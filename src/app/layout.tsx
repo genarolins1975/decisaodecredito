@@ -1,10 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import "katex/dist/katex.min.css";
+import "../../content/generated/legacy-scoped.css";
 
 export const metadata: Metadata = {
   title: { default: "Laboratório de Decisão de Crédito", template: "%s · Decisão de Crédito" },
   description: "Plataforma do curso de modelagem de risco de crédito do Prof. Genaro Dueire Lins.",
   robots: { index: false, follow: false },
+  icons: { icon: "/icon.svg" },
 };
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#00205B" };
 

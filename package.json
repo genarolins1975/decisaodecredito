@@ -42,6 +42,7 @@
   "devDependencies": {
     "@playwright/test": "1.56.1",
     "@tailwindcss/postcss": "4.3.3",
+    "@types/jsdom": "27.0.0",
     "@types/katex": "0.16.8",
     "@types/node": "22.20.3",
     "@types/papaparse": "5.5.2",

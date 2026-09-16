@@ -5,6 +5,7 @@ import { appContext } from "@/lib/context";
 const NAV = [
   { href: "/inicio", label: "Visão geral" },
   { href: "/aulas", label: "Aulas" },
+  { href: "/ao-vivo", label: "Ao vivo" },
   { href: "/trabalhos", label: "Trabalhos" },
   { href: "/materiais", label: "Materiais" },
   { href: "/acompanhamento", label: "Meu acompanhamento" },
