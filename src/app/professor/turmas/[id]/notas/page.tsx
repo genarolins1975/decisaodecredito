@@ -1,8 +1,8 @@
 import { requireClassAccess } from "@/lib/auth/guard";
-import { Empty } from "@/components/ui";
+import { Gradebook } from "@/components/professor/gradebook";
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+export default async function NotasPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   await requireClassAccess(id, ["professor"]);
-  return <Empty title="Em construção">Seção "notas" será implementada na etapa 4.</Empty>;
+  return <Gradebook classId={id} />;
 }
