@@ -52,14 +52,28 @@ export function wilson(k: number, n: number, z = 1.96) {
   return { p, lo: (centre - adj) / den, hi: (centre + adj) / den };
 }
 
-/** Calibração por faixas de previsão (decis por padrão). */
+/** Quantil com interpolação linear (convenção numpy/pandas). */
+export function quantile(sorted: number[], q: number) {
+  if (!sorted.length) return NaN;
+  const pos = (sorted.length - 1) * q, lo = Math.floor(pos), hi = Math.ceil(pos);
+  return sorted[lo] + (sorted[hi] - sorted[lo]) * (pos - lo);
+}
+
+/**
+ * Calibração por faixas de previsão (decis por padrão), com faixas por QUANTIS DO VALOR previsto,
+ * fechadas à direita (convenção pandas.qcut): reproduz exatamente as tabelas pré-calculadas do material
+ * (74,74,73,74,74,73,74,73,74,74 casos na janela OOT). O `calibracao` em JS do material dividia por
+ * CONTAGEM com piso, deslocando um caso entre faixas vizinhas; achado registrado na auditoria técnica.
+ */
 export function calibration(y: number[], p: number[], k = 10) {
-  const idx = y.map((_, i) => i).sort((a, b) => p[a] - p[b]);
+  const sorted = p.slice().sort((a, b) => a - b);
+  const edges = Array.from({ length: k + 1 }, (_, j) => quantile(sorted, j / k));
+  const groups: number[][] = Array.from({ length: k }, () => []);
+  p.forEach((v, i) => { let b = 0; while (b < k - 1 && v > edges[b + 1]) b++; groups[b].push(i); });
   const bins: { n: number; prev: number; obs: number; lo: number; hi: number; defaults: number }[] = [];
-  for (let b = 0; b < k; b++) {
-    const slice = idx.slice(Math.floor(b * idx.length / k), Math.floor((b + 1) * idx.length / k));
-    if (!slice.length) continue;
-    const n = slice.length, d = slice.reduce((s, i) => s + y[i], 0), prev = slice.reduce((s, i) => s + p[i], 0) / n;
+  for (const g of groups) {
+    if (!g.length) continue;
+    const n = g.length, d = g.reduce((s, i) => s + y[i], 0), prev = g.reduce((s, i) => s + p[i], 0) / n;
     const w = wilson(d, n);
     bins.push({ n, prev, obs: d / n, lo: w.lo, hi: w.hi, defaults: d });
   }
@@ -85,14 +99,14 @@ export function woeIv(bons: number[], maus: number[]) {
   return { woe, iv };
 }
 
-/** Ganho acumulado por decil (fila de risco). */
+/** Ganho acumulado por decil (fila de risco), por CONTAGEM com fronteiras arredondadas, como a função `gains` do núcleo JS original. */
 export function gains(y: number[], p: number[], k = 10) {
   const idx = y.map((_, i) => i).sort((a, b) => p[b] - p[a]);
   const D = y.reduce((s, v) => s + v, 0);
   const out: { decile: number; n: number; defaults: number; cumPct: number; lift: number }[] = [];
   let cum = 0;
   for (let b = 0; b < k; b++) {
-    const slice = idx.slice(Math.floor(b * idx.length / k), Math.floor((b + 1) * idx.length / k));
+    const slice = idx.slice(Math.round(b * idx.length / k), Math.round((b + 1) * idx.length / k));
     const d = slice.reduce((s, i) => s + y[i], 0); cum += d;
     out.push({ decile: b + 1, n: slice.length, defaults: d, cumPct: D ? cum / D : NaN, lift: D && slice.length ? (d / slice.length) / (D / y.length) : NaN });
   }

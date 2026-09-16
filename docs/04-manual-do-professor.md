@@ -1,0 +1,65 @@
+# Manual do professor
+
+Acesso: `/professor` após entrar com a conta de professor. Todas as ações têm confirmação e ficam na trilha de auditoria.
+
+## 1. Criar ano letivo e turma
+1. Turmas → "Nova edição (ano letivo)": informe o ano. A edição nasce vazia.
+2. Para reaproveitar o material, use "Duplicar edição" a partir de 2026: copia unidades, capítulos, páginas publicadas, questões, rubricas, materiais e catálogo de bases. Não copia turmas, matrículas, grupos, respostas, frequência, entregas ou notas. Revise prazos antes de publicar.
+3. "Nova turma nesta edição": código único (ex.: 2027-A) e nome. Uma edição pode ter várias turmas.
+4. Ativar a edição quando estiver pronta; arquivar ao encerrar (histórico preservado, novas interações bloqueadas).
+
+## 2. Importar a lista de alunos autorizados
+1. Turma → Alunos → "Importar lista (CSV)". Baixe o modelo (colunas nome, email, papel). Ano e turma vêm do contexto.
+2. Clique em Prévia: cada linha recebe ok, duplicada no arquivo, já matriculada ou inválida.
+3. Confirmar importação grava apenas as linhas válidas. Nenhum e-mail é enviado nesta etapa.
+4. Cadastro manual: formulário "Adicionar aluno". Papel monitor tem permissões restritas por turma.
+
+## 3. Conectar o Gmail
+1. Configurações → "Conectar meu Gmail". É preciso ter `EMAIL_PROVIDER=gmail` e as credenciais OAuth configuradas no servidor (ver `docs/09-ativacao-producao.md`).
+2. Autorize apenas o escopo de envio. A conta remetente aparece na tela; desconectar revoga o token.
+3. "Enviar teste" manda uma mensagem para o seu próprio e-mail (ou outro que você informar). Nunca para alunos.
+4. A fila mostra cada mensagem: na fila, aceita pelo Gmail (não comprova entrega), falhou (com erro e reenvio manual).
+
+## 4. Enviar e reemitir convites
+1. Alunos → selecione os alunos (ou "Selecionar aguardando/convidados") → "Enviar convites".
+2. Cada convite cria uma credencial individual de 12 caracteres, válida por 72 horas e de uso único, enviada com o link da plataforma. Reenviar invalida a anterior.
+3. Quem já tem conta com senha (outra turma) recebe apenas aviso de nova matrícula e link de login; a senha não muda.
+4. Estados: autorizado → convidado → ativo. Suspender ou encerrar bloqueia na hora o acesso à turma, inclusive sessões abertas.
+
+## 5. Encontros e datas
+Turma → Encontros → "Criar encontros padrão" (um por aula, sem data) e edite: data e hora (horário de São Paulo), local, link de videoconferência, o que preparar, se conta na frequência. Cancelar um encontro o retira do denominador; reposição referencia o encontro original.
+
+## 6. Publicar aula e conteúdo
+- Conteúdo → escolha a edição → capítulo → página: "ver como aluno", "projeção" ou "editar".
+- Editar cria uma nova versão (título, objetivo, apoio, blocos HTML com fórmulas, notas do professor, questões). "Salvar rascunho" não muda o que o aluno vê; "Publicar nova versão" torna visível. Respostas já dadas mantêm a versão anterior.
+- Página pode ser essencial ou complementar, ter minutos e ficar oculta (rascunho).
+
+## 7. Abrir uma sessão ao vivo e questões
+1. Encontros → "Nova sessão ao vivo" → "Abrir sessão".
+2. Escolha a página e "Apresentar esta página" (ou abra a projeção 16:9, que sincroniza ao navegar; N mostra as notas privadas, F tela cheia).
+3. "Publicar questão": escolha uma questão da página ou crie uma nova (alternativa única, múltipla, numérica com unidade e tolerância, texto curto, decisão de crédito com justificativa, previsão). Defina tempo e tentativas e clique em Abrir.
+4. A distribuição agregada aparece na tela (pode ser projetada). O "painel privado com nomes" não deve ser projetado.
+5. Encerrar → Liberar resultados (o aluno vê acerto e explicação). Reabrir cria nova rodada; use "antes" e "depois" para enquetes em duas rodadas.
+
+## 8. Validar presença
+1. Na sessão, "Abrir chamada com código": defina duração e, se quiser, minuto a partir do qual conta como atraso. O código muda a cada 60 s e há QR para projeção.
+2. O aluno digita o código autenticado; o servidor valida matrícula, janela, código e limite de tentativas. O código pode ser compartilhado por mensagem: confira a sala e corrija no mapa quando necessário.
+3. Frequência → clique na célula para corrigir (presente, ausente, atrasado, justificado, pendente) com motivo obrigatório. Pedidos de revisão do aluno aparecem com "!".
+4. Configurações da turma → regra de frequência (mínimo, atraso, justificado). Sem regra, nada é calculado e ninguém é reprovado. Exportar CSV traz legenda e regra aplicada.
+
+## 9. Receber e corrigir trabalhos
+1. Trabalhos → abra o trabalho → "Editar" para enunciado, entregáveis, formatos, tamanho, prazo, regra de atraso, modo (individual ou grupo) e rubrica → Publicar.
+2. Grupos → crie grupos, adicione membros e atribua bases. A composição no momento do envio fica congelada no recibo.
+3. Entregas vigentes → Corrigir: marque cada dimensão da rubrica (o total, o máximo e a regra de corte aparecem), registre a defesa individual por membro, comentários e anexo → "Salvar correção". Situações: corrigido, dispensado, não entregue, zero.
+4. "Publicar notas corrigidas" libera aos alunos. "Devolver" pede revisão; o reenvio cria nova versão sem apagar a anterior.
+5. Exceções de prazo por aluno ou grupo, com justificativa.
+6. Teste cego (trabalho final): cadastre o OOT sem desfecho e os rótulos (só você vê); defina máximo de submissões e nível de devolutiva. O aluno só baixa o OOT após congelar o modelo; exceções de congelamento são registradas com motivo.
+
+## 10. Exportar notas
+Turma → Notas → "Exportar CSV". O arquivo usa a mesma função de cálculo da tela e diferencia não corrigido, não entregue, dispensado e zero; células com fórmula são neutralizadas.
+
+## 11. Situações comuns
+- Convite expirado: reenviar (invalida o anterior).
+- Aluno esqueceu a senha: ele usa "Esqueci minha senha"; você nunca vê nem define senhas.
+- Aluno em duas turmas: mesma conta; ele alterna a turma no topo.
+- Gmail expirou: Configurações mostra o erro; reconecte e processe a fila.

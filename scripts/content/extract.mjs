@@ -118,6 +118,8 @@ const rubrics = await page.evaluate(() => {
   return out;
 });
 
+const dados = await page.evaluate(() => ({ DADOS, DID }));
+fs.writeFileSync(path.join(OUT, "dados.json"), JSON.stringify(dados));
 const cssMatch = html.match(/<style[^>]*>([\s\S]*?)<\/style>/);
 fs.writeFileSync(path.join(OUT, "legacy.css"), cssMatch ? cssMatch[1] : "");
 fs.writeFileSync(path.join(OUT, "extract.json"), JSON.stringify({ sourceFile: "content/original/apresentacao-curso-pd.html", sourceSha256: sha256, extractedAt: new Date().toISOString(), meta, pages, rubrics, errors }, null, 1));
