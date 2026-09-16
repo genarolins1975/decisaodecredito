@@ -116,5 +116,9 @@ root.walkRules((rule) => {
   rule.selectors = sels.map((s) => (s.trim().startsWith(":root") ? ".conteudo" : `.conteudo ${s.trim()}`));
 });
 root.walkAtRules((at) => { if (at.name === "media" && at.params.includes("print")) at.remove(); });
-fs.writeFileSync(path.join(OUT, "legacy-scoped.css"), root.toString());
+// telas estreitas: toda grade do material vira uma coluna; linhas flex quebram
+const gridSel = new Set();
+root.walkRules((rule) => { rule.walkDecls((d) => { if (d.prop === "grid-template-columns" || (d.prop === "display" && d.value === "flex")) rule.selectors.forEach((sel) => gridSel.add(sel)); }); });
+const mobile = `\n@media (max-width: 720px) {\n${[...gridSel].map((sel) => `${sel} { grid-template-columns: 1fr !important; flex-wrap: wrap; }`).join("\n")}\n}\n`;
+fs.writeFileSync(path.join(OUT, "legacy-scoped.css"), root.toString() + mobile);
 console.log("css escopado gerado");

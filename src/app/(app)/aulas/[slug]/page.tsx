@@ -28,14 +28,23 @@ export default async function AulaPaginaPage({ params }: { params: Promise<{ slu
   return (
     <div className="grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)]">
       <aside className="lg:sticky lg:top-[100px] self-start no-print" aria-label="Páginas do capítulo">
-        <p className="eyebrow mb-2">{data.unit.kind === "trabalho" ? "Trabalho final" : `Aula ${data.unit.number}`} · Capítulo {data.chapter.number}</p>
-        <p className="font-serif font-bold text-ink text-[15px] mb-3">{data.chapter.title}</p>
-        <ol className="link-list list-none p-0 m-0 text-[13px] max-h-[60vh] overflow-auto">
-          {chapterPages.map((p, i) => <li key={p.id}><Link href={`/aulas/${p.slug}`} aria-current={p.slug === slug ? "page" : undefined}><span className="font-mono text-[11px] text-muted mr-2">{i + 1}</span>{p.title}</Link></li>)}
-        </ol>
-        <div className="mt-4 flex flex-col gap-2">
-          <Link href={`/apresentacao/${slug}`} className="btn btn-secondary btn-sm">Modo apresentação</Link>
-          <Link href="/aulas" className="btn btn-ghost btn-sm">Todas as aulas</Link>
+        <details className="lg:hidden panel-soft">
+          <summary className="cursor-pointer font-semibold text-ink min-h-[44px] flex items-center">Capítulo {data.chapter.number} · página {idx + 1} de {chapterPages.length}</summary>
+          <ol className="link-list list-none p-0 m-0 text-[13px] mt-2">
+            {chapterPages.map((p, i) => <li key={p.id}><Link href={`/aulas/${p.slug}`} aria-current={p.slug === slug ? "page" : undefined}><span className="font-mono text-[11px] text-muted mr-2">{i + 1}</span>{p.title}</Link></li>)}
+          </ol>
+          <div className="mt-3 flex gap-2"><Link href={`/apresentacao/${slug}`} className="btn btn-secondary btn-sm">Modo apresentação</Link><Link href="/aulas" className="btn btn-ghost btn-sm">Todas as aulas</Link></div>
+        </details>
+        <div className="hidden lg:block">
+          <p className="eyebrow mb-2">{data.unit.kind === "trabalho" ? "Trabalho final" : `Aula ${data.unit.number}`} · Capítulo {data.chapter.number}</p>
+          <p className="font-serif font-bold text-ink text-[15px] mb-3">{data.chapter.title}</p>
+          <ol className="link-list list-none p-0 m-0 text-[13px] max-h-[60vh] overflow-auto">
+            {chapterPages.map((p, i) => <li key={p.id}><Link href={`/aulas/${p.slug}`} aria-current={p.slug === slug ? "page" : undefined}><span className="font-mono text-[11px] text-muted mr-2">{i + 1}</span>{p.title}</Link></li>)}
+          </ol>
+          <div className="mt-4 flex flex-col gap-2">
+            <Link href={`/apresentacao/${slug}`} className="btn btn-secondary btn-sm">Modo apresentação</Link>
+            <Link href="/aulas" className="btn btn-ghost btn-sm">Todas as aulas</Link>
+          </div>
         </div>
       </aside>
       <article className="min-w-0" style={{ ["--cap" as string]: theme, ["--cap-soft" as string]: data.chapter.themeSoft ?? "#EFF3FA" }}>
@@ -46,10 +55,11 @@ export default async function AulaPaginaPage({ params }: { params: Promise<{ slu
             {data.page.origin && ORIGIN[data.page.origin] && <Badge tone="ink">{ORIGIN[data.page.origin]}</Badge>}
           </p>
           <h1 className="mt-2">{data.version.title}</h1>
-          {data.version.objective && <p className="mt-3 text-[15px]"><span className="eyebrow text-gold mr-2">Objetivo</span>{data.version.objective}</p>}
+          {data.version.objective && <p className="mt-3 text-[15px]"><span className="eyebrow text-[#7a5f16] mr-2">Objetivo</span>{data.version.objective}</p>}
           {data.version.support && <p className="mt-2 text-[16px] max-w-[66ch]">{data.version.support}</p>}
         </div>
         <div className="mt-6">
+          <h2 className="sr-only">Conteúdo da página</h2>
           <ContentBlocks blocks={data.blocks} questions={data.questions} classId={ctx.current.classId} />
         </div>
         {data.questions.find((q) => q.slug === `${slug}-checagem`) && (

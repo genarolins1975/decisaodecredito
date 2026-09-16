@@ -14,7 +14,7 @@ export default function AjudaPage() {
         <p><b>Trabalhos.</b> Inicie a entrega, anexe arquivos ou links e clique em Enviar: só então há entrega, com recibo (versão, hashes e horário do servidor). Nova versão substitui a vigente sem apagar o histórico. Prazos seguem o horário de Brasília.</p>
         <p><b>Teste cego.</b> Congele o modelo (manifesto, versão e hashes) antes de baixar o arquivo OOT; as previsões são enviadas uma única vez.</p>
         <p><b>Devolutivas.</b> Notas e comentários aparecem em Trabalhos e em Meu acompanhamento quando o professor publica.</p>
-        <p><b>Problemas de acesso.</b> Use "Esqueci minha senha" na tela de entrada. Se o convite expirou, peça um novo ao professor.</p>
+        <p><b>Problemas de acesso.</b> Use “Esqueci minha senha” na tela de entrada. Se o convite expirou, peça um novo ao professor.</p>
       </div>
     </div>
   );

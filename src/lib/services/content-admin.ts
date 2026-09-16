@@ -1,6 +1,5 @@
 import "server-only";
 import { and, asc, desc, eq } from "drizzle-orm";
-import katex from "katex";
 import { db, schema } from "@/lib/db/client";
 import { newId } from "@/lib/ids";
 import { ApiError } from "@/lib/auth/guard";
@@ -8,11 +7,7 @@ import { audit } from "@/lib/audit";
 import { sanitizeHtml } from "@/lib/sanitize";
 import type { Block } from "@/lib/services/content";
 
-/** Renderiza \( \) e \[ \] com KaTeX (HTML + MathML) no HTML editado pelo professor. */
-export function renderTex(html: string) {
-  const tex = (l: string, d: boolean) => { try { return katex.renderToString(l, { displayMode: d, throwOnError: false, output: "htmlAndMathml", strict: "ignore" }); } catch { return `<code>${l}</code>`; } };
-  return html.replace(/\\\[([\s\S]+?)\\\]/g, (_m, l) => tex(l, true)).replace(/\\\(([\s\S]+?)\\\)/g, (_m, l) => tex(l, false));
-}
+import { renderTex } from "@/lib/tex";
 
 export async function pageForEditor(pageId: string) {
   const [row] = await db.select({ page: schema.pages, chapter: schema.chapters, unit: schema.units }).from(schema.pages)
@@ -31,7 +26,7 @@ export type VersionInput = { title: string; objective?: string | null; support?:
 export async function createPageVersion(pageId: string, input: VersionInput, actorId: string) {
   const { page, latest } = await pageForEditor(pageId);
   const blocks: Block[] = input.blocks.map((b) => {
-    if (b.type === "html") return { type: "html", html: sanitizeHtml(renderTex(b.html)) };
+    if (b.type === "html") return { type: "html", html: sanitizeHtml(b.html) }; // TeX é renderizado ao servir, mantendo a fonte editável
     if (b.type === "legacy") return { ...b, fallbackHtml: sanitizeHtml(b.fallbackHtml) };
     return b;
   });

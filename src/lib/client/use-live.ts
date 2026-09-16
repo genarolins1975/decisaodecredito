@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "./api";
 
 /**
@@ -10,16 +10,16 @@ import { api } from "./api";
 export function useLiveState<T extends { session: { stateVersion: number } }>(sessionId: string, initial: T | null) {
   const [state, setState] = useState<T | null>(initial);
   const [channel, setChannel] = useState<"sse" | "polling" | "revoked">("sse");
-  const [lastUpdate, setLastUpdate] = useState<number>(Date.now());
+  const [lastUpdate, setLastUpdate] = useState<number>(0);
   const versionRef = useRef<number>(initial?.session.stateVersion ?? -1);
   const sigRef = useRef<string>("");
-  const apply = (s: T) => {
+  const apply = useCallback((s: T) => {
     const sig = JSON.stringify(s);
     if (s.session.stateVersion < versionRef.current) return;
     if (s.session.stateVersion === versionRef.current && sig === sigRef.current) return;
     versionRef.current = s.session.stateVersion; sigRef.current = sig;
     setState(s); setLastUpdate(Date.now());
-  };
+  }, []);
   useEffect(() => {
     let es: EventSource | null = null; let poll: ReturnType<typeof setInterval> | null = null; let stopped = false;
     const startPolling = () => {
@@ -39,7 +39,7 @@ export function useLiveState<T extends { session: { stateVersion: number } }>(se
     };
     startSse();
     return () => { stopped = true; es?.close(); if (poll) clearInterval(poll); };
-  }, [sessionId]);
+  }, [sessionId, apply]);
   const refresh = async () => { try { apply(await api<T>(`/api/aovivo/${sessionId}/estado`)); } catch { /* ignora */ } };
   return { state, channel, lastUpdate, refresh };
 }

@@ -13,3 +13,5 @@ coverage/
 backups/*
 !backups/.gitkeep
 /tmp/
+content/generated/shots/
+tsconfig.tsbuildinfo

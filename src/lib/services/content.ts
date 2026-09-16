@@ -1,6 +1,7 @@
 import "server-only";
 import { and, asc, eq, inArray } from "drizzle-orm";
 import { db, schema } from "@/lib/db/client";
+import { renderTex } from "@/lib/tex";
 
 export type Block =
   | { type: "html"; html: string }
@@ -50,7 +51,7 @@ export async function getPage(editionId: string, slug: string, includeGuide: boo
     .innerJoin(schema.units, eq(schema.units.id, schema.chapters.unitId))
     .where(and(eq(schema.units.editionId, editionId), eq(schema.pages.slug, slug), eq(schema.pages.status, "published"))).limit(1);
   if (!row) return null;
-  const blocks = row.version.blocks as Block[];
+  const blocks = (row.version.blocks as Block[]).map((b) => (b.type === "html" ? { ...b, html: renderTex(b.html) } : b));
   const slugs = blocks.filter((b): b is Extract<Block, { type: "question" }> => b.type === "question").map((b) => b.slug);
   const checagem = `${slug}-checagem`;
   const qs = await publicQuestions(editionId, [...slugs, checagem]);

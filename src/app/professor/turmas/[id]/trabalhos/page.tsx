@@ -18,7 +18,7 @@ export default async function TrabalhosProfessorPage({ params }: { params: Promi
     <div className="flex flex-col gap-4">
       <div className="table-wrap card p-0">
         <table className="table">
-          <thead><tr><th>Trabalho</th><th>Modo</th><th>Prazo</th><th>Situação</th><th>Entregas vigentes</th><th></th></tr></thead>
+          <thead><tr><th>Trabalho</th><th>Modo</th><th>Prazo</th><th>Situação</th><th>Entregas vigentes</th><th><span className="sr-only">Ações</span></th></tr></thead>
           <tbody>
             {list.map((a) => {
               const c = counts.filter((x) => x.aid === a.id);

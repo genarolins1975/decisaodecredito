@@ -45,10 +45,10 @@ export function GmailPanel({ status, flash, queue }: { status: Status; flash: { 
       </div>
       <section className="card min-w-0">
         <div className="flex items-center gap-3 mb-2"><h2 className="text-base">Fila de e-mails</h2><div className="flex-1" /><button className="btn btn-sm btn-secondary" onClick={() => run(async () => { const r = await api<{ ready: { ok: boolean; reason?: string }; processed: { sent: number; failed: number } | null }>("/api/professor/email/processar", { body: {} }); return r.processed ? `Processado: ${r.processed.sent} aceito(s), ${r.processed.failed} falha(s).` : `Sem remetente: ${r.ready.reason}`; })}>Processar fila agora</button></div>
-        <p className="hint mb-2">"Aceito pelo Gmail" significa que o provedor recebeu a mensagem; não comprova entrega ao destinatário. Falhas têm tentativas limitadas com espera crescente; reenvio manual zera o contador.</p>
+        <p className="hint mb-2">“Aceito pelo Gmail” significa que o provedor recebeu a mensagem; não comprova entrega ao destinatário. Falhas têm tentativas limitadas com espera crescente; reenvio manual zera o contador.</p>
         <div className="table-wrap">
           <table className="table text-[13px]">
-            <thead><tr><th>Quando</th><th>Tipo</th><th>Para</th><th>Estado</th><th>Tent.</th><th>Erro</th><th></th></tr></thead>
+            <thead><tr><th>Quando</th><th>Tipo</th><th>Para</th><th>Estado</th><th>Tent.</th><th>Erro</th><th><span className="sr-only">Ações</span></th></tr></thead>
             <tbody>
               {queue.map((m) => <tr key={m.id}><td className="whitespace-nowrap">{fmtDT(m.createdAt)}</td><td>{m.kind}</td><td className="font-mono">{m.toEmail}</td><td><StatusBadge status={m.status} />{m.acceptedAt && <div className="hint">{fmtDT(m.acceptedAt)}</div>}</td><td>{m.attempts}</td><td className="text-alert max-w-[260px]">{m.lastError}</td><td>{m.status === "failed" && <button className="btn btn-sm btn-ghost" onClick={() => run(async () => { await api(`/api/professor/email/reenviar/${m.id}`, { body: {} }); return "Recolocada na fila."; })}>Reenviar</button>}</td></tr>)}
               {queue.length === 0 && <tr><td colSpan={7} className="hint text-center py-6">Fila vazia.</td></tr>}

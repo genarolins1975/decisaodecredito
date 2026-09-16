@@ -12,15 +12,18 @@ export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liv
 }) {
   const byslug = new Map(questions.map((q) => [q.slug, q]));
   const revealRef = useRef<((slug: string, choice: number) => void) | null>(null);
-  const [initial, setInitial] = useState<Record<string, { isCorrect: boolean | null; feedback: never; attemptNo: number; answer: unknown }> | null>(null);
+  const [fetched, setFetched] = useState<Record<string, { isCorrect: boolean | null; feedback: never; attemptNo: number; answer: unknown }> | null>(null);
+  const ids = questions.map((q) => q.versionId).join(",");
+  const skipFetch = mode === "previa" || !ids;
+  const initial = skipFetch ? {} : fetched;
 
   useEffect(() => {
-    if (mode === "previa") { setInitial({}); return; }
-    const ids = questions.map((q) => q.versionId).join(",");
-    if (!ids) { setInitial({}); return; }
+    if (skipFetch) return;
+    let cancelled = false;
     api<{ responses: Record<string, { isCorrect: boolean | null; feedback: never; attemptNo: number; answer: unknown }> }>(`/api/estudo/responder?classId=${classId}&versions=${ids}`)
-      .then((d) => setInitial(d.responses)).catch(() => setInitial({}));
-  }, [classId, questions, mode]);
+      .then((d) => { if (!cancelled) setFetched(d.responses); }).catch(() => { if (!cancelled) setFetched({}); });
+    return () => { cancelled = true; };
+  }, [classId, ids, skipFetch]);
 
   const submit = (q: PublicQuestion) => async (answer: unknown, clientRequestId: string) => {
     if (mode === "previa") return { isCorrect: null, feedback: null, attemptNo: 0 };

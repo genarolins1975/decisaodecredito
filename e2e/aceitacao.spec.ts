@@ -224,6 +224,9 @@ test.describe.serial("trabalhos, grupos e notas", () => {
     expect((await b.get(`/api/arquivos/${good.file.id}`)).status()).toBe(403);
     expect((await b.get(`/api/trabalhos/${asg.id}?classId=${cid}`)).json().then((d) => d.submissions.length)).resolves.toBe(0);
     // nota: sem publicar, invisível; publicada, visível; ausência de nota não vira zero
+    // (o teste é reexecutável: uma nota já publicada em rodada anterior é removida; regrade de nota publicada mantém a publicação, com histórico)
+    await sql("delete from grade_history where grade_id in (select g.id from grades g join users u on u.id=g.user_id where g.assignment_id=$1 and u.email=$2)", [asg.id, ALUNO_A.email]);
+    await sql("delete from grades where assignment_id=$1 and user_id in (select id from users where email=$2)", [asg.id, ALUNO_A.email]);
     const grade = await prof.post(`/api/professor/turmas/${cid}/trabalhos/${asg.id}/envios/${draft.id}/nota`, { data: { scores: {}, status: "corrigido", comments: "ok" } });
     expect(grade.status()).toBe(200);
     expect((await (await a.get(`/api/trabalhos/${asg.id}?classId=${cid}`)).json()).grade).toBeNull();

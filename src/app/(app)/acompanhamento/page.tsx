@@ -39,7 +39,7 @@ export default async function AcompanhamentoPage() {
       <div className="grid gap-4 md:grid-cols-2">
         <section className="card" aria-labelledby="freq">
           <h2 id="freq" className="text-lg mb-2">Presença por encontro</h2>
-          <table className="table text-[14px]"><thead><tr><th>Encontro</th><th>Data</th><th>Situação</th><th></th></tr></thead>
+          <table className="table text-[14px]"><thead><tr><th>Encontro</th><th>Data</th><th>Situação</th><th><span className="sr-only">Ações</span></th></tr></thead>
             <tbody>{map.meetings.map((m, i) => { const c = mine?.cells[i]; return <tr key={m.id}><td>{m.title}</td><td>{fmtD(m.scheduledAt) || "—"}</td><td>{m.status === "cancelled" ? <span className="badge badge-muted">cancelado</span> : c?.status ? <StatusBadge status={c.status === "atrasado" ? "atrasado_freq" : c.status} /> : <span className="hint">sem registro</span>}{c?.reviewRequested && <span className="hint block">revisão solicitada</span>}</td><td>{m.status !== "cancelled" && <ReviewRequest classId={cid} meetingId={m.id} />}</td></tr>; })}</tbody></table>
           <p className="hint mt-2">Presença é registrada por check-in com código em sala e validada pelo professor. Se discordar de um registro, solicite revisão com uma justificativa.</p>
         </section>

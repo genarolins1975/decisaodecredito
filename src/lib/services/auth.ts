@@ -7,7 +7,7 @@ import { hashPassword, passwordProblems, verifyPassword } from "@/lib/auth/passw
 import { normalizeEmail } from "@/lib/auth/email";
 import { ApiError } from "@/lib/auth/guard";
 import { createSession, revokeAllSessions, clientMeta } from "@/lib/auth/session";
-import { rateLimit } from "@/lib/rate-limit";
+import { rateLimit, rateLimitPeek } from "@/lib/rate-limit";
 import { audit } from "@/lib/audit";
 import { enqueueEmail } from "@/lib/email/queue";
 import { resetTemplate } from "@/lib/email/templates";
@@ -18,11 +18,12 @@ const GENERIC = "E-mail ou senha incorretos";
 export async function login(emailRaw: string, password: string) {
   const email = normalizeEmail(emailRaw);
   const meta = await clientMeta();
-  await rateLimit(`login:ip:${meta.ipHash ?? "x"}`, 30, 600);
-  await rateLimit(`login:email:${email}`, 10, 600);
+  await rateLimit(`login:ip:${meta.ipHash ?? "x"}`, 600, 600); // turmas inteiras compartilham o IP da sala: limite por IP alto, por e-mail baixo
+  await rateLimitPeek(`login:email:${email}`, 10, 600); // por e-mail conta só falhas: logins válidos não bloqueiam a própria pessoa
   const [u] = await db.select().from(schema.users).where(eq(schema.users.email, email)).limit(1);
   const ok = u ? await verifyPassword(u.passwordHash, password) : await verifyPassword("$argon2id$v=19$m=19456,t=2,p=1$AAAAAAAAAAAAAAAAAAAAAA$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", password);
   if (!u || !ok || u.disabledAt) {
+    await rateLimit(`login:email:${email}`, 10, 600);
     await audit({ action: "auth.login_failed", entity: "user", entityId: u?.id ?? null, ipHash: meta.ipHash, details: { email: u ? undefined : "desconhecido" } });
     throw new ApiError(401, GENERIC, "invalid_credentials");
   }
@@ -38,7 +39,7 @@ export async function login(emailRaw: string, password: string) {
  */
 export async function activate(code: string) {
   const meta = await clientMeta();
-  await rateLimit(`activate:ip:${meta.ipHash ?? "x"}`, 20, 600);
+  await rateLimit(`activate:ip:${meta.ipHash ?? "x"}`, 300, 600);
   const clean = code.trim().toUpperCase().replace(/[\s-]/g, "");
   if (clean.length < 8) throw new ApiError(400, "Código inválido", "invalid_code");
   const [inv] = await db.select({ inv: schema.invites, enr: schema.enrollments }).from(schema.invites)
@@ -105,7 +106,7 @@ export async function changePassword(userId: string, sessionId: string, current:
 export async function requestPasswordReset(emailRaw: string) {
   const email = normalizeEmail(emailRaw);
   const meta = await clientMeta();
-  await rateLimit(`reset:ip:${meta.ipHash ?? "x"}`, 10, 900);
+  await rateLimit(`reset:ip:${meta.ipHash ?? "x"}`, 100, 900);
   await rateLimit(`reset:email:${email}`, 3, 900);
   const [u] = await db.select().from(schema.users).where(eq(schema.users.email, email)).limit(1);
   if (!u || !u.passwordHash || u.disabledAt) return;

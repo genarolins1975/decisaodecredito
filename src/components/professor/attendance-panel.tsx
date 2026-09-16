@@ -53,7 +53,7 @@ export function AttendancePanel({ classId, map }: { classId: string; map: Map })
           </tbody>
         </table>
       </div>
-      <p className="hint">Legenda: presente, atrasado, ausente, justificado, pendente (validação docente), cancelado. Clique numa célula para corrigir com motivo; a evidência de check-in (código, horário do servidor) é mantida separadamente da decisão. Um "!" indica pedido de revisão do aluno.</p>
+      <p className="hint">Legenda: presente, atrasado, ausente, justificado, pendente (validação docente), cancelado. Clique numa célula para corrigir com motivo; a evidência de check-in (código, horário do servidor) é mantida separadamente da decisão. Um “!” indica pedido de revisão do aluno.</p>
     </div>
   );
 }

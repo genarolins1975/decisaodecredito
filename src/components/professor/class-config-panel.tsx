@@ -23,7 +23,7 @@ export function ClassConfigPanel({ classId, config, cls }: { classId: string; co
       <ErrorBox message={err} /><SuccessBox message={ok} />
       <section className="card">
         <h2 className="text-base mb-1">Regra de frequência</h2>
-        <p className="hint mb-3">A plataforma não impõe percentual institucional. Sem regra definida, o mapa mostra "regra não definida" e não reprova ninguém.</p>
+        <p className="hint mb-3">A plataforma não impõe percentual institucional. Sem regra definida, o mapa mostra “regra não definida” e não reprova ninguém.</p>
         <div className="form-grid">
           <label className="text-[13px]">Frequência mínima (%) — vazio = sem regra<input className="input" inputMode="decimal" value={min} onChange={(e) => setMin(e.target.value)} placeholder="ex.: 75" /></label>
           <label className="text-[13px]">Atraso conta como<select className="select" value={late} onChange={(e) => setLate(e.target.value)}><option value="presente">presença</option><option value="meia">meia presença</option><option value="ausente">ausência</option></select></label>

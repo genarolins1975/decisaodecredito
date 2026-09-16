@@ -15,7 +15,9 @@ const B = process.env.APP_URL ?? "http://localhost:3000";
 const doShots = process.argv.includes("--shots");
 if (doShots) fs.mkdirSync(SHOTS, { recursive: true });
 const inv = JSON.parse(fs.readFileSync(path.join(OUT, "inventory.json"), "utf8"));
-const slugs = inv.pages.map((p) => p.slug);
+const only = process.env.SWEEP_ONLY ? process.env.SWEEP_ONLY.split(",") : null;
+const slugs = inv.pages.map((p) => p.slug).filter((s) => !only || only.includes(s));
+const modes = process.env.SWEEP_MODES ? process.env.SWEEP_MODES.split(",") : ["desktop", "mobile", "projecao"];
 
 const exe = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const browser = await chromium.launch(fs.existsSync(exe) ? { executablePath: exe } : {});
@@ -26,7 +28,7 @@ async function login(ctx, email, pw) {
   await page.close();
 }
 const results = [];
-for (const [name, viewport, mode] of [["desktop", { width: 1366, height: 850 }, "estudo"], ["mobile", { width: 390, height: 844 }, "estudo"], ["projecao", { width: 1920, height: 1080 }, "apresentacao"]]) {
+for (const [name, viewport, mode] of [["desktop", { width: 1366, height: 850 }, "estudo"], ["mobile", { width: 390, height: 844 }, "estudo"], ["projecao", { width: 1920, height: 1080 }, "apresentacao"]].filter((m) => modes.includes(m[0]))) {
   const ctx = await browser.newContext({ viewport, isMobile: name === "mobile", hasTouch: name === "mobile" });
   await login(ctx, "aluno.a@example.test", "aluno-a-dev-2026");
   const page = await ctx.newPage();
@@ -39,7 +41,7 @@ for (const [name, viewport, mode] of [["desktop", { width: 1366, height: 850 }, 
     const t0 = Date.now();
     try {
       await page.goto(url, { waitUntil: "load", timeout: 60000 });
-      if (mode === "apresentacao") { await page.keyboard.press("ArrowRight"); await page.keyboard.press("ArrowRight"); }
+      if (mode === "apresentacao") { await page.waitForTimeout(1200); await page.keyboard.press("ArrowRight"); await page.waitForTimeout(150); await page.keyboard.press("ArrowRight"); }
       await page.waitForTimeout(1500);
       const info = await page.evaluate(() => {
         const frames = [...document.querySelectorAll("iframe")];
@@ -66,7 +68,7 @@ for (const [name, viewport, mode] of [["desktop", { width: 1366, height: 850 }, 
   await ctx.close();
 }
 console.log();
-fs.writeFileSync(path.join(OUT, "sweep.json"), JSON.stringify(results, null, 1));
+if (only || process.env.SWEEP_MODES) { const prev = fs.existsSync(path.join(OUT, "sweep.json")) ? JSON.parse(fs.readFileSync(path.join(OUT, "sweep.json"), "utf8")) : []; const merged = prev.filter((r) => !results.some((n) => n.slug === r.slug && n.mode === r.mode)).concat(results); fs.writeFileSync(path.join(OUT, "sweep.json"), JSON.stringify(merged, null, 1)); } else fs.writeFileSync(path.join(OUT, "sweep.json"), JSON.stringify(results, null, 1));
 const bad = results.filter((r) => r.errors.length || r.overflow || r.rawTex || (r.frames && r.legacyReady === false));
 console.log(`páginas×modos: ${results.length}; com problemas: ${bad.length}`);
 for (const b of bad.slice(0, 40)) console.log(b.mode, b.slug, b.errors.slice(0, 2).join(" | "), b.overflow ? "OVERFLOW-X" : "", b.rawTex ? "TEX-CRU" : "", b.frames && b.legacyReady === false ? "LEGADO-NAO-CARREGOU" : "");

@@ -5,7 +5,6 @@ import { JSDOM } from "jsdom";
 let purifier: ReturnType<typeof createDOMPurify> | null = null;
 function purify() {
   if (!purifier) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     purifier = createDOMPurify(new JSDOM("").window as any);
   }
   return purifier;

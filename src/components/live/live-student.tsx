@@ -15,14 +15,14 @@ type PageData = { page: { slug: string; title: string; objective: string | null;
 export function LiveStudent({ sessionId, classId, meeting, initial }: { sessionId: string; classId: string; meeting: { id: string; title: string; number: number; videoUrl: string | null }; initial: State }) {
   const { state, channel, lastUpdate } = useLiveState<State>(sessionId, initial);
   const [follow, setFollow] = useState(true);
-  const [slug, setSlug] = useState<string | null>(initial.currentPage?.slug ?? null);
+  const [ownSlug, setSlug] = useState<string | null>(initial.currentPage?.slug ?? null);
   const [page, setPage] = useState<PageData | null>(null);
   const [checkinMsg, setCheckinMsg] = useState<string | null>(null);
   const [code, setCode] = useState("");
   const [windows, setWindows] = useState<{ id: string; meetingId: string; closesAt: string }[]>([]);
 
   const st = state ?? initial;
-  useEffect(() => { if (follow && st.currentPage?.slug) setSlug(st.currentPage.slug); }, [follow, st.currentPage?.slug]);
+  const slug = follow ? (st.currentPage?.slug ?? ownSlug) : ownSlug;
   useEffect(() => { if (!slug) return; api<PageData>(`/api/conteudo/pagina/${slug}?classId=${classId}`).then(setPage).catch(() => setPage(null)); }, [slug, classId]);
   useEffect(() => {
     const load = () => api<{ windows: { id: string; meetingId: string; closesAt: string }[] }>(`/api/frequencia/chamada?classId=${classId}`).then((d) => setWindows(d.windows.filter((w) => w.meetingId === meeting.id))).catch(() => {});
@@ -49,14 +49,14 @@ export function LiveStudent({ sessionId, classId, meeting, initial }: { sessionI
         </div>
         <div className="flex flex-wrap items-center gap-2 mb-4 no-print" role="group" aria-label="Modo de acompanhamento">
           <button type="button" className={`btn btn-sm ${follow ? "" : "btn-secondary"}`} aria-pressed={follow} onClick={() => setFollow(true)}>Acompanhar professor</button>
-          <button type="button" className={`btn btn-sm ${!follow ? "" : "btn-secondary"}`} aria-pressed={!follow} onClick={() => setFollow(false)}>Explorar livremente</button>
+          <button type="button" className={`btn btn-sm ${!follow ? "" : "btn-secondary"}`} aria-pressed={!follow} onClick={() => { setSlug(slug); setFollow(false); }}>Explorar livremente</button>
           {!follow && st.currentPage && <button type="button" className="btn btn-sm btn-ghost" onClick={() => { setFollow(true); setSlug(st.currentPage!.slug); }}>Voltar ao slide atual: {st.currentPage.title}</button>}
         </div>
         {page ? (
           <article className="card">
             <p className="eyebrow">Capítulo {page.page.chapter.number} · {page.page.chapter.title}</p>
             <h2 className="mt-1">{page.page.title}</h2>
-            {page.page.objective && <p className="mt-2 text-[15px]"><span className="eyebrow text-gold mr-2">Objetivo</span>{page.page.objective}</p>}
+            {page.page.objective && <p className="mt-2 text-[15px]"><span className="eyebrow text-[#7a5f16] mr-2">Objetivo</span>{page.page.objective}</p>}
             {page.page.support && <p className="mt-2">{page.page.support}</p>}
             <div className="mt-5"><ContentBlocks blocks={page.blocks} questions={page.questions} classId={classId} hideSlugs={st.activities.map((a) => a.question.slug)} /></div>
             {!follow && (
@@ -94,12 +94,14 @@ export function LiveStudent({ sessionId, classId, meeting, initial }: { sessionI
 }
 
 function LiveActivity({ a, sessionId }: { a: Activity; sessionId: string }) {
-  const [left, setLeft] = useState<number | null>(null);
+  const counting = Boolean(a.closesAt) && a.status === "open";
+  const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
-    if (!a.closesAt || a.status !== "open") { setLeft(null); return; }
-    const t = setInterval(() => setLeft(Math.max(0, Math.round((new Date(a.closesAt!).getTime() - Date.now()) / 1000))), 500);
+    if (!counting) return;
+    const t = setInterval(() => setNow(Date.now()), 500);
     return () => clearInterval(t);
-  }, [a.closesAt, a.status]);
+  }, [counting]);
+  const left = counting && now !== null ? Math.max(0, Math.round((new Date(a.closesAt!).getTime() - now) / 1000)) : null;
   const canAnswer = a.status === "open" && a.attemptsUsed < a.maxAttempts && (a.myAttempt?.status !== "submitted" || a.attemptsUsed < a.maxAttempts);
   const initial = a.myAttempt && a.myAttempt.status === "submitted" ? { isCorrect: a.myAttempt.isCorrect, feedback: a.status === "released" ? a.myAttempt.feedback : null, attemptNo: a.myAttempt.attemptNo, answer: a.myAttempt.answer } : null;
   return (

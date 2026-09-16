@@ -30,7 +30,6 @@ const editionLabel = args.includes("--edition") ? args[args.indexOf("--edition")
 const republish = args.includes("--republish");
 
 const ex: Extract = JSON.parse(fs.readFileSync(path.join(GEN, "extract.json"), "utf8"));
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const purify = createDOMPurify(new JSDOM("").window as any);
 const SANITIZE = {
   USE_PROFILES: { html: true, svg: true, svgFilters: true, mathMl: true },

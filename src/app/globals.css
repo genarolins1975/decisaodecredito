@@ -19,7 +19,7 @@
   --color-alert-soft: #FBF2F3;
   --color-ok: #2E6B4F;
   --color-ok-soft: #F0F7F3;
-  --color-warn: #9A6B10;
+  --color-warn: #7a5309;
   --color-warn-soft: #FDF7E9;
   --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
   --font-sans: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -36,7 +36,7 @@ h1 { font-size: clamp(24px, 2.6vw, 34px); }
 h2 { font-size: clamp(20px, 2.1vw, 28px); }
 h3 { font-size: 18px; }
 p { margin: 0; }
-a { color: var(--color-ink); text-underline-offset: 3px; }
+a { color: var(--color-ink); text-decoration: underline; text-underline-offset: 3px; }
 button, input, select, textarea { font: inherit; color: inherit; }
 :focus-visible { outline: 3px solid var(--color-gold); outline-offset: 2px; }
 ::selection { background: var(--color-gold-soft); }
@@ -49,7 +49,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 @layer components {
 /* Componentes base */
 .eyebrow { font-size: 11px; letter-spacing: .09em; text-transform: uppercase; color: var(--color-muted); font-weight: 700; }
-.eyebrow b { color: var(--color-gold); }
+.eyebrow b { color: #7a5f16; }
 .card { background: var(--color-surface); border: 1px solid var(--color-rule); border-radius: 6px; box-shadow: var(--shadow-card); padding: 18px; }
 .card-flat { background: var(--color-surface); border: 1px solid var(--color-rule); border-radius: 6px; padding: 18px; }
 .panel-soft { background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 6px; padding: 16px; }
@@ -72,7 +72,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .badge { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; border: 1px solid; vertical-align: middle; white-space: nowrap; }
 .badge-ink { color: var(--color-ink); border-color: #BCCAE2; background: #EFF3FA; }
 .badge-ok { color: var(--color-ok); border-color: #BDD8CA; background: var(--color-ok-soft); }
-.badge-warn { color: var(--color-warn); border-color: #E6D2A6; background: var(--color-warn-soft); }
+.badge-warn { color: #6f4d0a; border-color: #E6D2A6; background: var(--color-warn-soft); }
 .badge-alert { color: var(--color-alert); border-color: #E3B7BE; background: var(--color-alert-soft); }
 .badge-muted { color: var(--color-muted); border-color: var(--color-rule); background: #EFEDE6; }
 .badge-gold { color: #7a5f16; border-color: #E0CBA0; background: var(--color-gold-soft); }
@@ -105,9 +105,21 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .conteudo .nota { font-size: 13px; color: var(--color-muted); }
 .conteudo .fig-caption { font-size: 12.5px; color: var(--color-muted); margin-top: 6px; }
 
+/* Conteúdo herdado em telas estreitas: grades e colunas fixas viram uma coluna; tabelas rolam */
+@media (max-width: 720px) {
+  .conteudo { overflow-wrap: anywhere; }
+  .conteudo [style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+  .conteudo [style*="display:flex"], .conteudo [style*="display: flex"] { flex-wrap: wrap; }
+  .conteudo .palcoflex { flex-direction: column; }
+  .conteudo .palcoflex > .esq, .conteudo .palcoflex > .dir { flex: 1 1 auto; width: 100%; }
+  .conteudo table { display: block; overflow-x: auto; max-width: 100%; }
+  .conteudo [style*="width:"] { max-width: 100%; }
+  .conteudo [style*="height:"], .conteudo .nv-samples { height: auto !important; }
+}
+
 /* Apresentação 16:9 */
 .slide-stage { background: #0b1a3d; color: #fff; }
-.slide { aspect-ratio: 16 / 9; width: min(100vw, calc(100vh * 16 / 9)); margin: 0 auto; background: var(--color-ground); color: var(--color-body); position: relative; overflow: hidden; }
+.slide { aspect-ratio: 16 / 9; width: min(100vw, calc((100vh - 52px) * 16 / 9)); margin: 0 auto; background: var(--color-ground); color: var(--color-body); position: relative; overflow: hidden; }
 .slide-inner { position: absolute; inset: 0; padding: 3.2% 3.6%; display: flex; flex-direction: column; gap: 1.2%; container-type: size; }
 .slide-inner h2 { font-size: clamp(22px, 3.6cqh, 48px); }
 .slide-inner .objective { font-size: clamp(14px, 2.4cqh, 24px); }

@@ -320,3 +320,84 @@
 .conteudo .v13-equidade{display:grid;grid-template-columns:minmax(180px,.55fr) minmax(0,1.45fr);gap:22px}.conteudo .v13-equidade-nav{display:grid;align-content:start}.conteudo .v13-equidade-nav button{border:0;border-bottom:1px solid var(--regua);background:transparent;padding:12px;text-align:left;cursor:pointer;color:var(--mudo)}.conteudo .v13-equidade-nav button.ativo{background:var(--cap-soft);box-shadow:inset 5px 0 var(--cap);color:var(--ink);font-weight:750}.conteudo .v13-equidade-main{padding:20px;border-left:1px solid var(--regua)}
 .conteudo .v13-choice{display:grid;gap:8px}.conteudo .v13-choice button{border:1px solid var(--regua);background:#fff;padding:12px;text-align:left;cursor:pointer}.conteudo .v13-choice button.certa{border-color:var(--verde);background:#EEF7F2}.conteudo .v13-choice button.errada{border-color:var(--alerta);background:#FBF0F2}
 @media(max-width:900px){.conteudo .menu-topo-pop{right:auto;left:0}.conteudo .nv-episodio,.conteudo .nv-checkpoint,.conteudo .nv-checkpoint-main,.conteudo .v13-cena,.conteudo .v13-compare,.conteudo .v13-equidade{grid-template-columns:1fr}.conteudo .nv-episodio-num,.conteudo .nv-checkpoint-side{border-right:0;border-bottom:5px solid var(--cap)}.conteudo .nv-episodio-rota,.conteudo .v13-monitor,.conteudo .v13-sinal,.conteudo .v13-indicadores{grid-template-columns:1fr}.conteudo .v13-dots{grid-template-columns:repeat(8,25px);gap:5px}.conteudo .v13-dot{width:25px;height:25px}.conteudo .v13-compare .vs{text-align:center}.conteudo .v13-waterfall{grid-template-columns:1fr}.conteudo .v13-waterfall button{min-height:80px}.conteudo .v13-bar{grid-template-columns:110px 1fr 54px}}
+
+@media (max-width: 720px) {
+.conteudo .painel>h3 { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .opcoes { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .opcao { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .ctrl { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .ctrl label { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .linhabotoes { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .g2 { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .g3 { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .ia-etapa { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .ia-check label { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .trilha-ia { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .caso-ia { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .passo-pratico { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .passos { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .grade { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .grade.g2 { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .grade.g3 { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-flow { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-caption { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-rubrica-topo { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-rubrica-item { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-rubrica-botoes { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-model-world { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-window li { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-lenses { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-lens { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-tree { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-strategy { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-mini-models { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-demo { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-demo-scene { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-residual-case { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-residual-bars { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-split { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-waterfall { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-formula-anatomy { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-case-pipeline { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-case-middle { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-human-ai { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-baseline { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-ruler .people { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-branch { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-model-branches div { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-pd-waterfall { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-case-picker { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-timeline { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-boost-lab { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-boost-state { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-boost-controls { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-freeze { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-cal-rule { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-rank-level { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-queue { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-samples { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-recorte-time { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-recorte-main { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo button.nv-feature { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-pd-result { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-pd-dots { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-future-vars { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-recorte-msg { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-episodio { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-episodio-num { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-episodio-rota { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-checkpoint { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .nv-checkpoint-main { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .v13-tabs { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .v13-cena { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .v13-metricas { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .v13-dots { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .v13-compare { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .v13-monitor { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .v13-bar { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .v13-waterfall { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .v13-indicadores { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .v13-indicadores label { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .v13-sinal { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+.conteudo .v13-equidade { grid-template-columns: 1fr !important; flex-wrap: wrap; }
+}

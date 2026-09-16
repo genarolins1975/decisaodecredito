@@ -91,6 +91,7 @@ export function LiveTeacher({ sessionId, classId, meeting, initial, pages, quest
             <div className="text-center">
               <p className="eyebrow">código atual · renova em {chamada[0].secondsLeft}s</p>
               <p className="font-mono text-5xl font-bold text-ink tracking-[.2em] my-2" aria-live="polite">{chamada[0].code}</p>
+              {/* eslint-disable-next-line @next/next/no-img-element -- QR gerado no servidor como data URL; otimização de imagem não se aplica */}
               {qr && <img src={qr} alt="QR code com o link da sessão e o código atual" className="mx-auto" width={220} height={220} />}
               <p className="hint mt-2">aberta até {fmtT(chamada[0].closesAt)}. O código pode ser compartilhado por mensagem: confira a sala e valide manualmente no mapa de frequência quando necessário.</p>
               <button className="btn btn-sm btn-ghost mt-2" onClick={() => run(async () => { await api(`/api/professor/turmas/${classId}/chamadas/${chamada[0].id}`, { method: "DELETE" }); setChamada([]); })}>Fechar chamada</button>

@@ -39,19 +39,19 @@ export function Slide(p: {
   });
 
   return (
-    <div className="slide-stage min-h-screen flex flex-col">
+    <main id="conteudo" className="slide-stage min-h-screen flex flex-col">
       <div className="slide" style={{ ["--cap" as string]: p.chapter.color, ["--cap-soft" as string]: p.chapter.soft }}>
         <div className="slide-inner">
           <header className="flex items-center justify-between gap-3 eyebrow">
             <span>{p.unitLabel} · Capítulo {p.chapter.number} · {p.chapter.title}</span>
             <span className="flex items-center gap-3"><b>página {p.pageIndex} de {p.pageCount}</b><span>{p.minutes} min</span>{p.level === "complementar" && <span className="badge badge-muted">complementar</span>}</span>
           </header>
-          <h2 className="mt-1">{p.title}</h2>
-          <div className={`transition-opacity ${reveal >= 1 ? "opacity-100" : "opacity-0"}`} aria-hidden={reveal < 1}>
-            {p.objective && <p className="objective"><span className="eyebrow text-gold mr-2">Objetivo</span>{p.objective}</p>}
+          <h1 className="mt-1 text-[clamp(22px,3.6cqh,48px)]">{p.title}</h1>
+          <div className={`transition-opacity ${reveal >= 1 ? "opacity-100" : "opacity-0"}`} inert={reveal < 1}>
+            {p.objective && <p className="objective"><span className="eyebrow text-[#7a5f16] mr-2">Objetivo</span>{p.objective}</p>}
             {p.support && <p className="objective max-w-[70ch]">{p.support}</p>}
           </div>
-          <div className={`conteudo transition-opacity ${reveal >= 2 ? "opacity-100" : "opacity-0 pointer-events-none"}`} aria-hidden={reveal < 2}>
+          <div className={`conteudo transition-opacity ${reveal >= 2 ? "opacity-100" : "opacity-0 pointer-events-none"}`} inert={reveal < 2}>
             <ContentBlocks blocks={p.blocks} questions={p.questions} classId={p.classId} mode={p.isStaff ? "previa" : "estudo"} />
           </div>
           {p.connection && reveal >= 2 && p.next && <p className="font-serif italic text-ink text-[.9em] border-t border-rule pt-1"><span className="eyebrow not-italic mr-2">A seguir</span>{p.connection}</p>}
@@ -77,6 +77,6 @@ export function Slide(p: {
           </dl>
         </aside>
       )}
-    </div>
+    </main>
   );
 }

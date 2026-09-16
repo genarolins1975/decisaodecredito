@@ -31,7 +31,8 @@ export function Question({ q, initial, submit, onRevealed, disabled, compact }: 
   const alts = (q.options.alternatives as string[] | undefined) ?? [];
   const decisions = (q.options.decisions as string[] | undefined) ?? ["aprovar", "recusar", "revisar"];
 
-  useEffect(() => { if (initial) setResult(initial); }, [initial]);
+  const [seenInitial, setSeenInitial] = useState(initial);
+  if (initial !== seenInitial) { setSeenInitial(initial); if (initial) { setResult(initial); setState("sent"); } }
 
   const answer = () => {
     if (q.kind === "single" || q.kind === "predict") return { choice };
