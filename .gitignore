@@ -1,0 +1,15 @@
+node_modules/
+.next/
+out/
+storage/*
+!storage/.gitkeep
+.env
+.env.local
+.env.production
+*.log
+test-results/
+playwright-report/
+coverage/
+backups/*
+!backups/.gitkeep
+/tmp/
