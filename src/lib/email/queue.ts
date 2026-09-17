@@ -30,20 +30,30 @@ export async function enqueueEmail(input: QueueInput) {
 }
 
 const BACKOFF_MIN = [1, 5, 15, 60, 240];
+/** Minutos em "sending" após os quais a mensagem é considerada interrompida. */
+const STUCK_MIN = 10;
+/** Orçamento de tempo por execução (as rotas declaram maxDuration = 60 s; o lote para antes disso). */
+const BUDGET_MS = 40_000;
 
 /** Processa a fila: tentativas limitadas, backoff exponencial, sem duplicação (linha bloqueada). */
 export async function processEmailQueue(limit = 20): Promise<{ sent: number; failed: number; skipped: number }> {
   const p = provider();
   const ready = await p.ready();
   const out = { sent: 0, failed: 0, skipped: 0 };
-  if (!ready.ok) return out;
+  const started = Date.now();
   const now = new Date();
+  // Recuperação: uma execução interrompida (limite de tempo da função, reinício) deixa a mensagem em "sending" sem desfecho.
+  // Após STUCK_MIN minutos ela volta para a fila; a tentativa já contada preserva o limite de reenvios.
+  await db.update(schema.emailMessages).set({ status: "queued", lastError: "Envio interrompido antes da confirmação; recolocado na fila", nextAttemptAt: now })
+    .where(and(eq(schema.emailMessages.status, "sending"), lte(schema.emailMessages.nextAttemptAt, new Date(now.getTime() - STUCK_MIN * 60e3))));
+  if (!ready.ok) return out;
   const due = await db.select({ id: schema.emailMessages.id }).from(schema.emailMessages)
     .where(and(eq(schema.emailMessages.status, "queued"), lte(schema.emailMessages.nextAttemptAt, now)))
     .orderBy(asc(schema.emailMessages.nextAttemptAt)).limit(limit);
   for (const { id } of due) {
     // reserva atômica: só um processo por mensagem
-    const claimed = await db.update(schema.emailMessages).set({ status: "sending", attempts: sql`${schema.emailMessages.attempts} + 1` })
+    if (Date.now() - started > BUDGET_MS) break; // deixa o restante para a próxima execução em vez de morrer no meio de um envio
+    const claimed = await db.update(schema.emailMessages).set({ status: "sending", attempts: sql`${schema.emailMessages.attempts} + 1`, nextAttemptAt: new Date() })
       .where(and(eq(schema.emailMessages.id, id), eq(schema.emailMessages.status, "queued"))).returning();
     const m = claimed[0];
     if (!m) { out.skipped++; continue; }

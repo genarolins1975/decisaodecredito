@@ -22,6 +22,13 @@ A coluna nome pode ficar vazia quando só o e-mail é conhecido: o convite sai c
 3. "Enviar teste" manda uma mensagem para o seu próprio e-mail (ou outro que você informar). Nunca para alunos.
 4. A fila mostra cada mensagem: na fila, aceita pelo Gmail (não comprova entrega), falhou (com erro e reenvio manual).
 
+### 3.1. Se os e-mails não chegaram
+Verifique nesta ordem, em Configurações:
+1. **Estado do remetente.** "pronto para enviar" com a conta certa. Qualquer outro texto (nenhuma conta conectada, credenciais não configuradas, conexão expirada) significa que nada saiu: os convites estão na fila. Reconecte e clique em "Processar fila agora".
+2. **Fila de e-mails.** Cada convite tem um estado. "Na fila" com tentativas 0 significa que ninguém processou; use "Processar fila agora". "Falhou" mostra o erro do Gmail na coluna ao lado (por exemplo, escopo insuficiente, token revogado, limite diário) e permite reenviar. "Aceita" significa que o Gmail recebeu a mensagem: confira a pasta Enviados da conta remetente e peça ao aluno para olhar spam e promoções.
+3. **Estado das matrículas.** Em Alunos, "autorizado" indica que o convite ainda não foi aceito pelo Gmail; "convidado" indica que foi.
+4. Envios interrompidos no meio (limite de tempo do servidor) voltam sozinhos para a fila após 10 minutos, com a observação "Envio interrompido antes da confirmação".
+
 ## 4. Enviar e reemitir convites
 1. Alunos → selecione os alunos (ou "Selecionar aguardando/convidados") → "Enviar convites".
 2. Cada convite cria uma credencial individual de 12 caracteres, válida por 72 horas e de uso único, enviada com o link da plataforma. Reenviar invalida a anterior.

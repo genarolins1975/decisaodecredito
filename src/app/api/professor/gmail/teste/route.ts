@@ -6,6 +6,9 @@ import { testTemplate } from "@/lib/email/templates";
 import { normalizeEmail } from "@/lib/auth/email";
 
 /** Envia teste apenas para o próprio professor ou endereço explicitamente informado por ele. */
+/** Processa a fila dentro da requisição: precisa de mais que os 10 s padrão da função. */
+export const maxDuration = 60;
+
 export const POST = handle(async (req) => {
   const u = await requireStaff();
   const b = await parseBody(req, z.object({ to: z.string().email().optional() }));

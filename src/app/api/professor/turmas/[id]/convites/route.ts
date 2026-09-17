@@ -4,6 +4,9 @@ import { requireStaff } from "@/lib/auth/guard";
 import { issueInvites } from "@/lib/services/enrollment";
 import { processEmailQueue, provider } from "@/lib/email/queue";
 
+/** Processa a fila dentro da requisição: precisa de mais que os 10 s padrão da função. */
+export const maxDuration = 60;
+
 export const POST = handle(async (req, ctx: { params: Promise<{ id: string }> }) => {
   const u = await requireStaff();
   const { id } = await ctx.params;
