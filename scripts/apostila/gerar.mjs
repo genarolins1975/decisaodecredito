@@ -46,7 +46,8 @@ function guiaDocente(p) {
     ${erros ? `<p><b>Erros previsíveis.</b></p><ul>${erros}</ul>` : ""}${g.verificacao ? `<p><b>Verificação.</b> ${esc(g.verificacao)}</p>` : ""}${g.transicao ? `<p><b>Transição.</b> ${esc(g.transicao)}</p>` : ""}${extra}</aside>`;
 }
 function pagina(p) {
-  const interativa = p.interactive && figMeta[p.id];
+  // visual capturado da plataforma para páginas interativas e para as narrativas visuais (.nv), cujo layout depende do motor original
+  const interativa = (p.interactive || /class="nv[ "]/.test(p.html)) && figMeta[p.id];
   const legenda = PROF && p.guia?.leitura ? `Visual da página ${p.cap}.${p.n} (o que a turma vê): ${p.guia.leitura}` : `Visual da página ${p.cap}.${p.n}: ${p.titulo}. Na plataforma este visual é interativo.`;
   const corpo = interativa ? figura(p.id, legenda) : `<div class="conteudo estatica">${limpar(p.html)}</div>`;
   const checagem = !PROF && p.guia?.pergunta ? caixa("verifique", "Para discutir em aula", par(p.guia.pergunta)) : "";

@@ -1,6 +1,6 @@
 import { chromium } from "playwright"; import fs from "node:fs";
 const S = process.env.APOSTILA_DIR ?? "tmp/apostila";
-const slugs = JSON.parse(fs.readFileSync("content/generated/extract.json", "utf8")).pages.filter((p) => p.interactive).map((p) => p.id);
+const slugs = JSON.parse(fs.readFileSync("content/generated/extract.json", "utf8")).pages.map((p) => p.id);
 const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
 const ctx = await browser.newContext({ viewport: { width: 1000, height: 700 }, deviceScaleFactor: 2 }); const page = await ctx.newPage();
 await page.goto("http://localhost:3000/entrar"); await page.fill("input[name=email]", "aluno.a@example.test"); await page.fill("input[name=password]", "aluno-a-dev-2026"); await page.click("button[type=submit]"); await page.waitForURL((u) => !u.toString().includes("/entrar"));

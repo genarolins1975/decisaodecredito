@@ -106,7 +106,9 @@ fs.writeFileSync(path.join(OUT, "legacy-engine.js"), header + out);
 console.log(`motor legado: ${(out.length / 1024).toFixed(0)} KB, ${applied.length} remoções de propriedades, ${edits2.length} literais limpos, 0 vazamentos`);
 
 // CSS escopado para blocos estáticos (.conteudo) — sem regras da casca
-const css = fs.readFileSync(path.join(OUT, "legacy.css"), "utf8");
+const EXTRA_CSS = "\n" + "/* plataforma: o botão discreto de explorar gráfico do deck original ficava com opacidade baixa (contraste 2:1); passa a opaco */" + "\n.explorar-dados{opacity:1}\n";
+// o CSS bruto pode já conter o acréscimo de uma execução anterior: escopa-se sempre a versão pristina
+const css = fs.readFileSync(path.join(OUT, "legacy.css"), "utf8").split(EXTRA_CSS).join("");
 const SHELL = /^(html|body|\.topo|\.marca|\.pill|\.trilho|\.layout|\.mapa|\.palco|\.cena|\.navrod|\.notas|#notas|\.explorador|\.guia|\.indice|\.m-|\.nav-|\.checagem-rapida|\.explorar-dados|\.tabela-toggle|\.skip|\.qr|\.cron|\.apoio|\.eyebrow|\.conexao|\.aprendizagem)/;
 const root = postcss.parse(css);
 root.walkRules((rule) => {
@@ -128,5 +130,12 @@ root.walkRules((rule) => { rule.walkDecls((d) => { if (d.prop === "grid-template
 const mobile = `\n@media (max-width: 720px) {\n${[...gridSel].map((sel) => `${sel} { grid-template-columns: 1fr !important; flex-wrap: wrap; }`).join("\n")}\n}\n`;
 fs.writeFileSync(path.join(OUT, "legacy-scoped.css"), root.toString() + mobile);
 // contraste: o botão discreto de explorar gráfico do deck original usava opacidade baixa (2:1); fica opaco no iframe
-fs.appendFileSync(path.join(OUT, "legacy.css"), '\n/* plataforma: o botão discreto de explorar gráfico do deck original ficava com opacidade baixa (contraste 2:1); passa a opaco */\n.explorar-dados{opacity:1}\n');
+fs.writeFileSync(path.join(OUT, "legacy.css"), css + EXTRA_CSS);
+// bases do trabalho final (17/09/2026): os números do pacote antigo no motor original passam a referir a base do grupo (mesmas substituições do import)
+const PATCH_C11 = {"mapa": [["<span class=\"big\">60.000</span><h3>propostas sintéticas</h3><p>51.000 no desenvolvimento<br>9.000 no OOT cego</p>", "<span class=\"big\">≈ 1 milhão</span><h3>propostas sintéticas por base</h3><p>cerca de 900 mil no desenvolvimento<br>100.000 no OOT cego</p>"]], "c11p1": [["60.000 propostas", "1 milhão de propostas"]], "c11p2": [["<span class=\"big\">51.000</span><small>treino + validação · rótulo somente nas aprovadas</small>", "<span class=\"big\">≈ 900 mil</span><small>treino + validação (jan/21 a dez/23) · rótulo somente nas aprovadas</small>"], ["<span class=\"big\">8.420</span><small>5.930 propostas aprovadas com rótulo</small>", "<span class=\"big\">jul–dez/23</span><small>cerca de 150 mil propostas; as aprovadas com rótulo você conta na sua base</small>"], ["<span class=\"big\">9.000</span><small>jan–jun/24 · nenhum desfecho no pacote do aluno</small>", "<span class=\"big\">100.000</span><small>jan–jun/24 · nenhum desfecho no pacote do aluno</small>"]], "c11p7": [["<small>42.580 propostas</small><small>30.938 aprovadas com rótulo</small>", "<small>cerca de 750 mil propostas</small><small>aprovadas com rótulo: contar na sua base</small>"], ["<small>8.420 propostas</small><small>5.930 aprovadas com rótulo</small>", "<small>cerca de 150 mil propostas</small><small>aprovadas com rótulo: contar na sua base</small>"], ["<small>9.000 IDs, sem desfecho</small>", "<small>100.000 IDs, sem desfecho</small>"]], "c11p8": [["<small>baseline aprendido no treino</small><span class=\"big\">6,655%</span><p>a mesma PD para toda proposta</p>", "<small>baseline aprendido no treino</small><span class=\"big\">p̂₀ da sua base</span><p>a mesma PD para toda proposta: defaults sobre aprovadas com rótulo no treino (o exemplo abaixo é do Banco Aurora)</p>"]], "c11p9": [["exatamente os mesmos 5.930 casos aprovados da validação", "exatamente os mesmos casos aprovados com rótulo da validação (o número é o da sua base)"]], "c11p17": [["Exatamente 9.000 IDs; nenhuma volta para melhorar.", "Exatamente 100.000 IDs; nenhuma volta para melhorar."]]};
+{
+  const enginePath = path.join(OUT, "legacy-engine.js"); let js = fs.readFileSync(enginePath, "utf8"); let n = 0;
+  for (const subsPagina of Object.values(PATCH_C11)) for (const [a, b] of subsPagina) { const ea = JSON.stringify(a).slice(1, -1), eb = JSON.stringify(b).slice(1, -1); for (const [x, y] of [[a, b], [ea, eb]]) if (js.includes(x)) { js = js.split(x).join(y); n++; } }
+  fs.writeFileSync(enginePath, js); console.log(`motor legado: ${n} substituições do capítulo 11`);
+}
 console.log("css escopado gerado");
