@@ -59,7 +59,7 @@ As bases, os gabaritos e o gerador ficam fora do repositório (ele é público).
 ```bash
 # 1) upload: só as variáveis do armazenamento (STORAGE_DRIVER=s3, S3_ENDPOINT, S3_REGION, S3_BUCKET, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY)
 npx tsx --tsconfig scripts/tsconfig.json scripts/dados/publicar.ts /caminho/do/pacote --modo upload
-# 2) registro: pelo botão "Registrar pacote" em Materiais (professor) ou, com DATABASE_URL, pelo script
+# 2) registro: pelo botão "Registrar pacote" em Painel do professor → Bases e gabaritos ou, com DATABASE_URL, pelo script
 npx tsx --tsconfig scripts/tsconfig.json scripts/dados/publicar.ts /caminho/do/pacote --modo registrar --edicao 2026
 ```
 

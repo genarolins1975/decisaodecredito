@@ -35,7 +35,7 @@ export default async function ProfessorHome() {
         <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4 text-[14px]">
           <Link href="/professor/turmas" className="panel-soft no-underline hover:underline">Turmas: alunos, convites, grupos, encontros, trabalhos e notas</Link>
           <Link href="/professor/conteudo" className="panel-soft no-underline hover:underline">Conteúdo: páginas, versões e notas privadas do guia docente</Link>
-          <Link href="/materiais" className="panel-soft no-underline hover:underline">Bases do trabalho final, gabaritos e registro do pacote (abre na visão do aluno, com os controles do professor)</Link>
+          <Link href="/professor/bases" className="panel-soft no-underline hover:underline">Bases e gabaritos: catálogo, OOT, rótulos, gabaritos e registro do pacote</Link>
           <Link href="/professor/configuracoes" className="panel-soft no-underline hover:underline">Configurações: Gmail, fila de e-mails, edições</Link>
         </div>
       </section>

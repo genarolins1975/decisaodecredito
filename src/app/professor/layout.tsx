@@ -10,6 +10,7 @@ const NAV = [
   { href: "/professor", label: "Painel", exact: true },
   { href: "/professor/turmas", label: "Turmas" },
   { href: "/professor/conteudo", label: "Conteúdo" },
+  { href: "/professor/bases", label: "Bases e gabaritos" },
   { href: "/professor/configuracoes", label: "Configurações" },
 ];
 

@@ -16,6 +16,10 @@
     AT = j; desenha();
     document.body.className = "m-estudo nav-fechada";
   } catch (e) { console.error(e); document.body.textContent = "Falha ao renderizar o visual."; }
+  /* fórmulas: o deck original escreve TeX puro (\[ \] e \( \)); a plataforma as renderiza com KaTeX, inclusive após cada redesenho */
+  function formulas() { try { if (typeof renderMathInElement === "function") renderMathInElement(document.body, { delimiters: [{ left: "\\[", right: "\\]", display: true }, { left: "\\(", right: "\\)", display: false }, { left: "$$", right: "$$", display: true }], ignoredTags: ["script", "noscript", "style", "textarea"], throwOnError: false }); } catch (e) {} }
+  formulas();
+  try { var fT = null; new MutationObserver(function (ms) { for (var i = 0; i < ms.length; i++) { if (ms[i].addedNodes.length) { clearTimeout(fT); fT = setTimeout(formulas, 60); break; } } }).observe(document.getElementById("palco") || document.body, { childList: true, subtree: true }); } catch (e) {}
   var last = 0;
   function report() {
     var pal = document.getElementById("palco"); var h = pal ? Math.ceil(pal.getBoundingClientRect().bottom + window.scrollY) + 8 : document.documentElement.scrollHeight;

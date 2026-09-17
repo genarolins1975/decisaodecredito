@@ -67,3 +67,7 @@ Evidência: `scripts/content/build-legacy.mjs` remove do motor legado as proprie
 - Portar os 84 visuais legados para componentes nativos em ordem de valor: c8p7 e c8p12 (política de corte), c4p16 e c4p17 (descida de gradiente), c5p6 e c5p7 (corte da raiz), c6p8 e c6p13 (boosting passo a passo), c7p9 e c7p10 (calibração), c9p3 e c9p4 (PSI). O núcleo numérico já está portado; falta a camada visual.
 - Registrar respostas dos simuladores de decisão (c10p11 e c10p13, memorando do comitê) como questões do tipo decisão de crédito na sessão ao vivo.
 - Confirmar edições e vigência das referências cadastradas em Materiais antes de publicá-las aos alunos.
+
+
+### Fórmulas nos visuais legados (17/09/2026)
+O deck original escreve TeX puro (\\[ \\] e \\( \\)) e o motor não o renderizava dentro do iframe (achado da auditoria, exemplo c6p12). A plataforma passa a servir KaTeX com auto-render no documento hospedeiro do visual (rotas /legado/katex.js, /legado/katex.css e /legado/fonts), executado após o desenho e a cada redesenho. CSP do iframe: script com nonce, fontes do próprio domínio.
