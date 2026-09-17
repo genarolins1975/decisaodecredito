@@ -499,3 +499,6 @@ body.cap-abertura .cena h2{font-size:clamp(26px,3.4vw,46px)}body.cap-abertura .c
 body.cap-fechamento .cena h2:after{width:110px;background:linear-gradient(90deg,var(--cap),var(--ouro))}
 body.m-apresentacao .aprendizagem{display:none}body.m-apresentacao .checagem-rapida{font-size:.7em}
 @media(max-width:900px){.topo .marca{width:100%}.menu-topo-pop{right:auto;left:0}.nv-episodio,.nv-checkpoint,.nv-checkpoint-main,.v13-cena,.v13-compare,.v13-equidade{grid-template-columns:1fr}.nv-episodio-num,.nv-checkpoint-side{border-right:0;border-bottom:5px solid var(--cap)}.nv-episodio-rota,.v13-monitor,.v13-sinal,.v13-indicadores{grid-template-columns:1fr}.v13-dots{grid-template-columns:repeat(8,25px);gap:5px}.v13-dot{width:25px;height:25px}.v13-compare .vs{text-align:center}.v13-waterfall{grid-template-columns:1fr}.v13-waterfall button{min-height:80px}.v13-bar{grid-template-columns:110px 1fr 54px}}
+
+/* plataforma: o botão discreto de explorar gráfico do deck original ficava com opacidade baixa (contraste 2:1); passa a opaco */
+.explorar-dados{opacity:1}

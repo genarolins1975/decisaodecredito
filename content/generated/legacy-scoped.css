@@ -12,7 +12,7 @@
 }
 .conteudo *{box-sizing:border-box}
 .conteudo h1,.conteudo h2,.conteudo h3,.conteudo h4{font-family:var(--serif);color:var(--ink);margin:0;text-wrap:balance;font-weight:700}
-.conteudo button,.conteudo select,.conteudo input,.conteudo textarea{font:inherit;color:inherit}
+.conteudo button:not(.btn),.conteudo select:not(.btn),.conteudo input:not(.btn),.conteudo textarea:not(.btn){font:inherit;color:inherit}
 .conteudo :focus-visible{outline:3px solid var(--ouro);outline-offset:2px}
 .conteudo .nv{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 

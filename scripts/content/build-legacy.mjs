@@ -113,7 +113,13 @@ root.walkRules((rule) => {
   if (rule.parent && rule.parent.type === "atrule" && /keyframes/.test(rule.parent.name)) return;
   const sels = rule.selectors.filter((s) => !SHELL.test(s.trim()));
   if (!sels.length) { rule.remove(); return; }
-  rule.selectors = sels.map((s) => (s.trim().startsWith(":root") ? ".conteudo" : `.conteudo ${s.trim()}`));
+  rule.selectors = sels.map((s) => {
+    const t = s.trim();
+    if (t.startsWith(":root")) return ".conteudo";
+    // resets genéricos de controles do deck original não devem recolorir os botões da plataforma (.btn)
+    if (/^(button|select|input|textarea)$/.test(t)) return `.conteudo ${t}:not(.btn)`;
+    return `.conteudo ${t}`;
+  });
 });
 root.walkAtRules((at) => { if (at.name === "media" && at.params.includes("print")) at.remove(); });
 // telas estreitas: toda grade do material vira uma coluna; linhas flex quebram
@@ -121,4 +127,6 @@ const gridSel = new Set();
 root.walkRules((rule) => { rule.walkDecls((d) => { if (d.prop === "grid-template-columns" || (d.prop === "display" && d.value === "flex")) rule.selectors.forEach((sel) => gridSel.add(sel)); }); });
 const mobile = `\n@media (max-width: 720px) {\n${[...gridSel].map((sel) => `${sel} { grid-template-columns: 1fr !important; flex-wrap: wrap; }`).join("\n")}\n}\n`;
 fs.writeFileSync(path.join(OUT, "legacy-scoped.css"), root.toString() + mobile);
+// contraste: o botão discreto de explorar gráfico do deck original usava opacidade baixa (2:1); fica opaco no iframe
+fs.appendFileSync(path.join(OUT, "legacy.css"), '\n/* plataforma: o botão discreto de explorar gráfico do deck original ficava com opacidade baixa (contraste 2:1); passa a opaco */\n.explorar-dados{opacity:1}\n');
 console.log("css escopado gerado");

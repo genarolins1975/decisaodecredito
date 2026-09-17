@@ -55,7 +55,11 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .panel-soft { background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 6px; padding: 16px; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 8px 18px; border-radius: 4px; border: 1px solid var(--color-ink); background: var(--color-ink); color: #fff; font-weight: 600; cursor: pointer; text-decoration: none; }
 .btn:hover { background: #0a2f78; }
-.btn:disabled, .btn[aria-disabled="true"] { opacity: .55; cursor: not-allowed; }
+.btn:disabled, .btn[aria-disabled="true"] { background: #E6E4DD; border-color: #E6E4DD; color: #4F5868; cursor: not-allowed; }
+/* dentro de conteúdo migrado, os resets do deck original nunca recolorem os botões da plataforma */
+.conteudo .btn { color: #fff; }
+.conteudo .btn-secondary, .conteudo .btn-ghost { color: var(--color-ink); }
+.conteudo .btn:disabled, .conteudo .btn[aria-disabled="true"] { color: #4F5868; }
 .btn-secondary { background: var(--color-surface); color: var(--color-ink); border-color: var(--color-ink); }
 .btn-secondary:hover { background: var(--color-paper); }
 .btn-ghost { background: transparent; color: var(--color-ink); border-color: transparent; }
