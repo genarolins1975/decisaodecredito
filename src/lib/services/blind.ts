@@ -97,8 +97,21 @@ export async function canDownloadOot(access: ClassAccess, assignmentId: string):
   return { ok: true, fileId: files.ootFileId, datasetCode: files.datasetCode };
 }
 
+/** Turma com OOT livre: algum trabalho com teste cego habilitado e política de liberação "livre" (sem congelamento, sem grupo). */
+export async function ootLivreParaTurma(classId: string) {
+  const rows = await db.select({ id: schema.blindTests.id }).from(schema.blindTests).innerJoin(schema.assignments, eq(schema.assignments.id, schema.blindTests.assignmentId))
+    .where(and(eq(schema.assignments.classId, classId), eq(schema.assignments.blindTestEnabled, true), eq(schema.blindTests.releasePolicy, "livre"))).limit(1);
+  return rows.length > 0;
+}
+
 /** Autorização de download de um arquivo OOT pelo id do arquivo: pela configuração do trabalho ou pelo catálogo de bases. */
 export async function canDownloadOotFile(access: ClassAccess, fileId: string) {
+  if (access.role !== "aluno") return true;
+  // política livre: qualquer matriculado baixa o OOT de qualquer base da edição (o professor recebe os resultados fora da plataforma)
+  if (await ootLivreParaTurma(access.classId)) {
+    const [d] = await db.select({ id: schema.datasets.id }).from(schema.datasets).where(and(eq(schema.datasets.editionId, access.edition.id), eq(schema.datasets.ootFileId, fileId)));
+    if (d) return true;
+  }
   const [bt] = await db.select().from(schema.blindTests).where(eq(schema.blindTests.ootFileId, fileId));
   const assignmentIds = bt ? [bt.assignmentId] : (await db.select({ id: schema.assignments.id }).from(schema.assignments).where(and(eq(schema.assignments.classId, access.classId), eq(schema.assignments.blindTestEnabled, true)))).map((r) => r.id);
   for (const aid of assignmentIds) { const r = await canDownloadOot(access, aid); if (r.ok && r.fileId === fileId) return true; }

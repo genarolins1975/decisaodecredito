@@ -347,6 +347,12 @@ test("teste cego por base: OOT e rótulos vêm da base do grupo; liberação só
   expect((await prof.get(`/api/arquivos/${lab.file.id}`)).status()).toBe(200);
   view = await (await prof.get(`/api/professor/turmas/${cid}/trabalhos/${asg.id}`)).json();
   expect(view.blind.datasets.find((d: { code: string }) => d.code === "02_cartao").ootFileId).toBe(oot.file.id);
+  // política livre: qualquer matriculado baixa o OOT de qualquer base, sem grupo nem congelamento; rótulos continuam privados
+  await prof.patch(`/api/professor/turmas/${cid}/trabalhos/${asg.id}/cego`, { data: { releasePolicy: "livre" } });
+  expect((await b.get(`/api/arquivos/${oot.file.id}`)).status()).toBe(200);
+  expect((await b.get(`/api/arquivos/${lab.file.id}`)).status()).toBe(403);
+  await prof.patch(`/api/professor/turmas/${cid}/trabalhos/${asg.id}/cego`, { data: { releasePolicy: "apos_congelamento" } });
+  expect((await b.get(`/api/arquivos/${oot.file.id}`)).status()).toBe(403);
 });
 
 test("registro do pacote de bases a partir do bucket: manifesto lido, tamanhos conferidos, catálogo e materiais atualizados; só professor", async () => {
