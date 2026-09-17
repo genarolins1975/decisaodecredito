@@ -4,7 +4,7 @@ Nada foi implantado fora do ambiente local nesta sessão: não há URL de homolo
 
 ## 1. Infraestrutura
 
-1. Banco PostgreSQL 16 (Supabase, Neon ou servidor próprio) com `DATABASE_URL`.
+1. Banco PostgreSQL 16 (Supabase, Neon ou servidor próprio) com `DATABASE_URL`. Em provedor gerenciado, use a string do pooler em modo sessão com `?sslmode=require`; para verificação completa da cadeia TLS, cole o certificado raiz do provedor em `DATABASE_SSL_CA`. `DATABASE_SSL=no-verify` cifra sem verificar e serve apenas para homologação.
 2. Hospedagem Node 22 (Vercel, Railway, Fly, VPS). Definir `APP_URL` (https), `APP_SECRET` (32 bytes aleatórios), `NODE_ENV=production`.
 3. Armazenamento: `STORAGE_DRIVER=s3` com `S3_ENDPOINT`, `S3_REGION`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY` (bucket privado), ou `local` em VPS com disco persistente e backup.
 4. Domínio e TLS.

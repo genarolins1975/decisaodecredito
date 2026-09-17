@@ -7,6 +7,9 @@ import { getSession, studentState, teacherState } from "@/lib/services/live";
  * sempre que a versão muda. Cada mensagem é autocontida, o que torna eventos duplicados
  * ou fora de ordem inofensivos. Se o canal cair, o cliente usa /estado periodicamente.
  */
+/** Em hospedagem serverless (Vercel) a função encerra neste limite; o cliente reconecta ou passa à atualização periódica. */
+export const maxDuration = 300;
+
 export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const { id } = await ctx.params;
   let s;
