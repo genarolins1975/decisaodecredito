@@ -22,11 +22,12 @@ export async function previewImport(classId: string, csvText: string): Promise<{
   const existingSet = new Set(existing.map((e) => e.email));
   const seen = new Set<string>();
   const out: ImportRow[] = rows.map((r, i) => {
-    const name = (r.nome ?? r.name ?? "").trim();
     const email = normalizeEmail(r.email ?? r["e-mail"] ?? "");
+    // nome desconhecido: o e-mail fica como nome provisório; o convite sai sem saudação nominal e o aluno informa o nome no perfil
+    const name = (r.nome ?? r.name ?? "").trim() || email;
     const role = (r.papel ?? r.role ?? "aluno").trim().toLowerCase() || "aluno";
     const line = i + 2;
-    if (!name || !email || !isValidEmail(email)) return { line, name, email, role, status: "invalida", message: !name ? "nome vazio" : "e-mail inválido" };
+    if (!email || !isValidEmail(email)) return { line, name, email, role, status: "invalida", message: "e-mail inválido" };
     if (!["aluno", "monitor"].includes(role)) return { line, name, email, role, status: "invalida", message: "papel deve ser aluno ou monitor" };
     if (seen.has(email)) return { line, name, email, role, status: "duplicada_no_arquivo", message: "e-mail repetido no arquivo" };
     seen.add(email);

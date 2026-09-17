@@ -17,8 +17,13 @@ const phoneRe = /^\+?[\d\s().-]{8,20}$/;
 export const PATCH = handle(async (req) => {
   const u = await requireUser();
   if (u.mustChangePassword) throw new ApiError(403, "Defina sua senha antes", "must_change_password");
-  const b = await parseBody(req, z.object({ phone: z.string().max(30).optional(), linkedinUrl: z.string().max(200).optional(), completeOnboarding: z.boolean().optional() }));
+  const b = await parseBody(req, z.object({ name: z.string().max(120).optional(), phone: z.string().max(30).optional(), linkedinUrl: z.string().max(200).optional(), completeOnboarding: z.boolean().optional() }));
   const patch: Partial<typeof schema.profiles.$inferInsert> = { updatedAt: new Date() };
+  if (b.name !== undefined) {
+    const v = b.name.trim().replace(/\s+/g, " ");
+    if (v.length < 3 || v.includes("@")) throw new ApiError(400, "Informe seu nome completo (mínimo 3 letras).", "invalid_name");
+    await db.update(schema.users).set({ name: v }).where(eq(schema.users.id, u.id));
+  }
   if (b.phone !== undefined) {
     const v = b.phone.trim();
     if (v && !phoneRe.test(v)) throw new ApiError(400, "Telefone inválido. Use apenas dígitos, espaços, parênteses e hífen.", "invalid_phone");

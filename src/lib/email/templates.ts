@@ -13,9 +13,13 @@ ${bodyHtml}
 </td></tr></table></td></tr></table></body></html>`;
 }
 
+/** Nome conhecido? Quando o cadastro só tem o e-mail, a saudação é neutra e o aluno informa o nome ao entrar. */
+export const nomeConhecido = (n: string) => Boolean(n && n.trim() && !n.includes("@"));
+
 export function inviteTemplate(p: { studentName: string; courseName: string; classLabel: string; link: string; code: string; expiresAtText: string }) {
   const subject = `Acesso ao curso ${p.courseName} · ${p.classLabel}`;
-  const text = `Olá, ${p.studentName}.
+  const saud = nomeConhecido(p.studentName) ? `Olá, ${p.studentName}.` : "Olá.";
+  const text = `${saud}
 
 Você foi autorizado(a) a acessar a plataforma do curso ${p.courseName} (${p.classLabel}).
 
@@ -26,11 +30,11 @@ Primeiro acesso:
 
 Esta credencial é individual, de uso único e vale até ${p.expiresAtText}. Depois disso, peça um novo convite ao professor.
 
-Ao entrar, você poderá preencher telefone e LinkedIn (opcionais) ou pular esta etapa.
+Ao entrar, confirme o seu nome e, se quiser, preencha telefone e LinkedIn (opcionais).
 
 Prof. Genaro Dueire Lins`;
   const html = layout("Seu acesso ao curso", `
-<p style="font-size:15px;line-height:1.5">Olá, <b>${esc(p.studentName)}</b>. Você foi autorizado(a) a acessar a plataforma do curso <b>${esc(p.courseName)}</b> (${esc(p.classLabel)}).</p>
+<p style="font-size:15px;line-height:1.5">${nomeConhecido(p.studentName) ? `Olá, <b>${esc(p.studentName)}</b>.` : "Olá."} Você foi autorizado(a) a acessar a plataforma do curso <b>${esc(p.courseName)}</b> (${esc(p.classLabel)}).</p>
 <p style="font-size:15px;line-height:1.5">Para o primeiro acesso, abra o link abaixo e defina a sua senha pessoal. A senha nunca será enviada por e-mail.</p>
 <p style="margin:20px 0"><a href="${esc(p.link)}" style="display:inline-block;background:#00205B;color:#fff;text-decoration:none;padding:12px 20px;border-radius:4px;font-family:Arial,sans-serif;font-weight:bold">Ativar meu acesso</a></p>
 <p style="font-size:14px;line-height:1.5">Se o link não abrir, acesse <a href="${esc(p.link.split("?")[0])}">${esc(p.link.split("?")[0])}</a> e informe o código de primeiro acesso: <b style="font-family:Consolas,monospace;font-size:16px;letter-spacing:.08em">${esc(p.code)}</b></p>

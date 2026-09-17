@@ -9,6 +9,8 @@ Acesso: `/professor` após entrar com a conta de professor. Todas as ações tê
 4. Ativar a edição quando estiver pronta; arquivar ao encerrar (histórico preservado, novas interações bloqueadas).
 
 ## 2. Importar a lista de alunos autorizados
+
+A coluna nome pode ficar vazia quando só o e-mail é conhecido: o convite sai com saudação neutra ("Olá."), o painel mostra o e-mail no lugar do nome e o aluno informa o nome completo no primeiro acesso (campo obrigatório no perfil enquanto o cadastro só tiver o e-mail).
 1. Turma → Alunos → "Importar lista (CSV)". Baixe o modelo (colunas nome, email, papel). Ano e turma vêm do contexto.
 2. Clique em Prévia: cada linha recebe ok, duplicada no arquivo, já matriculada ou inválida.
 3. Confirmar importação grava apenas as linhas válidas. Nenhum e-mail é enviado nesta etapa.
