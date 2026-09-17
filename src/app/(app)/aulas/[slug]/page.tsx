@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireContext } from "@/lib/context";
-import { getPage, neighbors } from "@/lib/services/content";
+import { chapterPrerequisites, getPage, neighbors } from "@/lib/services/content";
+import { chapterAssumptions, resolvePrerequisite } from "@/lib/content/prerequisites";
 import { ContentBlocks } from "@/components/content/blocks";
 import { TeacherGuide } from "@/components/content/teacher-guide";
 import { Badge } from "@/components/ui";
@@ -25,6 +26,10 @@ export default async function AulaPaginaPage({ params }: { params: Promise<{ slu
   const chapterPages = nav.all.filter((p) => p.chapterId === data.chapter.id);
   const idx = chapterPages.findIndex((p) => p.slug === slug);
   const theme = data.chapter.themeColor ?? "#00205B";
+  const slugSet = new Set(nav.all.map((p) => p.slug));
+  const titleOf = (s: string) => nav.all.find((p) => p.slug === s)?.title ?? s;
+  const prereq = resolvePrerequisite(data.prerequisite, { chapter: data.chapter.number, pageNumber: idx + 1, slugs: slugSet });
+  const assumptions = idx === 0 ? chapterAssumptions(await chapterPrerequisites(data.chapter.id), { chapter: data.chapter.number, slugs: slugSet }) : [];
   return (
     <div className="grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)]">
       <aside className="lg:sticky lg:top-[100px] self-start no-print" aria-label="Páginas do capítulo">
@@ -57,7 +62,27 @@ export default async function AulaPaginaPage({ params }: { params: Promise<{ slu
           <h1 className="mt-2">{data.version.title}</h1>
           {data.version.objective && <p className="mt-3 text-[15px]"><span className="eyebrow text-[#7a5f16] mr-2">Objetivo</span>{data.version.objective}</p>}
           {data.version.support && <p className="mt-2 text-[16px] max-w-[66ch]">{data.version.support}</p>}
+          {prereq && (
+            <p className="mt-3 text-[14px] text-muted max-w-[72ch]" data-testid="prerequisito">
+              <span className="eyebrow text-[#7a5f16] mr-2">Antes desta página</span>
+              {prereq.filter((s) => s.text).map((s, i) => s.slug ? <Link key={i} href={`/aulas/${s.slug}`} title={titleOf(s.slug)} className="font-semibold">{s.text}</Link> : <span key={i}>{s.text}</span>)}
+            </p>
+          )}
         </div>
+        {assumptions.length > 0 && (
+          <aside className="mt-5 callout text-[14px]" aria-labelledby="assume" data-testid="capitulo-assume">
+            <p id="assume" className="eyebrow mb-1">O que este capítulo assume</p>
+            <ul className="list-none p-0 m-0 grid gap-1">
+              {assumptions.map((a) => (
+                <li key={a.chapter}>
+                  <b>Capítulo {a.chapter}:</b>{" "}
+                  {a.slugs.map((s, i) => <span key={s}>{i > 0 && " · "}<Link href={`/aulas/${s}`}>{s === `c${a.chapter}p1` ? "abertura" : titleOf(s)}</Link></span>)}
+                </li>
+              ))}
+            </ul>
+            <p className="hint mt-1">Derivado dos prerrequisitos declarados em cada página deste capítulo. Páginas complementares aprofundam; as essenciais bastam para a aula.</p>
+          </aside>
+        )}
         <div className="mt-6">
           <h2 className="sr-only">Conteúdo da página</h2>
           <ContentBlocks blocks={data.blocks} questions={data.questions} classId={ctx.current.classId} />

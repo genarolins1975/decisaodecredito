@@ -56,10 +56,21 @@ export async function getPage(editionId: string, slug: string, includeGuide: boo
   const checagem = `${slug}-checagem`;
   const qs = await publicQuestions(editionId, [...slugs, checagem]);
   const { teacherGuide, ...version } = row.version;
+  const guide = (teacherGuide ?? null) as { pre?: unknown } | null;
   return {
     page: row.page, version, chapter: row.chapter, unit: row.unit, blocks, questions: qs,
+    /** campo "Pré-requisito" do guia docente, exibido ao aluno como "Antes desta página" (nada mais do guia sai daqui) */
+    prerequisite: typeof guide?.pre === "string" ? guide.pre : null,
     teacherGuide: includeGuide ? (teacherGuide as Record<string, unknown> | null) : undefined,
   };
+}
+
+/** Prerrequisitos de todas as páginas publicadas de um capítulo (para "O que este capítulo assume"). */
+export async function chapterPrerequisites(chapterId: string) {
+  const rows = await db.select({ number: schema.pages.number, position: schema.pages.position, guide: schema.pageVersions.teacherGuide })
+    .from(schema.pages).innerJoin(schema.pageVersions, eq(schema.pageVersions.id, schema.pages.publishedVersionId))
+    .where(and(eq(schema.pages.chapterId, chapterId), eq(schema.pages.status, "published"))).orderBy(schema.pages.position);
+  return rows.map((r, i) => ({ pageNumber: r.number ?? i + 1, pre: typeof (r.guide as { pre?: unknown } | null)?.pre === "string" ? (r.guide as { pre: string }).pre : null }));
 }
 
 /** Questões em forma pública: nunca inclui answerKey nem feedback. */

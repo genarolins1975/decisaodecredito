@@ -275,6 +275,18 @@ test("estudo: feedback em dois estágios, resposta vista não conta como acerto,
   }
 });
 
+test("estudo: prerrequisitos visíveis ao aluno com links e síntese do capítulo", async () => {
+  const a = await apiAs(ALUNO_A);
+  const p12 = await (await a.get("/aulas/c6p12")).text();
+  expect(p12).toContain("Antes desta página"); expect(p12).toContain('href="/aulas/c4p16"'); expect(p12).toContain("Gradiente da logística");
+  const p1 = await (await a.get("/aulas/c6p1")).text();
+  expect(p1).toContain("O que este capítulo assume"); expect(p1).toContain('href="/aulas/c4p7"'); expect(p1).toContain('href="/aulas/c2p13"');
+  const c1p1 = await (await a.get("/aulas/c1p1")).text();
+  expect(c1p1).not.toContain("Antes desta página"); // "Nenhum" não gera bloco
+  // nada além do prerrequisito sai do guia docente
+  expect(p12).not.toContain("Notas do professor"); expect(p12).not.toContain("intervencao");
+});
+
 test("núcleo: gabaritos e notas privadas não estão no motor legado nem nas páginas", async () => {
   const a = await apiAs(ALUNO_A);
   const cid = await classId();
