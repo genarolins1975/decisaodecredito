@@ -12,6 +12,8 @@ Nada foi implantado fora do ambiente local nesta sessão: não há URL de homolo
 
 ## 2. Gmail do professor
 
+O cliente OAuth pede três escopos: `gmail.send` (envio), `openid` e `email` (só para identificar a conta conectada; o perfil do Gmail exige escopos de leitura, que não são pedidos). Publicar o app na tela de permissão OAuth exige nome, e-mail de suporte, página inicial pública (`/entrar`) e política de privacidade pública (`/politica-de-privacidade`). A Gmail API precisa estar ativada no projeto (APIs e serviços → Biblioteca).
+
 1. No Google Cloud Console, criar um projeto, ativar a Gmail API e criar credenciais OAuth 2.0 do tipo "aplicativo da Web" com URI de redirecionamento `${APP_URL}/api/professor/gmail/callback`.
 2. Tela de consentimento: tipo externo; escopo `https://www.googleapis.com/auth/gmail.send`. Enquanto o app estiver em modo de teste, apenas contas listadas como usuários de teste podem autorizar e o refresh token tem vida limitada (documentação Google lida em 16/09/2026); para uso contínuo é necessário publicar e passar pela verificação de escopo sensível.
 3. Definir `EMAIL_PROVIDER=gmail`, `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `EMAIL_FROM_NAME`.

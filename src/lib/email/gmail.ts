@@ -14,6 +14,9 @@ import { EmailProviderError, type EmailProvider, type OutgoingEmail } from "./pr
  * Tokens ficam cifrados no banco (AES-256-GCM) e nunca são registrados em log.
  */
 export const GMAIL_SCOPE = "https://www.googleapis.com/auth/gmail.send";
+/** Identidade básica (OpenID Connect) só para saber qual conta foi conectada: o perfil do Gmail exige escopos de leitura que não pedimos. */
+const IDENTITY_SCOPES = "openid email";
+const USERINFO_URL = "https://openidconnect.googleapis.com/v1/userinfo";
 const AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
 const TOKEN_URL = "https://oauth2.googleapis.com/token";
 const REVOKE_URL = "https://oauth2.googleapis.com/revoke";
@@ -29,7 +32,7 @@ export function redirectUri() { return `${process.env.APP_URL}/api/professor/gma
 export function authorizationUrl(state: string) {
   const p = new URLSearchParams({
     client_id: process.env.GOOGLE_OAUTH_CLIENT_ID!, redirect_uri: redirectUri(), response_type: "code",
-    scope: GMAIL_SCOPE, access_type: "offline", prompt: "consent", include_granted_scopes: "false", state,
+    scope: `${GMAIL_SCOPE} ${IDENTITY_SCOPES}`, access_type: "offline", prompt: "consent", include_granted_scopes: "false", state,
   });
   return `${AUTH_URL}?${p}`;
 }
@@ -41,16 +44,29 @@ async function tokenRequest(body: Record<string, string>) {
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new EmailProviderError(`OAuth: ${data.error ?? res.status} ${data.error_description ?? ""}`.trim(), false, data.error);
-  return data as { access_token: string; expires_in: number; refresh_token?: string; scope?: string };
+  return data as { access_token: string; expires_in: number; refresh_token?: string; scope?: string; id_token?: string };
+}
+
+/** E-mail da conta a partir do id_token (JWT assinado pelo Google, recebido direto do endpoint de token via TLS: aqui só se lê a carga). */
+export function emailFromIdToken(idToken: string | undefined): string | null {
+  if (!idToken) return null;
+  const parts = idToken.split(".");
+  if (parts.length < 2) return null;
+  try {
+    const payload = JSON.parse(Buffer.from(parts[1].replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf8")) as { email?: string; email_verified?: boolean };
+    return payload.email && /^[^\s@]+@[^\s@]+$/.test(payload.email) ? payload.email.toLowerCase() : null;
+  } catch { return null; }
 }
 
 export async function exchangeCode(code: string, ownerUserId: string) {
   const tok = await tokenRequest({ code, grant_type: "authorization_code", redirect_uri: redirectUri() });
   if (!tok.refresh_token) throw new EmailProviderError("O Google não devolveu refresh token; revogue o acesso do app na conta Google e conecte novamente.", false);
   if (!(tok.scope ?? "").includes(GMAIL_SCOPE)) throw new EmailProviderError("Escopo de envio não concedido.", false);
-  const prof = await fetch(PROFILE_URL, { headers: { authorization: `Bearer ${tok.access_token}` } }).then((r) => r.json());
-  const email = String(prof.emailAddress ?? "");
-  if (!email) throw new EmailProviderError("Não foi possível identificar a conta Gmail conectada.", false);
+  // identidade: id_token (openid email) e, como reserva, o endpoint userinfo; o perfil do Gmail fica como último recurso
+  let email = emailFromIdToken(tok.id_token);
+  if (!email) { const ui = await fetch(USERINFO_URL, { headers: { authorization: `Bearer ${tok.access_token}` } }).then((r) => r.json()).catch(() => ({})); email = typeof ui.email === "string" ? ui.email.toLowerCase() : null; }
+  if (!email) { const prof = await fetch(PROFILE_URL, { headers: { authorization: `Bearer ${tok.access_token}` } }).then((r) => r.json()).catch(() => ({})); email = typeof prof.emailAddress === "string" ? prof.emailAddress.toLowerCase() : null; }
+  if (!email) throw new EmailProviderError("Não foi possível identificar a conta Gmail conectada. Na tela do Google, marque também a permissão de ver o endereço de e-mail.", false);
   // uma conexão ativa por vez
   await db.update(schema.gmailConnections).set({ revokedAt: new Date() }).where(isNull(schema.gmailConnections.revokedAt));
   const { newId } = await import("@/lib/ids");
