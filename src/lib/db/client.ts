@@ -1,4 +1,5 @@
 import { drizzle } from "drizzle-orm/node-postgres";
+import { X509Certificate } from "node:crypto";
 import { Pool } from "pg";
 import * as schema from "./schema";
 
@@ -13,14 +14,27 @@ declare global {
  * DATABASE_SSL=no-verify (ou sslmode=no-verify): cifra sem verificar a cadeia; só homologação.
  * Sem nada disso: sslmode=require/verify-* verifica contra as raízes públicas; sslmode=disable ou ausente não cifra.
  */
+/** Aceita PEM colado com quebras literais "\\n", CRLF ou espaços; recusa com mensagem clara o que não for certificado. */
+export function normalizeCa(raw: string | undefined): string | undefined {
+  if (!raw || !raw.trim()) return undefined;
+  const pem = raw.replace(/\\n/g, "\n").replace(/\r/g, "").split("\n").map((l) => l.trim()).filter(Boolean).join("\n") + "\n";
+  try {
+    const cert = new X509Certificate(pem);
+    if (!cert.ca) throw new Error(`o certificado "${cert.subject.replace(/\n/g, ", ")}" não é uma autoridade certificadora`);
+  } catch (e) {
+    throw new Error(`DATABASE_SSL_CA inválido: ${e instanceof Error ? e.message : String(e)}. Cole o conteúdo completo do arquivo .crt, de BEGIN CERTIFICATE a END CERTIFICATE.`);
+  }
+  return pem;
+}
+
 export function resolvePg(url: string, env: Record<string, string | undefined> = process.env): { connectionString: string; ssl?: { ca?: string; rejectUnauthorized: boolean } } {
   const u = new URL(url);
   const mode = u.searchParams.get("sslmode");
   u.searchParams.delete("sslmode");
   const connectionString = u.toString();
-  const ca = env.DATABASE_SSL_CA?.replace(/\\n/g, "\n").trim();
-  if (ca) return { connectionString, ssl: { ca, rejectUnauthorized: true } };
   if (env.DATABASE_SSL === "no-verify" || mode === "no-verify") return { connectionString, ssl: { rejectUnauthorized: false } };
+  const ca = normalizeCa(env.DATABASE_SSL_CA);
+  if (ca) return { connectionString, ssl: { ca, rejectUnauthorized: true } };
   if (mode && mode !== "disable") return { connectionString, ssl: { rejectUnauthorized: true } };
   return { connectionString };
 }
