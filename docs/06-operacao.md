@@ -65,6 +65,18 @@ npx tsx --tsconfig scripts/tsconfig.json scripts/dados/publicar.ts /caminho/do/p
 
 O diretório do pacote traz `manifesto.json` (versão, sha256 e tamanho de cada arquivo) e, por base: pacote do aluno (zip com desenvolvimento, dicionário e README), dicionário (csv), OOT sem desfecho (csv), rótulos do OOT (csv) e pacote do professor (zip com gabarito, verdades e métricas). Os objetos ficam em `bases/v<versao>/`. O registro confere existência e tamanho de cada objeto, grava `files` com chave estável e sha256 do manifesto, atualiza o catálogo (`datasets`: arquivo, dicionário, OOT, rótulos, gabarito, versão, status disponível), registra os materiais comuns (pacote do trabalho, publicado; gabaritos consolidados, só professor) e habilita o teste cego do trabalho final em cada turma da edição. Rótulos e gabaritos têm finalidade `labels`: só o professor baixa. Idempotente: registrar de novo atualiza no lugar; uma nova versão usa outro prefixo e o botão com a nova versão. Um manifesto só com materiais comuns (`bases: []`) atualiza apenas os materiais: o mesmo material em nova versão substitui o anterior no lugar (o título é comparado sem o sufixo de versão). Arquivos pequenos podem ser enviados pelo painel do R2 (pasta `bases/v<versao>/`), sem token.
 
+## 7.1. Apostila em PDF (aluno e professor)
+
+A apostila é gerada a partir de `content/generated/extract.json`, das capturas dos 180 visuais e de figuras conceituais, em duas versões: a do aluno (sem gabaritos nem notas privadas) e a do professor (com guia docente, gabaritos e erros previsíveis). Procedimento e dependências em `scripts/apostila/README.md`; resumo, com o servidor local no ar:
+
+```bash
+APOSTILA_DIR=tmp/apostila node scripts/apostila/captura-visuais.mjs      # capturas dos visuais (uma vez por versão do conteúdo)
+python3 scripts/apostila/figuras.py                                        # figuras conceituais (matplotlib)
+node scripts/apostila/gerar.mjs aluno --pdf && node scripts/apostila/gerar.mjs professor --pdf   # PDFs completos; "gerar.mjs aluno 4 --pdf" gera só o capítulo 4
+```
+
+A versão do aluno pode ser publicada como material comum; a versão do professor só como material com finalidade `labels` (só o professor baixa) e nunca no repositório, que é público. Regenerar sempre que o conteúdo for reimportado.
+
 ## 8. Procedimento antes de cada aula
 
 1. Backup.
