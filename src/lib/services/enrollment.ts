@@ -16,8 +16,28 @@ export const INVITE_TTL_HOURS = 72;
 export type ImportRow = { line: number; name: string; email: string; role: string; status: "ok" | "duplicada_no_arquivo" | "ja_matriculada" | "invalida"; message?: string };
 
 /** Prévia da importação: validação linha a linha, duplicidades no arquivo e na turma. Não grava nada. */
+/**
+ * Lê a lista colada com ou sem a linha de cabeçalho. Sem cabeçalho (ou com cabeçalho sem a coluna e-mail), as colunas são
+ * reconhecidas pelo conteúdo: a que contém "@" é o e-mail, a outra é o nome, uma terceira com aluno/monitor é o papel.
+ */
+export function parseImportList(csvText: string): { rows: Record<string, string>[]; errors: string[] } {
+  const parsed = parseCsv(csvText);
+  const fields = Object.keys(parsed.rows[0] ?? {});
+  const temEmail = fields.some((f) => ["email", "e-mail"].includes(f));
+  if (temEmail && !fields.some((f) => f.includes("@"))) return parsed;
+  const linhas = csvText.replace(/^\uFEFF/, "").split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  const sep = linhas.some((l) => l.includes(";")) ? ";" : linhas.some((l) => l.includes("\t")) ? "\t" : ",";
+  const rows = linhas.map((l) => l.split(sep).map((c) => c.trim().replace(/^"|"$/g, ""))).filter((c) => !(c.length === 1 && c[0] === "")).map((cols) => {
+    const email = cols.find((c) => c.includes("@")) ?? "";
+    const role = cols.find((c) => ["aluno", "monitor"].includes(c.toLowerCase())) ?? "";
+    const nome = cols.find((c) => c !== email && c !== role) ?? "";
+    return { nome, email, papel: role };
+  }).filter((r) => !(["nome", "name"].includes(r.nome.toLowerCase()) && !r.email));   // descarta um cabeçalho eventual
+  return { rows, errors: [] };
+}
+
 export async function previewImport(classId: string, csvText: string): Promise<{ rows: ImportRow[]; errors: string[] }> {
-  const { rows, errors } = parseCsv(csvText);
+  const { rows, errors } = parseImportList(csvText);
   const existing = await db.select({ email: schema.enrollments.email }).from(schema.enrollments).where(eq(schema.enrollments.classId, classId));
   const existingSet = new Set(existing.map((e) => e.email));
   const seen = new Set<string>();

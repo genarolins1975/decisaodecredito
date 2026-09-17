@@ -74,7 +74,7 @@ export function EnrollmentsPanel({ classId, rows, sender }: { classId: string; r
         </section>
         <section className="card">
           <h2 className="text-base mb-1">Importar lista (CSV)</h2>
-          <p className="hint mb-2">Colunas: nome, email e papel (opcional). Separador vírgula ou ponto e vírgula. Ano e turma vêm do contexto desta tela. <a href={`data:text/csv;charset=utf-8,${encodeURIComponent(CSV_MODEL)}`} download="modelo-alunos.csv">Baixar modelo</a>.</p>
+          <p className="hint mb-2">Colunas: nome, email e papel (opcional), com ou sem linha de cabeçalho. Separador vírgula, ponto e vírgula ou tabulação. Nome vazio é aceito: o convite sai com saudação neutra. Ano e turma vêm do contexto desta tela. <a href={`data:text/csv;charset=utf-8,${encodeURIComponent(CSV_MODEL)}`} download="modelo-alunos.csv">Baixar modelo</a>.</p>
           <input type="file" accept=".csv,text/csv" className="text-[13px]" aria-label="Arquivo CSV" onChange={async (e) => { const f = e.target.files?.[0]; if (f) setCsv(await f.text()); }} />
           <textarea className="textarea mt-2 font-mono text-[12px] min-h-[100px]" value={csv} onChange={(e) => setCsv(e.target.value)} placeholder={"nome;email\nMaria;maria@exemplo.com"} aria-label="Conteúdo CSV" />
           <div className="flex gap-2 mt-2">
