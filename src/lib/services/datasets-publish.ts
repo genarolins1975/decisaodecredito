@@ -56,10 +56,12 @@ export async function registrarPacote(editionId: string, versao: string, actorUs
 
   const mats = await db.select().from(schema.materials).where(eq(schema.materials.editionId, editionId));
   let pos = Math.max(-1, ...mats.map((x) => x.position)) + 1;
+  // o mesmo material em nova versão substitui o anterior no lugar: o título é comparado sem o sufixo "(vN ...)"
+  const semVersao = (t: string) => t.replace(/\s*\(v[^)]*\)\s*$/i, "").trim().toLowerCase();
   for (const c of m.comum) {
     const fileId = conta(await registrarArquivo(versao, c.arquivo, c.status === "professor" ? "labels" : "material", actorUserId));
-    const ex = mats.find((x) => x.title === c.titulo);
-    if (ex) await db.update(schema.materials).set({ fileId, description: c.descricao, kind: c.kind, status: c.status }).where(eq(schema.materials.id, ex.id));
+    const ex = mats.find((x) => semVersao(x.title) === semVersao(c.titulo));
+    if (ex) await db.update(schema.materials).set({ title: c.titulo, fileId, description: c.descricao, kind: c.kind, status: c.status }).where(eq(schema.materials.id, ex.id));
     else await db.insert(schema.materials).values({ id: newId(), editionId, title: c.titulo, kind: c.kind, description: c.descricao, fileId, status: c.status, position: pos++ });
     resumo.materiais.push(c.titulo);
   }
