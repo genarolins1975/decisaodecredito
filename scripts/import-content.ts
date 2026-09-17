@@ -306,7 +306,9 @@ async function main() {
 
   await db.insert(schema.contentImports).values({ id: newId(), editionId: edition.id, sourceFile: ex.sourceFile, sourceSha256: ex.sourceSha256, summary: { pages: ex.pages.length, questions: qCount, rendering: stats, republish } });
   fs.writeFileSync(path.join(GEN, "inventory.json"), JSON.stringify(inventory, null, 1));
-  console.log(`importação concluída: ${ex.pages.length} páginas (${JSON.stringify(stats)}), ${qCount} questões, ${rubricDefs.length} rubricas, ${ex.meta.casos.length} bases pendentes`);
+  const catalogo = await db.select({ status: schema.datasets.status }).from(schema.datasets).where(eq(schema.datasets.editionId, edition.id));
+  const pend = catalogo.filter((d) => d.status === "pendente").length;
+  console.log(`importação concluída: ${ex.pages.length} páginas (${JSON.stringify(stats)}), ${qCount} questões, ${rubricDefs.length} rubricas, ${catalogo.length} bases no catálogo (${catalogo.length - pend} disponíveis, ${pend} pendentes)`);
   await pool.end();
 }
 main().catch((e) => { console.error(e); process.exit(1); });
