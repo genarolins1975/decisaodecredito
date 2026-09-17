@@ -32,7 +32,8 @@ async function main() {
 
   // Professor: em produção, SEED_PROFESSOR_PASSWORD é temporária e a troca é exigida no primeiro acesso
   const profPw = process.env.SEED_PROFESSOR_PASSWORD ?? (DEV ? "professor-dev-2026" : null);
-  if (!profPw) throw new Error("Defina SEED_PROFESSOR_PASSWORD (senha temporária do professor) fora do ambiente de desenvolvimento");
+  const [existingProf] = await db.select({ id: schema.users.id }).from(schema.users).where(eq(schema.users.email, PROFESSOR_EMAIL));
+  if (!existingProf && !profPw) throw new Error("Defina SEED_PROFESSOR_PASSWORD (senha temporária do professor) para criar a conta fora do ambiente de desenvolvimento");
   const prof = await upsertUser(PROFESSOR_EMAIL, "Genaro Dueire Lins", profPw, true, !DEV);
 
   if (DEV && process.env.SEED_TEST_ACCOUNTS !== "0") {
