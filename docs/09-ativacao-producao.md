@@ -8,7 +8,7 @@ Nada foi implantado fora do ambiente local nesta sessão: não há URL de homolo
 2. Hospedagem Node 22 (Vercel, Railway, Fly, VPS). Definir `APP_URL` (https), `APP_SECRET` (32 bytes aleatórios), `NODE_ENV=production`.
 3. Armazenamento: `STORAGE_DRIVER=s3` com `S3_ENDPOINT`, `S3_REGION`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY` (bucket privado), ou `local` em VPS com disco persistente e backup.
 4. Domínio e TLS.
-5. Executar `npm run db:migrate`, `npm run db:seed` com `SEED_TEST_ACCOUNTS=0` e `SEED_PROFESSOR_EMAIL` definido (o professor define a senha por "Esqueci minha senha" após conectar o Gmail, ou por `SEED_PROFESSOR_PASSWORD` temporária trocada no primeiro acesso), e `npm run content:import`.
+5. Banco inicial. Na Vercel, basta definir `BOOTSTRAP_ON_BUILD=1`, `SEED_PROFESSOR_EMAIL` e `SEED_PROFESSOR_PASSWORD` (temporária; a troca é exigida no primeiro acesso): o script `scripts/vercel-build.sh` aplica as migrações, cria curso, edição, turma e a conta do professor sem contas de teste, e importa o conteúdo antes de compilar. As três etapas são idempotentes, então a variável pode ficar ligada para que futuras migrações sejam aplicadas a cada deploy; remova `SEED_PROFESSOR_PASSWORD` após o primeiro acesso. Fora da Vercel, o equivalente manual é `npm run db:migrate`, `NODE_ENV=production SEED_TEST_ACCOUNTS=0 npm run db:seed` e `npm run content:import`. Não defina `NODE_ENV` manualmente na Vercel: isso impede a instalação das dependências de build.
 
 ## 2. Gmail do professor
 

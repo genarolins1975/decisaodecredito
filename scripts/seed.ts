@@ -13,12 +13,12 @@ import { getOrCreateCourse } from "../src/lib/services/admin";
 const PROFESSOR_EMAIL = process.env.SEED_PROFESSOR_EMAIL ?? "genaro.lins@gmail.com";
 const DEV = process.env.NODE_ENV !== "production";
 
-async function upsertUser(email: string, name: string, password: string | null, isStaff = false) {
+async function upsertUser(email: string, name: string, password: string | null, isStaff = false, forceChange = false) {
   const [u] = await db.select().from(schema.users).where(eq(schema.users.email, email));
   if (u) return u;
   const id = newId();
   const [row] = await db.insert(schema.users).values({
-    id, email, name, isStaff, passwordHash: password ? await hashPassword(password) : null, mustChangePassword: !password, emailVerifiedAt: new Date(),
+    id, email, name, isStaff, passwordHash: password ? await hashPassword(password) : null, mustChangePassword: !password || forceChange, emailVerifiedAt: new Date(),
   }).returning();
   return row;
 }
@@ -30,9 +30,10 @@ async function main() {
   let [cls] = await db.select().from(schema.classes).where(and(eq(schema.classes.editionId, ed.id), eq(schema.classes.code, "2026-A")));
   if (!cls) [cls] = await db.insert(schema.classes).values({ id: newId(), editionId: ed.id, code: "2026-A", name: "Turma 2026" }).returning();
 
-  // Professor: senha inicial só em desenvolvimento; em produção define pela recuperação de senha
+  // Professor: em produção, SEED_PROFESSOR_PASSWORD é temporária e a troca é exigida no primeiro acesso
   const profPw = process.env.SEED_PROFESSOR_PASSWORD ?? (DEV ? "professor-dev-2026" : null);
-  const prof = await upsertUser(PROFESSOR_EMAIL, "Genaro Dueire Lins", profPw, true);
+  if (!profPw) throw new Error("Defina SEED_PROFESSOR_PASSWORD (senha temporária do professor) fora do ambiente de desenvolvimento");
+  const prof = await upsertUser(PROFESSOR_EMAIL, "Genaro Dueire Lins", profPw, true, !DEV);
 
   if (DEV && process.env.SEED_TEST_ACCOUNTS !== "0") {
     // contas de teste isoladas (domínio reservado example.test, nunca entregável)
