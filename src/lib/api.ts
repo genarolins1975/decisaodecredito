@@ -14,7 +14,10 @@ export function assertSameOrigin(req: NextRequest) {
   const origin = req.headers.get("origin");
   const appUrl = process.env.APP_URL;
   if (site && site !== "same-origin" && site !== "none") throw new ApiError(403, "Origem não permitida", "csrf");
-  if (origin && appUrl && new URL(origin).host !== new URL(appUrl).host && process.env.NODE_ENV === "production")
+  // Origem aceita: a do próprio pedido (host que atendeu, inclusive pré-visualizações) ou a de APP_URL
+  const requestHost = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
+  const allowed = new Set([requestHost, appUrl ? new URL(appUrl).host : null].filter(Boolean));
+  if (origin && process.env.NODE_ENV === "production" && !allowed.has(new URL(origin).host))
     throw new ApiError(403, "Origem não permitida", "csrf");
   if (req.headers.get("x-requested-with") !== "fetch" && !req.headers.get("content-type")?.startsWith("multipart/form-data"))
     throw new ApiError(403, "Cabeçalho de requisição ausente", "csrf");
