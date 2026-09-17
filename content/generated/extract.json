@@ -2908,14 +2908,14 @@
        "adequado": "aceitar apenas o que já estava disponível na data da decisão, fonte por fonte, com a latência declarada no dicionário de dados",
        "novaQuestao": {
         "rot": "Outra vez, com outra latência",
-        "pergunta": "Uma fonte externa tem latência declarada de 45 dias. A decisão é de 10 de agosto. Qual é o mês mais recente dessa fonte que pode entrar como variável?",
+        "pergunta": "Uma fonte externa tem latência declarada de 45 dias. A decisão é de 20 de agosto. Qual é o mês mais recente dessa fonte que pode entrar como variável?",
         "alt": [
          "julho",
          "junho",
          "agosto"
         ],
         "certa": 1,
-        "porqueCerta": "Com 45 dias de latência, o fechamento de julho só estaria disponível em meados de setembro. O mês mais recente utilizável em 10 de agosto é junho.",
+        "porqueCerta": "Com 45 dias de latência, o fechamento de julho (31 de julho) só estaria disponível em meados de setembro. Junho fecha em 30 de junho e fica disponível em 14 de agosto, antes da decisão de 20 de agosto; por isso junho é o mês mais recente utilizável.",
         "erros": []
        }
       },

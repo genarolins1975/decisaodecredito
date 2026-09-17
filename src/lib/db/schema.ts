@@ -305,6 +305,10 @@ export const studyResponses = pgTable("study_responses", {
   attemptNo: integer("attempt_no").notNull().default(1),
   clientRequestId: text("client_request_id").notNull(),
   serverTime: ts("server_time").notNull().defaultNow(),
+  /** quando o gabarito (alternativa correta e explicação) foi divulgado ao aluno nesta tentativa; nulo = ainda não */
+  revealedAt: ts("revealed_at"),
+  /** o gabarito já havia sido divulgado ao aluno antes desta tentativa (não conta como acerto próprio) */
+  disclosedBefore: boolean("disclosed_before").notNull().default(false),
 }, (t) => [
   uniqueIndex("study_responses_req_uq").on(t.userId, t.clientRequestId),
   index("study_responses_user_q_idx").on(t.userId, t.questionVersionId),

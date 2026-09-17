@@ -10,3 +10,7 @@
 8. **Teste cego.** Congele o modelo (manifesto, versão e hashes) antes de baixar o arquivo OOT; as previsões são enviadas uma única vez. Arquivo com IDs faltantes ou duplicados é recusado e não conta no limite.
 9. **Devolutivas.** Notas, comentários e anexos aparecem em Trabalhos e em Meu acompanhamento quando o professor publica.
 10. **Problemas.** Senha esquecida: "Esqueci minha senha" na tela de entrada. Convite expirado: peça um novo ao professor.
+
+## Como funciona o feedback das questões com gabarito
+
+Ao errar pela primeira vez, a plataforma não mostra a alternativa correta: mostra onde costuma estar a confusão, o conceito envolvido, um exemplo e uma pergunta de retomada, e pede uma nova tentativa. A alternativa correta e a explicação completa aparecem quando você acerta, a partir da segunda tentativa, ou quando clica em "Ver a resposta". Em Meu acompanhamento, conta como acerto próprio apenas a resposta certa dada antes de ver a resposta; acertos depois de ver a resposta ficam registrados separadamente. Nas sessões ao vivo a regra é outra: o resultado só aparece quando o professor libera.

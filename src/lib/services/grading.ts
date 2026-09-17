@@ -48,6 +48,28 @@ export function grade(kind: string, answer: Answer, key: AnswerKey | null, feedb
   return { isCorrect: null, feedback: { modelAnswer: (feedback?.modelAnswer as string) ?? null, explanation: key?.explanation ?? null } };
 }
 
+/**
+ * Feedback em dois estágios (prática de recuperação): na primeira resposta errada de uma questão com
+ * gabarito, o aluno recebe só a recuperação (confusão, conceito, exemplo, pergunta de retomada) e tenta
+ * de novo; a alternativa correta e a explicação só aparecem quando acerta, a partir da segunda tentativa
+ * ou quando pede "Ver a resposta". Sessões ao vivo não usam esta regra: lá a divulgação é por "Liberar resultados".
+ */
+export const GRADED_KINDS = ["single", "multi", "numeric"] as const;
+
+export function shouldDisclose(kind: string, isCorrect: boolean | null, attemptNo: number, revealedBefore: boolean, requested = false) {
+  if (!(GRADED_KINDS as readonly string[]).includes(kind)) return true;
+  if (isCorrect === null) return true;
+  return isCorrect || attemptNo >= 2 || revealedBefore || requested;
+}
+
+/** Remove do feedback o que identifica a resposta certa, preservando a recuperação. */
+export function redactFeedback<T extends Record<string, unknown> | null>(feedback: T): T {
+  if (!feedback) return feedback;
+  const { correct: _c, explanation: _e, expected: _x, tolerance: _t, unit: _u, ...rest } = feedback as Record<string, unknown>;
+  void _c; void _e; void _x; void _t; void _u;
+  return rest as T;
+}
+
 export function validateAnswer(kind: string, answer: unknown, options: Record<string, unknown>): Answer {
   const a = (answer ?? {}) as Answer;
   const nAlt = Array.isArray(options.alternatives) ? (options.alternatives as unknown[]).length : 0;

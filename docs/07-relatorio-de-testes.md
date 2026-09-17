@@ -6,8 +6,8 @@ Ambiente: sessão de desenvolvimento local em 16/09/2026, Node 22.22, PostgreSQL
 
 | Conjunto | Comando | Resultado |
 |---|---|---|
-| Unidade e reconciliação numérica (24 testes) | `npm test` | 24 passaram |
-| Aceitação por API e interface (11 testes, seção 13 do briefing) | `npm run test:e2e` | 11 passaram |
+| Unidade, reconciliação numérica, TLS e feedback em dois estágios (31 testes) | `npm test` | 31 passaram em 17/09/2026 |
+| Aceitação por API e interface (12 testes, seção 13 do briefing e feedback em dois estágios) | `npm run test:e2e` | 12 passaram em 17/09/2026 |
 | Varredura das 180 páginas em 3 modos (540 cargas) | `node scripts/content/sweep.mjs --shots` | 0 erros de console, 0 fórmulas cruas, 84/84 visuais legados carregados em cada modo; 3 estouros horizontais no celular corrigidos e reverificados |
 | Acessibilidade axe-core (27 telas, regras WCAG 2.x A/AA e boas práticas) | `node scripts/content/a11y.mjs` | 24 telas sem violação; 3 violações moderadas restantes (ordem de títulos em conteúdo herdado com h4 após h2 em c3p7 e na sessão ao vivo; ver 4.3) |
 | Carga com 100 alunos simultâneos | `node scripts/load-test.mjs 100` | 100/100 sucessos, 100 tentativas gravadas, 9,6 s no total |
@@ -88,4 +88,5 @@ Nenhuma dimensão aplicável ficou abaixo de 8; as duas notas 8 têm causa e pen
 7. Limite de login por IP bloqueava uma turma inteira atrás do mesmo endereço: limite por IP elevado, limite por e-mail mantido.
 8. Arquivo inválido no teste cego consumia o limite de submissões: agora é recusado com diagnóstico sem contar.
 9. Limite de login por e-mail contava também entradas válidas: quem entrasse dez vezes em dez minutos ficava bloqueado (surgiu na reexecução da suíte e2e com o professor). Agora o limite por e-mail conta apenas falhas; o limite por IP continua contando todas as tentativas.
+11. (17/09/2026, após auditoria didática) Feedback revelava a alternativa correta e a explicação na primeira resposta errada, e a tentativa seguinte contava como acerto; nota nula aparecia como 0 em Meu acompanhamento. Implementado feedback em dois estágios com divulgação registrada (`revealed_at`, `disclosed_before`), botão "Ver a resposta", contadores de acerto próprio, e "sem nota" para total nulo. Testes: unitário `tests/feedback-dois-estagios.test.ts` e e2e "estudo: feedback em dois estágios". Gabarito da pergunta de retomada de c3p7 corrigido por versão nova da questão.
 10. Teste e2e de notas dependia do estado deixado pela rodada anterior (nota já publicada): teste tornado reexecutável. Regra confirmada e documentada: recorrigir uma nota já publicada mantém a publicação e grava o estado anterior no histórico.

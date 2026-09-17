@@ -18,14 +18,17 @@ export default async function AcompanhamentoPage() {
   const map = await attendanceMap(cid, rule);
   const mine = map.rows.find((r) => r.userId === uid);
   const pages = await flatPages(ctx.current.edition.id);
-  const responses = await db.select({ qv: schema.studyResponses.questionVersionId, ok: schema.studyResponses.isCorrect, at: schema.studyResponses.serverTime }).from(schema.studyResponses).where(and(eq(schema.studyResponses.userId, uid), eq(schema.studyResponses.classId, cid))).orderBy(desc(schema.studyResponses.serverTime));
+  const responses = await db.select({ qv: schema.studyResponses.questionVersionId, ok: schema.studyResponses.isCorrect, at: schema.studyResponses.serverTime, attemptNo: schema.studyResponses.attemptNo, disclosedBefore: schema.studyResponses.disclosedBefore, revealedAt: schema.studyResponses.revealedAt }).from(schema.studyResponses).where(and(eq(schema.studyResponses.userId, uid), eq(schema.studyResponses.classId, cid))).orderBy(desc(schema.studyResponses.serverTime));
   const answered = new Set(responses.map((r) => r.qv));
   const qids = [...answered];
   const qpages = qids.length ? await db.select({ vid: schema.questionVersions.id, pageId: schema.questions.pageId, kind: schema.questions.kind }).from(schema.questionVersions).innerJoin(schema.questions, eq(schema.questions.id, schema.questionVersions.questionId)).where(inArray(schema.questionVersions.id, qids)) : [];
   const pagesTouched = new Set(qpages.map((q) => q.pageId).filter(Boolean));
   const totalQ = await db.select({ id: schema.questions.id, kind: schema.questions.kind }).from(schema.questions).where(eq(schema.questions.editionId, ctx.current.edition.id));
   const graded = qpages.filter((q) => q.kind === "single");
-  const correctFirst = graded.filter((q) => { const rs = responses.filter((r) => r.qv === q.vid); return rs[rs.length - 1]?.ok === true; }).length;
+  // acerto próprio: a última tentativa está certa e o gabarito não tinha sido divulgado antes dela
+  const ownCorrect = graded.filter((q) => { const last = responses.filter((r) => r.qv === q.vid).sort((a, b) => b.attemptNo - a.attemptNo)[0]; return last?.ok === true && !last.disclosedBefore; }).length;
+  const firstTry = graded.filter((q) => { const rs = responses.filter((r) => r.qv === q.vid); return rs.length === 1 && rs[0].ok === true; }).length;
+  const sawAnswer = graded.filter((q) => responses.some((r) => r.qv === q.vid && r.disclosedBefore) || responses.filter((r) => r.qv === q.vid).sort((a, b) => b.attemptNo - a.attemptNo)[0]?.ok === false && responses.some((r) => r.qv === q.vid && r.revealedAt)).length;
   const grades = await db.select({ g: schema.grades, a: schema.assignments }).from(schema.grades).innerJoin(schema.assignments, eq(schema.assignments.id, schema.grades.assignmentId)).where(and(eq(schema.grades.userId, uid), eq(schema.grades.classId, cid))).orderBy(asc(schema.assignments.position));
   const lastPage = pages.find((p) => pagesTouched.has(p.id));
   return (
@@ -34,7 +37,7 @@ export default async function AcompanhamentoPage() {
       <div className="grid gap-3 sm:grid-cols-3 mb-6">
         <Stat label="Frequência" value={mine?.ruleDefined ? (mine.pct == null ? "—" : `${mine.pct}%`) : "regra não definida"} hint={mine?.ruleDefined ? `mínimo ${rule?.minimumPct}% · ${mine.denominator} encontro(s) realizados no denominador` : "o professor ainda não configurou a regra; nada é calculado"} tone={mine?.belowMinimum ? "alert" : undefined} />
         <Stat label="Páginas com atividade respondida" value={`${pagesTouched.size} / ${pages.length}`} hint={lastPage ? <Link href={`/aulas/${lastPage.slug}`}>retomar em {lastPage.slug}</Link> : "comece pelas aulas"} />
-        <Stat label="Questões com gabarito acertadas" value={`${correctFirst} / ${graded.length}`} hint={`${totalQ.filter((q) => q.kind === "single").length} questões com gabarito no curso`} />
+        <Stat label="Questões com gabarito acertadas por conta própria" value={`${ownCorrect} / ${graded.length}`} hint={`${firstTry} na primeira tentativa · ${ownCorrect - firstTry} após recuperação · ${sawAnswer} com a resposta vista · ${totalQ.filter((q) => q.kind === "single").length} questões com gabarito no curso`} />
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         <section className="card" aria-labelledby="freq">
@@ -46,7 +49,7 @@ export default async function AcompanhamentoPage() {
         <section className="card" aria-labelledby="res">
           <h2 id="res" className="text-lg mb-2">Resultados de trabalhos</h2>
           {grades.length === 0 && <p className="hint">Nenhuma nota publicada.</p>}
-          <ul className="list-none p-0 m-0 grid gap-2">{grades.map(({ g, a }) => <li key={g.id} className="flex items-center gap-2 flex-wrap border-b border-rule pb-2"><Link href={`/trabalhos/${a.id}`} className="font-semibold">{a.title}</Link>{g.publishedAt ? <><StatusBadge status={g.status} />{g.status === "corrigido" && <b>{Number(g.total)}</b>}<span className="hint">publicada {fmtDT(g.publishedAt)}</span></> : <span className="hint">correção não publicada</span>}</li>)}</ul>
+          <ul className="list-none p-0 m-0 grid gap-2">{grades.map(({ g, a }) => <li key={g.id} className="flex items-center gap-2 flex-wrap border-b border-rule pb-2"><Link href={`/trabalhos/${a.id}`} className="font-semibold">{a.title}</Link>{g.publishedAt ? <><StatusBadge status={g.status} />{g.status === "corrigido" && (g.total == null ? <span className="hint">sem nota</span> : <b>{Number(g.total)}</b>)}<span className="hint">publicada {fmtDT(g.publishedAt)}</span></> : <span className="hint">correção não publicada</span>}</li>)}</ul>
         </section>
       </div>
     </div>

@@ -7,14 +7,16 @@ type Feedback = {
   correct?: number | number[]; explanation?: string | null; revealHtml?: string | null; modelAnswer?: string | null; expected?: number; tolerance?: number; unit?: string | null;
   recovery?: { confusion?: string | null; concept?: string | null; exampleHtml?: string | null; yours?: string | null; adequate?: string | null; followUp?: { prompt: string; alternatives: string[]; correct: number; explanation?: string | null } | null } | null;
 };
-type Result = { isCorrect: boolean | null; feedback: Feedback | null; attemptNo: number; answer?: unknown };
+type Result = { isCorrect: boolean | null; feedback: Feedback | null; attemptNo: number; answer?: unknown; revealed?: boolean; disclosedBefore?: boolean };
 
 /**
  * Questão nativa (estudo ou sessão ao vivo). A correção acontece no servidor.
  * `submit` recebe a resposta e devolve o resultado; `initial` restaura resposta anterior.
  */
-export function Question({ q, initial, submit, onRevealed, disabled, compact }: {
+export function Question({ q, initial, submit, reveal, onRevealed, disabled, compact }: {
   q: PublicQuestion; initial?: Result | null; submit: (answer: unknown, clientRequestId: string) => Promise<Result>;
+  /** pede a divulgação do gabarito da última tentativa (modo estudo); ausente em sessões ao vivo */
+  reveal?: () => Promise<Result>;
   onRevealed?: (slug: string, choice: number) => void; disabled?: boolean; compact?: boolean;
 }) {
   const [choice, setChoice] = useState<number | null>(typeof (initial?.answer as { choice?: number })?.choice === "number" ? (initial!.answer as { choice: number }).choice : null);
@@ -55,10 +57,18 @@ export function Question({ q, initial, submit, onRevealed, disabled, compact }: 
     }
   }
   function retry() { setReqId(requestId()); setResult(null); setState("idle"); setError(null); }
+  async function showAnswer() {
+    if (!reveal) return;
+    setError(null);
+    try { const r = await reveal(); setResult((prev) => ({ ...(prev ?? r), ...r, answer: prev?.answer ?? r.answer })); }
+    catch (e) { setError(e instanceof ClientApiError ? e.message : "Falha ao carregar a resposta."); }
+  }
 
   const answered = state === "sent" && result;
   const fb = result?.feedback ?? null;
   const correctIdx = typeof fb?.correct === "number" ? fb.correct : null;
+  // gabarito ainda não divulgado: errou pela primeira vez e não pediu a resposta
+  const withheld = Boolean(answered && result!.isCorrect === false && correctIdx === null && !fb?.explanation);
 
   return (
     <section className={`rounded-md border p-4 ${compact ? "" : "mt-3"} ${answered ? (result!.isCorrect === true ? "border-ok bg-ok-soft/40" : result!.isCorrect === false ? "border-alert bg-alert-soft/40" : "border-rule bg-paper") : "border-[#E0CBA0] bg-[#FDFAF2]"}`} aria-labelledby={`${gid}-t`}>
@@ -110,12 +120,14 @@ export function Question({ q, initial, submit, onRevealed, disabled, compact }: 
         </span>
         {state === "error" && <button type="button" className="btn btn-sm btn-secondary" onClick={send}>Enviar novamente</button>}
         {answered && result!.isCorrect === false && q.kind !== "predict" && <button type="button" className="btn btn-sm btn-ghost" onClick={retry}>Tentar de novo</button>}
+        {withheld && reveal && <button type="button" className="btn btn-sm btn-ghost" onClick={showAnswer}>Ver a resposta</button>}
       </div>
 
       {answered && fb && (
         <div className="mt-3 text-[14px] conteudo" aria-live="polite">
           {result!.isCorrect === true && <p className="font-semibold text-ok">Correto.</p>}
-          {result!.isCorrect === false && <p className="font-semibold text-alert">Não é essa.</p>}
+          {result!.isCorrect === false && <p className="font-semibold text-alert">Não é essa.{withheld ? " Leia a recuperação abaixo e tente de novo antes de ver a resposta." : ""}</p>}
+          {answered && result!.isCorrect === true && result!.disclosedBefore && <p className="hint">Você já tinha visto a resposta; esta tentativa não conta como acerto próprio.</p>}
           {fb.explanation && <p className="mt-1">{fb.explanation}</p>}
           {fb.recovery && (
             <details className="mt-2 callout" open>

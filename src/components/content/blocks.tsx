@@ -31,6 +31,8 @@ export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liv
     return api<{ isCorrect: boolean | null; feedback: never; attemptNo: number }>("/api/estudo/responder", { body: { classId, questionVersionId: q.versionId, answer, clientRequestId } });
   };
 
+  const reveal = (q: PublicQuestion) => async () => api<{ isCorrect: boolean | null; feedback: never; attemptNo: number; revealed: boolean; disclosedBefore: boolean }>("/api/estudo/responder", { body: { classId, questionVersionId: q.versionId, reveal: true } });
+
   return (
     <div className="flex flex-col gap-4">
       {blocks.map((b, i) => {
@@ -42,7 +44,7 @@ export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liv
           const q = byslug.get(b.slug);
           if (!q) return null;
           if (hideSlugs?.includes(b.slug)) return <p key={i} className="hint border border-dashed border-rule rounded p-3">Esta questão foi publicada pelo professor na sessão: responda no painel de atividades.</p>;
-          return <Question key={q.versionId} q={q} initial={initial ? initial[q.versionId] ?? null : null} submit={submit(q)} onRevealed={(s, c) => revealRef.current?.(s, c)} disabled={initial === null} />;
+          return <Question key={q.versionId} q={q} initial={initial ? initial[q.versionId] ?? null : null} submit={submit(q)} reveal={mode === "estudo" && !liveSubmit ? reveal(q) : undefined} onRevealed={(s, c) => revealRef.current?.(s, c)} disabled={initial === null} />;
         }
         return null;
       })}

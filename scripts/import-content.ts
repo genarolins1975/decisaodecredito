@@ -211,6 +211,9 @@ async function main() {
   inventory.questions = qCount;
   inventory.rendering = stats;
 
+  // Correções de conteúdo versionadas: aplicadas a bancos já importados (nova versão da questão, idempotente por conteúdo)
+  await applyContentPatches(edition.id);
+
   // rubricas
   const rubricDefs = [
     { slug: "comite", name: "Rubrica do comitê (laboratório integrado)", def: {
@@ -317,3 +320,28 @@ async function main() {
   await pool.end();
 }
 main().catch((e) => { console.error(e); process.exit(1); });
+
+/**
+ * Patches de conteúdo. Cada um verifica se a versão corrente ainda tem o defeito e, se tiver, cria uma
+ * nova versão da questão (respostas antigas continuam ligadas à versão anterior). Idempotente.
+ */
+async function applyContentPatches(editionId: string) {
+  // P1 (auditoria de 17/09/2026, achado F03): pergunta de retomada de c3p7q com gabarito incoerente.
+  // Com latência de 45 dias e decisão em 10 de agosto, junho (fecha 30/06, disponível 14/08) não estaria disponível;
+  // a decisão passa a 20 de agosto para que "junho" seja de fato o mês mais recente utilizável.
+  const [q] = await db.select().from(schema.questions).where(and(eq(schema.questions.editionId, editionId), eq(schema.questions.slug, "c3p7q")));
+  if (!q?.currentVersionId) return;
+  const [v] = await db.select().from(schema.questionVersions).where(eq(schema.questionVersions.id, q.currentVersionId));
+  const key = v?.answerKey as { perAlternative?: ({ followUp?: { prompt: string; explanation?: string | null } | null } | null)[] } | null;
+  const fu = key?.perAlternative?.[0]?.followUp;
+  if (!fu || !fu.prompt.includes("A decisão é de 10 de agosto")) return;
+  const fixed = JSON.parse(JSON.stringify(key));
+  fixed.perAlternative[0].followUp.prompt = fu.prompt.replace("A decisão é de 10 de agosto", "A decisão é de 20 de agosto");
+  fixed.perAlternative[0].followUp.explanation = "Com 45 dias de latência, o fechamento de julho (31 de julho) só estaria disponível em meados de setembro. Junho fecha em 30 de junho e fica disponível em 14 de agosto, antes da decisão de 20 de agosto; por isso junho é o mês mais recente utilizável.";
+  const existing = await db.select({ v: schema.questionVersions.versionNo }).from(schema.questionVersions).where(eq(schema.questionVersions.questionId, q.id));
+  const versionNo = Math.max(...existing.map((e) => e.v)) + 1;
+  const vid = newId();
+  await db.insert(schema.questionVersions).values({ id: vid, questionId: q.id, versionNo, label: v.label, prompt: v.prompt, options: v.options, answerKey: fixed, feedback: v.feedback });
+  await db.update(schema.questions).set({ currentVersionId: vid }).where(eq(schema.questions.id, q.id));
+  console.log(`patch c3p7q: nova versão ${versionNo} (decisão em 20 de agosto)`);
+}

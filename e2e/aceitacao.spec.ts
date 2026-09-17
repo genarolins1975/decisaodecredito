@@ -242,6 +242,39 @@ test.describe.serial("trabalhos, grupos e notas", () => {
   });
 });
 
+test("estudo: feedback em dois estágios, resposta vista não conta como acerto, nota nula não vira zero", async () => {
+  const a = await apiAs(ALUNO_A);
+  const cid = await classId();
+  const page = await (await a.get(`/api/conteudo/pagina/c3p7?classId=${cid}`)).json();
+  const q = page.questions.find((x: { slug: string }) => x.slug === "c3p7q");
+  await sql("delete from study_responses where user_id=(select id from users where email=$1) and question_version_id=$2", [ALUNO_A.email, q.versionId]);
+  const wrong = await (await a.post("/api/estudo/responder", { data: { classId: cid, questionVersionId: q.versionId, answer: { choice: 0 }, clientRequestId: `e2e-${uid()}` } })).json();
+  expect(wrong.isCorrect).toBe(false); expect(wrong.revealed).toBe(false);
+  expect(wrong.feedback.correct).toBeUndefined(); expect(wrong.feedback.explanation).toBeUndefined();
+  expect(wrong.feedback.recovery.confusion).toBeTruthy(); expect(wrong.feedback.recovery.followUp.prompt).toContain("20 de agosto"); // gabarito corrigido (patch c3p7q)
+  const state = await (await a.get(`/api/estudo/responder?classId=${cid}&versions=${q.versionId}`)).json();
+  expect(state.responses[q.versionId].feedback.correct).toBeUndefined();
+  // pede a resposta: divulga e marca; a tentativa seguinte, mesmo certa, não conta como acerto próprio
+  const seen = await (await a.post("/api/estudo/responder", { data: { classId: cid, questionVersionId: q.versionId, reveal: true } })).json();
+  expect(seen.revealed).toBe(true); expect(seen.feedback.correct).toBe(1); expect(seen.feedback.explanation).toBeTruthy();
+  const after = await (await a.post("/api/estudo/responder", { data: { classId: cid, questionVersionId: q.versionId, answer: { choice: 1 }, clientRequestId: `e2e-${uid()}` } })).json();
+  expect(after.isCorrect).toBe(true); expect(after.disclosedBefore).toBe(true);
+  // segunda tentativa errada sem pedir a resposta: divulga (regra da segunda tentativa)
+  await sql("delete from study_responses where user_id=(select id from users where email=$1) and question_version_id=$2", [ALUNO_A.email, q.versionId]);
+  await a.post("/api/estudo/responder", { data: { classId: cid, questionVersionId: q.versionId, answer: { choice: 0 }, clientRequestId: `e2e-${uid()}` } });
+  const second = await (await a.post("/api/estudo/responder", { data: { classId: cid, questionVersionId: q.versionId, answer: { choice: 2 }, clientRequestId: `e2e-${uid()}` } })).json();
+  expect(second.attemptNo).toBe(2); expect(second.revealed).toBe(true); expect(second.feedback.correct).toBe(1);
+  // nota nula em Meu acompanhamento aparece como "sem nota", não como 0
+  const prof = await apiAs(PROF);
+  const asg = (await (await prof.get(`/api/professor/turmas/${cid}/trabalhos`)).json()).assignments.find((x: { slug: string }) => x.slug === "entrega-aula-1");
+  const rows = await sql<{ total: string | null }>("select g.total from grades g join users u on u.id=g.user_id where g.assignment_id=$1 and u.email=$2", [asg.id, ALUNO_A.email]);
+  if (rows[0] && rows[0].total === null) {
+    const ui = await apiAs(ALUNO_A);
+    const html = await (await ui.get("/acompanhamento")).text();
+    expect(html).toContain("sem nota");
+  }
+});
+
 test("núcleo: gabaritos e notas privadas não estão no motor legado nem nas páginas", async () => {
   const a = await apiAs(ALUNO_A);
   const cid = await classId();
