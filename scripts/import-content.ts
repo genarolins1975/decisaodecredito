@@ -398,6 +398,13 @@ const PATCH_C11: Record<string, [string, string][]> = {
  ]
 };
 async function patchCapitulo11(editionId: string) {
+  // atividade central do capítulo: "base de 60.000 propostas" vira a base do grupo
+  const caps = await db.select({ id: schema.chapters.id, activity: schema.chapters.activity }).from(schema.chapters)
+    .innerJoin(schema.units, eq(schema.units.id, schema.chapters.unitId)).where(and(eq(schema.units.editionId, editionId), eq(schema.chapters.slug, "c11")));
+  for (const c of caps) if (c.activity?.includes("uma base de 60.000 propostas")) {
+    await db.update(schema.chapters).set({ activity: c.activity.replace("sobre uma base de 60.000 propostas, com teste", "sobre a base do grupo, com cerca de 1 milhão de propostas e teste") }).where(eq(schema.chapters.id, c.id));
+    console.log("patch c11: atividade central com a base do grupo");
+  }
   const rows = await db.select({ page: schema.pages, v: schema.pageVersions }).from(schema.pages)
     .innerJoin(schema.chapters, eq(schema.chapters.id, schema.pages.chapterId)).innerJoin(schema.units, eq(schema.units.id, schema.chapters.unitId))
     .innerJoin(schema.pageVersions, eq(schema.pageVersions.id, schema.pages.publishedVersionId))
@@ -406,10 +413,13 @@ async function patchCapitulo11(editionId: string) {
     const subs = PATCH_C11[page.slug]; if (!subs) continue;
     let json = JSON.stringify(v.blocks); let changed = false;
     for (const [a, b] of subs) { const ea = JSON.stringify(a).slice(1, -1), eb = JSON.stringify(b).slice(1, -1); if (json.includes(ea)) { json = json.split(ea).join(eb); changed = true; } }
+    // guia docente: a saída esperada da missão 3 citava 60.000 IDs (pacote antigo)
+    let guide = v.teacherGuide; const gj = JSON.stringify(guide ?? null);
+    if (gj.includes("60.000 IDs")) { guide = JSON.parse(gj.split("60.000 IDs").join("todos os IDs da base do grupo")); changed = true; }
     if (!changed) continue;
     const existing = await db.select({ v: schema.pageVersions.versionNo }).from(schema.pageVersions).where(eq(schema.pageVersions.pageId, page.id));
     const versionNo = Math.max(...existing.map((e) => e.v)) + 1; const vid = newId();
-    await db.insert(schema.pageVersions).values({ id: vid, pageId: page.id, versionNo, title: v.title, objective: v.objective, support: v.support, connection: v.connection, timeBudget: v.timeBudget, blocks: JSON.parse(json), teacherGuide: v.teacherGuide, changeNote: "Bases do trabalho final: 15 bases de cerca de 1 milhão de propostas e OOT de 100.000 IDs; números fixos do pacote antigo substituídos", publishedAt: new Date() });
+    await db.insert(schema.pageVersions).values({ id: vid, pageId: page.id, versionNo, title: v.title, objective: v.objective, support: v.support, connection: v.connection, timeBudget: v.timeBudget, blocks: JSON.parse(json), teacherGuide: guide, changeNote: "Bases do trabalho final: 15 bases de cerca de 1 milhão de propostas e OOT de 100.000 IDs; números fixos do pacote antigo substituídos", publishedAt: new Date() });
     await db.update(schema.pages).set({ publishedVersionId: vid, updatedAt: new Date() }).where(eq(schema.pages.id, page.id));
     console.log(`patch ${page.slug}: nova versão ${versionNo} (números do pacote de bases)`);
   }
