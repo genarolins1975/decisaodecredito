@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Entrar" };
 export default async function EntrarPage({ searchParams }: { searchParams: Promise<{ next?: string; m?: string }> }) {
   const sp = await searchParams;
   return (
-    <div className="card">
+    <div className="card max-w-[440px] mx-auto">
       <p className="eyebrow mb-1">Acesso restrito</p>
       <h1 className="mb-1">Entrar</h1>
       <p className="hint mb-5">Somente alunos autorizados pelo professor. Primeiro acesso? Use o link ou o código recebido por e-mail em <Link href="/ativar">Ativar acesso</Link>.</p>
