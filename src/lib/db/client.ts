@@ -27,22 +27,25 @@ export function normalizeCa(raw: string | undefined): string | undefined {
   return pem;
 }
 
-export function resolvePg(url: string, env: Record<string, string | undefined> = process.env): { connectionString: string; ssl?: { ca?: string; rejectUnauthorized: boolean } } {
+export function resolvePg(url: string, env: Record<string, string | undefined> = process.env): { connectionString: string; ssl?: { ca?: string; rejectUnauthorized: boolean }; tls: string } {
   const u = new URL(url);
   const mode = u.searchParams.get("sslmode");
   u.searchParams.delete("sslmode");
   const connectionString = u.toString();
-  if (env.DATABASE_SSL === "no-verify" || mode === "no-verify") return { connectionString, ssl: { rejectUnauthorized: false } };
+  const flag = (env.DATABASE_SSL ?? "").trim().toLowerCase().replace(/^["']|["']$/g, "");
+  if (flag === "no-verify" || mode === "no-verify") return { connectionString, ssl: { rejectUnauthorized: false }, tls: "cifrada sem verificação da cadeia (DATABASE_SSL=no-verify)" };
   const ca = normalizeCa(env.DATABASE_SSL_CA);
-  if (ca) return { connectionString, ssl: { ca, rejectUnauthorized: true } };
-  if (mode && mode !== "disable") return { connectionString, ssl: { rejectUnauthorized: true } };
-  return { connectionString };
+  if (ca) return { connectionString, ssl: { ca, rejectUnauthorized: true }, tls: `verificação completa com certificado raiz "${new X509Certificate(ca).subject.replace(/\n/g, ", ")}"` };
+  if (mode && mode !== "disable") return { connectionString, ssl: { rejectUnauthorized: true }, tls: `verificação contra raízes públicas (sslmode=${mode}); DATABASE_SSL_CA ${env.DATABASE_SSL_CA === undefined ? "ausente" : "vazia"}, DATABASE_SSL=${JSON.stringify(env.DATABASE_SSL ?? null)}` };
+  return { connectionString, tls: "sem TLS (sem sslmode na URL)" };
 }
 
 function makePool() {
   const url = process.env.DATABASE_URL;
   if (!url) throw new Error("DATABASE_URL não definida");
-  return new Pool({ ...resolvePg(url), max: Number(process.env.PG_POOL_MAX ?? 10) });
+  const { connectionString, ssl, tls } = resolvePg(url);
+  console.log(`[banco] host ${new URL(connectionString).host}; TLS: ${tls}`);
+  return new Pool({ connectionString, ...(ssl ? { ssl } : {}), max: Number(process.env.PG_POOL_MAX ?? 10) });
 }
 
 export const pool: Pool = global.__pgPool ?? makePool();

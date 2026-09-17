@@ -22,9 +22,11 @@ describe("resolução de TLS do banco", () => {
   it("no-verify cifra sem verificar e prevalece sobre o certificado", () => {
     expect(resolvePg(URL_, { DATABASE_SSL: "no-verify" }).ssl).toEqual({ rejectUnauthorized: false });
     expect(resolvePg(URL_, { DATABASE_SSL: "no-verify", DATABASE_SSL_CA: CA }).ssl).toEqual({ rejectUnauthorized: false });
+    expect(resolvePg(URL_, { DATABASE_SSL: ' "No-Verify" ' }).ssl).toEqual({ rejectUnauthorized: false });
     expect(resolvePg(URL_.replace("require", "no-verify"), {}).ssl).toEqual({ rejectUnauthorized: false });
   });
   it("URL local sem sslmode não cifra", () => {
-    expect(resolvePg("postgres://curso:curso@localhost:5432/curso_dev", {})).toEqual({ connectionString: "postgres://curso:curso@localhost:5432/curso_dev" });
+    const r = resolvePg("postgres://curso:curso@localhost:5432/curso_dev", {});
+    expect(r.connectionString).toBe("postgres://curso:curso@localhost:5432/curso_dev"); expect(r.ssl).toBeUndefined();
   });
 });
