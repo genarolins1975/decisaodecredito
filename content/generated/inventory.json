@@ -3635,6 +3635,36 @@
    "name": "Financiamento de equipamentos",
    "status": "pendente",
    "referencedAs": "aluno/casos/10_equipamentos.zip"
+  },
+  {
+   "code": "11_cheque_rotativo",
+   "name": "Cheque especial e rotativo",
+   "status": "pendente",
+   "referencedAs": "aluno/casos/11_cheque_rotativo.zip"
+  },
+  {
+   "code": "12_consignado_inss",
+   "name": "Consignado INSS",
+   "status": "pendente",
+   "referencedAs": "aluno/casos/12_consignado_inss.zip"
+  },
+  {
+   "code": "13_crediario",
+   "name": "Crediário de varejo",
+   "status": "pendente",
+   "referencedAs": "aluno/casos/13_crediario.zip"
+  },
+  {
+   "code": "14_marketplace",
+   "name": "Crédito a vendedores de marketplace",
+   "status": "pendente",
+   "referencedAs": "aluno/casos/14_marketplace.zip"
+  },
+  {
+   "code": "15_home_equity",
+   "name": "Home equity",
+   "status": "pendente",
+   "referencedAs": "aluno/casos/15_home_equity.zip"
   }
  ],
  "gaps": [

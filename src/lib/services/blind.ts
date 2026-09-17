@@ -29,6 +29,20 @@ export async function upsertBlindConfig(classId: string, assignmentId: string, p
   await audit({ actorUserId: actorId, action: "blind.config", entity: "assignment", entityId: assignmentId, classId, details: Object.keys(patch) });
 }
 
+/**
+ * Arquivos efetivos do teste cego para um sujeito. Com uma base por grupo, o OOT sem desfecho e os rótulos
+ * vêm do catálogo de bases (datasets.ootFileId / labelsFileId); a configuração do trabalho é o fallback
+ * para turmas com base única.
+ */
+export async function resolveBlindFiles(cfg: { ootFileId: string | null; labelsFileId: string | null } | null, group: { datasetId: string | null } | null) {
+  let ootFileId = cfg?.ootFileId ?? null, labelsFileId = cfg?.labelsFileId ?? null, datasetCode: string | null = null, datasetName: string | null = null;
+  if (group?.datasetId) {
+    const [d] = await db.select().from(schema.datasets).where(eq(schema.datasets.id, group.datasetId));
+    if (d?.ootFileId) { ootFileId = d.ootFileId; labelsFileId = d.labelsFileId ?? null; datasetCode = d.code; datasetName = d.name; }
+  }
+  return { ootFileId, labelsFileId, datasetCode, datasetName };
+}
+
 async function subject(access: ClassAccess, assignment: { mode: string }) {
   const group = assignment.mode === "grupo" ? await myGroup(access.classId, access.user.id) : null;
   if (assignment.mode === "grupo" && !group) throw new ApiError(400, "Você não está em um grupo", "no_group");
@@ -67,15 +81,28 @@ export async function teacherFreezeException(classId: string, assignmentId: stri
 }
 
 /** O OOT sem desfecho só é liberado após o congelamento (política padrão). */
-export async function canDownloadOot(access: ClassAccess, assignmentId: string) {
+export async function canDownloadOot(access: ClassAccess, assignmentId: string): Promise<{ ok: boolean; fileId?: string; reason?: string; datasetCode?: string | null }> {
   const cfg = await blindConfig(assignmentId);
-  if (!cfg?.ootFileId) return { ok: false, reason: "Arquivo OOT ainda não cadastrado pelo professor" };
-  if (access.role !== "aluno") return { ok: true, fileId: cfg.ootFileId };
-  if (cfg.releasePolicy === "apos_congelamento") {
+  const [a] = await db.select().from(schema.assignments).where(eq(schema.assignments.id, assignmentId));
+  if (!a) return { ok: false, reason: "Trabalho não encontrado" };
+  let group: { datasetId: string | null } | null = null;
+  if (a.mode === "grupo") { try { group = await subject(access, a); } catch { if (access.role === "aluno") return { ok: false, reason: "Entre em um grupo com base atribuída para receber o arquivo OOT" }; } }
+  const files = await resolveBlindFiles(cfg, group);
+  if (!files.ootFileId) return { ok: false, reason: group && !group.datasetId ? "Seu grupo ainda não tem base atribuída" : "Arquivo OOT ainda não cadastrado pelo professor" };
+  if (access.role !== "aluno") return { ok: true, fileId: files.ootFileId, datasetCode: files.datasetCode };
+  if ((cfg?.releasePolicy ?? "apos_congelamento") === "apos_congelamento") {
     const { freezes } = await myFreeze(access, assignmentId);
     if (!freezes.some((f) => !f.modelVersion.endsWith("-invalidado"))) return { ok: false, reason: "Congele o modelo (manifesto e hashes) antes de receber o arquivo OOT" };
   }
-  return { ok: true, fileId: cfg.ootFileId };
+  return { ok: true, fileId: files.ootFileId, datasetCode: files.datasetCode };
+}
+
+/** Autorização de download de um arquivo OOT pelo id do arquivo: pela configuração do trabalho ou pelo catálogo de bases. */
+export async function canDownloadOotFile(access: ClassAccess, fileId: string) {
+  const [bt] = await db.select().from(schema.blindTests).where(eq(schema.blindTests.ootFileId, fileId));
+  const assignmentIds = bt ? [bt.assignmentId] : (await db.select({ id: schema.assignments.id }).from(schema.assignments).where(and(eq(schema.assignments.classId, access.classId), eq(schema.assignments.blindTestEnabled, true)))).map((r) => r.id);
+  for (const aid of assignmentIds) { const r = await canDownloadOot(access, aid); if (r.ok && r.fileId === fileId) return true; }
+  return false;
 }
 
 type Pred = { id: string; pd: number; decision: string; version: string };
@@ -95,9 +122,11 @@ function parsePredictions(text: string): { rows: Pred[]; errors: string[] } {
 /** Submissão de previsões OOT: valida IDs contra o arquivo OOT, calcula métricas com os rótulos (privado) e respeita o limite. */
 export async function submitBlind(access: ClassAccess, assignmentId: string, fileId: string) {
   const cfg = await blindConfig(assignmentId);
-  if (!cfg?.ootFileId) throw new ApiError(400, "Teste cego não configurado");
+  if (!cfg) throw new ApiError(400, "Teste cego não configurado");
   const [a] = await db.select().from(schema.assignments).where(eq(schema.assignments.id, assignmentId));
   const group = await subject(access, a);
+  const files = await resolveBlindFiles(cfg, group);
+  if (!files.ootFileId) throw new ApiError(400, group && !group.datasetId ? "Seu grupo ainda não tem base atribuída" : "Teste cego não configurado: arquivo OOT ausente");
   const { freezes } = await myFreeze(access, assignmentId);
   const freeze = freezes.find((f) => !f.modelVersion.endsWith("-invalidado"));
   if (!freeze) throw new ApiError(400, "Congele o modelo antes de enviar previsões", "not_frozen");
@@ -107,8 +136,10 @@ export async function submitBlind(access: ClassAccess, assignmentId: string, fil
   const { file, buffer } = await readFileBuffer(fileId);
   if (file.ownerUserId !== access.user.id) throw new ApiError(403, "Arquivo não pertence a você");
   const { rows, errors } = parsePredictions(buffer.toString("utf8"));
-  const oot = parseCsv((await readFileBuffer(cfg.ootFileId)).buffer.toString("utf8")).rows;
-  const expected = new Set(oot.map((r) => (r.proposta_id ?? "").trim()).filter(Boolean));
+  // conjunto esperado de IDs: o arquivo de rótulos (compacto, cobre todos os IDs do OOT) quando existe; senão o próprio OOT
+  const labels = files.labelsFileId ? parseCsv((await readFileBuffer(files.labelsFileId)).buffer.toString("utf8")).rows : null;
+  const idSource = labels ?? parseCsv((await readFileBuffer(files.ootFileId)).buffer.toString("utf8")).rows;
+  const expected = new Set(idSource.map((r) => (r.proposta_id ?? "").trim()).filter(Boolean));
   const seen = new Set<string>(); let dup = 0, extra = 0;
   for (const r of rows) { if (seen.has(r.id)) dup++; seen.add(r.id); if (!expected.has(r.id)) extra++; }
   const missing = [...expected].filter((id) => !seen.has(id)).length;
@@ -119,12 +150,11 @@ export async function submitBlind(access: ClassAccess, assignmentId: string, fil
     throw new ApiError(400, `Arquivo inválido: ${validation.rowsRead} linhas lidas, ${expected.size} esperadas; faltantes ${missing}, duplicadas ${dup}, extras ${extra}${errors.length ? "; " + errors.slice(0, 3).join("; ") : ""}. Corrija e envie novamente (não contou no limite).`, "invalid_predictions");
   }
   let metrics: Record<string, unknown> | null = null;
-  if (validation.valid && cfg.labelsFileId) {
-    const labels = parseCsv((await readFileBuffer(cfg.labelsFileId)).buffer.toString("utf8")).rows;
-    const lab = new Map(labels.map((r) => [(r.proposta_id ?? "").trim(), Number(r.y ?? r.default ?? r.desfecho)]));
+  if (validation.valid && labels) {
+    const lab = new Map(labels.map((r) => [(r.proposta_id ?? "").trim(), Number((r.y ?? r.default ?? r.desfecho ?? "").trim() || NaN)]));
     const y: number[] = [], p: number[] = [];
     for (const r of rows) { const v = lab.get(r.id); if (v === 0 || v === 1) { y.push(v); p.push(r.pd); } }
-    metrics = { n: y.length, prevalence: y.reduce((s, v) => s + v, 0) / y.length, auc: auc(y, p), ks: ks(y, p).ks, brier: brier(y, p), logloss: logloss(y, p), calibration: calibration(y, p, 10), computedAt: new Date().toISOString(), freezeId: freeze.id };
+    metrics = { n: y.length, prevalence: y.reduce((s, v) => s + v, 0) / y.length, auc: auc(y, p), ks: ks(y, p).ks, brier: brier(y, p), logloss: logloss(y, p), calibration: calibration(y, p, 10), computedAt: new Date().toISOString(), freezeId: freeze.id, datasetCode: files.datasetCode };
   }
   const id = newId();
   await db.insert(schema.blindSubmissions).values({ id, blindTestId: cfg.id, groupId: group?.id ?? null, userId: access.user.id, fileId: file.id, freezeId: freeze.id, submissionNo: used + 1, validation, metrics });
@@ -138,8 +168,12 @@ export async function submitBlind(access: ClassAccess, assignmentId: string, fil
 
 export async function listBlindForTeacher(assignmentId: string) {
   const cfg = await blindConfig(assignmentId);
-  if (!cfg) return { cfg: null, submissions: [], freezes: [] };
+  // bases da edição com OOT/rótulos próprios (uma base por grupo) e quantos grupos da turma usam cada uma
+  const [a] = await db.select({ classId: schema.assignments.classId }).from(schema.assignments).where(eq(schema.assignments.id, assignmentId));
+  const [cls] = a ? await db.select({ editionId: schema.classes.editionId }).from(schema.classes).where(eq(schema.classes.id, a.classId)) : [];
+  const datasets = cls ? await db.select({ id: schema.datasets.id, code: schema.datasets.code, name: schema.datasets.name, ootFileId: schema.datasets.ootFileId, labelsFileId: schema.datasets.labelsFileId, groups: sql<number>`(select count(*) from ${schema.groups} g where g.dataset_id = ${schema.datasets.id} and g.class_id = ${a!.classId})` }).from(schema.datasets).where(eq(schema.datasets.editionId, cls.editionId)).orderBy(schema.datasets.code) : [];
+  if (!cfg) return { cfg: null, submissions: [], freezes: [], datasets };
   const subs = await db.select({ b: schema.blindSubmissions, user: schema.users.name, group: schema.groups.name }).from(schema.blindSubmissions).innerJoin(schema.users, eq(schema.users.id, schema.blindSubmissions.userId)).leftJoin(schema.groups, eq(schema.groups.id, schema.blindSubmissions.groupId)).where(eq(schema.blindSubmissions.blindTestId, cfg.id)).orderBy(desc(schema.blindSubmissions.submittedAt));
   const freezes = await db.select({ f: schema.modelFreezes, group: schema.groups.name, user: schema.users.name }).from(schema.modelFreezes).leftJoin(schema.groups, eq(schema.groups.id, schema.modelFreezes.groupId)).leftJoin(schema.users, eq(schema.users.id, schema.modelFreezes.frozenBy)).where(eq(schema.modelFreezes.assignmentId, assignmentId)).orderBy(desc(schema.modelFreezes.frozenAt));
-  return { cfg, submissions: subs, freezes };
+  return { cfg, submissions: subs, freezes, datasets };
 }

@@ -7,9 +7,10 @@
 5. **Aulas.** Cada página traz objetivo, apoio, o visual, atividades e uma pergunta de checagem. Alt+← e Alt+→ navegam. "Modo apresentação" mostra o slide em 16:9.
 6. **Ao vivo.** Quando o professor abre a sessão, entre por Ao vivo. Você pode acompanhar o slide dele ou explorar livremente e voltar. As questões publicadas aparecem no painel lateral; sua resposta fica salva no servidor e um reenvio por falha de rede não duplica. Digite o código mostrado em sala para registrar presença.
 7. **Trabalhos.** Inicie a entrega, anexe arquivos ou links e clique em Enviar. Só então há entrega, com recibo (versão, hashes e horário do servidor). Uma nova versão substitui a vigente sem apagar o histórico. Prazos seguem o horário de Brasília.
-8. **Teste cego.** Congele o modelo (manifesto, versão e hashes) antes de baixar o arquivo OOT; as previsões são enviadas uma única vez. Arquivo com IDs faltantes ou duplicados é recusado e não conta no limite.
-9. **Devolutivas.** Notas, comentários e anexos aparecem em Trabalhos e em Meu acompanhamento quando o professor publica.
-10. **Problemas.** Senha esquecida: "Esqueci minha senha" na tela de entrada. Convite expirado: peça um novo ao professor.
+8. **Teste cego.** Congele o modelo (manifesto, versão e hashes) antes de baixar o arquivo OOT da base do seu grupo (100.000 IDs, sem desfecho); as previsões são enviadas uma única vez. Arquivo com IDs faltantes, duplicados ou extras é recusado e não conta no limite. O arquivo de previsões precisa caber em 4,5 MB: quatro colunas, PD com até seis casas.
+9. **Base do trabalho final.** Em Materiais, baixe o pacote da sua base (propostas de desenvolvimento, dicionário e README) e o pacote comum do trabalho (guia de dados e missões, template do manifesto, roteiro de testes e notebook guiado). As bases são sintéticas e trazem sujeira deliberada: duplicidades, sentinelas, unidades trocadas, datas em dois formatos, consulta ao bureau posterior à proposta, campos pós-decisão e ausência informativa. Tratar sem olhar custa caro no OOT.
+10. **Devolutivas.** Notas, comentários e anexos aparecem em Trabalhos e em Meu acompanhamento quando o professor publica.
+11. **Problemas.** Senha esquecida: "Esqueci minha senha" na tela de entrada. Convite expirado: peça um novo ao professor.
 
 ## Como funciona o feedback das questões com gabarito
 

@@ -326,6 +326,7 @@ main().catch((e) => { console.error(e); process.exit(1); });
  * nova versão da questão (respostas antigas continuam ligadas à versão anterior). Idempotente.
  */
 async function applyContentPatches(editionId: string) {
+  await patchCapitulo11(editionId);
   // P1 (auditoria de 17/09/2026, achado F03): pergunta de retomada de c3p7q com gabarito incoerente.
   // Com latência de 45 dias e decisão em 10 de agosto, junho (fecha 30/06, disponível 14/08) não estaria disponível;
   // a decisão passa a 20 de agosto para que "junho" seja de fato o mês mais recente utilizável.
@@ -344,4 +345,81 @@ async function applyContentPatches(editionId: string) {
   await db.insert(schema.questionVersions).values({ id: vid, questionId: q.id, versionNo, label: v.label, prompt: v.prompt, options: v.options, answerKey: fixed, feedback: v.feedback });
   await db.update(schema.questions).set({ currentVersionId: vid }).where(eq(schema.questions.id, q.id));
   console.log(`patch c3p7q: nova versão ${versionNo} (decisão em 20 de agosto)`);
+}
+
+/**
+ * P1 (bases do trabalho final, 17/09/2026): o capítulo 11 descrevia o pacote antigo (60.000 propostas, OOT de 9.000 IDs,
+ * baseline 6,655%). Com 15 bases de cerca de 1 milhão de propostas e OOT de 100.000 IDs, os números fixos viram
+ * referências à base do grupo. Cria nova versão publicada das páginas afetadas quando a versão corrente ainda tem o texto antigo.
+ */
+const PATCH_C11: Record<string, [string, string][]> = {
+ "c11p1": [
+  [
+   "60.000 propostas",
+   "1 milhão de propostas"
+  ]
+ ],
+ "c11p2": [
+  [
+   "<span class=\"big\">51.000</span><small>treino + validação · rótulo somente nas aprovadas</small>",
+   "<span class=\"big\">≈ 900 mil</span><small>treino + validação (jan/21 a dez/23) · rótulo somente nas aprovadas</small>"
+  ],
+  [
+   "<span class=\"big\">8.420</span><small>5.930 propostas aprovadas com rótulo</small>",
+   "<span class=\"big\">jul–dez/23</span><small>cerca de 150 mil propostas; as aprovadas com rótulo você conta na sua base</small>"
+  ],
+  [
+   "<span class=\"big\">9.000</span><small>jan–jun/24 · nenhum desfecho no pacote do aluno</small>",
+   "<span class=\"big\">100.000</span><small>jan–jun/24 · nenhum desfecho no pacote do aluno</small>"
+  ]
+ ],
+ "c11p7": [
+  [
+   "<small>42.580 propostas</small><small>30.938 aprovadas com rótulo</small>",
+   "<small>cerca de 750 mil propostas</small><small>aprovadas com rótulo: contar na sua base</small>"
+  ],
+  [
+   "<small>8.420 propostas</small><small>5.930 aprovadas com rótulo</small>",
+   "<small>cerca de 150 mil propostas</small><small>aprovadas com rótulo: contar na sua base</small>"
+  ],
+  [
+   "<small>9.000 IDs, sem desfecho</small>",
+   "<small>100.000 IDs, sem desfecho</small>"
+  ]
+ ],
+ "c11p8": [
+  [
+   "<small>baseline aprendido no treino</small><span class=\"big\">6,655%</span><p>a mesma PD para toda proposta</p>",
+   "<small>baseline aprendido no treino</small><span class=\"big\">p̂₀ da sua base</span><p>a mesma PD para toda proposta: defaults sobre aprovadas com rótulo no treino (o exemplo abaixo é do Banco Aurora)</p>"
+  ]
+ ],
+ "c11p9": [
+  [
+   "exatamente os mesmos 5.930 casos aprovados da validação",
+   "exatamente os mesmos casos aprovados com rótulo da validação (o número é o da sua base)"
+  ]
+ ],
+ "c11p17": [
+  [
+   "Exatamente 9.000 IDs; nenhuma volta para melhorar.",
+   "Exatamente 100.000 IDs; nenhuma volta para melhorar."
+  ]
+ ]
+};
+async function patchCapitulo11(editionId: string) {
+  const rows = await db.select({ page: schema.pages, v: schema.pageVersions }).from(schema.pages)
+    .innerJoin(schema.chapters, eq(schema.chapters.id, schema.pages.chapterId)).innerJoin(schema.units, eq(schema.units.id, schema.chapters.unitId))
+    .innerJoin(schema.pageVersions, eq(schema.pageVersions.id, schema.pages.publishedVersionId))
+    .where(and(eq(schema.units.editionId, editionId), eq(schema.chapters.slug, "c11")));
+  for (const { page, v } of rows) {
+    const subs = PATCH_C11[page.slug]; if (!subs) continue;
+    let json = JSON.stringify(v.blocks); let changed = false;
+    for (const [a, b] of subs) { const ea = JSON.stringify(a).slice(1, -1), eb = JSON.stringify(b).slice(1, -1); if (json.includes(ea)) { json = json.split(ea).join(eb); changed = true; } }
+    if (!changed) continue;
+    const existing = await db.select({ v: schema.pageVersions.versionNo }).from(schema.pageVersions).where(eq(schema.pageVersions.pageId, page.id));
+    const versionNo = Math.max(...existing.map((e) => e.v)) + 1; const vid = newId();
+    await db.insert(schema.pageVersions).values({ id: vid, pageId: page.id, versionNo, title: v.title, objective: v.objective, support: v.support, connection: v.connection, timeBudget: v.timeBudget, blocks: JSON.parse(json), teacherGuide: v.teacherGuide, changeNote: "Bases do trabalho final: 15 bases de cerca de 1 milhão de propostas e OOT de 100.000 IDs; números fixos do pacote antigo substituídos", publishedAt: new Date() });
+    await db.update(schema.pages).set({ publishedVersionId: vid, updatedAt: new Date() }).where(eq(schema.pages.id, page.id));
+    console.log(`patch ${page.slug}: nova versão ${versionNo} (números do pacote de bases)`);
+  }
 }

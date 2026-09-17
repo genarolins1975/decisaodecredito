@@ -297,3 +297,84 @@ test("núcleo: gabaritos e notas privadas não estão no motor legado nem nas p�
   const st = await (await a.get(`/api/estudo/responder?classId=${cid}&versions=${ids}`)).json();
   expect(JSON.stringify(st)).not.toContain("porqueCerta");
 });
+
+test("teste cego por base: OOT e rótulos vêm da base do grupo; liberação só após congelar; métricas no servidor; outro aluno não acessa", async () => {
+  const prof = await apiAs(PROF);
+  const cid = await classId();
+  const ed = (await (await prof.get("/api/professor/edicoes")).json()).editions.find((e: { label: string }) => e.label === "2026");
+  const ds = (await (await prof.get(`/api/professor/edicoes/${ed.id}/bases`)).json()).datasets.find((d: { code: string }) => d.code === "02_cartao");
+  expect(ds).toBeTruthy();
+  // OOT sem desfecho e rótulos pequenos, cadastrados na base (não no trabalho)
+  const ids = ["P020000001", "P020000002", "P020000003", "P020000004", "P020000005", "P020000006"];
+  const ootCsv = "proposta_id,cliente_id,data_proposta,canal,utilizacao_limite\n" + ids.map((id, i) => `${id},C02${i},2024-0${(i % 6) + 1}-15,app,0.${i + 1}`).join("\n");
+  const labelsCsv = "proposta_id,y\n" + ids.map((id, i) => `${id},${i < 2 ? "" : i % 2}`).join("\n"); // dois IDs recusados (sem rótulo)
+  const oot = await (await prof.post("/api/arquivos", { multipart: { classId: cid, purpose: "oot", file: { name: "oot_e2e.csv", mimeType: "text/csv", buffer: Buffer.from(ootCsv) } } })).json();
+  const lab = await (await prof.post("/api/arquivos", { multipart: { classId: cid, purpose: "labels", file: { name: "rotulos_e2e.csv", mimeType: "text/csv", buffer: Buffer.from(labelsCsv) } } })).json();
+  expect((await prof.patch(`/api/professor/edicoes/${ed.id}/bases/${ds.id}`, { data: { ootFileId: oot.file.id, labelsFileId: lab.file.id } })).status()).toBe(200);
+  // trabalho final publicado em modo grupo, teste cego com devolutiva completa; grupo de A com a base 02
+  const asg = (await (await prof.get(`/api/professor/turmas/${cid}/trabalhos`)).json()).assignments.find((a: { slug: string }) => a.slug === "trabalho-final");
+  await prof.patch(`/api/professor/turmas/${cid}/trabalhos/${asg.id}`, { data: { status: "published", mode: "grupo", dueAt: "2030-01-01T23:59" } });
+  await prof.patch(`/api/professor/turmas/${cid}/trabalhos/${asg.id}/cego`, { data: { maxSubmissions: 1, feedbackLevel: "completo", releasePolicy: "apos_congelamento" } });
+  const users = await sql<{ id: string; email: string }>("select id, email from users where email = any($1)", [[ALUNO_A.email, ALUNO_B.email]]);
+  const ua = users.find((u) => u.email === ALUNO_A.email)!.id;
+  // estado limpo e reexecutável: A sai de grupos anteriores; congelamentos e submissões do trabalho são apagados
+  await sql("update group_members set left_at = now() where user_id=$1 and left_at is null and group_id in (select id from groups where class_id=$2)", [ua, cid]);
+  await sql("delete from blind_submissions where blind_test_id in (select id from blind_tests where assignment_id=$1)", [asg.id]);
+  await sql("delete from model_freezes where assignment_id=$1", [asg.id]);
+  const gid = (await (await prof.post(`/api/professor/turmas/${cid}/grupos`, { data: { name: `G-cego-${uid()}`, datasetId: ds.id } })).json()).id;
+  await prof.post(`/api/professor/turmas/${cid}/grupos/${gid}/membros`, { data: { userId: ua, action: "add" } });
+  const a = await apiAs(ALUNO_A);
+  let view = await (await a.get(`/api/trabalhos/${asg.id}?classId=${cid}`)).json();
+  expect(view.blind.configured).toBe(true); expect(view.blind.datasetCode).toBe("02_cartao"); expect(view.blind.oot.ok).toBe(false);
+  expect((await a.get(`/api/trabalhos/${asg.id}/oot?classId=${cid}`)).status()).toBe(403);
+  expect((await a.get(`/api/arquivos/${oot.file.id}`)).status()).toBe(403); // antes de congelar, nem pelo id do arquivo
+  // congela e recebe o OOT da sua base
+  const man = await (await a.post("/api/arquivos", { multipart: { classId: cid, purpose: "manifest", file: { name: "manifesto.md", mimeType: "text/plain", buffer: Buffer.from("# manifesto\nversao 1.0\n") } } })).json();
+  expect((await a.post(`/api/trabalhos/${asg.id}/congelar`, { data: { classId: cid, manifestFileId: man.file.id, modelVersion: "v1.0", artifactHashes: [{ name: "modelo.pkl", sha256: "a".repeat(64) }] } })).status()).toBe(201);
+  const dl = await (await a.get(`/api/trabalhos/${asg.id}/oot?classId=${cid}`)).json();
+  expect(dl.downloadUrl).toBe(`/api/arquivos/${oot.file.id}`);
+  const got = await a.get(dl.downloadUrl); expect(got.status()).toBe(200); expect(await got.text()).toContain("P020000006");
+  // previsões: ordenação perfeita nos IDs com rótulo -> AUC 1; IDs sem rótulo não entram na métrica
+  const predCsv = "proposta_id,pd_modelo,decisao_politica,versao_modelo\n" + ids.map((id, i) => `${id},${i % 2 === 1 ? "0.9" : "0.1"},${i % 2 ? "recusar" : "aprovar"},v1.0`).join("\n");
+  const pf = await (await a.post("/api/arquivos", { multipart: { classId: cid, purpose: "blind_predictions", file: { name: "previsoes.csv", mimeType: "text/csv", buffer: Buffer.from(predCsv) } } })).json();
+  const sub = await (await a.post(`/api/trabalhos/${asg.id}/cego`, { data: { classId: cid, fileId: pf.file.id } })).json();
+  expect(sub.feedback.validation.valid).toBe(true); expect(sub.feedback.validation.expected).toBe(6);
+  expect(sub.feedback.metrics.n).toBe(4); expect(sub.feedback.metrics.auc).toBe(1); expect(sub.feedback.metrics.datasetCode).toBe("02_cartao");
+  // B não está no grupo: não recebe o OOT nem por id do arquivo; rótulos nunca chegam a aluno
+  const b = await apiAs(ALUNO_B);
+  expect((await b.get(`/api/arquivos/${oot.file.id}`)).status()).toBe(403);
+  expect((await a.get(`/api/arquivos/${lab.file.id}`)).status()).toBe(403);
+  expect((await prof.get(`/api/arquivos/${lab.file.id}`)).status()).toBe(200);
+  view = await (await prof.get(`/api/professor/turmas/${cid}/trabalhos/${asg.id}`)).json();
+  expect(view.blind.datasets.find((d: { code: string }) => d.code === "02_cartao").ootFileId).toBe(oot.file.id);
+});
+
+test("registro do pacote de bases a partir do bucket: manifesto lido, tamanhos conferidos, catálogo e materiais atualizados; só professor", async () => {
+  const fs = await import("node:fs"); const path = await import("node:path"); const { createHash } = await import("node:crypto");
+  const prof = await apiAs(PROF);
+  const ed = (await (await prof.get("/api/professor/edicoes")).json()).editions.find((e: { label: string }) => e.label === "2026");
+  const versao = `e2e${uid().slice(0, 4)}`; const dir = path.join(process.cwd(), "storage", "bases", `v${versao}`); fs.mkdirSync(dir, { recursive: true });
+  const escreve = (nome: string, conteudo: Buffer) => { fs.writeFileSync(path.join(dir, nome), conteudo); return { arquivo: nome, sha256: createHash("sha256").update(conteudo).digest("hex"), bytes: conteudo.length }; };
+  const zip = Buffer.concat([Buffer.from([0x50, 0x4b, 3, 4]), Buffer.alloc(40)]);
+  const base = { codigo: "03_consignado", nome: "Consignado privado", produto: "Consignado privado", populacao: "Empregados de empresas privadas", enfase: "teste", versao, oot_ids: 3,
+    aluno_zip: escreve("03_consignado_v.zip", zip), dicionario: escreve("03_consignado_dicionario.csv", Buffer.from("campo,tipo\nproposta_id,texto\n")), oot: escreve("03_consignado_oot.csv", Buffer.from("proposta_id\nP1\nP2\nP3\n")), rotulos: escreve("03_consignado_rotulos.csv", Buffer.from("proposta_id,y\nP1,0\nP2,1\nP3,\n")), professor_zip: escreve("03_consignado_professor.zip", zip) };
+  const comum = [{ arquivo: escreve("pacote.zip", zip), titulo: `Pacote e2e ${versao}`, descricao: "teste", kind: "arquivo", status: "published" }, { arquivo: escreve("gabaritos.zip", zip), titulo: `Gabaritos e2e ${versao}`, descricao: "teste", kind: "gabarito", status: "professor" }];
+  fs.writeFileSync(path.join(dir, "manifesto.json"), JSON.stringify({ versao, gerado_em: "2026-09-17", comum, bases: [base] }));
+  const aluno = await apiAs(ALUNO_A);
+  expect((await aluno.post(`/api/professor/edicoes/${ed.id}/bases/registrar`, { data: { versao } })).status()).toBe(403);
+  const r = await (await prof.post(`/api/professor/edicoes/${ed.id}/bases/registrar`, { data: { versao } })).json();
+  expect(r.resumo.bases).toEqual(["03_consignado"]); expect(r.resumo.arquivos_novos).toBe(7);
+  const ds = (await (await prof.get(`/api/professor/edicoes/${ed.id}/bases`)).json()).datasets.find((d: { code: string }) => d.code === "03_consignado");
+  expect(ds.status).toBe("disponivel"); expect(ds.version).toBe(versao); expect(ds.ootFileId).toBeTruthy(); expect(ds.labelsFileId).toBeTruthy(); expect(ds.teacherFileId).toBeTruthy();
+  // idempotente: segunda execução não cria arquivos
+  const r2 = await (await prof.post(`/api/professor/edicoes/${ed.id}/bases/registrar`, { data: { versao } })).json();
+  expect(r2.resumo.arquivos_novos).toBe(0); expect(r2.resumo.arquivos_existentes).toBe(7);
+  // materiais: o publicado aparece ao aluno e o do professor não; gabarito só para professor; tamanho divergente é recusado
+  const mats = await sql<{ title: string; status: string }>("select title, status from materials where edition_id=$1 and title like $2", [ed.id, `%e2e ${versao}`]);
+  expect(mats.map((m) => m.status).sort()).toEqual(["professor", "published"]);
+  expect((await aluno.get(`/api/arquivos/${ds.teacherFileId}`)).status()).toBe(403);
+  expect((await prof.get(`/api/arquivos/${ds.teacherFileId}`)).status()).toBe(200);
+  expect((await aluno.get(`/api/arquivos/${ds.dictionaryFileId}`)).status()).toBe(200);
+  fs.appendFileSync(path.join(dir, "03_consignado_oot.csv"), "P4\n");
+  expect((await prof.post(`/api/professor/edicoes/${ed.id}/bases/registrar`, { data: { versao } })).status()).toBe(400);
+});

@@ -52,7 +52,20 @@ Ensaio executado em 16/09/2026 nesta sessão: ver `docs/07-relatorio-de-testes.m
 
 Ver `docs/01-arquitetura-e-decisoes.md`, seção 6: opção recomendada ≈ US$ 45 por mês (Vercel Pro + Supabase Pro), preços lidos em 16/09/2026. Nenhum serviço pago foi contratado nesta sessão.
 
-## 7. Procedimento antes de cada aula
+## 7. Publicar as bases do trabalho final
+
+As bases, os gabaritos e o gerador ficam fora do repositório (ele é público). O pacote vai ao bucket privado sem passar pela Vercel (limite de 4,5 MB por requisição) e é registrado no catálogo em duas etapas separáveis, para que a máquina que gera o pacote não precise da senha do banco:
+
+```bash
+# 1) upload: só as variáveis do armazenamento (STORAGE_DRIVER=s3, S3_ENDPOINT, S3_REGION, S3_BUCKET, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY)
+npx tsx --tsconfig scripts/tsconfig.json scripts/dados/publicar.ts /caminho/do/pacote --modo upload
+# 2) registro: pelo botão "Registrar pacote" em Materiais (professor) ou, com DATABASE_URL, pelo script
+npx tsx --tsconfig scripts/tsconfig.json scripts/dados/publicar.ts /caminho/do/pacote --modo registrar --edicao 2026
+```
+
+O diretório do pacote traz `manifesto.json` (versão, sha256 e tamanho de cada arquivo) e, por base: pacote do aluno (zip com desenvolvimento, dicionário e README), dicionário (csv), OOT sem desfecho (csv), rótulos do OOT (csv) e pacote do professor (zip com gabarito, verdades e métricas). Os objetos ficam em `bases/v<versao>/`. O registro confere existência e tamanho de cada objeto, grava `files` com chave estável e sha256 do manifesto, atualiza o catálogo (`datasets`: arquivo, dicionário, OOT, rótulos, gabarito, versão, status disponível), registra os materiais comuns (pacote do trabalho, publicado; gabaritos consolidados, só professor) e habilita o teste cego do trabalho final em cada turma da edição. Rótulos e gabaritos têm finalidade `labels`: só o professor baixa. Idempotente: registrar de novo atualiza no lugar; uma nova versão usa outro prefixo e o botão com a nova versão.
+
+## 8. Procedimento antes de cada aula
 
 1. Backup.
 2. Confirmar data do encontro, link de videoconferência e material publicado.

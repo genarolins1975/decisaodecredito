@@ -9,7 +9,7 @@ import { audit } from "@/lib/audit";
 export const PATCH = handle(async (req, ctx: { params: Promise<{ id: string; did: string }> }) => {
   const u = await requireStaff();
   const { id, did } = await ctx.params;
-  const b = await parseBody(req, z.object({ fileId: z.string().nullable().optional(), dictionaryFileId: z.string().nullable().optional(), version: z.string().max(40).optional(), notes: z.string().max(2000).nullable().optional(), name: z.string().max(120).optional(), population: z.string().max(300).nullable().optional(), emphasis: z.string().max(500).nullable().optional() }));
+  const b = await parseBody(req, z.object({ fileId: z.string().nullable().optional(), dictionaryFileId: z.string().nullable().optional(), ootFileId: z.string().nullable().optional(), labelsFileId: z.string().nullable().optional(), teacherFileId: z.string().nullable().optional(), version: z.string().max(40).optional(), notes: z.string().max(2000).nullable().optional(), name: z.string().max(120).optional(), population: z.string().max(300).nullable().optional(), emphasis: z.string().max(500).nullable().optional() }));
   const status = b.fileId ? "disponivel" : undefined;
   await db.update(schema.datasets).set({ ...b, ...(status ? { status } : {}) }).where(and(eq(schema.datasets.id, did), eq(schema.datasets.editionId, id)));
   await audit({ actorUserId: u.id, action: "dataset.update", entity: "dataset", entityId: did, details: Object.keys(b) });

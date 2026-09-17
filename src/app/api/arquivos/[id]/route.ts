@@ -17,6 +17,16 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string
     const f = await getFile(id);
     let allowed = f.ownerUserId === user.id && f.purpose !== "labels";
     if (f.purpose === "labels") allowed = user.isStaff;
+    // arquivos de edição (bases, dicionários, OOT por base, materiais) não têm turma: qualquer turma acessível da edição serve
+    if (!allowed && !f.classId && ["dataset", "material", "oot"].includes(f.purpose)) {
+      const { listAccessibleClasses } = await import("@/lib/auth/guard");
+      for (const c of await listAccessibleClasses(user)) {
+        let access; try { access = await requireClassAccess(c.cls.id); } catch { access = null; }
+        if (!access) continue;
+        if (f.purpose !== "oot") { allowed = true; break; }
+        const { canDownloadOotFile } = await import("@/lib/services/blind"); if (await canDownloadOotFile(access, f.id)) { allowed = true; break; }
+      }
+    }
     if (!allowed && f.classId) {
       let access;
       try { access = await requireClassAccess(f.classId); } catch { access = null; }
@@ -32,8 +42,7 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string
           const [g] = await db.select().from(schema.grades).where(and(eq(schema.grades.feedbackFileId, f.id), eq(schema.grades.userId, user.id)));
           if (g && g.publishedAt) allowed = true;
         } else if (f.purpose === "oot") {
-          const [bt] = await db.select().from(schema.blindTests).where(eq(schema.blindTests.ootFileId, f.id));
-          if (bt) { const { canDownloadOot } = await import("@/lib/services/blind"); const r = await canDownloadOot(access, bt.assignmentId); allowed = r.ok; }
+          const { canDownloadOotFile } = await import("@/lib/services/blind"); allowed = await canDownloadOotFile(access, f.id);
         }
       }
     }

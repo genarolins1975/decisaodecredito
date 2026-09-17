@@ -462,8 +462,11 @@ export const datasets = pgTable("datasets", {
   emphasis: text("emphasis"),
   version: text("version").notNull().default("1"),
   status: text("status").notNull().default("pendente"), // pendente | disponivel
-  fileId: text("file_id").references(() => files.id),
+  fileId: text("file_id").references(() => files.id),                    // pacote do aluno (zip: desenvolvimento, dicionário, README)
   dictionaryFileId: text("dictionary_file_id").references(() => files.id),
+  ootFileId: text("oot_file_id").references(() => files.id),             // OOT sem desfecho desta base (liberado após congelamento)
+  labelsFileId: text("labels_file_id").references(() => files.id),       // rótulos verdadeiros do OOT: somente professor
+  teacherFileId: text("teacher_file_id").references(() => files.id),     // gabarito e verdade da base: somente professor
   notes: text("notes"),
   createdAt: createdAt(),
 }, (t) => [uniqueIndex("datasets_edition_code_uq").on(t.editionId, t.code)]);
