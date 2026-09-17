@@ -220,16 +220,7 @@ async function main() {
       scale: [0, 1, 2, 3], maxScore: 15, rounding: { decimals: 1 }, cutoffRule: ex.rubrics.comite?.regraTexto || "Zero em qualquer uma das cinco dimensões reprova o memorando inteiro.",
       criteria: (ex.rubrics.comite?.rows ?? []).map((r: string[], i: number) => ({ key: `d${i + 1}`, name: r[0], weight: 1, levels: [0, 1, 2, 3].map((s) => ({ score: s, label: String(s), description: r[s + 1] })) })),
       source: "c10p10" } },
-    { slug: "trabalho-final", name: "Avaliação final do trabalho (quatro perguntas)", def: {
-      scale: [0, 1, 2], maxScore: 8, rounding: { decimals: 0 }, cutoffRule: null, source: "c11p18",
-      levelsLegend: "0 não demonstrou · 1 parcial · 2 completo e sustentado por evidência",
-      criteria: [
-        { key: "problema_dados", name: "Problema e dados", weight: 1, question: "A pergunta está clara e os dados usados existiam na data da decisão?" },
-        { key: "modelo_testes", name: "Modelo e testes", weight: 1, question: "O grupo comparou os modelos corretamente e preservou o teste OOT?" },
-        { key: "uso_responsavel", name: "Uso responsável (governança, na prática)", weight: 1, question: "O grupo explicou quando usar o modelo, como acompanhá-lo e quem age se algo sair do esperado?" },
-        { key: "reproducao_defesa", name: "Reprodução e defesa", weight: 1, question: "Outra pessoa consegue executar o projeto e o aluno explica as decisões que tomou?" },
-      ].map((c) => ({ ...c, levels: [{ score: 0, label: "0", description: "não demonstrou" }, { score: 1, label: "1", description: "parcial" }, { score: 2, label: "2", description: "completo e sustentado por evidência" }] })),
-      individualQuestion: "Mostre uma decisão que foi sua, a evidência que a sustentou e uma resposta da IA que você recusou ou corrigiu." } },
+    { slug: "trabalho-final", name: "Avaliação final do trabalho (modelo e blueprint)", def: RUBRICA_TRABALHO_FINAL_V2 },
   ];
   const rubricVersionBySlug = new Map<string, string>();
   for (const r of rubricDefs) {
@@ -270,13 +261,11 @@ async function main() {
       const slug = isFinal ? "trabalho-final" : `entrega-aula-${a.n}`;
       const aid = newId();
       await db.insert(schema.assignments).values({
-        id: aid, classId: cls.id, unitId, slug, title: isFinal ? "Trabalho final: construir, testar e defender o modelo de PD" : `Entrega da aula ${a.n}: ${a.entrega}`,
-        description: isFinal
-          ? "Dossiê final, código reproduzível, teste OOT cego e defesa individual. As doze missões abaixo organizam o percurso; nem toda missão tem entrega ou nota separada."
-          : `${a.entrega}. Entrega indicada no material da aula ${a.n} (${a.titulo}). Formato, prazo e rubrica são definidos pelo professor antes da publicação.`,
+        id: aid, classId: cls.id, unitId, slug, title: isFinal ? TRABALHO_FINAL.title : `Entrega da aula ${a.n}: ${a.entrega}`,
+        description: isFinal ? TRABALHO_FINAL.description : `${a.entrega}. Entrega indicada no material da aula ${a.n} (${a.titulo}). Formato, prazo e rubrica são definidos pelo professor antes da publicação.`,
         objectives: isFinal ? ex.meta.capitulos.find((c: any) => c.n === 11)?.aprende : ex.meta.capitulos.filter((c: any) => a.caps.includes(c.n)).map((c: any) => c.aprende).join(" "),
         prerequisites: isFinal ? ex.meta.capitulos.find((c: any) => c.n === 11)?.prereq : null,
-        deliverables: isFinal ? ["Dossiê final (PDF)", "Código reproduzível (ZIP)", "Manifesto do modelo congelado", "Previsões OOT (CSV com proposta_id, pd_modelo, decisao_politica, versao_modelo)"] : [a.entrega],
+        deliverables: isFinal ? TRABALHO_FINAL.deliverables : [a.entrega],
         mode: "grupo", status: "draft", position: pos++, blindTestEnabled: isFinal,
         rubricVersionId: isFinal ? rubricVersionBySlug.get("trabalho-final") ?? null : a.n === 4 ? rubricVersionBySlug.get("comite") ?? null : null,
       });
@@ -294,6 +283,7 @@ async function main() {
         for (const [m, v] of [...byMission.entries()].sort((a, b) => a[0] - b[0])) {
           await db.insert(schema.assignmentSteps).values({ id: newId(), assignmentId: aid, number: m, title: v.title, description: v.desc.join(" "), pageSlug: v.pages[0], expectedOutputs: v.outputs, requiresDelivery: m === 12, position: m });
         }
+        for (const st of ETAPAS_BLUEPRINT) await db.insert(schema.assignmentSteps).values({ id: newId(), assignmentId: aid, ...st });
       }
     }
   }
@@ -327,6 +317,7 @@ main().catch((e) => { console.error(e); process.exit(1); });
  */
 async function applyContentPatches(editionId: string) {
   await patchCapitulo11(editionId);
+  await patchTrabalhoFinal(editionId);
   // P1 (auditoria de 17/09/2026, achado F03): pergunta de retomada de c3p7q com gabarito incoerente.
   // Com latência de 45 dias e decisão em 10 de agosto, junho (fecha 30/06, disponível 14/08) não estaria disponível;
   // a decisão passa a 20 de agosto para que "junho" seja de fato o mês mais recente utilizável.
@@ -421,5 +412,65 @@ async function patchCapitulo11(editionId: string) {
     await db.insert(schema.pageVersions).values({ id: vid, pageId: page.id, versionNo, title: v.title, objective: v.objective, support: v.support, connection: v.connection, timeBudget: v.timeBudget, blocks: JSON.parse(json), teacherGuide: v.teacherGuide, changeNote: "Bases do trabalho final: 15 bases de cerca de 1 milhão de propostas e OOT de 100.000 IDs; números fixos do pacote antigo substituídos", publishedAt: new Date() });
     await db.update(schema.pages).set({ publishedVersionId: vid, updatedAt: new Date() }).where(eq(schema.pages.id, page.id));
     console.log(`patch ${page.slug}: nova versão ${versionNo} (números do pacote de bases)`);
+  }
+}
+
+/**
+ * Trabalho final com dois componentes sobre o mesmo produto (17/09/2026): o modelo (doze missões) e o blueprint da
+ * operação (fluxo de concessão, governança e três linhas de defesa, modelo de decisão integrado, monitoramento e RAS).
+ */
+const TRABALHO_FINAL = {
+  title: "Trabalho final: o modelo de PD e o blueprint da operação do mesmo produto",
+  description: "Dois componentes sobre o mesmo produto de crédito, o da base escolhida pelo grupo. Componente 1, o modelo: construir, testar e defender o modelo de PD seguindo as doze missões (dossiê, código reproduzível, manifesto congelado, previsões OOT, defesa individual). Componente 2, o blueprint: desenhar a operação completa desse produto, da captação do cliente ao desembolso e ao monitoramento pós-concessão, integrando o fluxo de concessão, a governança com três linhas de defesa (políticas, comitês, alçadas, segregação de funções, RAS) e o modelo de decisão do componente 1 com sua justificativa. Entregas do blueprint: fluxograma da jornada de crédito, alçadas e comitês, limites derivados do RAS e indicadores de monitoramento. Critérios: coerência entre fluxo, governança e modelo; aderência regulatória (Bacen, LGPD); viabilidade operacional; clareza na apresentação ao Conselho ou à diretoria. As etapas abaixo organizam o percurso; nem toda etapa tem entrega ou nota separada.",
+  deliverables: ["Componente 1 · Dossiê do modelo (PDF)", "Componente 1 · Código reproduzível (ZIP)", "Componente 1 · Manifesto do modelo congelado", "Componente 1 · Previsões OOT (CSV com proposta_id, pd_modelo, decisao_politica, versao_modelo)", "Componente 2 · Blueprint da operação (PDF): fluxograma da jornada, alçadas e comitês, limites RAS, indicadores de monitoramento e modelo de decisão integrado"],
+};
+const DESCRICAO_ANTIGA = "Dossiê final, código reproduzível, teste OOT cego e defesa individual. As doze missões abaixo organizam o percurso; nem toda missão tem entrega ou nota separada.";
+const ETAPAS_BLUEPRINT = [
+  { number: 13, title: "Blueprint · Fluxo de concessão", description: "Jornada completa do produto escolhido: captação, análise, decisão, desembolso e pós-concessão. Onde cada informação nasce e onde o modelo entra.", pageSlug: null, expectedOutputs: ["Fluxograma da jornada de crédito com pontos de decisão e dados disponíveis em cada ponto"], requiresDelivery: false, position: 13 },
+  { number: 14, title: "Blueprint · Governança e três linhas de defesa", description: "Políticas, comitês, alçadas, segregação de funções e apetite a risco (RAS) com limites que derivam da conta econômica da missão 10.", pageSlug: null, expectedOutputs: ["Matriz de alçadas e comitês", "Limites do RAS por produto (PD média, perda esperada, concentração)"], requiresDelivery: false, position: 14 },
+  { number: 15, title: "Blueprint · Modelo de decisão integrado", description: "Como o modelo do componente 1 entra no fluxo: limiar, faixa manual, exceções, tratamento de categorias novas e de ausência, aderência a Bacen e LGPD.", pageSlug: null, expectedOutputs: ["Política de decisão escrita (limiar, faixa cinza, exceções) e justificativa da escolha do modelo"], requiresDelivery: false, position: 15 },
+  { number: 16, title: "Blueprint · Monitoramento e apresentação ao Conselho", description: "Indicadores com limite, frequência, responsável e ação (missão 11) ligados ao RAS; síntese de uma página para o Conselho ou a diretoria.", pageSlug: null, expectedOutputs: ["Painel de indicadores e gatilhos", "Sumário executivo de uma página"], requiresDelivery: true, position: 16 },
+];
+const NIVEIS = [{ score: 0, label: "0", description: "não demonstrou" }, { score: 1, label: "1", description: "parcial" }, { score: 2, label: "2", description: "completo e sustentado por evidência" }];
+const RUBRICA_TRABALHO_FINAL_V2 = {
+  scale: [0, 1, 2], maxScore: 16, rounding: { decimals: 0 }, cutoffRule: null, source: "c11p18",
+  levelsLegend: "0 não demonstrou · 1 parcial · 2 completo e sustentado por evidência",
+  criteria: [
+    { key: "problema_dados", name: "Modelo · Problema e dados", weight: 1, question: "A pergunta está clara e os dados usados existiam na data da decisão?" },
+    { key: "modelo_testes", name: "Modelo · Modelo e testes", weight: 1, question: "O grupo comparou os modelos corretamente e preservou o teste OOT?" },
+    { key: "uso_responsavel", name: "Modelo · Uso responsável (governança, na prática)", weight: 1, question: "O grupo explicou quando usar o modelo, como acompanhá-lo e quem age se algo sair do esperado?" },
+    { key: "reproducao_defesa", name: "Modelo · Reprodução e defesa", weight: 1, question: "Outra pessoa consegue executar o projeto e o aluno explica as decisões que tomou?" },
+    { key: "bp_coerencia", name: "Blueprint · Coerência entre fluxo, governança e modelo", weight: 1, question: "O fluxograma, as alçadas e o modelo de decisão descrevem a mesma operação, sem contradições?" },
+    { key: "bp_regulatorio", name: "Blueprint · Aderência regulatória", weight: 1, question: "Políticas, alçadas, uso de dados e monitoramento respeitam as normas do Bacen e a LGPD, com as referências citadas?" },
+    { key: "bp_viabilidade", name: "Blueprint · Viabilidade operacional", weight: 1, question: "A operação cabe na capacidade declarada (faixa manual, prazos, sistemas) e escala sem quebrar a governança?" },
+    { key: "bp_conselho", name: "Blueprint · Clareza para o Conselho", weight: 1, question: "Um conselheiro entende em uma página o que se decide, com que risco, quem responde e o que dispara ação?" },
+  ].map((c) => ({ ...c, levels: NIVEIS })),
+  individualQuestion: "Mostre uma decisão que foi sua, a evidência que a sustentou e uma resposta da IA que você recusou ou corrigiu.",
+};
+async function patchTrabalhoFinal(editionId: string) {
+  // rubrica: nova versão com os oito critérios quando a corrente ainda tem só os quatro do modelo
+  const [rb] = await db.select().from(schema.rubrics).where(and(eq(schema.rubrics.editionId, editionId), eq(schema.rubrics.slug, "trabalho-final")));
+  if (!rb?.currentVersionId) return;
+  const [cur] = await db.select().from(schema.rubricVersions).where(eq(schema.rubricVersions.id, rb.currentVersionId));
+  let versionId = rb.currentVersionId;
+  if (cur && (cur.definition as { criteria: unknown[] }).criteria.length < 8) {
+    versionId = newId();
+    await db.insert(schema.rubricVersions).values({ id: versionId, rubricId: rb.id, versionNo: cur.versionNo + 1, definition: RUBRICA_TRABALHO_FINAL_V2, changeNote: "Trabalho final com dois componentes: critérios do blueprint da operação" });
+    await db.update(schema.rubrics).set({ currentVersionId: versionId, name: "Avaliação final do trabalho (modelo e blueprint)" }).where(eq(schema.rubrics.id, rb.id));
+    console.log(`patch rubrica trabalho-final: versão ${cur.versionNo + 1} (oito critérios)`);
+  }
+  // trabalhos finais das turmas da edição ainda com o enunciado original: enunciado, entregáveis, rubrica e etapas do blueprint
+  const classes = await db.select({ id: schema.classes.id, code: schema.classes.code }).from(schema.classes).where(eq(schema.classes.editionId, editionId));
+  for (const cls of classes) {
+    const [a] = await db.select().from(schema.assignments).where(and(eq(schema.assignments.classId, cls.id), eq(schema.assignments.slug, "trabalho-final")));
+    if (!a) continue;
+    const graded = await db.select({ id: schema.grades.id }).from(schema.grades).where(eq(schema.grades.assignmentId, a.id)).limit(1);
+    if (a.description === DESCRICAO_ANTIGA) {
+      await db.update(schema.assignments).set({ title: TRABALHO_FINAL.title, description: TRABALHO_FINAL.description, deliverables: TRABALHO_FINAL.deliverables, ...(graded.length ? {} : { rubricVersionId: versionId }) }).where(eq(schema.assignments.id, a.id));
+      console.log(`patch trabalho-final ${cls.code}: enunciado com dois componentes`);
+    }
+    const steps = await db.select({ number: schema.assignmentSteps.number }).from(schema.assignmentSteps).where(eq(schema.assignmentSteps.assignmentId, a.id));
+    const have = new Set(steps.map((s) => s.number));
+    for (const st of ETAPAS_BLUEPRINT) if (!have.has(st.number)) await db.insert(schema.assignmentSteps).values({ id: newId(), assignmentId: a.id, ...st });
   }
 }

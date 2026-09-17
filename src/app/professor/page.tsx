@@ -19,6 +19,8 @@ export default async function ProfessorHome() {
   const queuedMail = await db.select({ n: sql<number>`count(*)` }).from(schema.emailMessages).where(eq(schema.emailMessages.status, "queued"));
   const gmail = await db.select().from(schema.gmailConnections).where(isNull(schema.gmailConnections.revokedAt)).limit(1);
   const count = (cid: string, st: string) => Number(enr.find((e) => e.classId === cid && e.status === st)?.n ?? 0);
+  const finals = ids.length ? await db.select({ a: schema.assignments, policy: schema.blindTests.releasePolicy }).from(schema.assignments).leftJoin(schema.blindTests, eq(schema.blindTests.assignmentId, schema.assignments.id)).where(and(inArray(schema.assignments.classId, ids), eq(schema.assignments.slug, "trabalho-final"))) : [];
+  const datasetsReady = await db.select({ editionId: schema.datasets.editionId, n: sql<number>`count(*) filter (where ${schema.datasets.status} = 'disponivel')`, total: sql<number>`count(*)` }).from(schema.datasets).groupBy(schema.datasets.editionId);
   return (
     <div>
       <PageHeader eyebrow="Prof. Genaro Dueire Lins" title="Painel do professor" lead="O que precisa de atenção agora, por turma. Cada número leva à tela onde a ação acontece." />
@@ -28,6 +30,15 @@ export default async function ProfessorHome() {
         <Stat label="E-mails com falha" value={Number(failedMail[0]?.n ?? 0)} hint={<Link href="/professor/configuracoes">ver fila</Link>} tone={Number(failedMail[0]?.n ?? 0) ? "alert" : undefined} />
         <Stat label="Turmas" value={classes.length} hint={`${editions.length} edição(ões)`} />
       </div>
+      <section className="card mb-6" aria-labelledby="atalhos">
+        <h2 id="atalhos" className="text-lg mb-2">Atalhos do professor</h2>
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4 text-[14px]">
+          <Link href="/professor/turmas" className="panel-soft no-underline hover:underline">Turmas: alunos, convites, grupos, encontros, trabalhos e notas</Link>
+          <Link href="/professor/conteudo" className="panel-soft no-underline hover:underline">Conteúdo: páginas, versões e notas privadas do guia docente</Link>
+          <Link href="/materiais" className="panel-soft no-underline hover:underline">Bases do trabalho final, gabaritos e registro do pacote (abre na visão do aluno, com os controles do professor)</Link>
+          <Link href="/professor/configuracoes" className="panel-soft no-underline hover:underline">Configurações: Gmail, fila de e-mails, edições</Link>
+        </div>
+      </section>
       <div className="flex flex-col gap-4">
         {editions.map((e) => (
           <section key={e.id} className="card" aria-labelledby={`ed-${e.id}`}>
@@ -44,6 +55,7 @@ export default async function ProfessorHome() {
                       <li><Link href={`/professor/turmas/${c.id}/alunos`}>{count(c.id, "ativo")} ativos · {count(c.id, "convidado")} convidados · {count(c.id, "autorizado")} aguardando convite</Link></li>
                       <li>{open.length ? open.map((s) => <Link key={s.s.id} href={`/professor/aovivo/${s.s.id}`}>Sessão aberta: {s.m.title} (aberta em {fmtDT(s.s.openedAt)})</Link>) : <Link href={`/professor/turmas/${c.id}/encontros`}>Nenhuma sessão aberta · encontros</Link>}</li>
                       <li><Link href={`/professor/turmas/${c.id}/trabalhos`}>{grading} entrega(s) aguardando correção</Link></li>
+                      {(() => { const f = finals.find((x) => x.a.classId === c.id); const ds = datasetsReady.find((d) => d.editionId === e.id); return <li><Link href={f ? `/professor/turmas/${c.id}/trabalhos/${f.a.id}` : `/professor/turmas/${c.id}/trabalhos`}>Trabalho final: {f ? (f.a.status === "published" ? "publicado" : f.a.status === "closed" ? "encerrado" : "rascunho (invisível aos alunos)") : "não criado"} · OOT {f?.policy === "livre" ? "liberado a todos" : "após congelamento"} · bases disponíveis {Number(ds?.n ?? 0)}/{Number(ds?.total ?? 0)}</Link></li>; })()}
                     </ul>
                   </article>
                 );

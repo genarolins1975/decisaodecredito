@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: "Trabalhos" };
 
 export default async function TrabalhosPage() {
   const ctx = await requireContext();
-  const list = await listAssignments(ctx.current.classId, ctx.current.role !== "aluno");
+  const list = await listAssignments(ctx.current.classId, ctx.current.role === "monitor");
   const group = await myGroup(ctx.current.classId, ctx.user.id);
   const ids = list.map((a) => a.id);
   const subs = ids.length ? await db.select().from(schema.submissions).where(and(inArray(schema.submissions.assignmentId, ids), eq(schema.submissions.isCurrent, true), group ? eq(schema.submissions.groupId, group.id) : eq(schema.submissions.submitterUserId, ctx.user.id))) : [];

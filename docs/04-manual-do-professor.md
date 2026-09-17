@@ -57,6 +57,12 @@ Turma → Encontros → "Criar encontros padrão" (um por aula, sem data) e edit
 7. Bases do trabalho final: qualquer matriculado baixa qualquer base e dicionário. Se os resultados forem recebidos fora da plataforma (por e-mail), abra o trabalho final → Teste cego → "Liberação do OOT: livre": o OOT sem desfecho de todas as bases passa a aparecer em Materiais para todos os alunos, sem grupo nem congelamento. Os rótulos e os gabaritos nunca chegam ao aluno em nenhuma política. Entregas das aulas 1 a 4 em rascunho ficam invisíveis aos alunos; só o que está publicado aparece.
    Bases: 15 bases sintéticas (cerca de 1 milhão de propostas cada, OOT de 100.000 IDs), com dicionário, README e sujeira controlada. Atribua uma base a cada grupo em Grupos. O gabarito de cada base (processo gerador, sujeira plantada com contagens e exemplos de IDs, métricas de referência dos três modelos e dos pipelines ingênuos, respostas esperadas das doze missões) está em Materiais → Bases → "Gabarito (só professor)" e no material "Gabaritos consolidados". Nada do gabarito, do gerador ou dos rótulos fica no repositório público.
 
+### Trabalho final com dois componentes
+O trabalho final avalia o mesmo produto de crédito em dois componentes: o modelo (doze missões; dossiê, código, manifesto, previsões OOT, defesa individual) e o blueprint da operação (etapas 13 a 16: fluxo de concessão, governança e três linhas de defesa, modelo de decisão integrado, monitoramento e apresentação ao Conselho). A rubrica tem oito critérios de 0 a 2 (máximo 16): quatro do modelo e quatro do blueprint (coerência, aderência regulatória, viabilidade operacional, clareza para o Conselho). Turmas cujo trabalho final ainda tinha o enunciado original foram atualizadas pelo patch de importação; um trabalho já editado à mão não é alterado.
+
+### Painel do professor e visão do aluno
+O painel do professor (barra dourada "área restrita") é a área de trabalho: turmas, conteúdo, configurações e atalhos. "Ver como aluno" abre a área do aluno com uma faixa de aviso e mostra exatamente o que o aluno vê: rascunhos não aparecem. As bases, os gabaritos e o registro do pacote ficam em Materiais dessa visão, com os controles do professor visíveis só para você.
+
 ## 10. Exportar notas
 Turma → Notas → "Exportar CSV". O arquivo usa a mesma função de cálculo da tela e diferencia não corrigido, não entregue, dispensado e zero; células com fórmula são neutralizadas.
 

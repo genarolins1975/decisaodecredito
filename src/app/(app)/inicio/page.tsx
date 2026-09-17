@@ -17,7 +17,7 @@ export default async function InicioPage() {
   const meetings = await db.select().from(schema.meetings).where(and(eq(schema.meetings.classId, cid), eq(schema.meetings.status, "planned"))).orderBy(asc(schema.meetings.scheduledAt));
   const next = meetings.find((m) => m.scheduledAt && m.scheduledAt >= new Date(now.getTime() - 4 * 3600e3)) ?? meetings.find((m) => !m.scheduledAt) ?? meetings[0] ?? null;
   const openSessions = await db.select({ s: schema.liveSessions, m: schema.meetings }).from(schema.liveSessions).innerJoin(schema.meetings, eq(schema.meetings.id, schema.liveSessions.meetingId)).where(and(eq(schema.liveSessions.classId, cid), eq(schema.liveSessions.status, "open")));
-  const assignments = await listAssignments(cid, ctx.current.role !== "aluno");
+  const assignments = await listAssignments(cid, ctx.current.role === "monitor");
   const group = await myGroup(cid, uid);
   const ids = assignments.map((a) => a.id);
   const subs = ids.length ? await db.select().from(schema.submissions).where(and(inArray(schema.submissions.assignmentId, ids), eq(schema.submissions.isCurrent, true), group ? eq(schema.submissions.groupId, group.id) : eq(schema.submissions.submitterUserId, uid))) : [];
@@ -38,7 +38,7 @@ export default async function InicioPage() {
 
   return (
     <div>
-      <PageHeader eyebrow={<>{ctx.current.cls.name} · edição {ctx.current.edition.label}</>} title={`Olá, ${ctx.user.name.split(" ")[0]}`} lead={openSessions.length ? undefined : "Próxima aula, o que preparar, o que está pendente e os prazos."} />
+      <PageHeader eyebrow={<>{ctx.current.cls.name} · edição {ctx.current.edition.label}</>} title={ctx.user.isStaff ? "Visão do aluno" : `Olá, ${ctx.user.name.split(" ")[0]}`} lead={openSessions.length ? undefined : "Próxima aula, o que preparar, o que está pendente e os prazos."} />
       {openSessions.map(({ s, m }) => (
         <div key={s.id} className="callout callout-ok mb-5 flex flex-wrap items-center gap-3"><p className="font-semibold text-ok text-[15px]">Sessão ao vivo aberta agora: {m.title}</p><div className="flex-1" /><ButtonLink href={`/ao-vivo/${s.id}`}>Entrar na sessão</ButtonLink></div>
       ))}

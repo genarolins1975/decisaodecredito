@@ -13,7 +13,9 @@ export function AppShell({ children, nav, user, classes, currentClassId, context
 }) {
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="bg-ink text-white sticky top-0 z-40">
+      <header className={`${area === "professor" ? "bg-[#1B2A3A] border-b-4 border-gold" : "bg-ink"} text-white sticky top-0 z-40`}>
+        {area === "professor" && <p className="m-0 bg-gold text-ink text-[11.5px] font-semibold tracking-[0.12em] uppercase text-center py-[3px]">Painel do professor · área restrita</p>}
+        {area === "aluno" && user.isStaff && <p className="m-0 bg-[#FBF1E3] text-ink text-[12.5px] text-center py-1 px-3">Visão do aluno: você vê a plataforma como um aluno matriculado a vê (sem rascunhos, sem ferramentas do professor). <Link href="/professor" className="font-semibold">Voltar ao painel do professor</Link></p>}
         <div className="max-w-[1400px] mx-auto px-4 py-2 flex items-center gap-3 flex-wrap min-h-[52px]">
           <Brand light sub={contextLabel} />
           <div className="flex-1" />
