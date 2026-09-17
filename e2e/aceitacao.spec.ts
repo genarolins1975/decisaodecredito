@@ -377,4 +377,7 @@ test("registro do pacote de bases a partir do bucket: manifesto lido, tamanhos c
   expect((await aluno.get(`/api/arquivos/${ds.dictionaryFileId}`)).status()).toBe(200);
   fs.appendFileSync(path.join(dir, "03_consignado_oot.csv"), "P4\n");
   expect((await prof.post(`/api/professor/edicoes/${ed.id}/bases/registrar`, { data: { versao } })).status()).toBe(400);
+  // limpeza: os materiais do teste não ficam visíveis nas telas
+  await sql("delete from materials where edition_id=$1 and title like $2", [ed.id, `%e2e ${versao}`]);
+  fs.rmSync(dir, { recursive: true, force: true });
 });
