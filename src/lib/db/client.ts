@@ -7,22 +7,28 @@ declare global {
 }
 
 /**
- * TLS com provedores gerenciados (Supabase, Neon): DATABASE_SSL_CA recebe o certificado raiz em PEM
- * (verificação completa, recomendado); DATABASE_SSL=no-verify cifra sem verificar a cadeia
- * (aceitável em homologação); vazio usa apenas o que a própria DATABASE_URL pedir (sslmode).
+ * TLS com provedores gerenciados (Supabase, Neon). O `sslmode` da URL é retirado e resolvido aqui,
+ * porque o driver dá prioridade ao que vem na URL e descartaria o certificado configurado à parte.
+ * DATABASE_SSL_CA: certificado raiz do provedor em PEM (verificação completa, recomendado).
+ * DATABASE_SSL=no-verify (ou sslmode=no-verify): cifra sem verificar a cadeia; só homologação.
+ * Sem nada disso: sslmode=require/verify-* verifica contra as raízes públicas; sslmode=disable ou ausente não cifra.
  */
-export function sslConfig(): false | { ca?: string; rejectUnauthorized: boolean } | undefined {
-  const ca = process.env.DATABASE_SSL_CA?.replace(/\\n/g, "\n").trim();
-  if (ca) return { ca, rejectUnauthorized: true };
-  if (process.env.DATABASE_SSL === "no-verify") return { rejectUnauthorized: false };
-  return undefined;
+export function resolvePg(url: string, env: Record<string, string | undefined> = process.env): { connectionString: string; ssl?: { ca?: string; rejectUnauthorized: boolean } } {
+  const u = new URL(url);
+  const mode = u.searchParams.get("sslmode");
+  u.searchParams.delete("sslmode");
+  const connectionString = u.toString();
+  const ca = env.DATABASE_SSL_CA?.replace(/\\n/g, "\n").trim();
+  if (ca) return { connectionString, ssl: { ca, rejectUnauthorized: true } };
+  if (env.DATABASE_SSL === "no-verify" || mode === "no-verify") return { connectionString, ssl: { rejectUnauthorized: false } };
+  if (mode && mode !== "disable") return { connectionString, ssl: { rejectUnauthorized: true } };
+  return { connectionString };
 }
 
 function makePool() {
   const url = process.env.DATABASE_URL;
   if (!url) throw new Error("DATABASE_URL não definida");
-  const ssl = sslConfig();
-  return new Pool({ connectionString: url, max: Number(process.env.PG_POOL_MAX ?? 10), ...(ssl ? { ssl } : {}) });
+  return new Pool({ ...resolvePg(url), max: Number(process.env.PG_POOL_MAX ?? 10) });
 }
 
 export const pool: Pool = global.__pgPool ?? makePool();
