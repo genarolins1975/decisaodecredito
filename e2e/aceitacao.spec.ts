@@ -387,6 +387,16 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(eq).toContainText("72,7% (370 de 509)");
   await eq.getByRole("button", { name: "Recusa entre pagadores" }).click();
   await expect(eq).toContainText("106 de 454");
+
+  // capítulo 2: a bolinha desce a perda e a árvore sem freio decora uma proposta
+  await page.goto("/aulas/c2p12");
+  const bol = page.locator('figure[data-vz="bolinha-descida"]');
+  await expect(bol).toContainText("Iteração 0:");
+  await bol.getByRole("button", { name: "Próxima iteração" }).click();
+  await expect(bol).toContainText("b = -0,7500");
+  await page.goto("/aulas/c2p14");
+  const dec = page.locator('figure[data-vz="arvore-que-decora"]');
+  await expect(dec).toContainText("2 erros nas 16, 2 folhas");
 });
 
 test("núcleo: gabaritos e notas privadas não estão no motor legado nem nas páginas", async () => {

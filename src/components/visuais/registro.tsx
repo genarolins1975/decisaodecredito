@@ -5,6 +5,9 @@ import { PerdaQueCai } from "./perda-que-cai";
 import { DistanciaQueSeAbre } from "./distancia-que-se-abre";
 import { IndiceQueSoma } from "./indice-que-soma";
 import { Equidade } from "./equidade";
+import { BolinhaNaPerda } from "./bolinha-na-perda";
+import { ArvoreQueDecora } from "./arvore-que-decora";
+import { IntervaloQueEncolhe } from "./intervalo-que-encolhe";
 import { ArvoreQueCresce } from "./arvore-que-cresce";
 import { CemVidas } from "./cem-vidas";
 import { CurvaDeLucro } from "./curva-de-lucro";
@@ -23,6 +26,10 @@ import { Safras } from "./safras";
 export type VisualNativo = { Componente: ComponentType; substitui: "legacy" | "figura" };
 const REGISTRO: Record<string, VisualNativo> = {
   c1p5: { Componente: CemVidas, substitui: "legacy" },
+  c2p11: { Componente: () => <BolinhaNaPerda modo="perda" />, substitui: "legacy" },
+  c2p12: { Componente: () => <BolinhaNaPerda modo="descida" />, substitui: "legacy" },
+  c2p14: { Componente: ArvoreQueDecora, substitui: "legacy" },
+  c2p16: { Componente: IntervaloQueEncolhe, substitui: "legacy" },
   c3p7: { Componente: LinhaDoTempo, substitui: "figura" },
   c3p11: { Componente: Safras, substitui: "figura" },
   c4p2: { Componente: RetaQueQuebra, substitui: "figura" },

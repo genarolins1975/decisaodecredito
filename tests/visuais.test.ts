@@ -240,3 +240,33 @@ describe("monitoramento contra o gerador (capítulo 9)", async () => {
     expect(d.dif * 100).toBeCloseTo(1.43, 1); expect(d.lo * 100).toBeCloseTo(-1.15, 1); expect(d.hi * 100).toBeCloseTo(4.02, 1);
   });
 });
+
+describe("perda e descida em um parâmetro (capítulo 2)", async () => {
+  const { perdaConstante, descidaConstante } = await import("@/lib/visuais/perda");
+  const { crescer, folhas, errosNaAmostra, wilson } = await import("@/lib/visuais/arvore");
+  const did = JSON.parse(readFileSync("src/lib/visuais/did.json", "utf8"));
+  it("8 propostas com 1 default: perda 0,5067 em 2% e mínimo 0,3768 na frequência 12,5% (c2p11)", () => {
+    expect(perdaConstante(0.02, 1, 8)).toBeCloseTo(0.5067, 4);
+    expect(perdaConstante(0.125, 1, 8)).toBeCloseTo(0.3768, 4);
+    expect(perdaConstante(0.3, 1, 8)).toBeGreaterThan(perdaConstante(0.125, 1, 8));
+  });
+  it("descida com passo 2 a partir de b = 0 chega à frequência observada (c2p12); passo grande demais oscila", () => {
+    const it = descidaConstante(1, 8, 2, 40);
+    expect(it[0]).toMatchObject({ t: 0, b: 0, p: 0.5, g: 0.375 });
+    expect(it[1].b).toBeCloseTo(-0.75, 6);
+    expect(it[40].p).toBeCloseTo(0.125, 3);
+    const grande = descidaConstante(1, 8, 40, 6); expect(Math.abs(grande[6].g)).toBeGreaterThan(Math.abs(it[6].g));
+  });
+  it("árvore que decora: profundidade 1 erra 2 com 2 folhas; profundidade 3 sem freio cria folha de uma proposta, a #15 (c2p14)", () => {
+    const a1 = crescer(did.base, 1, 1); expect(folhas(a1).length).toBe(2); expect(errosNaAmostra(a1)).toBe(2);
+    const a3 = crescer(did.base, 3, 1); const uma = folhas(a3).filter((f) => f.n === 1);
+    expect(uma.length).toBeGreaterThan(0); expect(uma.some((f) => f.grupo[0].id === 15 && f.d === 0)).toBe(true);
+    expect(errosNaAmostra(a3)).toBe(0);
+  });
+  it("intervalo de Wilson: 1 em 8 vai de 2,2% a 47,1%; 100 em 800 de 10,4% a 15,0%; 0 em 1 vai até 79,3% (c2p16)", () => {
+    const w8 = wilson(1, 8); expect(w8.lo * 100).toBeCloseTo(2.2, 1); expect(w8.hi * 100).toBeCloseTo(47.1, 1);
+    const w80 = wilson(10, 80); expect(w80.lo * 100).toBeCloseTo(6.9, 1); expect(w80.hi * 100).toBeCloseTo(21.5, 1);
+    const w800 = wilson(100, 800); expect(w800.lo * 100).toBeCloseTo(10.4, 1); expect(w800.hi * 100).toBeCloseTo(15.0, 1);
+    expect(wilson(0, 1).hi * 100).toBeCloseTo(79.3, 1);
+  });
+});

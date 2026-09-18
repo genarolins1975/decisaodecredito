@@ -680,6 +680,27 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner .vz-ind-cartoes { gap: 1.2cqh; } .slide-inner .vz-ind-cartao { padding: 1cqh 1.4cqh; }
 .slide-inner .vz-ind-opcao { font-size: .95em; padding: .8cqh 1.2cqh; }
 .slide-inner .vz-ind-ic { max-width: 30cqh; }
+/* Capítulo 2: a bolinha na perda, a árvore que decora, o intervalo que encolhe */
+.vz-bol-grade, .vz-dec-grade, .vz-int-grade { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 14px 22px; align-items: start; }
+.vz-bol-painel, .vz-dec-painel, .vz-int-painel { display: grid; gap: 10px; min-width: 0; }
+.vz-bol-bola { fill: var(--color-gold); stroke: var(--color-ink); stroke-width: 2; transition: cx .45s cubic-bezier(.2,.8,.3,1), cy .45s cubic-bezier(.2,.8,.3,1); }
+.vz-bol-passo { fill: #fff; stroke: var(--color-ink); stroke-width: 1.5; } .vz-bol-trilha { fill: none; stroke: var(--color-ink); stroke-width: 1.5; stroke-dasharray: 4 3; opacity: .7; }
+.vz-bol-botoes { display: flex; gap: 8px; flex-wrap: wrap; }
+.vz-tile--btn { text-align: left; cursor: pointer; font: inherit; } .vz-tile--btn:hover { border-color: var(--color-ink); } .vz-tile--on { border-color: var(--color-gold); background: var(--color-gold-soft); }
+.vz-t-on td { background: var(--color-gold-soft); font-weight: 700; }
+.vz-dec-folha { stroke: none; } .vz-dec-folha--default { fill: var(--color-alert); } .vz-dec-folha--pagou { fill: #6f8fc4; }
+.vz-dec-folha--uma { stroke: var(--color-gold); stroke-width: 3; }
+.vz-dec-id { font-size: 9px; font-weight: 700; fill: #fff; pointer-events: none; }
+.vz-int-linha { cursor: pointer; opacity: .55; } .vz-int-linha--on { opacity: 1; } .vz-int-pt { fill: var(--color-ink); }
+@media (prefers-reduced-motion: reduce) { .vz-bol-bola { transition: none; } }
+@container (max-width: 760px) { .vz-bol-grade, .vz-dec-grade, .vz-int-grade { grid-template-columns: minmax(0, 1fr); } }
+/* palco */
+.slide-inner .vz-bol-grade, .slide-inner .vz-dec-grade, .slide-inner .vz-int-grade { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1cqh 2cqh; }
+.slide-inner [data-vz^="bolinha"] .vz-grafico svg { height: 42cqh; width: auto; }
+.slide-inner [data-vz="arvore-que-decora"] .vz-grafico svg { height: 44cqh; width: auto; }
+.slide-inner [data-vz="intervalo-que-encolhe"] .vz-grafico svg { height: 34cqh; width: auto; }
+.slide-inner [data-vz="bolinha-perda"] .vz-tiles--coluna { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.slide-inner [data-vz="bolinha-descida"] .table-wrap { display: none; }
 /* palco: raiz mostra plano e disputa; freios e instabilidade mostram plano, árvore e tiles */
 .slide-inner .vz-arv-grade { grid-template-columns: 46cqh minmax(0, 1fr); gap: 1cqh 2cqh; }
 .slide-inner [data-vz^="arvore"] .vz-arv-grade > .vz-grafico svg { height: 46cqh; }
