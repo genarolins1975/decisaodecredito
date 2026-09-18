@@ -755,6 +755,48 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner [data-vz="modelo-perfeito"] .table-wrap, .slide-inner [data-vz="modelo-perfeito"] .vz-grafico > .hint { display: none; }
 .slide-inner .vz-qp-grade { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1cqh; }
 .slide-inner .vz-qp-perg { font-size: 1em; }
+/* Capítulo 7: acerto, pares, KS e decis, calibração, Brier, amostras e decisões */
+.vz-ace-grade, .vz-par-grade, .vz-ks-grade, .vz-cal-grade, .vz-bri-grade { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 14px 22px; align-items: start; }
+.vz-ace-painel, .vz-par-painel, .vz-ks-painel, .vz-cal-painel, .vz-bri-painel { display: grid; gap: 10px; min-width: 0; }
+.vz-ace-matriz { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 26px 0 0 78px; }
+.vz-ace-eixo { position: absolute; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--color-muted); }
+.vz-ace-eixo--col { top: 4px; left: calc(78px + 25% - 30px); } .vz-ace-eixo--col2 { top: 4px; left: calc(78px + 75% - 30px); }
+.vz-ace-eixo--lin { left: 0; top: calc(26px + 25%); } .vz-ace-eixo--lin2 { left: 0; top: calc(26px + 75%); }
+.vz-ace-cel { position: relative; aspect-ratio: 1; background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 6px; display: grid; place-content: center; text-align: center; overflow: hidden; }
+.vz-ace-cel b { position: relative; font-family: var(--font-serif); font-size: 28px; color: var(--color-ink); line-height: 1; } .vz-ace-cel small { position: relative; font-size: 12px; color: var(--color-body); }
+.vz-ace-quad { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); border-radius: 4px; transition: width .4s, height .4s; opacity: .35; }
+.vz-ace-quad--ok { background: var(--color-ok); } .vz-ace-quad--erro { background: var(--color-alert); }
+.vz-par-tab { border-collapse: separate; border-spacing: 4px; width: 100%; font-variant-numeric: tabular-nums; }
+.vz-par-tab th { font-size: 12px; color: var(--color-ink); text-align: center; } .vz-par-tab th small { display: block; font-weight: 400; color: var(--color-muted); }
+.vz-par-tab tbody th { text-align: right; padding-right: 6px; color: var(--color-alert); }
+.vz-par-cel { height: 44px; background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 6px; text-align: center; font-size: 20px; font-weight: 700; cursor: pointer; transition: background .3s; }
+.vz-par-cel--correto { background: #DDEFE4; color: var(--color-ok); } .vz-par-cel--invertido { background: #F7DADD; color: var(--color-alert); } .vz-par-cel--empate { background: var(--color-gold-soft); color: #7a5f16; }
+.vz-curva--default { stroke: var(--color-alert); } .vz-curva--pagou { stroke: #6f8fc4; }
+.vz-ks-dist { stroke: var(--color-gold); stroke-width: 4; stroke-linecap: round; }
+.vz-dec-ic { position: absolute; top: 4px; height: 6px; background: var(--color-gold); opacity: .9; border-radius: 2px; }
+.vz-cal-pontos { display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 4px; max-width: 460px; }
+.vz-cal-pontos i { display: block; aspect-ratio: 1; border-radius: 50%; background: #C9D8F2; box-sizing: border-box; }
+.vz-cal-pontos .vz-cal-p--d { background: var(--color-alert); } .vz-cal-pontos .vz-cal-p--esp { border: 2px solid var(--color-ink); }
+.vz-cal-pt { fill: var(--color-ink); stroke: #fff; stroke-width: 1.5; } .vz-cal-pt--fora { fill: var(--color-alert); }
+.vz-amo-grade { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.vz-amo-cartao { text-align: left; background: var(--color-paper); border: 1px solid var(--color-rule); border-top: 4px solid var(--color-ink); border-radius: 6px; padding: 10px 12px; display: grid; gap: 8px; cursor: pointer; font: inherit; color: var(--color-body); }
+.vz-amo-cartao--on { border-top-color: var(--color-gold); background: #fff; box-shadow: var(--shadow-card); }
+.vz-amo-barras { display: grid; gap: 6px; } .vz-amo-linha { display: grid; grid-template-columns: 62px 1fr max-content; gap: 8px; align-items: center; font-size: 13px; font-variant-numeric: tabular-nums; }
+.vz-amo-rot { color: var(--color-body); } .vz-amo-trilho { display: block; height: 14px; background: #EDEBE3; border-radius: 3px; overflow: hidden; }
+.vz-amo-fill { display: block; height: 100%; } .vz-amo-fill--log { background: var(--color-ink); } .vz-amo-fill--gbm { background: #6f8fc4; } .vz-amo-fill--alarme { background: var(--color-alert); }
+.vz-dec-nao { font-size: 13px; color: var(--color-alert); }
+[data-vz^="brier"] .vz-grafico .vz-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@container (max-width: 760px) { .vz-ace-grade, .vz-par-grade, .vz-ks-grade, .vz-cal-grade, .vz-bri-grade { grid-template-columns: minmax(0, 1fr); } .vz-amo-grade { grid-template-columns: minmax(0, 1fr); } }
+/* palco */
+.slide-inner .vz-ace-grade, .slide-inner .vz-par-grade, .slide-inner .vz-ks-grade, .slide-inner .vz-cal-grade, .slide-inner .vz-bri-grade { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1cqh 2cqh; }
+.slide-inner .vz-ace-matriz { max-width: 44cqh; } .slide-inner .vz-ace-eixo { font-size: .8em; } .slide-inner .vz-ace-cel b { font-size: clamp(16px, 3.4cqh, 36px); }
+.slide-inner .vz-par-cel { height: 5cqh; font-size: 2.4cqh; }
+.slide-inner [data-vz^="ks"] .vz-grafico svg, .slide-inner [data-vz="calibracao-faixas"] .vz-grafico svg { height: 44cqh; width: auto; }
+.slide-inner [data-vz="ks-ganho"] .vz-res-barra { font-size: .85em; } .slide-inner [data-vz="ks-ganho"] .vz-res-barras { gap: .4cqh; }
+.slide-inner .vz-cal-pontos { max-width: 40cqh; gap: .3cqh; }
+.slide-inner [data-vz="calibracao-faixas"] .table-wrap { display: none; }
+.slide-inner [data-vz="brier-deslocamento"] .vz-grafico > .hint { display: none; }
+.slide-inner .vz-amo-grade { gap: 1cqh; }
 /* palco: raiz mostra plano e disputa; freios e instabilidade mostram plano, árvore e tiles */
 .slide-inner .vz-arv-grade { grid-template-columns: 46cqh minmax(0, 1fr); gap: 1cqh 2cqh; }
 .slide-inner [data-vz^="arvore"] .vz-arv-grade > .vz-grafico svg { height: 46cqh; }

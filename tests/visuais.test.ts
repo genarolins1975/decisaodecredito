@@ -310,3 +310,40 @@ describe("o modelo perfeito que está errado (capítulo 11)", async () => {
     expect(vaz.comparacao.diferenca).toBeCloseTo(0.0299, 4);
   });
 });
+
+describe("avaliação na janela fora do tempo contra o gerador (capítulo 7)", async () => {
+  const { matrizConfusao, decisDeRisco, ganho, faixasDeCalibracao, brier, logLoss, deslocar, media, pares, FILA_DIDATICA } = await import("@/lib/visuais/avaliacao");
+  const { aucPorPares, curvaRoc, ks } = await import("@/lib/visuais/metricas");
+  const oot = JSON.parse(readFileSync("src/lib/visuais/oot-logistica.json", "utf8"));
+  const mod = JSON.parse(readFileSync("src/lib/visuais/oot-modelos.json", "utf8"));
+  it("acerto de classificação: corte 12% dá 73,27% com 48 de 81 capturados, abaixo da regra trivial de 89,01% (c7p2)", () => {
+    const c = matrizConfusao(oot.y, oot.pd, 0.12);
+    expect([c.recusadaDefault, c.recusadaPagou, c.aprovadaDefault, c.aprovadaPagou]).toEqual([48, 164, 33, 492]);
+    expect(c.acerto * 100).toBeCloseTo(73.27, 2); expect(c.trivial * 100).toBeCloseTo(89.01, 2);
+  });
+  it("AUC como contagem de pares: 12 de 20 no exemplo didático e 53.136 pares na janela (c7p5)", () => {
+    const p = pares(FILA_DIDATICA); expect(p.pares.length).toBe(20); expect(p.auc).toBeCloseTo(0.6, 6);
+    expect(p.pares.filter((x) => x.estado === "correto").length).toBe(12);
+    const real = aucPorPares(oot.y, oot.pd); expect(real.pares).toBe(53136); expect(real.auc).toBeCloseTo(0.7257, 4);
+  });
+  it("KS 0,3621 em PD 9,7% e separação 0,3426 no corte de 12% (c7p7)", () => {
+    const k = ks(curvaRoc(oot.y, oot.pd)); expect(k.ks).toBeCloseTo(0.3621, 4); expect(k.pd * 100).toBeCloseTo(9.75, 1);
+    const c = matrizConfusao(oot.y, oot.pd, 0.12); expect(c.recusadaDefault / 81 - c.recusadaPagou / 656).toBeCloseTo(0.3426, 4);
+  });
+  it("ganho por decil: 2 decis da logística alcançam 42,0% dos defaults (2,10×) e do boosting 37,0% (c7p8)", () => {
+    const dl = decisDeRisco(oot.y, oot.pd); expect(dl[0]).toMatchObject({ n: 74, d: 22 });
+    const g = ganho(dl, 2); expect(g.ganho).toBeCloseTo(0.4198, 3); expect(g.alavancagem).toBeCloseTo(2.1, 1); expect(g.examinados).toBe(147);
+    const db = decisDeRisco(oot.y, mod.pg); expect(ganho(db, 2).ganho).toBeCloseTo(0.3704, 3);
+    // limites de decil com um caso de diferença em um ponto: tolerância de um default
+    mod.gains.logit.forEach((r: { pct: number; gains: number }, i: number) => expect(Math.abs(ganho(dl, i + 1).ganho - r.gains)).toBeLessThan(1.5 / 81));
+  });
+  it("faixas de calibração por decil de PD prevista batem com o gerador (c7p10)", () => {
+    const f = faixasDeCalibracao(oot.y, oot.pd);
+    f.forEach((x, j) => { const g = mod.calib.logit[j]; expect(x.k).toBe(g.k); expect(x.prev).toBeCloseTo(g.prev, 3); expect(x.lo).toBeCloseTo(g.lo, 2); expect(x.hi).toBeCloseTo(g.hi, 2); });
+    expect(f[0]).toMatchObject({ n: 74, k: 1 }); expect(f.filter((x) => !x.compativel).length).toBeLessThanOrEqual(1);
+  });
+  it("Brier 0,09128 e log loss 0,31487; deslocar em log odds muda os dois e não muda a AUC (c7p11)", () => {
+    expect(brier(oot.y, oot.pd)).toBeCloseTo(0.09128, 5); expect(logLoss(oot.y, oot.pd)).toBeCloseTo(0.31487, 5); expect(media(oot.pd) * 100).toBeCloseTo(9.72, 2);
+    const d = deslocar(oot.pd, 0.5); expect(brier(oot.y, d)).not.toBeCloseTo(0.09128, 4); expect(aucPorPares(oot.y, d).auc).toBeCloseTo(0.725685, 6);
+  });
+});

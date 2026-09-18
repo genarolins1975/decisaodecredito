@@ -13,6 +13,12 @@ import { QuadroDoComite } from "./quadro-do-comite";
 import { MesaSobChoque } from "./mesa-sob-choque";
 import { ModeloPerfeito } from "./modelo-perfeito";
 import { QuatroPerguntas } from "./quatro-perguntas";
+import { AcertoQueEngana } from "./acerto-que-engana";
+import { Pares } from "./pares";
+import { KsEDecis } from "./ks-e-decis";
+import { CalibracaoPorFaixa } from "./calibracao-por-faixa";
+import { BrierELogLoss } from "./brier-e-logloss";
+import { TresAmostras, DecisaoEvidencia } from "./evidencias";
 import { ArvoreQueCresce } from "./arvore-que-cresce";
 import { CemVidas } from "./cem-vidas";
 import { CurvaDeLucro } from "./curva-de-lucro";
@@ -50,7 +56,17 @@ const REGISTRO: Record<string, VisualNativo> = {
   c6p13: { Componente: () => <PerdaQueCai modo="iteracoes" />, substitui: "legacy" },
   c6p14: { Componente: () => <PerdaQueCai modo="rastro" />, substitui: "legacy" },
   c6p17: { Componente: DistanciaQueSeAbre, substitui: "figura" },
+  c7p2: { Componente: AcertoQueEngana, substitui: "legacy" },
+  c7p5: { Componente: Pares, substitui: "legacy" },
   c7p6: { Componente: FilaDeRisco, substitui: "legacy" },
+  c7p7: { Componente: () => <KsEDecis modo="ks" />, substitui: "legacy" },
+  c7p8: { Componente: () => <KsEDecis modo="ganho" />, substitui: "legacy" },
+  c7p9: { Componente: () => <CalibracaoPorFaixa modo="grupos" />, substitui: "legacy" },
+  c7p10: { Componente: () => <CalibracaoPorFaixa modo="faixas" />, substitui: "legacy" },
+  c7p11: { Componente: () => <BrierELogLoss modo="deslocamento" />, substitui: "legacy" },
+  c7p12: { Componente: () => <BrierELogLoss modo="recalibrar" />, substitui: "legacy" },
+  c7p16: { Componente: TresAmostras, substitui: "legacy" },
+  c7p18: { Componente: DecisaoEvidencia, substitui: "legacy" },
   c10p2: { Componente: TresZonas, substitui: "legacy" },
   c10p3: { Componente: QuadroDoComite, substitui: "legacy" },
   c10p11: { Componente: () => <MesaSobChoque modo="rodada1" />, substitui: "legacy" },

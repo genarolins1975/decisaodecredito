@@ -415,6 +415,16 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(mp).toContainText("não entra");
   await mp.getByRole("button", { name: "Bloquear: o campo nasce depois" }).click();
   await expect(mp).toContainText("A AUC honesta é 0,6958");
+
+  // capítulo 7: o acerto que engana, os pares e o KS reproduzem os números das páginas
+  await page.goto("/aulas/c7p2");
+  await expect(page.locator('figure[data-vz="acerto-que-engana"]')).toContainText("acerto 73,27%");
+  await page.goto("/aulas/c7p5");
+  const par = page.locator('figure[data-vz="pares"]');
+  await par.getByRole("button", { name: "Todos" }).click();
+  await expect(par).toContainText("12 corretos");
+  await page.goto("/aulas/c7p7");
+  await expect(page.locator('figure[data-vz="ks-ks"]')).toContainText("KS máximo 0,3621");
 });
 
 test("núcleo: gabaritos e notas privadas não estão no motor legado nem nas páginas", async () => {

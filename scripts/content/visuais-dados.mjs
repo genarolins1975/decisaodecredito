@@ -39,3 +39,9 @@ const vaz = { fonte: "content/generated/dados.json (DADOS.res e DADOS.comparacao
   modelos: { logit_oot: DADOS.res.logit_oot, gbm_raw_oot: DADOS.res.gbm_raw_oot, gbm_treino: DADOS.res.gbm_treino, leak_suave_treino: DADOS.res.gbm_leak_suave_treino, leak_suave_oot: DADOS.res.gbm_leak_suave_oot, leak_total_treino: DADOS.res.gbm_com_leakage_treino, leak_total_oot: DADOS.res.gbm_com_leakage_oot }, comparacao: DADOS.res.comparacao_auc };
 writeFileSync("src/lib/visuais/vazamento.json", JSON.stringify(vaz));
 console.log(`vazamento.json: AUC honesta ${vaz.modelos.gbm_raw_oot.auc}, suave ${vaz.modelos.leak_suave_oot.auc}, total ${vaz.modelos.leak_total_oot.auc}`);
+
+// Capítulo 7: PD do boosting (bruta e calibrada por Platt) na janela, ganhos por decil e calibração por faixa do gerador.
+const mod = { fonte: "content/generated/dados.json (DADOS.oot.pg, pgr, gains, calib, res)", pg: oot.pg.map((x) => Math.round(x * 1e6) / 1e6), pgr: oot.pgr.map((x) => Math.round(x * 1e6) / 1e6), gains: DADOS.gains, calib: DADOS.calib,
+  res: { logit_treino: DADOS.res.logit_treino, gbm_treino: DADOS.res.gbm_treino, logit_val: DADOS.res.logit_val, gbm_val: DADOS.res.gbm_val, logit_oot: DADOS.res.logit_oot, gbm_raw_oot: DADOS.res.gbm_raw_oot, gbm_platt_oot: DADOS.res.gbm_platt_oot }, platt: DADOS.platt };
+writeFileSync("src/lib/visuais/oot-modelos.json", JSON.stringify(mod));
+console.log(`oot-modelos.json: ${mod.pg.length} PDs do boosting, ganhos ${Object.keys(mod.gains).join("/")}`);
