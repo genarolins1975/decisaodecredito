@@ -8,6 +8,8 @@ const out = {
   amostra: "737 propostas fora do tempo, safras 2023-08 a 2023-12",
   modelo: "regressão logística com pesos de evidência, PD estimada",
   y: oot.y, pd: oot.pl.map((x) => Math.round(x * 1e6) / 1e6), ead: oot.ead,
+  // PD verdadeira do gerador: só existe porque a base é sintética; o revisor manual do capítulo 10 observa um sinal ruidoso dela
+  pt: oot.pt.map((x) => Math.round(x * 1e6) / 1e6),
 };
 writeFileSync("src/lib/visuais/oot-logistica.json", JSON.stringify(out));
 console.log(`oot-logistica.json: ${out.y.length} propostas, ${out.y.reduce((a, b) => a + b, 0)} defaults, exposição total ${out.ead.reduce((a, b) => a + b, 0)}`);

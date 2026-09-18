@@ -397,6 +397,17 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await page.goto("/aulas/c2p14");
   const dec = page.locator('figure[data-vz="arvore-que-decora"]');
   await expect(dec).toContainText("2 erros nas 16, 2 folhas");
+
+  // capítulo 10: a política em três zonas fecha em 548 aprovados e o choque leva o resultado a −R$ 225 mil
+  await page.goto("/aulas/c10p11");
+  const mesa = page.locator('figure[data-vz="mesa-rodada1"]');
+  await expect(mesa).toContainText("548");
+  await expect(mesa).toContainText("R$ 607 mil");
+  await page.goto("/aulas/c10p12");
+  const choque = page.locator('figure[data-vz="mesa-choque"]');
+  await choque.getByRole("button", { name: "Aplicar o choque" }).click();
+  await expect(choque).toContainText("Estado do cenário: sob choque.");
+  await expect(choque).toContainText("−R$ 225 mil");
 });
 
 test("núcleo: gabaritos e notas privadas não estão no motor legado nem nas páginas", async () => {

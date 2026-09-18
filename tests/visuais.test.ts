@@ -270,3 +270,28 @@ describe("perda e descida em um parâmetro (capítulo 2)", async () => {
     expect(wilson(0, 1).hi * 100).toBeCloseTo(79.3, 1);
   });
 });
+
+describe("política em três zonas contra o motor da aula (capítulo 10)", async () => {
+  const { avaliarCarteira, sobChoque, CHOQUE, POLITICA } = await import("@/lib/visuais/politica");
+  const { esperado } = await import("@/lib/visuais/economia");
+  const oot = JSON.parse(readFileSync("src/lib/visuais/oot-logistica.json", "utf8"));
+  it("corte 12%, teto 30%, capacidade 80: 548 aprovados, R$ 607 mil, 36 defaults entre aprovados, parcelas da rodada 1", () => {
+    const a = avaliarCarteira(oot);
+    expect(a.aprovados).toBe(548); expect(a.revisados).toBe(80); expect(a.defaultsAprovados).toBe(36);
+    expect(a.esperado / 1000).toBeCloseTo(607, 0);
+    expect(a.receitaEsp / 1e6).toBeCloseTo(2.11, 2); expect(a.perda / 1000).toBeCloseTo(307, 0); expect(a.funding / 1000).toBeCloseTo(959, 0);
+    expect(a.operacao).toBeCloseTo(548 * 120, 0); expect(a.capital / 1000).toBeCloseTo(160, 0); expect(a.revisoes).toBe(7200);
+    expect(a.exposicao / 1e6).toBeCloseTo(7.99, 2); expect(a.perda / a.exposicao).toBeCloseTo(0.0384, 3);
+  });
+  it("sob o choque (funding 21%, perda 80%, PD +0,30 em log odds) com a mesma política: 461 aprovados e R$ −225 mil", () => {
+    const pdc = sobChoque(oot.pd); const ptc = sobChoque(oot.pt);
+    const a = avaliarCarteira({ ...oot, pd: pdc, pt: ptc }, { funding: CHOQUE.funding, lgd: CHOQUE.lgd });
+    expect(a.aprovados).toBe(461); expect(a.esperado / 1000).toBeCloseTo(-225, 0); expect(a.perda / a.exposicao).toBeCloseTo(0.0543, 3);
+  });
+  it("três clientes, três zonas: Helena 44,9% dá −R$ 2.618 e recusa; Rogério R$ 1.261 e automática; Dalva revisão", () => {
+    expect(esperado(0.449, 9000)).toBeCloseTo(-2618, 0);
+    expect(esperado(0.0516, 15000)).toBeCloseTo(1260, -1);
+    const zona = (pd: number) => (pd <= POLITICA.corte ? "automática" : pd <= POLITICA.teto ? "revisão" : "recusa");
+    expect([zona(0.449), zona(0.052), zona(0.219)]).toEqual(["recusa", "automática", "revisão"]);
+  });
+});
