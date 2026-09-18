@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireContext } from "@/lib/context";
-import { chapterPrerequisites, getPage, neighbors } from "@/lib/services/content";
-import { chapterAssumptions, resolvePrerequisite } from "@/lib/content/prerequisites";
-import { InfograficoCapitulo } from "@/components/content/infografico";
-import { infograficoDoCapitulo } from "@/lib/content/infograficos";
+import { getPage, neighbors } from "@/lib/services/content";
+import { resolvePrerequisite } from "@/lib/content/prerequisites";
 import { ContentBlocks } from "@/components/content/blocks";
 import { TeacherGuide } from "@/components/content/teacher-guide";
 import { Badge } from "@/components/ui";
@@ -31,7 +29,7 @@ export default async function AulaPaginaPage({ params }: { params: Promise<{ slu
   const slugSet = new Set(nav.all.map((p) => p.slug));
   const titleOf = (s: string) => nav.all.find((p) => p.slug === s)?.title ?? s;
   const prereq = resolvePrerequisite(data.prerequisite, { chapter: data.chapter.number, pageNumber: idx + 1, slugs: slugSet });
-  const assumptions = idx === 0 ? chapterAssumptions(await chapterPrerequisites(data.chapter.id), { chapter: data.chapter.number, slugs: slugSet }) : [];
+  const capituloHref = `/aulas/capitulo/${data.chapter.number}`;
   return (
     <div className="grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)]">
       <aside className="lg:sticky lg:top-[100px] self-start no-print" aria-label="Páginas do capítulo">
@@ -40,16 +38,17 @@ export default async function AulaPaginaPage({ params }: { params: Promise<{ slu
           <ol className="link-list list-none p-0 m-0 text-[13px] mt-2">
             {chapterPages.map((p, i) => <li key={p.id}><Link href={`/aulas/${p.slug}`} aria-current={p.slug === slug ? "page" : undefined}><span className="font-mono text-[11px] text-muted mr-2">{i + 1}</span>{p.title}</Link></li>)}
           </ol>
-          <div className="mt-3 flex gap-2"><Link href={`/apresentacao/${slug}`} className="btn btn-secondary btn-sm">Ver em tela cheia</Link><Link href="/aulas" className="btn btn-ghost btn-sm">Todas as aulas</Link></div>
+          <div className="mt-3 flex gap-2 flex-wrap"><Link href={capituloHref} className="btn btn-secondary btn-sm">Abertura do capítulo</Link><Link href={`/apresentacao/${slug}`} className="btn btn-secondary btn-sm">Ver em tela cheia</Link><Link href="/aulas" className="btn btn-ghost btn-sm">Todas as aulas</Link></div>
         </details>
         <div className="hidden lg:block">
           <Link href="/aulas" className="voltar mb-2">Aulas</Link>
           <p className="eyebrow mb-2">{data.unit.kind === "trabalho" ? "Trabalho final" : `Aula ${data.unit.number}`} · Capítulo {data.chapter.number}</p>
-          <p className="font-serif font-bold text-ink text-[15px] mb-3">{data.chapter.title}</p>
+          <p className="font-serif font-bold text-ink text-[15px] mb-3"><Link href={capituloHref} className="no-underline hover:underline" title="Abertura do capítulo">{data.chapter.title}</Link></p>
           <ol className="link-list list-none p-0 m-0 text-[13px] max-h-[60vh] overflow-auto">
             {chapterPages.map((p, i) => <li key={p.id}><Link href={`/aulas/${p.slug}`} aria-current={p.slug === slug ? "page" : undefined}><span className="font-mono text-[11px] text-muted mr-2">{i + 1}</span>{p.title}</Link></li>)}
           </ol>
           <div className="mt-4 flex flex-col gap-2">
+            <Link href={capituloHref} className="btn btn-secondary btn-sm">Abertura do capítulo</Link>
             <Link href={`/apresentacao/${slug}`} className="btn btn-secondary btn-sm">Ver em tela cheia</Link>
           </div>
         </div>
@@ -71,22 +70,8 @@ export default async function AulaPaginaPage({ params }: { params: Promise<{ slu
             </p>
           )}
         </div>
-        {idx === 0 && infograficoDoCapitulo(data.chapter.number) && (
-          <div className="mt-5"><InfograficoCapitulo d={infograficoDoCapitulo(data.chapter.number)!} /></div>
-        )}
-        {assumptions.length > 0 && (
-          <aside className="mt-5 callout text-[14px]" aria-labelledby="assume" data-testid="capitulo-assume">
-            <p id="assume" className="eyebrow mb-1">O que este capítulo assume</p>
-            <ul className="list-none p-0 m-0 grid gap-1">
-              {assumptions.map((a) => (
-                <li key={a.chapter}>
-                  <b>Capítulo {a.chapter}:</b>{" "}
-                  {a.slugs.map((s, i) => <span key={s}>{i > 0 && " · "}<Link href={`/aulas/${s}`}>{s === `c${a.chapter}p1` ? "abertura" : titleOf(s)}</Link></span>)}
-                </li>
-              ))}
-            </ul>
-            <p className="hint mt-1">Derivado dos prerrequisitos declarados em cada página deste capítulo. Páginas complementares aprofundam; as essenciais bastam para a aula.</p>
-          </aside>
+        {idx === 0 && (
+          <p className="mt-5 callout text-[14px]" data-testid="abertura-capitulo"><span className="eyebrow mr-2">Abertura</span>Pergunta central, o que se aprende, infográfico e mapa das páginas estão na <Link href={capituloHref} className="font-semibold">página do capítulo</Link>.</p>
         )}
         <div className="mt-6">
           <h2 className="sr-only">Conteúdo da página</h2>

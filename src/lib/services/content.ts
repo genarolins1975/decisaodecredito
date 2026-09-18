@@ -87,3 +87,25 @@ export async function neighbors(editionId: string, slug: string) {
   const i = all.findIndex((p) => p.slug === slug);
   return { prev: i > 0 ? all[i - 1] : null, next: i >= 0 && i < all.length - 1 ? all[i + 1] : null, index: i, total: all.length, all };
 }
+
+/** Página de abertura do capítulo: unidade, capítulo, páginas com objetivo e orçamento de tempo, vizinhos e materiais que citam o capítulo. */
+export async function chapterOverview(editionId: string, numero: number) {
+  const outline = await courseOutline(editionId);
+  const flat = outline.flatMap((u) => u.chapters.map((c) => ({ unit: u, chapter: c })));
+  const i = flat.findIndex((x) => x.chapter.number === numero);
+  if (i < 0) return null;
+  const { unit, chapter } = flat[i];
+  const ids = chapter.pages.map((p) => p.id);
+  const versions = ids.length ? await db.select({ pageId: schema.pageVersions.pageId, objective: schema.pageVersions.objective, timeBudget: schema.pageVersions.timeBudget })
+    .from(schema.pageVersions).innerJoin(schema.pages, eq(schema.pages.publishedVersionId, schema.pageVersions.id)).where(inArray(schema.pages.id, ids)) : [];
+  const byPage = new Map(versions.map((v) => [v.pageId, v]));
+  const pages = chapter.pages.map((p) => ({ ...p, objective: byPage.get(p.id)?.objective ?? null, timeBudget: (byPage.get(p.id)?.timeBudget ?? null) as { exp?: number; ex?: number; prat?: number; disc?: number } | null }));
+  const materials = await db.select().from(schema.materials).where(and(eq(schema.materials.editionId, editionId), inArray(schema.materials.status, ["published", "professor"]))).orderBy(asc(schema.materials.position));
+  const vizinho = (x: { unit: typeof unit; chapter: typeof chapter } | undefined) => x ? { number: x.chapter.number, title: x.chapter.title, unitLabel: x.unit.kind === "trabalho" ? "Trabalho final" : `Aula ${x.unit.number}` } : null;
+  const titles: Record<string, string> = {};
+  for (const x of flat) for (const p of x.chapter.pages) titles[p.slug] = p.title;
+  return {
+    unit: { id: unit.id, kind: unit.kind, number: unit.number, title: unit.title, deliverable: unit.deliverable },
+    chapter: { ...chapter, pages }, prev: vizinho(flat[i - 1]), next: vizinho(flat[i + 1]), total: flat.length, materials, titles,
+  };
+}

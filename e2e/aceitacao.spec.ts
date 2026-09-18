@@ -297,8 +297,9 @@ test("estudo: prerrequisitos visíveis ao aluno com links e síntese do capítul
   const a = await apiAs(ALUNO_A);
   const p12 = await (await a.get("/aulas/c6p12")).text();
   expect(p12).toContain("Antes desta página"); expect(p12).toContain('href="/aulas/c4p16"'); expect(p12).toContain("Gradiente da logística");
-  const p1 = await (await a.get("/aulas/c6p1")).text();
-  expect(p1).toContain("O que este capítulo assume"); expect(p1).toContain('href="/aulas/c4p7"'); expect(p1).toContain('href="/aulas/c2p13"');
+  const cap6 = await (await a.get("/aulas/capitulo/6")).text(); // o que o capítulo assume vive na abertura do capítulo
+  expect(cap6).toContain('data-testid="capitulo-assume"'); expect(cap6).toContain('href="/aulas/c4p7"'); expect(cap6).toContain('href="/aulas/c2p13"');
+  expect(await (await a.get("/aulas/c6p1")).text()).toContain('data-testid="abertura-capitulo"');
   const c1p1 = await (await a.get("/aulas/c1p1")).text();
   expect(c1p1).not.toContain("Antes desta página"); // "Nenhum" não gera bloco
   // nada além do prerrequisito sai do guia docente
@@ -633,4 +634,25 @@ test("registro do pacote de bases a partir do bucket: manifesto lido, tamanhos c
   // limpeza: os materiais do teste não ficam visíveis nas telas
   await sql("delete from materials where edition_id=$1 and title like $2", [ed.id, `%e2e ${versao}`]);
   fs.rmSync(dir, { recursive: true, force: true });
+});
+
+test("abertura do capítulo: página própria com pergunta central, mapa das páginas, vizinhos e roteiro só para o professor", async () => {
+  const a = await apiAs(ALUNO_A);
+  const r = await a.get("/aulas/capitulo/1");
+  expect(r.status()).toBe(200);
+  const html = await r.text();
+  expect(html).toContain("O que precisamos saber para decidir?");
+  expect(html.replace(/<!-- -->/g, "")).toContain("As 8 páginas");
+  expect(html).toContain("Mesma PD, decisões econômicas diferentes");
+  expect(html).toContain('href="/aulas/capitulo/2"');
+  expect(html).toContain("Infográfico de abertura");
+  expect(html).not.toContain("Roteiro: exposição");
+  const c1p1 = await (await a.get("/aulas/c1p1")).text();
+  expect(c1p1).toContain('data-testid="abertura-capitulo"'); // a primeira página aponta para a abertura e não repete o infográfico
+  expect(c1p1).not.toContain('data-testid="infografico"');
+  expect((await a.get("/aulas/capitulo/99")).status()).toBe(404);
+  const p = await apiAs(PROF);
+  const ph = await (await p.get("/aulas/capitulo/1")).text();
+  expect(ph).toContain("Roteiro: exposição");
+  expect(ph).toContain("Editar o conteúdo");
 });

@@ -80,6 +80,12 @@ Turma → Aulas ao vivo → "Criar as quatro aulas" (uma por unidade, sem data) 
 ### Trabalho final com dois componentes
 O trabalho final avalia o mesmo produto de crédito em dois componentes: o modelo (doze missões; dossiê, código, manifesto, previsões OOT, defesa individual) e o blueprint da operação (etapas 13 a 16: fluxo de concessão, governança e três linhas de defesa, modelo de decisão integrado, monitoramento e apresentação ao Conselho). A rubrica tem oito critérios de 0 a 2 (máximo 16): quatro do modelo e quatro do blueprint (coerência, aderência regulatória, viabilidade operacional, clareza para o Conselho). Turmas cujo trabalho final ainda tinha o enunciado original foram atualizadas pelo patch de importação; um trabalho já editado à mão não é alterado.
 
+### Página do capítulo e a listagem de Conteúdo
+
+Cada capítulo tem uma abertura própria em `/aulas/capitulo/N` (ligada em Aulas, na lateral das páginas e na listagem de Conteúdo). Para o professor ela mostra também o roteiro do guia docente: exposição, exemplo, prática e discussão por página e no total. Os PDFs do capítulo aparecem ali quando publicados em Materiais com "Capítulo N" no título; a versão do professor só aparece com status "professor".
+
+Na listagem de Conteúdo, "ver" abre a página como o aluno a vê, na edição da turma ativa no seletor do topo, e não no ano escolhido na listagem. Se a turma ativa pertence a outra edição, a página informa que não está publicada naquela edição; troque a turma no seletor. "Editar" abre o editor pelo identificador da página: se a listagem estiver desatualizada em relação ao banco, a tela pede para recarregar a listagem. Qualquer falha ao montar uma página mostra um código de erro (digest) que identifica o registro no servidor da hospedagem.
+
 ### Área do professor e visão do aluno
 A área do professor (faixa dourada no topo) é a área de trabalho: Início, Turmas, Conteúdo, Bases e gabaritos, E-mail. "Ver como aluno" abre a área do aluno com uma faixa de aviso e mostra exatamente o que o aluno vê: rascunhos não aparecem. As bases, os gabaritos e o registro do pacote ficam em Bases e gabaritos; a visão do aluno não mostra nada do professor.
 

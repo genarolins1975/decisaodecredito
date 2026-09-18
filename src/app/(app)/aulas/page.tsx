@@ -30,10 +30,11 @@ export default async function AulasPage() {
                 return (
                   <article key={c.id} className="panel-soft flex flex-col gap-2" style={{ borderTop: `3px solid ${c.themeColor ?? "#00205B"}` }}>
                     <p className="eyebrow">Capítulo {c.number} · {mins} min essenciais · {c.pages.length} páginas</p>
-                    <h3 className="text-[17px]"><Link href={`/aulas/${c.pages[0]?.slug ?? ""}`} className="no-underline hover:underline">{c.title}</Link></h3>
+                    <h3 className="text-[17px]"><Link href={`/aulas/capitulo/${c.number}`} className="no-underline hover:underline">{c.title}</Link></h3>
                     <p className="text-[14px] italic text-ink">{c.centralQuestion}</p>
                     <p className="text-[13.5px]">{c.learn}</p>
-                    <details className="mt-auto">
+                    <div className="mt-auto flex flex-wrap gap-2 pt-1"><Link href={`/aulas/capitulo/${c.number}`} className="btn btn-secondary btn-sm">Abrir o capítulo</Link><Link href={`/aulas/${c.pages[0]?.slug ?? ""}`} className="btn btn-ghost btn-sm">Página 1</Link></div>
+                    <details>
                       <summary className="cursor-pointer text-[13px] font-semibold text-ink min-h-[32px] flex items-center">Ver as páginas</summary>
                       <ol className="link-list mt-1 text-[13.5px] list-none p-0 m-0">
                         {c.pages.map((p) => (

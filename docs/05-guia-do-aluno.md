@@ -16,6 +16,10 @@
 
 Ao errar pela primeira vez, a plataforma não mostra a alternativa correta: mostra onde costuma estar a confusão, o conceito envolvido, um exemplo e uma pergunta de retomada, e pede uma nova tentativa. A alternativa correta e a explicação completa aparecem quando você acerta, a partir da segunda tentativa, ou quando clica em "Ver a resposta". Em Notas e presença, conta como acerto próprio apenas a resposta certa dada antes de ver a resposta; acertos depois de ver a resposta ficam registrados separadamente. Nas sessões ao vivo a regra é outra: o resultado só aparece quando o professor libera.
 
+## A página do capítulo
+
+Cada capítulo tem uma página de abertura própria, em Aulas ("Abrir o capítulo") ou pelo título do capítulo na lateral de qualquer página: pergunta central, o que se aprende, por que importa, a atividade, o que o capítulo assume, o infográfico de abertura, o mapa das páginas com objetivo e minutos, a entrega da aula e os materiais cujo título cita o capítulo. A primeira página de aula começa direto no conteúdo e aponta para essa abertura.
+
 ## Antes desta página e o que o capítulo assume
 
 No alto de cada página aparece "Antes desta página": o que ela pressupõe, com links para as páginas onde o assunto foi construído (capítulo e página, ou a página anterior). Na primeira página de cada capítulo, o bloco "O que este capítulo assume" reúne os capítulos e páginas de que o capítulo depende. Se algo ali parecer novo, é por onde revisar antes de seguir. As páginas complementares aprofundam; as essenciais bastam para acompanhar a aula.
