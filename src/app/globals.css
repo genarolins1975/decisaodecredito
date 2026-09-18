@@ -1016,3 +1016,32 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner [data-vz="tres-estrategias"] .vz-grafico svg { height: 34cqh; } .slide-inner [data-vz="hiperparametros"] .vz-grafico svg { height: 40cqh; } .slide-inner [data-vz="tres-limites"] .vz-grafico svg { height: 34cqh; }
 .slide-inner .vz-te-modelo { font-size: 1em; height: auto; padding: .2cqh .8cqh; } .slide-inner [data-vz="tres-estrategias"] .vz-te-card .vz-num { display: none; }
 .vz-hp-controla th { text-transform: none; font-size: 13px; }
+/* Capítulo 2 completo: recorte, variáveis, mesmas características e condicional */
+.vz-rec-grade { display: grid; gap: 12px; } .vz-var-grade, .vz-mc-grade, .vz-cond-grade { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 14px 22px; align-items: start; }
+.vz-var-lado, .vz-mc-painel, .vz-mc-lado, .vz-cond-lado { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; min-width: 0; align-content: start; }
+.vz-rec-zona--antes { fill: var(--color-ok-soft); stroke: #BFD9C9; } .vz-rec-zona--depois { fill: var(--color-alert-soft); stroke: #F0C9CE; }
+.vz-rec-corte { stroke: var(--color-ink); stroke-width: 3; stroke-dasharray: 6 4; }
+.vz-rec-chip { cursor: pointer; transition: transform .35s cubic-bezier(.2,.7,.2,1); } .vz-rec-chip rect { fill: var(--color-surface); stroke: var(--color-ok); stroke-width: 1.5; } .vz-rec-chip text { font-size: 11px; font-weight: 700; fill: var(--color-ink); }
+.vz-rec-chip--on rect { fill: var(--color-ok); } .vz-rec-chip--on text { fill: #fff; }
+.vz-rec-chip--futuro rect { stroke: var(--color-alert); stroke-dasharray: 4 3; } .vz-rec-chip--futuro text { fill: var(--color-alert); }
+.vz-rec-chip--barrada { animation: vz-bate .5s ease-out; } .vz-rec-chip--barrada rect { fill: var(--color-alert); } .vz-rec-chip--barrada text { fill: #fff; }
+@keyframes vz-bate { 0% { translate: 0 0; } 35% { translate: -22px 0; } 70% { translate: 8px 0; } 100% { translate: 0 0; } }
+.vz-rec-fluxo { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1.2fr); gap: 10px; align-items: center; }
+.vz-rec-seta { font-size: 26px; color: var(--color-muted); text-align: center; } .vz-rec-lista { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 3px; font-size: 13px; color: var(--color-body); } .vz-rec-lista b { float: right; color: var(--color-ink); }
+.vz-rec-cem { width: 100%; max-width: 220px; height: auto; display: block; margin-top: 6px; }
+.vz-var-ficha { display: grid; gap: 8px; align-content: start; background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 8px; padding: 12px 14px; }
+.vz-var-campo { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center; text-align: left; padding: 10px 12px; border: 1px solid var(--color-rule); border-radius: 6px; background: var(--color-surface); cursor: pointer; font: inherit; color: var(--color-body); transition: border-color .2s, box-shadow .2s; }
+.vz-var-campo--on { border-color: var(--color-ink); box-shadow: 0 0 0 2px var(--color-ink) inset; } .vz-var-campo--alvo { border-style: dashed; }
+.vz-var-nome { font-size: 13px; } .vz-var-valor { font-family: var(--font-serif); font-size: 18px; color: var(--color-ink); } .vz-var-papel { font-style: normal; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--color-muted); } .vz-var-campo--alvo .vz-var-papel { color: var(--color-alert); }
+.vz-var-matriz th, .vz-var-matriz td { white-space: normal; text-align: center; } .vz-var-matriz th[scope="row"] { text-align: left; }
+.vz-mc-pontos { display: flex; flex-wrap: wrap; gap: 6px; } .vz-mc-ponto { width: 36px; height: 36px; border-radius: 6px; border: none; font: 700 15px var(--font-sans); color: #fff; background: #9db6de; cursor: pointer; transition: opacity .2s, transform .2s; } .vz-mc-ponto--default { background: var(--color-alert); } .vz-mc-ponto--fora { opacity: .25; transform: scale(.8); text-decoration: line-through; }
+.vz-mc-fraco { opacity: .45; }
+.vz-cond-regiao { fill: var(--color-alert-soft); stroke: var(--color-alert); stroke-dasharray: 4 3; transition: x .3s, y .3s, width .3s, height .3s; }
+@container (max-width: 760px) { .vz-var-grade, .vz-mc-grade, .vz-cond-grade { grid-template-columns: minmax(0, 1fr); } .vz-rec-fluxo { grid-template-columns: minmax(0, 1fr); } .vz-rec-seta { transform: rotate(90deg); } }
+/* palco */
+.slide-inner .vz-var-grade, .slide-inner .vz-mc-grade, .slide-inner .vz-cond-grade { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1cqh 2cqh; }
+.slide-inner .vz-rec-fluxo { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1.2fr); }
+.slide-inner [data-vz="recorte"] .vz-rec-passo .hint, .slide-inner [data-vz="variaveis"] .vz-var-ficha > .hint, .slide-inner [data-vz="variaveis"] .vz-var-lado .vz-tile--alerta, .slide-inner [data-vz="mesmas-caracteristicas"] .vz-mc-lado .vz-tile, .slide-inner [data-vz="condicional"] .vz-cond-lado > .hint, .slide-inner [data-vz="condicional"] .vz-cond-lado .vz-tile .hint { display: none; }
+.slide-inner [data-vz="recorte"] .vz-grafico svg { height: 26cqh; } .slide-inner [data-vz="condicional"] .vz-grafico svg { height: 46cqh; } .slide-inner [data-vz="mesmas-caracteristicas"] .vz-grafico svg { height: 24cqh; }
+.slide-inner .vz-rec-chip text { font-size: 12px; } .slide-inner .vz-var-nome { font-size: 1em; }
+.slide-inner [data-vz="variaveis"] .vz-var-lado .vz-tile:nth-child(2) { display: none; } .slide-inner [data-vz="variaveis"] .vz-var-lado .vz-tile--alerta { display: block; }

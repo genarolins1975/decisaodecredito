@@ -527,3 +527,17 @@ describe("três estratégias, hiperparâmetros e três limites reproduzem as pá
     expect(arv(base.filter((p) => p.id !== 15)).dir!.corte).toBeUndefined(); expect(arv(base.filter((p) => p.id !== 16)).dir!.corte!.valor).toBe(82.5);
   });
 });
+
+describe("recorte, variáveis, mesmas características e condicional reproduzem as páginas herdadas (capítulo 2, c2p2, c2p5 a c2p7)", async () => {
+  const { CONDICOES } = await import("@/components/visuais/condicional");
+  const base = did.base as Proposta[];
+  it("quatro condições: 57,5% dá 7 em 8 contra 1 em 8; 40% dá 7 em 11; 20 dias dá 5 em 7; 5 dias dá 5 em 8 (c2p7)", () => {
+    const conta = (k: string) => { const c = CONDICOES.find((x) => x.k === k)!; const d = base.filter(c.f), f = base.filter((p) => !c.f(p)); return [d.length, d.filter((p) => p.y).length, f.length, f.filter((p) => p.y).length]; };
+    expect(conta("u57")).toEqual([8, 7, 8, 1]); expect(conta("u40")).toEqual([11, 7, 5, 1]); expect(conta("a20")).toEqual([7, 5, 9, 3]); expect(conta("a05")).toEqual([8, 5, 8, 3]);
+  });
+  it("duas pessoas: 50% de 9,5% a 90,5%; dezesseis: 50% de 28% a 72%; sem a #15: 53,3% de 30% a 75% (c2p6)", () => {
+    const y16 = base.map((p) => p.y); expect(y16).toEqual([0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1]);
+    const w2 = wilson(1, 2), w16 = wilson(8, 16), w15 = wilson(8, 15);
+    expect(w2.lo * 100).toBeCloseTo(9.5, 1); expect(w2.hi * 100).toBeCloseTo(90.5, 1); expect(w16.lo * 100).toBeCloseTo(28, 0); expect(w16.hi * 100).toBeCloseTo(72, 0); expect((8 / 15) * 100).toBeCloseTo(53.3, 1); expect(w15.lo * 100).toBeCloseTo(30.1, 1);
+  });
+});

@@ -504,6 +504,21 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(hp).toContainText("log loss de treino 0,47481 contra 0,43282 da logística, 16 folhas somadas, menor folha com 2, PD de 33% a 67%");
   await hp.getByRole("button", { name: "decorar" }).click();
   await expect(hp).toContainText("O modelo decorou a amostra");
+
+  // capítulo 2: o recorte barra o futuro, a amostra menor muda a prevalência e a condição recalcula a contagem
+  await page.goto("/aulas/c2p2");
+  const rec = page.locator('figure[data-vz="recorte"]');
+  await rec.getByRole("button", { name: "Default em 12 meses" }).click();
+  await expect(rec).toContainText("Barrada: default em 12 meses só será conhecido no futuro.");
+  await page.goto("/aulas/c2p6");
+  const mc = page.locator('figure[data-vz="mesmas-caracteristicas"]');
+  await mc.getByRole("button", { name: "retire 1 caso" }).click();
+  await expect(mc).toContainText("15 pessoas, prevalência observada 53,3%");
+  await page.goto("/aulas/c2p7");
+  const cond = page.locator('figure[data-vz="condicional"]');
+  await expect(cond).toContainText("Dado que utilização acima de 57,5%: 87,5%, 7 defaults em 8 propostas.");
+  await cond.getByRole("button", { name: "atraso de 20 dias ou mais" }).click();
+  await expect(cond).toContainText("71,4%, 5 defaults em 7 propostas");
 });
 
 test("núcleo: gabaritos e notas privadas não estão no motor legado nem nas páginas", async () => {

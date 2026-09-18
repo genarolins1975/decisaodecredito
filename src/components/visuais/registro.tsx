@@ -50,6 +50,10 @@ import { Painel } from "./painel";
 import { TresEstrategias } from "./tres-estrategias";
 import { Hiperparametros } from "./hiperparametros";
 import { TresLimites } from "./tres-limites";
+import { Recorte } from "./recorte";
+import { Variaveis } from "./variaveis";
+import { MesmasCaracteristicas } from "./mesmas-caracteristicas";
+import { Condicional } from "./condicional";
 import { LinhaDoTempo } from "./linha-do-tempo";
 import { Safras } from "./safras";
 
@@ -61,6 +65,10 @@ import { Safras } from "./safras";
 export type VisualNativo = { Componente: ComponentType; substitui: "legacy" | "figura" };
 const REGISTRO: Record<string, VisualNativo> = {
   c1p5: { Componente: CemVidas, substitui: "legacy" },
+  c2p2: { Componente: Recorte, substitui: "legacy" },
+  c2p5: { Componente: Variaveis, substitui: "legacy" },
+  c2p6: { Componente: MesmasCaracteristicas, substitui: "legacy" },
+  c2p7: { Componente: Condicional, substitui: "legacy" },
   c2p11: { Componente: () => <BolinhaNaPerda modo="perda" />, substitui: "legacy" },
   c2p12: { Componente: () => <BolinhaNaPerda modo="descida" />, substitui: "legacy" },
   c2p14: { Componente: ArvoreQueDecora, substitui: "legacy" },
