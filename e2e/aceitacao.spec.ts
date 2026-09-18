@@ -479,6 +479,20 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(page.locator('figure[data-vz="memorando-1"]')).toContainText("Campo completo. 5 de 5 itens declarados");
   await page.goto("/aulas/c10p7");
   await expect(page.locator('figure[data-vz="memorando-3"]')).toContainText("4,7 pp, intervalo de −2,5 a 11,9 pp");
+
+  // capítulo 9: a medição só aparece depois do plano; o painel montado chega ao campo 5 do memorando
+  await page.goto("/aulas/c9p7");
+  const gat = page.locator('figure[data-vz="gatilhos"]');
+  await expect(gat).toContainText("A medição só aparece depois da leitura do plano.");
+  await gat.getByRole("button", { name: "Medir a janela desta base" }).click();
+  await expect(gat).toContainText("0 gatilhos disparados de 5 medidos.");
+  await page.goto("/aulas/c9p8");
+  const pn = page.locator('figure[data-vz="painel"]');
+  await expect(pn).toContainText("3 de 11 selecionados, 1 sem espera de rótulo. Os três fenômenos estão cobertos, mas falta leitura de equidade.");
+  await pn.getByRole("checkbox").nth(8).check();
+  await expect(pn).toContainText("Painel com cobertura completa.");
+  await page.goto("/aulas/c10p9");
+  await expect(page.locator('figure[data-vz="memorando-5"]')).toContainText("4 indicadores registrados neste navegador");
 });
 
 test("núcleo: gabaritos e notas privadas não estão no motor legado nem nas páginas", async () => {

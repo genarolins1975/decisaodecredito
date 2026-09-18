@@ -44,6 +44,9 @@ import { Caminho } from "./caminho";
 import { Poda } from "./poda";
 import { DuasFamilias } from "./duas-familias";
 import { Memorando } from "./memorando";
+import { TresFenomenos } from "./tres-fenomenos";
+import { Gatilhos } from "./gatilhos";
+import { Painel } from "./painel";
 import { LinhaDoTempo } from "./linha-do-tempo";
 import { Safras } from "./safras";
 
@@ -115,10 +118,13 @@ const REGISTRO: Record<string, VisualNativo> = {
   c10p13: { Componente: () => <MesaSobChoque modo="rodada2" />, substitui: "legacy" },
   c11p6: { Componente: ModeloPerfeito, substitui: "legacy" },
   c11p18: { Componente: QuatroPerguntas, substitui: "legacy" },
+  c9p2: { Componente: TresFenomenos, substitui: "legacy" },
   c9p3: { Componente: () => <IndiceQueSoma modo="faixas" />, substitui: "legacy" },
   c9p4: { Componente: () => <IndiceQueSoma modo="variaveis" />, substitui: "legacy" },
   c9p5: { Componente: () => <IndiceQueSoma modo="leituras" />, substitui: "legacy" },
   c9p6: { Componente: Equidade, substitui: "legacy" },
+  c9p7: { Componente: Gatilhos, substitui: "legacy" },
+  c9p8: { Componente: Painel, substitui: "legacy" },
   c8p3: { Componente: () => <ResultadoPorProposta modo="fracao" />, substitui: "legacy" },
   c8p5: { Componente: () => <ResultadoPorProposta modo="parcelas" />, substitui: "legacy" },
   c8p6: { Componente: () => <ResultadoPorProposta modo="equilibrio" />, substitui: "legacy" },

@@ -7,7 +7,8 @@ import { fmtReais } from "@/lib/visuais/economia";
 import { avaliarCarteira, POLITICA } from "@/lib/visuais/politica";
 import { wilson } from "@/lib/visuais/arvore";
 import { diferencaProporcoes } from "@/lib/visuais/monitoramento";
-import { assinarLab, decodificarLab, decodificarMemo, gravarMemo, lerLab, lerMemo, type CampoMemo, type Memo } from "@/lib/visuais/lab-estado";
+import { assinarLab, decodificarLab, decodificarMemo, decodificarPainel, gravarMemo, lerLab, lerMemo, lerPainel, type CampoMemo, type Memo } from "@/lib/visuais/lab-estado";
+import { diagnostico } from "@/lib/visuais/painel";
 
 /**
  * O memorando de cinco campos (capítulo 10, c10p5 a c10p9). Um campo por página, escrito neste navegador e guardado
@@ -47,6 +48,8 @@ export function Memorando({ campo }: { campo: 1 | 2 | 3 | 4 | 5 }) {
   const c = CAMPOS[campo - 1];
   const brutoMemo = useSyncExternalStore(assinarLab, lerMemo, () => "{}");
   const brutoLab = useSyncExternalStore(assinarLab, lerLab, () => "{}");
+  const brutoPainel = useSyncExternalStore(assinarLab, lerPainel, () => "");
+  const painel = useMemo(() => decodificarPainel(brutoPainel), [brutoPainel]);
   const memo = useMemo(() => decodificarMemo(brutoMemo), [brutoMemo]);
   const lab = useMemo(() => decodificarLab(brutoLab), [brutoLab]);
   const texto = memo.textos?.[c.k] ?? ""; const itens = c.itens.map((_, i) => !!memo.itens?.[c.k]?.[i]);
@@ -87,7 +90,7 @@ export function Memorando({ campo }: { campo: 1 | 2 | 3 | 4 | 5 }) {
           {campo === 2 && <Campo2 pol={pol} aprovados={av.aprovados} esperado={av.esperado} perdaSobreExp={av.perda / av.exposicao} />}
           {campo === 3 && <Campo3 />}
           {campo === 4 && <Campo4 />}
-          {campo === 5 && <Campo5 cobertura={memo.cobertura ?? []} setCobertura={(v) => gravar({ cobertura: v })} />}
+          {campo === 5 && <Campo5 cobertura={memo.cobertura ?? []} setCobertura={(v) => gravar({ cobertura: v })} painel={painel} />}
         </div>
       </div>
       <p className="vz-fonte">Regra de completude da rubrica: os cinco itens declarados e pelo menos {MINIMO} caracteres. O texto e as marcações ficam em lab10.memo neste navegador, campo a campo, e a síntese do capítulo os reúne. Números do material: janela fora do tempo de {N} propostas com {D} defaults; política de referência com corte 12,0%, teto 30,0% e capacidade 80.</p>
@@ -171,13 +174,16 @@ function Campo4() {
   </>;
 }
 
-function Campo5({ cobertura, setCobertura }: { cobertura: string[]; setCobertura: (v: string[]) => void }) {
-  const tem = (k: string) => cobertura.includes(k);
+function Campo5({ cobertura, setCobertura, painel }: { cobertura: string[]; setCobertura: (v: string[]) => void; painel: string[] | null }) {
+  const d = painel ? diagnostico(painel) : null;
+  const auto: string[] | null = d ? [...(["entrada", "nivel", "relacao"] as const).filter((f) => d.tem[f]), ...(d.rapidos > 0 ? ["rapido"] : []), ...(d.tem.equidade ? ["equidade"] : [])] : null;
+  const tem = (k: string) => (auto ?? cobertura).includes(k);
   const faltam = FENOMENOS.filter((f) => !tem(f.k));
   const alternar = (k: string) => setCobertura(tem(k) ? cobertura.filter((x) => x !== k) : [...cobertura, k]);
   return <>
-    <div className="vz-tile"><p className="eyebrow">Cobertura do seu plano · marque o que o plano escrito à esquerda cobre</p>
-      <div className="vz-memo-itens">{FENOMENOS.map((f) => <label key={f.k} className={`vz-memo-item ${tem(f.k) ? "vz-memo-item--on" : ""}`}><input type="checkbox" checked={tem(f.k)} onChange={() => alternar(f.k)} /> <span><b>{f.nome}:</b> {f.como}</span></label>)}</div>
+    <div className="vz-tile"><p className="eyebrow">{d ? "O que você selecionou no capítulo 9" : "Cobertura do seu plano · marque o que o plano escrito à esquerda cobre"}</p>
+      {d && <p className="hint">{d.sel.length ? `${d.sel.length} indicadores registrados neste navegador: ${d.sel.map((s) => s.nome).join("; ")}. Traga cada um com limiar, janela, responsável e ação.` : "Seleção vazia registrada no capítulo 9. Um plano vazio é uma decisão, e precisa ser defendida como tal."}</p>}
+      <div className="vz-memo-itens">{FENOMENOS.map((f) => <label key={f.k} className={`vz-memo-item ${tem(f.k) ? "vz-memo-item--on" : ""}`}><input type="checkbox" checked={tem(f.k)} disabled={!!d} onChange={() => alternar(f.k)} /> <span><b>{f.nome}:</b> {f.como}</span></label>)}</div>
       <p className={`hint ${faltam.length ? "vz-t-default" : "vz-t-ok"}`}>{faltam.length === 0 ? "Os três fenômenos têm leitura, existe indicador rápido e a equidade está coberta. Cada indicador ainda precisa de limiar, janela, responsável e ação." : `Sem cobertura para: ${faltam.map((f) => f.nome.toLowerCase()).join(", ")}. Um fenômeno sem leitura não é acompanhado, é esperado.`}</p></div>
     <div className="vz-tile"><p className="eyebrow">Os quatro campos de cada gatilho</p>
       <table className="table text-[.85em] vz-esc-usos"><tbody>

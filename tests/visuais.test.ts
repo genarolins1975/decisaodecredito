@@ -492,3 +492,18 @@ describe("o memorando de cinco campos reproduz o material das páginas herdadas 
     expect(100 * d.dif).toBeCloseTo(4.7, 1); expect(100 * d.lo).toBeCloseTo(-2.5, 1); expect(100 * d.hi).toBeCloseTo(11.9, 1); expect(d.excluiZero).toBe(false);
   });
 });
+
+describe("três fenômenos, gatilhos e painel reproduzem as páginas herdadas (capítulo 9, c9p2, c9p7 e c9p8)", async () => {
+  const { GATILHOS } = await import("@/components/visuais/gatilhos");
+  const { INDICADORES, SELECAO_INICIAL, diagnostico } = await import("@/lib/visuais/painel");
+  it("na janela do gerador nenhum dos cinco gatilhos medidos dispara e dois não estão instrumentados (c9p7)", () => {
+    expect(GATILHOS.length).toBe(7); expect(GATILHOS.filter((g) => g.medivel).length).toBe(5); expect(GATILHOS.filter((g) => g.medivel && g.disparou).length).toBe(0);
+    expect(GATILHOS[0].valor).toBe("0,0136"); expect(GATILHOS[1].valor).toBe("0,0260 (utilizacao)"); expect(GATILHOS[2].valor).toBe("0,8845"); expect(GATILHOS[3].valor).toBe("alta de 0,0849"); expect(GATILHOS[4].valor).toBe("4,7 pp, intervalo inclui zero");
+  });
+  it("onze candidatos, quatro sem espera de rótulo; a seleção de partida cobre os três fenômenos mas falha em equidade; com equidade fecha; doze linhas é grande (c9p8)", () => {
+    expect(INDICADORES.length).toBe(11); expect(INDICADORES.filter((x) => !x.rot).length).toBe(4);
+    const d0 = diagnostico(SELECAO_INICIAL); expect(d0.faltam).toEqual([]); expect(d0.rapidos).toBe(1); expect(d0.ok).toBe(false); expect(d0.tem.equidade).toBe(false);
+    expect(diagnostico([...SELECAO_INICIAL, "eq"]).ok).toBe(true); expect(diagnostico(["niv", "ord", "eq"]).faltam).toEqual(["entrada"]); expect(diagnostico(["niv", "cal", "ord", "eq"]).rapidos).toBe(0);
+    expect(diagnostico(INDICADORES.map((x) => x.id)).grande).toBe(true); expect(diagnostico([]).faltam).toEqual(["entrada", "nivel", "relacao"]);
+  });
+});

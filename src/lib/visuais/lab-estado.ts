@@ -16,3 +16,9 @@ export const CHAVE_MEMO = "lab10.memo";
 export const lerMemo = (): string => { try { return localStorage.getItem(CHAVE_MEMO) || "{}"; } catch { return "{}"; } };
 export const gravarMemo = (m: Memo) => { try { localStorage.setItem(CHAVE_MEMO, JSON.stringify(m)); } catch { /* sem armazenamento */ } window.dispatchEvent(new Event("lab10")); };
 export const decodificarMemo = (bruto: string): Memo => { try { return JSON.parse(bruto) as Memo; } catch { return {}; } };
+
+/** Painel de acompanhamento montado no capítulo 9: identificadores dos indicadores escolhidos, lidos pelo campo 5 do memorando. */
+export const CHAVE_PAINEL = "lab9.painel";
+export const lerPainel = (): string => { try { return localStorage.getItem(CHAVE_PAINEL) || ""; } catch { return ""; } };
+export const gravarPainel = (ids: string[]) => { try { localStorage.setItem(CHAVE_PAINEL, JSON.stringify(ids)); } catch { /* sem armazenamento */ } window.dispatchEvent(new Event("lab10")); };
+export const decodificarPainel = (bruto: string): string[] | null => { if (!bruto) return null; try { const v = JSON.parse(bruto); return Array.isArray(v) ? v.map(String) : null; } catch { return null; } };
