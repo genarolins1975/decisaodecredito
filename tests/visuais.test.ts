@@ -468,3 +468,27 @@ describe("anatomia, impureza, recursão, caminho, poda e duas famílias reproduz
     expect(pd5.pl * 100).toBeCloseTo(52.6, 1); expect(pd5.pa).toBe(0); expect(ll / 16).toBeCloseTo(0.43282, 5); expect(la / 16).toBeCloseTo(0.18844, 5);
   });
 });
+
+describe("o memorando de cinco campos reproduz o material das páginas herdadas (capítulo 10, c10p5 a c10p9)", async () => {
+  const { CAMPOS, MINIMO, situacao } = await import("@/components/visuais/memorando");
+  const { avaliarCarteira, POLITICA } = await import("@/lib/visuais/politica");
+  const { diferencaProporcoes } = await import("@/lib/visuais/monitoramento");
+  const ref = JSON.parse(readFileSync("src/lib/visuais/memorando.json", "utf8"));
+  const oot = JSON.parse(readFileSync("src/lib/visuais/oot-logistica.json", "utf8"));
+  it("cinco campos com cinco itens cada; completo exige os cinco marcados e 120 caracteres", () => {
+    expect(CAMPOS.map((c) => c.itens.length)).toEqual([5, 5, 5, 5, 5]); expect(MINIMO).toBe(120);
+    expect(situacao({}, "recomendacao")).toEqual({ marcados: 0, n: 0, completo: false });
+    const cheio = { textos: { evidencia: "x".repeat(120) }, itens: { evidencia: [true, true, true, true, true] } };
+    expect(situacao(cheio, "evidencia").completo).toBe(true); expect(situacao({ ...cheio, textos: { evidencia: "x".repeat(119) } }, "evidencia").completo).toBe(false);
+  });
+  it("material do campo 1 e 2: 548 de 737, R$ 607 mil, perda esperada 3,84% da exposição; AUC 0,7257 contra 0,6958; Wilson 8,93% a 13,45%; PSI 0,0136 com 10 faixas", () => {
+    const a = avaliarCarteira(oot, POLITICA); expect(a.aprovados).toBe(548); expect(a.esperado / 1000).toBeCloseTo(607, 0); expect((100 * a.perda) / a.exposicao).toBeCloseTo(3.84, 2);
+    expect(ref.logit.auc).toBe(0.7257); expect(ref.gbm.auc).toBe(0.6958); expect(ref.logit.brier).toBe(0.09128); expect(ref.gbm.brier).toBe(0.09491); expect(ref.psi).toEqual({ valor: 0.0136, faixas: 10 });
+    const w = wilson(81, 737); expect(w.lo * 100).toBeCloseTo(8.93, 2); expect(w.hi * 100).toBeCloseTo(13.45, 2); expect(ref.meta).toMatchObject({ n: 5000, seed: 20260501, treino: 2103, validacao: 760, oot: 737 });
+  });
+  it("material do campo 3: diferença de AUC 0,0299 com intervalo de 0,0001 a 0,0596; aprovação de 72%; grupos 4,7 pp com intervalo de −2,5 a 11,9 pp", () => {
+    expect(ref.comparacao).toMatchObject({ diferenca: 0.0299, erro_padrao: 0.0152, ic95: [0.0001, 0.0596] }); expect(ref.taxaAprovacao).toBe(0.72);
+    const g1 = ref.grupos.G1, g2 = ref.grupos.G2; const d = diferencaProporcoes(Math.round(g1.taxaAprov * g1.n), g1.n, Math.round(g2.taxaAprov * g2.n), g2.n);
+    expect(100 * d.dif).toBeCloseTo(4.7, 1); expect(100 * d.lo).toBeCloseTo(-2.5, 1); expect(100 * d.hi).toBeCloseTo(11.9, 1); expect(d.excluiZero).toBe(false);
+  });
+});

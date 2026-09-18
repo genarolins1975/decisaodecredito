@@ -8,3 +8,11 @@ export const lerLab = (): string => { try { return localStorage.getItem(CHAVE_LA
 export const gravarLab = (e: EstadoLab) => { try { localStorage.setItem(CHAVE_LAB, JSON.stringify(e)); } catch { /* sem armazenamento */ } window.dispatchEvent(new Event("lab10")); };
 export const assinarLab = (cb: () => void) => { window.addEventListener("storage", cb); window.addEventListener("lab10", cb); return () => { window.removeEventListener("storage", cb); window.removeEventListener("lab10", cb); }; };
 export const decodificarLab = (bruto: string): EstadoLab => { try { return JSON.parse(bruto); } catch { return {}; } };
+
+/** Memorando de cinco campos do capítulo 10, escrito um campo por página e guardado neste navegador. */
+export type CampoMemo = "recomendacao" | "evidencia" | "incerteza" | "condicoes" | "plano";
+export type Memo = { textos?: Partial<Record<CampoMemo, string>>; itens?: Partial<Record<CampoMemo, boolean[]>>; cobertura?: string[] };
+export const CHAVE_MEMO = "lab10.memo";
+export const lerMemo = (): string => { try { return localStorage.getItem(CHAVE_MEMO) || "{}"; } catch { return "{}"; } };
+export const gravarMemo = (m: Memo) => { try { localStorage.setItem(CHAVE_MEMO, JSON.stringify(m)); } catch { /* sem armazenamento */ } window.dispatchEvent(new Event("lab10")); };
+export const decodificarMemo = (bruto: string): Memo => { try { return JSON.parse(bruto) as Memo; } catch { return {}; } };

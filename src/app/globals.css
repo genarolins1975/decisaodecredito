@@ -925,3 +925,30 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner [data-vz="anatomia"] .vz-ana-lado .vz-tile:first-child, .slide-inner [data-vz="corte-candidato"] .vz-cc-lado .vz-formula, .slide-inner [data-vz="corte-candidato"] .vz-cc-lados .hint,
 .slide-inner [data-vz="poda"] .vz-poda-lado .vz-tile, .slide-inner [data-vz="poda"] .vz-poda-painel .vz-formula, .slide-inner [data-vz="duas-familias"] .vz-df-lado .vz-tile--alerta, .slide-inner [data-vz="duas-familias"] .vz-df-cartao .hint { display: none; }
 .slide-inner [data-vz="anatomia"] .vz-ana-lado .vz-tile:nth-child(2) { display: block; }
+/* Capítulo 10, memorando de cinco campos */
+.vz-memo-grade { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 14px 22px; align-items: start; }
+.vz-memo-escrita, .vz-memo-lado { display: grid; gap: 10px; min-width: 0; align-content: start; }
+.vz-memo-label { font-size: 14px; color: var(--color-ink); font-weight: 700; line-height: 1.35; }
+.vz-memo-texto { width: 100%; border: 1px solid var(--color-rule); border-radius: 6px; padding: 10px 12px; font: inherit; font-size: 14px; line-height: 1.5; color: var(--color-body); background: var(--color-surface); resize: vertical; min-height: 150px; }
+.vz-memo-texto:focus { outline: 3px solid var(--color-gold); outline-offset: 1px; }
+.vz-memo-medidor { display: grid; grid-template-columns: 1fr max-content; gap: 10px; align-items: center; font-size: 12px; color: var(--color-muted); }
+.vz-memo-rot { margin-top: 4px; }
+.vz-memo-itens { display: grid; gap: 5px; }
+.vz-memo-item { display: flex; gap: 9px; align-items: flex-start; padding: 7px 10px; border: 1px solid var(--color-rule); border-radius: 6px; background: var(--color-paper); font-size: 13.5px; line-height: 1.35; cursor: pointer; transition: border-color .2s, background .2s; }
+.vz-memo-item input { margin-top: 2px; accent-color: var(--color-ok); width: 16px; height: 16px; flex: none; } .vz-memo-item--on { border-color: var(--color-ok); background: var(--color-ok-soft); }
+.vz-memo-mapa { display: flex; gap: 6px; align-items: flex-end; }
+.vz-memo-pag { display: grid; gap: 3px; width: 48px; padding: 5px 6px 4px; border: 1px solid var(--color-rule); border-radius: 5px; background: var(--color-paper); text-align: center; font-size: 10.5px; color: var(--color-muted); }
+.vz-memo-pag b { font-family: var(--font-serif); font-size: 15px; color: var(--color-ink); line-height: 1; } .vz-memo-pag i { display: block; height: 4px; background: var(--color-gold); border-radius: 2px; transition: width .3s; } .vz-memo-pag small { font-size: 10px; }
+.vz-memo-pag--atual { border-color: var(--color-ink); box-shadow: 0 0 0 2px var(--color-ink) inset; } .vz-memo-pag--ok { border-color: var(--color-ok); background: var(--color-ok-soft); } .vz-memo-pag--ok i { background: var(--color-ok); }
+.vz-estado--ok { background: var(--color-ok-soft); border-color: #BFD9C9; color: #1f4a36; }
+.vz-memo-fontes th { vertical-align: top; } .vz-memo-fontes td { vertical-align: top; }
+@container (max-width: 760px) { .vz-memo-grade { grid-template-columns: minmax(0, 1fr); } }
+/* palco: o campo em escrita e a tabela de material; os exemplos ficam para o modo estudo */
+.slide-inner .vz-memo-grade { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1cqh 2cqh; }
+.slide-inner .vz-memo-texto { min-height: 22cqh; font-size: 1em; } .slide-inner .vz-memo-item { font-size: .95em; padding: .5cqh 1cqh; }
+.slide-inner [data-vz^="memorando-"] .vz-memo-lado .vz-tile:not(:first-child), .slide-inner [data-vz^="memorando-"] .vz-memo-lado .vz-tile > .hint, .slide-inner [data-vz^="memorando-"] .vz-memo-medidor { display: none; }
+.slide-inner [data-vz="memorando-5"] .vz-memo-lado .vz-tile:nth-child(2) { display: block; }
+/* palco, densidade do memorando: o campo em escrita com o material essencial */
+.slide-inner .vz-memo-label { font-size: 1em; }
+.slide-inner [data-vz="memorando-2"] .vz-memo-lado tr:nth-child(n+4), .slide-inner [data-vz="memorando-3"] .vz-memo-fontes th:nth-child(3), .slide-inner [data-vz="memorando-3"] .vz-memo-fontes td:nth-child(3),
+.slide-inner [data-vz="memorando-4"] .vz-memo-fontes th:nth-child(n+2), .slide-inner [data-vz="memorando-4"] .vz-memo-fontes td, .slide-inner [data-vz="memorando-5"] .vz-memo-lado .vz-tile:nth-child(2), .slide-inner [data-vz="memorando-5"] .vz-memo-lado .hint { display: none; }

@@ -43,6 +43,7 @@ import { Recursao } from "./recursao";
 import { Caminho } from "./caminho";
 import { Poda } from "./poda";
 import { DuasFamilias } from "./duas-familias";
+import { Memorando } from "./memorando";
 import { LinhaDoTempo } from "./linha-do-tempo";
 import { Safras } from "./safras";
 
@@ -104,6 +105,11 @@ const REGISTRO: Record<string, VisualNativo> = {
   c7p18: { Componente: DecisaoEvidencia, substitui: "legacy" },
   c10p2: { Componente: TresZonas, substitui: "legacy" },
   c10p3: { Componente: QuadroDoComite, substitui: "legacy" },
+  c10p5: { Componente: () => <Memorando campo={1} />, substitui: "legacy" },
+  c10p6: { Componente: () => <Memorando campo={2} />, substitui: "legacy" },
+  c10p7: { Componente: () => <Memorando campo={3} />, substitui: "legacy" },
+  c10p8: { Componente: () => <Memorando campo={4} />, substitui: "legacy" },
+  c10p9: { Componente: () => <Memorando campo={5} />, substitui: "legacy" },
   c10p11: { Componente: () => <MesaSobChoque modo="rodada1" />, substitui: "legacy" },
   c10p12: { Componente: () => <MesaSobChoque modo="choque" />, substitui: "legacy" },
   c10p13: { Componente: () => <MesaSobChoque modo="rodada2" />, substitui: "legacy" },

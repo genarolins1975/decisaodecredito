@@ -466,6 +466,19 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(poda).toContainText("vence profundidade 3, folhas de 1, com custo 0,18000");
   await poda.getByRole("button", { name: "α = 0,30" }).click();
   await expect(poda).toContainText("vence só a raiz");
+
+  // capítulo 10: o memorando guarda o campo neste navegador e lê a política congelada no capítulo 8
+  await page.goto("/aulas/c10p5");
+  const memo = page.locator('figure[data-vz="memorando-1"]');
+  await expect(memo).toContainText("Campo incompleto. 0 de 5 itens declarados e 0 caracteres escritos.");
+  await expect(memo).toContainText("Corte da política congelada");
+  await memo.locator("textarea").fill("Recomendamos manter a logística com WoE como modelo principal de PD em 12 meses, para ordenar e precificar, com o boosting calibrado mantido em paralelo. Corte 12,0%, revisão até 30,0% com capacidade 80. Vale por dois ciclos de safra madura. Assina o comitê de crédito.");
+  for (const cb of await memo.locator(".vz-memo-escrita input[type=checkbox]").all()) await cb.check();
+  await expect(memo).toContainText("Campo completo. 5 de 5 itens declarados");
+  await page.reload();
+  await expect(page.locator('figure[data-vz="memorando-1"]')).toContainText("Campo completo. 5 de 5 itens declarados");
+  await page.goto("/aulas/c10p7");
+  await expect(page.locator('figure[data-vz="memorando-3"]')).toContainText("4,7 pp, intervalo de −2,5 a 11,9 pp");
 });
 
 test("núcleo: gabaritos e notas privadas não estão no motor legado nem nas páginas", async () => {
