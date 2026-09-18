@@ -83,4 +83,4 @@ export function mesDoDefault(h: number, u: number): number {
 }
 
 export const fmtPct = (v: number, casas = 0) => `${(v * 100).toLocaleString("pt-BR", { minimumFractionDigits: casas, maximumFractionDigits: casas })}%`;
-export const fmtNum = (v: number, casas = 4) => v.toLocaleString("pt-BR", { minimumFractionDigits: casas, maximumFractionDigits: casas });
+export const fmtNum = (v: number, casas = 4) => v.toLocaleString("pt-BR", { minimumFractionDigits: casas, maximumFractionDigits: casas }).replace("-", "−");

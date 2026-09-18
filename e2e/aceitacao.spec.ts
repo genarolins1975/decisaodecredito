@@ -393,7 +393,7 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   const bol = page.locator('figure[data-vz="bolinha-descida"]');
   await expect(bol).toContainText("Iteração 0:");
   await bol.getByRole("button", { name: "Próxima iteração" }).click();
-  await expect(bol).toContainText("b = -0,7500");
+  await expect(bol).toContainText("b = −0,7500");
   await page.goto("/aulas/c2p14");
   const dec = page.locator('figure[data-vz="arvore-que-decora"]');
   await expect(dec).toContainText("2 erros nas 16, 2 folhas");
@@ -434,6 +434,24 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(pqf).toContainText("Política congelada neste navegador: corte 12,0%");
   await page.goto("/aulas/c8p7");
   await expect(page.locator('figure[data-vz="troca-do-corte"]')).toContainText("saldo R$ 276 mil");
+
+  // capítulo 4: as escalas, o intercepto e a descida completa reproduzem as páginas herdadas
+  await page.goto("/aulas/c4p6");
+  const regua = page.locator('figure[data-vz="escala-regua"]');
+  await expect(regua).toContainText("escore didático 865");
+  await regua.getByRole("button", { name: "PD 50%" }).click();
+  await expect(regua).toContainText("escore didático 600");
+  await page.goto("/aulas/c4p16");
+  const grad = page.locator('figure[data-vz="descida-gradiente"]');
+  await expect(grad).toContainText("gradiente (+0,00000; −0,59375; −0,23438)");
+  await grad.getByRole("button", { name: "Executar uma iteração" }).click();
+  await expect(grad).toContainText("Iteração 1, perda 0,67194");
+  await page.goto("/aulas/c4p17");
+  const desc = page.locator('figure[data-vz="descida-completa"]');
+  await desc.getByRole("button", { name: "+10.000" }).click();
+  await desc.getByRole("button", { name: "+10.000" }).click();
+  await expect(desc).toContainText("Iterações 20.000: perda 0,432824");
+  await expect(desc).toContainText("Convergido.");
 });
 
 test("núcleo: gabaritos e notas privadas não estão no motor legado nem nas páginas", async () => {

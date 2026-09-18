@@ -58,3 +58,51 @@ export function logisticaSoUtil(base: Proposta[], iteracoes = 50000, passo = PAS
   }
   return c;
 }
+
+/** Odds de uma probabilidade: defaults para cada adimplente. */
+export const odds = (p: number) => p / (1 - p);
+/** Convenção de escore do curso: desloca e inverte o log odds para que número maior signifique risco menor. */
+export const escoreDidatico = (p: number) => Math.round(600 - 90 * logit(p));
+/** Perda logarítmica de uma proposta. */
+export const perdaIndividual = (p: number, y: number) => -(y ? Math.log(p) : Math.log(1 - p));
+/** Inclinação local da curva logística por diferença central (a conta da página c4p7). */
+export const inclinacaoLocal = (z: number, dz = 0.1) => (sigmoide(z + dz) - sigmoide(z - dz)) / (2 * dz);
+/** Distância euclidiana entre um vetor de coeficientes e os coeficientes de convergência. */
+export const distanciaAoOtimo = (beta: readonly number[], alvo: readonly number[] = BETA_AULA) => Math.hypot(beta[0] - alvo[0], beta[1] - alvo[1], beta[2] - alvo[2]);
+/** Uma iteração da descida: PD de cada proposta, gradiente e os coeficientes seguintes. */
+export function passo(beta: readonly number[], base: Proposta[], eta = PASSO): { p: number[]; g: [number, number, number]; novo: [number, number, number]; perda: number } {
+  const p = base.map((b) => sigmoide(escore(beta, b.util, b.atraso).z));
+  const g = gradiente(beta, base);
+  return { p, g, novo: [beta[0] - eta * g[0], beta[1] - eta * g[1], beta[2] - eta * g[2]], perda: perdaLog(beta, base) };
+}
+/** Trajetória completa da descida a partir de zero: coeficientes e perda em cada iteração de 0 a n. */
+export function trajetoria(base: Proposta[], n = 20000, eta = PASSO): { beta: [number, number, number][]; perda: number[] } {
+  let beta: [number, number, number] = [0, 0, 0]; const betas: [number, number, number][] = [beta]; const perdas: number[] = [perdaLog(beta, base)];
+  for (let it = 1; it <= n; it++) {
+    const g = gradiente(beta, base); beta = [beta[0] - eta * g[0], beta[1] - eta * g[1], beta[2] - eta * g[2]];
+    betas.push(beta); perdas.push(perdaLog(beta, base));
+  }
+  return { beta: betas, perda: perdas };
+}
+/** Faixas de contagem igual de uma variável: limites, casos, defaults e taxa (a página c4p21). */
+export function faixasIguais(x: number[], y: number[], k = 4): { de: number; ate: number; n: number; d: number; taxa: number }[] {
+  const ordem = x.map((v, i) => i).sort((a, b) => x[a] - x[b]); const out: { de: number; ate: number; n: number; d: number; taxa: number }[] = [];
+  for (let f = 0; f < k; f++) {
+    const ini = Math.floor((f * ordem.length) / k), fim = Math.floor(((f + 1) * ordem.length) / k); const ids = ordem.slice(ini, fim);
+    const d = ids.reduce((s, i) => s + y[i], 0);
+    out.push({ de: x[ids[0]], ate: x[ids[ids.length - 1]], n: ids.length, d, taxa: d / ids.length });
+  }
+  return out;
+}
+/** Logística de uma variável por Newton (IRLS): intercepto e inclinação por unidade de x. Poucas iterações bastam. */
+export function logisticaNewton(x: number[], y: number[], iteracoes = 25): [number, number] {
+  let a = Math.log((y.reduce((s, v) => s + v, 0) + 0.5) / (y.length - y.reduce((s, v) => s + v, 0) + 0.5)), b = 0;
+  for (let it = 0; it < iteracoes; it++) {
+    let g0 = 0, g1 = 0, h00 = 0, h01 = 0, h11 = 0;
+    for (let i = 0; i < x.length; i++) { const p = sigmoide(a + b * x[i]), r = p - y[i], w = p * (1 - p); g0 += r; g1 += r * x[i]; h00 += w; h01 += w * x[i]; h11 += w * x[i] * x[i]; }
+    const det = h00 * h11 - h01 * h01; if (Math.abs(det) < 1e-12) break;
+    const da = (h11 * g0 - h01 * g1) / det, db = (h00 * g1 - h01 * g0) / det; a -= da; b -= db;
+    if (Math.abs(da) + Math.abs(db) < 1e-10) break;
+  }
+  return [a, b];
+}

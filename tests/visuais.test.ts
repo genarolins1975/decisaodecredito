@@ -382,3 +382,53 @@ describe("economia por proposta e política que fecha (capítulo 8)", async () =
     expect(c.aprovadosNaRevisao).toBe(23); expect(c.defaultsAprovados).toBe(36);
   });
 });
+
+describe("as escalas, o intercepto e a descida completa reproduzem as páginas herdadas (capítulo 4)", async () => {
+  const { odds, escoreDidatico, inclinacaoLocal, perdaIndividual, distanciaAoOtimo, passo, trajetoria, faixasIguais, logisticaNewton, logit } = await import("@/lib/visuais/logistica");
+  const base = did.base as Proposta[];
+  it("PD 12%: 12 defaults para 88 adimplentes e odds 0,136; PD 20%: odds 0,250; dobrar dá 33,33% e a metade 11,11%, ±0,6931 em log odds (c4p3 a c4p5)", () => {
+    expect(12 / 88).toBeCloseTo(0.136, 3); expect(odds(0.2)).toBeCloseTo(0.25, 6); expect(odds(0.01)).toBeCloseTo(0.010, 3); expect(odds(0.95)).toBeCloseTo(19, 6);
+    const o = odds(0.2); expect((2 * o) / (1 + 2 * o) * 100).toBeCloseTo(33.33, 2); expect((o / 2) / (1 + o / 2) * 100).toBeCloseTo(11.11, 2);
+    expect(logit(0.2)).toBeCloseTo(-1.386, 3); expect(Math.log(2 * o) - logit(0.2)).toBeCloseTo(0.6931, 4); expect(logit(0.2) - Math.log(o / 2)).toBeCloseTo(0.6931, 4);
+  });
+  it("PD 5%: odds 0,053, log odds −2,944 e escore didático 865; PD 50% dá 600 (c4p6)", () => {
+    expect(odds(0.05)).toBeCloseTo(0.053, 3); expect(logit(0.05)).toBeCloseTo(-2.944, 3); expect(escoreDidatico(0.05)).toBe(865); expect(escoreDidatico(0.5)).toBe(600); expect(escoreDidatico(0.9)).toBe(402);
+  });
+  it("z = −1,50: odds 0,223 e PD 18,2%; somar 1 leva a 37,8% (19,51 pontos); inclinação local 0,1492 e 0,25 em zero (c4p7)", () => {
+    expect(Math.exp(-1.5)).toBeCloseTo(0.223, 3); expect(sigmoide(-1.5) * 100).toBeCloseTo(18.2, 1); expect(sigmoide(-0.5) * 100).toBeCloseTo(37.8, 1);
+    expect((sigmoide(-0.5) - sigmoide(-1.5)) * 100).toBeCloseTo(19.51, 2); expect(inclinacaoLocal(-1.5)).toBeCloseTo(0.1492, 4); expect(inclinacaoLocal(0)).toBeCloseTo(0.25, 3);
+  });
+  it("intercepto −5,65: util 30% e atraso 5 d dão z −2,716 e PD 6,20% (6,11% na aula), PD média 50,2%, ordem #12 > #14 > #16 > #9 > #15 > #13 (c4p13)", () => {
+    const b = [-5.65, BETA_AULA[1], BETA_AULA[2]] as const;
+    expect(escore(b, 30, 5).z).toBeCloseTo(-2.716, 3); expect(sigmoide(escore(b, 30, 5).z) * 100).toBeCloseTo(6.2, 2); expect(sigmoide(escore(BETA_AULA, 30, 5).z) * 100).toBeCloseTo(6.11, 2);
+    expect(sigmoide(escore(b, 95, 20).z) * 100).toBeCloseTo(98.55, 2);
+    expect(base.reduce((s, r) => s + sigmoide(escore(b, r.util, r.atraso).z), 0) / 16 * 100).toBeCloseTo(50.2, 1);
+    const ordem = (beta: readonly number[]) => base.map((r) => ({ id: r.id, p: sigmoide(escore(beta, r.util, r.atraso).z) })).sort((a, c) => c.p - a.p).map((r) => r.id);
+    expect(ordem(b).slice(0, 6)).toEqual([12, 14, 16, 9, 15, 13]); expect(ordem([-8, BETA_AULA[1], BETA_AULA[2]])).toEqual(ordem([-3, BETA_AULA[1], BETA_AULA[2]]));
+  });
+  it("proposta #2: PD 26,65% e perda 1,3223; #15: 1,3435; média 0,43282, o mínimo nesta amostra (c4p15)", () => {
+    const p2 = sigmoide(escore(BETA_AULA, 25, 20).z); expect(p2 * 100).toBeCloseTo(26.65, 2); expect(perdaIndividual(p2, 1)).toBeCloseTo(1.3223, 4);
+    expect(perdaIndividual(sigmoide(escore(BETA_AULA, 90, 0).z), 0)).toBeCloseTo(1.3435, 4); expect(perdaLog(BETA_AULA, base)).toBeCloseTo(0.43282, 5);
+    for (const d of [[0.01, 0, 0], [0, 0.01, 0], [0, 0, 0.01], [-0.01, 0, 0]]) expect(perdaLog([BETA_AULA[0] + d[0], BETA_AULA[1] + d[1], BETA_AULA[2] + d[2]], base)).toBeGreaterThan(0.43282);
+  });
+  it("uma iteração em β = 0: perda 0,69315, distância 5,883, gradiente (0; −0,59375; −0,23438), contribuição da #16 −4,75 (c4p16)", () => {
+    const s = passo([0, 0, 0], base); expect(s.perda).toBeCloseTo(0.69315, 5); expect(distanciaAoOtimo([0, 0, 0])).toBeCloseTo(5.883, 3);
+    expect(s.g[0]).toBeCloseTo(0, 6); expect(s.g[1]).toBeCloseTo(-0.59375, 5); expect(s.g[2]).toBeCloseTo(-0.234375, 6); expect(s.novo[1]).toBeCloseTo(0.059375, 8); expect(s.novo[2]).toBeCloseTo(0.0234375, 8);
+    expect((s.p[15] - 1) * 9.5).toBeCloseTo(-4.75, 4);
+  });
+  it("descida completa: perda 0,580716 em 100, 0,445906 em 1.000 e 0,432824 em 10.000; em 20.000, β = (−5,66657; 0,74530; 1,39550) (c4p17)", () => {
+    const t = trajetoria(base, 20000);
+    expect(t.perda[0]).toBeCloseTo(0.693147, 6); expect(t.perda[100]).toBeCloseTo(0.580716, 6); expect(t.perda[1000]).toBeCloseTo(0.445906, 6); expect(t.perda[10000]).toBeCloseTo(0.432824, 6);
+    expect(t.beta[10000][0]).toBeCloseTo(-5.66246, 5); expect(t.beta[20000]).toEqual(descida(base, [20000])[0].beta);
+    for (let i = 1; i <= 20000; i *= 10) expect(t.perda[i]).toBeLessThanOrEqual(t.perda[i - 1]);
+  });
+  it("quatro faixas: nas 16 propostas, 4 por faixa com taxas 25%, 0%, 100% e 75%; no treino do gerador, 525 ou 526 por faixa com 4,95% a 16,73% (c4p21)", () => {
+    const f = faixasIguais(base.map((r) => r.util), base.map((r) => r.y));
+    expect(f.map((x) => x.n)).toEqual([4, 4, 4, 4]); expect(f.map((x) => x.taxa)).toEqual([0.25, 0, 1, 0.75]);
+    const esc = JSON.parse(readFileSync("src/lib/visuais/escores.json", "utf8"));
+    const g = faixasIguais(esc.treino.util, esc.treino.y); expect(g.map((x) => x.n)).toEqual([525, 526, 526, 526]); expect(g.map((x) => x.d)).toEqual([26, 35, 52, 88]);
+    expect(g[3].taxa * 100).toBeCloseTo(16.73, 2); expect(g.every((x, i) => !i || x.taxa >= g[i - 1].taxa)).toBe(true);
+    const [a, b] = logisticaNewton(base.map((r) => r.util / 10), base.map((r) => r.y)); const c = logisticaSoUtil(base, 50000);
+    expect(a).toBeCloseTo(c[0], 2); expect(b).toBeCloseTo(c[1], 2);
+  });
+});

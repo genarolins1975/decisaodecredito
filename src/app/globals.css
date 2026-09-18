@@ -828,3 +828,52 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner [data-vz="arvore-raiz"] .vz-arv-cand-grade svg { height: 22cqh; }
 .slide-inner [data-vz="arvore-raiz"] .vz-arv-cand-grade table { display: none; }
 .slide-inner [data-vz="arvore-freios"] .vz-arv-cand-bloco, .slide-inner [data-vz="arvore-instabilidade"] .vz-arv-cand-bloco { display: none; }
+/* Capítulo 4 completo: escalas, curva logística, intercepto, descida completa e faixas */
+.vz-esc-grade, .vz-cl-grade, .vz-int-grade, .vz-dc-grade, .vz-fx-grade { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 14px 22px; align-items: start; }
+.vz-esc-painel, .vz-esc-lado, .vz-cl-painel, .vz-int-painel, .vz-int-lado, .vz-dc-painel, .vz-dc-lado, .vz-fx-lado { display: grid; gap: 10px; min-width: 0; align-content: start; }
+.vz-esc-painel .vz-slider, .vz-cl-painel .vz-slider, .vz-int-painel .vz-slider { margin-top: 0; }
+.vz-tiles--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 0; } .vz-tiles--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 0; }
+.vz-num--odds { color: #6B4E8C; } .vz-num--ouro { color: #7a5f16; } .vz-num--mono { font-family: var(--font-mono); font-size: 15px; font-weight: 700; margin-top: 6px; }
+.vz-tile--alerta { border-left: 3px solid var(--color-alert); } .vz-tile--ok { border-left: 3px solid var(--color-ok); }
+.vz-formula { font-family: var(--font-mono); font-size: 13px; color: var(--color-ink); background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 6px; padding: 8px 12px; line-height: 1.5; }
+.vz-esc-usos th { width: 34%; font-weight: 700; color: var(--color-ink); vertical-align: top; }
+.vz-t-forte { font-weight: 700; color: var(--color-ink); } .vz-t-cara { background: #FBF2F3; }
+.vz-cem { transition: fill .25s; } .vz-cem--default { fill: var(--color-alert); } .vz-cem--pagou { fill: #c9d8f2; }
+.vz-cem-t { font-size: 14px; fill: var(--color-ink); } .vz-cem-t--forte { font-weight: 700; font-size: 15px; } .vz-cem-t--default { fill: var(--color-alert); font-weight: 700; } .vz-cem-t--pagou { fill: #6f8fc4; font-weight: 700; }
+.vz-cem-parede { fill: var(--color-alert-soft); stroke: var(--color-alert); stroke-dasharray: 3 3; }
+.vz-cem-seta { stroke: var(--color-ink); stroke-width: 2; } .vz-cem-seta--estoura { stroke: var(--color-alert); } .vz-cem-seta-o { fill: var(--color-ink); } .vz-cem-seta-p { fill: var(--color-ink); } .vz-cem-seta-p--estoura { fill: var(--color-alert); }
+.vz-curva--odds { stroke: #6B4E8C; } .vz-curva--ouro { stroke: var(--color-gold); stroke-width: 2.8; }
+.vz-lo-chave { stroke: var(--color-gold); stroke-width: 4; stroke-linecap: round; } .vz-lo-chave--pd { stroke: var(--color-ink-soft); }
+.vz-lo-chave-t { font-size: 11px; font-weight: 700; fill: #7a5f16; } .vz-lo-chave-t--pd { fill: var(--color-ink-soft); }
+.vz-lo-ponto--metade circle, .vz-lo-ponto--dobro circle { fill: var(--color-gold); } .vz-lo-ponto--metade .vz-ponto-t, .vz-lo-ponto--dobro .vz-ponto-t { fill: #7a5f16; }
+.vz-cl-degrau line { stroke: var(--color-alert); stroke-width: 2.2; } .vz-cl-degrau-t { font-size: 11.5px; font-weight: 700; fill: var(--color-alert); }
+.vz-int-rastro { stroke: var(--color-muted); stroke-width: 1.2; stroke-dasharray: 2 3; } .vz-int-haste { stroke: var(--color-rule); stroke-width: 1; }
+.vz-int-orig { fill: #fff; stroke-width: 1.5; } .vz-int-orig--default { stroke: var(--color-alert); } .vz-int-orig--pagou { stroke: #6f8fc4; }
+.vz-int-ponto { transition: transform .35s cubic-bezier(.2,.7,.2,1); } .vz-int-ponto circle { stroke: #fff; stroke-width: 2; } .vz-int-c--default { fill: var(--color-alert); } .vz-int-c--pagou { fill: #9db6de; }
+.vz-int-tracejada { stroke-dasharray: 5 4; opacity: .6; }
+.vz-dc-barra { transition: height .3s, y .3s; } .vz-dc-barra--default { fill: var(--color-alert); } .vz-dc-barra--pagou { fill: #9db6de; } .vz-dc-barra--sel { stroke: var(--color-gold); stroke-width: 3; }
+.vz-dc-barra-g { cursor: pointer; }
+.vz-dc-coef--0 { stroke: var(--color-ink); } .vz-dc-coef--1 { stroke: var(--color-alert); } .vz-dc-coef--2 { stroke: var(--color-amber); }
+.vz-dc-coef-t--0 { fill: var(--color-ink); } .vz-dc-coef-t--1 { fill: var(--color-alert); } .vz-dc-coef-t--2 { fill: var(--color-amber); }
+.vz-fx-wilson { fill: #DDE6F3; opacity: .85; transition: y .3s, height .3s; } .vz-fx-taxa { stroke: var(--color-ink); stroke-width: 3; stroke-linecap: round; }
+.vz-sw--faixa { background: #DDE6F3; border-color: var(--color-ink); border-radius: 2px; } .vz-sw--ouro { background: var(--color-gold); }
+@container (max-width: 760px) { .vz-esc-grade, .vz-cl-grade, .vz-int-grade, .vz-dc-grade, .vz-fx-grade { grid-template-columns: minmax(0, 1fr); } .vz-tiles--3 { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); } }
+/* palco */
+.slide-inner .vz-esc-grade, .slide-inner .vz-cl-grade, .slide-inner .vz-int-grade, .slide-inner .vz-dc-grade, .slide-inner .vz-fx-grade { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1cqh 2cqh; }
+.slide-inner .vz-esc-painel, .slide-inner .vz-esc-lado, .slide-inner .vz-cl-painel, .slide-inner .vz-int-painel, .slide-inner .vz-int-lado, .slide-inner .vz-dc-painel, .slide-inner .vz-dc-lado, .slide-inner .vz-fx-lado { gap: .8cqh; }
+.slide-inner .vz-formula { font-size: .85em; padding: .5cqh 1cqh; }
+.slide-inner [data-vz="escala-probabilidade"] .vz-grafico svg { height: 40cqh; }
+.slide-inner [data-vz="escala-odds"] .vz-grafico svg, .slide-inner [data-vz="escala-logodds"] .vz-grafico svg, .slide-inner [data-vz="curva-logistica"] .vz-grafico svg, .slide-inner [data-vz="faixas"] .vz-grafico svg { height: 42cqh; }
+.slide-inner [data-vz="escala-odds"] .vz-esc-lado .table-wrap, .slide-inner [data-vz="escala-regua"] .vz-esc-painel .vz-tile, .slide-inner [data-vz="curva-logistica"] .vz-cl-painel .vz-tile, .slide-inner [data-vz="intercepto"] .vz-int-lado .vz-tiles--coluna, .slide-inner [data-vz="descida-perda"] .vz-dc-tabela, .slide-inner [data-vz="descida-gradiente"] .vz-dc-tabela, .slide-inner [data-vz="faixas"] .vz-fx-lado .vz-tile:last-child { display: none; }
+.slide-inner [data-vz="escala-regua"] .vz-esc-reguas svg { height: 34cqh; }
+.slide-inner [data-vz="intercepto"] .vz-int-painel .vz-grafico svg { height: 18cqh; } .slide-inner [data-vz="intercepto"] .vz-int-lado .vz-grafico svg { height: 26cqh; }
+.slide-inner [data-vz="descida-perda"] .vz-grafico svg { height: 26cqh; }
+.slide-inner [data-vz="descida-gradiente"] .vz-grafico svg { height: 28cqh; }
+.slide-inner [data-vz="descida-completa"] .vz-grafico svg { height: 24cqh; }
+/* palco, densidade: cada tela do capítulo 4 fica com o essencial (a linha de estado carrega os números) */
+.slide-inner .vz-formula { font-size: 1em; }
+.slide-inner [data-vz="escala-probabilidade"] .vz-esc-lado .vz-tile:not(.vz-tile--alerta), .slide-inner [data-vz="escala-logodds"] .vz-esc-lado .vz-tile, .slide-inner [data-vz="escala-logodds"] .vz-esc-painel > .hint, .slide-inner [data-vz="escala-regua"] .vz-esc-lado > .hint,
+.slide-inner [data-vz="intercepto"] .vz-int-painel .table-wrap, .slide-inner [data-vz="intercepto"] .vz-int-painel > .hint,
+.slide-inner [data-vz="descida-perda"] .vz-tiles--3, .slide-inner [data-vz="descida-perda"] .vz-formula, .slide-inner [data-vz="descida-perda"] .vz-grafico-t .hint,
+.slide-inner [data-vz="descida-gradiente"] .vz-dc-painel > .hint, .slide-inner [data-vz="descida-gradiente"] .vz-dc-lado > .hint, .slide-inner [data-vz="descida-gradiente"] .vz-grafico-t .hint,
+.slide-inner [data-vz="faixas"] .vz-fx-lado .vz-tile, .slide-inner [data-vz="faixas"] .vz-legenda, .slide-inner [data-vz="faixas"] .vz-grafico-t .hint, .slide-inner [data-vz="faixas"] .table-wrap tr:nth-child(3), .slide-inner [data-vz="faixas"] .table-wrap tr:nth-child(4) { display: none; }

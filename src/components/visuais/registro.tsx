@@ -31,6 +31,11 @@ import { FilaDeRisco } from "./fila-de-risco";
 import { Fronteira } from "./fronteira";
 import { RetaQueQuebra } from "./reta-que-quebra";
 import { TresEscalas } from "./tres-escalas";
+import { Escalas } from "./escalas";
+import { CurvaLogistica } from "./curva-logistica";
+import { Intercepto } from "./intercepto";
+import { DescidaCompleta } from "./descida-completa";
+import { Faixas } from "./faixas";
 import { LinhaDoTempo } from "./linha-do-tempo";
 import { Safras } from "./safras";
 
@@ -49,8 +54,18 @@ const REGISTRO: Record<string, VisualNativo> = {
   c3p7: { Componente: LinhaDoTempo, substitui: "figura" },
   c3p11: { Componente: Safras, substitui: "figura" },
   c4p2: { Componente: RetaQueQuebra, substitui: "figura" },
+  c4p3: { Componente: () => <Escalas modo="probabilidade" />, substitui: "legacy" },
+  c4p4: { Componente: () => <Escalas modo="odds" />, substitui: "legacy" },
+  c4p5: { Componente: () => <Escalas modo="logodds" />, substitui: "legacy" },
+  c4p6: { Componente: () => <Escalas modo="regua" />, substitui: "legacy" },
+  c4p7: { Componente: CurvaLogistica, substitui: "legacy" },
   c4p9: { Componente: TresEscalas, substitui: "legacy" },
+  c4p13: { Componente: Intercepto, substitui: "legacy" },
+  c4p15: { Componente: () => <DescidaCompleta modo="perda" />, substitui: "legacy" },
+  c4p16: { Componente: () => <DescidaCompleta modo="gradiente" />, substitui: "legacy" },
+  c4p17: { Componente: () => <DescidaCompleta modo="descida" />, substitui: "legacy" },
   c4p19: { Componente: Fronteira, substitui: "legacy" },
+  c4p21: { Componente: Faixas, substitui: "legacy" },
   c5p7: { Componente: () => <ArvoreQueCresce modo="raiz" />, substitui: "legacy" },
   c5p14: { Componente: () => <ArvoreQueCresce modo="freios" />, substitui: "legacy" },
   c5p16: { Componente: () => <ArvoreQueCresce modo="instabilidade" />, substitui: "legacy" },

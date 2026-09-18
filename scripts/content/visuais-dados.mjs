@@ -27,7 +27,7 @@ console.log(`grid-boosting.json: ${grid.grade.length} configurações`);
 // Capítulo 9: escores de treino e da janela fora do tempo (para PSI ao vivo) e referências de monitoramento.
 const r1 = (v) => Math.round(v * 10) / 10;
 const escores = { fonte: "content/generated/dados.json (DADOS.tr e DADOS.oot), gerador com semente 20260501", escala: "escore de crédito (maior é melhor); utilização em % do limite; atraso em dias",
-  treino: { sc: DADOS.tr.sc, util: DADOS.tr.util.map(r1), atr: DADOS.tr.atr }, janela: { sc: DADOS.oot.sc, util: DADOS.oot.util.map(r1), atr: DADOS.oot.atr, y: DADOS.oot.y } };
+  treino: { sc: DADOS.tr.sc, util: DADOS.tr.util.map(r1), atr: DADOS.tr.atr, y: DADOS.tr.y }, janela: { sc: DADOS.oot.sc, util: DADOS.oot.util.map(r1), atr: DADOS.oot.atr, y: DADOS.oot.y } };
 writeFileSync("src/lib/visuais/escores.json", JSON.stringify(escores));
 const monit = { fonte: "content/generated/dados.json (DADOS.psi, csi, fair, res, meta)", psi: DADOS.psi, csi: DADOS.csi, fair: DADOS.fair,
   res: { logit_oot: DADOS.res.logit_oot, logit_val: DADOS.res.logit_val, logit_treino: DADOS.res.logit_treino, gbm_val: DADOS.res.gbm_val, gbm_raw_oot: DADOS.res.gbm_raw_oot }, n: { treino: DADOS.meta.n_treino, val: DADOS.meta.n_val, oot: DADOS.meta.n_oot } };
