@@ -34,6 +34,17 @@ Toda página sai sobre os tokens de `assets/tokens.css` e os componentes de `ass
 - **Painel de acompanhamento**: resumo antes do detalhe, estado codificado em `.badge`, tabela com `tabular-nums`, sem gráfico sem escala.
 - **Material do aluno**: texto corrido com `--measure`, caixas `.caixa-objetivo`, `.caixa-apoio`, `.caixa-discutir`, tabela de erros comuns ao final.
 
+## Palco: qualquer coisa que vá para a apresentação
+
+A apresentação da plataforma é um deck 16:9 (`/apresentacao/<slug>`), e cada tela obedece às regras de um slide de PowerPoint:
+
+1. **Tudo cabe na área visível.** Nada rola dentro do slide. Uma página vira uma sequência de telas: a capa (título, objetivo e apoio) e depois um bloco ou grupo de blocos por tela, empacotados pela altura medida (`Slide` em `src/components/content/slide.tsx`).
+2. **Nenhuma tela vazia nem rala.** A tela preenche a área: o conteúdo é escalado com reflow (zoom entre 0,55 e 1,35, largura compensada) até ocupar a altura disponível. Uma peça que sozinha não cabe é reduzida; uma pequena é ampliada.
+3. **Uma ideia por tela.** Peça principal grande, painéis secundários escondidos no slide (`.slide-inner` em `globals.css`, seção "Palco"): acumuladas do KS, anatomia do lucro, trajetórias dos coeficientes, legendas longas, notas de fonte.
+4. **Alturas em cqh, nunca em px.** Dentro do slide, gráficos e figuras têm altura em fração da altura do slide (`height: 40cqh`, `max-height: 58cqh`), largura automática e `max-width: 100%`. Figuras estáticas herdadas (`.svgfit svg`) seguem a mesma regra.
+5. **Tipografia proporcional ao projetor.** Fontes em `clamp(min, Ncqh, max)`; números de tiles em 2,8cqh; nada abaixo de 11 px em 1400×900.
+6. **Medir antes de entregar.** `node tmp/ux/medir-deck.mjs <pasta> <slugs> <LxA>` percorre cada tela e acusa rolagem, tela vazia e a escala aplicada; rodar em 1400×900 e 1920×1080 e olhar as capturas. Rolagem ou tela vazia é defeito.
+
 ## Tipografia e medida
 
 Títulos em serifa (`--font-serif`), corpo em `--font-sans`, números em `tabular-nums`. Corpo 16 px, texto de apoio 13 a 14 px, legendas 12,5 px, eyebrow 11 px em caixa alta com espaçamento. Texto corrido até `--measure` (66 caracteres).

@@ -476,3 +476,20 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .info--slide .info-tempo { max-width: 32cqh; }
 .info--slide .info-barras, .info--slide .info-kv, .info--slide .info-lista { gap: .3cqh; }
 .info--slide .info-kv div { padding: .2cqh .6cqh; }
+
+/* Apresentação como deck: capa, título compacto nas telas de conteúdo, área sem rolagem, figuras estáticas limitadas pela altura */
+.slide-inner--capa { justify-content: flex-start; }
+.slide-capa { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 2cqh; padding: 0 4cqh 6cqh; max-width: 90%; }
+.slide-capa h1 { font-size: clamp(28px, 6cqh, 64px); line-height: 1.1; }
+.slide-capa .objective { font-size: clamp(15px, 2.8cqh, 28px); }
+.slide-capa-apoio { color: var(--color-body); }
+.slide-capa-dica { font-size: clamp(11px, 1.8cqh, 16px); color: var(--color-muted); margin-top: 1cqh; }
+.slide-titulo-compacto { font-size: clamp(16px, 2.9cqh, 32px); line-height: 1.15; margin: 0; }
+.slide-titulo-objetivo { font-family: var(--font-sans); font-weight: 400; color: var(--color-body); font-size: clamp(12px, 2cqh, 20px); }
+.slide-inner .slide-area { overflow: hidden; }
+.slide-area--capa { display: none; }
+.palco-tela { display: flex; flex-direction: column; gap: 1.5cqh; }
+.palco-tela > .hidden { display: none; }
+.slide-inner .conteudo .svgfit svg, .slide-inner .conteudo figure svg { max-height: 58cqh; width: auto; max-width: 100%; height: auto; margin: 0 auto; display: block; }
+.slide-inner .conteudo .palcoflex { align-items: flex-start; }
+.slide-inner .conteudo .palcoflex .svgfit svg { max-height: 56cqh; }

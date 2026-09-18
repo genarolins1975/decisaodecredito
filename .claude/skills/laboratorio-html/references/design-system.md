@@ -59,3 +59,8 @@ Quatro blocos, sempre nesta ordem, com os textos do JSON do capítulo (`content/
 4. **Faixa**: `.info-faixa` em navy com eyebrow em gold e três pares termo e definição, os mesmos "três ideias para levar" da página de síntese do capítulo.
 
 Responsivo: quatro colunas até 960 px, duas até 560 px, uma abaixo. No modo apresentação o infográfico rola dentro do slide com a escala do slide.
+
+
+## Palco (modo apresentação)
+
+O slide é um contêiner `container-type: size`; dentro dele, `cqh` é a fração da altura do slide (1400×900: 1cqh ≈ 7,4 px; 1920×1080: ≈ 10 px). A área de conteúdo fica com cerca de 70cqh na tela de conteúdo (título compacto de uma linha) e a capa usa o restante. Orçamento típico de uma peça no palco: cabeçalho 8cqh, gráfico principal 40 a 50cqh, controle 6cqh, quatro tiles em linha 12cqh. Painéis secundários ficam ocultos e o texto de fonte não aparece. `AjusteAoPalco` (visuais) e o ajuste da tela em `Slide` fazem a escala fina; o objetivo é que a escala fique perto de 1, e não que ela conserte um layout errado.

@@ -9,8 +9,10 @@ import { api } from "@/lib/client/api";
 
 type SubmitFn = (q: PublicQuestion, answer: unknown, clientRequestId: string) => Promise<{ isCorrect: boolean | null; feedback: never; attemptNo: number }>;
 
-export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liveSubmit, hideSlugs, pageSlug }: {
+export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liveSubmit, hideSlugs, pageSlug, visiveis }: {
   blocks: Block[]; questions: PublicQuestion[]; classId: string; mode?: "estudo" | "apresentacao" | "previa"; liveSubmit?: SubmitFn; hideSlugs?: string[]; pageSlug?: string;
+  /** Apresentação: índices dos blocos a exibir nesta tela (os outros ficam montados, mas ocultos); null exibe todos */
+  visiveis?: number[] | null;
 }) {
   const nativo = pageSlug ? visualNativo(pageSlug) : null;
   // a figura estática é substituída uma vez, no primeiro bloco HTML que a contém
@@ -38,13 +40,19 @@ export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liv
 
   const reveal = (q: PublicQuestion) => async () => api<{ isCorrect: boolean | null; feedback: never; attemptNo: number; revealed: boolean; disclosedBefore: boolean }>("/api/estudo/responder", { body: { classId, questionVersionId: q.versionId, reveal: true } });
 
+  const bloco = (i: number, filho: React.ReactNode) => filho == null ? null : <div key={i} data-bloco={i} className={visiveis && !visiveis.includes(i) ? "hidden" : undefined}>{filho}</div>;
   return (
     <div className="flex flex-col gap-4">
-      {blocks.map((b, i) => {
-        if (b.type === "html") {
-          if (i === idxFigura && nativo) return <div key={i} className="flex flex-col gap-4"><AjusteAoPalco><nativo.Componente /></AjusteAoPalco><div className="conteudo" dangerouslySetInnerHTML={{ __html: removerFiguraEstatica(b.html) }} /></div>;
-          return <div key={i} className="conteudo" dangerouslySetInnerHTML={{ __html: b.html }} />;
-        }
+      {blocks.flatMap((b, i) => {
+        // figura estática substituída: o visual nativo e o texto restante viram dois blocos (i e i + 0,5), paginados separadamente
+        if (b.type === "html" && i === idxFigura && nativo) return [bloco(i, <AjusteAoPalco><nativo.Componente /></AjusteAoPalco>), bloco(i + 0.5, <div className="conteudo" dangerouslySetInnerHTML={{ __html: removerFiguraEstatica(b.html) }} />)];
+        return [bloco(i, renderBloco(b, i))];
+      })}
+    </div>
+  );
+
+  function renderBloco(b: Block, i: number): React.ReactNode {
+        if (b.type === "html") return <div key={i} className="conteudo" dangerouslySetInnerHTML={{ __html: b.html }} />;
         if (b.type === "episode") return <Episode key={i} b={b} />;
         if (b.type === "checkpoint") return <Checkpoint key={i} b={b} />;
         if (b.type === "legacy") {
@@ -59,9 +67,7 @@ export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liv
           return <Question key={q.versionId} q={q} initial={initial ? initial[q.versionId] ?? null : null} submit={submit(q)} reveal={mode === "estudo" && !liveSubmit ? reveal(q) : undefined} onRevealed={(s, c) => revealRef.current?.(s, c)} disabled={initial === null} />;
         }
         return null;
-      })}
-    </div>
-  );
+  }
 }
 
 export function Episode({ b }: { b: Extract<Block, { type: "episode" }> }) {
