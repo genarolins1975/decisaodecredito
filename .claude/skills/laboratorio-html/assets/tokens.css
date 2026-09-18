@@ -1,0 +1,35 @@
+/* Tokens do Laboratório de Decisão de Crédito. Fonte: src/app/globals.css (@theme) e as cores de capítulo do conteúdo.
+   Um único tema (claro). Nunca introduzir cor fora desta lista; acentos por papel, não por gosto. */
+:root {
+  --color-ground: #F5F4F0;      /* fundo da página */
+  --color-paper: #FBFAF7;       /* superfícies secundárias, quadros de apoio */
+  --color-surface: #FFFFFF;     /* cartões e tabelas */
+  --color-ink: #00205B;         /* títulos, links, negrito de destaque */
+  --color-ink-soft: #3D5A8A;    /* acento azul de infográfico, subtítulos */
+  --color-gold: #C9A84C;        /* foco, filete do painel do professor, eyebrow em fundo escuro */
+  --color-gold-soft: #F4ECD6;   /* fundo do rótulo dourado */
+  --color-amber: #B8640F;       /* acento âmbar de infográfico (família do dourado, legível como texto) */
+  --color-body: #333333;        /* corpo de texto */
+  --color-muted: #5B6475;       /* legendas, eixos, notas */
+  --color-rule: #E2DFD6;        /* réguas, bordas */
+  --color-alert: #8C2332;       /* erro, default, resultado negativo */
+  --color-alert-soft: #FBF2F3;
+  --color-ok: #2E6B4F;          /* bom, resultado positivo */
+  --color-ok-soft: #F0F7F3;
+  --color-warn: #7a5309;        /* alerta */
+  --color-warn-soft: #FDF7E9;
+  --color-dots: #C9D8F2;        /* pontos neutros de uma grade de frequência */
+  --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --font-sans: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "SF Mono", "Cascadia Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --shadow-card: 0 1px 2px rgba(0, 32, 91, .06), 0 8px 24px rgba(0, 32, 91, .05);
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-12: 48px;
+  --radius-sm: 3px; --radius-md: 4px; --radius-lg: 6px;
+  --measure: 66ch;               /* largura máxima do texto corrido */
+  /* capítulos: cor forte e cor suave (--cap e --cap-soft recebem o par do capítulo em uso) */
+  --cap-1: #B36A18; --cap-1-soft: #FBF1E3; --cap-2: #2E6B4F; --cap-2-soft: #EEF6F2; --cap-3: #6B4E8C; --cap-3-soft: #F5F0F8;
+  --cap-4: #9A4E36; --cap-4-soft: #FAF0EC; --cap-5: #28725B; --cap-5-soft: #EDF7F3; --cap-6: #7B3E73; --cap-6-soft: #F8EFF6;
+  --cap-7: #B16A12; --cap-7-soft: #FBF2E5; --cap-8: #176C73; --cap-8-soft: #EAF6F6; --cap-9: #5C4B8A; --cap-9-soft: #F2EFF8;
+  --cap-10: #8C4A1F; --cap-10-soft: #FAF0E9; --cap-11: #2E6B4F; --cap-11-soft: #EEF6F2;
+  --cap: var(--color-ink); --cap-soft: #EFF3FA;
+}
