@@ -56,7 +56,7 @@ export function Slide(p: {
           </div>
           <div className={`conteudo transition-opacity ${reveal >= 2 ? "opacity-100" : "opacity-0 pointer-events-none"}`} inert={reveal < 2}>
             {p.infografico && <div className="mb-3"><InfograficoCapitulo d={p.infografico} modo="apresentacao" /></div>}
-            <ContentBlocks blocks={p.blocks} questions={p.questions} classId={p.classId} mode={p.isStaff ? "previa" : "estudo"} />
+            <ContentBlocks blocks={p.blocks} questions={p.questions} classId={p.classId} mode={p.isStaff ? "previa" : "estudo"} pageSlug={p.slug} />
           </div>
           {p.connection && reveal >= 2 && p.next && <p className="font-serif italic text-ink text-[.9em] border-t border-rule pt-1"><span className="eyebrow not-italic mr-2">A seguir</span>{p.connection}</p>}
         </div>

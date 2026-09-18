@@ -51,3 +51,31 @@ describe("visuais nativos: cem vidas em doze meses", () => {
     expect(Math.abs(dp - 3)).toBeLessThan(0.3);
   });
 });
+
+import { dia, entraPelaRegraIngenua, estadoDoCampo, fracaoManifestada, mesIdx, prevalenciaComImaturas, rotuloDia, safraMadura } from "../src/lib/visuais/tempo";
+
+describe("visuais nativos: a linha do tempo do cliente (c3p7)", () => {
+  it("a fatura de fevereiro (28 fev, disponível 30 abr) não entra numa decisão de 15 mar, embora o fato seja anterior", () => {
+    const evento = dia(28, 2), disp = dia(30, 4), decisao = dia(15, 3);
+    expect(rotuloDia(evento)).toBe("28 fev"); expect(rotuloDia(disp)).toBe("30 abr");
+    expect(estadoDoCampo(evento, disp, decisao)).toBe("ocorreu_sem_saber");
+    expect(entraPelaRegraIngenua(evento, decisao)).toBe(true); // o erro que a regra ingênua comete
+    expect(estadoDoCampo(evento, disp, dia(30, 4))).toBe("utilizavel");
+    expect(estadoDoCampo(dia(20, 7), dia(21, 7), decisao)).toBe("futuro");
+  });
+});
+
+describe("visuais nativos: a base amadurece (c3p11)", () => {
+  it("com referência em jan 2025, horizonte 12 e apuração 1, a última safra que entra é dez 2023 e nenhuma de 2024 entra", () => {
+    const ref = mesIdx(2025, 1);
+    expect(safraMadura(mesIdx(2023, 12), ref)).toBe(true);
+    expect(safraMadura(mesIdx(2024, 1), ref)).toBe(false);
+  });
+  it("safra imatura com rótulo zero puxa a prevalência para baixo, nunca para cima", () => {
+    expect(fracaoManifestada(6)).toBeCloseTo(0.42, 6); expect(fracaoManifestada(12)).toBe(1); expect(fracaoManifestada(0)).toBe(0);
+    const safras = Array.from({ length: 36 }, (_, i) => mesIdx(2022, 1) + i);
+    const r = prevalenciaComImaturas(safras, mesIdx(2025, 1), 0.1);
+    expect(r.imaturas).toBe(12);
+    expect(r.comImaturas).toBeLessThan(0.1); expect(r.comImaturas).toBeGreaterThan(0.07);
+  });
+});

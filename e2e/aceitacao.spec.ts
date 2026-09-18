@@ -320,6 +320,18 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(vidas).toBeVisible();
   await vidas.getByRole("button", { name: "24 meses", exact: true }).click();
   await expect(vidas).toContainText("PD de 19,0% em 24 meses");
+  // capítulo 3: figura estática substituída, texto ao redor preservado
+  await page.goto("/aulas/c3p7");
+  const tempo = page.locator('figure[data-vz="linha-do-tempo"]');
+  await expect(tempo).toBeVisible();
+  await expect(page.locator(".svgfit")).toHaveCount(0);
+  await expect(page.locator("main")).toContainText("O erro que não aparece em nenhuma métrica");
+  await tempo.getByRole("button", { name: "Só a data do evento" }).click();
+  await expect(tempo).toContainText("3 entram por engano: vazamento");
+  await page.goto("/aulas/c3p11");
+  const safras = page.locator('figure[data-vz="safras"]');
+  await expect(safras).toContainText("até dez 2023");
+  await expect(page.locator("main")).toContainText("A regra de inclusão");
 });
 
 test("núcleo: gabaritos e notas privadas não estão no motor legado nem nas páginas", async () => {

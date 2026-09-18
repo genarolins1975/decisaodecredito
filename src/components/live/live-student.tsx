@@ -58,7 +58,7 @@ export function LiveStudent({ sessionId, classId, meeting, initial }: { sessionI
             <h2 className="mt-1">{page.page.title}</h2>
             {page.page.objective && <p className="mt-2 text-[15px]"><span className="eyebrow text-[#7a5f16] mr-2">Objetivo</span>{page.page.objective}</p>}
             {page.page.support && <p className="mt-2">{page.page.support}</p>}
-            <div className="mt-5"><ContentBlocks blocks={page.blocks} questions={page.questions} classId={classId} hideSlugs={st.activities.map((a) => a.question.slug)} /></div>
+            <div className="mt-5"><ContentBlocks blocks={page.blocks} questions={page.questions} classId={classId} hideSlugs={st.activities.map((a) => a.question.slug)} pageSlug={page.page.slug} /></div>
             {!follow && (
               <div className="flex justify-between mt-6 pt-3 border-t border-rule">
                 <button type="button" className="btn btn-sm btn-secondary" disabled={!page.prev} onClick={() => page.prev && setSlug(page.prev)}>← Anterior</button>

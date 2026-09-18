@@ -90,7 +90,7 @@ export default async function AulaPaginaPage({ params }: { params: Promise<{ slu
         )}
         <div className="mt-6">
           <h2 className="sr-only">Conteúdo da página</h2>
-          <ContentBlocks blocks={data.blocks} questions={data.questions} classId={ctx.current.classId} />
+          <ContentBlocks blocks={data.blocks} questions={data.questions} classId={ctx.current.classId} pageSlug={slug} />
         </div>
         {data.questions.find((q) => q.slug === `${slug}-checagem`) && (
           <div className="mt-6">

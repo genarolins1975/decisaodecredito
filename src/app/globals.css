@@ -306,3 +306,58 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner .vz-vidas-grade { grid-template-columns: 240px minmax(0, 1fr); }
 .slide-inner .vz-hist svg { height: 120px; width: 100%; }
 .slide-inner .vz-tiles { margin-top: 6px; }
+
+/* A linha do tempo do cliente */
+.vz-tempo-svg, .vz-safras-svg { width: 100%; height: auto; display: block; background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 6px; }
+.vz-futuro { fill: #ECEAE3; opacity: .55; transition: x .12s linear, width .12s linear; }
+.vz-decisao { stroke: var(--color-ink); stroke-width: 2; stroke-dasharray: 5 3; }
+.vz-decisao-t { font-size: 11.5px; fill: var(--color-ink); font-weight: 700; }
+.vz-decisao--hoje { stroke: var(--color-alert); }
+.vz-decisao-t--hoje { fill: var(--color-alert); }
+.vz-fonte-rotulo { font-size: 10px; fill: var(--color-muted); text-transform: uppercase; letter-spacing: .06em; font-weight: 700; }
+.vz-fato-nome { font-size: 12px; fill: var(--color-body); }
+.vz-latencia { stroke: #cfd7e6; stroke-width: 6; stroke-linecap: round; }
+.vz-latencia-t { font-size: 9.5px; fill: var(--color-muted); }
+.vz-evento { fill: var(--color-surface); stroke: var(--color-ink-soft); stroke-width: 2; }
+.vz-disp { fill: var(--color-ink); }
+.vz-estado-t { font-size: 11px; fill: var(--color-muted); transition: fill .25s; }
+.vz-fato--utilizavel .vz-estado-t { fill: var(--color-ok); font-weight: 700; }
+.vz-fato--utilizavel .vz-disp { fill: var(--color-ok); }
+.vz-fato--ocorreu_sem_saber .vz-estado-t { fill: var(--color-alert); font-weight: 700; }
+.vz-fato--ocorreu_sem_saber .vz-latencia { stroke: #E9C9CE; }
+.vz-fato--ocorreu_sem_saber .vz-evento { stroke: var(--color-alert); }
+.vz-fato--futuro { opacity: .5; }
+.vz-fato--vazamento .vz-estado-t { fill: var(--color-alert); }
+.vz-fato--vazamento .vz-latencia { stroke: var(--color-alert); animation: vz-pisca 1.1s ease-in-out infinite; }
+.vz-fato--alvo .vz-evento { fill: var(--color-alert); stroke: var(--color-alert); }
+.vz-fato--alvo .vz-estado-t { fill: var(--color-alert); font-weight: 700; }
+@keyframes vz-pisca { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+.vz-sw--evento { background: #fff; border-color: var(--color-ink-soft); border-width: 2px; }
+.vz-sw--disp { background: var(--color-ink); border-radius: 2px; transform: rotate(45deg) scale(.85); }
+.vz-sw--lat { background: #cfd7e6; border-radius: 3px; }
+.vz-sw--futuro { background: #ECEAE3; border-radius: 2px; }
+
+/* A base amadurece */
+.vz-safras-grade { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 14px 18px; align-items: start; }
+.vz-safras-painel { display: grid; gap: 10px; }
+.vz-tiles--coluna { grid-template-columns: 1fr; margin-top: 0; }
+.vz-legenda--coluna { flex-direction: column; gap: 4px; align-items: flex-start; }
+.vz-safra-janela { fill: none; stroke: #b9b5a8; stroke-width: 1; stroke-dasharray: 3 2; }
+.vz-safra-obs { fill: #d9c9cd; transition: width .25s linear; }
+.vz-safra--madura .vz-safra-janela { fill: var(--color-ink); stroke: none; }
+.vz-safra--madura .vz-safra-obs { fill: var(--color-ink); }
+.vz-safra--futura { opacity: .45; }
+.vz-safra-apur { fill: var(--color-gold); opacity: .6; }
+.vz-safra--futura .vz-safra-apur { opacity: .25; }
+.vz-safra-nota { font-size: 9px; fill: var(--color-alert); font-weight: 700; }
+.vz-particao { opacity: .9; }
+.vz-particao--treino { fill: #EFF3FA; } .vz-particao--val { fill: #F0F7F3; } .vz-particao--oot { fill: var(--color-gold-soft); }
+.vz-particao-t { font-size: 9.5px; fill: var(--color-ink); font-weight: 700; }
+.vz-sw--madura { background: var(--color-ink); border-radius: 2px; }
+.vz-sw--obs { background: #d9c9cd; border-radius: 2px; }
+.vz-sw--faltam { background: #fff; border: 1px dashed #b9b5a8; border-radius: 2px; }
+.vz-sw--apur { background: var(--color-gold); opacity: .7; border-radius: 2px; }
+@container (max-width: 760px) { .vz-safras-grade { grid-template-columns: 1fr; } .vz-tiles--coluna { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); } }
+.slide-inner .vz-safras-grade { grid-template-columns: minmax(0, 1fr) 230px; }
+.slide-inner .vz-legenda--coluna { display: none; }
+.slide-inner .vz-tiles--coluna .vz-tile { padding: 6px 10px; }
