@@ -22,7 +22,7 @@ export function GmailPanel({ status, flash, queue }: { status: Status; flash: { 
         {flash?.kind === "erro" && <ErrorBox message={`Falha ao conectar: ${flash.message ?? "desconhecida"}`} />}
         <ErrorBox message={err} /><SuccessBox message={ok} />
         <section className="card">
-          <h2 className="text-base mb-2">Remetente (Gmail)</h2>
+          <h2 className="text-base mb-2">Conta que envia (Gmail)</h2>
           <dl className="kv text-[14px]">
             <dt>Provedor</dt><dd>{status.provider === "gmail" ? "Gmail API (OAuth 2.0, escopo gmail.send)" : "Fila sem envio (desenvolvimento/homologação)"}</dd>
             <dt>OAuth</dt><dd>{status.oauthConfigured ? "credenciais configuradas no servidor" : "não configurado (GOOGLE_OAUTH_CLIENT_ID/SECRET)"}</dd>

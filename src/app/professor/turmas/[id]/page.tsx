@@ -4,6 +4,7 @@ import { db, schema } from "@/lib/db/client";
 import { requireClassAccess } from "@/lib/auth/guard";
 import { listMeetings } from "@/lib/services/meetings";
 import { Stat } from "@/components/ui";
+import { StartClassButton } from "@/components/professor/start-class-button";
 import { fmtDT } from "@/lib/time";
 
 export default async function TurmaVisaoPage({ params }: { params: Promise<{ id: string }> }) {
@@ -19,20 +20,20 @@ export default async function TurmaVisaoPage({ params }: { params: Promise<{ id:
   return (
     <div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <Stat label="Aguardando convite" value={c("autorizado")} hint={<Link href={`/professor/turmas/${id}/alunos`}>enviar convites</Link>} tone={c("autorizado") ? "warn" : undefined} />
+        <Stat label="Sem convite" value={c("autorizado")} hint={<Link href={`/professor/turmas/${id}/alunos`}>enviar convites</Link>} tone={c("autorizado") ? "warn" : undefined} />
         <Stat label="Convidados sem ativar" value={c("convidado")} hint="ainda não definiram senha" tone={c("convidado") ? "warn" : undefined} />
-        <Stat label="Ativos" value={c("ativo")} hint={`${c("suspenso")} suspensos · ${c("encerrado")} encerrados`} tone="ok" />
-        <Stat label="Entregas a corrigir" value={Number(grading[0]?.n ?? 0)} hint={<Link href={`/professor/turmas/${id}/trabalhos`}>trabalhos</Link>} />
+        <Stat label="Com acesso" value={c("ativo")} hint={`${c("suspenso")} suspensos · ${c("encerrado")} encerrados`} tone="ok" />
+        <Stat label="Entregas para corrigir" value={Number(grading[0]?.n ?? 0)} hint={<Link href={`/professor/turmas/${id}/trabalhos`}>ver trabalhos</Link>} />
       </div>
       <div className="grid gap-4 md:grid-cols-2 mt-4">
         <section className="card">
-          <h2 className="text-base mb-2">Próximo encontro</h2>
-          {next ? <p><b>{next.title}</b><br /><span className="hint">{fmtDT(next.scheduledAt) || "sem data definida"} {next.location ? `· ${next.location}` : ""}</span></p> : <p className="hint">Nenhum encontro planejado. <Link href={`/professor/turmas/${id}/encontros`}>Criar encontros</Link>.</p>}
+          <h2 className="text-base mb-2">Próxima aula</h2>
+          {next ? <><p><b>{next.title}</b><br /><span className="hint">{fmtDT(next.scheduledAt) || "sem data definida"} {next.location ? `· ${next.location}` : ""}</span></p><div className="mt-3 flex flex-wrap gap-2 items-center"><StartClassButton classId={id} meetingId={next.id} size="sm">Iniciar aula</StartClassButton><Link href={`/professor/turmas/${id}/encontros`} className="btn btn-sm btn-ghost">Datas das aulas</Link></div></> : <p className="hint">Nenhuma aula marcada. <Link href={`/professor/turmas/${id}/encontros`}>Criar as aulas</Link>.</p>}
         </section>
         <section className="card">
-          <h2 className="text-base mb-2">Frequência</h2>
+          <h2 className="text-base mb-2">Presença</h2>
           <p className="text-[14px]">{rule?.minimumPct != null ? `Regra definida: mínimo ${rule.minimumPct}%.` : "Regra não definida: ninguém é reprovado por frequência até você configurar."} {Number(reviews[0]?.n ?? 0) > 0 && <b className="text-alert">{Number(reviews[0]?.n)} pedido(s) de revisão pendente(s).</b>}</p>
-          <p className="hint mt-1"><Link href={`/professor/turmas/${id}/frequencia`}>Mapa de frequência</Link> · <Link href={`/professor/turmas/${id}/configuracoes`}>configurar regra</Link></p>
+          <p className="hint mt-1"><Link href={`/professor/turmas/${id}/frequencia`}>Ver presença</Link> · <Link href={`/professor/turmas/${id}/configuracoes`}>definir a regra</Link></p>
         </section>
       </div>
     </div>

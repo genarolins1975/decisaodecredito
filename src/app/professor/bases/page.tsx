@@ -22,8 +22,8 @@ export default async function ProfessorBasesPage({ searchParams }: { searchParam
   const disponiveis = datasets.filter((d) => d.status === "disponivel").length;
   return (
     <div>
-      <PageHeader eyebrow={`Edição ${edition.label}`} title="Bases e gabaritos" lead={`${disponiveis} de ${datasets.length} bases disponíveis. Tudo nesta página é do professor: OOT sem desfecho, rótulos e gabaritos nunca aparecem ao aluno. O aluno vê, em Materiais, o pacote de cada base, o dicionário e, quando a política do trabalho final é "livre", o OOT.`} />
-      {editions.length > 1 && <p className="hint mb-3">Edições: {editions.map((e) => <Link key={e.id} href={`/professor/bases?edicao=${e.id}`} className={e.id === edition.id ? "font-semibold mr-2" : "mr-2"}>{e.label}</Link>)}</p>}
+      <PageHeader eyebrow={`Ano ${edition.label}`} title="Bases e gabaritos" lead={`${disponiveis} de ${datasets.length} bases disponíveis. Tudo nesta página é do professor: OOT sem desfecho, rótulos e gabaritos nunca aparecem ao aluno. O aluno vê, em Materiais, o pacote de cada base, o dicionário e, quando a política do trabalho final é "livre", o OOT.`} />
+      {editions.length > 1 && <p className="hint mb-3">Anos: {editions.map((e) => <Link key={e.id} href={`/professor/bases?edicao=${e.id}`} className={e.id === edition.id ? "font-semibold mr-2" : "mr-2"}>{e.label}</Link>)}</p>}
       <div className="grid gap-3 md:grid-cols-3 mb-4">
         {finais.map((f) => <div key={f.cls} className="panel-soft text-[14px]"><b>{f.cls}</b> · trabalho final {f.status === "published" ? "publicado" : f.status === "closed" ? "encerrado" : "rascunho"} · OOT {f.policy === "livre" ? "liberado a todos" : "após congelamento"}</div>)}
       </div>

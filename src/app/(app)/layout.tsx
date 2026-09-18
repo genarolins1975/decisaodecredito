@@ -2,13 +2,14 @@ import type { ReactNode } from "react";
 import { AppShell } from "@/components/app-shell";
 import { appContext } from "@/lib/context";
 
+/** Seis lugares, com nome de lugar. A ação do momento aparece em Início. */
 const NAV = [
-  { href: "/inicio", label: "Visão geral" },
+  { href: "/inicio", label: "Início" },
   { href: "/aulas", label: "Aulas" },
   { href: "/ao-vivo", label: "Ao vivo" },
   { href: "/trabalhos", label: "Trabalhos" },
   { href: "/materiais", label: "Materiais" },
-  { href: "/acompanhamento", label: "Meu acompanhamento" },
+  { href: "/acompanhamento", label: "Notas e presença" },
 ];
 
 export default async function AppLayout({ children }: { children: ReactNode }) {

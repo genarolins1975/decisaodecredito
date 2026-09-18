@@ -43,7 +43,7 @@ Ensaio executado em 16/09/2026 nesta sessão: ver `docs/07-relatorio-de-testes.m
 ## 5. Observabilidade e alertas
 
 - `GET /api/health` responde `{ok:true}` com banco acessível: use em monitor externo (ex.: verificação a cada minuto).
-- Fila de e-mail: Configurações mostra falhas; o painel inicial mostra contagem de mensagens com falha.
+- Fila de e-mail: a tela E-mail mostra falhas; Início mostra a contagem de mensagens com falha.
 - Trilha de auditoria: tabela `audit_log` (ações de autenticação, matrícula, sessão, frequência, notas, arquivos). Alunos não podem apagar eventos.
 - Logs da aplicação: erros internos vão para stderr com prefixo `[api]`; não registram senhas, tokens nem conteúdo acadêmico.
 - Limpeza: `cleanupOrphans()` em `src/lib/services/files.ts` marca uploads pendentes com mais de 24 h; agende uma chamada diária (rota administrativa a criar) ou execute por script.
@@ -59,7 +59,7 @@ As bases, os gabaritos e o gerador ficam fora do repositório (ele é público).
 ```bash
 # 1) upload: só as variáveis do armazenamento (STORAGE_DRIVER=s3, S3_ENDPOINT, S3_REGION, S3_BUCKET, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY)
 npx tsx --tsconfig scripts/tsconfig.json scripts/dados/publicar.ts /caminho/do/pacote --modo upload
-# 2) registro: pelo botão "Registrar pacote" em Painel do professor → Bases e gabaritos ou, com DATABASE_URL, pelo script
+# 2) registro: pelo botão "Registrar pacote" em Bases e gabaritos ou, com DATABASE_URL, pelo script
 npx tsx --tsconfig scripts/tsconfig.json scripts/dados/publicar.ts /caminho/do/pacote --modo registrar --edicao 2026
 ```
 

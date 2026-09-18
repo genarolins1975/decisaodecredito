@@ -133,6 +133,24 @@ test.describe.serial("matrícula, convite, ativação e senha", () => {
   });
 });
 
+test("iniciar aula em um clique: reaproveita a aula aberta e abre para os alunos", async () => {
+  const prof = await apiAs(PROF);
+  const cid = await classId();
+  const meetings = await (await prof.get(`/api/professor/turmas/${cid}/encontros`)).json();
+  if (!meetings.meetings.length) await prof.post(`/api/professor/turmas/${cid}/encontros`, { data: { scaffold: true } });
+  const mid = (await (await prof.get(`/api/professor/turmas/${cid}/encontros`)).json()).meetings[0].id;
+  const r1 = await prof.post(`/api/professor/turmas/${cid}/encontros/${mid}/iniciar`, { data: {} });
+  expect(r1.status()).toBe(200);
+  const { sessionId } = await r1.json();
+  expect((await sql<{ status: string }>("select status from live_sessions where id=$1", [sessionId]))[0].status).toBe("open");
+  const r2 = await (await prof.post(`/api/professor/turmas/${cid}/encontros/${mid}/iniciar`, { data: {} })).json();
+  expect(r2.sessionId).toBe(sessionId); // segundo clique não cria outra aula
+  const a = await apiAs(ALUNO_A);
+  expect((await a.get(`/api/aovivo/${sessionId}/estado`)).status()).toBe(200); // aluno vê a aula aberta
+  expect((await a.post(`/api/professor/turmas/${cid}/encontros/${mid}/iniciar`, { data: {} })).status()).toBe(403); // aluno não inicia aula
+  await prof.post(`/api/aovivo/${sessionId}/status`, { data: { status: "closed" } });
+});
+
 test.describe.serial("aula ao vivo, respostas e presença", () => {
   let sid = "", aid = "", mid = "", cid = "";
   test("professor abre questão; aluno responde; duplicação não duplica; fechada recusa", async () => {

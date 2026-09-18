@@ -17,7 +17,7 @@ export function Slide(p: {
 }) {
   const router = useRouter();
   const [notes, setNotes] = useState(false);
-  const [reveal, setReveal] = useState(0); // revelação progressiva: 0 = título, 1 = objetivo+apoio, 2 = tudo
+  const [reveal, setReveal] = useState(0); // revelação progressiva: 0 = título, 1 = objetivo e apoio, 2 = tudo ("Mostrar mais")
   const maxReveal = 2;
   const go = (slug: string | null) => { if (!slug) return; setReveal(0); router.push(`/apresentacao/${slug}${p.sessionId ? `?sessao=${p.sessionId}` : ""}`); };
 
@@ -62,15 +62,16 @@ export function Slide(p: {
         </div>
         <div className="absolute left-0 bottom-0 h-[3px] bg-gold" style={{ width: `${(p.pageIndex / p.pageCount) * 100}%` }} aria-hidden="true" />
       </div>
-      <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2 text-white/85 text-[13px] no-print">
+      <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2 text-white/85 text-[13px] no-print" role="toolbar" aria-label="Controles da apresentação">
         <div className="flex gap-2">
-          <button type="button" className="btn btn-sm btn-secondary" onClick={() => go(p.prev)} disabled={!p.prev}>← Anterior</button>
-          <button type="button" className="btn btn-sm btn-secondary" onClick={() => reveal < maxReveal ? setReveal(reveal + 1) : go(p.next)}>{reveal < maxReveal ? "Revelar" : "Próxima →"}</button>
+          <button type="button" className="btn btn-sm btn-secondary" onClick={() => go(p.prev)} disabled={!p.prev}>‹ Anterior</button>
+          <button type="button" className="btn btn-sm btn-secondary" onClick={() => reveal < maxReveal ? setReveal(reveal + 1) : go(p.next)}>{reveal < maxReveal ? "Mostrar mais" : "Próxima ›"}</button>
         </div>
-        <span>{p.position} · Setas navegam · Espaço revela · F tela cheia{p.teacherGuide ? " · N notas" : ""} · Esc estudo</span>
+        <span>página {p.position}<span className="hidden md:inline"> · setas ou espaço avançam · F tela cheia{p.teacherGuide ? " · N notas" : ""} · Esc sai</span></span>
         <div className="flex gap-2">
-          {p.teacherGuide && <button type="button" className="btn btn-sm btn-secondary" aria-pressed={notes} onClick={() => setNotes(!notes)}>Notas</button>}
-          <Link href={`/aulas/${p.slug}`} className="btn btn-sm btn-ghost text-white">Modo estudo</Link>
+          <button type="button" className="btn btn-sm btn-secondary" onClick={() => document.documentElement.requestFullscreen?.().catch(() => {})}>Tela cheia</button>
+          {p.teacherGuide && <button type="button" className="btn btn-sm btn-secondary" aria-pressed={notes} onClick={() => setNotes(!notes)}>{notes ? "Ocultar notas" : "Notas do professor"}</button>}
+          <Link href={`/aulas/${p.slug}`} className="btn btn-sm btn-ghost text-white">Sair da apresentação</Link>
         </div>
       </div>
       {notes && p.teacherGuide && (

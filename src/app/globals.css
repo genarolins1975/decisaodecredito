@@ -95,6 +95,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .kv dt { color: var(--color-muted); }
 .kv dd { margin: 0; }
 .status-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+/* Caminho de volta (estilo "‹ Lugar"): sempre acima do título da tela */
+.voltar { display: inline-flex; align-items: center; gap: 4px; font-size: 13.5px; color: var(--color-ink-soft); text-decoration: none; min-height: 32px; }
+.voltar::before { content: "‹"; font-size: 18px; line-height: 1; }
+.voltar:hover { text-decoration: underline; }
 .link-list a { display: block; padding: 10px 12px; border-radius: 4px; text-decoration: none; border-left: 3px solid transparent; }
 .link-list a:hover { background: #EDEBE3; }
 .link-list a[aria-current="page"] { background: #fff; border-left-color: var(--color-gold); font-weight: 600; box-shadow: var(--shadow-card); }

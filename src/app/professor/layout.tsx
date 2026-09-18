@@ -6,12 +6,13 @@ import { listAccessibleClasses } from "@/lib/auth/guard";
 import { cookies } from "next/headers";
 import { CLASS_COOKIE } from "@/lib/context";
 
+/** Cinco lugares. Início mostra o que fazer agora (iniciar a aula, corrigir, convidar). */
 const NAV = [
-  { href: "/professor", label: "Painel", exact: true },
+  { href: "/professor", label: "Início", exact: true },
   { href: "/professor/turmas", label: "Turmas" },
   { href: "/professor/conteudo", label: "Conteúdo" },
   { href: "/professor/bases", label: "Bases e gabaritos" },
-  { href: "/professor/configuracoes", label: "Configurações" },
+  { href: "/professor/configuracoes", label: "E-mail" },
 ];
 
 /** Área do professor: exige staff global. Monitores usam a área do aluno com permissões extras por turma. */
@@ -25,6 +26,6 @@ export default async function ProfessorLayout({ children }: { children: ReactNod
   const c = await cookies();
   const cur = c.get(CLASS_COOKIE)?.value ?? null;
   return (
-    <AppShell nav={NAV} user={u} classes={classes} currentClassId={cur} contextLabel="Painel do professor" area="professor">{children}</AppShell>
+    <AppShell nav={NAV} user={u} classes={classes} currentClassId={cur} contextLabel="Área do professor" area="professor">{children}</AppShell>
   );
 }

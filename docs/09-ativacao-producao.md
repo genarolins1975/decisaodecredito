@@ -17,7 +17,7 @@ O cliente OAuth pede três escopos: `gmail.send` (envio), `openid` e `email` (s�
 1. No Google Cloud Console, criar um projeto, ativar a Gmail API e criar credenciais OAuth 2.0 do tipo "aplicativo da Web" com URI de redirecionamento `${APP_URL}/api/professor/gmail/callback`.
 2. Tela de consentimento: tipo externo; escopo `https://www.googleapis.com/auth/gmail.send`. Enquanto o app estiver em modo de teste, apenas contas listadas como usuários de teste podem autorizar e o refresh token tem vida limitada (documentação Google lida em 16/09/2026); para uso contínuo é necessário publicar e passar pela verificação de escopo sensível.
 3. Definir `EMAIL_PROVIDER=gmail`, `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `EMAIL_FROM_NAME`.
-4. Em Configurações, "Conectar meu Gmail" com a conta do professor e "Enviar teste" para o próprio e-mail. Só depois enviar convites.
+4. Em E-mail, "Conectar meu Gmail" com a conta do professor e "Enviar teste" para o próprio e-mail. Só depois enviar convites.
 5. Limites: contas Workspace pagas enviam até 2.000 mensagens por dia; a fila respeita isso naturalmente (turmas de até 100 alunos).
 
 ## 3. Verificações em homologação (não comprováveis localmente)

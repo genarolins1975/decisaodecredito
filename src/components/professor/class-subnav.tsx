@@ -2,9 +2,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+/** Seções de uma turma, com nome de lugar e sem jargão de sistema. */
 export function ClassSubnav({ id }: { id: string }) {
   const path = usePathname();
-  const items = [["", "Visão"], ["/alunos", "Alunos"], ["/encontros", "Encontros e sessões"], ["/frequencia", "Frequência"], ["/trabalhos", "Trabalhos"], ["/grupos", "Grupos"], ["/notas", "Notas"], ["/configuracoes", "Configurações"]];
+  const items = [["", "Resumo"], ["/alunos", "Alunos"], ["/encontros", "Aulas ao vivo"], ["/frequencia", "Presença"], ["/trabalhos", "Trabalhos"], ["/grupos", "Grupos"], ["/notas", "Notas"], ["/configuracoes", "Ajustes"]];
   return (
     <nav aria-label="Seções da turma" className="border-b border-rule overflow-x-auto">
       <ul className="flex gap-1 list-none m-0 p-0 whitespace-nowrap">

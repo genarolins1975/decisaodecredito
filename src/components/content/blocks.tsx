@@ -43,7 +43,7 @@ export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liv
         if (b.type === "question") {
           const q = byslug.get(b.slug);
           if (!q) return null;
-          if (hideSlugs?.includes(b.slug)) return <p key={i} className="hint border border-dashed border-rule rounded p-3">Esta questão foi publicada pelo professor na sessão: responda no painel de atividades.</p>;
+          if (hideSlugs?.includes(b.slug)) return <p key={i} className="hint border border-dashed border-rule rounded p-3">O professor fez esta pergunta à turma: responda no painel ao lado, em Perguntas.</p>;
           return <Question key={q.versionId} q={q} initial={initial ? initial[q.versionId] ?? null : null} submit={submit(q)} reveal={mode === "estudo" && !liveSubmit ? reveal(q) : undefined} onRevealed={(s, c) => revealRef.current?.(s, c)} disabled={initial === null} />;
         }
         return null;

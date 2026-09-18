@@ -6,7 +6,7 @@ import { LiveStudent } from "@/components/live/live-student";
 import { db, schema } from "@/lib/db/client";
 import { eq } from "drizzle-orm";
 
-export const metadata: Metadata = { title: "Sessão ao vivo" };
+export const metadata: Metadata = { title: "Aula ao vivo" };
 
 export default async function SessaoPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

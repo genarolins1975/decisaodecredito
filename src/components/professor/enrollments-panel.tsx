@@ -29,9 +29,9 @@ export function EnrollmentsPanel({ classId, rows, sender }: { classId: string; r
     <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_380px]">
       <div className="min-w-0 flex flex-col gap-3">
         <ErrorBox message={err} /><SuccessBox message={ok} />
-        {!sender.ok && <Callout tone="warn" title="Remetente não conectado">{sender.reason}. Convites emitidos ficam na fila e não saem da plataforma até o Gmail ser conectado em Configurações.</Callout>}
+        {!sender.ok && <Callout tone="warn" title="Gmail não conectado">{sender.reason}. Os convites ficam na fila e só saem depois que você conectar o Gmail em E-mail.</Callout>}
         <div className="flex flex-wrap items-center gap-2">
-          <button className="btn btn-sm btn-secondary" onClick={() => setSel(new Set(invitable.map((r) => r.id)))}>Selecionar aguardando/convidados ({invitable.length})</button>
+          <button className="btn btn-sm btn-secondary" onClick={() => setSel(new Set(invitable.map((r) => r.id)))}>Selecionar quem ainda não ativou ({invitable.length})</button>
           <button className="btn btn-sm btn-ghost" onClick={() => setSel(new Set())}>Limpar seleção</button>
           <div className="flex-1" />
           <button className="btn btn-sm" disabled={!sel.size || busy} onClick={() => { if (!confirm(`Emitir convite para ${sel.size} pessoa(s)? Reenvio invalida a credencial anterior; contas já ativas recebem apenas aviso.`)) return; run(async () => { const r = await api<{ results: { outcome: string }[]; note: string; processed: { sent: number; failed: number } | null }>(`/api/professor/turmas/${classId}/convites`, { body: { enrollmentIds: [...sel] } }); setSel(new Set()); return `${r.results.length} convite(s) processado(s). ${r.processed ? `Aceitos pelo Gmail: ${r.processed.sent}; falhas: ${r.processed.failed}. ` : ""}${r.note}`; }); }}>Enviar convites ({sel.size})</button>
@@ -60,26 +60,26 @@ export function EnrollmentsPanel({ classId, rows, sender }: { classId: string; r
             </tbody>
           </table>
         </div>
-        <p className="hint">Estados: autorizado (na lista, sem convite) → convidado (credencial emitida) → ativo (senha definida). Suspender ou encerrar bloqueia imediatamente APIs, arquivos e canais desta turma, sem afetar outras matrículas da mesma pessoa. Senhas nunca são visíveis.</p>
+        <p className="hint">Situações: sem convite (na lista) → convidado (recebeu o e-mail) → com acesso (definiu a senha). Suspender ou encerrar bloqueia o acesso na hora, sem afetar outras turmas da mesma pessoa. Senhas nunca são visíveis.</p>
       </div>
       <aside className="flex flex-col gap-4">
         <section className="card">
-          <h2 className="text-base mb-2">Adicionar aluno</h2>
-          <form className="form-grid" onSubmit={(e) => { e.preventDefault(); const fd = new FormData(e.currentTarget); const form = e.currentTarget; run(async () => { const r = await api<{ created: string[]; skipped: string[] }>(`/api/professor/turmas/${classId}/matriculas`, { body: { people: [{ name: String(fd.get("name")), email: String(fd.get("email")), role: String(fd.get("role")) }] } }); form.reset(); return r.created.length ? "Aluno autorizado (sem convite ainda)." : "E-mail já consta na turma."; }); }}>
+          <h2 className="text-base mb-2">Adicionar um aluno</h2>
+          <form className="form-grid" onSubmit={(e) => { e.preventDefault(); const fd = new FormData(e.currentTarget); const form = e.currentTarget; run(async () => { const r = await api<{ created: string[]; skipped: string[] }>(`/api/professor/turmas/${classId}/matriculas`, { body: { people: [{ name: String(fd.get("name")), email: String(fd.get("email")), role: String(fd.get("role")) }] } }); form.reset(); return r.created.length ? "Aluno adicionado. Selecione e envie o convite quando quiser." : "E-mail já consta na turma."; }); }}>
             <label className="text-[13px]">Nome<input name="name" className="input" required /></label>
             <label className="text-[13px]">E-mail<input name="email" type="email" className="input" required /></label>
             <label className="text-[13px]">Papel<select name="role" className="select"><option value="aluno">aluno</option><option value="monitor">monitor</option></select></label>
-            <button className="btn btn-sm" type="submit" disabled={busy}>Autorizar</button>
+            <button className="btn btn-sm" type="submit" disabled={busy}>Adicionar</button>
           </form>
         </section>
         <section className="card">
-          <h2 className="text-base mb-1">Importar lista (CSV)</h2>
+          <h2 className="text-base mb-1">Importar uma lista (CSV)</h2>
           <p className="hint mb-2">Colunas: nome, email e papel (opcional), com ou sem linha de cabeçalho. Separador vírgula, ponto e vírgula ou tabulação. Nome vazio é aceito: o convite sai com saudação neutra. Ano e turma vêm do contexto desta tela. <a href={`data:text/csv;charset=utf-8,${encodeURIComponent(CSV_MODEL)}`} download="modelo-alunos.csv">Baixar modelo</a>.</p>
           <input type="file" accept=".csv,text/csv" className="text-[13px]" aria-label="Arquivo CSV" onChange={async (e) => { const f = e.target.files?.[0]; if (f) setCsv(await f.text()); }} />
           <textarea className="textarea mt-2 font-mono text-[12px] min-h-[100px]" value={csv} onChange={(e) => setCsv(e.target.value)} placeholder={"nome;email\nMaria;maria@exemplo.com"} aria-label="Conteúdo CSV" />
           <div className="flex gap-2 mt-2">
-            <button className="btn btn-sm btn-secondary" disabled={!csv.trim() || busy} onClick={() => run(async () => { setPreview(await api<Preview>(`/api/professor/turmas/${classId}/importar/previa`, { body: { csv } })); return "Prévia gerada. Confira e confirme."; })}>Prévia</button>
-            <button className="btn btn-sm" disabled={!preview || !preview.rows.some((r) => r.status === "ok") || busy} onClick={() => run(async () => { const r = await api<{ created: string[]; note: string }>(`/api/professor/turmas/${classId}/importar/confirmar`, { body: { csv } }); setPreview(null); setCsv(""); return `${r.created.length} matrícula(s) criada(s). ${r.note}`; })}>Confirmar importação</button>
+            <button className="btn btn-sm btn-secondary" disabled={!csv.trim() || busy} onClick={() => run(async () => { setPreview(await api<Preview>(`/api/professor/turmas/${classId}/importar/previa`, { body: { csv } })); return "Confira a lista abaixo e clique em Importar."; })}>Conferir</button>
+            <button className="btn btn-sm" disabled={!preview || !preview.rows.some((r) => r.status === "ok") || busy} onClick={() => run(async () => { const r = await api<{ created: string[]; note: string }>(`/api/professor/turmas/${classId}/importar/confirmar`, { body: { csv } }); setPreview(null); setCsv(""); return `${r.created.length} aluno(s) adicionado(s). ${r.note}`; })}>Importar</button>
           </div>
           {preview && (
             <div className="mt-3 table-wrap">

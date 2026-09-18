@@ -42,15 +42,15 @@ export function LiveStudent({ sessionId, classId, meeting, initial }: { sessionI
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-3 mb-4">
-          <div><p className="eyebrow">Encontro {meeting.number} · sessão ao vivo</p><h1 className="text-xl">{meeting.title}</h1></div>
+          <div><Link href="/ao-vivo" className="voltar">Ao vivo</Link><p className="eyebrow">Aula {meeting.number} · ao vivo</p><h1 className="text-xl">{meeting.title}</h1></div>
           <StatusBadge status={st.session.status} />
           <span className="hint" aria-live="polite">{channel === "sse" ? "Conectado" : channel === "polling" ? "Atualização periódica" : "Acesso revogado"} · {new Date(lastUpdate).toLocaleTimeString("pt-BR")}</span>
           {meeting.videoUrl && <a className="btn btn-sm btn-secondary" href={meeting.videoUrl} target="_blank" rel="noreferrer">Videoconferência</a>}
         </div>
         <div className="flex flex-wrap items-center gap-2 mb-4 no-print" role="group" aria-label="Modo de acompanhamento">
-          <button type="button" className={`btn btn-sm ${follow ? "" : "btn-secondary"}`} aria-pressed={follow} onClick={() => setFollow(true)}>Acompanhar professor</button>
-          <button type="button" className={`btn btn-sm ${!follow ? "" : "btn-secondary"}`} aria-pressed={!follow} onClick={() => { setSlug(slug); setFollow(false); }}>Explorar livremente</button>
-          {!follow && st.currentPage && <button type="button" className="btn btn-sm btn-ghost" onClick={() => { setFollow(true); setSlug(st.currentPage!.slug); }}>Voltar ao slide atual: {st.currentPage.title}</button>}
+          <button type="button" className={`btn btn-sm ${follow ? "" : "btn-secondary"}`} aria-pressed={follow} onClick={() => setFollow(true)}>Seguir o professor</button>
+          <button type="button" className={`btn btn-sm ${!follow ? "" : "btn-secondary"}`} aria-pressed={!follow} onClick={() => { setSlug(slug); setFollow(false); }}>Navegar por conta própria</button>
+          {!follow && st.currentPage && <button type="button" className="btn btn-sm btn-ghost" onClick={() => { setFollow(true); setSlug(st.currentPage!.slug); }}>Voltar ao slide do professor: {st.currentPage.title}</button>}
         </div>
         {page ? (
           <article className="card">
@@ -62,12 +62,12 @@ export function LiveStudent({ sessionId, classId, meeting, initial }: { sessionI
             {!follow && (
               <div className="flex justify-between mt-6 pt-3 border-t border-rule">
                 <button type="button" className="btn btn-sm btn-secondary" disabled={!page.prev} onClick={() => page.prev && setSlug(page.prev)}>← Anterior</button>
-                <Link href={`/aulas/${page.page.slug}`} className="hint self-center">Abrir no modo estudo</Link>
+                <Link href={`/aulas/${page.page.slug}`} className="hint self-center">Abrir esta página em Aulas</Link>
                 <button type="button" className="btn btn-sm btn-secondary" disabled={!page.next} onClick={() => page.next && setSlug(page.next)}>Próxima →</button>
               </div>
             )}
           </article>
-        ) : <div className="panel-soft"><p className="hint">{st.currentPage ? "Carregando slide…" : "O professor ainda não apresentou um slide."}</p></div>}
+        ) : <div className="panel-soft"><p className="hint">{st.currentPage ? "Carregando…" : "O professor ainda não mostrou nenhuma página."}</p></div>}
       </div>
 
       <aside className="flex flex-col gap-4" aria-label="Atividades e presença">
@@ -76,14 +76,14 @@ export function LiveStudent({ sessionId, classId, meeting, initial }: { sessionI
           {windows.length ? (
             <form className="mt-2 flex gap-2" onSubmit={(e) => { e.preventDefault(); doCheckin(); }}>
               <input className="input font-mono tracking-widest uppercase" value={code} onChange={(e) => setCode(e.target.value)} placeholder="Código" aria-label="Código de presença" maxLength={8} autoComplete="off" />
-              <button className="btn btn-sm" type="submit" disabled={code.length < 4}>Registrar</button>
+              <button className="btn btn-sm" type="submit" disabled={code.length < 4}>Registrar presença</button>
             </form>
-          ) : <p className="hint mt-1">Nenhuma chamada aberta neste momento.</p>}
+          ) : <p className="hint mt-1">Quando o professor abrir a chamada, o campo do código aparece aqui.</p>}
           {checkinMsg && <p className="mt-2 text-[14px]" role="status">{checkinMsg}</p>}
         </section>
         <section aria-labelledby="ativ">
-          <h2 id="ativ" className="text-base mb-2">Atividades {open.length ? <span className="badge badge-ok ml-1">{open.length} aberta{open.length > 1 ? "s" : ""}</span> : null}</h2>
-          {st.activities.length === 0 && <p className="hint">Quando o professor publicar uma questão, ela aparece aqui.</p>}
+          <h2 id="ativ" className="text-base mb-2">Perguntas {open.length ? <span className="badge badge-ok ml-1">{open.length} aberta{open.length > 1 ? "s" : ""}</span> : null}</h2>
+          {st.activities.length === 0 && <p className="hint">Quando o professor fizer uma pergunta, ela aparece aqui.</p>}
           <div className="flex flex-col gap-3">
             {[...open, ...others].map((a) => <LiveActivity key={a.id} a={a} sessionId={sessionId} />)}
           </div>

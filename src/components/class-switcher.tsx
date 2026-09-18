@@ -9,7 +9,7 @@ export function ClassSwitcher({ classes, currentId }: { classes: { id: string; n
   return (
     <label className="text-[12.5px] flex items-center gap-2">
       <span className="sr-only">Turma</span>
-      <select className="bg-white/10 border border-white/30 rounded-full px-3 py-1 text-white min-h-[36px]" value={currentId ?? ""}
+      <select className="bg-white/10 border border-white/30 rounded-full px-3 py-1 text-white min-h-[36px] max-w-[118px] sm:max-w-[220px] truncate" value={currentId ?? ""}
         onChange={async (e) => { await api("/api/turma/selecionar", { body: { classId: e.target.value } }); router.refresh(); }}>
         {classes.map((c) => <option key={c.id} value={c.id} className="text-body">{c.name} · {c.code}</option>)}
       </select>

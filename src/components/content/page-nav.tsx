@@ -18,7 +18,7 @@ export function PageNav({ prev, next, position }: { prev: { href: string; title:
   return (
     <nav className="mt-8 flex items-center justify-between gap-3 border-t border-rule pt-4 no-print" aria-label="Navegação entre páginas">
       {prev ? <Link href={prev.href} className="btn btn-secondary" rel="prev">← Anterior</Link> : <span />}
-      <span className="hint text-center">{position}<span className="hidden md:inline"> · Alt+← / Alt+→</span></span>
+      <span className="hint text-center">página {position}<span className="hidden md:inline"> · Alt+← e Alt+→ também navegam</span></span>
       {next ? <Link href={next.href} className="btn" rel="next">Próxima →</Link> : <span />}
     </nav>
   );

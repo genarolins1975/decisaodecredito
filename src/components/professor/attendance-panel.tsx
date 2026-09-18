@@ -28,7 +28,7 @@ export function AttendancePanel({ classId, map }: { classId: string; map: Map })
     <div className="flex flex-col gap-3">
       <ErrorBox message={err} /><SuccessBox message={ok} />
       <div className="flex flex-wrap items-center gap-3">
-        <p className="text-[14px]">{map.rule?.minimumPct != null ? <>Regra: mínimo <b>{map.rule.minimumPct}%</b>; atraso conta como <b>{map.rule.lateCountsAs ?? "ausente"}</b>; justificado como <b>{map.rule.justifiedCountsAs ?? "ausente"}</b>. Encontros cancelados e os que não contam ficam fora do denominador; só encontros marcados como realizados entram.</> : <><b>Regra não definida.</b> Nenhum percentual é calculado nem ninguém é reprovado até você configurar em <Link href={`/professor/turmas/${classId}/configuracoes`}>Configurações</Link>.</>}</p>
+        <p className="text-[14px]">{map.rule?.minimumPct != null ? <>Regra: mínimo <b>{map.rule.minimumPct}%</b>; atraso conta como <b>{map.rule.lateCountsAs ?? "ausente"}</b>; justificado como <b>{map.rule.justifiedCountsAs ?? "ausente"}</b>. Aulas canceladas e as que não contam ficam fora da conta; só aulas marcadas como realizadas entram.</> : <><b>Regra não definida.</b> Nenhum percentual é calculado nem ninguém é reprovado até você configurar em <Link href={`/professor/turmas/${classId}/configuracoes`}>Configurações</Link>.</>}</p>
         <div className="flex-1" />
         <a className="btn btn-sm btn-secondary" href={`/api/professor/turmas/${classId}/frequencia?formato=csv`}>Exportar CSV</a>
       </div>

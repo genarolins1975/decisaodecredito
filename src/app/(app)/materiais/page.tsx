@@ -18,7 +18,7 @@ export default async function MateriaisPage() {
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <div>
-        <PageHeader eyebrow="Leituras, referências e pacote do trabalho" title="Materiais" lead="Bibliografia de apoio e o pacote do trabalho final (guia de dados e missões, template do manifesto, roteiro de testes e notebook guiado). As obras citadas sustentam conceitos das aulas; os números do material são reconstruções didáticas ou exemplos sintéticos, salvo indicação." />
+        <PageHeader eyebrow="Leituras e pacote do trabalho" title="Materiais" lead="Leituras de apoio e o pacote do trabalho final (guia de dados e missões, modelo de manifesto, roteiro de testes e notebook guiado). Os números do material são reconstruções didáticas ou exemplos sintéticos, salvo indicação." />
         <ul className="list-none p-0 m-0 grid gap-2">
           {materials.map((m) => <li key={m.id} className="card-flat"><p className="eyebrow">{m.kind}</p><p className="font-semibold text-ink text-[15px]">{m.url ? <a href={m.url} target="_blank" rel="noreferrer">{m.title}</a> : m.fileId ? <a href={`/api/arquivos/${m.fileId}`}>{m.title}</a> : m.title}</p>{m.description && <p className="hint mt-1">{m.description}</p>}</li>)}
           {materials.length === 0 && <li className="hint">Nenhum material cadastrado.</li>}

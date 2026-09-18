@@ -12,7 +12,7 @@ export default async function AulasPage() {
   return (
     <div>
       <PageHeader eyebrow={<>{ctx.current.cls.name} · edição {ctx.current.edition.label}</>} title="Aulas"
-        lead="Quatro encontros de 180 minutos (com 15 de intervalo) e o trabalho final. Em cada capítulo, as páginas essenciais formam a aula; as complementares aprofundam no estudo individual." />
+        lead="Quatro aulas e o trabalho final. Em cada capítulo, as páginas essenciais são vistas em aula; as complementares aprofundam no seu estudo." />
       <div className="flex flex-col gap-6">
         {outline.map((u) => (
           <section key={u.id} className="card" aria-labelledby={`u-${u.id}`}>
@@ -34,7 +34,7 @@ export default async function AulasPage() {
                     <p className="text-[14px] italic text-ink">{c.centralQuestion}</p>
                     <p className="text-[13.5px]">{c.learn}</p>
                     <details className="mt-auto">
-                      <summary className="cursor-pointer text-[13px] font-semibold text-ink min-h-[32px] flex items-center">Páginas</summary>
+                      <summary className="cursor-pointer text-[13px] font-semibold text-ink min-h-[32px] flex items-center">Ver as páginas</summary>
                       <ol className="link-list mt-1 text-[13.5px] list-none p-0 m-0">
                         {c.pages.map((p) => (
                           <li key={p.id}><Link href={`/aulas/${p.slug}`} className="flex items-center gap-2"><span className="font-mono text-[11px] text-muted w-8 shrink-0">{p.slug}</span><span className="flex-1">{p.title}</span>{p.level === "complementar" && <Badge tone="muted">compl.</Badge>}</Link></li>

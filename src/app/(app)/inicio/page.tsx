@@ -8,7 +8,7 @@ import { flatPages } from "@/lib/services/content";
 import { PageHeader, StatusBadge, ButtonLink } from "@/components/ui";
 import { fmtL, fmtDT, relative } from "@/lib/time";
 
-export const metadata: Metadata = { title: "Visão geral" };
+export const metadata: Metadata = { title: "Início" };
 
 export default async function InicioPage() {
   const ctx = await requireContext();
@@ -38,9 +38,9 @@ export default async function InicioPage() {
 
   return (
     <div>
-      <PageHeader eyebrow={<>{ctx.current.cls.name} · edição {ctx.current.edition.label}</>} title={ctx.user.isStaff ? "Visão do aluno" : `Olá, ${ctx.user.name.split(" ")[0]}`} lead={openSessions.length ? undefined : "Próxima aula, o que preparar, o que está pendente e os prazos."} />
+      <PageHeader eyebrow={<>{ctx.current.cls.name} · edição {ctx.current.edition.label}</>} title={`Olá, ${ctx.user.name.split(" ")[0]}`} lead={openSessions.length ? undefined : "Sua próxima aula, o que preparar e o que está pendente."} />
       {openSessions.map(({ s, m }) => (
-        <div key={s.id} className="callout callout-ok mb-5 flex flex-wrap items-center gap-3"><p className="font-semibold text-ok text-[15px]">Sessão ao vivo aberta agora: {m.title}</p><div className="flex-1" /><ButtonLink href={`/ao-vivo/${s.id}`}>Entrar na sessão</ButtonLink></div>
+        <div key={s.id} className="callout callout-ok mb-5 flex flex-wrap items-center gap-3"><p className="font-semibold text-ok text-[15px]">A aula ao vivo começou: {m.title}</p><div className="flex-1" /><ButtonLink href={`/ao-vivo/${s.id}`}>Entrar na aula</ButtonLink></div>
       ))}
       <div className="grid gap-4 lg:grid-cols-3">
         <section className="card lg:col-span-2" aria-labelledby="prox">
@@ -52,13 +52,13 @@ export default async function InicioPage() {
               {nextUnit && <p className="mt-2 text-[14.5px]"><b>Capítulos:</b> {unitChapters.map((c) => `${c.number}. ${c.title}`).join(" · ")}</p>}
               <p className="mt-2 text-[14.5px]"><b>O que preparar:</b> {next.preparation ?? (unitChapters.length ? `ler as páginas essenciais dos capítulos ${unitChapters.map((c) => c.number).join(", ")} e responder às perguntas de checagem.` : "o professor ainda não indicou.")}</p>
               {nextUnit && <p className="mt-1 text-[14.5px]"><b>Entrega indicada:</b> {nextUnit.deliverable}</p>}
-              <div className="mt-3 flex gap-2 flex-wrap">{unitChapters[0] && <ButtonLink href="/aulas" variant="secondary">Abrir a aula</ButtonLink>}<ButtonLink href="/ao-vivo" variant="ghost">Sessão ao vivo</ButtonLink></div>
+              <div className="mt-3 flex gap-2 flex-wrap">{unitChapters[0] && <ButtonLink href="/aulas" variant="secondary">Ver o conteúdo da aula</ButtonLink>}</div>
             </>
-          ) : <p className="hint mt-1">Nenhum encontro planejado. Enquanto isso, estude pelas aulas.</p>}
+          ) : <p className="hint mt-1">Nenhuma aula marcada. Enquanto isso, estude em Aulas.</p>}
         </section>
         <section className="card" aria-labelledby="cont">
-          <p className="eyebrow">Continuar estudando</p>
-          {resume ? <><h2 id="cont" className="text-lg mt-1">{resume.title}</h2><p className="hint">página {resume.slug}</p><ButtonLink href={`/aulas/${resume.slug}`} className="mt-3">Retomar</ButtonLink></> : <p className="hint">Sem histórico ainda.</p>}
+          <p className="eyebrow">Continuar de onde parou</p>
+          {resume ? <><h2 id="cont" className="text-lg mt-1">{resume.title}</h2><p className="hint">página {resume.slug}</p><ButtonLink href={`/aulas/${resume.slug}`} className="mt-3">Continuar</ButtonLink></> : <p className="hint">Você ainda não começou. Comece em Aulas.</p>}
         </section>
         <section className="card lg:col-span-2" aria-labelledby="pend">
           <h2 id="pend" className="text-lg mb-2">Entregas pendentes</h2>
@@ -67,7 +67,7 @@ export default async function InicioPage() {
           )}
         </section>
         <section className="card" aria-labelledby="dev">
-          <h2 id="dev" className="text-lg mb-2">Avisos e devolutivas</h2>
+          <h2 id="dev" className="text-lg mb-2">Avisos e resultados</h2>
           {notices.length === 0 && published.length === 0 && <p className="hint">Nenhum aviso recente.</p>}
           <ul className="list-none p-0 m-0 grid gap-2 text-[14px]">
             {notices.map((n) => <li key={n.id}><b>{n.title}</b><p className="hint">{fmtDT(n.publishedAt)}</p><p className="whitespace-pre-line">{n.body}</p></li>)}

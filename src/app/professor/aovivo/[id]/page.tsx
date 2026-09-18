@@ -7,7 +7,7 @@ import { flatPages, publicQuestions } from "@/lib/services/content";
 import { db, schema } from "@/lib/db/client";
 import { LiveTeacher } from "@/components/live/live-teacher";
 
-export const metadata: Metadata = { title: "Sessão ao vivo (professor)" };
+export const metadata: Metadata = { title: "Painel da aula" };
 
 export default async function AoVivoProfessorPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

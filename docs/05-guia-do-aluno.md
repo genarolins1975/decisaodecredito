@@ -2,19 +2,19 @@
 
 1. **Ativar o acesso.** Você recebe um e-mail do professor com um link e um código de primeiro acesso (12 caracteres). Abra o link ou vá em Ativar acesso e digite o código. Ele é individual, vale por 72 horas e funciona uma vez.
 2. **Definir a senha.** Escolha uma senha com pelo menos 10 caracteres. Ela é só sua: nunca é enviada por e-mail nem vista pelo professor.
-3. **Perfil opcional.** Telefone e LinkedIn podem ser preenchidos, pulados ("Preencher depois"), editados ou removidos em Perfil. Só você e o professor veem esses dados.
+3. **Perfil opcional.** Telefone e LinkedIn podem ser preenchidos, pulados ("Preencher depois"), editados ou removidos em Meus dados (clique no seu nome, no topo). Só você e o professor veem esses dados.
 4. **Turma.** Se você tiver mais de uma matrícula autorizada, escolha a turma no seletor do topo. Cada edição tem histórico separado.
-5. **Aulas.** Cada página traz objetivo, apoio, o visual, atividades e uma pergunta de checagem. Alt+← e Alt+→ navegam. "Modo apresentação" mostra o slide em 16:9.
-6. **Ao vivo.** Quando o professor abre a sessão, entre por Ao vivo. Você pode acompanhar o slide dele ou explorar livremente e voltar. As questões publicadas aparecem no painel lateral; sua resposta fica salva no servidor e um reenvio por falha de rede não duplica. Digite o código mostrado em sala para registrar presença.
+5. **Aulas.** Cada página traz objetivo, apoio, o visual, atividades e uma pergunta de checagem. Anterior e Próxima ficam no fim da página; Alt+← e Alt+→ também navegam. "Ver em tela cheia" mostra a página como slide.
+6. **Ao vivo.** Quando o professor inicia a aula, aparece em Início o aviso "A aula ao vivo começou" com o botão "Entrar na aula" (ou vá em Ao vivo). Você segue o professor por padrão, pode "Navegar por conta própria" e voltar. As perguntas dele aparecem ao lado; sua resposta fica salva no servidor e um reenvio por falha de rede não duplica. Digite o código mostrado em sala para registrar presença.
 7. **Trabalhos.** Inicie a entrega, anexe arquivos ou links e clique em Enviar. Só então há entrega, com recibo (versão, hashes e horário do servidor). Uma nova versão substitui a vigente sem apagar o histórico. Prazos seguem o horário de Brasília.
 8. **Teste cego.** Congele o modelo (manifesto, versão e hashes) antes de baixar o arquivo OOT da base do seu grupo (100.000 IDs, sem desfecho); as previsões são enviadas uma única vez. Arquivo com IDs faltantes, duplicados ou extras é recusado e não conta no limite. O arquivo de previsões precisa caber em 4,5 MB: quatro colunas, PD com até seis casas.
 9. **Base do trabalho final.** Em Materiais, baixe o pacote de qualquer base (propostas de desenvolvimento, dicionário e README); o OOT sem desfecho aparece ali quando o professor libera, ou na página do trabalho final depois do congelamento e o pacote comum do trabalho (guia de dados e missões, template do manifesto, roteiro de testes e notebook guiado). As bases são sintéticas e trazem sujeira deliberada: duplicidades, sentinelas, unidades trocadas, datas em dois formatos, consulta ao bureau posterior à proposta, campos pós-decisão e ausência informativa. Tratar sem olhar custa caro no OOT.
-10. **Devolutivas.** Notas, comentários e anexos aparecem em Trabalhos e em Meu acompanhamento quando o professor publica.
+10. **Notas.** Notas, comentários e anexos aparecem em Trabalhos e em Notas e presença quando o professor publica.
 11. **Problemas.** Senha esquecida: "Esqueci minha senha" na tela de entrada. Convite expirado: peça um novo ao professor.
 
 ## Como funciona o feedback das questões com gabarito
 
-Ao errar pela primeira vez, a plataforma não mostra a alternativa correta: mostra onde costuma estar a confusão, o conceito envolvido, um exemplo e uma pergunta de retomada, e pede uma nova tentativa. A alternativa correta e a explicação completa aparecem quando você acerta, a partir da segunda tentativa, ou quando clica em "Ver a resposta". Em Meu acompanhamento, conta como acerto próprio apenas a resposta certa dada antes de ver a resposta; acertos depois de ver a resposta ficam registrados separadamente. Nas sessões ao vivo a regra é outra: o resultado só aparece quando o professor libera.
+Ao errar pela primeira vez, a plataforma não mostra a alternativa correta: mostra onde costuma estar a confusão, o conceito envolvido, um exemplo e uma pergunta de retomada, e pede uma nova tentativa. A alternativa correta e a explicação completa aparecem quando você acerta, a partir da segunda tentativa, ou quando clica em "Ver a resposta". Em Notas e presença, conta como acerto próprio apenas a resposta certa dada antes de ver a resposta; acertos depois de ver a resposta ficam registrados separadamente. Nas sessões ao vivo a regra é outra: o resultado só aparece quando o professor libera.
 
 ## Antes desta página e o que o capítulo assume
 

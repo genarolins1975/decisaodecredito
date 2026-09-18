@@ -41,8 +41,8 @@ export function PageEditor({ data }: { data: Data }) {
           <h1 className="eyebrow text-[11px] font-sans">{data.unit.kind === "trabalho" ? "Trabalho final" : `Aula ${data.unit.number}`} · Capítulo {data.chapter.number} · {data.page.slug}</h1>
           <Badge tone={data.page.status === "published" ? "ok" : "muted"}>{data.page.status === "published" ? "publicada" : "rascunho"}</Badge>
           <div className="flex-1" />
-          <Link href={`/aulas/${data.page.slug}`} className="btn btn-sm btn-ghost">Ver como aluno (versão publicada)</Link>
-          <Link href="/professor/conteudo" className="btn btn-sm btn-ghost">Voltar</Link>
+          <Link href={`/aulas/${data.page.slug}`} className="btn btn-sm btn-ghost">Ver a versão publicada</Link>
+          <Link href="/professor/conteudo" className="btn btn-sm btn-ghost">Voltar ao conteúdo</Link>
         </div>
         <ErrorBox message={err} /><SuccessBox message={ok} />
         <section className="card form-grid">

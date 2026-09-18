@@ -40,17 +40,17 @@ export default async function AulaPaginaPage({ params }: { params: Promise<{ slu
           <ol className="link-list list-none p-0 m-0 text-[13px] mt-2">
             {chapterPages.map((p, i) => <li key={p.id}><Link href={`/aulas/${p.slug}`} aria-current={p.slug === slug ? "page" : undefined}><span className="font-mono text-[11px] text-muted mr-2">{i + 1}</span>{p.title}</Link></li>)}
           </ol>
-          <div className="mt-3 flex gap-2"><Link href={`/apresentacao/${slug}`} className="btn btn-secondary btn-sm">Modo apresentação</Link><Link href="/aulas" className="btn btn-ghost btn-sm">Todas as aulas</Link></div>
+          <div className="mt-3 flex gap-2"><Link href={`/apresentacao/${slug}`} className="btn btn-secondary btn-sm">Ver em tela cheia</Link><Link href="/aulas" className="btn btn-ghost btn-sm">Todas as aulas</Link></div>
         </details>
         <div className="hidden lg:block">
+          <Link href="/aulas" className="voltar mb-2">Aulas</Link>
           <p className="eyebrow mb-2">{data.unit.kind === "trabalho" ? "Trabalho final" : `Aula ${data.unit.number}`} · Capítulo {data.chapter.number}</p>
           <p className="font-serif font-bold text-ink text-[15px] mb-3">{data.chapter.title}</p>
           <ol className="link-list list-none p-0 m-0 text-[13px] max-h-[60vh] overflow-auto">
             {chapterPages.map((p, i) => <li key={p.id}><Link href={`/aulas/${p.slug}`} aria-current={p.slug === slug ? "page" : undefined}><span className="font-mono text-[11px] text-muted mr-2">{i + 1}</span>{p.title}</Link></li>)}
           </ol>
           <div className="mt-4 flex flex-col gap-2">
-            <Link href={`/apresentacao/${slug}`} className="btn btn-secondary btn-sm">Modo apresentação</Link>
-            <Link href="/aulas" className="btn btn-ghost btn-sm">Todas as aulas</Link>
+            <Link href={`/apresentacao/${slug}`} className="btn btn-secondary btn-sm">Ver em tela cheia</Link>
           </div>
         </div>
       </aside>

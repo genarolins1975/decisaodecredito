@@ -25,6 +25,15 @@ export async function createSession(meetingId: string, classId: string, actorId:
   return id;
 }
 
+/** Inicia a aula ao vivo de um encontro em um clique: reaproveita a sessão aberta ou em rascunho, senão cria; abre e devolve o id. */
+export async function startSession(meetingId: string, classId: string, actorId: string) {
+  const existing = await db.select().from(schema.liveSessions).where(and(eq(schema.liveSessions.meetingId, meetingId), eq(schema.liveSessions.classId, classId), inArray(schema.liveSessions.status, ["open", "draft"]))).orderBy(desc(schema.liveSessions.createdAt));
+  const open = existing.find((s) => s.status === "open") ?? existing[0];
+  const id = open?.id ?? (await createSession(meetingId, classId, actorId));
+  if (!open || open.status !== "open") await setSessionStatus(id, "open", actorId);
+  return id;
+}
+
 export async function setSessionStatus(sessionId: string, status: "open" | "closed", actorId: string) {
   const s = await getSession(sessionId);
   await db.update(schema.liveSessions).set({ status, openedAt: status === "open" ? s.openedAt ?? new Date() : s.openedAt, closedAt: status === "closed" ? new Date() : null }).where(eq(schema.liveSessions.id, sessionId));
