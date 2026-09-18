@@ -210,3 +210,33 @@ describe("boosting didático contra o gerador (capítulo 6)", async () => {
     }
   });
 });
+
+describe("monitoramento contra o gerador (capítulo 9)", async () => {
+  const { indiceDeEstabilidade, limitesDecis, diferencaProporcoes, PERGUNTAS, psi } = await import("@/lib/visuais/monitoramento");
+  const esc = JSON.parse(readFileSync("src/lib/visuais/escores.json", "utf8"));
+  const mon = JSON.parse(readFileSync("src/lib/visuais/monitoramento.json", "utf8"));
+  it("faixas congeladas no treino: decis 731,0 · 763,9 · … · 908,9 e PSI do escore 0,0136", () => {
+    const edges = limitesDecis(esc.treino.sc);
+    edges.forEach((e, i) => expect(e).toBeCloseTo(mon.psi.edges[i], 0));
+    const r = indiceDeEstabilidade(esc.treino.sc, esc.janela.sc, edges); // limites calculados aqui; os do gerador estão arredondados a uma casa
+    r.faixas.forEach((f, j) => { expect(f.p).toBeCloseTo(mon.psi.ref[j], 2); expect(f.q).toBeCloseTo(mon.psi.cur[j], 2); }); // escores com uma casa: um empate no limite muda uma proposta de faixa
+    expect(r.valor).toBeCloseTo(0.0136, 3);
+    expect(r.faixas[0].psi).toBeCloseTo(0.00065, 3); expect(r.faixas[3].psi).toBeCloseTo(0.00436, 3);
+  });
+  it("PSI direto das proporções do gerador reproduz 0,0136 e o piso de 0,0001 entra numa faixa vazia", () => {
+    expect(psi(mon.psi.ref, mon.psi.cur).valor).toBeCloseTo(0.0136, 3);
+    const r = psi([0.5, 0.5], [1, 0]); expect(r.faixas[1].q).toBeCloseTo(1e-4, 6); expect(r.valor).toBeGreaterThan(3);
+  });
+  it("equidade: aprovação 72,7% contra 68,0%, diferença 4,7 pp com IC de −2,5 a 11,9 pp (c9p6)", () => {
+    const g1 = mon.fair.G1, g2 = mon.fair.G2; const q = PERGUNTAS[0];
+    const d = diferencaProporcoes(q.k(g1), q.n(g1), q.k(g2), q.n(g2));
+    expect(d.p1).toBeCloseTo(0.7269, 3); expect(d.p2).toBeCloseTo(0.6798, 3);
+    expect(d.dif * 100).toBeCloseTo(4.7, 1); expect(d.lo * 100).toBeCloseTo(-2.5, 1); expect(d.hi * 100).toBeCloseTo(11.9, 1); expect(d.excluiZero).toBe(false);
+    // recusa entre pagadores é a taxa de falsos positivos do gerador; default entre recusados é o valor preditivo positivo
+    expect(PERGUNTAS[2].k(g1) / PERGUNTAS[2].n(g1)).toBeCloseTo(mon.fair.G1.fpr, 3); expect(PERGUNTAS[3].k(g1) / PERGUNTAS[3].n(g1)).toBeCloseTo(mon.fair.G1.vpp, 3);
+  });
+  it("nível: prevalência da janela 10,99% contra 9,56% no treino, +1,43 pp com IC de −1,15 a +4,02 pp (c9p5)", () => {
+    const d = diferencaProporcoes(Math.round(mon.res.logit_oot.obs * mon.n.oot), mon.n.oot, Math.round(mon.res.logit_treino.obs * mon.n.treino), mon.n.treino);
+    expect(d.dif * 100).toBeCloseTo(1.43, 1); expect(d.lo * 100).toBeCloseTo(-1.15, 1); expect(d.hi * 100).toBeCloseTo(4.02, 1);
+  });
+});

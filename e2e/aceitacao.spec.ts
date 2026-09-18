@@ -377,6 +377,16 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await grade.getByRole("button", { name: "Escolher pelo treino" }).click();
   await expect(grade).toContainText("0,9927");
   await expect(grade).toContainText("a pior da grade inteira");
+
+  // capítulo 9: o índice soma faixa a faixa e a equidade muda com a pergunta
+  await page.goto("/aulas/c9p3");
+  const indice = page.locator('figure[data-vz="indice-faixas"]');
+  await expect(indice).toContainText("PSI do escore 0,0133");
+  await page.goto("/aulas/c9p6");
+  const eq = page.locator('figure[data-vz="equidade"]');
+  await expect(eq).toContainText("72,7% (370 de 509)");
+  await eq.getByRole("button", { name: "Recusa entre pagadores" }).click();
+  await expect(eq).toContainText("106 de 454");
 });
 
 test("núcleo: gabaritos e notas privadas não estão no motor legado nem nas páginas", async () => {

@@ -3,6 +3,8 @@ import type { ComponentType } from "react";
 import { ResiduosQueEncolhem } from "./residuos-que-encolhem";
 import { PerdaQueCai } from "./perda-que-cai";
 import { DistanciaQueSeAbre } from "./distancia-que-se-abre";
+import { IndiceQueSoma } from "./indice-que-soma";
+import { Equidade } from "./equidade";
 import { ArvoreQueCresce } from "./arvore-que-cresce";
 import { CemVidas } from "./cem-vidas";
 import { CurvaDeLucro } from "./curva-de-lucro";
@@ -37,6 +39,10 @@ const REGISTRO: Record<string, VisualNativo> = {
   c6p14: { Componente: () => <PerdaQueCai modo="rastro" />, substitui: "legacy" },
   c6p17: { Componente: DistanciaQueSeAbre, substitui: "figura" },
   c7p6: { Componente: FilaDeRisco, substitui: "legacy" },
+  c9p3: { Componente: () => <IndiceQueSoma modo="faixas" />, substitui: "legacy" },
+  c9p4: { Componente: () => <IndiceQueSoma modo="variaveis" />, substitui: "legacy" },
+  c9p5: { Componente: () => <IndiceQueSoma modo="leituras" />, substitui: "legacy" },
+  c9p6: { Componente: Equidade, substitui: "legacy" },
   c8p8: { Componente: CurvaDeLucro, substitui: "legacy" },
 };
 

@@ -654,6 +654,32 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner .vz-dist-leitura { font-size: .9em; padding: .8cqh 1.2cqh; }
 .slide-inner .vz-check { font-size: .85em; margin-top: .4cqh; }
 .slide-inner [data-vz="residuos-arvores"] .table { font-size: .8em; }
+/* Capítulo 9: o índice que soma, equidade */
+.vz-ind-grade, .vz-eq-grade { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 14px 22px; align-items: start; }
+.vz-ind-painel, .vz-eq-painel { display: grid; gap: 10px; min-width: 0; }
+.vz-ind-p { fill: var(--color-ink); } .vz-ind-q { fill: var(--color-gold); } .vz-ind-futuro { opacity: .3; }
+.vz-ind-lim { fill: var(--color-muted); font-size: 9.5px; }
+.vz-ind-psi { font-size: 10.5px; font-weight: 700; fill: var(--color-ink); font-variant-numeric: tabular-nums; } .vz-ind-psi--maior { fill: var(--color-alert); }
+.vz-ind-trilho { position: relative; } .vz-ind-marca { position: absolute; top: -3px; height: 20px; width: 2px; background: var(--color-gold); }
+.vz-ind-leituras { display: grid; gap: 12px; }
+.vz-ind-cartoes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.vz-ind-cartao { background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 6px; padding: 10px 12px; display: grid; gap: 4px; align-content: start; }
+.vz-ind-ic { width: 100%; max-width: 260px; height: auto; margin-top: 4px; }
+.vz-ind-ic-linha { stroke: var(--color-ink); stroke-width: 4; stroke-linecap: round; } .vz-ind-ic-pt { fill: var(--color-gold); stroke: var(--color-ink); stroke-width: 1.5; }
+.vz-ind-opcoes { display: grid; gap: 8px; }
+.vz-ind-opcao { text-align: left; background: #fff; border: 1px solid var(--color-rule); border-radius: 6px; padding: 10px 12px; cursor: pointer; display: grid; gap: 4px; font-size: 14px; color: var(--color-body); }
+.vz-ind-opcao b { color: var(--color-ink); } .vz-ind-opcao:hover { border-color: var(--color-ink); }
+.vz-ind-opcao--ok { border-color: var(--color-ok); background: #F0F7F3; } .vz-ind-opcao--nao { border-color: var(--color-alert); background: #FBF2F3; }
+[data-vz="equidade"] .vz-seg { display: flex; flex-wrap: wrap; max-width: 100%; } [data-vz="equidade"] .vz-seg-b { flex: 1 1 auto; }
+.vz-eq-barra { fill: var(--color-ink); opacity: .85; } .vz-eq-ic { stroke: var(--color-gold); stroke-width: 3; }
+@container (max-width: 760px) { .vz-ind-grade, .vz-eq-grade { grid-template-columns: minmax(0, 1fr); } .vz-ind-cartoes { grid-template-columns: minmax(0, 1fr); } }
+/* palco */
+.slide-inner .vz-ind-grade, .slide-inner .vz-eq-grade { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1cqh 2cqh; }
+.slide-inner [data-vz="indice-faixas"] .vz-grafico svg { height: 42cqh; width: auto; }
+.slide-inner [data-vz="equidade"] .vz-grafico svg { height: 30cqh; width: auto; }
+.slide-inner .vz-ind-cartoes { gap: 1.2cqh; } .slide-inner .vz-ind-cartao { padding: 1cqh 1.4cqh; }
+.slide-inner .vz-ind-opcao { font-size: .95em; padding: .8cqh 1.2cqh; }
+.slide-inner .vz-ind-ic { max-width: 30cqh; }
 /* palco: raiz mostra plano e disputa; freios e instabilidade mostram plano, árvore e tiles */
 .slide-inner .vz-arv-grade { grid-template-columns: 46cqh minmax(0, 1fr); gap: 1cqh 2cqh; }
 .slide-inner [data-vz^="arvore"] .vz-arv-grade > .vz-grafico svg { height: 46cqh; }
