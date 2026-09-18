@@ -19,6 +19,11 @@ import { KsEDecis } from "./ks-e-decis";
 import { CalibracaoPorFaixa } from "./calibracao-por-faixa";
 import { BrierELogLoss } from "./brier-e-logloss";
 import { TresAmostras, DecisaoEvidencia } from "./evidencias";
+import { ResultadoPorProposta } from "./resultado-por-proposta";
+import { TrocaDoCorte } from "./troca-do-corte";
+import { RevisaoManual } from "./revisao-manual";
+import { Ponte } from "./ponte";
+import { PoliticaQueFecha } from "./politica-que-fecha";
 import { ArvoreQueCresce } from "./arvore-que-cresce";
 import { CemVidas } from "./cem-vidas";
 import { CurvaDeLucro } from "./curva-de-lucro";
@@ -78,7 +83,15 @@ const REGISTRO: Record<string, VisualNativo> = {
   c9p4: { Componente: () => <IndiceQueSoma modo="variaveis" />, substitui: "legacy" },
   c9p5: { Componente: () => <IndiceQueSoma modo="leituras" />, substitui: "legacy" },
   c9p6: { Componente: Equidade, substitui: "legacy" },
+  c8p3: { Componente: () => <ResultadoPorProposta modo="fracao" />, substitui: "legacy" },
+  c8p5: { Componente: () => <ResultadoPorProposta modo="parcelas" />, substitui: "legacy" },
+  c8p6: { Componente: () => <ResultadoPorProposta modo="equilibrio" />, substitui: "legacy" },
+  c8p7: { Componente: TrocaDoCorte, substitui: "legacy" },
   c8p8: { Componente: CurvaDeLucro, substitui: "legacy" },
+  c8p9: { Componente: RevisaoManual, substitui: "legacy" },
+  c8p10: { Componente: Ponte, substitui: "legacy" },
+  c8p11: { Componente: CurvaDeLucro, substitui: "legacy" },
+  c8p12: { Componente: PoliticaQueFecha, substitui: "legacy" },
 };
 
 export function visualNativo(slug: string): VisualNativo | null {

@@ -20,7 +20,7 @@ export function ruidoEstavel(id: number, semente = 7): number {
 }
 
 export type Registro = { i: number; pd: number; pdUsada: number; ead: number; y: number; zona: "auto" | "revisao" | "recusa"; revisado: boolean; aprovado: boolean; esperado: number; realizado: number };
-export type Avaliacao = { reg: Registro[]; aprovados: number; revisados: number; exposicao: number; receitaEsp: number; perda: number; funding: number; operacao: number; capital: number; revisoes: number; esperado: number; realizado: number; defaultsAprovados: number };
+export type Avaliacao = { reg: Registro[]; aprovados: number; revisados: number; aprovadosNaRevisao: number; filaNaoAtendida: number; exposicao: number; receitaEsp: number; perda: number; funding: number; operacao: number; capital: number; revisoes: number; esperado: number; realizado: number; valorReal: number | null; defaultsAprovados: number };
 
 export function avaliarCarteira(ops: { pd: number[]; ead: number[]; y: number[]; pt?: number[] }, par: Partial<Politica> = {}): Avaliacao {
   const P = { ...POLITICA, ...par }; const n = ops.pd.length;
@@ -35,16 +35,18 @@ export function avaliarCarteira(ops: { pd: number[]; ead: number[]; y: number[];
     const z = (1 - w) * logit(r.pd) + w * logit(alvo) + ruidoEstavel(r.i) * 0.6 * (1 - w);
     r.revisado = true; r.pdUsada = sigmoide(z); r.aprovado = r.pdUsada <= P.corte;
   }
-  let receitaEsp = 0, perda = 0, funding = 0, operacao = 0, capital = 0, exposicao = 0, realizado = 0, defaultsAprovados = 0;
+  let receitaEsp = 0, perda = 0, funding = 0, operacao = 0, capital = 0, exposicao = 0, realizado = 0, defaultsAprovados = 0, valorReal = 0;
   for (const r of reg) {
     if (!r.aprovado) continue;
     const R = r.ead * P.receita, F = r.ead * P.funding, O = P.operacao, K = r.ead * P.capital, EL = r.pdUsada * P.lgd * r.ead;
     r.esperado = (1 - r.pdUsada) * R - EL - F - O - K;
     r.realizado = r.y ? -P.lgd * r.ead - F - O - K : R - F - O - K;
+    // valor da decisão sob a PD verdadeira do gerador: só existe porque a base é sintética
+    if (ops.pt) { const t = ops.pt[r.i]; valorReal += (1 - t) * R - t * P.lgd * r.ead - F - O - K; }
     receitaEsp += (1 - r.pdUsada) * R; perda += EL; funding += F; operacao += O; capital += K; exposicao += r.ead; realizado += r.realizado; defaultsAprovados += r.y;
   }
   const revisoes = fila.length * P.custoRevisao;
-  return { reg, aprovados: reg.filter((r) => r.aprovado).length, revisados: fila.length, exposicao, receitaEsp, perda, funding, operacao, capital, revisoes, esperado: receitaEsp - perda - funding - operacao - capital - revisoes, realizado: realizado - revisoes, defaultsAprovados };
+  return { reg, aprovados: reg.filter((r) => r.aprovado).length, revisados: fila.length, aprovadosNaRevisao: fila.filter((r) => r.aprovado).length, filaNaoAtendida: reg.filter((r) => r.zona === "revisao").length - fila.length, exposicao, receitaEsp, perda, funding, operacao, capital, revisoes, esperado: receitaEsp - perda - funding - operacao - capital - revisoes, realizado: realizado - revisoes, valorReal: ops.pt ? valorReal - revisoes : null, defaultsAprovados };
 }
 
 /** aplica o choque: PD deslocada em log odds, funding e perda dado o default maiores */

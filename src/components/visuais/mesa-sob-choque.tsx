@@ -5,6 +5,7 @@ import { avaliarCarteira, CHOQUE, POLITICA, sobChoque, type Avaliacao } from "@/
 import { fmtReais } from "@/lib/visuais/economia";
 import { wilson } from "@/lib/visuais/arvore";
 import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
+import { assinarLab, decodificarLab, gravarLab, lerLab, type EstadoLab } from "@/lib/visuais/lab-estado";
 
 /**
  * A mesa do comitê (capítulo 10). Rodada 1 (c10p11): a política na tela, congelada pela turma. Choque (c10p12): funding,
@@ -12,19 +13,16 @@ import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
  * recupera. O estado (política congelada, choque ligado, rodada 2) fica gravado neste navegador e aparece nas três páginas.
  */
 export type ModoMesa = "rodada1" | "choque" | "rodada2";
-type Estado = { rodada1?: { corte: number; teto: number; capacidade: number }; choque?: boolean; rodada2?: { corte: number; capacidade: number } };
-const CHAVE = "lab10.estado";
+type Estado = EstadoLab;
 const OPS = { pd: oot.pd as number[], ead: oot.ead as number[], y: oot.y as number[], pt: oot.pt as number[] };
 const OPS_CHOQUE = { ...OPS, pd: sobChoque(OPS.pd), pt: sobChoque(OPS.pt) };
 const PAR_CHOQUE = { funding: CHOQUE.funding, lgd: CHOQUE.lgd };
-const ler = (): string => { try { return localStorage.getItem(CHAVE) || "{}"; } catch { return "{}"; } };
-const gravar = (e: Estado) => { try { localStorage.setItem(CHAVE, JSON.stringify(e)); } catch { /* sem armazenamento */ } window.dispatchEvent(new Event("lab10")); };
-const assinar = (cb: () => void) => { window.addEventListener("storage", cb); window.addEventListener("lab10", cb); return () => { window.removeEventListener("storage", cb); window.removeEventListener("lab10", cb); }; };
+const ler = lerLab, gravar = gravarLab, assinar = assinarLab;
 
 export function MesaSobChoque({ modo = "choque" }: { modo?: ModoMesa }) {
   // estado gravado neste navegador (política congelada, choque, rodada 2), lido como fonte externa para não divergir entre páginas
   const bruto = useSyncExternalStore(assinar, ler, () => "{}");
-  const estado = useMemo<Estado>(() => { try { return JSON.parse(bruto); } catch { return {}; } }, [bruto]);
+  const estado = useMemo<Estado>(() => decodificarLab(bruto), [bruto]);
   const [edicao, setEdicao] = useState<{ corte: number; teto: number; capacidade: number } | null>(null);
   const [edicao2, setEdicao2] = useState<{ corte: number; capacidade: number } | null>(null);
   const salvar = (patch: Estado) => gravar({ ...estado, ...patch });

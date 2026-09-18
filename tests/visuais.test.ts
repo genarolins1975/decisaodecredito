@@ -347,3 +347,38 @@ describe("avaliação na janela fora do tempo contra o gerador (capítulo 7)", a
     const d = deslocar(oot.pd, 0.5); expect(brier(oot.y, d)).not.toBeCloseTo(0.09128, 4); expect(aucPorPares(oot.y, d).auc).toBeCloseTo(0.725685, 6);
   });
 });
+
+describe("economia por proposta e política que fecha (capítulo 8)", async () => {
+  const { esperado, realizado, pontoDeEquilibrio, PARAMETROS } = await import("@/lib/visuais/economia");
+  const { avaliarCarteira } = await import("@/lib/visuais/politica");
+  const oot = JSON.parse(readFileSync("src/lib/visuais/oot-logistica.json", "utf8"));
+  it("uma operação de R$ 10 mil com PD 10%: parcelas +2.520 −650 −1.200 −120 −200 = R$ 350; ponto de equilíbrio 13,76% (c8p5, c8p6)", () => {
+    expect(esperado(0.1, 10000)).toBeCloseTo(350, 0); expect(pontoDeEquilibrio(10000) * 100).toBeCloseTo(13.76, 2);
+    expect(pontoDeEquilibrio(10000, { ...PARAMETROS, funding: 0.18 }) * 100).toBeCloseTo(7.31, 2); expect(pontoDeEquilibrio(10000, { ...PARAMETROS, lgd: 0.4 }) * 100).toBeCloseTo(18.82, 2);
+    expect(pontoDeEquilibrio(10000, { ...PARAMETROS, receita: 0.34 }) * 100).toBeCloseTo(18.99, 2); expect(pontoDeEquilibrio(2000) * 100).toBeCloseTo(8.6, 2); expect(pontoDeEquilibrio(60000) * 100).toBeCloseTo(14.84, 2);
+    expect(pontoDeEquilibrio(10000, { ...PARAMETROS, lgd: 0.3 }) * 100).toBeCloseTo(22.07, 2); expect(esperado(pontoDeEquilibrio(10000), 10000)).toBeCloseTo(0, 6);
+  });
+  it("apertar o corte para 10%: 55 defaults recusados (R$ 606 mil evitados), 213 bons recusados (R$ 330 mil abandonados), saldo R$ 276 mil (c8p7)", () => {
+    let rd = 0, rp = 0, evit = 0, aband = 0, todos = 0, aprov = 0;
+    oot.pd.forEach((p: number, i: number) => { const r = realizado(oot.y[i], oot.ead[i]); todos += r; if (p < 0.1) { aprov += r; return; } if (oot.y[i]) { rd++; evit -= r; } else { rp++; aband += r; } });
+    expect([rd, rp]).toEqual([55, 213]); expect(evit / 1000).toBeCloseTo(606, 0); expect(aband / 1000).toBeCloseTo(330, 0);
+    expect((evit - aband) / 1000).toBeCloseTo(276, 0); expect(todos / 1000).toBeCloseTo(378, 0); expect(aprov / 1000).toBeCloseTo(654, 0); expect(aprov).toBeCloseTo(todos + evit - aband, 3);
+  });
+  it("revisão manual com sinal de 60% e capacidade 120: o relatório sobe R$ 2,7 mil e o valor real cai (c8p9)", () => {
+    const sem = avaliarCarteira(oot, { corte: 0.12, teto: 0.3, capacidade: 0 }), com = avaliarCarteira(oot, { corte: 0.12, teto: 0.3, capacidade: 120, qualidade: 0.6 });
+    expect(sem.esperado / 1000).toBeCloseTo(603, 0); expect(sem.valorReal! / 1000).toBeCloseTo(471, 0); expect(sem.realizado / 1000).toBeCloseTo(638, 0);
+    expect(com.revisados).toBe(120); expect(com.aprovadosNaRevisao).toBe(28); expect(com.filaNaoAtendida).toBe(78);
+    expect(com.esperado - sem.esperado).toBeGreaterThan(0); expect(com.valorReal! - sem.valorReal!).toBeLessThan(0);
+  });
+  it("ponte no corte de 14% sem revisão: 580 aprovados, R$ 8,38 mi, 4,13% e R$ 608 mil, folga zero (c8p10)", () => {
+    const a = avaliarCarteira(oot, { corte: 0.14, capacidade: 0 });
+    expect(a.aprovados).toBe(580); expect(a.exposicao / 1e6).toBeCloseTo(8.38, 2); expect(a.perda / a.exposicao * 100).toBeCloseTo(4.13, 2); expect(a.esperado / 1000).toBeCloseTo(608, 0);
+    expect(a.receitaEsp - a.perda - a.funding - a.operacao - a.capital - a.revisoes).toBeCloseTo(a.esperado, 6);
+  });
+  it("composição por faixa da política escolhida fecha com a carteira: 213 + 266 + 69 = 548 e 36 defaults (c8p12)", () => {
+    const c = avaliarCarteira(oot, { corte: 0.12, teto: 0.3, capacidade: 80, qualidade: 0.6 });
+    const faixa = (lo: number, hi: number) => c.reg.filter((r) => r.aprovado && r.pdUsada >= lo && r.pdUsada < hi);
+    expect([faixa(0, 0.05).length, faixa(0.05, 0.1).length, faixa(0.1, 0.2).length, faixa(0.2, 1.01).length]).toEqual([213, 266, 69, 0]);
+    expect(c.aprovadosNaRevisao).toBe(23); expect(c.defaultsAprovados).toBe(36);
+  });
+});

@@ -425,6 +425,15 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(par).toContainText("12 corretos");
   await page.goto("/aulas/c7p7");
   await expect(page.locator('figure[data-vz="ks-ks"]')).toContainText("KS máximo 0,3621");
+
+  // capítulo 8: a política escolhida fecha consigo mesma e fica congelada para o capítulo 10
+  await page.goto("/aulas/c8p12");
+  const pqf = page.locator('figure[data-vz="politica-que-fecha"]');
+  await expect(pqf).toContainText("Aprovados 548, 23 deles pela revisão");
+  await pqf.getByRole("button", { name: "Congelar esta política" }).click();
+  await expect(pqf).toContainText("Política congelada neste navegador: corte 12,0%");
+  await page.goto("/aulas/c8p7");
+  await expect(page.locator('figure[data-vz="troca-do-corte"]')).toContainText("saldo R$ 276 mil");
 });
 
 test("núcleo: gabaritos e notas privadas não estão no motor legado nem nas páginas", async () => {

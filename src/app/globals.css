@@ -797,6 +797,29 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner [data-vz="calibracao-faixas"] .table-wrap { display: none; }
 .slide-inner [data-vz="brier-deslocamento"] .vz-grafico > .hint { display: none; }
 .slide-inner .vz-amo-grade { gap: 1cqh; }
+/* Capítulo 8: resultado por proposta, troca do corte, revisão manual, ponte, política que fecha */
+.vz-rpp-grade, .vz-tdc-grade, .vz-rev-grade, .vz-pon-grade, .vz-pqf-grade { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 14px 22px; align-items: start; }
+.vz-rpp-painel, .vz-tdc-painel, .vz-rev-painel, .vz-pon-painel, .vz-pqf-painel { display: grid; gap: 10px; min-width: 0; }
+.vz-res-soma-parcela--ok { background: var(--color-ok); }
+.vz-rpp-deriv { display: grid; gap: 6px; background: var(--color-paper); border-left: 3px solid var(--color-ink); padding: 10px 14px; font-family: var(--font-mono); font-size: 13.5px; } .vz-rpp-deriv p { margin: 0; } .vz-rpp-deriv b { color: var(--color-ink); font-size: 1.15em; }
+.vz-rpp-regua { position: relative; height: 26px; background: #F7DADD; border-radius: 4px; margin-top: 10px; }
+.vz-rpp-regua-ok { position: absolute; left: 0; top: 0; height: 100%; background: #DDEFE4; border-radius: 4px 0 0 4px; }
+.vz-rpp-regua-marca { position: absolute; top: -4px; width: 4px; height: 34px; background: var(--color-ink); border-radius: 2px; }
+.vz-rpp-regua-t { position: absolute; top: 30px; transform: translateX(-50%); font-size: 12px; font-weight: 700; color: #7a5f16; white-space: nowrap; }
+.vz-rpp-barra { display: flex; height: 40px; border-radius: 6px; overflow: hidden; font-size: 13px; font-weight: 700; color: #fff; }
+.vz-rpp-perda { background: var(--color-alert); display: grid; place-items: center; transition: width .3s; } .vz-rpp-rec { flex: 1; background: #6f8fc4; display: grid; place-items: center; }
+.vz-tdc-barras { display: grid; gap: 8px; }
+.vz-tdc-linha { display: grid; grid-template-columns: 150px 1fr max-content; gap: 10px; align-items: center; font-variant-numeric: tabular-nums; }
+.vz-tdc-rot { font-weight: 700; color: var(--color-ink); font-size: 14px; } .vz-tdc-rot small { display: block; font-weight: 400; color: var(--color-muted); font-size: 12px; }
+.vz-tdc-trilho { display: block; height: 18px; background: #EDEBE3; border-radius: 3px; overflow: hidden; } .vz-tdc-fill { display: block; height: 100%; transition: width .3s; }
+.vz-tdc-fill--ok { background: var(--color-ok); } .vz-tdc-fill--erro { background: var(--color-alert); } .vz-tdc-fill--ouro { background: var(--color-gold); }
+.vz-tdc-linha--saldo { border-top: 1px solid var(--color-rule); padding-top: 8px; }
+@container (max-width: 760px) { .vz-rpp-grade, .vz-tdc-grade, .vz-rev-grade, .vz-pon-grade, .vz-pqf-grade { grid-template-columns: minmax(0, 1fr); } .vz-tdc-linha { grid-template-columns: 110px 1fr max-content; } }
+/* palco */
+.slide-inner .vz-rpp-grade, .slide-inner .vz-tdc-grade, .slide-inner .vz-rev-grade, .slide-inner .vz-pon-grade, .slide-inner .vz-pqf-grade { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 1cqh 2cqh; }
+.slide-inner [data-vz="troca-do-corte"] .table-wrap, .slide-inner [data-vz="revisao-manual"] .vz-rev-painel > .vz-tile, .slide-inner [data-vz="ponte"] .vz-grafico > .vz-tile, .slide-inner [data-vz="resultado-fracao"] .vz-rpp-painel .vz-tile:last-child { display: none; }
+.slide-inner .vz-rpp-deriv { font-size: .9em; }
+.slide-inner .vz-tdc-rot { font-size: .95em; }
 /* palco: raiz mostra plano e disputa; freios e instabilidade mostram plano, árvore e tiles */
 .slide-inner .vz-arv-grade { grid-template-columns: 46cqh minmax(0, 1fr); gap: 1cqh 2cqh; }
 .slide-inner [data-vz^="arvore"] .vz-arv-grade > .vz-grafico svg { height: 46cqh; }
