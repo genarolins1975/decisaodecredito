@@ -36,6 +36,13 @@ import { CurvaLogistica } from "./curva-logistica";
 import { Intercepto } from "./intercepto";
 import { DescidaCompleta } from "./descida-completa";
 import { Faixas } from "./faixas";
+import { Anatomia } from "./anatomia";
+import { Impureza } from "./impureza";
+import { CorteCandidato } from "./corte-candidato";
+import { Recursao } from "./recursao";
+import { Caminho } from "./caminho";
+import { Poda } from "./poda";
+import { DuasFamilias } from "./duas-familias";
 import { LinhaDoTempo } from "./linha-do-tempo";
 import { Safras } from "./safras";
 
@@ -66,9 +73,17 @@ const REGISTRO: Record<string, VisualNativo> = {
   c4p17: { Componente: () => <DescidaCompleta modo="descida" />, substitui: "legacy" },
   c4p19: { Componente: Fronteira, substitui: "legacy" },
   c4p21: { Componente: Faixas, substitui: "legacy" },
+  c5p3: { Componente: Anatomia, substitui: "legacy" },
+  c5p4: { Componente: () => <Impureza modo="curva" />, substitui: "legacy" },
+  c5p5: { Componente: () => <Impureza modo="raiz" />, substitui: "legacy" },
+  c5p6: { Componente: CorteCandidato, substitui: "legacy" },
   c5p7: { Componente: () => <ArvoreQueCresce modo="raiz" />, substitui: "legacy" },
+  c5p9: { Componente: Recursao, substitui: "legacy" },
+  c5p11: { Componente: Caminho, substitui: "legacy" },
   c5p14: { Componente: () => <ArvoreQueCresce modo="freios" />, substitui: "legacy" },
+  c5p15: { Componente: Poda, substitui: "legacy" },
   c5p16: { Componente: () => <ArvoreQueCresce modo="instabilidade" />, substitui: "legacy" },
+  c5p18: { Componente: DuasFamilias, substitui: "legacy" },
   c6p7: { Componente: () => <ResiduosQueEncolhem modo="taxa" />, substitui: "legacy" },
   c6p8: { Componente: () => <ResiduosQueEncolhem modo="arvores" />, substitui: "legacy" },
   c6p9: { Componente: () => <ResiduosQueEncolhem modo="soma" />, substitui: "legacy" },

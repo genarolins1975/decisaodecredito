@@ -877,3 +877,51 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner [data-vz="descida-perda"] .vz-tiles--3, .slide-inner [data-vz="descida-perda"] .vz-formula, .slide-inner [data-vz="descida-perda"] .vz-grafico-t .hint,
 .slide-inner [data-vz="descida-gradiente"] .vz-dc-painel > .hint, .slide-inner [data-vz="descida-gradiente"] .vz-dc-lado > .hint, .slide-inner [data-vz="descida-gradiente"] .vz-grafico-t .hint,
 .slide-inner [data-vz="faixas"] .vz-fx-lado .vz-tile, .slide-inner [data-vz="faixas"] .vz-legenda, .slide-inner [data-vz="faixas"] .vz-grafico-t .hint, .slide-inner [data-vz="faixas"] .table-wrap tr:nth-child(3), .slide-inner [data-vz="faixas"] .table-wrap tr:nth-child(4) { display: none; }
+/* Capítulo 5 completo: anatomia, impureza, corte candidato, recursão, caminho, poda e duas famílias */
+.vz-ana-grade, .vz-imp-grade, .vz-cc-grade, .vz-cam-grade, .vz-poda-grade, .vz-df-grade { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 14px 22px; align-items: start; }
+.vz-ana-lado, .vz-imp-painel, .vz-imp-lado, .vz-cc-painel, .vz-cc-lado, .vz-cam-painel, .vz-poda-painel, .vz-poda-lado, .vz-df-lado { display: grid; gap: 10px; min-width: 0; align-content: start; }
+.vz-imp-painel .vz-slider, .vz-cc-painel .vz-slider, .vz-cam-painel .vz-slider, .vz-poda-painel .vz-slider { margin-top: 0; }
+.vz-ad { width: 100%; height: auto; display: block; }
+.vz-ad-ramo { stroke: var(--color-muted); stroke-width: 1.6; transition: stroke .25s, stroke-width .25s; } .vz-ad-ramo-t { font-size: 10.5px; fill: var(--color-muted); font-weight: 700; }
+.vz-ad-ramo-g--aceso .vz-ad-ramo { stroke: var(--color-gold); stroke-width: 4; } .vz-ad-ramo-g--aceso .vz-ad-ramo-t { fill: #7a5f16; }
+.vz-ad-caixa { stroke-width: 1.5; transition: stroke .25s, stroke-width .25s; } .vz-ad-caixa--no { fill: var(--color-surface); stroke: var(--color-ink); } .vz-ad-caixa--default { fill: var(--color-alert-soft); stroke: var(--color-alert); } .vz-ad-caixa--pagou { fill: #EFF3FA; stroke: #9db6de; }
+.vz-ad-no--aceso .vz-ad-caixa { stroke: var(--color-gold); stroke-width: 3.5; }
+.vz-ad-t { font-size: 10.5px; fill: var(--color-body); font-variant-numeric: tabular-nums; } .vz-ad-t--var { font-weight: 700; fill: var(--color-ink); } .vz-ad-t--pd { font-weight: 700; fill: var(--color-ink); font-size: 11.5px; } .vz-ad-t--gini { fill: var(--color-muted); font-size: 9.5px; }
+.vz-ad-nivel { fill: var(--color-gold-soft); stroke: var(--color-gold); stroke-dasharray: 4 3; }
+.vz-ad--no .vz-ad-caixa, .vz-ad--folha .vz-ad-no--folha .vz-ad-caixa { stroke: var(--color-gold); stroke-width: 3.5; }
+.vz-ad--regra .vz-ad-t--var { fill: #7a5f16; font-size: 12px; } .vz-ad--regra .vz-ad-no--interno .vz-ad-caixa { stroke: var(--color-gold); stroke-width: 3.5; }
+.vz-ad--ramo .vz-ad-ramo { stroke: var(--color-gold); stroke-width: 4; } .vz-ad--ramo .vz-ad-ramo-t { fill: #7a5f16; font-size: 12px; }
+.vz-ad--folha .vz-ad-no--interno, .vz-ad--regra .vz-ad-no--folha { opacity: .55; }
+.vz-ana-potencias { display: flex; align-items: flex-end; gap: 4px; height: 70px; margin: 8px 0 22px; } .vz-ana-pot { flex: 1; background: #E6E4DD; border-radius: 3px 3px 0 0; position: relative; transition: background .2s; } .vz-ana-pot--ate { background: #c9d8f2; } .vz-ana-pot--on { background: var(--color-ink); } .vz-ana-pot b { position: absolute; bottom: -16px; left: 0; right: 0; text-align: center; font-size: 10px; color: var(--color-muted); }
+.vz-imp-quadrado { max-width: 360px; } .vz-imp-q-fundo { fill: #DDE6F3; } .vz-imp-q-erro { fill: var(--color-alert-soft); stroke: var(--color-alert); stroke-width: 1; transition: width .25s, height .25s, x .25s, y .25s; }
+.vz-imp-caixa-t { font-size: 15px; font-weight: 700; fill: #fff; } .vz-imp-base table th, .vz-imp-base table td { padding-top: 3px; padding-bottom: 3px; }
+.vz-cc-lado--esq { fill: var(--color-ok-soft); } .vz-cc-lado--dir { fill: var(--color-alert-soft); }
+.vz-cc-id { font-size: 8.5px; font-weight: 700; fill: #fff; }
+.vz-cc-lados { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .vz-cc-tile--esq { border-left: 3px solid var(--color-ok); } .vz-cc-tile--dir { border-left: 3px solid var(--color-alert); }
+.vz-cc-barras { display: grid; gap: 8px; } .vz-cc-fill--esq { background: var(--color-ok); } .vz-cc-fill--dir { background: var(--color-alert); }
+.vz-rec-grade { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 22px; } .vz-rec-no { background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 6px; padding: 8px 10px; cursor: pointer; transition: box-shadow .2s; } .vz-rec-no--on { box-shadow: 0 0 0 2px var(--color-gold); }
+.vz-rec-corpo { display: grid; gap: 8px; } .vz-rec-plano { width: 100%; height: auto; display: block; } .vz-rec-fora { fill: #F5F4F0; } .vz-rec-dentro { fill: #fff; stroke: var(--color-rule); }
+.vz-rec-tiles { margin-top: 12px; }
+.vz-cam-plano svg { max-width: 360px; } .vz-cam-regiao { stroke: #fff; stroke-width: 1; transition: fill-opacity .25s; } .vz-cam-ponto { fill: var(--color-gold); stroke: var(--color-ink); stroke-width: 2.5; }
+.vz-poda-linha { stroke-width: 2.4; opacity: .55; transition: opacity .2s, stroke-width .2s; } .vz-poda-linha--venc { opacity: 1; stroke-width: 4; }
+.vz-poda-c--0 { stroke: var(--color-muted); background: var(--color-muted); } .vz-poda-c--1 { stroke: var(--color-ink); background: var(--color-ink); } .vz-poda-c--2 { stroke: #6B4E8C; background: #6B4E8C; } .vz-poda-c--3 { stroke: var(--color-alert); background: var(--color-alert); }
+.vz-poda-t--0 { fill: var(--color-muted); } .vz-poda-t--1 { fill: var(--color-ink); } .vz-poda-t--2 { fill: #6B4E8C; } .vz-poda-t--3 { fill: var(--color-alert); }
+.vz-df-ponto circle { stroke: #fff; stroke-width: 2; transition: r .2s; } .vz-df-ponto--on circle { stroke: var(--color-gold); stroke-width: 3.5; }
+.vz-df-cartao { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 10px; align-items: center; margin-top: 10px; } .vz-df-x { font-size: 26px; font-weight: 700; color: var(--color-muted); }
+@container (max-width: 760px) { .vz-ana-grade, .vz-imp-grade, .vz-cc-grade, .vz-cam-grade, .vz-poda-grade, .vz-df-grade, .vz-rec-grade, .vz-cc-lados { grid-template-columns: minmax(0, 1fr); } }
+/* palco */
+.slide-inner .vz-ana-grade, .slide-inner .vz-imp-grade, .slide-inner .vz-cc-grade, .slide-inner .vz-cam-grade, .slide-inner .vz-poda-grade, .slide-inner .vz-df-grade { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1cqh 2cqh; }
+.slide-inner .vz-ana-lado, .slide-inner .vz-imp-painel, .slide-inner .vz-imp-lado, .slide-inner .vz-cc-painel, .slide-inner .vz-cc-lado, .slide-inner .vz-cam-painel, .slide-inner .vz-poda-painel, .slide-inner .vz-poda-lado, .slide-inner .vz-df-lado, .slide-inner .vz-rec-corpo { gap: .8cqh; }
+.slide-inner .vz-ad { height: 40cqh; width: auto; max-width: 100%; margin: 0; }
+.slide-inner [data-vz="anatomia"] .vz-ana-lado .vz-tile:not(:first-child), .slide-inner [data-vz="impureza-curva"] .vz-imp-lado .vz-tile, .slide-inner [data-vz="impureza-curva"] .vz-imp-lado > .hint, .slide-inner [data-vz="impureza-raiz"] .vz-imp-lado > .hint, .slide-inner [data-vz="impureza-raiz"] .vz-imp-painel > .hint, .slide-inner [data-vz="impureza-raiz"] .vz-imp-lado .vz-tile,
+.slide-inner [data-vz="corte-candidato"] .vz-cc-lado > .hint, .slide-inner [data-vz="corte-candidato"] .vz-cc-lados .hint, .slide-inner [data-vz="recursao"] .vz-rec-tiles, .slide-inner [data-vz="caminho"] .vz-cam-plano, .slide-inner [data-vz="caminho"] .vz-grafico > .hint,
+.slide-inner [data-vz="poda"] .vz-poda-painel > .hint, .slide-inner [data-vz="poda"] .vz-poda-lado > .hint, .slide-inner [data-vz="duas-familias"] .vz-df-tabela, .slide-inner [data-vz="duas-familias"] .vz-df-lado > .hint, .slide-inner [data-vz="duas-familias"] .vz-df-lado > .vz-tile:last-child { display: none; }
+.slide-inner [data-vz="impureza-curva"] .vz-imp-lado .vz-grafico svg { height: 40cqh; } .slide-inner [data-vz="impureza-curva"] .vz-imp-quadrado { height: 22cqh; }
+.slide-inner [data-vz="impureza-raiz"] .vz-imp-painel .vz-grafico svg { height: 12cqh; } .slide-inner [data-vz="impureza-raiz"] .vz-imp-base { display: none; } .slide-inner [data-vz="impureza-raiz"] .vz-imp-lado .vz-tile { display: block; }
+.slide-inner [data-vz="corte-candidato"] .vz-grafico svg { height: 18cqh; }
+.slide-inner [data-vz="recursao"] .vz-rec-plano { height: 26cqh; width: auto; }
+.slide-inner [data-vz="poda"] .vz-grafico svg, .slide-inner [data-vz="duas-familias"] .vz-grafico > svg { height: 44cqh; width: auto; max-width: 100%; }
+/* palco, densidade do capítulo 5 */
+.slide-inner [data-vz="anatomia"] .vz-ana-lado .vz-tile:first-child, .slide-inner [data-vz="corte-candidato"] .vz-cc-lado .vz-formula, .slide-inner [data-vz="corte-candidato"] .vz-cc-lados .hint,
+.slide-inner [data-vz="poda"] .vz-poda-lado .vz-tile, .slide-inner [data-vz="poda"] .vz-poda-painel .vz-formula, .slide-inner [data-vz="duas-familias"] .vz-df-lado .vz-tile--alerta, .slide-inner [data-vz="duas-familias"] .vz-df-cartao .hint { display: none; }
+.slide-inner [data-vz="anatomia"] .vz-ana-lado .vz-tile:nth-child(2) { display: block; }

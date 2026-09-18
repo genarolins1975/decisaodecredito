@@ -432,3 +432,39 @@ describe("as escalas, o intercepto e a descida completa reproduzem as páginas h
     expect(a).toBeCloseTo(c[0], 2); expect(b).toBeCloseTo(c[1], 2);
   });
 });
+
+describe("anatomia, impureza, recursão, caminho, poda e duas famílias reproduzem as páginas herdadas (capítulo 5)", async () => {
+  const { perdaIndividual, escore: esc, sigmoide: sig, BETA_AULA: B } = await import("@/lib/visuais/logistica");
+  const { gini: g, crescer: cr, folhas: fl, todosOsCandidatos: tc } = await import("@/lib/visuais/arvore");
+  const { caminhoNaArvore } = await import("@/components/visuais/arvore-diagrama");
+  const base = did.base as Proposta[];
+  const arv = cr(base, 2);
+  it("a árvore de profundidade 2 tem 7 nós, 4 folhas (1 de 2, 0 de 6, 6 de 6, 1 de 2) que somam 16 e 8 (c5p3)", () => {
+    const fs = fl(arv); expect(fs.map((f) => `${f.d}/${f.n}`)).toEqual(["1/2", "0/6", "6/6", "1/2"]);
+    expect(fs.reduce((s, f) => s + f.n, 0)).toBe(16); expect(fs.reduce((s, f) => s + f.d, 0)).toBe(8); expect(Math.max(...fs.map((f) => f.prof))).toBe(2);
+  });
+  it("Gini 0,5 e entropia 1 bit meio a meio; 0,18 com 10%; raiz 2 × 0,5 × 0,5 = 0,50000 (c5p4, c5p5)", () => {
+    expect(2 * 0.5 * 0.5).toBe(0.5); expect(-(0.5 * Math.log2(0.5) + 0.5 * Math.log2(0.5))).toBe(1); expect(2 * 0.1 * 0.9).toBeCloseTo(0.18, 6); expect(g(8, 16)).toBe(0.5); expect(g(0, 6)).toBe(0); expect(g(1, 2)).toBe(0.5);
+  });
+  it("recursão: os quatro melhores de cada lado, com 0,09375 no topo e empate à direita entre utilização 87,5 e atraso 2,5 (c5p9)", () => {
+    const esq = tc(base.filter((p) => p.util <= 57.5)).sort((a, b) => b.ganho - a.ganho), dir = tc(base.filter((p) => p.util > 57.5)).sort((a, b) => b.ganho - a.ganho);
+    expect(esq.slice(0, 2).map((a) => [a.v, a.corte, +a.ganho.toFixed(5)])).toEqual([["util", 27.5, 0.09375], ["util", 32.5, 0.05208]]);
+    expect(dir.slice(0, 2).map((a) => [a.v, a.corte, +a.ganho.toFixed(5)])).toEqual([["util", 87.5, 0.09375], ["atraso", 2.5, 0.09375]]);
+  });
+  it("utilização 72% e atraso 8 d: não, sim, folha 6 de 6 com PD 100%; a logística dá 69,3% (c5p11)", () => {
+    const cam = caminhoNaArvore(arv, 72, 8); expect(cam.map((n) => `${n.d}/${n.n}`)).toEqual(["8/16", "7/8", "6/6"]);
+    expect(sig(esc(B, 72, 8).z) * 100).toBeCloseTo(69.3, 1); expect(caminhoNaArvore(arv, 30, 5).pop()!.d).toBe(0);
+  });
+  it("poda: impurezas 0,5, 0,21875, 0,125 e 0 com 1, 2, 4 e 6 folhas; trocas em 0,0547 e 0,2813; quatro folhas nunca vence (c5p15)", () => {
+    const arvs = [0, 1, 2, 3].map((p) => { const fs = fl(cr(base, p)); return { k: fs.length, R: fs.reduce((s, f) => s + (f.n / 16) * g(f.d, f.n), 0) }; });
+    expect(arvs.map((a) => a.k)).toEqual([1, 2, 4, 6]); expect(arvs.map((a) => a.R)).toEqual([0.5, 0.21875, 0.125, 0]);
+    expect((arvs[1].R - arvs[3].R) / 4).toBeCloseTo(0.0546875, 7); expect(arvs[0].R - arvs[1].R).toBeCloseTo(0.28125, 7);
+    for (let a = 0; a <= 0.35; a += 0.001) { const cs = arvs.map((t) => t.R + a * t.k); expect(cs[2]).toBeGreaterThanOrEqual(Math.min(cs[0], cs[1], cs[3]) - 1e-12); }
+    const cs = arvs.map((t) => t.R + 0.03 * t.k); expect(cs[3]).toBeCloseTo(0.18, 6); expect(Math.min(...cs)).toBe(cs[3]);
+  });
+  it("#5: logística 52,6% contra árvore 0%; log loss de treino 0,43282 contra 0,18844 com piso e teto (c5p18)", () => {
+    let ll = 0, la = 0; const pd5 = { pl: 0, pa: 0 };
+    for (const r of base) { const pl = sig(esc(B, r.util, r.atraso).z); const f = caminhoNaArvore(arv, r.util, r.atraso).pop()!; const pa = f.d / f.n; ll += perdaIndividual(pl, r.y); la += perdaIndividual(Math.min(0.98, Math.max(0.02, pa)), r.y); if (r.id === 5) Object.assign(pd5, { pl, pa }); }
+    expect(pd5.pl * 100).toBeCloseTo(52.6, 1); expect(pd5.pa).toBe(0); expect(ll / 16).toBeCloseTo(0.43282, 5); expect(la / 16).toBeCloseTo(0.18844, 5);
+  });
+});

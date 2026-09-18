@@ -452,6 +452,20 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await desc.getByRole("button", { name: "+10.000" }).click();
   await expect(desc).toContainText("Iterações 20.000: perda 0,432824");
   await expect(desc).toContainText("Convergido.");
+
+  // capítulo 5: o corte candidato, o caminho e a poda reproduzem as páginas herdadas
+  await page.goto("/aulas/c5p6");
+  await expect(page.locator('figure[data-vz="corte-candidato"]')).toContainText("média ponderada 0,30159 e ganho 0,19841");
+  await page.goto("/aulas/c5p11");
+  const cam = page.locator('figure[data-vz="caminho"]');
+  await expect(cam).toContainText("Folha com 6 de 6: PD 100,0%");
+  await cam.getByRole("button", { name: "#3" }).click();
+  await expect(cam).toContainText("Folha com 0 de 6: PD 0,0%");
+  await page.goto("/aulas/c5p15");
+  const poda = page.locator('figure[data-vz="poda"]');
+  await expect(poda).toContainText("vence profundidade 3, folhas de 1, com custo 0,18000");
+  await poda.getByRole("button", { name: "α = 0,30" }).click();
+  await expect(poda).toContainText("vence só a raiz");
 });
 
 test("núcleo: gabaritos e notas privadas não estão no motor legado nem nas páginas", async () => {
