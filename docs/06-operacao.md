@@ -72,7 +72,7 @@ A apostila é gerada a partir de `content/generated/extract.json`, das capturas 
 ```bash
 APOSTILA_DIR=tmp/apostila node scripts/apostila/captura-visuais.mjs      # capturas dos visuais (uma vez por versão do conteúdo)
 python3 scripts/apostila/figuras.py                                        # figuras conceituais (matplotlib)
-node scripts/apostila/gerar.mjs aluno --pdf && node scripts/apostila/gerar.mjs professor --pdf   # PDFs completos; "gerar.mjs aluno 4 --pdf" gera só o capítulo 4
+node scripts/apostila/gerar.mjs aluno todos --pdf && node scripts/apostila/gerar.mjs professor todos --pdf   # um PDF por capítulo e versão; "gerar.mjs aluno 4 --pdf" gera só o capítulo 4
 ```
 
 A versão do aluno pode ser publicada como material comum; a versão do professor só como material com finalidade `labels` (só o professor baixa) e nunca no repositório, que é público. Regenerar sempre que o conteúdo for reimportado.

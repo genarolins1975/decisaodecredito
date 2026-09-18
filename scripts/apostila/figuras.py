@@ -22,15 +22,17 @@ ax.plot(k, tr, color=B, lw=2, label="erro no treino"); ax.plot(k, va, color=O, l
 ax.set_xlabel("complexidade do modelo (parâmetros, profundidade, iterações)"); ax.set_ylabel("erro"); ax.legend(loc="upper right"); salvar(fig, "conceito-c2-generalizacao")
 
 # c3 · calendário do protocolo
-fig, ax = plt.subplots(figsize=(8, 2.9)); ax.grid(False); ax.set_xlim(0, 54); ax.set_ylim(0, 4.2); ax.axis("off")
-def barra(y, x0, x1, cor, rot, sub=""):
-    ax.add_patch(FancyBboxPatch((x0, y), x1 - x0, 0.9, boxstyle="round,pad=0,rounding_size=0.12", fc=cor, ec="none")); ax.text((x0 + x1) / 2, y + 0.45, rot, ha="center", va="center", color="white", fontsize=9.5, fontweight="bold")
-    if sub: ax.text((x0 + x1) / 2, y - 0.28, sub, ha="center", va="center", color=MUT, fontsize=8.5)
-barra(3, 0, 30, B, "Treino · jan/21 a jun/23", "aprende tudo: imputação, escala, categorias, modelo, calibrador"); barra(3, 30, 36, A, "Validação", "jul a dez/23"); barra(3, 36, 42, O, "OOT cego", "jan a jun/24 · uma execução")
-ax.add_patch(Rectangle((42, 3), 12, 0.9, fc="none", ec=MUT, ls="--")); ax.text(48, 3.45, "maturação: +12 meses +30 dias", ha="center", va="center", color=MUT, fontsize=8.5)
+fig, ax = plt.subplots(figsize=(9, 3.5)); ax.grid(False); ax.set_xlim(-0.5, 54.5); ax.set_ylim(-0.4, 4.6); ax.axis("off")
+def barra(y, x0, x1, cor, rot, sub="", fora=False):
+    ax.add_patch(FancyBboxPatch((x0, y), x1 - x0, 0.9, boxstyle="round,pad=0,rounding_size=0.12", fc=cor, ec="none"))
+    if fora: ax.text((x0 + x1) / 2, y + 1.15, rot, ha="center", va="center", color=cor, fontsize=9.5, fontweight="bold")
+    else: ax.text((x0 + x1) / 2, y + 0.45, rot, ha="center", va="center", color="white", fontsize=10.5, fontweight="bold")
+    if sub: ax.text((x0 + x1) / 2 if fora else x0 + 0.3, y - 0.3, sub, ha="center" if fora else "left", va="center", color=MUT, fontsize=9)
+barra(3, 0, 30, B, "Treino · jan/21 a jun/23", "imputação, escala, categorias, modelo, calibrador"); barra(3, 30, 36, A, "Validação", "jul a dez/23", fora=True); barra(3, 36, 42, O, "OOT cego", "jan a jun/24", fora=True)
+ax.add_patch(Rectangle((42, 3), 12, 0.9, fc="none", ec=MUT, ls="--")); ax.text(48, 3.45, "maturação\n+12 meses +30 dias", ha="center", va="center", color=MUT, fontsize=9, linespacing=1.3)
 ax.annotate("", xy=(54, 1.6), xytext=(0, 1.6), arrowprops=dict(arrowstyle="->", color=MUT)); 
-for x, t in [(0, "jan/21"), (30, "jul/23"), (36, "jan/24"), (42, "jul/24"), (54, "jan/25")]: ax.text(x, 1.2, t, ha="center", color=INK, fontsize=8.5)
-ax.text(0, 0.35, "Data de referência do arquivo: 31/01/2025. Toda proposta de dez/23 tem rótulo disponível em jan/25 (data_rotulo_disponivel).", color=MUT, fontsize=8.5); salvar(fig, "conceito-c3-calendario")
+for x, t in [(0, "jan/21"), (30, "jul/23"), (36, "jan/24"), (42, "jul/24"), (54, "jan/25")]: ax.text(x, 1.2, t, ha="center", color=INK, fontsize=9.5)
+ax.text(0, 0.55, "Data de referência do arquivo: 31/01/2025. Toda proposta de dez/23 tem rótulo disponível em jan/25\n(data_rotulo_disponivel). O OOT cego é avaliado uma única vez.", color=MUT, fontsize=9.5, va="top", linespacing=1.4); salvar(fig, "conceito-c3-calendario")
 
 # c4 · curva logística e log odds
 fig, axs = plt.subplots(1, 2, figsize=(8, 3.2)); z = np.linspace(-6, 6, 300); axs[0].plot(z, sig(z), color=B, lw=2); axs[0].axhline(0.5, color=MUT, lw=0.8, ls=":"); axs[0].axvline(0, color=MUT, lw=0.8, ls=":")
