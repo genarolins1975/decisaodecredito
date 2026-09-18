@@ -4,6 +4,7 @@ import type { Block, PublicQuestion } from "@/lib/services/content";
 import { Question } from "./question";
 import { LegacyFrame } from "./legacy-frame";
 import { removerFiguraEstatica, visualNativo } from "@/components/visuais/registro";
+import { AjusteAoPalco } from "./ajuste-ao-palco";
 import { api } from "@/lib/client/api";
 
 type SubmitFn = (q: PublicQuestion, answer: unknown, clientRequestId: string) => Promise<{ isCorrect: boolean | null; feedback: never; attemptNo: number }>;
@@ -41,14 +42,14 @@ export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liv
     <div className="flex flex-col gap-4">
       {blocks.map((b, i) => {
         if (b.type === "html") {
-          if (i === idxFigura && nativo) return <div key={i} className="flex flex-col gap-4"><nativo.Componente /><div className="conteudo" dangerouslySetInnerHTML={{ __html: removerFiguraEstatica(b.html) }} /></div>;
+          if (i === idxFigura && nativo) return <div key={i} className="flex flex-col gap-4"><AjusteAoPalco><nativo.Componente /></AjusteAoPalco><div className="conteudo" dangerouslySetInnerHTML={{ __html: removerFiguraEstatica(b.html) }} /></div>;
           return <div key={i} className="conteudo" dangerouslySetInnerHTML={{ __html: b.html }} />;
         }
         if (b.type === "episode") return <Episode key={i} b={b} />;
         if (b.type === "checkpoint") return <Checkpoint key={i} b={b} />;
         if (b.type === "legacy") {
           const n = visualNativo(b.slug);
-          if (n?.substitui === "legacy") return <n.Componente key={i} />;
+          if (n?.substitui === "legacy") return <AjusteAoPalco key={i}><n.Componente /></AjusteAoPalco>;
           return <LegacyFrame key={i} slug={b.slug} fallbackHtml={b.fallbackHtml} note={b.note} revealRef={revealRef} />;
         }
         if (b.type === "question") {

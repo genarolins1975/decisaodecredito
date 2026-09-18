@@ -296,16 +296,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-hist-barra--esp { fill: var(--color-ink); }
 @container (max-width: 700px) { .vz-vidas-grade { grid-template-columns: 1fr; } }
 
-/* No slide, a peça ocupa a largura toda e reduz espaçamentos */
-.slide-inner .vz { padding: 10px 12px 8px; font-size: 12.5px; }
-.slide-inner .vz-tit { font-size: 16px; }
-.slide-inner .vz-num { font-size: 20px; }
-.slide-inner .vz-fonte { display: none; }
-.slide-inner .vz-fila-grade { grid-template-columns: minmax(0, 1fr) 280px; }
-.slide-inner .vz-graficos > :nth-child(2) { display: none; }
-.slide-inner .vz-vidas-grade { grid-template-columns: 240px minmax(0, 1fr); }
-.slide-inner .vz-hist svg { height: 120px; width: 100%; }
-.slide-inner .vz-tiles { margin-top: 6px; }
 
 /* A linha do tempo do cliente */
 .vz-tempo-svg, .vz-safras-svg { width: 100%; height: auto; display: block; background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 6px; }
@@ -358,9 +348,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-sw--faltam { background: #fff; border: 1px dashed #b9b5a8; border-radius: 2px; }
 .vz-sw--apur { background: var(--color-gold); opacity: .7; border-radius: 2px; }
 @container (max-width: 760px) { .vz-safras-grade { grid-template-columns: 1fr; } .vz-tiles--coluna { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); } }
-.slide-inner .vz-safras-grade { grid-template-columns: minmax(0, 1fr) 230px; }
-.slide-inner .vz-legenda--coluna { display: none; }
-.slide-inner .vz-tiles--coluna .vz-tile { padding: 6px 10px; }
 
 /* A curva de lucro */
 .vz-estado { margin: 0 0 12px; padding: 8px 12px; border-radius: 6px; background: var(--color-paper); border: 1px solid var(--color-rule); font-size: 13px; color: var(--color-body); }
@@ -384,10 +371,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-area--capital { fill: #EBDDB0; }
 .vz-palpites .input { min-height: 38px; font-size: 14px; }
 @container (max-width: 760px) { .vz-lucro-grade { grid-template-columns: 1fr; } }
-.slide-inner .vz-lucro-grade { grid-template-columns: minmax(0, 1fr) 250px; }
-.slide-inner [data-vz="curva-de-lucro"] .vz-grafico svg { height: 290px; width: auto; max-width: 100%; margin: 0 auto; }
-.slide-inner .vz-lucro-grade .vz-graficos > :nth-child(2) { display: none; }
-.slide-inner .vz-palpites table { display: none; }
 
 /* Capítulo 4: três escalas, fronteira e a reta que quebra */
 .vz-escalas-grade, .vz-front-grade, .vz-reta-grade { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px 22px; align-items: start; }
@@ -419,8 +402,77 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-curva--reta { stroke: var(--color-alert); }
 .vz-dot-plano { stroke: #fff; stroke-width: 1.5; } .vz-dot-plano--default { fill: var(--color-alert); } .vz-dot-plano--pagou { fill: #9db6de; }
 @container (max-width: 760px) { .vz-escalas-grade, .vz-front-grade, .vz-reta-grade { grid-template-columns: 1fr; } }
-.slide-inner .vz-front-grade { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+
+
+/* ------------------------------------------------------------------
+   Palco: os visuais nativos e o infográfico dentro do slide (16:9). Alturas em cqh (altura do slide), uma peça
+   principal por tela, painéis secundários escondidos, tipografia proporcional ao projetor. O ajuste fino de
+   escala é feito por .palco-ajuste (zoom) quando ainda assim a peça não cabe.
+   ------------------------------------------------------------------ */
+.palco-ajuste { width: 100%; }
+.slide-inner .vz { padding: 1.2cqh 1.6cqh 1cqh; font-size: clamp(11px, 1.75cqh, 18px); line-height: 1.35; gap: .6cqh; border-radius: 8px; }
+.slide-inner .vz .vz-cab { margin-bottom: .8cqh; gap: .6cqh 1.6cqh; }
+.slide-inner .vz .eyebrow { font-size: .8em; }
+.slide-inner .vz-tit { font-size: clamp(13px, 2.2cqh, 24px); }
+.slide-inner .vz .btn-sm { min-height: 3.6cqh; padding: .2cqh 1.2cqh; font-size: .95em; }
+.slide-inner .vz-fonte, .slide-inner .vz-legenda-nota { display: none; }
+.slide-inner .vz-legenda { font-size: .85em; margin-top: .4cqh; gap: .3cqh 1.2cqh; }
+.slide-inner .vz-slider { margin-top: .6cqh; }
+.slide-inner .vz-slider-rotulo { font-size: .95em; margin-bottom: 0; }
+.slide-inner .vz input[type="range"] { min-height: 2.6cqh; }
+.slide-inner .vz-tiles { gap: .8cqh; margin-top: .8cqh; }
+.slide-inner .vz-tile { padding: .6cqh 1cqh; }
+.slide-inner .vz-num { font-size: clamp(14px, 2.8cqh, 30px); }
+.slide-inner .vz-tile .hint, .slide-inner .vz .hint { font-size: .85em; }
+.slide-inner .vz-grafico-t { font-size: .95em; margin-bottom: .2cqh; }
+.slide-inner .vz-grafico svg, .slide-inner .vz-fita, .slide-inner .vz-vidas, .slide-inner .vz-tempo-svg, .slide-inner .vz-safras-svg, .slide-inner .vz-contrib svg, .slide-inner .vz-escalas-reguas svg, .slide-inner .vz-hist svg { width: auto; max-width: 100%; margin: 0; }
+.slide-inner .vz-estado { margin-bottom: .8cqh; padding: .5cqh 1cqh; font-size: .9em; }
+.slide-inner .vz .table { font-size: .85em; }
+/* a fila de risco: fita à esquerda com os quatro números, ROC à direita; acumuladas escondidas */
+.slide-inner .vz-fila-grade { grid-template-columns: minmax(0, 1fr) 40cqh; gap: 1cqh 2cqh; }
+.slide-inner .vz-fita { height: 32cqh; }
+.slide-inner .vz-graficos > :nth-child(2) { display: none; }
+.slide-inner [data-vz="fila-de-risco"] .vz-grafico svg { height: 46cqh; }
+/* cem vidas */
+.slide-inner .vz-vidas-grade { grid-template-columns: 48cqh minmax(0, 1fr); gap: 1cqh 2cqh; }
+.slide-inner .vz-vidas { height: 48cqh; }
+.slide-inner .vz-hist svg { height: 16cqh; width: 100%; }
+.slide-inner .vz-tempo { padding: .6cqh 1cqh; }
+/* a linha do tempo do cliente e a base amadurece */
+.slide-inner .vz-tempo-svg { height: 40cqh; }
+.slide-inner .vz-safras-grade { grid-template-columns: minmax(0, 1fr) 30cqh; gap: 1cqh 2cqh; }
+.slide-inner .vz-safras-svg { height: 48cqh; }
+.slide-inner .vz-legenda--coluna { display: none; }
+/* a curva de lucro: só a curva, com o painel de cenário */
+.slide-inner .vz-lucro-grade { grid-template-columns: minmax(0, 1fr) 34cqh; gap: 1cqh 2cqh; }
+.slide-inner [data-vz="curva-de-lucro"] .vz-grafico svg { height: 48cqh; }
+.slide-inner [data-vz="curva-de-lucro"] .vz-tiles--coluna { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.slide-inner [data-vz="curva-de-lucro"] .vz-palpites .hint { display: none; }
+.slide-inner .vz-lucro-grade .vz-graficos > :nth-child(2), .slide-inner .vz-palpites table { display: none; }
+.slide-inner .vz-cenario { padding: .5cqh 1cqh .8cqh; gap: .5cqh; }
+/* três escalas, fronteira e a reta que quebra */
+.slide-inner .vz-escalas-grade { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 1cqh 2cqh; }
+.slide-inner [data-vz="tres-escalas"] .vz-escalas-reguas > svg { height: 22cqh; }
+.slide-inner [data-vz="tres-escalas"] .vz-escalas-reguas .vz-grafico svg { height: 28cqh; }
+.slide-inner [data-vz="tres-escalas"] .vz-contrib svg { height: 14cqh; }
+.slide-inner .vz-front-grade { grid-template-columns: 56cqh minmax(0, 1fr); gap: 1cqh 2cqh; }
+.slide-inner [data-vz="fronteira"] .vz-grafico:first-child svg { height: 50cqh; }
 .slide-inner [data-vz="fronteira"] .vz-front-painel .table-wrap, .slide-inner [data-vz="fronteira"] .vz-front-painel .vz-grafico { display: none; }
-.slide-inner [data-vz="fronteira"] .vz-front-grade { grid-template-columns: 430px minmax(0, 1fr); }
-.slide-inner [data-vz="tres-escalas"] .vz-escalas-reguas .vz-grafico svg { height: 190px; width: auto; max-width: 100%; }
-.slide-inner [data-vz="tres-escalas"] .vz-contrib { display: none; }
+.slide-inner .vz-reta-grade { grid-template-columns: minmax(0, 1fr) 30cqh; gap: 1cqh 2cqh; }
+.slide-inner [data-vz="reta-que-quebra"] .vz-grafico svg { height: 48cqh; }
+/* infográfico de abertura no slide: mesma grade, tudo mais denso */
+.info--slide { padding: 1cqh 1.4cqh; gap: .5cqh; line-height: 1.3; }
+.info--slide .info-perg { display: none; }
+.info--slide .info-kicker { margin-top: .2cqh; font-size: .72em; }
+.info--slide .info-fluxo, .info--slide .info-tiles, .info--slide .info-paineis { gap: .8cqh; }
+.info--slide .info-cartao, .info--slide .info-tile, .info--slide .info-painel { padding: .5cqh .9cqh .5cqh 1.1cqh; }
+.info--slide .info-painel { gap: .3cqh; }
+.info--slide .info-cartao-tit { margin-bottom: .1cqh; }
+.info--slide .info-formula { padding: .6cqh 1cqh; }
+.info--slide .info-faixa { padding: .7cqh 1.2cqh; margin-top: 0; }
+.info--slide .info-faixa-k { margin-bottom: .3cqh; }
+.info--slide .info-faixa dl { gap: 1.2cqh; } .info--slide .info-faixa dt { font-size: 1em; } .info--slide .info-faixa dd { font-size: .85em; }
+.info--slide .info-pontos { max-width: 22cqh; gap: 2px; }
+.info--slide .info-tempo { max-width: 32cqh; }
+.info--slide .info-barras, .info--slide .info-kv, .info--slide .info-lista { gap: .3cqh; }
+.info--slide .info-kv div { padding: .2cqh .6cqh; }
