@@ -1,6 +1,6 @@
 """Infográficos de abertura dos capítulos: SVG em retrato (860 × 1052) para a capa de cada capítulo da apostila.
 
-Conteúdo: scripts/apostila/infograficos/cNN.json (uma fonte para a capa impressa e para os slides FGV).
+Conteúdo: content/infograficos/cNN.json (uma fonte para a capa impressa e para os slides FGV).
 Uso: python3 scripts/apostila/infograficos.py [capítulos ex.: 1,4]   (APOSTILA_DIR define onde fica fig/; padrão tmp/apostila)
 Saída: fig/infografico-cN.svg, usado pelo gerador da apostila quando existir.
 Tipos de painel: pontos (grade de 100), tempo (linha do tempo com janelas), barras (horizontais), kv (linhas chave e valor), lista (marcadores).
@@ -83,7 +83,7 @@ def painel(s, p, x, y, pw, ph):
 
 
 def gerar(n):
-    d = json.load(open(os.path.join(AQUI, "infograficos", f"c{n:02d}.json")))
+    d = json.load(open(os.path.join(AQUI, "../../content/infograficos", f"c{n:02d}.json")))
     cor, soft = TEMAS.get(str(n), ["#B36A18", "#FBF1E3"])
     W, H = 860, 1052
     s = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}">', rect(0, 0, W, H, "#ffffff", r=0), rect(0, 0, W, 8, cor, r=0)]
@@ -124,6 +124,6 @@ def gerar(n):
     with open(OUT + f"infografico-c{n}.svg", "w") as fh: fh.write("\n".join(s))
 
 
-caps = [int(c) for c in sys.argv[1].split(",")] if len(sys.argv) > 1 else sorted(int(os.path.basename(f)[1:3]) for f in glob.glob(os.path.join(AQUI, "infograficos", "c*.json")))
+caps = [int(c) for c in sys.argv[1].split(",")] if len(sys.argv) > 1 else sorted(int(os.path.basename(f)[1:3]) for f in glob.glob(os.path.join(AQUI, "../../content/infograficos", "c*.json")))
 for n in caps: gerar(n)
 print("infográficos gerados:", caps, "em", OUT)

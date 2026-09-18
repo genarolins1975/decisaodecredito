@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { requireContext } from "@/lib/context";
 import { chapterPrerequisites, getPage, neighbors } from "@/lib/services/content";
 import { chapterAssumptions, resolvePrerequisite } from "@/lib/content/prerequisites";
+import { InfograficoCapitulo } from "@/components/content/infografico";
+import { infograficoDoCapitulo } from "@/lib/content/infograficos";
 import { ContentBlocks } from "@/components/content/blocks";
 import { TeacherGuide } from "@/components/content/teacher-guide";
 import { Badge } from "@/components/ui";
@@ -69,6 +71,9 @@ export default async function AulaPaginaPage({ params }: { params: Promise<{ slu
             </p>
           )}
         </div>
+        {idx === 0 && infograficoDoCapitulo(data.chapter.number) && (
+          <div className="mt-5"><InfograficoCapitulo d={infograficoDoCapitulo(data.chapter.number)!} /></div>
+        )}
         {assumptions.length > 0 && (
           <aside className="mt-5 callout text-[14px]" aria-labelledby="assume" data-testid="capitulo-assume">
             <p id="assume" className="eyebrow mb-1">O que este capítulo assume</p>

@@ -1,6 +1,6 @@
 // Gera Capitulo-NN-infografico.pptx (pôster + quatro slides) para cada JSON de scripts/apostila/infograficos.
 const fs = require('fs'), path = require('path'); const fgv = require(process.env.FGV_LIB || './scripts/fgv');
-const DIR = require('path').join(__dirname, '..', 'infograficos');
+const DIR = require('path').join(__dirname, '..', '..', '..', 'content', 'infograficos');
 const caps = process.argv[2] ? process.argv[2].split(',').map(Number) : [1,2,3,4,5,6,7,8,9,10,11];
 (async () => {
   for (const n of caps) {

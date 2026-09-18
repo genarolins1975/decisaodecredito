@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { Block, PublicQuestion } from "@/lib/services/content";
 import { ContentBlocks } from "./blocks";
+import { InfograficoCapitulo } from "./infografico";
+import type { Infografico } from "@/lib/content/infograficos";
 import { api } from "@/lib/client/api";
 
 export function Slide(p: {
@@ -11,6 +13,7 @@ export function Slide(p: {
   chapter: { number: number; title: string; color: string; soft: string }; unitLabel: string; pageIndex: number; pageCount: number;
   blocks: Block[]; questions: PublicQuestion[]; classId: string; prev: string | null; next: string | null; position: string;
   teacherGuide: Record<string, unknown> | null; sessionId: string | null; isStaff: boolean; minutes: number; level: string;
+  infografico?: Infografico | null;
 }) {
   const router = useRouter();
   const [notes, setNotes] = useState(false);
@@ -52,6 +55,7 @@ export function Slide(p: {
             {p.support && <p className="objective max-w-[70ch]">{p.support}</p>}
           </div>
           <div className={`conteudo transition-opacity ${reveal >= 2 ? "opacity-100" : "opacity-0 pointer-events-none"}`} inert={reveal < 2}>
+            {p.infografico && <div className="mb-3"><InfograficoCapitulo d={p.infografico} modo="apresentacao" /></div>}
             <ContentBlocks blocks={p.blocks} questions={p.questions} classId={p.classId} mode={p.isStaff ? "previa" : "estudo"} />
           </div>
           {p.connection && reveal >= 2 && p.next && <p className="font-serif italic text-ink text-[.9em] border-t border-rule pt-1"><span className="eyebrow not-italic mr-2">A seguir</span>{p.connection}</p>}

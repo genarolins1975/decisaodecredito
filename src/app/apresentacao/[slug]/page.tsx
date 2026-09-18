@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { requireContext } from "@/lib/context";
 import { getPage, neighbors } from "@/lib/services/content";
 import { Slide } from "@/components/content/slide";
+import { infograficoDoCapitulo } from "@/lib/content/infograficos";
 
 export const metadata: Metadata = { title: "Apresentação" };
 
@@ -16,12 +17,14 @@ export default async function ApresentacaoPage({ params, searchParams }: { param
   if (!data) notFound();
   const nav = await neighbors(ctx.current.edition.id, slug);
   const chapterPages = nav.all.filter((p) => p.chapterId === data.chapter.id);
+  const pageIndex = chapterPages.findIndex((p) => p.slug === slug) + 1;
+  const infografico = pageIndex === 1 ? infograficoDoCapitulo(data.chapter.number) : null;
   return (
     <Slide
       slug={slug} title={data.version.title} objective={data.version.objective} support={data.version.support} connection={data.version.connection}
       chapter={{ number: data.chapter.number, title: data.chapter.title, color: data.chapter.themeColor ?? "#00205B", soft: data.chapter.themeSoft ?? "#EFF3FA" }}
       unitLabel={data.unit.kind === "trabalho" ? "Trabalho final" : `Aula ${data.unit.number}`}
-      pageIndex={chapterPages.findIndex((p) => p.slug === slug) + 1} pageCount={chapterPages.length}
+      pageIndex={pageIndex} pageCount={chapterPages.length} infografico={infografico}
       blocks={data.blocks} questions={data.questions} classId={ctx.current.classId}
       prev={nav.prev?.slug ?? null} next={nav.next?.slug ?? null} position={`${nav.index + 1}/${nav.total}`}
       teacherGuide={staff ? (data.teacherGuide ?? null) : null} sessionId={sessao ?? null} isStaff={staff}
