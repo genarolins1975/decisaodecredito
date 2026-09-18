@@ -1,6 +1,7 @@
 """Figuras conceituais da apostila (SVG, vetoriais). Paleta validada: azul #2a78d6, laranja #eb6834, água #1baf7a; texto #0b0b0b / #52514e."""
 import numpy as np, matplotlib
 matplotlib.use("Agg")
+import matplotlib.ticker as mticker
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, FancyBboxPatch
 import os, sys
@@ -53,7 +54,7 @@ ax.text(0.2, 0.15, "Um coeficiente de 0,69 no log odds dobra as odds em qualquer
 fig, axs = plt.subplots(1, 2, figsize=(8, 3.2)); x = np.linspace(0.2, 0.95, 200); gini = 0.18 - 0.09 * np.exp(-((x - 0.7) / 0.12) ** 2)
 axs[0].plot(x * 100, gini, color=B, lw=2); axs[0].plot([70], [0.09], "o", color=O, ms=8); axs[0].annotate("melhor corte: utilização 70%", (70, 0.09), xytext=(35, 0.10), color=INK, fontsize=9, arrowprops=dict(arrowstyle="-", color=MUT)); axs[0].set_xlabel("corte candidato (utilização do limite, %)"); axs[0].set_ylabel("impureza ponderada dos filhos"); axs[0].set_title("A árvore testa todos os cortes e guarda o melhor", fontsize=9.5, loc="left")
 n = np.array([5, 10, 20, 50, 100, 200, 500, 1000]); p = 0.2; z95 = 1.96; lo = (p + z95**2/(2*n) - z95*np.sqrt(p*(1-p)/n + z95**2/(4*n**2)))/(1+z95**2/n); hi = (p + z95**2/(2*n) + z95*np.sqrt(p*(1-p)/n + z95**2/(4*n**2)))/(1+z95**2/n)
-axs[1].fill_between(n, lo * 100, hi * 100, color=B, alpha=0.18); axs[1].plot(n, np.full_like(n, 20.0), color=B, lw=2); axs[1].set_xscale("log"); axs[1].set_xlabel("n na folha (escala log)"); axs[1].set_ylabel("taxa de default na folha (%)"); axs[1].set_title("Folha com 20% de default: intervalo de Wilson 95%", fontsize=9.5, loc="left"); fig.tight_layout(); salvar(fig, "conceito-c5-arvore")
+axs[1].fill_between(n, lo * 100, hi * 100, color=B, alpha=0.18); axs[1].plot(n, np.full_like(n, 20.0), color=B, lw=2); axs[1].set_xscale("log"); axs[1].set_xticks([10, 100, 1000, 10000]); axs[1].set_xticklabels(["10", "100", "1.000", "10.000"]); axs[1].xaxis.set_minor_formatter(mticker.NullFormatter()); axs[1].set_xlabel("n na folha (escala log)"); axs[1].set_ylabel("taxa de default na folha (%)"); axs[1].set_title("Folha com 20% de default: intervalo de Wilson 95%", fontsize=9.5, loc="left"); fig.tight_layout(); salvar(fig, "conceito-c5-arvore")
 
 # c6 · boosting: correções acumuladas
 fig, ax = plt.subplots(figsize=(7, 3.4)); alvo = 8.0; F = [6.5]; res = []
