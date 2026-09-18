@@ -79,3 +79,33 @@ describe("visuais nativos: a base amadurece (c3p11)", () => {
     expect(r.comImaturas).toBeLessThan(0.1); expect(r.comImaturas).toBeGreaterThan(0.07);
   });
 });
+
+import { GRADE_CORTES, chocar, curva, otimo, parcelas, pontoDeEquilibrio, realizado } from "../src/lib/visuais/economia";
+
+describe("visuais nativos: a curva de lucro reproduz o motor econômico da aula (c8p5 a c8p11)", () => {
+  const pd = oot.pd as number[]; const ead = (oot as { ead: number[] }).ead;
+  it("operação padrão de R$ 10 mil com PD 10%: resultado R$ 350 e equilíbrio em 13,76%", () => {
+    const r = parcelas([0.1], [10000], 1);
+    expect(Math.round(r.receita)).toBe(2520); expect(Math.round(r.perda)).toBe(-650); expect(Math.round(r.total)).toBe(350);
+    expect(pontoDeEquilibrio(10000)).toBeCloseTo(0.1376, 4);
+  });
+  it("corte de 10%: 469 aprovados e R$ 585 mil; máximo da curva em 14% com 580 aprovados e R$ 608 mil", () => {
+    const r10 = parcelas(pd, ead, 0.10);
+    expect(r10.aprovados).toBe(469); expect(Math.round(r10.total / 1000)).toBe(585);
+    const best = otimo(curva(pd, ead, GRADE_CORTES));
+    expect(best.corte).toBeCloseTo(0.14, 6); expect(best.parcelas.aprovados).toBe(580); expect(Math.round(best.parcelas.total / 1000)).toBe(608);
+    expect(Math.round(best.parcelas.operacao / 1000)).toBe(-70); expect(Math.round(best.parcelas.perda / 1000)).toBe(-346);
+  });
+  it("resultado realizado na janela: R$ 378 mil na carteira inteira e R$ 654 mil com corte de 10%", () => {
+    const tudo = pd.reduce((s, _, i) => s + realizado((oot.y as number[])[i], ead[i]), 0);
+    const ap10 = pd.reduce((s, v, i) => s + (v < 0.1 ? realizado((oot.y as number[])[i], ead[i]) : 0), 0);
+    expect(Math.round(tudo / 1000)).toBe(378); expect(Math.round(ap10 / 1000)).toBe(654);
+  });
+  it("choque em log odds preserva o intervalo e sobe a PD média", () => {
+    const media = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;
+    expect(media(pd)).toBeCloseTo(0.0972, 3);
+    const chocada = pd.map((v) => chocar(v, 0.8));
+    expect(media(chocada)).toBeGreaterThan(media(pd)); expect(Math.max(...chocada)).toBeLessThan(1);
+    expect(chocar(0.5, 0)).toBe(0.5);
+  });
+});

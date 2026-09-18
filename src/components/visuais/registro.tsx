@@ -1,6 +1,7 @@
 "use client";
 import type { ComponentType } from "react";
 import { CemVidas } from "./cem-vidas";
+import { CurvaDeLucro } from "./curva-de-lucro";
 import { FilaDeRisco } from "./fila-de-risco";
 import { LinhaDoTempo } from "./linha-do-tempo";
 import { Safras } from "./safras";
@@ -16,6 +17,7 @@ const REGISTRO: Record<string, VisualNativo> = {
   c3p7: { Componente: LinhaDoTempo, substitui: "figura" },
   c3p11: { Componente: Safras, substitui: "figura" },
   c7p6: { Componente: FilaDeRisco, substitui: "legacy" },
+  c8p8: { Componente: CurvaDeLucro, substitui: "legacy" },
 };
 
 export function visualNativo(slug: string): VisualNativo | null {

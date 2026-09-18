@@ -361,3 +361,30 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner .vz-safras-grade { grid-template-columns: minmax(0, 1fr) 230px; }
 .slide-inner .vz-legenda--coluna { display: none; }
 .slide-inner .vz-tiles--coluna .vz-tile { padding: 6px 10px; }
+
+/* A curva de lucro */
+.vz-estado { margin: 0 0 12px; padding: 8px 12px; border-radius: 6px; background: var(--color-paper); border: 1px solid var(--color-rule); font-size: 13px; color: var(--color-body); }
+.vz-estado--alterado { background: var(--color-warn-soft); border-color: #E6D2A6; color: #5a3f06; }
+.vz-lucro-grade { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 14px 20px; align-items: start; }
+.vz-lucro-painel { display: grid; gap: 12px; min-width: 0; }
+.vz-cenario { background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 6px; padding: 8px 12px 10px; display: grid; gap: 8px; }
+.vz-cenario .vz-slider { margin-top: 0; }
+.vz-cenario .vz-seg { display: flex; width: 100%; }
+.vz-cenario .vz-seg-b { flex: 1; padding: 6px 4px; font-size: 12.5px; white-space: nowrap; }
+.vz-zero { stroke: var(--color-ink); stroke-width: 1.2; }
+.vz-otimo { fill: var(--color-gold); stroke: #fff; stroke-width: 1.5; }
+.vz-otimo-linha { stroke: var(--color-gold); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.vz-palpite { fill: #fff; stroke: var(--color-ink-soft); stroke-width: 2; }
+.vz-tick--palpite { fill: var(--color-ink-soft); font-weight: 700; }
+.vz-area { stroke: none; opacity: .85; }
+.vz-area--receita { fill: #CFE3D8; }
+.vz-area--perda { fill: #E3B7BE; }
+.vz-area--funding { fill: #BCCAE2; }
+.vz-area--operacao { fill: #D9D6CC; }
+.vz-area--capital { fill: #EBDDB0; }
+.vz-palpites .input { min-height: 38px; font-size: 14px; }
+@container (max-width: 760px) { .vz-lucro-grade { grid-template-columns: 1fr; } }
+.slide-inner .vz-lucro-grade { grid-template-columns: minmax(0, 1fr) 250px; }
+.slide-inner [data-vz="curva-de-lucro"] .vz-grafico svg { height: 290px; width: auto; max-width: 100%; margin: 0 auto; }
+.slide-inner .vz-lucro-grade .vz-graficos > :nth-child(2) { display: none; }
+.slide-inner .vz-palpites table { display: none; }

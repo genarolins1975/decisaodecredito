@@ -84,7 +84,8 @@ Alguns visuais herdados (iframe do motor original) foram substituídos por compo
 
 - Capítulo 1, `c1p5`: "Cem vidas em doze meses" (`cem-vidas.tsx`). Simulação com risco mensal constante; sem dados externos.
 - Capítulo 3, `c3p7`: "A linha do tempo do cliente" (`linha-do-tempo.tsx`) e `c3p11`: "A base amadurece" (`safras.tsx`). Regras em `src/lib/visuais/tempo.ts` (disponibilidade contra evento; maturação com horizonte 12 e apuração 1, que reproduz a partição da base: fora do tempo até dez 2023). Entram no lugar da figura estática (`substitui: "figura"`), preservando o texto ao redor.
-- Capítulo 7, `c7p6`: "A fila de risco" (`fila-de-risco.tsx`). Usa `src/lib/visuais/oot-logistica.json`, gerado por `node scripts/content/visuais-dados.mjs` a partir de `content/generated/dados.json` (737 propostas fora do tempo e PD da logística).
+- Capítulo 7, `c7p6`: "A fila de risco" (`fila-de-risco.tsx`).
+- Capítulo 8, `c8p8`: "A curva de lucro" (`curva-de-lucro.tsx`). Motor econômico em `src/lib/visuais/economia.ts` (parâmetros de c8p5 e c8p6, choque em log odds de c8p11), conferido contra o gerador: corte de 10% com 469 aprovados e R$ 585 mil, máximo em 14% com R$ 608 mil, realizado de R$ 378 mil na janela. Palpites da turma digitados pelo professor viram marcas na curva. Usa `src/lib/visuais/oot-logistica.json`, gerado por `node scripts/content/visuais-dados.mjs` a partir de `content/generated/dados.json` (737 propostas fora do tempo e PD da logística).
 
 Os cálculos ficam em `src/lib/visuais/metricas.ts` (funções puras) e são conferidos contra o gerador em `tests/visuais.test.ts` (AUC 0,7257, KS 0,3621 em PD 9,74%, corte de 12% com 48 de 81 e 164 de 656). Regras das peças: botão de reproduzir e controle único, cores por papel (default em `--color-alert`, pagou em azul claro, corte em `--color-gold`), números tabulares, respeito a `prefers-reduced-motion`, layout por container query e variante compacta dentro do slide (`.slide-inner .vz`).
 

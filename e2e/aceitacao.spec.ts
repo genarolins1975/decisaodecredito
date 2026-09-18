@@ -332,6 +332,15 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   const safras = page.locator('figure[data-vz="safras"]');
   await expect(safras).toContainText("até dez 2023");
   await expect(page.locator("main")).toContainText("A regra de inclusão");
+  // capítulo 8: motor econômico recalculado na tela, com estado do cenário sempre visível
+  await page.goto("/aulas/c8p8");
+  const lucro = page.locator('figure[data-vz="curva-de-lucro"]');
+  await expect(lucro).toContainText("R$ 585 mil");
+  await expect(lucro).toContainText("Máximo da curva · corte 14,0%");
+  await lucro.getByRole("button", { name: "severo" }).click();
+  await expect(lucro).toContainText("choque severo de PD (+0,8 em log odds)");
+  await lucro.locator('input[aria-label="Palpites da turma, cortes em porcentagem"]').fill("8, 20");
+  await expect(lucro).toContainText("média da turma");
 });
 
 test("núcleo: gabaritos e notas privadas não estão no motor legado nem nas páginas", async () => {
