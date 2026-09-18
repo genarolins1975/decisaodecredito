@@ -34,6 +34,10 @@ const memorando = { fonte: "content/generated/dados.json (DADOS.res, meta, fair,
   taxaAprovacao: DADOS.res.prevalencia.taxa_aprovacao, meta: { seed: DADOS.meta.seed, n: DADOS.meta.n, data: DADOS.meta.data_referencia, treino: DADOS.meta.n_treino, validacao: DADOS.meta.n_val, oot: DADOS.meta.n_oot },
   grupos: { G1: { n: DADOS.fair.G1.n, taxaAprov: DADOS.fair.G1.taxa_aprov }, G2: { n: DADOS.fair.G2.n, taxaAprov: DADOS.fair.G2.taxa_aprov } }, psi: { valor: DADOS.psi.valor, faixas: DADOS.psi.ref.length } };
 writeFileSync("src/lib/visuais/memorando.json", JSON.stringify(memorando));
+// Capítulo 3: WoE das faixas de utilização e de renda (com contribuição para o IV) e a prevalência de treino.
+const woe = { fonte: "content/generated/dados.json (DADOS.woe_bins, woe_renda, res.prevalencia)", prevalenciaTreino: DADOS.res.prevalencia.aprovados_treino,
+  utilizacao: DADOS.woe_bins.utilizacao, renda: { edges: DADOS.woe_bins.renda.edges, faixas: DADOS.woe_renda } };
+writeFileSync("src/lib/visuais/woe.json", JSON.stringify(woe));
 const monit = { fonte: "content/generated/dados.json (DADOS.psi, csi, fair, res, meta)", psi: DADOS.psi, csi: DADOS.csi, fair: DADOS.fair,
   res: { logit_oot: DADOS.res.logit_oot, logit_val: DADOS.res.logit_val, logit_treino: DADOS.res.logit_treino, gbm_val: DADOS.res.gbm_val, gbm_raw_oot: DADOS.res.gbm_raw_oot }, n: { treino: DADOS.meta.n_treino, val: DADOS.meta.n_val, oot: DADOS.meta.n_oot } };
 writeFileSync("src/lib/visuais/monitoramento.json", JSON.stringify(monit));

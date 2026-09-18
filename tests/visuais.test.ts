@@ -541,3 +541,28 @@ describe("recorte, variáveis, mesmas características e condicional reproduzem 
     expect(w2.lo * 100).toBeCloseTo(9.5, 1); expect(w2.hi * 100).toBeCloseTo(90.5, 1); expect(w16.lo * 100).toBeCloseTo(28, 0); expect(w16.hi * 100).toBeCloseTo(72, 0); expect((8 / 15) * 100).toBeCloseTo(53.3, 1); expect(w15.lo * 100).toBeCloseTo(30.1, 1);
   });
 });
+
+describe("as quatro últimas páginas herdadas: mesma PD, balancear, WoE e valor da informação (c1p7, c3p15 a c3p17)", async () => {
+  const { resultadoEsperado } = await import("@/components/visuais/mesma-pd");
+  const { reponderar } = await import("@/components/visuais/balancear");
+  const { IV_TOTAL, leituraIV } = await import("@/components/visuais/valor-da-informacao");
+  const woe = JSON.parse(readFileSync("src/lib/visuais/woe.json", "utf8"));
+  it("PD 12%: operação A dá R$ 1.007 e B dá −R$ 852 (c1p7)", () => {
+    expect(Math.round(resultadoEsperado(0.12, { ead: 9000, rec: 3060, perda: 4050 }))).toBe(1007); expect(Math.round(resultadoEsperado(0.12, { ead: 15000, rec: 2850, perda: 12000 }))).toBe(-852);
+  });
+  it("reponderar as odds preserva a AUC 0,725685 e move a PD média de 9,72% para 9,76%, 19,35% e 45,34% (c3p15)", () => {
+    const q = (pa: number) => oot.pd.map((p: number) => reponderar(p, pa)); const media = (v: number[]) => v.reduce((s, x) => s + x, 0) / v.length;
+    for (const pa of [0.096, 0.2, 0.5]) expect(aucPorPares(oot.y, q(pa)).auc).toBeCloseTo(0.725685, 6);
+    expect(media(oot.pd) * 100).toBeCloseTo(9.72, 2); expect(media(q(0.096)) * 100).toBeCloseTo(9.76, 2); expect(media(q(0.2)) * 100).toBeCloseTo(19.35, 2); expect(media(q(0.5)) * 100).toBeCloseTo(45.34, 2);
+    expect(media(q(0.5).map((v: number) => reponderar(v, woe.prevalenciaTreino, 0.5))) * 100).toBeCloseTo(9.72, 2);
+  });
+  it("WoE = ln(pb ÷ pm): 0 meio a meio, ln(0,7 ÷ 0,3) = 0,847; utilização baixa positiva, alta negativa (c3p16)", () => {
+    expect(Math.log(0.5 / 0.5)).toBe(0); expect(Math.log(0.7 / 0.3)).toBeCloseTo(0.847, 3); expect(Math.log(0.25 / 0.75)).toBeCloseTo(-1.099, 3);
+    expect(woe.utilizacao.woe[0]).toBeGreaterThan(0); expect(woe.utilizacao.woe[5]).toBeLessThan(0); expect(woe.utilizacao.n.reduce((s: number, v: number) => s + v, 0)).toBe(2103);
+  });
+  it("IV da renda soma 0,03174 em seis faixas, leitura fraca, maior contribuição F5 com 0,00867; cada WoE é ln(pb ÷ pm) (c3p17)", () => {
+    expect(IV_TOTAL).toBeCloseTo(0.03174, 5); expect(leituraIV(IV_TOTAL)).toBe("fraca"); expect(leituraIV(0.15)).toBe("média");
+    const f = woe.renda.faixas; expect(f[0]).toMatchObject({ n: 3, woe: -0.4556, iv: 0.00041 }); expect(f.reduce((m: { iv: number }, x: { iv: number }) => (x.iv > m.iv ? x : m), f[0])).toMatchObject({ faixa: 4, n: 841, iv: 0.00867 });
+    for (const x of f.slice(1)) expect(Math.log(x.pb / x.pm)).toBeCloseTo(x.woe, 2);
+  });
+});

@@ -54,6 +54,10 @@ import { Recorte } from "./recorte";
 import { Variaveis } from "./variaveis";
 import { MesmasCaracteristicas } from "./mesmas-caracteristicas";
 import { Condicional } from "./condicional";
+import { MesmaPd } from "./mesma-pd";
+import { Balancear } from "./balancear";
+import { Woe } from "./woe";
+import { ValorDaInformacao } from "./valor-da-informacao";
 import { LinhaDoTempo } from "./linha-do-tempo";
 import { Safras } from "./safras";
 
@@ -65,6 +69,7 @@ import { Safras } from "./safras";
 export type VisualNativo = { Componente: ComponentType; substitui: "legacy" | "figura" };
 const REGISTRO: Record<string, VisualNativo> = {
   c1p5: { Componente: CemVidas, substitui: "legacy" },
+  c1p7: { Componente: MesmaPd, substitui: "legacy" },
   c2p2: { Componente: Recorte, substitui: "legacy" },
   c2p5: { Componente: Variaveis, substitui: "legacy" },
   c2p6: { Componente: MesmasCaracteristicas, substitui: "legacy" },
@@ -75,6 +80,9 @@ const REGISTRO: Record<string, VisualNativo> = {
   c2p16: { Componente: IntervaloQueEncolhe, substitui: "legacy" },
   c3p7: { Componente: LinhaDoTempo, substitui: "figura" },
   c3p11: { Componente: Safras, substitui: "figura" },
+  c3p15: { Componente: Balancear, substitui: "legacy" },
+  c3p16: { Componente: Woe, substitui: "legacy" },
+  c3p17: { Componente: ValorDaInformacao, substitui: "legacy" },
   c4p2: { Componente: RetaQueQuebra, substitui: "figura" },
   c4p3: { Componente: () => <Escalas modo="probabilidade" />, substitui: "legacy" },
   c4p4: { Componente: () => <Escalas modo="odds" />, substitui: "legacy" },

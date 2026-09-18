@@ -519,6 +519,19 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(cond).toContainText("Dado que utilização acima de 57,5%: 87,5%, 7 defaults em 8 propostas.");
   await cond.getByRole("button", { name: "atraso de 20 dias ou mais" }).click();
   await expect(cond).toContainText("71,4%, 5 defaults em 7 propostas");
+
+  // as quatro últimas: mesma PD com duas operações, balancear preserva a AUC, WoE e IV das faixas
+  await page.goto("/aulas/c1p7");
+  const mpd = page.locator('figure[data-vz="mesma-pd"]');
+  await expect(mpd).toContainText("A dá R$ 1.007 e B dá −R$ 852. Decisão: preferir A.");
+  await page.goto("/aulas/c3p15");
+  const bal = page.locator('figure[data-vz="balancear"]');
+  await expect(bal).toContainText("AUC 0,725685, idêntica até a sexta casa decimal; PD média prevista 9,76%");
+  await page.goto("/aulas/c3p17");
+  const vi = page.locator('figure[data-vz="valor-da-informacao"]');
+  await expect(vi).toContainText("IV total da variável 0,03174, leitura fraca; a maior contribuição vem de F5");
+  await vi.getByRole("button", { name: "F5" }).click();
+  await expect(vi).toContainText("F5, R$ 10.552 a R$ 14.292, 841 clientes: WoE 0,1518, contribuição para o IV 0,00867.");
 });
 
 test("núcleo: gabaritos e notas privadas não estão no motor legado nem nas páginas", async () => {
