@@ -493,6 +493,17 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(pn).toContainText("Painel com cobertura completa.");
   await page.goto("/aulas/c10p9");
   await expect(page.locator('figure[data-vz="memorando-5"]')).toContainText("4 indicadores registrados neste navegador");
+
+  // capítulo 6: o passo a passo de x = 8, os hiperparâmetros da aula e o modelo que decora
+  await page.goto("/aulas/c6p2");
+  const te = page.locator('figure[data-vz="tres-estrategias"]');
+  await te.getByRole("button", { name: "4. Árvore 4" }).click();
+  await expect(te).toContainText("previsão para x = 8 de 10,86, erro restante 1,14");
+  await page.goto("/aulas/c6p15");
+  const hp = page.locator('figure[data-vz="hiperparametros"]');
+  await expect(hp).toContainText("log loss de treino 0,47481 contra 0,43282 da logística, 16 folhas somadas, menor folha com 2, PD de 33% a 67%");
+  await hp.getByRole("button", { name: "decorar" }).click();
+  await expect(hp).toContainText("O modelo decorou a amostra");
 });
 
 test("núcleo: gabaritos e notas privadas não estão no motor legado nem nas páginas", async () => {

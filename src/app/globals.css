@@ -993,3 +993,26 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner [data-vz="tres-fenomenos"] .vz-tf-tres svg { height: 16cqh; width: auto; max-width: 100%; }
 /* colunas laterais em grade: nunca mais largas que a coluna, mesmo com tabela dentro */
 .vz-pn-lado, .vz-pn-lista, .vz-tf-lado, .vz-tf-leituras, .vz-memo-lado, .vz-memo-escrita, .vz-esc-lado, .vz-esc-painel, .vz-dc-lado, .vz-dc-painel, .vz-int-lado, .vz-int-painel, .vz-cc-lado, .vz-cc-painel, .vz-fx-lado, .vz-ana-lado, .vz-imp-lado, .vz-imp-painel, .vz-poda-painel, .vz-poda-lado, .vz-df-lado, .vz-cam-painel, .vz-cl-painel { grid-template-columns: minmax(0, 1fr); }
+/* Capítulo 6 completo: três estratégias, hiperparâmetros e três limites */
+.vz-te-grade, .vz-hp-grade, .vz-tl-grade { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 14px 22px; align-items: start; }
+.vz-te-lado, .vz-hp-painel, .vz-hp-lado, .vz-tl-lado { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; min-width: 0; align-content: start; }
+.vz-hp-painel .vz-slider { margin-top: 0; }
+.vz-te-estrategias { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
+.vz-te-card--boost { border-left: 3px solid var(--color-gold); background: var(--color-gold-soft); }
+.vz-te-modelos { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; } .vz-te-modelo { display: inline-grid; place-items: center; min-width: 34px; height: 24px; padding: 0 6px; border-radius: 5px; border: 1px solid var(--color-rule); background: var(--color-surface); font-size: 11.5px; font-weight: 700; color: var(--color-muted); } .vz-te-modelo--ativo { border-color: var(--color-ink); color: var(--color-ink); background: #EFF3FA; } .vz-te-modelo--soma { border-color: var(--color-gold); color: #7a5f16; }
+.vz-te-passos { margin-bottom: 8px; } .vz-te-tabela { margin-top: 8px; }
+.vz-num--ok { color: var(--color-ok); }
+.vz-tl-b { transition: height .3s, y .3s; } .vz-tl-b--treino { fill: var(--color-alert); } .vz-tl-b--val { fill: var(--color-ink); } .vz-tl-b--oot { fill: var(--color-gold); }
+.vz-sw--treino { background: var(--color-alert); } .vz-sw--val { background: var(--color-ink); } .vz-sw--oot { background: var(--color-gold); }
+.vz-tl-inst { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.vz-tl-parc { transition: height .25s, y .25s; } .vz-tl-parc--f0 { fill: var(--color-muted); } .vz-tl-parc--mais { fill: var(--color-alert); } .vz-tl-parc--menos { fill: #9db6de; }
+@container (max-width: 760px) { .vz-te-grade, .vz-hp-grade, .vz-tl-grade, .vz-te-estrategias, .vz-tl-inst { grid-template-columns: minmax(0, 1fr); } }
+/* palco */
+.slide-inner .vz-te-grade, .slide-inner .vz-hp-grade, .slide-inner .vz-tl-grade { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1cqh 2cqh; }
+.slide-inner .vz-te-lado, .slide-inner .vz-hp-painel, .slide-inner .vz-hp-lado, .slide-inner .vz-tl-lado { gap: .8cqh; } .slide-inner .vz-te-estrategias { gap: 1cqh; margin-bottom: 1cqh; }
+.slide-inner [data-vz="tres-estrategias"] .vz-te-card .hint, .slide-inner [data-vz="tres-estrategias"] .vz-te-lado .vz-tile:not(:first-child), .slide-inner [data-vz="tres-estrategias"] .vz-te-lado .vz-formula, .slide-inner [data-vz="tres-estrategias"] .vz-te-tabela,
+.slide-inner [data-vz="hiperparametros"] .vz-hp-lado .vz-tile, .slide-inner [data-vz="hiperparametros"] .vz-tile .hint,
+.slide-inner [data-vz="tres-limites"] .vz-tl-lado .vz-tile:nth-child(n+2), .slide-inner [data-vz="tres-limites"] .vz-legenda { display: none; }
+.slide-inner [data-vz="tres-estrategias"] .vz-grafico svg { height: 34cqh; } .slide-inner [data-vz="hiperparametros"] .vz-grafico svg { height: 40cqh; } .slide-inner [data-vz="tres-limites"] .vz-grafico svg { height: 34cqh; }
+.slide-inner .vz-te-modelo { font-size: 1em; height: auto; padding: .2cqh .8cqh; } .slide-inner [data-vz="tres-estrategias"] .vz-te-card .vz-num { display: none; }
+.vz-hp-controla th { text-transform: none; font-size: 13px; }

@@ -507,3 +507,23 @@ describe("três fenômenos, gatilhos e painel reproduzem as páginas herdadas (c
     expect(diagnostico(INDICADORES.map((x) => x.id)).grande).toBe(true); expect(diagnostico([]).faltam).toEqual(["entrada", "nivel", "relacao"]);
   });
 });
+
+describe("três estratégias, hiperparâmetros e três limites reproduzem as páginas herdadas (capítulo 6, c6p2, c6p15 e c6p18)", async () => {
+  const { PONTOS, boostingRegressao, boostingClassificacao, folhasReg, rotuloCorteReg } = await import("@/lib/visuais/boosting");
+  const base = did.base as Proposta[];
+  it("para x = 8 a previsão vai de 6,50 a 7,94, 9,97, 10,35 e 10,86 e o erro cai de 5,50 a 1,14 (c6p2)", () => {
+    const r = boostingRegressao(PONTOS.x, PONTOS.y, 0.5, 4, 1);
+    expect(r.map((p) => +p.F[7].toFixed(2))).toEqual([6.5, 7.94, 9.97, 10.35, 10.86]); expect(+(12 - r[4].F[7]).toFixed(2)).toBe(1.14);
+  });
+  it("η 0,4, M 4, profundidade 2 e mínimo 2: log loss 0,47481, 16 folhas, menor folha 2, PD de 33% a 67%; decorar dá perda quase nula (c6p15)", () => {
+    const ps = boostingClassificacao(base, 0.4, 4, 2, 2); const fim = ps[4];
+    expect(fim.perda).toBeCloseTo(0.47481, 5); expect(ps.slice(1).reduce((s, p) => s + folhasReg(p.arvore!).length, 0)).toBe(16);
+    expect(Math.min(...ps.slice(1).flatMap((p) => folhasReg(p.arvore!).map((l) => l.n)))).toBe(2); expect(Math.round(Math.min(...fim.p) * 100)).toBe(33); expect(Math.round(Math.max(...fim.p) * 100)).toBe(67);
+    expect(boostingClassificacao(base, 1, 40, 3, 1)[40].perda).toBeLessThan(0.05);
+  });
+  it("retirar a #15 transforma o nó direito da primeira árvore em folha e retirar a #16 move o corte para 82,5% (c6p18)", () => {
+    const arv = (b: Proposta[]) => boostingClassificacao(b, 0.4, 1, 2, 2)[1].arvore!;
+    expect(rotuloCorteReg(arv(base).dir!.corte!.v, arv(base).dir!.corte!.valor)).toBe("utilização ≤ 87,5%");
+    expect(arv(base.filter((p) => p.id !== 15)).dir!.corte).toBeUndefined(); expect(arv(base.filter((p) => p.id !== 16)).dir!.corte!.valor).toBe(82.5);
+  });
+});

@@ -47,6 +47,9 @@ import { Memorando } from "./memorando";
 import { TresFenomenos } from "./tres-fenomenos";
 import { Gatilhos } from "./gatilhos";
 import { Painel } from "./painel";
+import { TresEstrategias } from "./tres-estrategias";
+import { Hiperparametros } from "./hiperparametros";
+import { TresLimites } from "./tres-limites";
 import { LinhaDoTempo } from "./linha-do-tempo";
 import { Safras } from "./safras";
 
@@ -88,13 +91,16 @@ const REGISTRO: Record<string, VisualNativo> = {
   c5p15: { Componente: Poda, substitui: "legacy" },
   c5p16: { Componente: () => <ArvoreQueCresce modo="instabilidade" />, substitui: "legacy" },
   c5p18: { Componente: DuasFamilias, substitui: "legacy" },
+  c6p2: { Componente: TresEstrategias, substitui: "legacy" },
   c6p7: { Componente: () => <ResiduosQueEncolhem modo="taxa" />, substitui: "legacy" },
   c6p8: { Componente: () => <ResiduosQueEncolhem modo="arvores" />, substitui: "legacy" },
   c6p9: { Componente: () => <ResiduosQueEncolhem modo="soma" />, substitui: "legacy" },
   c6p12: { Componente: () => <PerdaQueCai modo="alvo" />, substitui: "legacy" },
   c6p13: { Componente: () => <PerdaQueCai modo="iteracoes" />, substitui: "legacy" },
   c6p14: { Componente: () => <PerdaQueCai modo="rastro" />, substitui: "legacy" },
+  c6p15: { Componente: Hiperparametros, substitui: "legacy" },
   c6p17: { Componente: DistanciaQueSeAbre, substitui: "figura" },
+  c6p18: { Componente: TresLimites, substitui: "legacy" },
   c7p2: { Componente: AcertoQueEngana, substitui: "legacy" },
   c7p5: { Componente: Pares, substitui: "legacy" },
   c7p6: { Componente: FilaDeRisco, substitui: "legacy" },
