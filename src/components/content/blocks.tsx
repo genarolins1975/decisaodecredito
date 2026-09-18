@@ -9,10 +9,10 @@ import { api } from "@/lib/client/api";
 
 type SubmitFn = (q: PublicQuestion, answer: unknown, clientRequestId: string) => Promise<{ isCorrect: boolean | null; feedback: never; attemptNo: number }>;
 
-export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liveSubmit, hideSlugs, pageSlug, visiveis }: {
+export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liveSubmit, hideSlugs, pageSlug, palco }: {
   blocks: Block[]; questions: PublicQuestion[]; classId: string; mode?: "estudo" | "apresentacao" | "previa"; liveSubmit?: SubmitFn; hideSlugs?: string[]; pageSlug?: string;
-  /** Apresentação: índices dos blocos a exibir nesta tela (os outros ficam montados, mas ocultos); null exibe todos */
-  visiveis?: number[] | null;
+  /** Apresentação (deck): cada bloco vira um invólucro [data-bloco] que o compositor pagina; episódio e síntese ganham o leiaute de palco */
+  palco?: boolean;
 }) {
   const nativo = pageSlug ? visualNativo(pageSlug) : null;
   // a figura estática é substituída uma vez, no primeiro bloco HTML que a contém
@@ -40,7 +40,7 @@ export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liv
 
   const reveal = (q: PublicQuestion) => async () => api<{ isCorrect: boolean | null; feedback: never; attemptNo: number; revealed: boolean; disclosedBefore: boolean }>("/api/estudo/responder", { body: { classId, questionVersionId: q.versionId, reveal: true } });
 
-  const bloco = (i: number, filho: React.ReactNode) => filho == null ? null : <div key={i} data-bloco={i} className={visiveis && !visiveis.includes(i) ? "hidden" : undefined}>{filho}</div>;
+  const bloco = (i: number, filho: React.ReactNode) => filho == null ? null : <div key={i} data-bloco={i}>{filho}</div>;
   return (
     <div className="flex flex-col gap-4">
       {blocks.flatMap((b, i) => {
@@ -53,12 +53,12 @@ export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liv
 
   function renderBloco(b: Block, i: number): React.ReactNode {
         if (b.type === "html") return <div key={i} className="conteudo" dangerouslySetInnerHTML={{ __html: b.html }} />;
-        if (b.type === "episode") return <Episode key={i} b={b} />;
-        if (b.type === "checkpoint") return <Checkpoint key={i} b={b} />;
+        if (b.type === "episode") return <Episode key={i} b={b} palco={palco} />;
+        if (b.type === "checkpoint") return <Checkpoint key={i} b={b} palco={palco} />;
         if (b.type === "legacy") {
           const n = visualNativo(b.slug);
           if (n?.substitui === "legacy") return <AjusteAoPalco key={i}><n.Componente /></AjusteAoPalco>;
-          return <LegacyFrame key={i} slug={b.slug} fallbackHtml={b.fallbackHtml} note={b.note} revealRef={revealRef} />;
+          return <LegacyFrame key={i} slug={b.slug} fallbackHtml={b.fallbackHtml} note={b.note} revealRef={revealRef} palco={palco} />;
         }
         if (b.type === "question") {
           const q = byslug.get(b.slug);
@@ -70,8 +70,31 @@ export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liv
   }
 }
 
-export function Episode({ b }: { b: Extract<Block, { type: "episode" }> }) {
+export function Episode({ b, palco }: { b: Extract<Block, { type: "episode" }>; palco?: boolean }) {
   const [i, setI] = useState(0);
+  if (palco) {
+    // palco: desafio em destaque e as etapas lado a lado, sem abas (tudo visível de uma vez)
+    return (
+      <section className="palco-episodio" aria-label="Desafio do capítulo">
+        <div className="palco-episodio-cab">
+          <p className="palco-episodio-num" aria-hidden="true">{String(b.number).padStart(2, "0")}</p>
+          <div>
+            <p className="eyebrow">O desafio deste capítulo</p>
+            <h3 className="palco-episodio-desafio">{b.challenge}</h3>
+            <p className="palco-episodio-texto">{b.text}</p>
+          </div>
+        </div>
+        <ol className="palco-episodio-etapas" aria-label="Etapas do capítulo">
+          {b.steps.map((s, k) => <li key={k}><span className="palco-episodio-n">{k + 1}</span><b>{s.title}</b><p>{s.detail}</p></li>)}
+        </ol>
+        {b.missions && (
+          <ol className="palco-missoes" aria-label="12 missões do trabalho">
+            {Array.from({ length: b.missions }, (_, k) => <li key={k}>{k + 1}</li>)}
+          </ol>
+        )}
+      </section>
+    );
+  }
   return (
     <section className="grid md:grid-cols-[120px_1fr] gap-5 items-start" aria-label="Desafio do capítulo">
       <div className="text-center md:text-left">
@@ -99,9 +122,30 @@ export function Episode({ b }: { b: Extract<Block, { type: "episode" }> }) {
   );
 }
 
-export function Checkpoint({ b }: { b: Extract<Block, { type: "checkpoint" }> }) {
+export function Checkpoint({ b, palco }: { b: Extract<Block, { type: "checkpoint" }>; palco?: boolean }) {
   const [i, setI] = useState(0);
   const it = b.items[i];
+  if (palco) {
+    // palco: as ideias lado a lado, pergunta e resposta visíveis, tipografia de síntese
+    return (
+      <section className="palco-sintese" aria-label="Síntese do capítulo">
+        <header className="palco-sintese-cab">
+          <p className="palco-sintese-num" aria-hidden="true">{b.count}</p>
+          <div><h3 className="palco-sintese-tit">ideias para levar</h3><p className="palco-sintese-intro">{b.intro}</p></div>
+        </header>
+        <ol className="palco-sintese-cartoes">
+          {b.items.map((x, k) => (
+            <li key={k} className="palco-sintese-cartao">
+              <p className="eyebrow">ideia {k + 1}</p>
+              <h4>{x.title}</h4>
+              <p className="palco-sintese-perg">{x.question}</p>
+              <p className="palco-sintese-resp">{x.answer}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+    );
+  }
   return (
     <section className="grid md:grid-cols-[200px_1fr] gap-5 items-start" aria-label="Síntese do capítulo">
       <div className="panel-soft">

@@ -7,12 +7,15 @@ import { ContentBlocks } from "./blocks";
 import { InfograficoCapitulo } from "./infografico";
 import type { Infografico } from "@/lib/content/infograficos";
 import { api } from "@/lib/client/api";
+import { aplicarTela, compor, mostrarTudo, type Composicao } from "@/lib/palco/unidades";
 
 /**
- * Apresentação 16:9 como um deck de slides. Cada página vira uma sequência de telas, um bloco ou grupo de blocos por
- * tela, empacotados pela altura medida para caber sem rolagem, já com o título compacto no alto (o apoio aparece na
- * primeira tela). Uma tela que não cabe recebe zoom; nenhuma tela fica vazia. Setas e espaço avançam tela a tela e
- * depois de página. Página sem blocos mostra a capa.
+ * Apresentação 16:9 como um deck de slides. Cada página vira uma sequência de telas compostas a partir das unidades do
+ * conteúdo (parágrafos, painéis, figuras, questões), inclusive dentro do HTML do material: o compositor mede cada
+ * unidade e escolhe o menor número de telas que cabem, equilibradas entre si (src/lib/palco). Colunas do material
+ * (.palcoflex) ficam lado a lado, com a figura persistindo enquanto o texto é paginado. Uma tela que ainda não cabe
+ * recebe zoom; a que sobra espaço cresce até 1,5. Nenhuma tela fica vazia. Recompõe ao redimensionar (tela cheia).
+ * Setas e espaço avançam tela a tela e depois de página. Página sem blocos mostra a capa.
  */
 export function Slide(p: {
   slug: string; title: string; objective: string | null; support: string | null; connection: string | null;
@@ -24,59 +27,76 @@ export function Slide(p: {
   const router = useRouter();
   const [notes, setNotes] = useState(false);
   const [tela, setTela] = useState(0); // índice da tela atual
-  const [telas, setTelas] = useState<number[][] | null>(null); // índices de bloco por tela (−1 = infográfico); vazio = só a capa
+  const [comp, setComp] = useState<Composicao | null>(null); // unidades e telas; telas vazias = só a capa
   const areaRef = useRef<HTMLDivElement>(null);
   const telaRef = useRef<HTMLDivElement>(null);
-  const indices = [...(p.infografico ? [-1] : []), ...p.blocks.map((_, i) => i)];
-  const total = telas ? Math.max(1, telas.length) : 1;
+  const total = comp ? Math.max(1, comp.telas.length) : 1;
   const go = (slug: string | null) => { if (!slug) return; router.push(`/apresentacao/${slug}${p.sessionId ? `?sessao=${p.sessionId}` : ""}`); };
   const avancar = () => { if (tela < total - 1) setTela(tela + 1); else go(p.next); };
   const voltar = () => { if (tela > 0) setTela(tela - 1); else go(p.prev); };
 
-  // mede a altura natural de cada bloco (com o cabeçalho compacto) e empacota em telas que cabem
+  // compõe as telas: mede as unidades com tudo visível e zoom 1, e refaz quando a área muda de altura (tela cheia).
+  // A linha "A seguir" ocupa espaço em todas as telas (só fica visível na última) para a área não mudar de altura entre telas.
   useLayoutEffect(() => {
-    const area = areaRef.current; if (!area) return;
-    const disponivel = area.clientHeight; const gap = Math.max(8, disponivel * 0.015);
-    const els = Array.from(area.querySelectorAll<HTMLElement>("[data-bloco]"));
-    const grupos: number[][] = []; let atual: number[] = []; let soma = 0;
-    for (const el of els) {
-      const i = Number(el.dataset.bloco); const h = el.getBoundingClientRect().height;
-      if (atual.length && soma + gap + h > disponivel) { grupos.push(atual); atual = []; soma = 0; }
-      atual.push(i); soma += (soma ? gap : 0) + h;
-    }
-    if (atual.length) grupos.push(atual);
-    setTelas(grupos); setTela(0);
+    const area = areaRef.current, el = telaRef.current; if (!area || !el) return;
+    let alturaBase = 0; let raf = 0;
+    const compor_ = () => {
+      el.style.zoom = "1"; delete el.dataset.zoom;
+      alturaBase = area.clientHeight;
+      const c = compor(el, alturaBase);
+      if (process.env.NODE_ENV !== "production") (window as unknown as { __composicao?: Composicao }).__composicao = c;
+      setComp(c); setTela((t) => Math.min(t, Math.max(0, c.telas.length - 1)));
+    };
+    compor_(); setTela(0);
+    const ro = new ResizeObserver(() => {
+      const h = area.clientHeight; if (!alturaBase || Math.abs(h - alturaBase) / alturaBase < 0.04) return;
+      cancelAnimationFrame(raf); raf = requestAnimationFrame(compor_);
+    });
+    ro.observe(area);
+    return () => { ro.disconnect(); cancelAnimationFrame(raf); mostrarTudo(el); };
   }, [p.slug]);
 
+  // mostra só as unidades da tela atual
+  useLayoutEffect(() => {
+    const el = telaRef.current; if (!el || !comp) return;
+    aplicarTela(el, comp, tela);
+  }, [tela, comp]);
+
   // ajuste ao palco: a tela preenche a área como um slide. Escala para baixo quando não cabe e para cima (com reflow,
-  // até 1,35) quando sobra espaço; a largura é compensada para o conteúdo continuar ocupando a área inteira.
+  // até 1,5) quando sobra espaço. A largura fica em 100%: com o zoom padrão do navegador as porcentagens já se
+  // resolvem no espaço ampliado, então compensar a largura faria o conteúdo sobrar ou faltar na horizontal.
   useEffect(() => {
-    const el = telaRef.current, area = areaRef.current; if (!el || !area || !telas || tela === 0) return;
+    const el = telaRef.current, area = areaRef.current; if (!el || !area || !comp) return;
     let raf = 0; let ultimo = "";
     const ajustar = () => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
-        let z = Number(el.dataset.zoom || 1) || 1;
+        // estimativa única a partir da altura natural (zoom 1) e correção só para baixo: sem oscilação com o reflow
         const alvo = area.clientHeight - 4;
-        const aplicar = (v: number) => { el.style.zoom = v.toFixed(3); el.style.width = `${(100 / v).toFixed(3)}%`; return el.getBoundingClientRect().height; };
-        for (let k = 0; k < 8; k++) {
-          const usado = aplicar(z); if (usado <= 0) break;
-          const razao = alvo / usado;
-          if (razao >= 1 && razao <= 1.03) break;
-          z = Math.max(0.55, Math.min(1.35, z * razao * 0.985));
-        }
-        // nunca terminar com rolagem: correção final para baixo
+        const aplicar = (v: number) => { el.style.zoom = v.toFixed(3); return el.getBoundingClientRect().height; };
+        const natural = aplicar(1); if (natural <= 0) return;
+        // tela com iframe herdado não recebe zoom: o documento do iframe reflui com a largura e realimentaria o ajuste
+        if (el.querySelector("iframe") && !el.querySelector("iframe")!.closest("[data-oculto]")) { el.dataset.zoom = "1.00"; ultimo = "1.00"; return; }
+        let z = Math.max(0.55, Math.min(1.5, (alvo / natural) * 0.995));
         for (let k = 0; k < 6; k++) { const usado = aplicar(z); if (usado <= alvo || z <= 0.55) break; z = Math.max(0.55, z * (alvo / usado) * 0.99); }
-        aplicar(z);
+        // o reflow pode ter deixado folga (colunas mais largas ao reduzir): tenta subir; se a subida estoura, bisseção
+        // entre o valor que cabe e o que não cabe, sempre terminando num valor verificado
+        for (let k = 0; k < 2; k++) {
+          const usado = aplicar(z); if (usado >= alvo * 0.92 || z >= 1.5) break;
+          let alto = Math.min(1.5, z * (alvo / usado) * 0.98);
+          if (aplicar(alto) <= alvo) { z = alto; continue; }
+          for (let b = 0; b < 4; b++) { const meio = (z + alto) / 2; if (aplicar(meio) <= alvo) z = meio; else alto = meio; }
+          aplicar(z); break;
+        }
         el.dataset.zoom = z.toFixed(2); ultimo = el.dataset.zoom;
       });
     };
     ajustar();
     const ro = new ResizeObserver(() => { if (el.dataset.zoom === ultimo) ajustar(); });
-    ro.observe(area); ro.observe(el);
+    ro.observe(el);
     const fontes = (document as Document & { fonts?: { ready: Promise<unknown> } }).fonts; fontes?.ready.then(ajustar);
-    return () => { ro.disconnect(); cancelAnimationFrame(raf); el.style.zoom = "1"; el.style.width = ""; delete el.dataset.zoom; };
-  }, [tela, telas]);
+    return () => { ro.disconnect(); cancelAnimationFrame(raf); el.style.zoom = "1"; delete el.dataset.zoom; };
+  }, [tela, comp]);
 
   // sincroniza a sessão ao vivo (professor "apresenta" esta página)
   useEffect(() => {
@@ -98,10 +118,8 @@ export function Slide(p: {
     return () => removeEventListener("keydown", onKey);
   });
 
-  const capa = telas !== null && telas.length === 0; // página sem blocos: mostra título, objetivo e apoio
-  const visiveis = telas === null ? null : capa ? [] : telas[tela];
-  const ultima = telas !== null && tela === total - 1;
-  const mostra = (i: number) => visiveis === null || visiveis.includes(i);
+  const capa = comp !== null && comp.telas.length === 0; // página sem blocos: mostra título, objetivo e apoio
+  const ultima = comp !== null && tela === total - 1;
 
   return (
     <main id="conteudo" className="slide-stage min-h-screen flex flex-col">
@@ -125,11 +143,11 @@ export function Slide(p: {
           )}
           <div ref={areaRef} className={`conteudo slide-area ${capa ? "slide-area--capa" : ""}`}>
             <div ref={telaRef} className="palco-tela">
-              {p.infografico && <div data-bloco={-1} className={mostra(-1) ? undefined : "hidden"}><InfograficoCapitulo d={p.infografico} modo="apresentacao" /></div>}
-              <ContentBlocks blocks={p.blocks} questions={p.questions} classId={p.classId} mode={p.isStaff ? "previa" : "estudo"} pageSlug={p.slug} visiveis={visiveis} />
+              {p.infografico && <div data-bloco={-1}><InfograficoCapitulo d={p.infografico} modo="apresentacao" /></div>}
+              <ContentBlocks blocks={p.blocks} questions={p.questions} classId={p.classId} mode={p.isStaff ? "previa" : "estudo"} pageSlug={p.slug} palco />
             </div>
           </div>
-          {p.connection && ultima && p.next && <p className="font-serif italic text-ink text-[.9em] border-t border-rule pt-1"><span className="eyebrow not-italic mr-2">A seguir</span>{p.connection}</p>}
+          {p.connection && p.next && <p className="font-serif italic text-ink text-[.9em] border-t border-rule pt-1" style={ultima ? undefined : { visibility: "hidden" }} aria-hidden={!ultima}><span className="eyebrow not-italic mr-2">A seguir</span>{p.connection}</p>}
         </div>
         <div className="absolute left-0 bottom-0 h-[3px] bg-gold" style={{ width: `${(p.pageIndex / p.pageCount) * 100}%` }} aria-hidden="true" />
       </div>

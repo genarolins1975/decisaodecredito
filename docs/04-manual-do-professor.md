@@ -6,7 +6,7 @@ Lugares da área do professor (barra do topo): Início, Turmas, Conteúdo, Bases
 
 ## 0. Roteiro de uma aula (o caminho curto)
 1. Início → no cartão da turma, "Iniciar aula". Isso abre a aula ao vivo para os alunos e leva ao painel da aula. Se a aula já estiver aberta, o botão vira "Entrar na aula".
-2. No painel da aula: "Projetar em tela cheia" abre a apresentação em outra aba; ela avisa os alunos a cada página que você avança. Na apresentação: setas ou espaço avançam, N mostra as notas privadas, F tela cheia, Esc sai.
+2. No painel da aula: "Projetar em tela cheia" abre a apresentação em outra aba; ela avisa os alunos a cada página que você avança. Na apresentação cada página vira uma ou mais telas que cabem inteiras no projetor (o rodapé mostra "tela 2 de 3"); setas ou espaço avançam tela a tela e depois de página, N mostra as notas privadas, F tela cheia, Esc sai.
 3. "Presença" → "Abrir chamada": o código muda a cada minuto e há QR para projetar. O aluno digita o código em Ao vivo.
 4. "Perguntar à turma": escolha uma pergunta da página (ou crie uma), "Adicionar à lista", depois "Abrir". Encerre e "Liberar resultados" quando quiser que o aluno veja acerto e explicação.
 5. Ao final, "Encerrar aula".

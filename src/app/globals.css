@@ -132,7 +132,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner { position: absolute; inset: 0; padding: 3.2% 3.6%; display: flex; flex-direction: column; gap: 1.2%; container-type: size; }
 .slide-inner h2 { font-size: clamp(22px, 3.6cqh, 48px); }
 .slide-inner .objective { font-size: clamp(14px, 2.4cqh, 24px); }
-.slide-inner .conteudo { font-size: clamp(13px, 2.1cqh, 22px); overflow: auto; flex: 1; min-height: 0; }
+.slide-inner .conteudo { font-size: clamp(14px, 2.4cqh, 26px); overflow: auto; flex: 1; min-height: 0; }
 .slide-inner .conteudo table { font-size: .9em; }
 
 /* ------------------------------------------------------------------
@@ -190,9 +190,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
 @media (max-width: 960px) { .info-fluxo { grid-template-columns: repeat(2, minmax(0, 1fr)); } .info-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } .info-formula { grid-column: 1 / -1; } .info-paineis, .info-faixa dl { grid-template-columns: 1fr; } }
 @media (max-width: 560px) { .info { padding: 14px; } .info-fluxo, .info-tiles { grid-template-columns: 1fr; } .info-num { font-size: 40px; } }
 /* no modo apresentação o infográfico rola dentro do slide e usa a escala do slide */
-.info--slide { font-size: clamp(11px, 1.9cqh, 17px); padding: 1.2% 1.6%; gap: .8em; }
+.info--slide { font-size: clamp(14px, 2.3cqh, 25px); padding: 1.2% 1.6%; gap: .8em; }
 .info--slide .info-cab { display: none; }
-.info--slide .info-desc, .info--slide .info-texto, .info--slide .info-lista, .info--slide .info-kv div, .info--slide .info-barra { font-size: .92em; }
+.info--slide .info-desc, .info--slide .info-texto, .info--slide .info-lista, .info--slide .info-kv div, .info--slide .info-barra, .info--slide .info-formula-n, .info--slide .info-faixa dd { font-size: 1em; }
+.info--slide .info-legenda, .info--slide .info-nota { font-size: .85em; }
 .info--slide .info-sigla[data-tam="g"] { font-size: 2em; } .info--slide .info-sigla[data-tam="m"] { font-size: 1.6em; } .info--slide .info-sigla[data-tam="p"] { font-size: 1.25em; }
 .info--slide .info-formula-t { font-size: 1.15em; } .info--slide .info-faixa dt { font-size: 1.1em; } .info--slide .info-legenda, .info--slide .info-nota, .info--slide .info-nome { font-size: .85em; }
 
@@ -410,11 +411,14 @@ button, input, select, textarea { font: inherit; color: inherit; }
    escala é feito por .palco-ajuste (zoom) quando ainda assim a peça não cabe.
    ------------------------------------------------------------------ */
 .palco-ajuste { width: 100%; }
-.slide-inner .vz { padding: 1.2cqh 1.6cqh 1cqh; font-size: clamp(11px, 1.75cqh, 18px); line-height: 1.35; gap: .6cqh; border-radius: 8px; }
+.slide-inner .vz { padding: 1.2cqh 1.6cqh 1cqh; font-size: clamp(12px, 2.1cqh, 24px); line-height: 1.35; gap: .6cqh; border-radius: 8px; }
 .slide-inner .vz .vz-cab { margin-bottom: .8cqh; gap: .6cqh 1.6cqh; }
 .slide-inner .vz .eyebrow { font-size: .8em; }
 .slide-inner .vz-tit { font-size: clamp(13px, 2.2cqh, 24px); }
 .slide-inner .vz .btn-sm { min-height: 3.6cqh; padding: .2cqh 1.2cqh; font-size: .95em; }
+.slide-inner .vz-seg { display: flex; flex-wrap: wrap; max-width: 100%; }
+.slide-inner .vz-seg-b { font-size: .85em; padding: .4cqh 1cqh; min-height: 3.4cqh; flex: 1 1 auto; }
+.slide-inner .vz-cenario .vz-seg-b { font-size: .8em; padding: .4cqh .6cqh; }
 .slide-inner .vz-fonte, .slide-inner .vz-legenda-nota { display: none; }
 .slide-inner .vz-legenda { font-size: .85em; margin-top: .4cqh; gap: .3cqh 1.2cqh; }
 .slide-inner .vz-slider { margin-top: .6cqh; }
@@ -426,7 +430,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner .vz-tile .hint, .slide-inner .vz .hint { font-size: .85em; }
 .slide-inner .vz-grafico-t { font-size: .95em; margin-bottom: .2cqh; }
 .slide-inner .vz-grafico svg, .slide-inner .vz-fita, .slide-inner .vz-vidas, .slide-inner .vz-tempo-svg, .slide-inner .vz-safras-svg, .slide-inner .vz-contrib svg, .slide-inner .vz-escalas-reguas svg, .slide-inner .vz-hist svg { width: auto; max-width: 100%; margin: 0; }
-.slide-inner .vz-estado { margin-bottom: .8cqh; padding: .5cqh 1cqh; font-size: .9em; }
+.slide-inner .vz-estado { margin-bottom: .8cqh; padding: .5cqh 1cqh; font-size: 1em; }
 .slide-inner .vz .table { font-size: .85em; }
 /* a fila de risco: fita à esquerda com os quatro números, ROC à direita; acumuladas escondidas */
 .slide-inner .vz-fila-grade { grid-template-columns: minmax(0, 1fr) 40cqh; gap: 1cqh 2cqh; }
@@ -492,7 +496,69 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .palco-tela { display: flex; flex-direction: column; gap: 1.5cqh; }
 .palco-tela > .hidden { display: none; }
 .slide-inner .conteudo .svgfit svg, .slide-inner .conteudo figure svg { max-height: 58cqh; width: auto; max-width: 100%; height: auto; margin: 0 auto; display: block; }
-.slide-inner .conteudo .palcoflex { align-items: flex-start; }
+/* Compositor: unidades ocultas fora da tela atual; colunas do material lado a lado; tela centrada na área */
+[data-oculto="1"] { display: none !important; }
+.slide-inner .slide-area { display: flex; flex-direction: column; }
+.slide-inner .palco-tela { margin: auto 0; }
+.slide-inner .conteudo .palcoflex { display: flex; gap: 2.4cqh; align-items: flex-start; }
+.slide-inner .conteudo .palcoflex > .esq { flex: 0 1 40%; min-width: 0; }
+.slide-inner .conteudo .palcoflex > .dir { flex: 1 1 0; min-width: 0; }
+.slide-inner .conteudo .palcoflex[data-colunas="grafico"] > .esq { flex: 1 1 56%; }
+.slide-inner .conteudo .palcoflex[data-colunas="grafico"] > .dir { flex: 1 1 44%; }
+.slide-inner .conteudo .palcoflex > .esq:only-child, .slide-inner .conteudo .palcoflex > .dir:only-child { flex: 1 1 100%; }
+.slide-inner .conteudo .palcoflex > .esq > :first-child, .slide-inner .conteudo .palcoflex > .dir > :first-child { margin-top: 0 !important; }
+.slide-inner .conteudo .palcoflex > [data-so] { flex: 1 1 100% !important; } /* vence o flex escrito no próprio material */
+.slide-inner .conteudo .palcoflex > [data-so="colunas"] { columns: 2; column-gap: 2.4cqh; }
+.slide-inner .conteudo .palcoflex > [data-so="colunas"] > * { break-inside: avoid; }
+.slide-inner .conteudo [style*="flex:0 0 86px"] { flex-basis: 7.5em !important; } /* cartões da fila (c7p4): largura acompanha a fonte */
+/* tamanhos em px escritos no próprio material viram frações do corpo do slide */
+.slide-inner .conteudo [style*="font-size:10"], .slide-inner .conteudo [style*="font-size:11"], .slide-inner .conteudo [style*="font-size: 10"], .slide-inner .conteudo [style*="font-size: 11"] { font-size: .85em !important; }
+.slide-inner .conteudo [style*="font-size:12"], .slide-inner .conteudo [style*="font-size:13"], .slide-inner .conteudo [style*="font-size: 12"], .slide-inner .conteudo [style*="font-size: 13"] { font-size: .9em !important; }
+.slide-inner .conteudo [style*="font-size:14"], .slide-inner .conteudo [style*="font-size:15"], .slide-inner .conteudo [style*="font-size: 14"], .slide-inner .conteudo [style*="font-size: 15"] { font-size: .95em !important; }
+.slide-inner .conteudo [style*="font-size:16"], .slide-inner .conteudo [style*="font-size:17"], .slide-inner .conteudo [style*="font-size:18"] { font-size: 1.05em !important; }
+/* tipografia do material no palco: tamanhos em função da altura do slide, nunca em px fixos */
+.slide-inner .conteudo p[style*="font-size"], .slide-inner .conteudo .revelacao, .slide-inner .conteudo .painel p, .slide-inner .conteudo .painel li { font-size: .95em !important; }
+.slide-inner .conteudo .revelacao h4, .slide-inner .conteudo .painel h3 { font-size: 1em !important; }
+.slide-inner .conteudo .nota, .slide-inner .conteudo .fig-caption, .slide-inner .conteudo .rot, .slide-inner .conteudo th, .slide-inner .conteudo .selo { font-size: .8em; }
+.slide-inner .conteudo td { font-size: .95em; }
+.slide-inner .conteudo table { font-size: .92em; }
+.slide-inner .conteudo .painel { padding: 1.2cqh 1.6cqh; }
+.slide-inner .conteudo .revelacao { padding: 1cqh 1.4cqh; }
+.slide-inner .conteudo .grade { gap: 1.4cqh; }
+/* visual herdado (iframe) no palco: caixa de altura fixa, cabeçalho de modo escondido, legenda na escala do slide */
+.slide-inner [data-legado] .legado-caixa { height: 66cqh; }
+.slide-inner [data-legado] > .no-print { display: none; }
+.slide-inner [data-legado] figcaption { font-size: .85em; margin-top: .6cqh; }
+/* questão no palco: enunciado, alternativas e devolutiva na escala do slide */
+.slide-inner [data-questao] { padding: 1.4cqh 1.8cqh; }
+.slide-inner [data-questao] > p:not(.eyebrow) { font-size: 1.1em; }
+.slide-inner [data-questao] label, .slide-inner [data-questao] [aria-live], .slide-inner [data-questao] textarea, .slide-inner [data-questao] input[type="text"] { font-size: 1em; }
+.slide-inner [data-questao] .btn { font-size: .95em; }
+/* episódio (abertura) e síntese (fecho) no palco */
+.palco-episodio { display: flex; flex-direction: column; gap: 2.2cqh; }
+.palco-episodio-cab { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2.4cqh; align-items: start; }
+.palco-episodio-num { font-family: var(--font-serif); font-weight: 700; font-size: clamp(40px, 11cqh, 120px); line-height: .9; color: var(--color-ink); margin: 0; }
+.palco-episodio-desafio { font-size: clamp(18px, 3.4cqh, 40px); line-height: 1.2; margin: .3cqh 0 .8cqh; }
+.palco-episodio-texto { font-size: clamp(14px, 2.3cqh, 24px); max-width: 70ch; margin: 0; }
+.palco-episodio-etapas { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(28cqh, 1fr)); gap: 1.6cqh; }
+.palco-episodio-etapas li { background: #fff; border: 1px solid var(--color-rule); border-top: 3px solid var(--color-gold); border-radius: 6px; padding: 1.4cqh 1.8cqh; font-size: clamp(13px, 2.1cqh, 22px); display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .3cqh 1.2cqh; align-items: baseline; }
+.palco-episodio-etapas b { font-family: var(--font-serif); color: var(--color-ink); font-size: 1.15em; }
+.palco-episodio-etapas p { grid-column: 2; margin: 0; color: var(--color-body); }
+.palco-episodio-n { grid-row: span 2; width: 2.2em; height: 2.2em; border-radius: 50%; background: var(--color-ink); color: #fff; display: grid; place-items: center; font-family: var(--font-mono); font-weight: 700; font-size: .9em; align-self: start; }
+.palco-missoes { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .8cqh; }
+.palco-missoes li { width: 3.4cqh; height: 3.4cqh; border-radius: 50%; background: var(--color-gold-soft); color: var(--color-ink); display: grid; place-items: center; font-family: var(--font-mono); font-weight: 700; font-size: clamp(10px, 1.5cqh, 15px); }
+.palco-sintese { display: flex; flex-direction: column; gap: 2.2cqh; }
+.palco-sintese-cab { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2.4cqh; align-items: center; }
+.palco-sintese-num { font-family: var(--font-serif); font-weight: 700; font-size: clamp(40px, 11cqh, 120px); line-height: .9; color: var(--color-gold); margin: 0; }
+.palco-sintese-tit { font-size: clamp(18px, 3.4cqh, 40px); margin: 0; }
+.palco-sintese-intro { font-size: clamp(14px, 2.2cqh, 22px); color: var(--color-muted); margin: .3cqh 0 0; max-width: 70ch; }
+.palco-sintese-cartoes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(28cqh, 1fr)); gap: 1.6cqh; }
+.palco-sintese-cartao { background: #fff; border: 1px solid var(--color-rule); border-radius: 6px; padding: 1.6cqh 2cqh; display: flex; flex-direction: column; gap: .8cqh; font-size: clamp(13px, 2.1cqh, 22px); }
+.palco-sintese-cartao h4 { font-size: 1.25em; margin: 0; }
+.palco-sintese-cartao p { margin: 0; }
+.palco-sintese-perg { color: var(--color-body); }
+.palco-sintese-resp { color: var(--color-ink); border-left: 3px solid var(--color-gold); padding-left: 1.2cqh; font-weight: 600; }
+
 .slide-inner .conteudo .palcoflex .svgfit svg { max-height: 56cqh; }
 
 /* Capítulo 5: a árvore que cresce */

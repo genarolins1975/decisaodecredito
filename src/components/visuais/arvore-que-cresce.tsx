@@ -86,7 +86,7 @@ export function ArvoreQueCresce({ modo = "raiz" }: { modo?: ModoArvore }) {
               <input type="range" min={0} max={4} step={1} value={profMax} onChange={(e) => { setCrescendo(false); setProfMax(Number(e.target.value)); }} aria-valuetext={`${profMax}`} /></label>
             <label className="vz-slider"><span className="vz-slider-rotulo"><b>Mínimo de propostas por folha</b> <span className="vz-slider-valor">{minFolha}</span></span>
               <input type="range" min={1} max={4} step={1} value={minFolha} onChange={(e) => setMinFolha(Number(e.target.value))} aria-valuetext={`${minFolha}`} /></label>
-            <label className="text-[13px]"><b>Proposta retirada da base</b>
+            <label className="text-[.95em]"><b>Proposta retirada da base</b>
               <select className="select mt-1" value={removida ?? ""} onChange={(e) => { setCrescendo(false); setRemovida(e.target.value ? Number(e.target.value) : null); }}>
                 <option value="">nenhuma, base completa</option>{BASE.map((b) => <option key={b.id} value={b.id}>#{b.id} · utilização {b.util}% · atraso {b.atraso} d · {b.y ? "default" : "pagou"}</option>)}
               </select></label>
@@ -111,7 +111,7 @@ export function ArvoreQueCresce({ modo = "raiz" }: { modo?: ModoArvore }) {
           <div>
             <label className="vz-slider"><span className="vz-slider-rotulo"><b>Ponto de corte</b> <span className="vz-slider-valor">{rotuloCorte(varCand, cand.corte)}</span></span>
               <input type="range" min={0} max={Math.max(0, cortesVar.length - 1)} step={1} value={idx} onChange={(e) => setIdxCand(Number(e.target.value))} aria-valuetext={rotuloCorte(varCand, cand.corte)} /></label>
-            <div className="table-wrap"><table className="table text-[12.5px] mt-2"><thead><tr><th>Lado</th><th>Propostas</th><th>Defaults</th><th>Proporção</th><th>Gini</th></tr></thead>
+            <div className="table-wrap"><table className="table text-[.85em] mt-2"><thead><tr><th>Lado</th><th>Propostas</th><th>Defaults</th><th>Proporção</th><th>Gini</th></tr></thead>
               <tbody>
                 <tr><th scope="row">≤ corte</th><td>{cand.esq.length}</td><td>{cand.esq.reduce((s, p) => s + p.y, 0)}</td><td>{fmtPct(cand.esq.length ? cand.esq.reduce((s, p) => s + p.y, 0) / cand.esq.length : 0, 1)}</td><td>{fmtNum(cand.giniEsq, 5)}</td></tr>
                 <tr><th scope="row">&gt; corte</th><td>{cand.dir.length}</td><td>{cand.dir.reduce((s, p) => s + p.y, 0)}</td><td>{fmtPct(cand.dir.length ? cand.dir.reduce((s, p) => s + p.y, 0) / cand.dir.length : 0, 1)}</td><td>{fmtNum(cand.giniDir, 5)}</td></tr>

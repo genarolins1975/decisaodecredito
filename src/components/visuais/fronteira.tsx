@@ -81,7 +81,7 @@ export function Fronteira() {
             <div className="vz-tile"><p className="eyebrow">Perda agora</p><p className="vz-num">{fmtNum(atual.perda, 5)}</p><p className="hint">mínimo atingível {fmtNum(fim.perda, 6)}</p></div>
             <div className="vz-tile"><p className="eyebrow">Recusadas</p><p className="vz-num">{rec.length} <span className="hint">de 16</span></p><p className="hint">{evitados} defaults evitados · {rec.length - evitados} boas recusadas · {8 - evitados} defaults aprovados</p></div>
           </div>
-          <div className="table-wrap"><table className="table text-[12.5px]"><thead><tr><th>Coeficiente</th><th>agora</th><th>convergência</th><th>falta</th></tr></thead>
+          <div className="table-wrap"><table className="table text-[.85em]"><thead><tr><th>Coeficiente</th><th>agora</th><th>convergência</th><th>falta</th></tr></thead>
             <tbody>{(["β₀ intercepto", "β₁ utilização", "β₂ atraso"] as const).map((n, k) => <tr key={n}><th scope="row">{n}</th><td>{fmtNum(beta[k], 4)}</td><td>{fmtNum(fim.beta[k], 4)}</td><td>{fmtNum(fim.beta[k] - beta[k], 4)}</td></tr>)}</tbody></table></div>
           <Trajetorias traj={traj} it={it} />
         </div>

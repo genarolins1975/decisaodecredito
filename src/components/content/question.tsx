@@ -71,7 +71,7 @@ export function Question({ q, initial, submit, reveal, onRevealed, disabled, com
   const withheld = Boolean(answered && result!.isCorrect === false && correctIdx === null && !fb?.explanation);
 
   return (
-    <section className={`rounded-md border p-4 ${compact ? "" : "mt-3"} ${answered ? (result!.isCorrect === true ? "border-ok bg-ok-soft/40" : result!.isCorrect === false ? "border-alert bg-alert-soft/40" : "border-rule bg-paper") : "border-[#E0CBA0] bg-[#FDFAF2]"}`} aria-labelledby={`${gid}-t`}>
+    <section data-questao="" className={`rounded-md border p-4 ${compact ? "" : "mt-3"} ${answered ? (result!.isCorrect === true ? "border-ok bg-ok-soft/40" : result!.isCorrect === false ? "border-alert bg-alert-soft/40" : "border-rule bg-paper") : "border-[#E0CBA0] bg-[#FDFAF2]"}`} aria-labelledby={`${gid}-t`}>
       <p className="eyebrow text-warn mb-1">{q.label ?? (q.kind === "predict" ? "Antes de ver o resultado" : "Responda antes de avançar")}</p>
       <p id={`${gid}-t`} className="font-semibold text-ink text-[15px] mb-3">{q.prompt}</p>
 

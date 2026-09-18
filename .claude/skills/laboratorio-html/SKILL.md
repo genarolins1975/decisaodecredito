@@ -38,12 +38,30 @@ Toda página sai sobre os tokens de `assets/tokens.css` e os componentes de `ass
 
 A apresentação da plataforma é um deck 16:9 (`/apresentacao/<slug>`), e cada tela obedece às regras de um slide de PowerPoint:
 
-1. **Tudo cabe na área visível.** Nada rola dentro do slide. Uma página vira uma sequência de telas: a capa (título, objetivo e apoio) e depois um bloco ou grupo de blocos por tela, empacotados pela altura medida (`Slide` em `src/components/content/slide.tsx`).
-2. **Nenhuma tela vazia nem rala.** A tela preenche a área: o conteúdo é escalado com reflow (zoom entre 0,55 e 1,35, largura compensada) até ocupar a altura disponível. Uma peça que sozinha não cabe é reduzida; uma pequena é ampliada.
-3. **Uma ideia por tela.** Peça principal grande, painéis secundários escondidos no slide (`.slide-inner` em `globals.css`, seção "Palco"): acumuladas do KS, anatomia do lucro, trajetórias dos coeficientes, legendas longas, notas de fonte.
-4. **Alturas em cqh, nunca em px.** Dentro do slide, gráficos e figuras têm altura em fração da altura do slide (`height: 40cqh`, `max-height: 58cqh`), largura automática e `max-width: 100%`. Figuras estáticas herdadas (`.svgfit svg`) seguem a mesma regra.
-5. **Tipografia proporcional ao projetor.** Fontes em `clamp(min, Ncqh, max)`; números de tiles em 2,8cqh; nada abaixo de 11 px em 1400×900.
-6. **Medir antes de entregar.** `node tmp/ux/medir-deck.mjs <pasta> <slugs> <LxA>` percorre cada tela e acusa rolagem, tela vazia e a escala aplicada; rodar em 1400×900 e 1920×1080 e olhar as capturas. Rolagem ou tela vazia é defeito.
+1. **Tudo cabe na área visível.** Nada rola dentro do slide. Uma página vira uma sequência de telas compostas a partir das unidades do conteúdo (parágrafo, painel, figura, questão), inclusive dentro do HTML do material: o compositor (`src/lib/palco/compositor.ts`, lado DOM em `unidades.ts`) mede cada unidade e escolhe o menor número de telas que cabem, equilibradas entre si. Cabeça (título, `.rot`, kicker) nunca fica separada do corpo; legenda nunca fica separada da figura.
+2. **Nenhuma tela vazia nem rala.** A tela é centrada na área e escalada com reflow (zoom entre 0,55 e 1,5) até preencher a altura. O compositor não abre tela nova quando a ocupação média cairia abaixo de 50% antes do zoom. Largura da tela sempre em 100%: com o zoom padrão do navegador as porcentagens já se resolvem no espaço ampliado.
+3. **Colunas do material lado a lado.** `.palcoflex` fica em duas colunas no slide (`.esq` 40% ou a proporção declarada em `data-colunas`); quando uma coluna começa por figura e cabe folgada, ela persiste em todas as telas enquanto a outra coluna é paginada.
+4. **Uma ideia por tela.** Peça principal grande, painéis secundários escondidos no slide (`.slide-inner` em `globals.css`, seção "Palco"). Episódio de abertura e síntese de fecho têm leiaute próprio de palco (`palco-episodio`, `palco-sintese`): tudo visível, sem abas.
+5. **Alturas em cqh, tipografia proporcional.** Dentro do slide, gráficos e figuras têm altura em fração da altura do slide (`height: 40cqh`, `max-height: 58cqh`), largura automática e `max-width: 100%`. Corpo do material em `clamp(14px, 2.4cqh, 26px)`; tamanhos em px do material são sobrescritos por `em`. Visual interativo herdado (iframe) é reduzido por `transform` até 72% da altura do slide, porque o zoom externo não alcança o documento do iframe.
+6. **Nota mínima 9 em toda página.** Antes de entregar qualquer página, visual ou mudança no deck, rodar a auditoria e reconstruir até que toda página tenha média 9,0 ou mais e nenhuma tela abaixo de 8:
+
+   ```
+   node scripts/palco/auditoria.mjs tmp/ux/auditoria-palco.json todas 1400x900
+   node scripts/palco/auditoria.mjs tmp/ux/auditoria-palco.json <slugs> 1920x1080 <pasta de capturas>
+   ```
+
+   A auditoria pontua cada tela em seis critérios de 0 a 10 e a página recebe a média das telas:
+
+   | Critério | Peso | Como se mede | 10 | 9 | 7 | 5 |
+   |---|---|---|---|---|---|---|
+   | Ajuste | 25% | rolagem interna ou elemento cortado pela borda da área | nada cortado | | corte até 2% | corte maior (4); rola (0) |
+   | Ocupação | 20% | altura da tela dividida pela altura da área | ≥ 66% | ≥ 55% | ≥ 45% | ≥ 35% |
+   | Legibilidade | 20% | menor fonte de texto corrido em % da altura do slide; comprimento de linha em parágrafos | ≥ 1,9% | ≥ 1,7% | ≥ 1,5% | ≥ 1,3% (linha acima de 95 caracteres tira 1 ponto; acima de 115, 2) |
+   | Densidade | 15% | palavras visíveis na tela | ≤ 100 | ≤ 140 | ≤ 180 | ≤ 230 |
+   | Estrutura | 10% | cabeça órfã no fim da tela (menos 4), parágrafo viúvo sozinho (menos 3), legenda solta no início (menos 3) | sem ocorrência | | | |
+   | Foco | 10% | unidades de topo visíveis na tela | ≤ 4 | | 5 a 6 (8) | 7 a 8 (6) |
+
+   Referências de 1,9% da altura do slide: 15 px em 1400×900, 20 px em 1920×1080. O relatório imprime, por tela, as seis notas, ocupação, zoom, menor fonte, palavras e unidades, e nomeia o elemento cortado ou a fonte miúda. Corrigir a causa (leiaute, CSS do palco, unidade indivisível grande demais), nunca o critério.
 
 ## Tipografia e medida
 

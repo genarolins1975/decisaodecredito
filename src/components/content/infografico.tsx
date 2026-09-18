@@ -7,7 +7,7 @@ import type { Infografico, Painel } from "@/lib/content/infograficos";
  */
 export function InfograficoCapitulo({ d, modo = "aula" }: { d: Infografico; modo?: "aula" | "apresentacao" }) {
   return (
-    <section className={`info ${modo === "apresentacao" ? "info--slide" : ""}`} aria-labelledby={`info-${d.numero}`} data-testid="infografico">
+    <section className={`info ${modo === "apresentacao" ? "info--slide" : ""}`} aria-labelledby={`info-${d.numero}`} data-testid="infografico" data-unidades={modo === "apresentacao" ? "" : undefined}>
       <header className="info-cab">
         <span className="info-num" aria-hidden="true">{d.numero}</span>
         <div>

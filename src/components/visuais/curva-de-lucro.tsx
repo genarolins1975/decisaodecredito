@@ -85,11 +85,11 @@ export function CurvaDeLucro() {
             </div>
           </div>
           <div className="vz-palpites">
-            <label className="text-[13px]"><b>Palpites da turma</b> <span className="hint">cortes em %, separados por vírgula</span>
+            <label className="text-[.95em]"><b>Palpites da turma</b> <span className="hint">cortes em %, separados por vírgula</span>
               <input className="input mt-1" value={palpitesTxt} onChange={(e) => setPalpitesTxt(e.target.value)} placeholder="8, 10, 12, 20" inputMode="decimal" aria-label="Palpites da turma, cortes em porcentagem" />
             </label>
             {palpites.length > 0 && (
-              <table className="table text-[12.5px] mt-2"><thead><tr><th>Palpite</th><th>Resultado</th><th>Na mesa</th></tr></thead>
+              <table className="table text-[.85em] mt-2"><thead><tr><th>Palpite</th><th>Resultado</th><th>Na mesa</th></tr></thead>
                 <tbody>{palpites.map((p, i) => <tr key={i}><td>{fmtPct(p.v, 1)}</td><td>{fmtReais(p.r.total)}</td><td className={best.parcelas.total - p.r.total > 500 ? "text-alert font-semibold" : ""}>{fmtReais(Math.max(0, best.parcelas.total - p.r.total))}</td></tr>)}
                   <tr><th scope="row">média da turma</th><td colSpan={2}>{(() => { const m = palpites.reduce((s, p) => s + p.v, 0) / palpites.length; const r = parcelas(pdCen, EAD, m, params); return `corte ${fmtPct(m, 1)} · ${fmtReais(r.total)} · na mesa ${fmtReais(Math.max(0, best.parcelas.total - r.total))}`; })()}</td></tr>
                 </tbody></table>
