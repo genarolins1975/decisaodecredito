@@ -65,12 +65,12 @@ export function TresLimites() {
             <p className="vz-grafico-t">A PD da proposta #11 decomposta: F₀ e uma parcela por árvore <span className="hint">utilização 70%, atraso 5 dias, default</span></p>
             <div className="vz-acoes" role="group" aria-label="Número de árvores">{[4, 12, 40].map((m) => <button key={m} type="button" className={`btn btn-sm ${M === m ? "" : "btn-secondary"}`} onClick={() => setM(m)}>{m} árvores</button>)}</div>
             <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${M} parcelas somadas; PD final ${fmtPct(parcelas[parcelas.length - 1].p, 1)}`}>
-              {(() => { const bw = (W - ML - MR) / (M + 1); const ymax = Math.max(0.1, ...parcelas.map((p) => Math.max(Math.abs(p.parcela), Math.abs(p.F)))) * 1.1; const y0 = MT + (H - MT - MB) / 2; const sc = (H - MT - MB) / 2 / ymax; return <>
-                <line x1={ML} x2={W - MR} y1={y0} y2={y0} className="vz-zero" />
-                <polyline points={parcelas.map((p, i) => `${(ML + (i + 0.5) * bw).toFixed(1)},${(y0 - p.F * sc).toFixed(1)}`).join(" ")} className="vz-curva vz-curva--ouro" />
-                {parcelas.map((p, i) => <rect key={p.m} x={ML + i * bw + 1} y={p.parcela >= 0 ? y0 - p.parcela * sc : y0} width={Math.max(1, bw - 2)} height={Math.abs(p.parcela) * sc} rx={2} className={`vz-tl-parc ${i === 0 ? "vz-tl-parc--f0" : p.parcela >= 0 ? "vz-tl-parc--mais" : "vz-tl-parc--menos"}`} />)}
-                <text x={ML} y={H - MB + 16} className="vz-tick">F₀ = {fmtNum(parcelas[0].F, 3)}</text><text x={ML + 4} y={y0 - 6} className="vz-tick vz-tick--nota">barras: parcela de cada árvore · linha dourada: soma acumulada</text><text x={W - MR} y={H - MB + 16} textAnchor="end" className="vz-tick">árvore {M}</text>
-                <text x={ML + 4} y={MT - 6} className="vz-rotulo">parcela em log odds</text>
+              {(() => { const bw = (W - ML - MR) / (M + 1); const lo = Math.min(0, ...parcelas.map((p) => p.F)), hi = Math.max(0.1, ...parcelas.map((p) => p.F)); const yv = (v: number) => MT + 14 + (1 - (v - lo) / (hi - lo)) * (H - MT - MB - 14); return <>
+                <line x1={ML} x2={W - MR} y1={yv(0)} y2={yv(0)} className="vz-zero" />
+                {parcelas.map((p, i) => { const de = i ? parcelas[i - 1].F : 0, ate = p.F; return <rect key={p.m} x={ML + i * bw + 1} y={yv(Math.max(de, ate))} width={Math.max(1, bw - 2)} height={Math.max(1, Math.abs(yv(de) - yv(ate)))} rx={2} className={`vz-tl-parc ${i === 0 ? "vz-tl-parc--f0" : ate >= de ? "vz-tl-parc--mais" : "vz-tl-parc--menos"}`} />; })}
+                <polyline points={parcelas.map((p, i) => `${(ML + (i + 1) * bw - 1).toFixed(1)},${yv(p.F).toFixed(1)}`).join(" ")} className="vz-curva vz-curva--ouro" />
+                <text x={ML} y={H - MB + 16} className="vz-tick">F₀ = {fmtNum(parcelas[0].F, 3)}</text><text x={W - MR} y={H - MB + 16} textAnchor="end" className="vz-tick">árvore {M}</text>
+                <text x={ML + 4} y={MT - 6} className="vz-rotulo">log odds acumulado, em cascata</text>
                 <text x={W - MR} y={MT + 8} textAnchor="end" className="vz-tick vz-tick--forte">soma {fmtNum(parcelas[parcelas.length - 1].F, 3)} → PD {fmtPct(parcelas[parcelas.length - 1].p, 1)}</text>
               </>; })()}
             </svg>
