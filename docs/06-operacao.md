@@ -67,16 +67,18 @@ O diretório do pacote traz `manifesto.json` (versão, sha256 e tamanho de cada 
 
 ## 7.1. Apostila em PDF (aluno e professor)
 
-A apostila é gerada a partir de `content/generated/extract.json`, das capturas dos 180 visuais e de figuras conceituais, em duas versões: a do aluno (sem gabaritos nem notas privadas) e a do professor (com guia docente, gabaritos e erros previsíveis). Procedimento e dependências em `scripts/apostila/README.md`; resumo, com o servidor local no ar:
+Um PDF por capítulo e versão, explicando slide a slide. Cada slide traz a captura da página na plataforma (peça nativa ou corpo do conteúdo), o texto autoral **Como ler este slide** (aluno) ou **Como conduzir este slide** (professor), o que está na tela, as questões (com gabarito só na versão do professor) e, na versão do professor, a ficha **Na hora da aula** (tempos, pergunta para a turma, resposta esperada, erros previsíveis, transição). Os textos autorais vivem em `scripts/apostila/explicacoes/cNN.json` (padrão de voz em `c01.json`, regras no README da pasta, validação por `validar-explicacoes.mjs`). Procedimento, com o servidor local no ar e a conta de teste do aluno:
 
 ```bash
-APOSTILA_DIR=tmp/apostila node scripts/apostila/captura-visuais.mjs      # capturas dos visuais (uma vez por versão do conteúdo)
-python3 scripts/apostila/figuras.py                                        # figuras conceituais (matplotlib)
-node scripts/apostila/gerar.mjs aluno todos --pdf && node scripts/apostila/gerar.mjs professor todos --pdf   # um PDF por capítulo e versão; "gerar.mjs aluno 4 --pdf" gera só o capítulo 4
+export APOSTILA_DIR=tmp/apostila
+python3 scripts/apostila/figuras.py && python3 scripts/apostila/infograficos.py      # figuras conceituais e infográficos (SVG)
+node scripts/apostila/captura-visuais.mjs todos                                        # 180 capturas (peça nativa ou conteúdo), 2x
+node scripts/apostila/validar-explicacoes.mjs                                          # cobertura, tamanhos e caracteres proibidos
+node scripts/apostila/gerar.mjs aluno todos --pdf && node scripts/apostila/gerar.mjs professor todos --pdf
+python3 scripts/apostila/prancha.py tmp/apostila/build/capitulo-04-aluno.pdf           # prancha de conferência visual
 ```
 
-Cada capítulo abre com um infográfico gerado de `content/infograficos/cNN.json` (`python3 scripts/apostila/infograficos.py`), que também alimenta os slides FGV de abertura (`scripts/apostila/slides/README.md`). A versão do aluno pode ser publicada como material comum; a versão do professor só como material com finalidade `labels` (só o professor baixa) e nunca no repositório, que é público. Regenerar sempre que o conteúdo for reimportado.
-
+`dump-capitulo.mjs N` imprime o conteúdo de um capítulo em texto para escrever ou revisar as explicações. A versão do aluno pode ser publicada como material comum; a versão do professor só como material com status "professor" (só o professor vê) e nunca no repositório, que é público. Com "Capítulo N" no título, o material aparece na página de abertura do capítulo. Regenerar sempre que o conteúdo for reimportado ou uma peça nativa mudar.
 
 ## 7.2. Visuais nativos das páginas (peças de assinatura)
 
