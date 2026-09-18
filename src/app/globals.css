@@ -207,3 +207,102 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 @media print { .no-print { display: none !important; } body { background: #fff; } }
 }
+
+/* ------------------------------------------------------------------
+   Visuais nativos (.vz): peças de assinatura dos capítulos, sem iframe. Animação por CSS e requestAnimationFrame,
+   cores por papel (default = alert, pagou = sky, corte = gold), números tabulares, contêiner responsivo.
+   ------------------------------------------------------------------ */
+.vz { margin: 0; background: var(--color-surface); border: 1px solid var(--color-rule); border-radius: 8px; padding: 16px 18px 14px; container-type: inline-size; font-size: 14px; }
+.vz .vz-cab { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px 16px; margin-bottom: 12px; }
+.vz-tit { font-family: var(--font-serif); font-weight: 700; color: var(--color-ink); font-size: 19px; line-height: 1.2; margin-top: 2px; text-wrap: balance; }
+.vz-acoes { display: flex; flex-wrap: wrap; gap: 6px; }
+.vz-fonte { font-size: 12.5px; color: var(--color-muted); margin-top: 12px; line-height: 1.45; max-width: 90ch; }
+.vz-legenda { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--color-muted); margin-top: 8px; align-items: center; }
+.vz-legenda-nota { margin-left: auto; font-style: italic; }
+.vz-sw { display: inline-block; width: 11px; height: 11px; border-radius: 50%; vertical-align: -1px; margin-right: 5px; border: 1px solid transparent; }
+.vz-sw--default { background: var(--color-alert); }
+.vz-sw--pagou { background: #c9d8f2; }
+.vz-sw--recusada { background: transparent; border-color: var(--color-gold); box-shadow: inset 0 0 0 2px var(--color-gold); }
+.vz-sw--viva { background: #E6E4DD; border-radius: 3px; }
+.vz-sw--depois { background: #fff; border-color: var(--color-alert); border-width: 2px; border-radius: 3px; }
+.vz-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-top: 10px; }
+.vz-tile { background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 6px; padding: 8px 10px; }
+.vz-num { font-family: var(--font-serif); font-weight: 700; font-size: 26px; color: var(--color-ink); line-height: 1.1; font-variant-numeric: tabular-nums; margin-top: 2px; transition: color .3s; }
+.vz-num--default { color: var(--color-alert); }
+.vz-tile .hint { margin-top: 2px; }
+.vz-slider { display: block; margin-top: 12px; }
+.vz-slider-rotulo { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; color: var(--color-ink); margin-bottom: 4px; }
+.vz-slider-valor { font-variant-numeric: tabular-nums; color: var(--color-body); }
+.vz input[type="range"] { width: 100%; accent-color: var(--color-ink); min-height: 28px; cursor: pointer; }
+.vz-grafico { min-width: 0; }
+.vz-grafico svg { width: 100%; height: auto; display: block; }
+.vz-grafico-t { font-size: 13px; font-weight: 700; color: var(--color-ink); margin-bottom: 4px; }
+.vz-grafico-t .hint { font-weight: 400; margin-left: 6px; }
+.vz-grade { stroke: var(--color-rule); stroke-width: 1; }
+.vz-tick { font-size: 10.5px; fill: var(--color-muted); font-variant-numeric: tabular-nums; }
+.vz-tick--diag { font-size: 10px; fill: var(--color-muted); font-style: italic; }
+.vz-tick--default { fill: var(--color-alert); font-weight: 700; }
+.vz-tick--pagou { fill: var(--color-ink-soft); font-weight: 700; }
+.vz-rotulo { font-size: 11px; fill: var(--color-ink); font-weight: 700; letter-spacing: .04em; }
+.vz-diagonal { stroke: var(--color-muted); stroke-width: 1.2; stroke-dasharray: 4 4; }
+.vz-curva { fill: none; stroke: var(--color-ink); stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+.vz-curva--fraca { stroke-width: 1.4; opacity: .3; }
+.vz-curva--default { stroke: var(--color-alert); }
+.vz-curva--pagou { stroke: var(--color-ink-soft); }
+.vz-ponto { fill: var(--color-alert); stroke: #fff; stroke-width: 2; }
+.vz-ponto-t { font-size: 11px; fill: var(--color-alert); font-weight: 700; }
+.vz-ks { stroke: var(--color-gold); stroke-width: 5; stroke-linecap: round; }
+.vz-ks-t { font-size: 11px; fill: #7a5f16; font-weight: 700; }
+.vz-corte-linha { stroke: var(--color-ink); stroke-width: 1; stroke-dasharray: 3 3; }
+.vz-corte-gap { stroke: var(--color-ink); stroke-width: 3; stroke-linecap: round; }
+.vz-esperado { stroke: var(--color-gold); stroke-width: 2.5; stroke-dasharray: 5 3; }
+
+/* A fila de risco */
+.vz-fila-grade { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 16px 20px; align-items: start; }
+.vz-graficos { display: grid; gap: 14px; }
+.vz-fita { width: 100%; height: auto; display: block; background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 6px; }
+.vz-dot { transition: transform .9s cubic-bezier(.2,.7,.2,1), opacity .35s, stroke-width .2s; opacity: .32; stroke: transparent; stroke-width: 0; }
+.vz-dot--pagou { fill: #9db6de; }
+.vz-dot--default { fill: var(--color-alert); }
+.vz-dot--recusada { opacity: 1; }
+.vz-dot--recusada.vz-dot--pagou { fill: #c9d8f2; stroke: #9db6de; stroke-width: 1.5; }
+.vz-corte-marca rect { fill: var(--color-gold); }
+.vz-corte-marca { transition: transform .15s linear; }
+@container (max-width: 760px) { .vz-fila-grade { grid-template-columns: 1fr; } .vz-graficos { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); } }
+
+/* Cem vidas */
+.vz-vidas-grade { display: grid; grid-template-columns: minmax(260px, 380px) minmax(0, 1fr); gap: 16px 22px; align-items: start; }
+.vz-vidas { width: 100%; height: auto; display: block; }
+.vz-vida rect { fill: #E6E4DD; transition: fill .3s; }
+.vz-vida--default rect { fill: var(--color-alert); animation: vz-pop .5s cubic-bezier(.2,.9,.3,1.4); }
+.vz-vida--depois rect { fill: #fff; stroke: var(--color-alert); stroke-width: 2.5; stroke-dasharray: 4 3; animation: vz-pop .5s cubic-bezier(.2,.9,.3,1.4); }
+.vz-vida-mes { font-size: 10px; font-weight: 700; fill: #fff; font-variant-numeric: tabular-nums; }
+.vz-vida--depois .vz-vida-mes { fill: var(--color-alert); }
+@keyframes vz-pop { 0% { transform: scale(.4); } 60% { transform: scale(1.18); } 100% { transform: scale(1); } }
+.vz-vidas-painel { display: grid; gap: 12px; min-width: 0; }
+.vz-tempo { background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 6px; padding: 10px 12px; }
+.vz-tempo-topo { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 2px; }
+.vz-tempo-trilho { position: relative; height: 6px; border-radius: 3px; background: #E6E4DD; margin: 2px 8px 10px; }
+.vz-tempo-horizonte { position: absolute; left: 0; top: 0; bottom: 0; background: var(--color-gold-soft); border-right: 2px solid var(--color-gold); border-radius: 3px 0 0 3px; transition: width .3s; }
+.vz-tempo-cursor { position: absolute; top: -4px; width: 3px; height: 14px; margin-left: -1.5px; background: var(--color-ink); border-radius: 2px; transition: left .25s linear; }
+.vz-seg { display: inline-flex; border: 1px solid var(--color-ink); border-radius: 6px; overflow: hidden; }
+.vz-seg-b { background: #fff; color: var(--color-ink); border: 0; padding: 6px 12px; font-size: 13px; cursor: pointer; min-height: 34px; }
+.vz-seg-b + .vz-seg-b { border-left: 1px solid var(--color-ink); }
+.vz-seg-b--on, .conteudo .vz .vz-seg-b--on { background: var(--color-ink); color: #fff; font-weight: 700; }
+.vz-hist { background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 6px; padding: 10px 12px; }
+.vz-hist-topo { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 12px; align-items: center; margin-bottom: 4px; }
+.vz-hist svg { width: 100%; height: auto; display: block; }
+.vz-hist-barra { fill: var(--color-ink-soft); transition: height .25s, y .25s; }
+.vz-hist-barra--esp { fill: var(--color-ink); }
+@container (max-width: 700px) { .vz-vidas-grade { grid-template-columns: 1fr; } }
+
+/* No slide, a peça ocupa a largura toda e reduz espaçamentos */
+.slide-inner .vz { padding: 10px 12px 8px; font-size: 12.5px; }
+.slide-inner .vz-tit { font-size: 16px; }
+.slide-inner .vz-num { font-size: 20px; }
+.slide-inner .vz-fonte { display: none; }
+.slide-inner .vz-fila-grade { grid-template-columns: minmax(0, 1fr) 280px; }
+.slide-inner .vz-graficos > :nth-child(2) { display: none; }
+.slide-inner .vz-vidas-grade { grid-template-columns: 240px minmax(0, 1fr); }
+.slide-inner .vz-hist svg { height: 120px; width: 100%; }
+.slide-inner .vz-tiles { margin-top: 6px; }

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import type { Block, PublicQuestion } from "@/lib/services/content";
 import { Question } from "./question";
 import { LegacyFrame } from "./legacy-frame";
+import { visualNativo } from "@/components/visuais/registro";
 import { api } from "@/lib/client/api";
 
 type SubmitFn = (q: PublicQuestion, answer: unknown, clientRequestId: string) => Promise<{ isCorrect: boolean | null; feedback: never; attemptNo: number }>;
@@ -39,7 +40,11 @@ export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liv
         if (b.type === "html") return <div key={i} className="conteudo" dangerouslySetInnerHTML={{ __html: b.html }} />;
         if (b.type === "episode") return <Episode key={i} b={b} />;
         if (b.type === "checkpoint") return <Checkpoint key={i} b={b} />;
-        if (b.type === "legacy") return <LegacyFrame key={i} slug={b.slug} fallbackHtml={b.fallbackHtml} note={b.note} revealRef={revealRef} />;
+        if (b.type === "legacy") {
+          const Nativo = visualNativo(b.slug);
+          if (Nativo) return <Nativo key={i} />;
+          return <LegacyFrame key={i} slug={b.slug} fallbackHtml={b.fallbackHtml} note={b.note} revealRef={revealRef} />;
+        }
         if (b.type === "question") {
           const q = byslug.get(b.slug);
           if (!q) return null;

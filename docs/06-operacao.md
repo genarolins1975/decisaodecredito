@@ -77,6 +77,16 @@ node scripts/apostila/gerar.mjs aluno todos --pdf && node scripts/apostila/gerar
 
 Cada capítulo abre com um infográfico gerado de `content/infograficos/cNN.json` (`python3 scripts/apostila/infograficos.py`), que também alimenta os slides FGV de abertura (`scripts/apostila/slides/README.md`). A versão do aluno pode ser publicada como material comum; a versão do professor só como material com finalidade `labels` (só o professor baixa) e nunca no repositório, que é público. Regenerar sempre que o conteúdo for reimportado.
 
+
+## 7.2. Visuais nativos das páginas (peças de assinatura)
+
+Alguns visuais herdados (iframe do motor original) foram substituídos por componentes nativos, animados e responsivos, em `src/components/visuais/`. O registro em `src/components/visuais/registro.tsx` mapeia o slug da página para o componente; quando existe, o bloco `legacy` da página é trocado pelo visual nativo em aula, apresentação e aula ao vivo, sem alterar o banco.
+
+- Capítulo 1, `c1p5`: "Cem vidas em doze meses" (`cem-vidas.tsx`). Simulação com risco mensal constante; sem dados externos.
+- Capítulo 7, `c7p6`: "A fila de risco" (`fila-de-risco.tsx`). Usa `src/lib/visuais/oot-logistica.json`, gerado por `node scripts/content/visuais-dados.mjs` a partir de `content/generated/dados.json` (737 propostas fora do tempo e PD da logística).
+
+Os cálculos ficam em `src/lib/visuais/metricas.ts` (funções puras) e são conferidos contra o gerador em `tests/visuais.test.ts` (AUC 0,7257, KS 0,3621 em PD 9,74%, corte de 12% com 48 de 81 e 164 de 656). Regras das peças: botão de reproduzir e controle único, cores por papel (default em `--color-alert`, pagou em azul claro, corte em `--color-gold`), números tabulares, respeito a `prefers-reduced-motion`, layout por container query e variante compacta dentro do slide (`.slide-inner .vz`).
+
 ## 8. Procedimento antes de cada aula
 
 1. Backup.

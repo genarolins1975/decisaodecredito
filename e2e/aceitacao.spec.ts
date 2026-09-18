@@ -305,6 +305,23 @@ test("estudo: prerrequisitos visíveis ao aluno com links e síntese do capítul
   expect(p12).not.toContain("Notas do professor"); expect(p12).not.toContain("intervencao");
 });
 
+test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e recalculam na tela", async ({ page }) => {
+  await loginUi(page, ALUNO_A);
+  await page.goto("/aulas/c7p6");
+  const fila = page.locator('figure[data-vz="fila-de-risco"]');
+  await expect(fila).toBeVisible();
+  await expect(page.locator("iframe[title^='Visual interativo']")).toHaveCount(0);
+  await expect(fila).toContainText("AUC 0,7257");
+  await expect(fila).toContainText("48 de 81");
+  await fila.getByRole("button", { name: "Sortear sem modelo" }).click();
+  await expect(fila).toContainText("fila sorteada");
+  await page.goto("/aulas/c1p5");
+  const vidas = page.locator('figure[data-vz="cem-vidas"]');
+  await expect(vidas).toBeVisible();
+  await vidas.getByRole("button", { name: "24 meses", exact: true }).click();
+  await expect(vidas).toContainText("PD de 19,0% em 24 meses");
+});
+
 test("núcleo: gabaritos e notas privadas não estão no motor legado nem nas páginas", async () => {
   const a = await apiAs(ALUNO_A);
   const cid = await classId();
