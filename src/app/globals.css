@@ -268,7 +268,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-dot--recusada.vz-dot--pagou { fill: #c9d8f2; stroke: #9db6de; stroke-width: 1.5; }
 .vz-corte-marca rect { fill: var(--color-gold); }
 .vz-corte-marca { transition: transform .15s linear; }
-@container (max-width: 760px) { .vz-fila-grade { grid-template-columns: 1fr; } .vz-graficos { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); } }
+@container (max-width: 760px) { .vz-fila-grade { grid-template-columns: minmax(0, 1fr); } .vz-graficos { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); } }
 
 /* Cem vidas */
 .vz-vidas-grade { display: grid; grid-template-columns: minmax(260px, 380px) minmax(0, 1fr); gap: 16px 22px; align-items: start; }
@@ -294,7 +294,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-hist svg { width: 100%; height: auto; display: block; }
 .vz-hist-barra { fill: var(--color-ink-soft); transition: height .25s, y .25s; }
 .vz-hist-barra--esp { fill: var(--color-ink); }
-@container (max-width: 700px) { .vz-vidas-grade { grid-template-columns: 1fr; } }
+@container (max-width: 700px) { .vz-vidas-grade { grid-template-columns: minmax(0, 1fr); } }
 
 
 /* A linha do tempo do cliente */
@@ -347,7 +347,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-sw--obs { background: #d9c9cd; border-radius: 2px; }
 .vz-sw--faltam { background: #fff; border: 1px dashed #b9b5a8; border-radius: 2px; }
 .vz-sw--apur { background: var(--color-gold); opacity: .7; border-radius: 2px; }
-@container (max-width: 760px) { .vz-safras-grade { grid-template-columns: 1fr; } .vz-tiles--coluna { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); } }
+@container (max-width: 760px) { .vz-safras-grade { grid-template-columns: minmax(0, 1fr); } .vz-tiles--coluna { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); } }
 
 /* A curva de lucro */
 .vz-estado { margin: 0 0 12px; padding: 8px 12px; border-radius: 6px; background: var(--color-paper); border: 1px solid var(--color-rule); font-size: 13px; color: var(--color-body); }
@@ -370,7 +370,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-area--operacao { fill: #D9D6CC; }
 .vz-area--capital { fill: #EBDDB0; }
 .vz-palpites .input { min-height: 38px; font-size: 14px; }
-@container (max-width: 760px) { .vz-lucro-grade { grid-template-columns: 1fr; } }
+@container (max-width: 760px) { .vz-lucro-grade { grid-template-columns: minmax(0, 1fr); } }
 
 /* Capítulo 4: três escalas, fronteira e a reta que quebra */
 .vz-escalas-grade, .vz-front-grade, .vz-reta-grade { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px 22px; align-items: start; }
@@ -401,7 +401,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-fora { fill: var(--color-alert-soft); }
 .vz-curva--reta { stroke: var(--color-alert); }
 .vz-dot-plano { stroke: #fff; stroke-width: 1.5; } .vz-dot-plano--default { fill: var(--color-alert); } .vz-dot-plano--pagou { fill: #9db6de; }
-@container (max-width: 760px) { .vz-escalas-grade, .vz-front-grade, .vz-reta-grade { grid-template-columns: 1fr; } }
+@container (max-width: 760px) { .vz-escalas-grade, .vz-front-grade, .vz-reta-grade { grid-template-columns: minmax(0, 1fr); } }
 
 
 /* ------------------------------------------------------------------
@@ -486,6 +486,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-capa-dica { font-size: clamp(11px, 1.8cqh, 16px); color: var(--color-muted); margin-top: 1cqh; }
 .slide-titulo-compacto { font-size: clamp(16px, 2.9cqh, 32px); line-height: 1.15; margin: 0; }
 .slide-titulo-objetivo { font-family: var(--font-sans); font-weight: 400; color: var(--color-body); font-size: clamp(12px, 2cqh, 20px); }
+.slide-apoio-compacto { font-size: clamp(11px, 1.8cqh, 18px); color: var(--color-muted); margin: .3cqh 0 0; }
 .slide-inner .slide-area { overflow: hidden; }
 .slide-area--capa { display: none; }
 .palco-tela { display: flex; flex-direction: column; gap: 1.5cqh; }
@@ -493,3 +494,45 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner .conteudo .svgfit svg, .slide-inner .conteudo figure svg { max-height: 58cqh; width: auto; max-width: 100%; height: auto; margin: 0 auto; display: block; }
 .slide-inner .conteudo .palcoflex { align-items: flex-start; }
 .slide-inner .conteudo .palcoflex .svgfit svg { max-height: 56cqh; }
+
+/* Capítulo 5: a árvore que cresce */
+.vz-arv-grade { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 14px 22px; align-items: start; }
+.vz-arv-painel { display: grid; gap: 10px; min-width: 0; }
+.vz-arv-controles { display: grid; gap: 8px; background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 6px; padding: 8px 12px 10px; }
+.vz-arv-controles .vz-slider { margin-top: 0; }
+.vz-arv-controles .select { min-height: 36px; font-size: 13px; }
+.vz-arv-folha { animation: vz-surge .5s ease-out both; }
+@keyframes vz-surge { from { opacity: 0; } to { opacity: 1; } }
+.vz-arv-rect { stroke: none; }
+.vz-arv-rot { font-size: 9.5px; fill: var(--color-ink); font-weight: 700; }
+.vz-arv-corte { stroke: var(--color-ink); stroke-linecap: round; }
+.vz-arv-cand { stroke: var(--color-gold); stroke-width: 2.5; stroke-dasharray: 6 4; }
+.vz-front-ponto--fora circle { fill: #fff; stroke: var(--color-muted); stroke-dasharray: 3 2; } .vz-front-ponto--fora .vz-front-id { fill: var(--color-muted); }
+.vz-sw--fora { background: #fff; border: 1px dashed var(--color-muted); }
+.vz-sw--cand { background: var(--color-gold); border-radius: 2px; }
+.vz-arv-ramo { stroke: var(--color-muted); stroke-width: 1.5; }
+.vz-arv-no { transition: transform .5s cubic-bezier(.2,.7,.2,1); }
+.vz-arv-caixa { stroke-width: 1.5; }
+.vz-arv-caixa--no { fill: var(--color-surface); stroke: var(--color-ink); }
+.vz-arv-caixa--default { fill: var(--color-alert-soft); stroke: var(--color-alert); }
+.vz-arv-caixa--pagou { fill: #EFF3FA; stroke: #9db6de; }
+.vz-arv-t { font-size: 10.5px; fill: var(--color-body); font-variant-numeric: tabular-nums; }
+.vz-arv-t--var { font-weight: 700; fill: var(--color-ink); }
+.vz-arv-t--pd { font-weight: 700; fill: var(--color-ink); }
+.vz-num--texto { font-size: 17px; line-height: 1.2; }
+.vz-arv-cand-bloco { margin-top: 12px; border-top: 1px solid var(--color-rule); padding-top: 10px; }
+.vz-arv-cand-cab { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 12px; margin-bottom: 4px; }
+.vz-arv-cand-grade { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 10px 22px; align-items: start; }
+.vz-arv-barra { transition: height .25s, y .25s; opacity: .55; }
+.vz-arv-barra--util { fill: var(--color-ink-soft); } .vz-arv-barra--atraso { fill: var(--color-amber); }
+.vz-arv-barra--melhor { opacity: 1; stroke: var(--color-gold); stroke-width: 2; }
+.vz-arv-barra--atual { opacity: 1; stroke: var(--color-alert); stroke-width: 2; }
+@container (max-width: 760px) { .vz-arv-grade, .vz-arv-cand-grade { grid-template-columns: minmax(0, 1fr); } }
+/* palco: raiz mostra plano e disputa; freios e instabilidade mostram plano, árvore e tiles */
+.slide-inner .vz-arv-grade { grid-template-columns: 46cqh minmax(0, 1fr); gap: 1cqh 2cqh; }
+.slide-inner [data-vz^="arvore"] .vz-arv-grade > .vz-grafico svg { height: 46cqh; }
+.slide-inner [data-vz^="arvore"] .vz-arv-painel .vz-grafico svg { height: 22cqh; width: auto; }
+.slide-inner [data-vz="arvore-raiz"] .vz-arv-controles, .slide-inner [data-vz="arvore-raiz"] .vz-tiles { display: none; }
+.slide-inner [data-vz="arvore-raiz"] .vz-arv-cand-grade svg { height: 22cqh; }
+.slide-inner [data-vz="arvore-raiz"] .vz-arv-cand-grade table { display: none; }
+.slide-inner [data-vz="arvore-freios"] .vz-arv-cand-bloco, .slide-inner [data-vz="arvore-instabilidade"] .vz-arv-cand-bloco { display: none; }

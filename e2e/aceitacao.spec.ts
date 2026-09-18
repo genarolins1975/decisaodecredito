@@ -357,6 +357,14 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(reta).toContainText("11,18 pp sempre");
   await reta.getByRole("button", { name: /Trocar de família/ }).click();
   await expect(reta).toContainText("sempre entre 0 e 1");
+  // capítulo 5: a árvore que cresce, raiz do gerador e instabilidade ao retirar a #10
+  await page.goto("/aulas/c5p16");
+  const arvore = page.locator('figure[data-vz="arvore-instabilidade"]');
+  await expect(arvore).toContainText("utilização ≤ 57,5%");
+  await expect(arvore).toContainText("utilização ≤ 87,5%");
+  await arvore.getByRole("button", { name: "Retirar a proposta 10" }).click();
+  await expect(arvore).toContainText("atraso ≤ 2,5 d");
+  await expect(arvore).toContainText("trocou de variável");
 });
 
 test("núcleo: gabaritos e notas privadas não estão no motor legado nem nas páginas", async () => {

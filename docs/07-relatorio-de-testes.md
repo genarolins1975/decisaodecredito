@@ -6,7 +6,7 @@ Ambiente: sessão de desenvolvimento local em 16/09/2026, Node 22.22, PostgreSQL
 
 | Conjunto | Comando | Resultado |
 |---|---|---|
-| Unidade, reconciliação numérica, TLS, feedback em dois estágios e prerrequisitos, identidade Gmail, importação de listas e visuais nativos contra o gerador as regras temporais, o motor econômico e a regressão logística (62 testes) | `npm test` | 62 passaram em 18/09/2026 |
+| Unidade, reconciliação numérica, TLS, feedback em dois estágios e prerrequisitos, identidade Gmail, importação de listas e visuais nativos contra o gerador as regras temporais, o motor econômico, a regressão logística e a árvore (67 testes) | `npm test` | 67 passaram em 18/09/2026 |
 | Aceitação por API e interface (15 testes: seção 13 do briefing, feedback em dois estágios, prerrequisitos, teste cego por base, registro do pacote) | `npm run test:e2e` | 15 passaram em 17/09/2026 |
 | Varredura das 180 páginas em 3 modos (540 cargas) | `node scripts/content/sweep.mjs --shots` | 0 erros de console, 0 fórmulas cruas, 84/84 visuais legados carregados em cada modo; 3 estouros horizontais no celular corrigidos e reverificados |
 | Acessibilidade axe-core (27 telas, regras WCAG 2.x A/AA e boas práticas) | `node scripts/content/a11y.mjs` | 24 telas sem violação; 3 violações moderadas restantes (ordem de títulos em conteúdo herdado com h4 após h2 em c3p7 e na sessão ao vivo; ver 4.3) |

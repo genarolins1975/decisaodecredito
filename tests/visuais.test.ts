@@ -139,3 +139,35 @@ describe("visuais nativos: regressão logística do capítulo 4 reproduz o gerad
     const c = logisticaSoUtil(base, 5000); expect(c[1]).toBeGreaterThan(0); expect(perdaLog([c[0], c[1], 0], base)).toBeLessThan(0.6931);
   });
 });
+
+import { avaliarCorte, crescer, errosNaAmostra, folhas, melhorCorte, todosOsCandidatos, wilson } from "../src/lib/visuais/arvore";
+
+describe("visuais nativos: a árvore que cresce reproduz o gerador (capítulo 5)", () => {
+  const base = did.base as Proposta[];
+  const gerador = JSON.parse(readFileSync("content/generated/dados.json", "utf8")).DID;
+  it("corte candidato utilização 62,5: 9 e 7 propostas, Gini 0,34568 e 0,24490, ganho 0,19841 (c5p6)", () => {
+    const a = avaliarCorte(base, "util", 62.5);
+    expect(a.esq.length).toBe(9); expect(a.dir.length).toBe(7);
+    expect(a.giniEsq).toBeCloseTo(0.34568, 5); expect(a.giniDir).toBeCloseTo(0.2449, 4); expect(a.ganho).toBeCloseTo(0.19841, 5);
+  });
+  it("todos os candidatos batem com a busca do gerador e a raiz é utilização 57,5 com ganho 0,28125 (c5p7)", () => {
+    const util = todosOsCandidatos(base).filter((a) => a.v === "util");
+    gerador.busca_cortes.utilizacao.forEach((c: { corte: number; ganho: number }, i: number) => { expect(util[i].corte).toBe(c.corte); expect(util[i].ganho).toBeCloseTo(c.ganho, 6); });
+    const m = melhorCorte(base)!; expect(m.v).toBe("util"); expect(m.corte).toBe(57.5); expect(m.ganho).toBeCloseTo(0.28125, 6);
+  });
+  it("nível 2: esquerda utilização 27,5 e direita utilização 87,5 (empate com atraso 2,5 decidido pela ordem), c5p9", () => {
+    const t = crescer(base, 2);
+    expect(t.esq!.corte).toMatchObject({ v: "util", valor: 27.5 }); expect(t.esq!.corte!.ganho).toBeCloseTo(0.09375, 6);
+    expect(t.dir!.corte).toMatchObject({ v: "util", valor: 87.5 }); expect(t.dir!.corte!.ganho).toBeCloseTo(0.09375, 6);
+  });
+  it("freios: profundidade 2 e mínimo 2 dão 4 folhas, 2 erros, menor folha com 2 e pior intervalo de 81% (c5p14)", () => {
+    const t = crescer(base, 2, 2); const fs = folhas(t);
+    expect(fs.length).toBe(4); expect(errosNaAmostra(t)).toBe(2); expect(Math.min(...fs.map((f) => f.n))).toBe(2);
+    const pior = Math.max(...fs.map((f) => { const w = wilson(f.d, f.n); return w.hi - w.lo; })); expect(Math.round(pior * 100)).toBe(81);
+  });
+  it("instabilidade: retirar a proposta #10 troca a variável do nó direito; a raiz resiste (c5p16)", () => {
+    const sem10 = base.filter((p) => p.id !== 10); const t = crescer(sem10, 2);
+    expect(t.corte).toMatchObject({ v: "util", valor: 57.5 }); expect(t.dir!.corte!.v).toBe("atraso");
+    const sem3 = crescer(base.filter((p) => p.id !== 3), 2); expect(sem3.dir!.corte!.v).toBe("util");
+  });
+});

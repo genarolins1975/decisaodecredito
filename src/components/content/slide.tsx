@@ -9,9 +9,10 @@ import type { Infografico } from "@/lib/content/infograficos";
 import { api } from "@/lib/client/api";
 
 /**
- * Apresentação 16:9 como um deck de slides. Cada página vira uma sequência de telas: a capa (título, objetivo e apoio)
- * e depois um bloco ou grupo de blocos por tela, empacotados pela altura medida para caber sem rolagem. Uma tela que
- * ainda assim não cabe recebe zoom; nenhuma tela fica vazia. Setas e espaço avançam tela a tela e depois de página.
+ * Apresentação 16:9 como um deck de slides. Cada página vira uma sequência de telas, um bloco ou grupo de blocos por
+ * tela, empacotados pela altura medida para caber sem rolagem, já com o título compacto no alto (o apoio aparece na
+ * primeira tela). Uma tela que não cabe recebe zoom; nenhuma tela fica vazia. Setas e espaço avançam tela a tela e
+ * depois de página. Página sem blocos mostra a capa.
  */
 export function Slide(p: {
   slug: string; title: string; objective: string | null; support: string | null; connection: string | null;
@@ -22,12 +23,12 @@ export function Slide(p: {
 }) {
   const router = useRouter();
   const [notes, setNotes] = useState(false);
-  const [tela, setTela] = useState(0); // 0 = capa; 1..n = grupos de blocos
-  const [telas, setTelas] = useState<number[][] | null>(null); // índices de bloco por tela (−1 = infográfico)
+  const [tela, setTela] = useState(0); // índice da tela atual
+  const [telas, setTelas] = useState<number[][] | null>(null); // índices de bloco por tela (−1 = infográfico); vazio = só a capa
   const areaRef = useRef<HTMLDivElement>(null);
   const telaRef = useRef<HTMLDivElement>(null);
   const indices = [...(p.infografico ? [-1] : []), ...p.blocks.map((_, i) => i)];
-  const total = telas ? telas.length + 1 : 1;
+  const total = telas ? Math.max(1, telas.length) : 1;
   const go = (slug: string | null) => { if (!slug) return; router.push(`/apresentacao/${slug}${p.sessionId ? `?sessao=${p.sessionId}` : ""}`); };
   const avancar = () => { if (tela < total - 1) setTela(tela + 1); else go(p.next); };
   const voltar = () => { if (tela > 0) setTela(tela - 1); else go(p.prev); };
@@ -97,8 +98,8 @@ export function Slide(p: {
     return () => removeEventListener("keydown", onKey);
   });
 
-  const capa = telas !== null && tela === 0;
-  const visiveis = telas === null ? null : capa ? [] : telas[tela - 1];
+  const capa = telas !== null && telas.length === 0; // página sem blocos: mostra título, objetivo e apoio
+  const visiveis = telas === null ? null : capa ? [] : telas[tela];
   const ultima = telas !== null && tela === total - 1;
   const mostra = (i: number) => visiveis === null || visiveis.includes(i);
 
@@ -115,10 +116,12 @@ export function Slide(p: {
               <h1>{p.title}</h1>
               {p.objective && <p className="objective"><span className="eyebrow text-[#7a5f16] mr-2">Objetivo</span>{p.objective}</p>}
               {p.support && <p className="objective slide-capa-apoio">{p.support}</p>}
-              {telas && telas.length > 0 && <p className="slide-capa-dica">{telas.length === 1 ? "1 tela de conteúdo" : `${telas.length} telas de conteúdo`} · seta ou espaço para avançar</p>}
             </div>
           ) : (
-            <h1 className="slide-titulo-compacto">{p.title}{p.objective && <span className="slide-titulo-objetivo"> · {p.objective}</span>}</h1>
+            <div>
+              <h1 className="slide-titulo-compacto">{p.title}{p.objective && <span className="slide-titulo-objetivo"> · {p.objective}</span>}</h1>
+              {p.support && tela === 0 && <p className="slide-apoio-compacto">{p.support}</p>}
+            </div>
           )}
           <div ref={areaRef} className={`conteudo slide-area ${capa ? "slide-area--capa" : ""}`}>
             <div ref={telaRef} className="palco-tela">
@@ -133,7 +136,7 @@ export function Slide(p: {
       <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2 text-white/85 text-[13px] no-print" role="toolbar" aria-label="Controles da apresentação">
         <div className="flex gap-2">
           <button type="button" className="btn btn-sm btn-secondary" onClick={voltar} disabled={tela === 0 && !p.prev}>‹ Anterior</button>
-          <button type="button" className="btn btn-sm btn-secondary" onClick={avancar} disabled={tela >= total - 1 && !p.next}>{tela < total - 1 ? "Mostrar mais" : "Próxima ›"}</button>
+          <button type="button" className="btn btn-sm btn-secondary" onClick={avancar} disabled={tela >= total - 1 && !p.next}>Próxima ›</button>
         </div>
         <span>página {p.position}{total > 1 ? ` · tela ${tela + 1} de ${total}` : ""}<span className="hidden md:inline"> · setas ou espaço avançam · F tela cheia{p.teacherGuide ? " · N notas" : ""} · Esc sai</span></span>
         <div className="flex gap-2">

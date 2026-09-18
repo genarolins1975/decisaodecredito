@@ -1,5 +1,6 @@
 "use client";
 import type { ComponentType } from "react";
+import { ArvoreQueCresce } from "./arvore-que-cresce";
 import { CemVidas } from "./cem-vidas";
 import { CurvaDeLucro } from "./curva-de-lucro";
 import { FilaDeRisco } from "./fila-de-risco";
@@ -22,6 +23,9 @@ const REGISTRO: Record<string, VisualNativo> = {
   c4p2: { Componente: RetaQueQuebra, substitui: "figura" },
   c4p9: { Componente: TresEscalas, substitui: "legacy" },
   c4p19: { Componente: Fronteira, substitui: "legacy" },
+  c5p7: { Componente: () => <ArvoreQueCresce modo="raiz" />, substitui: "legacy" },
+  c5p14: { Componente: () => <ArvoreQueCresce modo="freios" />, substitui: "legacy" },
+  c5p16: { Componente: () => <ArvoreQueCresce modo="instabilidade" />, substitui: "legacy" },
   c7p6: { Componente: FilaDeRisco, substitui: "legacy" },
   c8p8: { Componente: CurvaDeLucro, substitui: "legacy" },
 };
