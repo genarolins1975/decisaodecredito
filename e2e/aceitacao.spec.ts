@@ -408,6 +408,13 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await choque.getByRole("button", { name: "Aplicar o choque" }).click();
   await expect(choque).toContainText("Estado do cenário: sob choque.");
   await expect(choque).toContainText("−R$ 225 mil");
+
+  // capítulo 11: o campo do horizonte é bloqueado e a AUC honesta vai para o memorando
+  await page.goto("/aulas/c11p6");
+  const mp = page.locator('figure[data-vz="modelo-perfeito"]');
+  await expect(mp).toContainText("não entra");
+  await mp.getByRole("button", { name: "Bloquear: o campo nasce depois" }).click();
+  await expect(mp).toContainText("A AUC honesta é 0,6958");
 });
 
 test("núcleo: gabaritos e notas privadas não estão no motor legado nem nas páginas", async () => {

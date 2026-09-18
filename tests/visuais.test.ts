@@ -295,3 +295,18 @@ describe("política em três zonas contra o motor da aula (capítulo 10)", async
     expect([zona(0.449), zona(0.052), zona(0.219)]).toEqual(["recusa", "automática", "revisão"]);
   });
 });
+
+describe("o modelo perfeito que está errado (capítulo 11)", async () => {
+  const { estadoDoCampo } = await import("@/lib/visuais/tempo");
+  const vaz = JSON.parse(readFileSync("src/lib/visuais/vazamento.json", "utf8"));
+  it("o campo do horizonte nasce depois da decisão e é bloqueado; os campos da observação entram", () => {
+    expect(estadoDoCampo(12, 12, 0)).toBe("futuro");
+    expect(estadoDoCampo(0, 0, 0)).toBe("utilizavel");
+    expect(estadoDoCampo(0, 1, 0)).not.toBe("utilizavel");
+  });
+  it("com o campo do horizonte a AUC fora do tempo é 1,0000 e o Brier 0,00028; honesto 0,6958; suave 0,9676", () => {
+    expect(vaz.modelos.leak_total_oot.auc).toBe(1); expect(vaz.modelos.leak_total_oot.brier).toBeCloseTo(0.00028, 5);
+    expect(vaz.modelos.gbm_raw_oot.auc).toBeCloseTo(0.6958, 4); expect(vaz.modelos.leak_suave_oot.auc).toBeCloseTo(0.9676, 4);
+    expect(vaz.comparacao.diferenca).toBeCloseTo(0.0299, 4);
+  });
+});

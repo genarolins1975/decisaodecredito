@@ -736,6 +736,25 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner [data-vz="mesa-rodada1"] .vz-mesa-papeis, .slide-inner [data-vz="mesa-rodada1"] .vz-mesa-painel > .vz-tile, .slide-inner [data-vz="mesa-choque"] .vz-mesa-curva, .slide-inner [data-vz="mesa-choque"] .vz-mesa-painel > .vz-tile:first-child, .slide-inner [data-vz="mesa-choque"] .vz-mesa-painel > .vz-tile:last-child, .slide-inner [data-vz="mesa-rodada2"] .vz-mesa-curva, .slide-inner [data-vz="mesa-rodada2"] .vz-mesa-painel > .vz-tile:last-child { display: none; }
 .slide-inner .vz-mesa-papeis { font-size: .95em; }
 .slide-inner [data-vz^="mesa"] .vz-num--texto { font-size: .95em; }
+/* Capítulo 11: o modelo perfeito que está errado, quatro perguntas */
+.vz-mp-grade { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 14px 22px; align-items: start; }
+.vz-mp-painel { display: grid; gap: 10px; min-width: 0; }
+.vz-mp-obs { fill: #d9e4f5; } .vz-mp-hor { fill: var(--color-gold); opacity: .85; } .vz-mp-t0 { stroke: var(--color-ink); stroke-width: 2; stroke-dasharray: 5 4; }
+.vz-mp-nome { font-family: var(--font-mono); font-size: 10.5px; fill: var(--color-ink); }
+.vz-mp-pt { stroke: #fff; stroke-width: 1.5; } .vz-mp-pt--ok { fill: var(--color-ok); } .vz-mp-pt--nao { fill: var(--color-alert); }
+.vz-mp--ok { background: var(--color-ok); } .vz-mp--meio { background: var(--color-amber); } .vz-mp--ruim { background: var(--color-alert); }
+.vz-qp-grade { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.vz-qp-cartao { background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 6px; padding: 10px 12px; display: grid; gap: 6px; align-content: start; }
+.vz-qp-perg { margin: 0; font-size: 15px; color: var(--color-ink); }
+.vz-qp-cartao .vz-seg-b { min-width: 44px; font-weight: 700; }
+@container (max-width: 760px) { .vz-mp-grade { grid-template-columns: minmax(0, 1fr); } }
+@container (max-width: 520px) { .vz-qp-grade { grid-template-columns: minmax(0, 1fr); } }
+/* palco */
+.slide-inner .vz-mp-grade { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1cqh 2cqh; }
+.slide-inner [data-vz="modelo-perfeito"] .vz-grafico svg { height: 24cqh; width: 100%; }
+.slide-inner [data-vz="modelo-perfeito"] .table-wrap, .slide-inner [data-vz="modelo-perfeito"] .vz-grafico > .hint { display: none; }
+.slide-inner .vz-qp-grade { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1cqh; }
+.slide-inner .vz-qp-perg { font-size: 1em; }
 /* palco: raiz mostra plano e disputa; freios e instabilidade mostram plano, árvore e tiles */
 .slide-inner .vz-arv-grade { grid-template-columns: 46cqh minmax(0, 1fr); gap: 1cqh 2cqh; }
 .slide-inner [data-vz^="arvore"] .vz-arv-grade > .vz-grafico svg { height: 46cqh; }

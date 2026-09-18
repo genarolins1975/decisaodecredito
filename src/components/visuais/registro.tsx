@@ -11,6 +11,8 @@ import { IntervaloQueEncolhe } from "./intervalo-que-encolhe";
 import { TresZonas } from "./tres-zonas";
 import { QuadroDoComite } from "./quadro-do-comite";
 import { MesaSobChoque } from "./mesa-sob-choque";
+import { ModeloPerfeito } from "./modelo-perfeito";
+import { QuatroPerguntas } from "./quatro-perguntas";
 import { ArvoreQueCresce } from "./arvore-que-cresce";
 import { CemVidas } from "./cem-vidas";
 import { CurvaDeLucro } from "./curva-de-lucro";
@@ -54,6 +56,8 @@ const REGISTRO: Record<string, VisualNativo> = {
   c10p11: { Componente: () => <MesaSobChoque modo="rodada1" />, substitui: "legacy" },
   c10p12: { Componente: () => <MesaSobChoque modo="choque" />, substitui: "legacy" },
   c10p13: { Componente: () => <MesaSobChoque modo="rodada2" />, substitui: "legacy" },
+  c11p6: { Componente: ModeloPerfeito, substitui: "legacy" },
+  c11p18: { Componente: QuatroPerguntas, substitui: "legacy" },
   c9p3: { Componente: () => <IndiceQueSoma modo="faixas" />, substitui: "legacy" },
   c9p4: { Componente: () => <IndiceQueSoma modo="variaveis" />, substitui: "legacy" },
   c9p5: { Componente: () => <IndiceQueSoma modo="leituras" />, substitui: "legacy" },

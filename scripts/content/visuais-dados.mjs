@@ -33,3 +33,9 @@ const monit = { fonte: "content/generated/dados.json (DADOS.psi, csi, fair, res,
   res: { logit_oot: DADOS.res.logit_oot, logit_val: DADOS.res.logit_val, logit_treino: DADOS.res.logit_treino, gbm_val: DADOS.res.gbm_val, gbm_raw_oot: DADOS.res.gbm_raw_oot }, n: { treino: DADOS.meta.n_treino, val: DADOS.meta.n_val, oot: DADOS.meta.n_oot } };
 writeFileSync("src/lib/visuais/monitoramento.json", JSON.stringify(monit));
 console.log(`escores.json: ${escores.treino.sc.length} de treino e ${escores.janela.sc.length} da janela · monitoramento.json: PSI ${monit.psi.valor}`);
+
+// Capítulo 11: o modelo perfeito que está errado. Resultados do gerador com e sem vazamento.
+const vaz = { fonte: "content/generated/dados.json (DADOS.res e DADOS.comparacao_auc), gerador com semente 20260501", horizonte: DADOS.meta.horizonte,
+  modelos: { logit_oot: DADOS.res.logit_oot, gbm_raw_oot: DADOS.res.gbm_raw_oot, gbm_treino: DADOS.res.gbm_treino, leak_suave_treino: DADOS.res.gbm_leak_suave_treino, leak_suave_oot: DADOS.res.gbm_leak_suave_oot, leak_total_treino: DADOS.res.gbm_com_leakage_treino, leak_total_oot: DADOS.res.gbm_com_leakage_oot }, comparacao: DADOS.res.comparacao_auc };
+writeFileSync("src/lib/visuais/vazamento.json", JSON.stringify(vaz));
+console.log(`vazamento.json: AUC honesta ${vaz.modelos.gbm_raw_oot.auc}, suave ${vaz.modelos.leak_suave_oot.auc}, total ${vaz.modelos.leak_total_oot.auc}`);
