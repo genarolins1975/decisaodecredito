@@ -75,7 +75,7 @@ python3 scripts/apostila/figuras.py                                        # fig
 node scripts/apostila/gerar.mjs aluno todos --pdf && node scripts/apostila/gerar.mjs professor todos --pdf   # um PDF por capítulo e versão; "gerar.mjs aluno 4 --pdf" gera só o capítulo 4
 ```
 
-A versão do aluno pode ser publicada como material comum; a versão do professor só como material com finalidade `labels` (só o professor baixa) e nunca no repositório, que é público. Regenerar sempre que o conteúdo for reimportado.
+Cada capítulo abre com um infográfico gerado de `scripts/apostila/infograficos/cNN.json` (`python3 scripts/apostila/infograficos.py`), que também alimenta os slides FGV de abertura (`scripts/apostila/slides/README.md`). A versão do aluno pode ser publicada como material comum; a versão do professor só como material com finalidade `labels` (só o professor baixa) e nunca no repositório, que é público. Regenerar sempre que o conteúdo for reimportado.
 
 ## 8. Procedimento antes de cada aula
 

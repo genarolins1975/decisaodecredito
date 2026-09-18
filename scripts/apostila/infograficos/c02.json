@@ -1,0 +1,109 @@
+{
+ "numero": "02",
+ "titulo": "Fundamentos de modelagem estatística",
+ "pergunta": "Como dados viram estimativas, e por que elas são incertas?",
+ "kicker1": "1 · Um modelo é uma regra: do que o banco observa à chance de um evento futuro",
+ "cartoes": [
+  {
+   "tit": "Linha",
+   "cor": "steel",
+   "corpo": "A unidade de observação define o que é uma linha: um cliente, uma proposta ou um contrato. Escolher errado contamina toda a estimativa."
+  },
+  {
+   "tit": "Amostra",
+   "cor": "orange",
+   "corpo": "O modelo aprende só em quem a política aprovou: taxa de aprovação vigente de 72%; prevalência observada entre aprovados fora do tempo de 10,99%."
+  },
+  {
+   "tit": "Estimativa",
+   "cor": "navy",
+   "corpo": "Parâmetro é o que se estima pelos dados; estatística é o que se calcula na amostra; hiperparâmetro é o que o modelador escolhe antes do ajuste."
+  },
+  {
+   "tit": "Teste",
+   "cor": "green",
+   "corpo": "Treino 2.103 propostas (jan/22 a fev/23) aprende; validação 760 (mar a jul/23) escolhe; teste fora do tempo 737 (ago a dez/23) mede uma única vez."
+  }
+ ],
+ "kicker2": "2 · Três palavras que definem o experimento",
+ "tiles": [
+  {
+   "sigla": "Modelo",
+   "nome": "a regra",
+   "desc": "Transforma o que o banco observa numa estimativa da chance de um evento futuro.",
+   "cor": "steel"
+  },
+  {
+   "sigla": "Parâmetro",
+   "nome": "o que se estima",
+   "desc": "Número desconhecido da relação; o ajuste o encontra minimizando uma perda.",
+   "cor": "orange"
+  },
+  {
+   "sigla": "Perda",
+   "nome": "o que é errar",
+   "desc": "A log loss pune previsões confiantes do lado errado; sem critério não há estimativa.",
+   "cor": "green"
+  }
+ ],
+ "formula": "PD constante ótima = frequência observada do grupo",
+ "formulaNota": "Com 1 default em 8 propostas, a log loss é mínima em 12,5%; fixar 2% eleva a perda média para 0,5067.",
+ "kicker3": "3 · Por que toda estimativa é incerta",
+ "paineis": [
+  {
+   "tipo": "kv",
+   "titulo": "Toda proporção vem com intervalo",
+   "texto": "Mesma fração de 1 em 8, intervalos de Wilson a 95%:",
+   "linhas": [
+    [
+     "8 observações",
+     "2,2% a 47,1% (44,8 pp)"
+    ],
+    [
+     "80 observações",
+     "6,9% a 21,5% (14,6 pp)"
+    ],
+    [
+     "800 observações",
+     "10,4% a 15,0% (4,6 pp)"
+    ]
+   ],
+   "nota": "A largura depende do número de observações, não da fração."
+  },
+  {
+   "tipo": "lista",
+   "titulo": "Dois modos de errar",
+   "itens": [
+    "Viés: erro sistemático da família escolhida; erra parecido no treino e fora dele.",
+    "Variância: sensibilidade à amostra sorteada; erra pouco no treino e muito fora.",
+    "Reduzir um aumenta o outro; a validação em dados separados é a única medida honesta."
+   ]
+  },
+  {
+   "tipo": "lista",
+   "titulo": "O que a inferência não entrega",
+   "itens": [
+    "Associação medida em dados observacionais não autoriza afirmação causal.",
+    "Nenhuma previsão fora da faixa observada das variáveis.",
+    "Nenhuma extensão a uma população diferente da amostra que sobreviveu à política."
+   ]
+  }
+ ],
+ "faixa": {
+  "kicker": "Três ideias para levar",
+  "itens": [
+   {
+    "k": "Linha",
+    "v": "O que uma linha representa? A unidade econômica na qual a decisão acontece."
+   },
+   {
+    "k": "Erro",
+    "v": "O que significa errar? A função de perda diz; o ajuste procura os parâmetros que erram menos."
+   },
+   {
+    "k": "Teste",
+    "v": "Onde medir generalização? Só em dados que o ajuste nunca viu."
+   }
+  ]
+ }
+}

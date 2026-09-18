@@ -1,0 +1,131 @@
+{
+ "numero": "04",
+ "titulo": "Regressão logística",
+ "pergunta": "Como características viram probabilidade?",
+ "kicker1": "1 · Quatro escalas para o mesmo risco",
+ "cartoes": [
+  {
+   "tit": "Probabilidade",
+   "cor": "steel",
+   "corpo": "De 0 a 1: a escala em que a decisão acontece. PD de 20% significa 20 defaults em 100 propostas semelhantes."
+  },
+  {
+   "tit": "Odds",
+   "cor": "orange",
+   "corpo": "De zero a infinito: PD 20% vira odds 0,250, um default para cada quatro adimplentes. Multiplica em vez de somar."
+  },
+  {
+   "tit": "Log odds",
+   "cor": "navy",
+   "corpo": "De menos a mais infinito, simétrico em zero: odds 0,250 viram −1,386. É onde os efeitos se somam."
+  },
+  {
+   "tit": "Escore z",
+   "cor": "green",
+   "corpo": "Intercepto mais a soma das parcelas coeficiente × variável. A curva logística devolve a PD: 1 ÷ (1 + e^−z)."
+  }
+ ],
+ "kicker2": "2 · Uma proposta, um escore: utilização 70%, atraso 5 dias",
+ "tiles": [
+  {
+   "sigla": "−5,6666",
+   "nome": "intercepto",
+   "desc": "Âncora do nível: o escore quando todas as variáveis valem zero na escala usada.",
+   "cor": "steel"
+  },
+  {
+   "sigla": "+5,2171",
+   "nome": "utilização: 0,7453 × 7,0 dezenas",
+   "desc": "Cada 10 pontos de utilização somam 0,7453 ao log odds.",
+   "cor": "orange"
+  },
+  {
+   "sigla": "+0,6977",
+   "nome": "atraso: 1,3955 × 0,5 dezena",
+   "desc": "Cada 10 dias de atraso somam 1,3955 ao log odds.",
+   "cor": "green"
+  }
+ ],
+ "formula": "z = 0,2483 → odds 1,282 → PD 56,18%",
+ "formulaNota": "A soma em log odds volta para probabilidade pela curva logística, sem mudar a ordenação.",
+ "kicker3": "3 · O que um coeficiente significa",
+ "paineis": [
+  {
+   "tipo": "kv",
+   "titulo": "Razão de chances",
+   "texto": "Elevar e ao coeficiente dá o fator que multiplica as odds:",
+   "linhas": [
+    [
+     "Utilização, cada 10 pp",
+     "0,7453 → odds × 2,11"
+    ],
+    [
+     "Atraso, cada 10 dias",
+     "1,3955 → odds × 4,04"
+    ],
+    [
+     "Unidade",
+     "muda o número, não o modelo"
+    ]
+   ],
+   "nota": "Comparar coeficientes entre variáveis exige a mesma unidade."
+  },
+  {
+   "tipo": "barras",
+   "titulo": "Efeito constante em odds, variável em PD",
+   "texto": "Mais 10 pontos de utilização (odds × 2,11) deslocam a PD conforme o ponto de partida:",
+   "itens": [
+    {
+     "rot": "PD 2%",
+     "v": 2.12,
+     "cor": "steel",
+     "texto": "+2,12 pp"
+    },
+    {
+     "rot": "PD 10%",
+     "v": 8.97,
+     "cor": "steel",
+     "texto": "+8,97 pp"
+    },
+    {
+     "rot": "PD 50%",
+     "v": 17.82,
+     "cor": "navy",
+     "texto": "+17,82 pp"
+    },
+    {
+     "rot": "PD 90%",
+     "v": 4.99,
+     "cor": "steel",
+     "texto": "+4,99 pp"
+    }
+   ]
+  },
+  {
+   "tipo": "lista",
+   "titulo": "O limite da família",
+   "itens": [
+    "Supõe efeito aditivo e monótono em log odds.",
+    "Relação real não monótona (utilização muito baixa pode ser cliente inativo) produz erro sistemático.",
+    "Faixas devolvem flexibilidade sem trocar de família: 3 parâmetros em vez de 1."
+   ]
+  }
+ ],
+ "faixa": {
+  "kicker": "Três ideias para levar",
+  "itens": [
+   {
+    "k": "Soma",
+    "v": "Onde os efeitos se somam? Em log odds, pelo intercepto e pelos coeficientes."
+   },
+   {
+    "k": "Curva",
+    "v": "O que devolve a probabilidade? A curva logística, inversa exata do log odds."
+   },
+   {
+    "k": "Limite",
+    "v": "O que a família não faz? Interações e relações não monótonas sem faixas declaradas."
+   }
+  ]
+ }
+}

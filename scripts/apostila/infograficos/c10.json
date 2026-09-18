@@ -1,0 +1,109 @@
+{
+ "numero": "10",
+ "titulo": "Laboratório integrado",
+ "pergunta": "Qual modelo e qual política defenderíamos em um comitê?",
+ "kicker1": "1 · O memorando em cinco campos",
+ "cartoes": [
+  {
+   "tit": "Recomendação",
+   "cor": "steel",
+   "corpo": "O que fazer, com números e prazo: modelo, corte de aprovação, faixa de revisão, capacidade, validade e responsável. Preferência não é recomendação."
+  },
+  {
+   "tit": "Evidência",
+   "cor": "orange",
+   "corpo": "Cada número com amostra, denominador e origem, para que um terceiro consiga recalcular."
+  },
+  {
+   "tit": "Incerteza",
+   "cor": "navy",
+   "corpo": "Declarada com número, não com adjetivo: o intervalo, o tamanho da amostra e o que ainda inverteria a recomendação."
+  },
+  {
+   "tit": "Condições e plano",
+   "cor": "green",
+   "corpo": "Cada condição com verificação, responsável e data; o plano de acompanhamento do capítulo 9, com o que o painel não vê."
+  }
+ ],
+ "kicker2": "2 · O quadro de decisão do comitê",
+ "tiles": [
+  {
+   "sigla": "0,7257",
+   "nome": "ordenação: logística com WoE",
+   "desc": "Contra 0,6958 do boosting calibrado por Platt, na janela fora do tempo. Recomendação: manter a logística.",
+   "cor": "steel"
+  },
+  {
+   "sigla": "12% / 30%",
+   "nome": "economia: corte e teto de revisão",
+   "desc": "Aprovação automática até 12%, faixa de revisão até 30%, capacidade de 80 casos.",
+   "cor": "orange"
+  },
+  {
+   "sigla": "0 a 3",
+   "nome": "governança: rubrica por dimensão",
+   "desc": "Publicada antes da rodada, com regra de corte; precisa poder reprovar um texto bem escrito e mal sustentado.",
+   "cor": "green"
+  }
+ ],
+ "formula": "Decisão defensável = evidência + incerteza declarada + condições verificáveis",
+ "formulaNota": "Um documento que outra pessoa consegue revisar, recalcular e contestar.",
+ "kicker3": "3 · Duas rodadas e um choque",
+ "paineis": [
+  {
+   "tipo": "kv",
+   "titulo": "Cenário base, escrito na tela",
+   "texto": "Nenhum número é exibido sem o estado do cenário:",
+   "linhas": [
+    [
+     "Funding",
+     "12%"
+    ],
+    [
+     "Perda no default",
+     "65%"
+    ],
+    [
+     "PD do modelo",
+     "sem deslocamento"
+    ]
+   ],
+   "nota": "O choque testa exatamente a premissa que sustentava a decisão anterior."
+  },
+  {
+   "tipo": "lista",
+   "titulo": "Rodada 1: defesa e argumento contrário",
+   "itens": [
+    "Defender inclui produzir o melhor argumento contra a própria decisão.",
+    "A política fica na tela: modelo, corte, faixa e capacidade.",
+    "O argumento contrário revela qual premissa sustenta a recomendação."
+   ]
+  },
+  {
+   "tipo": "lista",
+   "titulo": "Rodada 2: sob choque",
+   "itens": [
+    "Separar o que mudou do que não mudou.",
+    "Nomear a premissa que caiu.",
+    "Revisar a recomendação com o choque escrito na mesma tela dos números."
+   ]
+  }
+ ],
+ "faixa": {
+  "kicker": "Três ideias para levar",
+  "itens": [
+   {
+    "k": "Recomendação",
+    "v": "O comitê entende o que fazer? Modelo, parâmetros, finalidade, validade e responsável."
+   },
+   {
+    "k": "Limites",
+    "v": "O que a evidência não diz? A amostra que faltou, nomeada, e o que inverteria a decisão."
+   },
+   {
+    "k": "Choque",
+    "v": "A decisão resiste? O que muda, o que não muda e qual premissa cai."
+   }
+  ]
+ }
+}

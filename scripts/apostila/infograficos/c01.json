@@ -1,0 +1,145 @@
+{
+ "numero": "01",
+ "titulo": "O problema da decisão de crédito",
+ "pergunta": "O que precisamos saber para decidir?",
+ "kicker1": "1 · Uma proposta chega hoje. O desfecho só aparece em doze meses.",
+ "cartoes": [
+  {
+   "tit": "A proposta",
+   "cor": "steel",
+   "corpo": "Helena Braga, autônoma, pede R$ 9.000. Renda declarada R$ 4.200, tempo na ocupação 1 ano e 6 meses, relacionamento 6 meses."
+  },
+  {
+   "tit": "Mais informação",
+   "cor": "orange",
+   "corpo": "O mesmo cliente parece outro: utilização do limite 78%, maior atraso em 6 meses 22 dias, comprometimento de renda 34%, 3 consultas a bureau em 3 meses."
+  },
+  {
+   "tit": "A decisão",
+   "cor": "navy",
+   "corpo": "Aprovar, recusar ou encaminhar, hoje, sem ver o desfecho. Sem números, é preferência de risco, não cálculo."
+  },
+  {
+   "tit": "O desfecho",
+   "cor": "green",
+   "corpo": "Doze meses depois: pagou, ou passou de 90 dias de atraso. Clientes idênticos no que o banco vê têm desfechos diferentes."
+  }
+ ],
+ "kicker2": "2 · Três números escondidos em toda decisão",
+ "tiles": [
+  {
+   "sigla": "PD",
+   "nome": "probabilidade de default",
+   "desc": "A chance de o cliente não pagar dentro do horizonte declarado. É o que o modelo entrega.",
+   "cor": "steel"
+  },
+  {
+   "sigla": "LGD",
+   "nome": "perda dado o default",
+   "desc": "A fração da exposição que se perde quando o default acontece.",
+   "cor": "orange"
+  },
+  {
+   "sigla": "EAD",
+   "nome": "exposição no default",
+   "desc": "Quanto está em jogo no momento do default: o saldo, não o limite.",
+   "cor": "green"
+  }
+ ],
+ "formula": "Perda esperada = PD × LGD × EAD",
+ "formulaNota": "Só com os três números a decisão vira conta, não opinião.",
+ "kicker3": "3 · O que a PD é, e o que ela não decide",
+ "paineis": [
+  {
+   "tipo": "pontos",
+   "titulo": "PD é frequência, não veredito",
+   "n": 100,
+   "cols": 25,
+   "defaults": [
+    3,
+    7,
+    12,
+    18,
+    25,
+    31,
+    44,
+    52,
+    66,
+    71,
+    83,
+    88,
+    95,
+    97
+   ],
+   "legenda": "Cem operações, todas com PD de 10%: são esperados cerca de 10 defaults. Este sorteio deu 14. Uma realização não contradiz a PD; ela é uma frequência com incerteza de amostra."
+  },
+  {
+   "tipo": "tempo",
+   "titulo": "O horizonte faz parte da estimativa",
+   "meses": [
+    0,
+    6,
+    12,
+    18,
+    24
+   ],
+   "marcaMes": 14,
+   "marcaTexto": "90 dias de atraso no mês 14",
+   "janelas": [
+    {
+     "ate": 12,
+     "cor": "steel",
+     "texto": "12 meses: não é default"
+    },
+    {
+     "ate": 18,
+     "cor": "red",
+     "texto": "18 meses: default"
+    }
+   ],
+   "legenda": "A trajetória é a mesma; o rótulo depende da janela declarada."
+  },
+  {
+   "tipo": "barras",
+   "titulo": "A previsão sozinha não decide",
+   "texto": "Operação de R$ 10.000: receita de 16% se pagar (R$ 1.600), LGD de 62%, custo de R$ 35. O limiar (20,1%) vem de receita, LGD, EAD e custo; a PD é o que o modelo entrega.",
+   "itens": [
+    {
+     "rot": "PD 10%",
+     "v": 785,
+     "cor": "green",
+     "texto": "+R$ 785"
+    },
+    {
+     "rot": "PD 20,1%",
+     "v": 0,
+     "cor": "mute",
+     "texto": "R$ 0: equilíbrio"
+    },
+    {
+     "rot": "PD 30%",
+     "v": -775,
+     "cor": "red",
+     "texto": "−R$ 775"
+    }
+   ]
+  }
+ ],
+ "faixa": {
+  "kicker": "Antes de qualquer modelo, três perguntas",
+  "itens": [
+   {
+    "k": "Evento",
+    "v": "O que conta como default? Um fato objetivo, observável e definido antes da modelagem."
+   },
+   {
+    "k": "Horizonte",
+    "v": "Em quanto tempo? A janela muda o rótulo e, com ele, a PD."
+   },
+   {
+    "k": "Uso",
+    "v": "Para qual decisão? Concessão, limite, preço ou provisão pedem ajustes declarados."
+   }
+  ]
+ }
+}

@@ -1,0 +1,126 @@
+{
+ "numero": "05",
+ "titulo": "Árvores de decisão",
+ "pergunta": "Como perguntas sucessivas dividem a população em grupos de risco?",
+ "kicker1": "1 · Perguntas sucessivas criam regiões de risco (base didática de 16 propostas)",
+ "cartoes": [
+  {
+   "tit": "Raiz",
+   "cor": "steel",
+   "corpo": "16 propostas, 8 defaults: metade a metade, Gini 0,500, impureza máxima. É o ponto de partida."
+  },
+  {
+   "tit": "Corte vencedor",
+   "cor": "orange",
+   "corpo": "Utilização ≤ 57,5%: redução de Gini de 0,281, a maior entre todos os candidatos. Lado sim: 8 casos, 1 default. Lado não: 8 casos, 7 defaults."
+  },
+  {
+   "tit": "Recursão",
+   "cor": "navy",
+   "corpo": "Cada lado recomeça a busca só com os casos que chegaram até ele. No lado esquerdo, utilização ≤ 27,5% dá ganho local de 0,094."
+  },
+  {
+   "tit": "Folha",
+   "cor": "green",
+   "corpo": "A previsão é a frequência da folha: 1 default em 2 propostas é PD de 50%, com intervalo de 95% de 9,5% a 90,5%."
+  }
+ ],
+ "kicker2": "2 · Três números que a árvore compara",
+ "tiles": [
+  {
+   "sigla": "0,500",
+   "nome": "Gini da raiz",
+   "desc": "Impureza máxima: o grupo está meio a meio. Zero quando todos têm o mesmo desfecho.",
+   "cor": "steel"
+  },
+  {
+   "sigla": "0,281",
+   "nome": "redução do melhor corte",
+   "desc": "Ganho ponderado pelo tamanho dos dois filhos; o maior ganho permitido vence.",
+   "cor": "orange"
+  },
+  {
+   "sigla": "12,5% e 87,5%",
+   "nome": "taxas após a raiz",
+   "desc": "Uma única divisão já separa dois grupos com risco muito diferente.",
+   "cor": "green"
+  }
+ ],
+ "formula": "Ganho = Gini(pai) − média ponderada dos Gini(filhos)",
+ "formulaNota": "Na raiz desta base: 0,500 − 0,21875 = 0,281.",
+ "kicker3": "3 · Onde a árvore erra, e como se controla",
+ "paineis": [
+  {
+   "tipo": "kv",
+   "titulo": "Folhas pequenas, intervalos largos",
+   "texto": "Intervalo de 95% da taxa de cada folha:",
+   "linhas": [
+    [
+     "2 casos, 1 default",
+     "50%: de 9,5% a 90,5%"
+    ],
+    [
+     "6 casos, 0 default",
+     "0%: de 0% a 39,0%"
+    ],
+    [
+     "6 casos, 6 defaults",
+     "100%: de 61,0% a 100%"
+    ]
+   ],
+   "nota": "Os intervalos se sobrepõem: a árvore não sustenta a decisão sozinha."
+  },
+  {
+   "tipo": "barras",
+   "titulo": "Poda: um preço por folha (α = 0,030)",
+   "texto": "Custo = impureza + α × folhas:",
+   "itens": [
+    {
+     "rot": "Só a raiz",
+     "v": 0.53,
+     "cor": "mute",
+     "texto": "0,530"
+    },
+    {
+     "rot": "Profund. 1",
+     "v": 0.279,
+     "cor": "steel",
+     "texto": "0,279"
+    },
+    {
+     "rot": "Profund. 2",
+     "v": 0.245,
+     "cor": "green",
+     "texto": "0,245"
+    }
+   ],
+   "nota": "Crescer primeiro, cortar depois: a árvore de profundidade 2 vence a este preço."
+  },
+  {
+   "tipo": "lista",
+   "titulo": "Os freios e a instabilidade",
+   "itens": [
+    "Profundidade máxima limita quantas perguntas se pode fazer.",
+    "Mínimo de casos por folha limita quão pequeno um grupo pode ficar.",
+    "Quando dois cortes têm ganhos próximos, retirar uma observação pode trocar a raiz: a árvore parece outro modelo."
+   ]
+  }
+ ],
+ "faixa": {
+  "kicker": "Três ideias para levar",
+  "itens": [
+   {
+    "k": "Corte",
+    "v": "O que vence a disputa por um nó? O corte que mais reduz a impureza, ponderado pelo tamanho dos filhos."
+   },
+   {
+    "k": "Folha",
+    "v": "O que a folha prevê? A frequência observada nela, com o intervalo que o tamanho permite."
+   },
+   {
+    "k": "Controle",
+    "v": "O que segura o sobreajuste? Profundidade, mínimo por folha e poda com preço por folha."
+   }
+  ]
+ }
+}

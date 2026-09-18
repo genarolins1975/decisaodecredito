@@ -1,0 +1,110 @@
+{
+ "numero": "11",
+ "titulo": "Trabalho final de conclusão de curso",
+ "pergunta": "Como construir, testar e defender um modelo de PD de ponta a ponta?",
+ "kicker1": "1 · Doze missões e dois componentes sobre o mesmo produto",
+ "cartoes": [
+  {
+   "tit": "Construir",
+   "cor": "steel",
+   "corpo": "Missões 1 a 7: pergunta congelada, dicionário como contrato, auditoria com IDs, bloqueio de vazamento, calendário como protocolo, régua mínima e três famílias com o mesmo protocolo."
+  },
+  {
+   "tit": "Testar",
+   "cor": "orange",
+   "corpo": "Missões 8, 9 e 11: discriminação com incerteza, calibração por faixa, subgrupos e choques, alertas com responsável e ação."
+  },
+  {
+   "tit": "Defender",
+   "cor": "navy",
+   "corpo": "Missões 10 e 12: conta econômica com hipóteses e reconciliação, pacote congelado antes do arquivo cego, OOT medido uma única vez."
+  },
+  {
+   "tit": "Blueprint",
+   "cor": "green",
+   "corpo": "A operação do mesmo produto: fluxo de concessão, governança e três linhas de defesa, modelo de decisão integrado, monitoramento e apetite de risco apresentáveis ao Conselho."
+  }
+ ],
+ "kicker2": "2 · A base foi desenhada para exigir decisões reais",
+ "tiles": [
+  {
+   "sigla": "≈ 1 milhão",
+   "nome": "propostas por base · jan/21 a dez/23",
+   "desc": "Com sujeira deliberada: chaves repetidas, datas fora de ordem, domínios e missing por período, produto e canal.",
+   "cor": "steel"
+  },
+  {
+   "sigla": "100.000",
+   "nome": "IDs no OOT cego · jan a jun/24",
+   "desc": "Nenhum desfecho no pacote; o teste cego não escolhe nada.",
+   "cor": "orange"
+  },
+  {
+   "sigla": "+12 m +30 d",
+   "nome": "maturação",
+   "desc": "Rótulo só existe depois de a janela fechar; a régua mínima é aprendida exclusivamente no treino.",
+   "cor": "green"
+  }
+ ],
+ "formula": "Selecionar → calibrar e decidir → congelar → medir o OOT uma vez",
+ "formulaNota": "A ordem é irreversível: manifesto, versões, sementes, dependências e hashes antes do arquivo cego.",
+ "kicker3": "3 · O que a banca pergunta",
+ "paineis": [
+  {
+   "tipo": "lista",
+   "titulo": "Quatro perguntas, 0 a 2 pontos cada",
+   "itens": [
+    "Problema e dados: a pergunta está clara e os dados existiam na data da decisão?",
+    "Modelos e teste: comparados com o mesmo protocolo e OOT preservado?",
+    "Decisão econômica: calculada, com hipóteses declaradas e reconciliada?",
+    "Governança: monitoramento com limite, responsável e ação?"
+   ]
+  },
+  {
+   "tipo": "kv",
+   "titulo": "Três famílias, o mesmo protocolo",
+   "texto": "Mesmos IDs, mesmas features, mesma validação:",
+   "linhas": [
+    [
+     "Logit",
+     "referência estável, aditiva e auditável"
+    ],
+    [
+     "Árvore",
+     "regras locais, interação automática, maior variância"
+    ],
+    [
+     "Boosting",
+     "correções não lineares, mais explicação e manutenção"
+    ]
+   ],
+   "nota": "Nenhum vencedor suposto de antemão."
+  },
+  {
+   "tipo": "lista",
+   "titulo": "Regras do jogo",
+   "itens": [
+    "A IA apoia o trabalho, mas não responde pela decisão.",
+    "Toda saída obrigatória: proposta_id, partição, modelo, PD, versão e horário da execução.",
+    "Sem ambiente de execução: pseudocódigo, testes e lista explícita do que ficou apenas proposto."
+   ]
+  }
+ ],
+ "faixa": {
+  "kicker": "Três ideias para levar",
+  "itens": [
+   {
+    "k": "Construir",
+    "v": "Pergunta, contrato de dados e calendário antes de qualquer modelo."
+   },
+   {
+    "k": "Testar",
+    "v": "Ordenação, nível e subgrupos, sempre com amostra e incerteza declaradas."
+   },
+   {
+    "k": "Defender",
+    "v": "Pacote congelado, conta econômica reconciliada e respostas para as quatro perguntas."
+   }
+  ]
+ }
+}

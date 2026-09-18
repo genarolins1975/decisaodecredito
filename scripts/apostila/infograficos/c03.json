@@ -1,0 +1,126 @@
+{
+ "numero": "03",
+ "titulo": "Construção da base e das variáveis",
+ "pergunta": "O que o modelo podia saber no momento da decisão?",
+ "kicker1": "1 · O relógio decide o que entra na base",
+ "cartoes": [
+  {
+   "tit": "Data da decisão",
+   "cor": "steel",
+   "corpo": "Só entra o que existia e estava disponível naquele instante. A fatura fechada em 28 de fevereiro que entra no sistema em 30 de abril não existia para quem decidiu em 15 de março."
+  },
+  {
+   "tit": "Janela de observação",
+   "cor": "orange",
+   "corpo": "De t−12 a t0: o que o modelo pode usar, fonte por fonte, já disponível antes da decisão."
+  },
+  {
+   "tit": "Janela de performance",
+   "cor": "navy",
+   "corpo": "De t0 a t+12: o evento a prever, 90 dias de atraso. Só fecha depois de decorrido o prazo inteiro."
+  },
+  {
+   "tit": "Maturação",
+   "cor": "green",
+   "corpo": "Uma safra só entra depois de 12 meses completos. Safra incompleta tratada como adimplente subestima a PD, pior nas safras recentes."
+  }
+ ],
+ "kicker2": "2 · O desenho temporal desta base",
+ "tiles": [
+  {
+   "sigla": "2.103",
+   "nome": "treino · safras jan/22 a fev/23",
+   "desc": "Aprende parâmetros, imputação, escala e transformações.",
+   "cor": "steel"
+  },
+  {
+   "sigla": "760",
+   "nome": "validação · mar a jul/23",
+   "desc": "Compara alternativas e congela a proposta.",
+   "cor": "orange"
+  },
+  {
+   "sigla": "737",
+   "nome": "fora do tempo · ago a dez/23",
+   "desc": "Mede uma única vez, depois de tudo congelado.",
+   "cor": "green"
+  }
+ ],
+ "formula": "Partição por data, nunca por sorteio",
+ "formulaNota": "A pergunta do modelo é sobre o futuro, não sobre uma fatia aleatória do passado.",
+ "kicker3": "3 · Três armadilhas que nenhuma métrica denuncia",
+ "paineis": [
+  {
+   "tipo": "barras",
+   "titulo": "A política anterior seleciona quem aparece",
+   "texto": "Default em 12 meses na safra fora do tempo, por grupo:",
+   "itens": [
+    {
+     "rot": "Aprovados",
+     "v": 11.0,
+     "cor": "steel",
+     "texto": "11,0%"
+    },
+    {
+     "rot": "Recusados",
+     "v": 33.0,
+     "cor": "red",
+     "texto": "33,0%"
+    },
+    {
+     "rot": "Candidatos",
+     "v": 17.9,
+     "cor": "mute",
+     "texto": "17,9%"
+    }
+   ],
+   "nota": "O banco só observa o desfecho de quem aprovou; a base descreve essa fatia."
+  },
+  {
+   "tipo": "lista",
+   "titulo": "Vazamento: como detectar sem gabarito",
+   "itens": [
+    "Salto sem explicação: uma variável nova move o AUC vários pontos de uma vez.",
+    "Importância concentrada: uma única variável domina o modelo.",
+    "O ganho aparece também no teste, porque o teste carrega o mesmo vazamento, e some em produção."
+   ]
+  },
+  {
+   "tipo": "kv",
+   "titulo": "Balancear não muda o mundo",
+   "texto": "Medido na janela fora do tempo, 737 propostas:",
+   "linhas": [
+    [
+     "AUC",
+     "0,7257 sem e com balanceamento"
+    ],
+    [
+     "PD média prevista",
+     "9,72% contra 9,76%"
+    ],
+    [
+     "Ordenação",
+     "idêntica; só o nível se desloca"
+    ]
+   ],
+   "nota": "Corrigir a prior é uma transformação monótona das odds."
+  }
+ ],
+ "faixa": {
+  "kicker": "Três ideias para levar",
+  "itens": [
+   {
+    "k": "Disponibilidade",
+    "v": "Quando um campo pode entrar? Quando o banco podia conhecer o fato, não quando ele ocorreu."
+   },
+   {
+    "k": "Maturação",
+    "v": "Quando uma safra pode ser rotulada? Depois de a janela de performance fechar inteira."
+   },
+   {
+    "k": "Vazamento",
+    "v": "Como o futuro contamina o teste? Variáveis posteriores à decisão inflam o AUC e desaparecem em produção."
+   }
+  ]
+ }
+}

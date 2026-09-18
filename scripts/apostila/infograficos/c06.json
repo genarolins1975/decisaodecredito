@@ -1,0 +1,131 @@
+{
+ "numero": "06",
+ "titulo": "Gradient boosting com árvores",
+ "pergunta": "Como uma sequência de árvores melhora uma previsão?",
+ "kicker1": "1 · Correções sucessivas sobre o erro que sobrou (exemplo de regressão, 8 pontos)",
+ "cartoes": [
+  {
+   "tit": "Palpite inicial",
+   "cor": "steel",
+   "corpo": "F₀ é a constante que minimiza o critério: a média dos oito valores, 6,50. Erro quadrático médio de 10,1875."
+  },
+  {
+   "tit": "Resíduo",
+   "cor": "orange",
+   "corpo": "O erro vira o novo alvo. Em x = 8, observado 12,00 menos previsão 6,50 dá resíduo +5,50: a previsão precisa subir."
+  },
+  {
+   "tit": "Árvore rasa",
+   "cor": "navy",
+   "corpo": "Uma pergunta sobre os resíduos: x ≤ 4,5? Sim: corrigir −2,875. Não: corrigir +2,875. Agrupa resíduos com direção parecida."
+  },
+  {
+   "tit": "Soma com taxa",
+   "cor": "green",
+   "corpo": "F₁ = 6,50 + 0,5 × 2,875 = 7,94 em x = 8. Com quatro árvores a previsão chega a 10,86 e o erro cai de 5,50 para 1,14."
+  }
+ ],
+ "kicker2": "2 · A fórmula depois da história",
+ "tiles": [
+  {
+   "sigla": "Fₘ₋₁(x)",
+   "nome": "previsão anterior",
+   "desc": "O que a sequência já aprendeu até a etapa anterior.",
+   "cor": "steel"
+  },
+  {
+   "sigla": "η",
+   "nome": "taxa de aprendizagem",
+   "desc": "Quanto confiar nesta etapa: somar só um pedaço da correção torna o avanço mais lento e mais estável.",
+   "cor": "orange"
+  },
+  {
+   "sigla": "hₘ(x)",
+   "nome": "nova correção",
+   "desc": "Uma árvore rasa ajustada ao erro atual; em classificação, ao resíduo y − p.",
+   "cor": "green"
+  }
+ ],
+ "formula": "Fₘ(x) = Fₘ₋₁(x) + η · hₘ(x)",
+ "formulaNota": "Em crédito a soma acontece em log odds, onde vive o escore da logística; somar probabilidades passaria de 1.",
+ "kicker3": "3 · O que decide o boosting",
+ "paineis": [
+  {
+   "tipo": "barras",
+   "titulo": "Erro quadrático a cada árvore (η = 0,50)",
+   "texto": "Redução acumulada de 60,9% com uma árvore e de 90,9% com três:",
+   "itens": [
+    {
+     "rot": "Só F₀",
+     "v": 10.19,
+     "cor": "mute",
+     "texto": "10,19"
+    },
+    {
+     "rot": "1 árvore",
+     "v": 3.99,
+     "cor": "steel",
+     "texto": "3,99"
+    },
+    {
+     "rot": "2 árvores",
+     "v": 2.22,
+     "cor": "steel",
+     "texto": "2,22"
+    },
+    {
+     "rot": "3 árvores",
+     "v": 0.93,
+     "cor": "green",
+     "texto": "0,93"
+    }
+   ]
+  },
+  {
+   "tipo": "kv",
+   "titulo": "η e M são acoplados",
+   "texto": "Árvores necessárias para levar a perda a 0,50:",
+   "linhas": [
+    [
+     "η = 0,10",
+     "14 árvores (η × M = 1,40)"
+    ],
+    [
+     "η = 0,20",
+     "7 árvores (1,40)"
+    ],
+    [
+     "η = 0,40",
+     "4 árvores (1,60)"
+    ]
+   ],
+   "nota": "Reduzir a taxa exige aumentar o número de árvores na mesma proporção."
+  },
+  {
+   "tipo": "lista",
+   "titulo": "Fora da amostra é onde se decide",
+   "itens": [
+    "Mais árvores sempre melhoram o treino; fora do tempo, a partir de certo ponto, pioram.",
+    "No treino desta base, AUC do boosting 0,8196 contra 0,6968 da logística: alarme de flexibilidade.",
+    "Resposta proporcional: early stopping, menor profundidade e folha mínima maior."
+   ]
+  }
+ ],
+ "faixa": {
+  "kicker": "Três ideias para levar",
+  "itens": [
+   {
+    "k": "Resíduo",
+    "v": "O que a nova árvore tenta prever? O erro que o conjunto atual ainda comete."
+   },
+   {
+    "k": "Soma",
+    "v": "Onde as correções se acumulam? Em log odds, multiplicadas pela taxa de aprendizagem."
+   },
+   {
+    "k": "Teste",
+    "v": "Onde a complexidade é decidida? Fora da amostra, nunca no treino."
+   }
+  ]
+ }
+}

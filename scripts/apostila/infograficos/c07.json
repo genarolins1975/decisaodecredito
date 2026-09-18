@@ -1,0 +1,126 @@
+{
+ "numero": "07",
+ "titulo": "Avaliação e calibração",
+ "pergunta": "Como saber se o modelo ordena e estima bem o risco?",
+ "kicker1": "1 · Quatro perguntas separadas (janela fora do tempo: 737 propostas, 81 defaults)",
+ "cartoes": [
+  {
+   "tit": "Ordena bem?",
+   "cor": "steel",
+   "corpo": "AUC de 0,7257: a chance de um default receber risco maior que um adimplente. Olhando os 2 piores decis, o ganho é 42% dos defaults, alavancagem 2,10×."
+  },
+  {
+   "tit": "As probabilidades são honestas?",
+   "cor": "orange",
+   "corpo": "Calibração por faixa: PD média prevista contra frequência observada, com intervalo. Na faixa de 2,48% previsto, 1,35% observado em 74 casos, intervalo de 0,24% a 7,27%."
+  },
+  {
+   "tit": "Mantém no tempo?",
+   "cor": "navy",
+   "corpo": "No treino, boosting 0,8196 contra logística 0,6968; fora do tempo, 0,6958 contra 0,7257. O treino não decide nada."
+  },
+  {
+   "tit": "Qual a incerteza?",
+   "cor": "green",
+   "corpo": "AUC pontual 0,7257; em 400 reamostragens, faixa central de 95% de 0,6543 a 0,7831. Reportar só o valor esconde a evidência."
+  }
+ ],
+ "kicker2": "2 · Três números que não se substituem",
+ "tiles": [
+  {
+   "sigla": "0,7257",
+   "nome": "AUC",
+   "desc": "Proporção de pares default × adimplente corretamente ordenados. Só ordem.",
+   "cor": "steel"
+  },
+  {
+   "sigla": "KS",
+   "nome": "distância máxima",
+   "desc": "Maior distância entre as acumuladas; declarar amostra, sentido do eixo e onde ocorre.",
+   "cor": "orange"
+  },
+  {
+   "sigla": "0,0913",
+   "nome": "Brier",
+   "desc": "Soma erro de nível e poder de separação: compara candidatos, não prova calibração.",
+   "cor": "green"
+  }
+ ],
+ "formula": "AUC = pares corretamente ordenados ÷ total de pares",
+ "formulaNota": "Exemplo didático: 12 de 20 = 0,600. Na janela fora do tempo: 0,7257 sobre 53.136 pares (81 × 656).",
+ "kicker3": "3 · O protocolo antes de abrir o OOT",
+ "paineis": [
+  {
+   "tipo": "barras",
+   "titulo": "Um corte, três leituras (corte de PD 12%)",
+   "texto": "Recusar quem tem PD acima de 12% nesta janela:",
+   "itens": [
+    {
+     "rot": "Defaults",
+     "v": 59,
+     "cor": "green",
+     "texto": "59% recusados (48 de 81)"
+    },
+    {
+     "rot": "Adimplentes",
+     "v": 25,
+     "cor": "red",
+     "texto": "25% recusados (164 de 656)"
+    },
+    {
+     "rot": "Carteira",
+     "v": 29,
+     "cor": "mute",
+     "texto": "29% recusada (212 de 737)"
+    }
+   ],
+   "nota": "Sortear 29% recusaria cerca de 29% dos defaults; este corte recusa 59%."
+  },
+  {
+   "tipo": "kv",
+   "titulo": "Comparar duas AUCs exige DeLong",
+   "texto": "Mesmas propostas, curvas correlacionadas:",
+   "linhas": [
+    [
+     "Logística",
+     "0,7257"
+    ],
+    [
+     "Boosting calibrado",
+     "0,6958"
+    ],
+    [
+     "Diferença",
+     "0,0299, com erro padrão próprio"
+    ]
+   ],
+   "nota": "Comparar intervalos individuais não responde à pergunta."
+  },
+  {
+   "tipo": "lista",
+   "titulo": "Congelar e medir uma única vez",
+   "itens": [
+    "Validação fixa: comparar candidatos, incerteza, discriminação, Brier e calibração.",
+    "Escolher e calibrar usando somente desenvolvimento; definir regra de desempate.",
+    "Congelar o pacote; executar o teste reservado uma única vez."
+   ]
+  }
+ ],
+ "faixa": {
+  "kicker": "Três ideias para levar",
+  "itens": [
+   {
+    "k": "Ordem",
+    "v": "Quem recebe maior risco? AUC, KS e ganho examinam a posição relativa."
+   },
+   {
+    "k": "Nível",
+    "v": "Dez por cento significa 10 em 100? Calibração por faixa, Brier e log loss."
+   },
+   {
+    "k": "Protocolo",
+    "v": "O que torna a escolha defensável? Seleção, calibração e congelamento antes do OOT."
+   }
+  ]
+ }
+}

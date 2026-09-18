@@ -1,0 +1,114 @@
+{
+ "numero": "08",
+ "titulo": "Da previsão à decisão econômica",
+ "pergunta": "Como transformar risco em política de crédito?",
+ "kicker1": "1 · Da PD ao resultado esperado (EAD R$ 10 mil, PD 10%, LGD 65%)",
+ "cartoes": [
+  {
+   "tit": "Receita esperada",
+   "cor": "green",
+   "corpo": "+R$ 2.520: o que o contrato bom paga, ponderado pela chance de pagar."
+  },
+  {
+   "tit": "Perda esperada",
+   "cor": "red",
+   "corpo": "−R$ 650: PD × LGD × EAD, ou 10% × 65% × R$ 10.000. Só um dos três fatores é a PD."
+  },
+  {
+   "tit": "Custos",
+   "cor": "orange",
+   "corpo": "−R$ 1.520: funding R$ 1.200, operação R$ 120 e capital R$ 200. Entram na conta antes de qualquer corte."
+  },
+  {
+   "tit": "Resultado",
+   "cor": "navy",
+   "corpo": "+R$ 350 por proposta. A mesma PD com outra exposição, outra receita ou outra severidade pode terminar negativa."
+  }
+ ],
+ "kicker2": "2 · Três números da política",
+ "tiles": [
+  {
+   "sigla": "13,76%",
+   "nome": "PD máxima viável",
+   "desc": "Resultado esperado igual a zero; sai de uma equação resolvida e pertence ao contrato, não ao cliente.",
+   "cor": "steel"
+  },
+  {
+   "sigla": "14,0%",
+   "nome": "corte que maximiza o resultado",
+   "desc": "R$ 608 mil com 580 aprovados, contra R$ 585 mil e 469 aprovados no corte intuitivo de 10%.",
+   "cor": "orange"
+  },
+  {
+   "sigla": "4,13%",
+   "nome": "perda esperada sobre exposição",
+   "desc": "Nos 580 aprovados: exposição R$ 8,38 mi e PD média de 6,81%.",
+   "cor": "green"
+  }
+ ],
+ "formula": "Resultado = receita esperada − PD × LGD × EAD − custos",
+ "formulaNota": "O limiar sai de igualar o resultado a zero e isolar a PD no cenário declarado.",
+ "kicker3": "3 · A política precisa fechar consigo mesma",
+ "paineis": [
+  {
+   "tipo": "barras",
+   "titulo": "Resultado esperado por corte",
+   "texto": "Varrer todos os cortes revela um máximo; a intuição raramente cai nele:",
+   "itens": [
+    {
+     "rot": "Corte 10%",
+     "v": 585,
+     "cor": "steel",
+     "texto": "R$ 585 mil"
+    },
+    {
+     "rot": "Corte 14%",
+     "v": 608,
+     "cor": "green",
+     "texto": "R$ 608 mil"
+    },
+    {
+     "rot": "Diferença",
+     "v": 23,
+     "cor": "red",
+     "texto": "R$ 23 mil"
+    }
+   ]
+  },
+  {
+   "tipo": "lista",
+   "titulo": "Revisão manual é compra de informação",
+   "itens": [
+    "Só cria valor quando o sinal do analista acrescenta informação.",
+    "Com sinal de 60% de qualidade e 120 casos por janela, o número reportado sobe enquanto o valor real cai.",
+    "Faixa manual entre aprovar e recusar, com largura limitada pela capacidade."
+   ]
+  },
+  {
+   "tipo": "lista",
+   "titulo": "Reconciliação é condição de aceite",
+   "itens": [
+    "Parcelas somam o total sem folga; folga significa dois caminhos de cálculo para o mesmo número.",
+    "Composição por faixa, parcelas e total vêm do mesmo conjunto de operações.",
+    "Nenhum número na tela sem o estado do cenário: LGD 65%, PD sem choque."
+   ]
+  }
+ ],
+ "faixa": {
+  "kicker": "Três ideias para levar",
+  "itens": [
+   {
+    "k": "Risco",
+    "v": "Qual é a perda esperada? PD multiplicada por LGD e EAD."
+   },
+   {
+    "k": "Valor",
+    "v": "O que a aprovação rende? Receita menos perda esperada menos custos, no cenário declarado."
+   },
+   {
+    "k": "Política",
+    "v": "Onde cortar? No ponto em que resultado, capacidade e reconciliação fecham ao mesmo tempo."
+   }
+  ]
+ }
+}

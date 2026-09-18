@@ -1,0 +1,141 @@
+{
+ "numero": "09",
+ "titulo": "Monitoramento e governança",
+ "pergunta": "Como perceber que o modelo deixou de funcionar?",
+ "kicker1": "1 · Três formas de um modelo mudar em produção, e o diagnóstico antes da ação",
+ "cartoes": [
+  {
+   "tit": "Entrada mudou",
+   "cor": "steel",
+   "corpo": "Distribuição, ausência, domínio ou canal mudaram. Medida por PSI e taxa de missing, sem esperar default."
+  },
+  {
+   "tit": "Nível mudou",
+   "cor": "orange",
+   "corpo": "A taxa observada sobe ou desce e a ordenação pode seguir boa. Medida pela prevalência madura, após 12 meses; quebra a calibração antes da ordenação."
+  },
+  {
+   "tit": "Relação mudou",
+   "cor": "navy",
+   "corpo": "As variáveis deixaram de explicar o evento como antes. Medida por AUC e KS por safra madura, com intervalo. Pede reestimação."
+  },
+  {
+   "tit": "Diagnóstico",
+   "cor": "green",
+   "corpo": "Diferença de prevalência de +1,43 pp com intervalo de −1,15 a +4,02 pp: candidato a mudança de nível. Manter a política e continuar medindo."
+  }
+ ],
+ "kicker2": "2 · PSI: localizar onde a entrada mudou",
+ "tiles": [
+  {
+   "sigla": "0,0807",
+   "nome": "PSI somado das entradas",
+   "desc": "Baixo no agregado; ainda assim vale decompor a contribuição por variável.",
+   "cor": "steel"
+  },
+  {
+   "sigla": "0,026",
+   "nome": "utilização, a maior contribuição",
+   "desc": "Seguida por comprometimento 0,020, renda 0,014, atraso 0,011 e relacionamento 0,010.",
+   "cor": "orange"
+  },
+  {
+   "sigla": "0,0136",
+   "nome": "PSI do escore",
+   "desc": "A saída do modelo se deslocou menos que as entradas.",
+   "cor": "green"
+  }
+ ],
+ "formula": "PSI = Σ (p_janela − p_treino) × ln(p_janela ÷ p_treino)",
+ "formulaNota": "Faixas congeladas no treino; cada contribuição é conferível isoladamente (faixa 1: 10,03% contra 10,85%, contribui cerca de 0,0007).",
+ "kicker3": "3 · Um painel que leva a uma decisão",
+ "paineis": [
+  {
+   "tipo": "kv",
+   "titulo": "Cada indicador fala num tempo",
+   "texto": "",
+   "linhas": [
+    [
+     "PSI e missing",
+     "entrada · imediato"
+    ],
+    [
+     "Aplicação da política",
+     "processo · imediato"
+    ],
+    [
+     "Prevalência e calibração",
+     "nível · após 12 meses"
+    ],
+    [
+     "AUC e KS com intervalo",
+     "relação · após 12 meses"
+    ]
+   ],
+   "nota": "Indicadores de tempos diferentes cobrem os três fenômenos."
+  },
+  {
+   "tipo": "barras",
+   "titulo": "Contribuições do PSI por variável",
+   "texto": "",
+   "itens": [
+    {
+     "rot": "Utilização",
+     "v": 0.026,
+     "cor": "orange",
+     "texto": "0,026"
+    },
+    {
+     "rot": "Comprometim.",
+     "v": 0.02,
+     "cor": "steel",
+     "texto": "0,020"
+    },
+    {
+     "rot": "Renda",
+     "v": 0.014,
+     "cor": "steel",
+     "texto": "0,014"
+    },
+    {
+     "rot": "Atraso",
+     "v": 0.011,
+     "cor": "steel",
+     "texto": "0,011"
+    },
+    {
+     "rot": "Relacionam.",
+     "v": 0.01,
+     "cor": "steel",
+     "texto": "0,010"
+    }
+   ]
+  },
+  {
+   "tipo": "lista",
+   "titulo": "Um gatilho governa quando está escrito antes",
+   "itens": [
+    "Sinal, limiar, janela, responsável e ação declarados antes de qualquer número.",
+    "O alerta abre investigação; não decide a ação sozinho.",
+    "Equidade com incerteza: aprovação 72,7% (370 de 509) contra 68,0% (155 de 228), diferença de 4,7 pp com intervalo de −2,5 a 11,9 pp."
+   ]
+  }
+ ],
+ "faixa": {
+  "kicker": "Três ideias para levar",
+  "itens": [
+   {
+    "k": "Entrada",
+    "v": "O que pode ser medido imediatamente? Distribuição das variáveis e do escore, missing e canal."
+   },
+   {
+    "k": "Desempenho",
+    "v": "O que só aparece com maturação? Prevalência, calibração por faixa, AUC e KS por safra."
+   },
+   {
+    "k": "Ação",
+    "v": "O que transforma sinal em governança? Limiar, janela, responsável e consequência declarados."
+   }
+  ]
+ }
+}
