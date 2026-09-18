@@ -1,5 +1,8 @@
 "use client";
 import type { ComponentType } from "react";
+import { ResiduosQueEncolhem } from "./residuos-que-encolhem";
+import { PerdaQueCai } from "./perda-que-cai";
+import { DistanciaQueSeAbre } from "./distancia-que-se-abre";
 import { ArvoreQueCresce } from "./arvore-que-cresce";
 import { CemVidas } from "./cem-vidas";
 import { CurvaDeLucro } from "./curva-de-lucro";
@@ -26,6 +29,13 @@ const REGISTRO: Record<string, VisualNativo> = {
   c5p7: { Componente: () => <ArvoreQueCresce modo="raiz" />, substitui: "legacy" },
   c5p14: { Componente: () => <ArvoreQueCresce modo="freios" />, substitui: "legacy" },
   c5p16: { Componente: () => <ArvoreQueCresce modo="instabilidade" />, substitui: "legacy" },
+  c6p7: { Componente: () => <ResiduosQueEncolhem modo="taxa" />, substitui: "legacy" },
+  c6p8: { Componente: () => <ResiduosQueEncolhem modo="arvores" />, substitui: "legacy" },
+  c6p9: { Componente: () => <ResiduosQueEncolhem modo="soma" />, substitui: "legacy" },
+  c6p12: { Componente: () => <PerdaQueCai modo="alvo" />, substitui: "legacy" },
+  c6p13: { Componente: () => <PerdaQueCai modo="iteracoes" />, substitui: "legacy" },
+  c6p14: { Componente: () => <PerdaQueCai modo="rastro" />, substitui: "legacy" },
+  c6p17: { Componente: DistanciaQueSeAbre, substitui: "figura" },
   c7p6: { Componente: FilaDeRisco, substitui: "legacy" },
   c8p8: { Componente: CurvaDeLucro, substitui: "legacy" },
 };

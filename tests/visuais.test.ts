@@ -171,3 +171,42 @@ describe("visuais nativos: a árvore que cresce reproduz o gerador (capítulo 5)
     const sem3 = crescer(base.filter((p) => p.id !== 3), 2); expect(sem3.dir!.corte!.v).toBe("util");
   });
 });
+
+describe("boosting didático contra o gerador (capítulo 6)", async () => {
+  const { boostingRegressao, boostingClassificacao, rastro, PONTOS } = await import("@/lib/visuais/boosting");
+  const dados = JSON.parse(readFileSync("content/generated/dados.json", "utf8"));
+  const did = JSON.parse(readFileSync("src/lib/visuais/did.json", "utf8"));
+  it("regressão: 8 pontos, η 0,5, quatro tocos: cortes 4,5 · 7,5 · 2,5 · 5,5 e MSE 10,1875 → 0,4485", () => {
+    const passos = boostingRegressao(PONTOS.x, PONTOS.y, 0.5, 4);
+    const ref = dados.DID.boost_reg.passos;
+    for (let m = 0; m <= 4; m++) {
+      expect(passos[m].mse).toBeCloseTo(ref[m].mse, 6);
+      passos[m].F.forEach((f, i) => expect(f).toBeCloseTo(ref[m].F[i], 6));
+      if (m) { expect(passos[m].arvore!.corte!.valor).toBe(ref[m].toco.corte); expect(passos[m].arvore!.esq!.valor).toBeCloseTo(ref[m].toco.esq, 6); }
+    }
+    expect(passos[1].arvore!.corte!.valor).toBe(4.5); expect(passos[4].mse).toBeCloseTo(0.44851, 4);
+  });
+  it("classificação: 16 propostas, η 0,4, profundidade 2, folha mínima 2: perda 0,6931 → 0,4748 e árvores do gerador", () => {
+    const passos = boostingClassificacao(did.base, 0.4, 4);
+    const ref = dados.DID.boost_clf.passos;
+    for (let m = 0; m <= 4; m++) {
+      expect(passos[m].perda).toBeCloseTo(ref[m].perda, 6);
+      passos[m].F.forEach((f, i) => expect(f).toBeCloseTo(ref[m].F[i], 6));
+    }
+    // raiz da árvore 1 em utilização 57,5 (5,75 na escala do gerador), filhos em 27,5 e 87,5
+    const a1 = passos[1].arvore!; expect(a1.corte).toMatchObject({ v: 0, valor: 57.5 }); expect(a1.esq!.corte!.valor).toBe(27.5); expect(a1.dir!.corte!.valor).toBe(87.5);
+    // árvore 2 divide o lado direito por atraso ≤ 2,5 d (0,25 na escala do gerador, em dezenas de dias)
+    expect(passos[2].arvore!.dir!.corte).toMatchObject({ v: 1, valor: 2.5 });
+    // rastro da proposta 12: +0,200 · +0,183 · +0,165 · +0,152, PD final 66,8%
+    const r = rastro(passos, 11, 0.4);
+    expect(r.map((x) => Math.round(x.parcela * 1000) / 1000)).toEqual([0, 0.2, 0.183, 0.165, 0.152]);
+    expect(r[4].p).toBeCloseTo(0.668, 3);
+  });
+  it("η e M acoplados: η × árvores até perda 0,50 fica perto de 1,5 (c6p16)", () => {
+    for (const [eta, arvores] of [[0.1, 14], [0.2, 7], [0.4, 4], [0.5, 3], [1, 2]] as const) {
+      const passos = boostingClassificacao(did.base, eta, 20);
+      const m = passos.findIndex((p) => p.perda <= 0.5);
+      expect(m).toBe(arvores);
+    }
+  });
+});

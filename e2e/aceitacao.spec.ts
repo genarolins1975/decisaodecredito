@@ -365,6 +365,18 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await arvore.getByRole("button", { name: "Retirar a proposta 10" }).click();
   await expect(arvore).toContainText("atraso ≤ 2,5 d");
   await expect(arvore).toContainText("trocou de variável");
+
+  // capítulo 6: a perda cai árvore por árvore e a grade escolhida pelo treino é a pior fora do tempo
+  await page.goto("/aulas/c6p13");
+  const perda = page.locator('figure[data-vz="perda-iteracoes"]');
+  await expect(perda).toContainText("0,6931 → 0,6219");
+  await perda.getByRole("button", { name: "árvore 4" }).click();
+  await expect(perda).toContainText("0,5150 → 0,4748");
+  await page.goto("/aulas/c6p17");
+  const grade = page.locator('figure[data-vz="distancia-que-se-abre"]');
+  await grade.getByRole("button", { name: "Escolher pelo treino" }).click();
+  await expect(grade).toContainText("0,9927");
+  await expect(grade).toContainText("a pior da grade inteira");
 });
 
 test("núcleo: gabaritos e notas privadas não estão no motor legado nem nas páginas", async () => {

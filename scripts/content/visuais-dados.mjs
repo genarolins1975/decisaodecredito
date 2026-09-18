@@ -16,3 +16,8 @@ console.log(`oot-logistica.json: ${out.y.length} propostas, ${out.y.reduce((a, b
 const did = { fonte: "content/generated/dados.json (DID.base)", escala: "utilização em % do limite; atraso em dias; y = 1 default", base: DADOS_DID.base };
 writeFileSync("src/lib/visuais/did.json", JSON.stringify(did));
 console.log(`did.json: ${did.base.length} propostas`);
+
+// Grade de boosting do capítulo 6 (c6p17): AUC de treino, validação e fora do tempo por número de árvores e folhas.
+const grid = { fonte: "content/generated/dados.json (DADOS.grid), gerador com semente 20260501", modelo: "gradient boosting, taxa 0,05, mínimo por folha 60, escolhido por validação: 60 árvores e 8 folhas", grade: DADOS.grid };
+writeFileSync("src/lib/visuais/grid-boosting.json", JSON.stringify(grid));
+console.log(`grid-boosting.json: ${grid.grade.length} configurações`);

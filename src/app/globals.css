@@ -594,6 +594,66 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-arv-barra--melhor { opacity: 1; stroke: var(--color-gold); stroke-width: 2; }
 .vz-arv-barra--atual { opacity: 1; stroke: var(--color-alert); stroke-width: 2; }
 @container (max-width: 760px) { .vz-arv-grade, .vz-arv-cand-grade { grid-template-columns: minmax(0, 1fr); } }
+/* Capítulo 6: resíduos que encolhem, a perda que cai, a distância que se abre */
+.vz-res-grade, .vz-perda-grade, .vz-dist-grade { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 14px 22px; align-items: start; }
+.vz-res-painel, .vz-perda-painel, .vz-dist-painel { display: grid; gap: 10px; min-width: 0; }
+.vz-res-controles { display: grid; gap: 8px; margin-top: 8px; }
+.vz-res-seg { stroke-width: 3; stroke-linecap: round; transition: opacity .3s; } .vz-res-seg--baixo { stroke: var(--color-alert); } .vz-res-seg--alto { stroke: #6f8fc4; } .vz-res-seg--foco { stroke-width: 5; }
+.vz-res-dot { fill: var(--color-ink); stroke: #fff; stroke-width: 1.5; } .vz-res-dot--foco { fill: var(--color-gold); stroke: var(--color-ink); }
+.vz-res-prev { fill: #fff; stroke: var(--color-ink); stroke-width: 2; }
+.vz-curva--degrau { stroke: var(--color-ink); stroke-width: 2.5; fill: none; }
+.vz-res-clic { cursor: pointer; }
+.vz-tick--ouro { fill: #7a5f16; font-weight: 700; }
+.vz-res-tabela { display: grid; gap: 10px; }
+.vz-res-barras { display: grid; gap: 6px; }
+.vz-res-barra { display: grid; grid-template-columns: minmax(64px, max-content) 1fr max-content; align-items: center; gap: 8px; font-size: 14px; font-variant-numeric: tabular-nums; }
+.vz-res-barra--futuro { opacity: .4; } .vz-res-barra--on .vz-res-barra-rot { font-weight: 700; color: var(--color-ink); }
+.vz-res-barra-rot { text-align: right; color: var(--color-body); }
+.vz-res-barra-trilho { display: block; height: 14px; background: #EDEBE3; border-radius: 3px; overflow: hidden; position: relative; }
+.vz-res-barra-fill { display: block; height: 100%; background: var(--color-ink); transition: width .5s; }
+.vz-res-barra--on .vz-res-barra-fill { background: var(--color-gold); }
+.vz-res-barra-val { font-family: var(--font-mono); font-weight: 700; color: var(--color-ink); }
+.vz-t-baixo { color: var(--color-alert); font-weight: 600; } .vz-t-alto { color: #4d6fa8; font-weight: 600; }
+.vz-res-soma { display: grid; gap: 6px; }
+.vz-res-soma-linha { display: grid; grid-template-columns: minmax(64px, max-content) 1fr max-content max-content; align-items: center; gap: 8px; font-size: 14px; font-variant-numeric: tabular-nums; }
+.vz-res-soma-rot { text-align: right; color: var(--color-body); }
+.vz-res-soma-trilho { display: block; position: relative; height: 16px; background: #EDEBE3; border-radius: 3px; }
+.vz-res-soma-base { position: absolute; left: 0; top: 0; height: 100%; background: var(--color-ink); border-radius: 3px 0 0 3px; }
+.vz-res-soma-parcela { position: absolute; top: 0; height: 100%; } .vz-res-soma-parcela--mais { background: var(--color-alert); } .vz-res-soma-parcela--menos { background: #6f8fc4; }
+.vz-res-soma-alvo { position: absolute; top: -3px; height: 22px; width: 2px; background: var(--color-gold); }
+.vz-res-soma-val { font-family: var(--font-mono); font-weight: 700; color: var(--color-ink); min-width: 4.5em; text-align: right; }
+.vz-res-soma-acum { color: var(--color-muted); }
+.vz-perda-caixa { stroke: none; } .vz-perda-caixa--sobe { fill: var(--color-alert); } .vz-perda-caixa--desce { fill: #6f8fc4; }
+.vz-perda-caixa-t { font-size: 12px; font-weight: 700; fill: var(--color-ink); }
+.vz-perda-pd { font-size: 10.5px; font-weight: 700; fill: var(--color-ink); paint-order: stroke; stroke: #fff; stroke-width: 3px; }
+.vz-perda-dot--foco { stroke: var(--color-gold); stroke-width: 3; }
+.vz-perda-trilho { background: linear-gradient(90deg, #EDEBE3 49.5%, var(--color-ink) 49.5%, var(--color-ink) 50.5%, #EDEBE3 50.5%); }
+.vz-perda-fill { position: absolute; top: 0; height: 100%; } .vz-perda-fill--mais { background: var(--color-alert); } .vz-perda-fill--menos { background: #6f8fc4; }
+.vz-perda-alvos .vz-res-barra { font-size: 13px; gap: 6px; }
+.vz-perda-curva { width: 100%; height: auto; }
+.vz-perda-pt { fill: var(--color-ink); } .vz-perda-pt--futuro { fill: #c9c4b4; }
+.vz-check { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--color-body); margin-top: 8px; }
+.vz-dist-linha { fill: none; stroke-width: 2.5; } .vz-dist-linha--oot { stroke-dasharray: 7 5; } .vz-dist-linha--val { stroke-dasharray: 2 4; stroke-width: 2; }
+.vz-dist--4 { stroke: #6f8fc4; fill: #6f8fc4; } .vz-dist--8 { stroke: var(--color-ink); fill: var(--color-ink); } .vz-dist--16 { stroke: var(--color-alert); fill: var(--color-alert); }
+.vz-dist-area { opacity: .08; stroke: none; }
+.vz-dist-pt { stroke: #fff; stroke-width: 1.5; } .vz-dist-pt--oot { fill: #fff; stroke-width: 2.5; } .vz-dist-pt--sel { stroke: var(--color-gold); stroke-width: 3; }
+.vz-dist-dist { stroke: var(--color-gold); stroke-width: 3; stroke-dasharray: 4 3; }
+.vz-dist-t { font-weight: 700; }
+.vz-dist-leitura { border-left: 3px solid var(--color-gold); background: var(--color-gold-soft); padding: 10px 12px; font-size: 14px; }
+@container (max-width: 760px) { .vz-res-grade, .vz-perda-grade, .vz-dist-grade { grid-template-columns: minmax(0, 1fr); } }
+/* palco */
+.slide-inner .vz-res-grade, .slide-inner .vz-perda-grade, .slide-inner .vz-dist-grade { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 1cqh 2cqh; }
+.slide-inner [data-vz^="residuos"] .vz-grafico svg { height: 44cqh; width: auto; }
+.slide-inner [data-vz^="perda"] .vz-grafico svg { height: 46cqh; width: auto; }
+.slide-inner [data-vz="distancia-que-se-abre"] .vz-grafico svg { height: 48cqh; width: auto; }
+.slide-inner .vz-perda-curva { height: 20cqh !important; width: auto; }
+.slide-inner .vz-res-barra, .slide-inner .vz-res-soma-linha { font-size: .95em; } .slide-inner .vz-perda-alvos .vz-res-barra { font-size: .9em; }
+.slide-inner .vz-res-barra-trilho, .slide-inner .vz-res-soma-trilho { height: 1.8cqh; }
+.slide-inner .vz-perda-alvos { gap: .3cqh; }
+.slide-inner .vz-res-controles { gap: .6cqh; margin-top: .6cqh; }
+.slide-inner .vz-dist-leitura { font-size: .9em; padding: .8cqh 1.2cqh; }
+.slide-inner .vz-check { font-size: .85em; margin-top: .4cqh; }
+.slide-inner [data-vz="residuos-arvores"] .table { font-size: .8em; }
 /* palco: raiz mostra plano e disputa; freios e instabilidade mostram plano, árvore e tiles */
 .slide-inner .vz-arv-grade { grid-template-columns: 46cqh minmax(0, 1fr); gap: 1cqh 2cqh; }
 .slide-inner [data-vz^="arvore"] .vz-arv-grade > .vz-grafico svg { height: 46cqh; }
