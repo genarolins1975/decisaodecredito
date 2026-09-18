@@ -94,6 +94,8 @@ function capitulo(n) {
   const mapa = `<div class="mapa-2"><table class="mapa"><thead><tr><th>#</th><th>Página</th><th>min</th></tr></thead><tbody>${pages.slice(0, meio).map(linha).join("")}</tbody></table><table class="mapa"><thead><tr><th>#</th><th>Página</th><th>min</th></tr></thead><tbody>${pages.slice(meio).map(linha).join("")}</tbody></table></div><p class="hint">Em cinza, páginas complementares. Essenciais: ${essenciais.length} de ${pages.length} (${min} min).</p>`;
   // infográfico de abertura (fig/infografico-cN.svg, gerado por infograficos.py): quando existe, ocupa a capa e a ideia central vai para a página seguinte
   const infoPath = path.join(FIG, `infografico-c${n}.svg`); const info = fs.existsSync(infoPath) ? infoPath : null;
+  const grade = `<div class="cap-grade"><div><p class="caixa-t">O que você aprende</p><p>${esc(c.aprende)}</p></div><div><p class="caixa-t">Por que importa</p><p>${esc(c.motiva)}</p></div><div><p class="caixa-t">Atividade central</p><p>${esc(c.atividade)}</p></div><div><p class="caixa-t">Pré-requisito</p><p>${esc(c.prereq)}</p></div></div>
+      <p class="cap-usa"><b>Onde isto é usado depois.</b> ${esc(c.usa)}</p>`;
   const ideia = sz ? `<h2>A ideia central</h2><p class="sintese">${esc(sz.sintese)}</p>${sz.figura ? `<figure class="conceito"><img src="file://${FIG}/${sz.figura}.svg" alt=""><figcaption>${esc(sz.legenda)}</figcaption></figure>` : ""}` : "";
   const como = PROF
     ? `<ul><li>Página a página: objetivo, visual (o que a turma vê), apoio, questões com gabarito e guia docente com condução, pergunta para a turma, resposta esperada e erros previsíveis.</li><li>O roteiro do encontro no fim soma os tempos das páginas essenciais.</li><li>Este arquivo contém gabaritos e notas privadas. Não distribua; a versão do aluno é outro arquivo.</li></ul>`
@@ -101,14 +103,15 @@ function capitulo(n) {
   return `<section class="capitulo" style="--cor:${cor};--cor-suave:${corSuave}">
     <section class="capa">
       <p class="eyebrow">Laboratório de Decisão de Crédito · ${PROF ? "versão do professor" : "versão do aluno"}</p>
-      <div class="capa-num"><span class="num">${pad(n)}</span><div><p class="eyebrow">Capítulo ${n} de 11</p><h1>${esc(c.nome)}</h1><p class="cap-pergunta">${esc(c.pergunta)}</p></div></div>
-      <div class="cap-grade"><div><p class="caixa-t">O que você aprende</p><p>${esc(c.aprende)}</p></div><div><p class="caixa-t">Por que importa</p><p>${esc(c.motiva)}</p></div><div><p class="caixa-t">Atividade central</p><p>${esc(c.atividade)}</p></div><div><p class="caixa-t">Pré-requisito</p><p>${esc(c.prereq)}</p></div></div>
-      <p class="cap-usa"><b>Onde isto é usado depois.</b> ${esc(c.usa)}</p>
-      ${info ? `<figure class="infografico"><img src="file://${info}" alt="Infográfico de abertura do capítulo ${n}"></figure>` : ideia}
+      ${info ? "" : `<div class="capa-num"><span class="num">${pad(n)}</span><div><p class="eyebrow">Capítulo ${n} de 11</p><h1>${esc(c.nome)}</h1><p class="cap-pergunta">${esc(c.pergunta)}</p></div></div>`}
+      ${info ? `<figure class="infografico"><img src="file://${info}" alt="Infográfico de abertura do capítulo ${n}"></figure>` : ""}
+      ${info ? "" : grade}
+
+      ${info ? "" : ideia}
       <p class="rodape-capa">Prof. Genaro Dueire Lins · FGV · Edição 2026 · material derivado da plataforma decisaodecredito.com · números do material são reconstruções didáticas ou exemplos sintéticos, salvo indicação${PROF ? " · documento restrito ao professor" : ""}</p>
     </section>
     <section class="panorama">
-      ${info ? ideia : ""}
+      ${info ? `<h1 class="pan-titulo">${esc(c.nome)}</h1><p class="cap-pergunta">${esc(c.pergunta)}</p>${grade}${ideia}` : ""}
       <div class="como"><p class="caixa-t">Como usar este capítulo</p>${como}</div>
       <h2>Mapa do capítulo</h2>${mapa}
     </section>
@@ -137,7 +140,7 @@ p { margin: 0 0 6px; }
 .panorama { margin-bottom: 6px; } .mapa-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; align-items: start; }
 .sintese { background: var(--paper); border-left: 4px solid var(--cor); border-radius: 0 6px 6px 0; padding: 8px 12px; font-size: 10.4pt; }
 figure { margin: 6px 0; break-inside: avoid; page-break-inside: avoid; } figure img { max-width: 100%; display: block; margin: 0 auto; } figcaption { font-size: 8.2pt; color: var(--muted); margin-top: 3px; text-align: center; }
-figure.conceito img { max-height: 70mm; } figure.infografico { margin: 10px 0 4px; } figure.infografico img { width: 100%; border: 1px solid var(--rule); border-radius: 6px; }
+figure.conceito img { max-height: 70mm; } figure.infografico { margin: 8px 0 4px; } figure.infografico img { width: 100%; max-height: 236mm; border: 1px solid var(--rule); border-radius: 6px; } .pan-titulo { font-size: 20pt; margin: 0 0 2px; }
 table.mapa, table.erros, table.roteiro { border-collapse: collapse; width: 100%; font-size: 8.6pt; margin: 4px 0 8px; } .mapa th, .erros th, .roteiro th { text-align: left; background: var(--paper); border-bottom: 1.5px solid var(--rule); padding: 3px 6px; font-size: 7.8pt; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); } .mapa td, .erros td, .roteiro td { padding: 3px 6px; border-bottom: 1px solid var(--rule); vertical-align: top; }
 .mapa tr.complementar td { color: var(--muted); } .mapa td:first-child, .roteiro td:first-child { width: 6%; color: var(--muted); }
 /* páginas */
