@@ -1,6 +1,6 @@
 # Design system do Laboratório de Decisão de Crédito
 
-Identidade acadêmica executiva: off-white, azul-marinho, cinzas quentes e dourado discreto; vermelho só em alerta ou default. Fonte da verdade: `src/app/globals.css` (plataforma) e `assets/tokens.css` (esta skill). O design system publicado como artefato "Laboratório de Decisão de Crédito" espelha os mesmos valores.
+Identidade acadêmica executiva: off-white, azul-marinho, cinzas quentes e dourado discreto; vermelho só em alerta ou default. Fonte da verdade: `src/app/globals.css` (plataforma) e `assets/tokens.css` (esta skill). O design system publicado como artefato "Laboratório de Decisão de Crédito" (https://claude.ai/artifact/AJzaRtC9WoUHdL5uXDBYyJ) espelha os mesmos valores; ao mudar um token aqui, sincronizar lá (tokens.json e components/bundle.css).
 
 ## Cores (tema único, claro)
 
