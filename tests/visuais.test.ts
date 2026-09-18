@@ -109,3 +109,33 @@ describe("visuais nativos: a curva de lucro reproduz o motor econômico da aula 
     expect(chocar(0.5, 0)).toBe(0.5);
   });
 });
+
+import { BETA_AULA, atrasoNaFronteira, descida, escore, logisticaSoUtil, perdaLog, retaMinimosQuadrados, sigmoide, type Proposta } from "../src/lib/visuais/logistica";
+import did from "../src/lib/visuais/did.json";
+
+describe("visuais nativos: regressão logística do capítulo 4 reproduz o gerador", () => {
+  const base = did.base as Proposta[];
+  it("descida de gradiente com passo 0,1: primeira iteração e convergência em 20.000 (c4p16 e c4p17)", () => {
+    const tr = descida(base, [0, 1, 20000]);
+    expect(tr[0].perda).toBeCloseTo(0.693147, 5);
+    expect(tr[1].beta[1]).toBeCloseTo(0.059375, 6); expect(tr[1].beta[2]).toBeCloseTo(0.0234375, 6);
+    expect(tr[2].beta[0]).toBeCloseTo(-5.66657, 4); expect(tr[2].beta[1]).toBeCloseTo(0.7453, 4); expect(tr[2].beta[2]).toBeCloseTo(1.3955, 4);
+    expect(tr[2].perda).toBeCloseTo(0.432824, 5);
+  });
+  it("proposta #11 (utilização 70%, atraso 5 dias): z 0,2483 e PD 56,18% (c4p8)", () => {
+    const e = escore(BETA_AULA, 70, 5);
+    expect(e.z).toBeCloseTo(0.2483, 3); expect(sigmoide(e.z)).toBeCloseTo(0.5618, 3);
+  });
+  it("corte de 50%: 8 recusadas, 6 defaults evitados, 2 boas recusadas (c4p19)", () => {
+    const rec = base.filter((b) => sigmoide(escore(BETA_AULA, b.util, b.atraso).z) >= 0.5);
+    expect(rec.length).toBe(8); expect(rec.filter((b) => b.y === 1).length).toBe(6);
+    // a fronteira passa por PD = 50% exatamente
+    const u = 60; const a = atrasoNaFronteira(BETA_AULA, 0.5, u); expect(sigmoide(escore(BETA_AULA, u, a).z)).toBeCloseTo(0.5, 6);
+  });
+  it("a reta na probabilidade: negativa abaixo de 12,8% de utilização e 11,18 pontos por 10 pontos (c4p2)", () => {
+    const r = retaMinimosQuadrados(base);
+    expect(-r.a / r.b).toBeCloseTo(12.76, 1); expect(r.b * 10).toBeCloseTo(0.1118, 3);
+    expect(r.a + r.b * 5).toBeCloseTo(-0.087, 2); expect(r.a + r.b * 110).toBeCloseTo(1.087, 2);
+    const c = logisticaSoUtil(base, 5000); expect(c[1]).toBeGreaterThan(0); expect(perdaLog([c[0], c[1], 0], base)).toBeLessThan(0.6931);
+  });
+});

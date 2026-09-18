@@ -341,6 +341,22 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(lucro).toContainText("choque severo de PD (+0,8 em log odds)");
   await lucro.locator('input[aria-label="Palpites da turma, cortes em porcentagem"]').fill("8, 20");
   await expect(lucro).toContainText("média da turma");
+  // capítulo 4: escalas ligadas, fronteira por descida de gradiente e a reta que vira curva
+  await page.goto("/aulas/c4p9");
+  const escalas = page.locator('figure[data-vz="tres-escalas"]');
+  await expect(escalas).toContainText("45,71%");
+  await escalas.getByRole("button", { name: /#11, pressionada/ }).click();
+  await expect(escalas).toContainText("56,18%");
+  await page.goto("/aulas/c4p19");
+  const fronteira = page.locator('figure[data-vz="fronteira"]');
+  await expect(fronteira).toContainText("6 defaults evitados · 2 boas recusadas");
+  await fronteira.getByRole("button", { name: "Zerar os coeficientes" }).click();
+  await expect(fronteira).toContainText("nenhuma fronteira");
+  await page.goto("/aulas/c4p2");
+  const reta = page.locator('figure[data-vz="reta-que-quebra"]');
+  await expect(reta).toContainText("11,18 pp sempre");
+  await reta.getByRole("button", { name: /Trocar de família/ }).click();
+  await expect(reta).toContainText("sempre entre 0 e 1");
 });
 
 test("núcleo: gabaritos e notas privadas não estão no motor legado nem nas páginas", async () => {

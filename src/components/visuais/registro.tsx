@@ -3,6 +3,9 @@ import type { ComponentType } from "react";
 import { CemVidas } from "./cem-vidas";
 import { CurvaDeLucro } from "./curva-de-lucro";
 import { FilaDeRisco } from "./fila-de-risco";
+import { Fronteira } from "./fronteira";
+import { RetaQueQuebra } from "./reta-que-quebra";
+import { TresEscalas } from "./tres-escalas";
 import { LinhaDoTempo } from "./linha-do-tempo";
 import { Safras } from "./safras";
 
@@ -16,6 +19,9 @@ const REGISTRO: Record<string, VisualNativo> = {
   c1p5: { Componente: CemVidas, substitui: "legacy" },
   c3p7: { Componente: LinhaDoTempo, substitui: "figura" },
   c3p11: { Componente: Safras, substitui: "figura" },
+  c4p2: { Componente: RetaQueQuebra, substitui: "figura" },
+  c4p9: { Componente: TresEscalas, substitui: "legacy" },
+  c4p19: { Componente: Fronteira, substitui: "legacy" },
   c7p6: { Componente: FilaDeRisco, substitui: "legacy" },
   c8p8: { Componente: CurvaDeLucro, substitui: "legacy" },
 };
