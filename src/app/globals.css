@@ -1167,3 +1167,4 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner [data-vz="lab-logistica"] .vz-lab-grade { grid-template-columns: minmax(0, 1fr) 34cqh; gap: 1cqh 2cqh; }
 .slide-inner [data-vz="lab-logistica"] .vz-lab-faixa, .slide-inner [data-vz="lab-logistica"] .vz-lab-eq .hint, .slide-inner [data-vz="lab-logistica"] .vz-lab-efeito .hint, .slide-inner [data-vz="lab-logistica"] .vz-lab-reta-ctl, .slide-inner [data-vz="lab-logistica"] .vz-lab-cheia { display: none; }
 .slide-inner [data-vz="lab-logistica"] .vz-lab-pd { font-size: 5cqh; } .slide-inner [data-vz="lab-logistica"] .vz-lab-ctl-rot, .slide-inner [data-vz="lab-logistica"] .vz-lab-frases, .slide-inner [data-vz="lab-logistica"] .vz-lab-eq { font-size: 1em; }
+.slide-inner [data-vz="lab-logistica"] .vz-lab-badge, .slide-inner [data-vz="lab-logistica"] .vz-lab-kv dt, .slide-inner [data-vz="lab-logistica"] .vz-lab-legenda { font-size: 1em; }
