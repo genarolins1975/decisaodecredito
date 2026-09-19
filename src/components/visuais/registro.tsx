@@ -30,6 +30,7 @@ import { CurvaDeLucro } from "./curva-de-lucro";
 import { FilaDeRisco } from "./fila-de-risco";
 import { Fronteira } from "./fronteira";
 import { LabLogistica } from "./lab-logistica";
+import { EscalaProbabilidade } from "./escala-probabilidade";
 import { TresEscalas } from "./tres-escalas";
 import { Escalas } from "./escalas";
 import { CurvaLogistica } from "./curva-logistica";
@@ -66,7 +67,7 @@ import { Safras } from "./safras";
  * figura estática (o bloco svgfit do primeiro bloco HTML), mantendo o texto ao redor. Vale em aula, apresentação e
  * aula ao vivo, sem alterar o banco. Fonte dos números: src/lib/visuais.
  */
-export type VisualNativo = { Componente: ComponentType; substitui: "legacy" | "figura" };
+export type VisualNativo = { Componente: ComponentType<{ palco?: boolean }>; substitui: "legacy" | "figura" };
 const REGISTRO: Record<string, VisualNativo> = {
   c1p5: { Componente: CemVidas, substitui: "legacy" },
   c1p7: { Componente: MesmaPd, substitui: "legacy" },
@@ -84,7 +85,7 @@ const REGISTRO: Record<string, VisualNativo> = {
   c3p16: { Componente: Woe, substitui: "legacy" },
   c3p17: { Componente: ValorDaInformacao, substitui: "legacy" },
   c4p2: { Componente: LabLogistica, substitui: "figura" },
-  c4p3: { Componente: () => <Escalas modo="probabilidade" />, substitui: "legacy" },
+  c4p3: { Componente: EscalaProbabilidade, substitui: "legacy" },
   c4p4: { Componente: () => <Escalas modo="odds" />, substitui: "legacy" },
   c4p5: { Componente: () => <Escalas modo="logodds" />, substitui: "legacy" },
   c4p6: { Componente: () => <Escalas modo="regua" />, substitui: "legacy" },

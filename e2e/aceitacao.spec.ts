@@ -368,6 +368,20 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(lab).toContainText("Ajuste da aula");
   await lab.getByRole("button", { name: "Comparar com a reta" }).click();
   await expect(lab).toContainText("p̂ = −0,143 + 1,118 · x");
+  // c4p3: escala 1, probabilidade: PD por operação, cem quadrados, limites e odds, tudo a partir do mesmo estado
+  await page.goto("/aulas/c4p3");
+  const ep = page.locator('figure[data-vz="escala-probabilidade"]');
+  await expect(ep).toContainText("PD 95% por operação: 95 defaults e 5 adimplentes esperados em 100.");
+  await expect(ep).toContainText("105% não é uma probabilidade.");
+  await expect(ep).toContainText("odds = 0,95 ÷ 0,05 = 19");
+  expect(await ep.locator(".vz-ep-q").count()).toBe(100); expect(await ep.locator(".vz-ep-q--default").count()).toBe(95);
+  await ep.getByLabel("PD por operação, em porcentagem").fill("50");
+  await expect(ep).toContainText("50 defaults e 50 adimplentes esperados"); await expect(ep).toContainText("Neste ponto, o resultado permanece entre 0% e 100%."); await expect(ep).toContainText("odds = 0,50 ÷ 0,50 = 1");
+  await expect(ep).toContainText("5% → 15%"); await expect(ep).toContainText("50% → 60%"); // as réguas fixas não seguem a PD selecionada
+  await ep.getByLabel("PD por operação, em porcentagem").fill("100");
+  await expect(ep).toContainText("odds → ∞ quando p → 1"); await expect(ep).toContainText("100% → 110%");
+  await ep.getByRole("button", { name: "Restaurar" }).click();
+  await expect(ep).toContainText("PD 95% por operação");
   // capítulo 5: a árvore que cresce, raiz do gerador e instabilidade ao retirar a #10
   await page.goto("/aulas/c5p16");
   const arvore = page.locator('figure[data-vz="arvore-instabilidade"]');

@@ -4,19 +4,18 @@ import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
 import { escoreDidatico, logit, odds } from "@/lib/visuais/logistica";
 
 /**
- * As escalas do risco (capítulo 4, páginas 3 a 6). Uma só PD lida em quatro réguas: probabilidade (cem quadrados),
+ * As escalas do risco (capítulo 4, páginas 4 a 6; a página 3 é a peça escala-probabilidade). Uma só PD lida em réguas:
  * odds (a razão que multiplica), log odds (onde somar faz sentido) e a régua com as quatro lado a lado, mais o
  * escore didático 600 − 90 × z. Números idênticos aos das páginas herdadas.
  */
-export type ModoEscalas = "probabilidade" | "odds" | "logodds" | "regua";
+export type ModoEscalas = "odds" | "logodds" | "regua";
 const W = 640;
 const LEITURAS = [0.01, 0.05, 0.1, 0.2, 0.3333333, 0.5, 0.6666667, 0.8, 0.9, 0.95];
 const REGUA_PDS = [0.01, 0.02, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.75, 0.9, 0.95];
 const leitura = (q: number) => { const o = odds(q); return q < 0.5 ? `1 default para ${fmtNum(1 / o, 2)} adimplentes` : Math.abs(q - 0.5) < 1e-6 ? "1 para 1" : `${fmtNum(o, 2)} defaults para 1 adimplente`; };
 
 export function Escalas({ modo }: { modo: ModoEscalas }) {
-  const [pd, setPd] = useState(modo === "probabilidade" ? 0.12 : modo === "regua" ? 0.05 : 0.2);
-  if (modo === "probabilidade") return <Probabilidade pd={pd} setPd={setPd} />;
+  const [pd, setPd] = useState(modo === "regua" ? 0.05 : 0.2);
   if (modo === "odds") return <Odds pd={pd} setPd={setPd} />;
   if (modo === "logodds") return <LogOdds pd={pd} setPd={setPd} />;
   return <Regua pd={pd} setPd={setPd} />;
@@ -26,53 +25,6 @@ function Slider({ rotulo, pd, setPd, min = 1, max = 95 }: { rotulo: string; pd: 
   return (
     <label className="vz-slider"><span className="vz-slider-rotulo"><b>{rotulo}</b> <span className="vz-slider-valor">{fmtPct(pd)}</span></span>
       <input type="range" min={min} max={max} step={1} value={Math.round(pd * 100)} onChange={(e) => setPd(Number(e.target.value) / 100)} aria-valuetext={fmtPct(pd)} /></label>
-  );
-}
-
-/* Página c4p3: cem quadrados e a parede em 0 e 1. */
-function Probabilidade({ pd, setPd }: { pd: number; setPd: (v: number) => void }) {
-  const n = Math.round(pd * 100); const o = n / (100 - n);
-  const exemplos = [pd, 0.5, 0.95];
-  return (
-    <figure className="vz" data-vz="escala-probabilidade">
-      <header className="vz-cab">
-        <div>
-          <p className="eyebrow">Escala 1, probabilidade · cem propostas idênticas · a escala em que a decisão acontece</p>
-          <p className="vz-tit">A probabilidade diz quantas terminam em default, não quais. E aperta nas bordas.</p>
-        </div>
-      </header>
-      <div className="vz-estado"><b>PD de {fmtPct(pd)}:</b> {n} defaults para {100 - n} adimplentes, odds = {n} ÷ {100 - n} = {fmtNum(o, 3)}. Entre propostas com este perfil, aproximadamente {n} em cada 100 terminam em default no horizonte definido.</div>
-      <div className="vz-esc-grade">
-        <div className="vz-esc-painel">
-          <Slider rotulo="PD do grupo" pd={pd} setPd={setPd} />
-          <div className="vz-grafico">
-            <p className="vz-grafico-t">Cem propostas com o mesmo perfil <span className="hint">a cor diz quantas, nunca quais</span></p>
-            <svg viewBox="-14 0 536 300" role="img" aria-label={`${n} defaults e ${100 - n} adimplentes em cem propostas`}>
-              {Array.from({ length: 100 }, (_, i) => <rect key={i} x={(i % 20) * 26 + 2} y={Math.floor(i / 20) * 26 + 2} width={22} height={22} rx={3} className={`vz-cem ${i < n ? "vz-cem--default" : "vz-cem--pagou"}`} />)}
-              <text x={260} y={166} textAnchor="middle" className="vz-cem-t"><tspan className="vz-cem-t--default">{n} defaults</tspan> para <tspan className="vz-cem-t--pagou">{100 - n} adimplentes</tspan></text>
-              <text x={260} y={190} textAnchor="middle" className="vz-cem-t vz-cem-t--forte">odds = {n} ÷ {100 - n} = {fmtNum(o, 2)}</text>
-              <text x={2} y={224} className="vz-rotulo">o mesmo efeito de +10 pontos, em três lugares da régua</text>
-              <line x1={2} x2={2 + 460} y1={262} y2={262} className="vz-regua" />
-              <rect x={2 + 460} y={236} width={56} height={52} className="vz-cem-parede" />
-              <text x={2 + 466} y={252} className="vz-tick">parede</text>
-              {[0, 0.25, 0.5, 0.75, 1].map((v) => <g key={v}><line x1={2 + v * 460} x2={2 + v * 460} y1={258} y2={266} className="vz-regua" /><text x={2 + v * 460} y={282} textAnchor="middle" className="vz-tick">{fmtPct(v)}</text></g>)}
-              {exemplos.map((p0, i) => { const x0 = 2 + p0 * 460, x1 = 2 + Math.min(1.1, p0 + 0.1) * 460, y = 246 + i * 5; const estoura = p0 + 0.1 > 1;
-                return <g key={i}><line x1={x0} x2={x1} y1={y} y2={y} className={`vz-cem-seta ${estoura ? "vz-cem-seta--estoura" : ""}`} /><circle cx={x0} cy={y} r={3.5} className="vz-cem-seta-o" /><polygon points={`${x1},${y - 4} ${x1 + 7},${y} ${x1},${y + 4}`} className={estoura ? "vz-cem-seta-p--estoura" : "vz-cem-seta-p"} /></g>; })}
-              <text x={2 + 0.5 * 460} y={240} textAnchor="middle" className="vz-tick">{fmtPct(pd)} → {fmtPct(Math.min(1.1, pd + 0.1))} · 50% → 60% · 95% → 105%</text>
-            </svg>
-          </div>
-        </div>
-        <div className="vz-esc-lado">
-          <div className="vz-tiles vz-tiles--coluna">
-            <div className="vz-tile"><p className="eyebrow">Permite</p><p className="vz-num vz-num--texto">Multiplicar por exposição e perda dado o default, somando perdas esperadas de operações diferentes. É o capítulo 8.</p></div>
-            <div className="vz-tile"><p className="eyebrow">Permite</p><p className="vz-num vz-num--texto">Comparar com a frequência observada numa faixa. É a calibração do capítulo 7.</p></div>
-            <div className="vz-tile vz-tile--alerta"><p className="eyebrow">Não permite</p><p className="vz-num vz-num--texto">Ter um efeito aditivo constante: os extremos estão presos em 0 e 1 e qualquer efeito constante acaba atravessando a parede. Espremer o efeito perto das bordas é a razão pela qual a probabilidade é excelente para decidir e ruim para modelar.</p></div>
-            <div className="vz-tile"><p className="eyebrow">Uma frase que precisa ser dita</p><p className="vz-num vz-num--texto">PD de {fmtPct(pd)} não significa que o cliente vai pagar {fmtPct(1 - pd)} da dívida. Significa que, entre propostas com este perfil, aproximadamente {n} em cada 100 terminam em default no horizonte definido.</p></div>
-          </div>
-        </div>
-      </div>
-      <p className="vz-fonte">Probabilidade é frequência esperada no intervalo de 0 a 1. A última linha da grade já mostra a segunda escala: {n} defaults para {100 - n} adimplentes é a razão que a próxima página chama de odds.</p>
-    </figure>
   );
 }
 

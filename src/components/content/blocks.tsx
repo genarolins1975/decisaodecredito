@@ -45,7 +45,7 @@ export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liv
     <div className="flex flex-col gap-4">
       {blocks.flatMap((b, i) => {
         // figura estática substituída: o visual nativo e o texto restante viram dois blocos (i e i + 0,5), paginados separadamente
-        if (b.type === "html" && i === idxFigura && nativo) return [bloco(i, <AjusteAoPalco><nativo.Componente /></AjusteAoPalco>), bloco(i + 0.5, <div className="conteudo" dangerouslySetInnerHTML={{ __html: removerFiguraEstatica(b.html) }} />)];
+        if (b.type === "html" && i === idxFigura && nativo) return [bloco(i, <AjusteAoPalco><nativo.Componente palco={palco} /></AjusteAoPalco>), bloco(i + 0.5, <div className="conteudo" dangerouslySetInnerHTML={{ __html: removerFiguraEstatica(b.html) }} />)];
         return [bloco(i, renderBloco(b, i))];
       })}
     </div>
@@ -57,7 +57,7 @@ export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liv
         if (b.type === "checkpoint") return <Checkpoint key={i} b={b} palco={palco} />;
         if (b.type === "legacy") {
           const n = visualNativo(b.slug);
-          if (n?.substitui === "legacy") return <AjusteAoPalco key={i}><n.Componente /></AjusteAoPalco>;
+          if (n?.substitui === "legacy") return <AjusteAoPalco key={i}><n.Componente palco={palco} /></AjusteAoPalco>;
           return <LegacyFrame key={i} slug={b.slug} fallbackHtml={b.fallbackHtml} note={b.note} revealRef={revealRef} palco={palco} />;
         }
         if (b.type === "question") {
