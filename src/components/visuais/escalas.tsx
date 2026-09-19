@@ -4,11 +4,11 @@ import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
 import { escoreDidatico, logit, odds } from "@/lib/visuais/logistica";
 
 /**
- * As escalas do risco (capítulo 4, páginas 4 a 6; a página 3 é a peça escala-probabilidade). Uma só PD lida em réguas:
+ * As escalas do risco (capítulo 4, páginas 5 e 6; as páginas 3 e 4 são as peças escala-probabilidade e escala-odds). Uma só PD lida em réguas:
  * odds (a razão que multiplica), log odds (onde somar faz sentido) e a régua com as quatro lado a lado, mais o
  * escore didático 600 − 90 × z. Números idênticos aos das páginas herdadas.
  */
-export type ModoEscalas = "odds" | "logodds" | "regua";
+export type ModoEscalas = "logodds" | "regua";
 const W = 640;
 const LEITURAS = [0.01, 0.05, 0.1, 0.2, 0.3333333, 0.5, 0.6666667, 0.8, 0.9, 0.95];
 const REGUA_PDS = [0.01, 0.02, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.75, 0.9, 0.95];
@@ -16,7 +16,6 @@ const leitura = (q: number) => { const o = odds(q); return q < 0.5 ? `1 default 
 
 export function Escalas({ modo }: { modo: ModoEscalas }) {
   const [pd, setPd] = useState(modo === "regua" ? 0.05 : 0.2);
-  if (modo === "odds") return <Odds pd={pd} setPd={setPd} />;
   if (modo === "logodds") return <LogOdds pd={pd} setPd={setPd} />;
   return <Regua pd={pd} setPd={setPd} />;
 }
@@ -25,56 +24,6 @@ function Slider({ rotulo, pd, setPd, min = 1, max = 95 }: { rotulo: string; pd: 
   return (
     <label className="vz-slider"><span className="vz-slider-rotulo"><b>{rotulo}</b> <span className="vz-slider-valor">{fmtPct(pd)}</span></span>
       <input type="range" min={min} max={max} step={1} value={Math.round(pd * 100)} onChange={(e) => setPd(Number(e.target.value) / 100)} aria-valuetext={fmtPct(pd)} /></label>
-  );
-}
-
-/* Página c4p4: odds contra PD. */
-function Odds({ pd, setPd }: { pd: number; setPd: (v: number) => void }) {
-  const o = odds(pd);
-  const H = 300, ML = 44, MR = 14, MT = 22, MB = 34;
-  const sx = (q: number) => ML + (q / 0.95) * (W - ML - MR), sy = (v: number) => MT + (1 - v / 20) * (H - MT - MB);
-  const curva = useMemo(() => { const pts: string[] = []; for (let q = 0.01, i = 0; q <= 0.9501; q += 0.005, i++) pts.push(`${i ? "L" : "M"}${sx(q).toFixed(1)} ${sy(Math.min(20, odds(q))).toFixed(1)}`); return pts.join(""); }, []);
-  const perto = LEITURAS.reduce((m, q) => (Math.abs(q - pd) < Math.abs(m - pd) ? q : m), LEITURAS[0]);
-  return (
-    <figure className="vz" data-vz="escala-odds">
-      <header className="vz-cab">
-        <div>
-          <p className="eyebrow">Escala 2, odds · quantos defaults para cada adimplente · de zero a infinito</p>
-          <p className="vz-tit">A mesma informação escrita como razão. Nada se perde na tradução, e as duas voltam uma para a outra.</p>
-        </div>
-      </header>
-      <div className="vz-estado"><b>PD {fmtPct(pd, 1)}:</b> odds {fmtNum(o, 3)}, ou {leitura(pd)}. Odds resolve o teto em 1 e cria um problema novo: a assimetria.</div>
-      <div className="vz-esc-grade">
-        <div className="vz-esc-painel">
-          <Slider rotulo="PD" pd={pd} setPd={setPd} />
-          <div className="vz-tiles vz-tiles--2">
-            <div className="vz-tile"><p className="eyebrow">PD</p><p className="vz-num">{fmtPct(pd, 1)}</p></div>
-            <div className="vz-tile"><p className="eyebrow">Odds</p><p className="vz-num vz-num--odds">{fmtNum(o, 3)}</p><p className="hint">{fmtNum(o, 2)} default{Math.abs(o - 1) < 0.005 ? "" : "s"} para cada 1 adimplente</p></div>
-          </div>
-          <div className="vz-grafico">
-            <p className="vz-grafico-t">Odds em função da PD <span className="hint">íngreme perto de 100%, achatada perto de 0%</span></p>
-            <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Odds ${fmtNum(o, 3)} em PD ${fmtPct(pd)}`}>
-              {[0, 5, 10, 15, 20].map((v) => <g key={v}><line x1={sx(0)} x2={sx(0.95)} y1={sy(v)} y2={sy(v)} className="vz-grade" /><text x={ML - 6} y={sy(v) + 4} textAnchor="end" className="vz-tick">{v}</text></g>)}
-              {[0, 0.25, 0.5, 0.75, 0.95].map((v) => <text key={v} x={sx(v)} y={H - MB + 16} textAnchor="middle" className="vz-tick">{fmtPct(v)}</text>)}
-              <text x={sx(0.475)} y={H - 4} textAnchor="middle" className="vz-rotulo">PD</text>
-              <text x={ML + 4} y={MT - 8} className="vz-rotulo">odds</text>
-              <path d={curva} className="vz-curva vz-curva--odds" />
-              <line x1={sx(pd)} x2={sx(pd)} y1={sy(0)} y2={sy(Math.min(20, o))} className="vz-corte-linha" />
-              <line x1={sx(0)} x2={sx(pd)} y1={sy(Math.min(20, o))} y2={sy(Math.min(20, o))} className="vz-corte-linha" />
-              <g className="vz-regua-ponto" style={{ transform: `translate(${sx(pd)}px, ${sy(Math.min(20, o))}px)` }}><circle r={7} /><text x={pd > 0.7 ? -12 : 12} y={-8} textAnchor={pd > 0.7 ? "end" : "start"} className="vz-ponto-t">odds {fmtNum(o, 2)}{o > 20 ? " (fora da escala)" : ""}</text></g>
-            </svg>
-          </div>
-        </div>
-        <div className="vz-esc-lado">
-          <div className="vz-formula">odds = PD ÷ (1 − PD) · PD = odds ÷ (1 + odds)</div>
-          <p className="hint">As duas fórmulas são a mesma relação lida nos dois sentidos. Nenhuma informação é criada ou destruída ao trocar de escala.</p>
-          <div className="table-wrap"><table className="table text-[.85em]"><thead><tr><th>PD</th><th>Odds</th><th>Leitura</th></tr></thead><tbody>
-            {LEITURAS.map((q) => <tr key={q} className={q === perto ? "vz-t-on" : ""}><th scope="row">{fmtPct(q, q < 0.1 ? 1 : 0)}</th><td>{fmtNum(odds(q), 3)}</td><td className="hint">{leitura(q)}</td></tr>)}
-          </tbody></table></div>
-        </div>
-      </div>
-      <p className="vz-fonte">Odds é a razão entre a probabilidade do evento e a do não evento. A curva é íngreme perto de PD 100%: pequenas variações de probabilidade produzem variações enormes de odds. Perto de PD 0%, o contrário.</p>
-    </figure>
   );
 }
 

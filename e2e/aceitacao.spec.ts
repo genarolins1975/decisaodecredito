@@ -382,6 +382,17 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(ep).toContainText("odds → ∞ quando p → 1"); await expect(ep).toContainText("100% → 110%");
   await ep.getByRole("button", { name: "Restaurar" }).click();
   await expect(ep).toContainText("PD 95% por operação");
+  // c4p4: escala 2, odds: três resultados, conversão nos dois sentidos, complementares e ponte para log odds
+  await page.goto("/aulas/c4p4");
+  const eo = page.locator('figure[data-vz="escala-odds"]');
+  await expect(eo).toContainText("PD 20%: odds = 0,2 ÷ 0,8 = 0,25."); await expect(eo).toContainText("1 default esperado para cada 4 adimplentes esperados."); await expect(eo).toContainText("20 defaults e 80 adimplentes esperados em 100 operações");
+  await expect(eo).toContainText("0,25 × 4 = 1"); await expect(eo).toContainText("ln(0,25) ≈ −1,386"); await expect(eo).toContainText("ln(4) ≈ +1,386");
+  await eo.getByRole("button", { name: "95%" }).click(); await expect(eo).toContainText("odds = 0,95 ÷ 0,05 = 19"); await expect(eo).toContainText("19 defaults esperados para cada adimplente esperado");
+  await eo.getByLabel("Odds", { exact: true }).fill("4"); await expect(eo).toContainText("PD 80%: odds = 0,8 ÷ 0,2 = 4.");
+  await eo.getByLabel("PD, em %").fill("99"); await expect(eo).toContainText("= 99."); await expect(eo).toContainText("fora da janela: odds 99");
+  await eo.getByLabel("PD, em %").fill("100"); await expect(eo).toContainText("odds → ∞ quando p → 1"); await expect(eo).toContainText("p = 100%: nenhum ponto finito");
+  await eo.getByLabel("PD, em %").fill("-5"); await expect(eo).toContainText("Uma probabilidade não pode ser negativa.");
+  await eo.getByRole("button", { name: "Restaurar" }).click(); await expect(eo).toContainText("PD 20%: odds = 0,2 ÷ 0,8 = 0,25.");
   // capítulo 5: a árvore que cresce, raiz do gerador e instabilidade ao retirar a #10
   await page.goto("/aulas/c5p16");
   const arvore = page.locator('figure[data-vz="arvore-instabilidade"]');

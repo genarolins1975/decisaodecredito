@@ -31,6 +31,7 @@ import { FilaDeRisco } from "./fila-de-risco";
 import { Fronteira } from "./fronteira";
 import { LabLogistica } from "./lab-logistica";
 import { EscalaProbabilidade } from "./escala-probabilidade";
+import { EscalaOdds } from "./escala-odds";
 import { TresEscalas } from "./tres-escalas";
 import { Escalas } from "./escalas";
 import { CurvaLogistica } from "./curva-logistica";
@@ -86,7 +87,7 @@ const REGISTRO: Record<string, VisualNativo> = {
   c3p17: { Componente: ValorDaInformacao, substitui: "legacy" },
   c4p2: { Componente: LabLogistica, substitui: "figura" },
   c4p3: { Componente: EscalaProbabilidade, substitui: "legacy" },
-  c4p4: { Componente: () => <Escalas modo="odds" />, substitui: "legacy" },
+  c4p4: { Componente: EscalaOdds, substitui: "legacy" },
   c4p5: { Componente: () => <Escalas modo="logodds" />, substitui: "legacy" },
   c4p6: { Componente: () => <Escalas modo="regua" />, substitui: "legacy" },
   c4p7: { Componente: CurvaLogistica, substitui: "legacy" },

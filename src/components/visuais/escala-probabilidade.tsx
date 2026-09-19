@@ -8,6 +8,7 @@ import { CONCLUSAO, EIXO_MAX, ETAPAS, esperados, INCREMENTO_INICIAL, mensagemLim
  * passagem para odds. Revelação por etapas no palco; tudo à vista no estudo. Contas em src/lib/visuais/escala-probabilidade.ts.
  */
 const pct = (v: number) => `${Math.round(v * 100)}%`;
+const pl = (n: number, um: string, varios: string) => `${n} ${n === 1 ? um : varios}`;
 const RW = 640, RH = 46, RL = 8, RR = 8;
 const rx = (v: number) => RL + (v / EIXO_MAX) * (RW - RL - RR);
 
@@ -36,7 +37,7 @@ export function EscalaProbabilidade({ palco = false }: { palco?: boolean }) {
         </div>
       </header>
       <div className={`vz-estado ${lim.invalida && v.limites ? "vz-estado--alterado" : "vz-estado--ok"}`} aria-live="polite">
-        <b>PD {pct(pd)} por operação: {e.defaults} defaults e {e.adimplentes} adimplentes esperados em {e.total}.</b>{v.limites && <> Com +{inc} pp: {lim.texto}</>}{v.odds && <> Odds {o.valor === null ? "→ ∞" : `= ${o.texto}`}.</>}
+        <b>PD {pct(pd)} por operação: {pl(e.defaults, "default", "defaults")} e {pl(e.adimplentes, "adimplente esperado", "adimplentes esperados")} em {e.total}.</b>{v.limites && <> Com +{inc} pp: {lim.texto}</>}{v.odds && <> Odds {o.valor === null ? "→ ∞" : `= ${o.texto}`}.</>}
       </div>
       <div className="vz-ep-grade">
         <section className="vz-ep-col" aria-labelledby="ep-1">
@@ -52,7 +53,7 @@ export function EscalaProbabilidade({ palco = false }: { palco?: boolean }) {
           <div className="vz-ep-cem" role="img" aria-label={`Cem operações: ${e.defaults} defaults esperados e ${e.adimplentes} adimplentes esperados`} data-testid="grade-cem">
             {Array.from({ length: N_OPERACOES }, (_, i) => <i key={i} className={i < e.defaults ? "vz-ep-q vz-ep-q--default" : "vz-ep-q vz-ep-q--pagou"} />)}
           </div>
-          <p className="vz-ep-cont"><b className="vz-ep-cont-d">{e.defaults} defaults esperados</b> <span>e {e.adimplentes} adimplentes esperados em {e.total} operações.</span></p>
+          <p className="vz-ep-cont"><b className="vz-ep-cont-d">{pl(e.defaults, "default esperado", "defaults esperados")}</b> <span>e {pl(e.adimplentes, "adimplente esperado", "adimplentes esperados")} em {e.total} operações.</span></p>
           <p className="vz-ep-nota">{NOTA_GRADE}</p>
         </section>
         <section className={`vz-ep-col vz-ep-col--lim ${v.limites ? "" : "vz-ep-oculto"}`} aria-labelledby="ep-2" aria-hidden={!v.limites}>
