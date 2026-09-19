@@ -1,22 +1,19 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
 import { escoreDidatico, logit, odds } from "@/lib/visuais/logistica";
 
 /**
- * As escalas do risco (capítulo 4, páginas 5 e 6; as páginas 3 e 4 são as peças escala-probabilidade e escala-odds). Uma só PD lida em réguas:
- * odds (a razão que multiplica), log odds (onde somar faz sentido) e a régua com as quatro lado a lado, mais o
- * escore didático 600 − 90 × z. Números idênticos aos das páginas herdadas.
+ * A régua das quatro escalas (capítulo 4, página 6). As páginas 3, 4 e 5 são as peças escala-probabilidade,
+ * escala-odds e escala-logodds. Uma só PD lida em quatro réguas, mais o escore didático 600 − 90 × z.
  */
-export type ModoEscalas = "logodds" | "regua";
+export type ModoEscalas = "regua";
 const W = 640;
-const LEITURAS = [0.01, 0.05, 0.1, 0.2, 0.3333333, 0.5, 0.6666667, 0.8, 0.9, 0.95];
 const REGUA_PDS = [0.01, 0.02, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.75, 0.9, 0.95];
-const leitura = (q: number) => { const o = odds(q); return q < 0.5 ? `1 default para ${fmtNum(1 / o, 2)} adimplentes` : Math.abs(q - 0.5) < 1e-6 ? "1 para 1" : `${fmtNum(o, 2)} defaults para 1 adimplente`; };
 
 export function Escalas({ modo }: { modo: ModoEscalas }) {
-  const [pd, setPd] = useState(modo === "regua" ? 0.05 : 0.2);
-  if (modo === "logodds") return <LogOdds pd={pd} setPd={setPd} />;
+  void modo;
+  const [pd, setPd] = useState(0.05);
   return <Regua pd={pd} setPd={setPd} />;
 }
 
@@ -24,68 +21,6 @@ function Slider({ rotulo, pd, setPd, min = 1, max = 95 }: { rotulo: string; pd: 
   return (
     <label className="vz-slider"><span className="vz-slider-rotulo"><b>{rotulo}</b> <span className="vz-slider-valor">{fmtPct(pd)}</span></span>
       <input type="range" min={min} max={max} step={1} value={Math.round(pd * 100)} onChange={(e) => setPd(Number(e.target.value) / 100)} aria-valuetext={fmtPct(pd)} /></label>
-  );
-}
-
-/* Página c4p5: dobrar e reduzir à metade, em PD e em log odds. */
-function LogOdds({ pd, setPd }: { pd: number; setPd: (v: number) => void }) {
-  const o = odds(pd), z = logit(pd), dobro = 2 * o, metade = o / 2, pDobro = dobro / (1 + dobro), pMetade = metade / (1 + metade);
-  const H = 300, ML = 44, MR = 14, MT = 22, MB = 34;
-  const sx = (q: number) => ML + q * (W - ML - MR), sy = (v: number) => MT + (1 - (v + 5) / 10) * (H - MT - MB);
-  const curva = useMemo(() => { const pts: string[] = []; for (let q = 0.01, i = 0; q <= 0.9901; q += 0.004, i++) pts.push(`${i ? "L" : "M"}${sx(q).toFixed(1)} ${sy(logit(q)).toFixed(1)}`); return pts.join(""); }, []);
-  const pontos = [{ n: "metade", p: pMetade, z: Math.log(metade), c: "vz-lo-ponto--metade" }, { n: "partida", p: pd, z, c: "vz-lo-ponto--partida" }, { n: "dobro", p: pDobro, z: Math.log(dobro), c: "vz-lo-ponto--dobro" }];
-  return (
-    <figure className="vz" data-vz="escala-logodds">
-      <header className="vz-cab">
-        <div>
-          <p className="eyebrow">Escala 3, log odds · simétrica em torno de zero · multiplicar vira somar</p>
-          <p className="vz-tit">Dobre as odds e reduza à metade. Em PD, os passos são desiguais. Em log odds, são o mesmo 0,6931.</p>
-        </div>
-      </header>
-      <div className="vz-estado"><b>Partida em PD {fmtPct(pd, 2)}:</b> dobrar as odds leva a {fmtPct(pDobro, 2)} e reduzir à metade leva a {fmtPct(pMetade, 2)}, {fmtNum(100 * (pDobro - pd), 2)} pontos para cima e {fmtNum(100 * (pd - pMetade), 2)} para baixo. Em log odds, +{fmtNum(Math.log(2), 4)} e −{fmtNum(Math.log(2), 4)}.</div>
-      <div className="vz-esc-grade">
-        <div className="vz-esc-painel">
-          <Slider rotulo="PD de partida" pd={pd} setPd={setPd} min={2} />
-          <div className="vz-tiles vz-tiles--3">
-            <div className="vz-tile"><p className="eyebrow">PD</p><p className="vz-num">{fmtPct(pd, 1)}</p></div>
-            <div className="vz-tile"><p className="eyebrow">Odds</p><p className="vz-num vz-num--odds">{fmtNum(o, 3)}</p></div>
-            <div className="vz-tile"><p className="eyebrow">Log odds</p><p className="vz-num">{fmtNum(z, 3)}</p></div>
-          </div>
-          <div className="table-wrap"><table className="table text-[.85em]"><thead><tr><th>Movimento</th><th>PD</th><th>Odds</th><th>Log odds</th><th>Variação em log odds</th></tr></thead><tbody>
-            <tr><th scope="row">Dobrar as odds</th><td>{fmtPct(pDobro, 2)}</td><td>{fmtNum(dobro, 3)}</td><td>{fmtNum(Math.log(dobro), 3)}</td><td className="vz-t-default">+{fmtNum(Math.log(2), 4)}</td></tr>
-            <tr className="vz-t-on"><th scope="row">Partida</th><td>{fmtPct(pd, 2)}</td><td>{fmtNum(o, 3)}</td><td>{fmtNum(z, 3)}</td><td>0</td></tr>
-            <tr><th scope="row">Reduzir as odds à metade</th><td>{fmtPct(pMetade, 2)}</td><td>{fmtNum(metade, 3)}</td><td>{fmtNum(Math.log(metade), 3)}</td><td className="vz-t-ok">−{fmtNum(Math.log(2), 4)}</td></tr>
-          </tbody></table></div>
-          <div className="vz-formula">log odds = ln( PD ÷ (1 − PD) )</div>
-          <p className="hint">ln é o logaritmo natural. A propriedade que importa é uma só: ln(a × b) = ln(a) + ln(b). Multiplicar odds vira somar log odds.</p>
-        </div>
-        <div className="vz-esc-lado">
-          <div className="vz-grafico">
-            <p className="vz-grafico-t">Log odds em função da PD <span className="hint">os três pontos: metade, partida e dobro</span></p>
-            <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Log odds ${fmtNum(z, 3)} em PD ${fmtPct(pd)}; dobro ${fmtPct(pDobro, 2)}, metade ${fmtPct(pMetade, 2)}`}>
-              {[-5, -2.5, 0, 2.5, 5].map((v) => <g key={v}><line x1={sx(0)} x2={sx(1)} y1={sy(v)} y2={sy(v)} className="vz-grade" /><text x={ML - 6} y={sy(v) + 4} textAnchor="end" className="vz-tick">{fmtNum(v, 1)}</text></g>)}
-              {[0, 0.25, 0.5, 0.75, 1].map((v) => <text key={v} x={sx(v)} y={H - MB + 16} textAnchor="middle" className="vz-tick">{fmtPct(v)}</text>)}
-              <text x={sx(0.5)} y={H - 4} textAnchor="middle" className="vz-rotulo">PD</text>
-              <text x={ML + 4} y={MT - 8} className="vz-rotulo">log odds</text>
-              <path d={curva} className="vz-curva" />
-              {pontos.map((q) => <g key={q.n}><line x1={sx(0)} x2={sx(q.p)} y1={sy(q.z)} y2={sy(q.z)} className="vz-corte-linha" /><line x1={sx(q.p)} x2={sx(q.p)} y1={sy(q.z)} y2={sy(-5)} className="vz-corte-linha" /></g>)}
-              {(() => { const dir = pd < 0.5 ? 1 : -1; const xc = dir > 0 ? sx(1) - 12 : sx(0) + 12; const anc = dir > 0 ? "end" : "start"; const dx = dir > 0 ? -8 : 8; const base = sy(-5); return <g>
-                <line x1={xc} x2={xc} y1={sy(Math.log(metade))} y2={sy(Math.log(dobro))} className="vz-lo-chave" />
-                <text x={xc + dx} y={sy(z + Math.log(2) / 2) + 4} textAnchor={anc} className="vz-lo-chave-t">+{fmtNum(Math.log(2), 4)} em log odds</text>
-                <text x={xc + dx} y={sy(z - Math.log(2) / 2) + 4} textAnchor={anc} className="vz-lo-chave-t">−{fmtNum(Math.log(2), 4)} em log odds</text>
-                <line x1={sx(pd)} x2={sx(pDobro)} y1={base - 34} y2={base - 34} className="vz-lo-chave vz-lo-chave--pd" />
-                <text x={sx((pd + pDobro) / 2)} y={base - 40} textAnchor="middle" className="vz-lo-chave-t vz-lo-chave-t--pd">+{fmtNum(100 * (pDobro - pd), 2)} pontos de PD</text>
-                <line x1={sx(pMetade)} x2={sx(pd)} y1={base - 16} y2={base - 16} className="vz-lo-chave vz-lo-chave--pd" />
-                <text x={sx((pd + pMetade) / 2)} y={base - 21} textAnchor="middle" className="vz-lo-chave-t vz-lo-chave-t--pd">−{fmtNum(100 * (pd - pMetade), 2)} pontos</text>
-              </g>; })()}
-              {pontos.map((q) => <g key={q.n} className={`vz-regua-ponto ${q.c}`} style={{ transform: `translate(${sx(q.p)}px, ${sy(q.z)}px)` }}><circle r={q.n === "partida" ? 7 : 5.5} /><text x={12} y={4} className="vz-ponto-t">{q.n} {fmtNum(q.z, 3)}</text></g>)}
-            </svg>
-          </div>
-          <div className="vz-tile"><p className="eyebrow">Por que essa é a escala do modelo</p><p className="vz-num vz-num--texto">Um efeito que multiplica as odds por um fator fixo vira, em log odds, uma soma de valor fixo. E soma de valor fixo é exatamente o que uma função linear sabe fazer. A escolha da escala não é estética: é ela que torna a linearidade defensável.</p></div>
-        </div>
-      </div>
-      <p className="vz-fonte">O logaritmo das odds é simétrico em torno de zero, vai de menos infinito a mais infinito e transforma multiplicação em soma. Dobrar as odds soma ln 2 = 0,6931 em qualquer ponto da régua; em PD, o mesmo movimento vale {fmtNum(100 * (pDobro - pd), 2)} pontos aqui e quase nada perto das bordas.</p>
-    </figure>
   );
 }
 

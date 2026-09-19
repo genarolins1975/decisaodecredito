@@ -393,6 +393,28 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await eo.getByLabel("PD, em %").fill("100"); await expect(eo).toContainText("odds → ∞ quando p → 1"); await expect(eo).toContainText("p = 100%: nenhum ponto finito");
   await eo.getByLabel("PD, em %").fill("-5"); await expect(eo).toContainText("Uma probabilidade não pode ser negativa.");
   await eo.getByRole("button", { name: "Restaurar" }).click(); await expect(eo).toContainText("PD 20%: odds = 0,2 ÷ 0,8 = 0,25.");
+  // c4p5: escala 3, log odds: ÷ 2 e × 2 sempre a partir das odds iniciais; ∓ln(2) em log odds, passos desiguais em PD
+  await page.goto("/aulas/c4p5");
+  const lo = page.locator('figure[data-vz="escala-logodds"]');
+  await expect(lo).toContainText("Nas odds, multiplicar. Nos log odds, somar.");
+  await expect(lo).toContainText("Partida em PD 33,00%."); await expect(lo).toContainText("os passos são −13,24 pp e +16,62 pp");
+  await expect(lo).toContainText("19,76%"); await expect(lo).toContainText("49,62%"); await expect(lo).toContainText("−0,708");
+  await expect(lo).toContainText("odds 0,493 ÷ 2 = 0,246"); await expect(lo).toContainText("odds 0,493 × 2 = 0,985");
+  await expect(lo).toContainText("−0,6931"); await expect(lo).toContainText("+0,6931");
+  await expect(lo).not.toContainText("±16,67 pp"); // a revelação só aparece quando o professor a aciona
+  await lo.getByRole("button", { name: "50%" }).click();
+  await expect(lo).toContainText("Em PD = 50%, os passos também são iguais: −16,67 pp e +16,67 pp.");
+  await expect(lo).toContainText("33,33%"); await expect(lo).toContainText("66,67%");
+  await lo.getByRole("button", { name: "Revelar explicação" }).click();
+  await expect(lo).toContainText("Nos log odds, os passos são ±ln(2) para qualquer PD inicial.");
+  await lo.getByRole("tab", { name: "Ver a função" }).click();
+  await expect(lo).toContainText("log odds em função da PD");
+  await lo.getByLabel("PD de partida, campo em %").fill("100");
+  await expect(lo).toContainText("Em PD = 100% as odds não têm valor finito");
+  await lo.getByLabel("PD de partida, campo em %").fill("1");
+  await expect(lo).toContainText("Partida em PD 1,00%."); await expect(lo).toContainText("−5,288");
+  await lo.getByRole("button", { name: "Restaurar" }).click();
+  await expect(lo).toContainText("Partida em PD 33,00%."); await expect(lo).not.toContainText("±16,67 pp");
   // c4p1: os dois quadros de abertura, um só estado: características → escore → PD; +10 pp → +0,7453 em z → × 2,11 nas odds
   await page.goto("/aulas/c4p1");
   const rl = page.locator('figure[data-vz="logit-slides"]');

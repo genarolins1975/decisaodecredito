@@ -1305,3 +1305,75 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner [data-vz="logit-slides"] { padding: 0; border: 0; background: transparent; gap: 0; }
 /* no palco o quadro é dimensionado pela altura da área (cqh do .slide-inner) e mantém 16:9; cabe sem zoom */
 .slide-inner .rl-slide { border-radius: 12px; aspect-ratio: auto; height: 95cqh; width: calc(95cqh * 16 / 9); max-width: 100%; margin: 0 auto; }
+
+/* Escala 3, log odds (c4p5): três cenários em colunas, duas réguas alinhadas, identidade logarítmica e revelação. */
+.vz-lo { --lo-navy: #10245C; --lo-verde: #1C6B4B; --lo-verde-soft: #EDF5F0; --lo-roxo: #5B3F8E; --lo-roxo-soft: #F1ECF7; }
+.vz-lo-sub { font-size: 15px; color: var(--color-muted); margin-top: 4px; max-width: 72ch; }
+.vz-lo-abas { display: flex; gap: 6px; }
+.vz-lo-controles { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(130px, auto) auto; gap: 10px 22px; align-items: start; margin-bottom: 14px; }
+.vz-lo-slider { margin: 0; } .vz-lo-slider input[type="range"] { width: 100%; accent-color: var(--lo-navy); }
+.vz-lo-campo { display: grid; gap: 4px; } .vz-lo-campo label { font-weight: 600; color: var(--color-ink); font-size: 14px; } .vz-lo-campo-in { display: flex; align-items: center; gap: 4px; }
+.vz-lo-campo-in input { width: 108px; min-height: 40px; border: 1px solid var(--color-rule); border-radius: 6px; padding: 4px 8px; text-align: right; background: var(--color-surface); font-variant-numeric: tabular-nums; }
+.vz-lo-campo-in input[aria-invalid="true"] { border-color: var(--color-alert); }
+.vz-lo-msg { font-size: 12px; min-height: 16px; max-width: 30ch; } .vz-lo-msg--erro { color: var(--color-alert); font-weight: 600; } .vz-lo-msg--aviso { color: var(--color-warn); }
+.vz-lo-atalhos { display: flex; flex-wrap: wrap; gap: 6px; align-self: end; }
+.vz-lo-colunas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 12px; }
+.vz-lo-col { border: 1px solid var(--color-rule); border-top: 4px solid var(--color-muted); border-radius: 8px; padding: 12px 14px 14px; background: var(--color-surface); display: grid; align-content: start; gap: 4px; }
+.vz-lo-col--menor { border-top-color: var(--lo-verde); background: var(--lo-verde-soft); }
+.vz-lo-col--partida { border-top-color: var(--lo-navy); background: var(--color-paper); }
+.vz-lo-col--maior { border-top-color: var(--lo-roxo); background: var(--lo-roxo-soft); }
+.vz-lo-col-k { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; color: var(--color-ink); }
+.vz-lo-col--menor .vz-lo-col-k { color: var(--lo-verde); } .vz-lo-col--maior .vz-lo-col-k { color: var(--lo-roxo); } .vz-lo-col--partida .vz-lo-col-k { color: var(--lo-navy); }
+.vz-lo-col-f { font-family: var(--font-mono); font-size: 12.5px; color: var(--color-muted); }
+.vz-lo-col-pd { font-family: var(--font-serif); font-weight: 700; font-size: clamp(32px, 3.9vw, 52px); line-height: 1.02; color: var(--color-ink); font-variant-numeric: tabular-nums; margin-top: 2px; }
+.vz-lo-col-sec { font-size: 13.5px; color: var(--color-body); font-variant-numeric: tabular-nums; } .vz-lo-col-sec span { color: var(--color-muted); font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; margin-right: 2px; } .vz-lo-col-sec b + span { margin-left: 10px; }
+.vz-lo-col-d { font-size: 13px; color: var(--color-body); margin-top: 4px; border-top: 1px dashed var(--color-rule); padding-top: 6px; font-variant-numeric: tabular-nums; }
+.vz-lo-col--menor .vz-lo-col-d b { color: var(--lo-verde); } .vz-lo-col--maior .vz-lo-col-d b { color: var(--lo-roxo); } .vz-lo-col--partida .vz-lo-col-d { color: var(--color-muted); }
+.vz-lo-grade { display: grid; grid-template-columns: minmax(0, 2.35fr) minmax(0, 1fr); gap: 16px 28px; align-items: start; }
+.vz-lo-painel { display: grid; gap: 8px; min-width: 0; } .vz-lo-painel[hidden] { display: none; }
+.vz-lo-regua svg { width: 100%; height: auto; display: block; } .vz-lo-regua .vz-lo-svg--compacta { display: none; }
+.vz-lo-regua-t { font-size: 13px; color: var(--color-ink); } .vz-lo-regua-n { color: var(--color-muted); font-weight: 400; }
+.vz-lo-eixo { stroke: var(--color-ink); stroke-width: 1.4; } .vz-lo-tick { font-size: 13px; fill: var(--color-muted); }
+.vz-lo-haste { stroke: var(--color-muted); stroke-width: 1; stroke-dasharray: 3 3; }
+.vz-lo-barra { fill: var(--color-muted); } .vz-lo-barra--menor { fill: var(--lo-verde); } .vz-lo-barra--maior { fill: var(--lo-roxo); }
+.vz-lo-marca circle { fill: var(--color-muted); stroke: #fff; stroke-width: 2.5; } .vz-lo-marca--menor circle { fill: var(--lo-verde); } .vz-lo-marca--maior circle { fill: var(--lo-roxo); } .vz-lo-marca--partida circle { fill: var(--lo-navy); }
+.vz-lo-marca-t { font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; fill: var(--color-ink); }
+.vz-lo-svg--compacta .vz-lo-marca-t { font-size: 21px; } .vz-lo-svg--compacta .vz-lo-tick { font-size: 17px; }
+.vz-lo-marca--menor .vz-lo-marca-t { fill: var(--lo-verde); } .vz-lo-marca--maior .vz-lo-marca-t { fill: var(--lo-roxo); } .vz-lo-marca--partida .vz-lo-marca-t { fill: var(--lo-navy); }
+.vz-lo-passos { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin: -2px 0 6px; }
+.vz-lo-chip { font-size: 13px; border-radius: 999px; padding: 3px 10px; border: 1px solid var(--color-rule); background: var(--color-surface); font-variant-numeric: tabular-nums; }
+.vz-lo-chip--menor { color: var(--lo-verde); border-color: #BFD9C9; background: var(--lo-verde-soft); } .vz-lo-chip--maior { color: var(--lo-roxo); border-color: #D6CAE6; background: var(--lo-roxo-soft); }
+.vz-lo-passos-l { font-size: 13px; color: var(--color-muted); } .vz-lo-janela { margin-top: 2px; }
+.vz-lo-painel--graf svg { width: 100%; height: auto; display: block; }
+.vz-lo-curva { fill: none; stroke: var(--lo-navy); stroke-width: 3.5; stroke-linecap: round; }
+.vz-lo-grade-l { stroke: var(--color-rule); stroke-width: 1; } .vz-lo-zero { stroke: var(--color-muted); stroke-width: 1.4; } .vz-lo-guia { stroke: var(--color-muted); stroke-width: 1.1; stroke-dasharray: 4 4; }
+.vz-lo-eixo-t { font-size: 12px; fill: var(--color-muted); letter-spacing: .05em; text-transform: uppercase; }
+.vz-lo-gp circle { fill: var(--color-muted); stroke: #fff; stroke-width: 3; } .vz-lo-gp--menor circle { fill: var(--lo-verde); } .vz-lo-gp--maior circle { fill: var(--lo-roxo); } .vz-lo-gp--partida circle { fill: var(--lo-navy); }
+.vz-lo-gp-t { font-size: 13px; font-weight: 700; fill: var(--color-ink); } .vz-lo-gp--menor .vz-lo-gp-t { fill: var(--lo-verde); } .vz-lo-gp--maior .vz-lo-gp-t { fill: var(--lo-roxo); } .vz-lo-gp--partida .vz-lo-gp-t { fill: var(--lo-navy); }
+.vz-lo-lado { display: grid; gap: 8px; align-content: start; border-left: 1px solid var(--color-rule); padding-left: 26px; }
+.vz-lo-k { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; color: var(--lo-roxo); } .vz-lo-k--modelo { color: var(--color-ok); margin-top: 6px; }
+.vz-lo-id { font-family: var(--font-serif); font-size: clamp(17px, 1.32vw, 21px); font-weight: 700; color: var(--color-ink); line-height: 1.25; }
+.vz-lo-id-l { font-size: 14px; color: var(--color-body); } .vz-lo-id-curta { display: none; }
+.vz-lo-notas-b { justify-self: start; } .vz-lo-notas { display: grid; gap: 6px; font-size: 13px; color: var(--color-muted); border-top: 1px solid var(--color-rule); padding-top: 8px; }
+.vz-lo-rodape { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 20px; align-items: center; background: var(--color-ink); color: #fff; border-radius: 8px; padding: 14px 20px; margin-top: 14px; }
+.vz-lo-perg { font-size: 17px; font-weight: 600; } .vz-lo-resp { font-size: 15px; color: #DCE7F3; margin-top: 6px; max-width: 86ch; }
+.vz-lo-rodape .btn { background: #fff; color: var(--color-ink); border-color: #fff; } .vz-lo-rodape .btn-secondary { background: transparent; color: #fff; }
+@container (max-width: 900px) {
+  .vz-lo-controles { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .vz-lo-slider { grid-column: 1 / -1; } .vz-lo-atalhos { grid-column: 1 / -1; }
+  .vz-lo-colunas { grid-template-columns: minmax(0, 1fr); } .vz-lo-col-pd { font-size: 40px; }
+  .vz-lo-grade { grid-template-columns: minmax(0, 1fr); } .vz-lo-lado { border-left: 0; padding-left: 0; border-top: 1px solid var(--color-rule); padding-top: 12px; }
+  .vz-lo-rodape { grid-template-columns: minmax(0, 1fr); } .vz-lo-rodape .btn { justify-self: start; }
+  .vz-lo-regua .vz-lo-svg--larga { display: none; } .vz-lo-regua .vz-lo-svg--compacta { display: block; }
+}
+@media (prefers-reduced-motion: reduce) { .vz-lo * { transition: none !important; animation: none !important; } }
+/* palco: o essencial em tamanho de projeção; o que é apoio de leitura sai de cena */
+.slide-inner [data-vz="escala-logodds"] .vz-estado, .slide-inner [data-vz="escala-logodds"] .vz-cab .eyebrow, .slide-inner [data-vz="escala-logodds"] .vz-lo-id-l, .slide-inner [data-vz="escala-logodds"] .vz-lo-k--modelo, .slide-inner [data-vz="escala-logodds"] .vz-lo-sub, .slide-inner [data-vz="escala-logodds"] .vz-lo-janela, .slide-inner [data-vz="escala-logodds"] .vz-lo-msg, .slide-inner [data-vz="escala-logodds"] .vz-lo-notas-b, .slide-inner [data-vz="escala-logodds"] .vz-lo-notas { display: none; }
+.slide-inner [data-vz="escala-logodds"] .vz-lo-col-pd { font-size: 6.4cqh; }
+.slide-inner [data-vz="escala-logodds"] .vz-lo-id-curta { display: block; font-size: 1em; color: var(--color-body); }
+.slide-inner [data-vz="escala-logodds"] .vz-lo-perg { font-size: 1.1em; }
+.slide-inner [data-vz="escala-logodds"] .vz-lo-col-k, .slide-inner [data-vz="escala-logodds"] .vz-lo-col-f, .slide-inner [data-vz="escala-logodds"] .vz-lo-col-sec, .slide-inner [data-vz="escala-logodds"] .vz-lo-col-sec span, .slide-inner [data-vz="escala-logodds"] .vz-lo-col-d, .slide-inner [data-vz="escala-logodds"] .vz-lo-campo label, .slide-inner [data-vz="escala-logodds"] .vz-lo-chip, .slide-inner [data-vz="escala-logodds"] .vz-lo-passos-l, .slide-inner [data-vz="escala-logodds"] .vz-lo-regua-t, .slide-inner [data-vz="escala-logodds"] .vz-estado, .slide-inner [data-vz="escala-logodds"] .vz-cab .eyebrow, .slide-inner [data-vz="escala-logodds"] .vz-lo-id-l, .slide-inner [data-vz="escala-logodds"] .vz-lo-k, .slide-inner [data-vz="escala-logodds"] .vz-lo-resp { font-size: 1em; }
+.slide-inner [data-vz="escala-logodds"] .vz-lo-painel--graf svg { height: 38cqh; width: auto; max-width: 100%; margin: 0 auto; }
+.vz-lo-leg circle { stroke: #fff; stroke-width: 2; }
+/* no palco a regra genérica .conteudo figure svg tentaria mostrar as duas versões da régua: a compacta é só do celular */
+.slide-inner [data-vz="escala-logodds"] .vz-lo-svg--compacta { display: none; }
+.slide-inner [data-vz="escala-logodds"] .vz-lo-svg--larga { display: block; width: 100%; height: auto; max-height: none; margin: 0; }
