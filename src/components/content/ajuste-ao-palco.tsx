@@ -23,8 +23,10 @@ export function AjusteAoPalco({ children }: { children: ReactNode }) {
     };
     ajustar();
     const ro = new ResizeObserver(ajustar); ro.observe(area);
+    // peças com várias unidades: quando o compositor esconde as outras telas, a altura natural muda e o ajuste refaz
+    const mo = new MutationObserver(ajustar); mo.observe(el, { subtree: true, attributes: true, attributeFilter: ["data-oculto"] });
     const fontes = (document as Document & { fonts?: { ready: Promise<unknown> } }).fonts; fontes?.ready.then(ajustar);
-    return () => { ro.disconnect(); cancelAnimationFrame(raf); };
+    return () => { ro.disconnect(); mo.disconnect(); cancelAnimationFrame(raf); };
   }, []);
   return <div ref={ref} className="palco-ajuste">{children}</div>;
 }

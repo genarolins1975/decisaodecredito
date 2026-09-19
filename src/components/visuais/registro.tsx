@@ -32,6 +32,7 @@ import { Fronteira } from "./fronteira";
 import { LabLogistica } from "./lab-logistica";
 import { EscalaProbabilidade } from "./escala-probabilidade";
 import { EscalaOdds } from "./escala-odds";
+import { LogitSlides } from "./logit-slides";
 import { TresEscalas } from "./tres-escalas";
 import { Escalas } from "./escalas";
 import { CurvaLogistica } from "./curva-logistica";
@@ -68,7 +69,8 @@ import { Safras } from "./safras";
  * figura estática (o bloco svgfit do primeiro bloco HTML), mantendo o texto ao redor. Vale em aula, apresentação e
  * aula ao vivo, sem alterar o banco. Fonte dos números: src/lib/visuais.
  */
-export type VisualNativo = { Componente: ComponentType<{ palco?: boolean }>; substitui: "legacy" | "figura" };
+/** substitui: "legacy" troca o bloco herdado; "figura" troca a figura estática do primeiro bloco HTML; "abertura" entra antes de todos os blocos. */
+export type VisualNativo = { Componente: ComponentType<{ palco?: boolean; pagina?: { index: number; total: number } }>; substitui: "legacy" | "figura" | "abertura" };
 const REGISTRO: Record<string, VisualNativo> = {
   c1p5: { Componente: CemVidas, substitui: "legacy" },
   c1p7: { Componente: MesmaPd, substitui: "legacy" },
@@ -85,6 +87,7 @@ const REGISTRO: Record<string, VisualNativo> = {
   c3p15: { Componente: Balancear, substitui: "legacy" },
   c3p16: { Componente: Woe, substitui: "legacy" },
   c3p17: { Componente: ValorDaInformacao, substitui: "legacy" },
+  c4p1: { Componente: LogitSlides, substitui: "abertura" },
   c4p2: { Componente: LabLogistica, substitui: "figura" },
   c4p3: { Componente: EscalaProbabilidade, substitui: "legacy" },
   c4p4: { Componente: EscalaOdds, substitui: "legacy" },

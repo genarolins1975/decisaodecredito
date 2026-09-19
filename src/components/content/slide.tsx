@@ -6,6 +6,7 @@ import type { Block, PublicQuestion } from "@/lib/services/content";
 import { ContentBlocks } from "./blocks";
 import { InfograficoCapitulo } from "./infografico";
 import type { Infografico } from "@/lib/content/infograficos";
+import { PALCO_PROPRIO } from "@/lib/visuais/palco-proprio";
 import { api } from "@/lib/client/api";
 import { aplicarTela, compor, mostrarTudo, type Composicao } from "@/lib/palco/unidades";
 
@@ -74,6 +75,8 @@ export function Slide(p: {
         // estimativa única a partir da altura natural (zoom 1) e correção só para baixo: sem oscilação com o reflow
         const alvo = area.clientHeight - 4;
         const aplicar = (v: number) => { el.style.zoom = v.toFixed(3); return el.getBoundingClientRect().height; };
+        // quadro próprio: já dimensionado pela altura da área; zoom fixo em 1
+        if (PALCO_PROPRIO.has(p.slug)) { aplicar(1); el.dataset.zoom = "1.00"; ultimo = "1.00"; return; }
         const natural = aplicar(1); if (natural <= 0) return;
         // tela com iframe herdado não recebe zoom: o documento do iframe reflui com a largura e realimentaria o ajuste
         if (el.querySelector("iframe") && !el.querySelector("iframe")!.closest("[data-oculto]")) { el.dataset.zoom = "1.00"; ultimo = "1.00"; return; }
@@ -107,7 +110,7 @@ export function Slide(p: {
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       const t = e.target as HTMLElement | null;
-      if (t && ["INPUT", "TEXTAREA", "SELECT"].includes(t.tagName)) return;
+      if (t && ["INPUT", "TEXTAREA", "SELECT", "BUTTON"].includes(t.tagName)) return;
       if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") { e.preventDefault(); avancar(); }
       else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); voltar(); }
       else if (e.key.toLowerCase() === "n" && p.teacherGuide) setNotes((v) => !v);
@@ -119,17 +122,18 @@ export function Slide(p: {
   });
 
   const capa = comp !== null && comp.telas.length === 0; // página sem blocos: mostra título, objetivo e apoio
+  const proprio = PALCO_PROPRIO.has(p.slug); // o visual desenha o próprio quadro: sem cabeçalho nem título da moldura
   const ultima = comp !== null && tela === total - 1;
 
   return (
     <main id="conteudo" className="slide-stage min-h-screen flex flex-col">
       <div className="slide" style={{ ["--cap" as string]: p.chapter.color, ["--cap-soft" as string]: p.chapter.soft }}>
         <div className={`slide-inner ${capa ? "slide-inner--capa" : "slide-inner--tela"}`}>
-          <header className="flex items-center justify-between gap-3 eyebrow">
+          {!proprio && <header className="flex items-center justify-between gap-3 eyebrow">
             <span>{p.unitLabel} · Capítulo {p.chapter.number} · {p.chapter.title}</span>
             <span className="flex items-center gap-3"><b>página {p.pageIndex} de {p.pageCount}</b><span>{p.minutes} min</span>{p.level === "complementar" && <span className="badge badge-muted">complementar</span>}</span>
-          </header>
-          {capa ? (
+          </header>}
+          {proprio ? null : capa ? (
             <div className="slide-capa">
               <h1>{p.title}</h1>
               {p.objective && <p className="objective"><span className="eyebrow text-[#7a5f16] mr-2">Objetivo</span>{p.objective}</p>}
@@ -144,10 +148,10 @@ export function Slide(p: {
           <div ref={areaRef} className={`conteudo slide-area ${capa ? "slide-area--capa" : ""}`}>
             <div ref={telaRef} className="palco-tela">
               {p.infografico && <div data-bloco={-1}><InfograficoCapitulo d={p.infografico} modo="apresentacao" /></div>}
-              <ContentBlocks blocks={p.blocks} questions={p.questions} classId={p.classId} mode={p.isStaff ? "previa" : "estudo"} pageSlug={p.slug} palco />
+              <ContentBlocks blocks={p.blocks} questions={p.questions} classId={p.classId} mode={p.isStaff ? "previa" : "estudo"} pageSlug={p.slug} palco pagina={{ index: p.pageIndex, total: p.pageCount }} />
             </div>
           </div>
-          {p.connection && p.next && <p className="font-serif italic text-ink text-[.9em] border-t border-rule pt-1" style={ultima ? undefined : { visibility: "hidden" }} aria-hidden={!ultima}><span className="eyebrow not-italic mr-2">A seguir</span>{p.connection}</p>}
+          {p.connection && p.next && !proprio && <p className="font-serif italic text-ink text-[.9em] border-t border-rule pt-1" style={ultima ? undefined : { visibility: "hidden" }} aria-hidden={!ultima}><span className="eyebrow not-italic mr-2">A seguir</span>{p.connection}</p>}
         </div>
         <div className="absolute left-0 bottom-0 h-[3px] bg-gold" style={{ width: `${(p.pageIndex / p.pageCount) * 100}%` }} aria-hidden="true" />
       </div>

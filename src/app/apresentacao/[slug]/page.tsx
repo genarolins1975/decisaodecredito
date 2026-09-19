@@ -4,6 +4,7 @@ import { requireContext } from "@/lib/context";
 import { getPage, neighbors } from "@/lib/services/content";
 import { Slide } from "@/components/content/slide";
 import { infograficoDoCapitulo } from "@/lib/content/infograficos";
+import { PALCO_PROPRIO } from "@/lib/visuais/palco-proprio";
 
 export const metadata: Metadata = { title: "Apresentação" };
 
@@ -18,7 +19,7 @@ export default async function ApresentacaoPage({ params, searchParams }: { param
   const nav = await neighbors(ctx.current.edition.id, slug);
   const chapterPages = nav.all.filter((p) => p.chapterId === data.chapter.id);
   const pageIndex = chapterPages.findIndex((p) => p.slug === slug) + 1;
-  const infografico = pageIndex === 1 ? infograficoDoCapitulo(data.chapter.number) : null;
+  const infografico = pageIndex === 1 && !PALCO_PROPRIO.has(slug) ? infograficoDoCapitulo(data.chapter.number) : null;
   return (
     <Slide
       slug={slug} title={data.version.title} objective={data.version.objective} support={data.version.support} connection={data.version.connection}

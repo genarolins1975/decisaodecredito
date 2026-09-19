@@ -5,12 +5,15 @@ import { Question } from "./question";
 import { LegacyFrame } from "./legacy-frame";
 import { removerFiguraEstatica, visualNativo } from "@/components/visuais/registro";
 import { AjusteAoPalco } from "./ajuste-ao-palco";
+import { PALCO_PROPRIO } from "@/lib/visuais/palco-proprio";
 import { api } from "@/lib/client/api";
 
 type SubmitFn = (q: PublicQuestion, answer: unknown, clientRequestId: string) => Promise<{ isCorrect: boolean | null; feedback: never; attemptNo: number }>;
 
-export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liveSubmit, hideSlugs, pageSlug, palco }: {
+export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liveSubmit, hideSlugs, pageSlug, palco, pagina }: {
   blocks: Block[]; questions: PublicQuestion[]; classId: string; mode?: "estudo" | "apresentacao" | "previa"; liveSubmit?: SubmitFn; hideSlugs?: string[]; pageSlug?: string;
+  /** posição da página no capítulo, para visuais que desenham o próprio quadro de slide */
+  pagina?: { index: number; total: number };
   /** Apresentação (deck): cada bloco vira um invólucro [data-bloco] que o compositor pagina; episódio e síntese ganham o leiaute de palco */
   palco?: boolean;
 }) {
@@ -41,8 +44,12 @@ export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liv
   const reveal = (q: PublicQuestion) => async () => api<{ isCorrect: boolean | null; feedback: never; attemptNo: number; revealed: boolean; disclosedBefore: boolean }>("/api/estudo/responder", { body: { classId, questionVersionId: q.versionId, reveal: true } });
 
   const bloco = (i: number, filho: React.ReactNode) => filho == null ? null : <div key={i} data-bloco={i}>{filho}</div>;
+  // visual de abertura: entra antes de todos os blocos; no palco, quando desenha o próprio quadro, é a página inteira
+  const abertura = nativo?.substitui === "abertura" ? <AjusteAoPalco><nativo.Componente palco={palco} pagina={pagina} /></AjusteAoPalco> : null;
+  if (abertura && palco && pageSlug && PALCO_PROPRIO.has(pageSlug)) return <div className="flex flex-col gap-4">{bloco(-1, abertura)}</div>;
   return (
     <div className="flex flex-col gap-4">
+      {abertura && bloco(-1, abertura)}
       {blocks.flatMap((b, i) => {
         // figura estática substituída: o visual nativo e o texto restante viram dois blocos (i e i + 0,5), paginados separadamente
         if (b.type === "html" && i === idxFigura && nativo) return [bloco(i, <AjusteAoPalco><nativo.Componente palco={palco} /></AjusteAoPalco>), bloco(i + 0.5, <div className="conteudo" dangerouslySetInnerHTML={{ __html: removerFiguraEstatica(b.html) }} />)];

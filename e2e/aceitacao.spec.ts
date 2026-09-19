@@ -393,6 +393,19 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await eo.getByLabel("PD, em %").fill("100"); await expect(eo).toContainText("odds → ∞ quando p → 1"); await expect(eo).toContainText("p = 100%: nenhum ponto finito");
   await eo.getByLabel("PD, em %").fill("-5"); await expect(eo).toContainText("Uma probabilidade não pode ser negativa.");
   await eo.getByRole("button", { name: "Restaurar" }).click(); await expect(eo).toContainText("PD 20%: odds = 0,2 ÷ 0,8 = 0,25.");
+  // c4p1: os dois quadros de abertura, um só estado: características → escore → PD; +10 pp → +0,7453 em z → × 2,11 nas odds
+  await page.goto("/aulas/c4p1");
+  const rl = page.locator('figure[data-vz="logit-slides"]');
+  await expect(rl).toContainText("Como o logit transforma uma proposta em PD"); await expect(rl).toContainText("−5,6666"); await expect(rl).toContainText("+5,2171"); await expect(rl).toContainText("+0,6978"); await expect(rl).toContainText("z ≈ 0,2483"); await expect(rl).toContainText("56,18%");
+  await expect(rl).toContainText("cerca de 56 defaults a cada 100");
+  await rl.getByLabel("Utilização do limite, campo").fill("0"); await rl.getByLabel("Atraso observado, campo").fill("0");
+  await expect(rl).toContainText("z ≈ −5,6666"); await expect(rl).toContainText("0,34%");
+  await rl.getByRole("button", { name: "Restaurar exemplo" }).click(); await expect(rl).toContainText("56,18%");
+  await expect(rl).toContainText("× 2,11"); await expect(rl).toContainText("≈ +2,12 pp"); await expect(rl).toContainText("≈ +8,97 pp"); await expect(rl).toContainText("≈ +17,82 pp"); await expect(rl).toContainText("≈ +4,99 pp");
+  await rl.getByRole("button", { name: "−10 pp" }).click(); await expect(rl).toContainText("× 0,47"); await expect(rl).toContainText("−0,7453");
+  await rl.getByRole("button", { name: "0", exact: true }).click(); await expect(rl).toContainText("sem mudança"); await expect(rl).toContainText("1,00×");
+  await page.goto("/apresentacao/c4p1");
+  await expect(page.locator("main")).toContainText("01 / 22"); await expect(page.locator("main")).not.toContainText("Infográfico de abertura");
   // capítulo 5: a árvore que cresce, raiz do gerador e instabilidade ao retirar a #10
   await page.goto("/aulas/c5p16");
   const arvore = page.locator('figure[data-vz="arvore-instabilidade"]');
