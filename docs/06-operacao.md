@@ -78,7 +78,7 @@ node scripts/apostila/gerar.mjs aluno todos --pdf && node scripts/apostila/gerar
 python3 scripts/apostila/prancha.py tmp/apostila/build/capitulo-04-aluno.pdf           # prancha de conferência visual
 ```
 
-`dump-capitulo.mjs N` imprime o conteúdo de um capítulo em texto para escrever ou revisar as explicações. A versão do aluno pode ser publicada como material comum; a versão do professor só como material com status "professor" (só o professor vê) e nunca no repositório, que é público. Com "Capítulo N" no título, o material aparece na página de abertura do capítulo. Regenerar sempre que o conteúdo for reimportado ou uma peça nativa mudar.
+`dump-capitulo.mjs N` imprime o conteúdo de um capítulo em texto para escrever ou revisar as explicações. A capa de cada capítulo é o infográfico de abertura gerado de `content/infograficos/cNN.json` por `infograficos.py`, a mesma fonte do componente da plataforma e do palco. Duas gramáticas: a de blocos (quatro cartões, três números com fórmula, três painéis, faixa de três ideias) e a de fluxo (`"variante": "fluxo"`, capítulo 4: três etapas com setas, painel das escalas com a curva logística, painel do coeficiente e faixa de limite); `tests/infograficos.test.ts` confere a forma dos onze arquivos e a aritmética do capítulo 4 contra os coeficientes da aula. A versão do aluno pode ser publicada como material comum; a versão do professor só como material com status "professor" (só o professor vê) e nunca no repositório, que é público. Com "Capítulo N" no título, o material aparece na página de abertura do capítulo. Regenerar sempre que o conteúdo for reimportado ou uma peça nativa mudar.
 
 ## 7.2. Visuais nativos das páginas (peças de assinatura)
 
