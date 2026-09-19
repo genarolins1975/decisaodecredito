@@ -16,7 +16,7 @@ const meta = fs.existsSync(`${S}/fig/_meta.json`) ? JSON.parse(fs.readFileSync(`
 for (const slug of slugs) {
   try {
     await page.goto(`${BASE}/aulas/${slug}`, { waitUntil: "networkidle" });
-    await page.addStyleTag({ content: "body > header, header.sticky, aside, nav, .no-print, [data-testid=abertura-capitulo], section[data-questao], .vz-fonte { display: none !important } article { max-width: 1000px } .vz { box-shadow: none !important }" });
+    await page.addStyleTag({ content: "nextjs-portal, body > header, header.sticky, aside, nav, .no-print, [data-testid=abertura-capitulo], section[data-questao], .vz-fonte { display: none !important } article { max-width: 1000px } .vz { box-shadow: none !important }" });
     await page.waitForTimeout(500);
     const vz = page.locator("figure.vz").first();
     let alvo, tipo;
