@@ -354,10 +354,20 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await fronteira.getByRole("button", { name: "Zerar os coeficientes" }).click();
   await expect(fronteira).toContainText("nenhuma fronteira");
   await page.goto("/aulas/c4p2");
-  const reta = page.locator('figure[data-vz="reta-que-quebra"]');
-  await expect(reta).toContainText("11,18 pp sempre");
-  await reta.getByRole("button", { name: /Trocar de família/ }).click();
-  await expect(reta).toContainText("sempre entre 0 e 1");
+  const lab = page.locator('figure[data-vz="lab-logistica"]');
+  await expect(lab).toContainText("Utilização 60%: z = 0,136, odds 1,15, PD 53,4%."); // ajuste da aula: β₀ −3,121787, β₁ 5,429194
+  await expect(lab).toContainText("PD de 53,4% para 66,3%, +13,0 pp");
+  await expect(lab).toContainText("Ajuste da aula");
+  await lab.getByRole("button", { name: "Eliminar o efeito" }).click();
+  await expect(lab).toContainText("A utilização não altera a PD: a curva é horizontal.");
+  await expect(lab).toContainText("Parâmetros exploratórios");
+  await expect(lab).not.toContainText("A curva fica horizontal: toda proposta recebe a mesma PD"); // explicação só após revelar
+  await lab.getByRole("button", { name: "Revelar explicação" }).click();
+  await expect(lab).toContainText("A curva fica horizontal: toda proposta recebe a mesma PD");
+  await lab.getByRole("button", { name: "Restaurar ajuste da aula" }).click();
+  await expect(lab).toContainText("Ajuste da aula");
+  await lab.getByRole("button", { name: "Comparar com a reta" }).click();
+  await expect(lab).toContainText("p̂ = −0,143 + 1,118 · x");
   // capítulo 5: a árvore que cresce, raiz do gerador e instabilidade ao retirar a #10
   await page.goto("/aulas/c5p16");
   const arvore = page.locator('figure[data-vz="arvore-instabilidade"]');

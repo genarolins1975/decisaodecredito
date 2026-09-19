@@ -29,7 +29,7 @@ import { CemVidas } from "./cem-vidas";
 import { CurvaDeLucro } from "./curva-de-lucro";
 import { FilaDeRisco } from "./fila-de-risco";
 import { Fronteira } from "./fronteira";
-import { RetaQueQuebra } from "./reta-que-quebra";
+import { LabLogistica } from "./lab-logistica";
 import { TresEscalas } from "./tres-escalas";
 import { Escalas } from "./escalas";
 import { CurvaLogistica } from "./curva-logistica";
@@ -83,7 +83,7 @@ const REGISTRO: Record<string, VisualNativo> = {
   c3p15: { Componente: Balancear, substitui: "legacy" },
   c3p16: { Componente: Woe, substitui: "legacy" },
   c3p17: { Componente: ValorDaInformacao, substitui: "legacy" },
-  c4p2: { Componente: RetaQueQuebra, substitui: "figura" },
+  c4p2: { Componente: LabLogistica, substitui: "figura" },
   c4p3: { Componente: () => <Escalas modo="probabilidade" />, substitui: "legacy" },
   c4p4: { Componente: () => <Escalas modo="odds" />, substitui: "legacy" },
   c4p5: { Componente: () => <Escalas modo="logodds" />, substitui: "legacy" },
