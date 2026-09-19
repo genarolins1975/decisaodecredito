@@ -93,7 +93,7 @@ export function LogitSlides({ pagina }: { palco?: boolean; pagina?: { index: num
     <figure className="vz rl" data-vz="logit-slides" data-unidades="">
       <section className="rl-slide" data-tela="1" aria-label="Como o logit transforma uma proposta em PD">
         <header className="rl-cab">
-          <div className="rl-meta"><span>{meta}</span><span>{numero(0)}</span></div>
+          <div className="rl-meta eyebrow"><span>{meta}</span><span>{numero(0)}</span></div>
           <h2 className="rl-tit">Como o logit transforma uma proposta em PD</h2>
           <p className="rl-sub">As características geram contribuições; a soma passa pela função logística e se torna uma probabilidade.</p>
         </header>
@@ -124,12 +124,12 @@ export function LogitSlides({ pagina }: { palco?: boolean; pagina?: { index: num
           </div>
         </div>
         <div className="rl-faixa"><p className="rl-faixa-t">{interpretarPd(p.pd)}</p><p className="rl-faixa-s">É uma frequência esperada pelo modelo, não uma certeza sobre esta proposta.</p></div>
-        <p className="rl-rod">A seguir: o que significa aumentar uma característica em uma unidade?</p>
+        <p className="rl-rod nota">A seguir: o que significa aumentar uma característica em uma unidade?</p>
       </section>
 
       <section className="rl-slide" data-tela="2" aria-label="O coeficiente soma no escore e multiplica as odds">
         <header className="rl-cab">
-          <div className="rl-meta"><span>{meta}</span><span>{numero(1)}</span></div>
+          <div className="rl-meta eyebrow"><span>{meta}</span><span>{numero(1)}</span></div>
           <h2 className="rl-tit">O coeficiente soma no escore e multiplica as odds</h2>
           <p className="rl-sub">Na probabilidade, o impacto depende do ponto de partida, mantidas as demais variáveis.</p>
         </header>
@@ -162,7 +162,7 @@ export function LogitSlides({ pagina }: { palco?: boolean; pagina?: { index: num
           </div>
         </div>
         <div className="rl-faixa"><p className="rl-faixa-t">Mesmo incremento em z. Mesmo multiplicador nas odds. Diferentes variações na PD.</p><p className="rl-faixa-s">No modelo apresentado, essa interpretação vale mantendo as demais variáveis constantes, sem interações envolvendo a utilização.</p></div>
-        <p className="rl-rod">A seguir: as três escalas do risco, uma por uma.</p>
+        <p className="rl-rod nota">A seguir: as três escalas do risco, uma por uma.</p>
       </section>
     </figure>
   );

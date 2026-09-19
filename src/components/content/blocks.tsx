@@ -45,7 +45,16 @@ export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liv
 
   const bloco = (i: number, filho: React.ReactNode) => filho == null ? null : <div key={i} data-bloco={i}>{filho}</div>;
   // visual de abertura: entra antes de todos os blocos; no palco, quando desenha o próprio quadro, é a página inteira
-  const abertura = nativo?.substitui === "abertura" ? <AjusteAoPalco><nativo.Componente palco={palco} pagina={pagina} /></AjusteAoPalco> : null;
+  const proprio = nativo?.substitui === "pagina" || nativo?.substitui === "abertura"
+    ? <AjusteAoPalco><nativo.Componente palco={palco} pagina={pagina} /></AjusteAoPalco> : null;
+  // "pagina": o visual ocupa o lugar de todo o conteúdo herdado; só as questões continuam (a checagem é montada fora daqui)
+  if (proprio && nativo?.substitui === "pagina") return (
+    <div className="flex flex-col gap-4">
+      {bloco(-1, proprio)}
+      {blocks.flatMap((b, i) => (b.type === "question" ? [bloco(i, renderBloco(b, i))] : []))}
+    </div>
+  );
+  const abertura = nativo?.substitui === "abertura" ? proprio : null;
   if (abertura && palco && pageSlug && PALCO_PROPRIO.has(pageSlug)) return <div className="flex flex-col gap-4">{bloco(-1, abertura)}</div>;
   return (
     <div className="flex flex-col gap-4">

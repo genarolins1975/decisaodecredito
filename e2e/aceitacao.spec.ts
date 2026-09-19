@@ -393,6 +393,25 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await eo.getByLabel("PD, em %").fill("100"); await expect(eo).toContainText("odds → ∞ quando p → 1"); await expect(eo).toContainText("p = 100%: nenhum ponto finito");
   await eo.getByLabel("PD, em %").fill("-5"); await expect(eo).toContainText("Uma probabilidade não pode ser negativa.");
   await eo.getByRole("button", { name: "Restaurar" }).click(); await expect(eo).toContainText("PD 20%: odds = 0,2 ÷ 0,8 = 0,25.");
+  // c4p8: a decomposição do escore, um só estado para tabela, soma e as três representações
+  await page.goto("/aulas/c4p8");
+  const es = page.locator('figure[data-vz="escore-soma"]');
+  await expect(es).toContainText("Do dado à contribuição. Da soma à probabilidade.");
+  await expect(es.locator(".es-tab tbody tr")).toHaveCount(3);
+  await expect(es).toContainText("70 ÷ 10 = 7"); await expect(es).toContainText("+5,2171"); await expect(es).toContainText("5 ÷ 10 = 0,5"); await expect(es).toContainText("+0,6978");
+  await expect(es).toContainText("z ≈ 0,2483"); await expect(es).toContainText("1,282"); await expect(es).toContainText("56,18%");
+  await expect(page.locator("main")).not.toContainText("Consultas a bureau"); // o diagrama de sete variáveis saiu
+  await expect(page.locator("main")).not.toContainText("RECALCULADO AQUI");
+  await es.getByLabel(/Utilização/).fill("90");
+  await expect(es).toContainText("90 ÷ 10 = 9"); await expect(es).toContainText("+6,7077"); await expect(es).toContainText("z ≈ 1,7389"); await expect(es).toContainText("85,05%");
+  await es.getByLabel(/Atraso/).fill("0");
+  await expect(es).toContainText("0 ÷ 10 = 0"); await expect(es).toContainText("z ≈ 1,0411");
+  await es.getByRole("button", { name: "Restaurar exemplo" }).click();
+  await expect(es).toContainText("z ≈ 0,2483"); await expect(es).toContainText("56,18%");
+  await page.goto("/apresentacao/c4p8"); // no palco o quadro é a página inteira: a tabela não fica em outra tela
+  await expect(page.locator("main")).toContainText("08 / 22");
+  await expect(page.locator("main .es-tab tbody tr")).toHaveCount(3);
+  await expect(page.locator("main")).not.toContainText("tela 2 de");
   // c4p5: escala 3, log odds: ÷ 2 e × 2 sempre a partir das odds iniciais; ∓ln(2) em log odds, passos desiguais em PD
   await page.goto("/aulas/c4p5");
   const lo = page.locator('figure[data-vz="escala-logodds"]');
