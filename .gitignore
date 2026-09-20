@@ -15,3 +15,5 @@ backups/*
 /tmp/
 content/generated/shots/
 tsconfig.tsbuildinfo
+aula_credito_html/qa/*.png
+__pycache__/
