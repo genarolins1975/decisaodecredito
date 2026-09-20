@@ -9,6 +9,12 @@ previsão à decisão de crédito.
 Abra `dist/aula_credito.html` com duplo clique. É um arquivo único, funciona sem
 internet e sem servidor, e não faz nenhuma requisição externa.
 
+Na plataforma, a mesma aula fica em `/aula_credito.html`. O `build.mjs` copia o
+arquivo para `public/` da aplicação Next a cada compilação, então os dois são
+sempre idênticos. Essa rota passa pelo `src/proxy.ts`, que redireciona para
+`/entrar` quem não tiver cookie de sessão. É conveniência de navegação, não
+controle de acesso: arquivo em `public/` não passa por `guard.ts`.
+
 Para trabalhar no código, abra `app/index.html`, que carrega os mesmos arquivos soltos.
 
 ## Conduzir
