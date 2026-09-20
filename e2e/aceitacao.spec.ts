@@ -512,6 +512,26 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(ip.locator(".ip-svg")).toBeVisible();
   await ip.getByRole("button", { name: "Ver a conta" }).click();
   await expect(ip).toContainText("PD final = m × p ÷ (1 − p + m × p)");
+  // c4p14: a mesma contribuição em três unidades; trocar a unidade não muda escore nem PD
+  await page.goto("/aulas/c4p14");
+  const uc = page.locator('figure[data-vz="unidade-coeficiente"]');
+  await expect(uc).toContainText("A unidade muda. A previsão permanece.");
+  await expect(uc).toContainText("0,7453"); await expect(uc).toContainText("0,07453"); await expect(uc).toContainText("7,453");
+  expect(await uc.locator(".uc-c").allInnerTexts()).toEqual(["5,2171", "5,2171", "5,2171"]);
+  await expect(uc).toContainText("z ≈ 0,2483"); await expect(uc).toContainText("56,18%");
+  await expect(page.locator("main")).not.toContainText("RECALCULADO AQUI");
+  await uc.getByRole("button", { name: "95%" }).click();
+  expect(new Set(await uc.locator(".uc-c").allInnerTexts()).size).toBe(1); // as três continuam iguais
+  await expect(uc).toContainText("89,20%");
+  await uc.getByLabel("Utilização, campo em %").fill("140");
+  await expect(uc).toContainText("A utilização vai de 0% a 100%.");
+  await uc.getByRole("button", { name: "Restaurar exemplo" }).click();
+  await expect(uc).toContainText("56,18%");
+  await uc.getByRole("button", { name: "Ver definição" }).nth(2).click();
+  await expect(uc).toContainText("x = utilização em % ÷ 100");
+  expect(await uc.locator(".uc-c").allInnerTexts()).toEqual(["5,2171", "5,2171", "5,2171"]); // selecionar não altera a proposta
+  await uc.getByRole("button", { name: "E a razão de odds?" }).click();
+  await expect(uc).toContainText("β × Δx = 0,7453 nas três"); await expect(uc).toContainText("≈ 2,11");
   // c4p1: os dois quadros de abertura, um só estado: características → escore → PD; +10 pp → +0,7453 em z → × 2,11 nas odds
   await page.goto("/aulas/c4p1");
   const rl = page.locator('figure[data-vz="logit-slides"]');
