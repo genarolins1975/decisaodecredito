@@ -65,8 +65,9 @@ Aula.slide({
       },
       poda: {
         rotulo: "Poda por custo e complexidade",
-        explicacao: "Cresce a árvore e depois retira ramos que não pagam seu preço por folha. " +
-          "O parâmetro alfa é esse preço.",
+        explicacao: ["Cresce a árvore e depois retira ramos que não pagam seu preço por folha: minimiza ",
+          Mat.i("R_\\alpha(T) = R(T) + \\alpha\\,|T|"), ", em que ", Mat.i("R(T)"),
+          " é a impureza da árvore, ", Mat.i("|T|"), " o número de folhas e ", Mat.i("\\alpha"), " o preço de cada uma."],
         itens: R.modelos.arvore.poda.map(function (p) {
           return { rotulo: "alfa " + F.dec(p.alpha, 6), c: {
             folhas: p.folhas, perda_validacao: p.perda_validacao,
@@ -120,7 +121,7 @@ Aula.slide({
         })),
         h("div", { class: "painel cor", estilo: "padding:10px 14px" }, [
           h("p", { class: "apoio", estilo: "color:var(--ink);margin:0;font-size:18px" },
-            aba.explicacao),
+            Array.isArray(aba.explicacao) ? aba.explicacao : [aba.explicacao]),
         ]),
         h("div", { class: "painel" }, [
           UI.slider({

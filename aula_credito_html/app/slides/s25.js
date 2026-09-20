@@ -22,6 +22,10 @@ Aula.slide({
       "Não é correto dizer que a PD individual tem 95% de chance de cair nesse intervalo.",
       "A incerteza real da árvore inclui a busca pelos cortes, e é maior que a mostrada aqui.",
     ],
+    aprofundar: [
+      "Fórmula do intervalo de Wilson, com z igual a 1,96 para 95% nominal: o centro é (p̂ + z²/2n) dividido por (1 + z²/n), e a meia amplitude é z vezes a raiz de [p̂(1−p̂)/n + z²/4n²], dividida pelo mesmo denominador.",
+      "Wilson é preferível ao intervalo normal simples justamente no caso deste slide: taxa baixa e folha pequena, onde o intervalo normal produz limite inferior negativo.",
+    ],
     transicao: "Folhas maiores estabilizam estimativas, mas a árvore também precisa capturar diferenças relevantes entre clientes.",
   },
   impressao: function (e) { e.zero = true; },
@@ -85,12 +89,12 @@ Aula.slide({
       h("div", { class: "coluna", estilo: "flex:0 0 440px" }, [
         h("div", { class: "painel cor" }, [
           h("h3", { class: "secao" }, "Leitura"),
-          h("p", { class: "apoio", estilo: "color:var(--ink);font-size:21px" },
-            "Mesma taxa, evidências diferentes: com " + F.inteiro(n) +
-            " contratos o intervalo tem amplitude de " +
+          h("p", { class: "apoio", estilo: "color:var(--ink);font-size:21px" }, [
+            Mat.i("\\text{amplitude} \\propto \\sqrt{\\hat{p}(1-\\hat{p})/n}"), " ",
+            "Mesma taxa, evidências diferentes: com " + F.inteiro(n) + " contratos a amplitude é " +
             F.pp(M.wilson(Math.round(n * 0.10), n)[1] - M.wilson(Math.round(n * 0.10), n)[0], 1) +
-            "; com 1.000 contratos, " +
-            F.pp(M.wilson(100, 1000)[1] - M.wilson(100, 1000)[0], 1) + "."),
+            "; com 1.000, " +
+            F.pp(M.wilson(100, 1000)[1] - M.wilson(100, 1000)[0], 1) + "."]),
         ]),
         h("div", { class: "painel" }, [
           UI.slider({
