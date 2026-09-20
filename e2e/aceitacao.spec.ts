@@ -483,6 +483,35 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await ro.getByRole("radio", { name: /19,0%/ }).check();
   await ro.getByRole("button", { name: "Conferir resposta" }).click();
   await expect(ro).toContainText("Resposta correta."); await expect(ro).toContainText("Primeiro multiplicamos as odds");
+  // c4p12: a curva do aumento da PD; o máximo revelado não é 50%
+  await page.goto("/aulas/c4p12");
+  const ip = page.locator('figure[data-vz="impacto-pd"]');
+  await expect(ip).toContainText("O mesmo multiplicador, diferentes mudanças na PD");
+  await expect(ip).toContainText("Δz = +0,7453"); await expect(ip).toContainText("× 2,11");
+  await expect(ip).toContainText("18,97%"); await expect(ip).toContainText("+8,97 pp");
+  await expect(ip).not.toContainText("40,8%"); // a revelação começa fechada
+  await expect(page.locator("main")).not.toContainText("RECALCULADO AQUI");
+  await ip.getByRole("button", { name: "50%", exact: true }).click();
+  await expect(ip).toContainText("67,82%"); await expect(ip).toContainText("+17,82 pp");
+  await ip.getByRole("button", { name: "2%", exact: true }).click();
+  await expect(ip).toContainText("4,12%"); await expect(ip).toContainText("+2,12 pp");
+  await ip.getByLabel("PD inicial, campo em %").fill("99,9");
+  await expect(ip).toContainText("99,95%"); await expect(ip).toContainText("+0,05 pp"); // o extremo da faixa é aceito
+  await ip.getByLabel("PD inicial, campo em %").fill("120");
+  await expect(ip).toContainText("A PD inicial vai de 0,1% a 99,9%.");
+  await ip.getByRole("button", { name: "Restaurar" }).click();
+  await expect(ip).toContainText("18,97%");
+  await ip.getByRole("button", { name: /O maior impacto ocorre em 50%/ }).click();
+  await expect(ip).toContainText("perto de uma PD inicial de 40,8%, com aumento de aproximadamente 18,42 pp");
+  await expect(ip).toContainText("50% é o ponto de maior sensibilidade local");
+  await ip.getByRole("button", { name: "Comparar sete cenários" }).click();
+  await expect(ip.locator(".ip-tab tbody tr")).toHaveCount(7);
+  await expect(ip).toContainText("maior aumento entre os cenários listados");
+  await expect(ip).toContainText("Cenários didáticos; não representam uma amostra de clientes.");
+  await ip.getByRole("button", { name: "Voltar ao gráfico" }).click();
+  await expect(ip.locator(".ip-svg")).toBeVisible();
+  await ip.getByRole("button", { name: "Ver a conta" }).click();
+  await expect(ip).toContainText("PD final = m × p ÷ (1 − p + m × p)");
   // c4p1: os dois quadros de abertura, um só estado: características → escore → PD; +10 pp → +0,7453 em z → × 2,11 nas odds
   await page.goto("/aulas/c4p1");
   const rl = page.locator('figure[data-vz="logit-slides"]');
