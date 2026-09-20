@@ -413,7 +413,7 @@ def resumir_arvore(modelo, X, y, nomes, profundidade_max=3):
 
 
 def treinar_boosting(Xtr, ytr, Xva, yva, taxas, profundidades, n_arv=300,
-                     paciencia=20, tolerancia=1e-4):
+                     paciencia=20, tolerancia=1e-4, Xcli=None, passo_cli=5):
     cenarios = []
     melhor = None
     for lr in taxas:
@@ -441,9 +441,19 @@ def treinar_boosting(Xtr, ytr, Xva, yva, taxas, profundidades, n_arv=300,
                     if espera >= paciencia:
                         parada = i
                         break
+            # Previsão dos quatro clientes ao longo das iterações, para o slide 37.
+            trajetoria_cli = []
+            if Xcli is not None:
+                for i, f_cli in enumerate(m.staged_decision_function(Xcli), start=1):
+                    if i % passo_cli == 0 or i == 1:
+                        trajetoria_cli.append({
+                            "iteracao": i,
+                            "pd": [round(float(v), 6) for v in sigmoid(f_cli.ravel())],
+                        })
             item = {
                 "taxa": lr,
                 "profundidade": prof,
+                "clientes_por_iteracao": trajetoria_cli,
                 "melhor_iteracao": melhor_iter,
                 "iteracao_parada": parada,
                 "perda_validacao": round(float(perdas_va[melhor_iter - 1]), 6),
@@ -650,8 +660,10 @@ def executar(verbose=True):
     poda = caminho_poda(Xtr, ytr, Xva, yva, None if arvore_info["profundidade"] < 0
                         else arvore_info["profundidade"], arvore_info["min_folha"])
 
+    Xcli_pre = codificar_clientes(medianas)
     boost, boost_info, boost_cenarios = treinar_boosting(
-        Xtr, ytr, Xva, yva, taxas=[0.03, 0.10, 0.30], profundidades=[1, 2, 3])
+        Xtr, ytr, Xva, yva, taxas=[0.03, 0.10, 0.30], profundidades=[1, 2, 3],
+        Xcli=Xcli_pre)
     log(f"boosting: taxa={boost_info['taxa']} profundidade={boost_info['profundidade']} "
         f"melhor_iteração={boost_info['melhor_iteracao']} perda_val={boost_info['perda_validacao']:.5f}")
     boost_final = BoostingCortado(boost, boost_info["melhor_iteracao"])
@@ -734,7 +746,7 @@ def executar(verbose=True):
         modelos["boosting"], Xva, yva, GRUPOS, COLUNAS, rng)
     fundo_idx = rng.choice(len(Xca), size=300, replace=False)
     fundo = Xca[fundo_idx]
-    Xcli = codificar_clientes(medianas)
+    Xcli = Xcli_pre
     locais = []
     for i, c in enumerate(CLIENTES):
         phi, base_v, total_v = shapley_intervencional(

@@ -6,7 +6,7 @@
   "numpy": "2.4.6",
   "scikit_learn": "1.9.1",
   "arquivo_resultados": "saida/resultados.json",
-  "sha256_resultados": "11197a8b64b891beeb42d5d9b5b1f39a1ae7950e9a2d45175d5fa0a403d557b0",
-  "bytes_resultados": 356177,
+  "sha256_resultados": "819746e8a01e72c2e9974080324900247cbae0f2497482e62c3184a5a6389b2e",
+  "bytes_resultados": 388909,
   "observacao": "Base sintética. Nenhum dado real de cliente. Os modelos são ajustados no treino, selecionados na validação, calibrados na partição de calibração e avaliados uma única vez no teste."
 }
