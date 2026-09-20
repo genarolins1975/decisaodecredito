@@ -19,6 +19,11 @@ Aula.slide({
       "Sobre causalidade: uma contribuição positiva do histórico não prova que remover o atraso do cadastro reduziria o risco real.",
       "Reduzir a taxa de aprendizagem exige recalcular as rodadas e os resíduos, não dividir a PD.",
     ],
+    cuidados: [
+      "A soma das árvores acontece na escala de log odds. Somar contribuições em probabilidade dá resultado errado.",
+      "A miniatura tem 10 registros e serve para ver o mecanismo. Não é modelo ajustado nem sustenta comparação de desempenho.",
+      "Reconstruir a previsão de um cliente novo não valida o modelo: validação exige amostra fora do tempo, no bloco seguinte.",
+    ],
     transicao: "Sabemos como as três técnicas funcionam. Agora precisamos comparar as três em condições iguais e verificar o que cada métrica responde.",
   },
   impressao: function (e) { e.escolha = 1; e.conferido = true; e.passos = 2; },

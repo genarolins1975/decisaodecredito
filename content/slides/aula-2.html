@@ -2666,6 +2666,10 @@ Aula.slide({
       ]),
       h("div", { estilo: "flex:0 0 430px" }, h("div", { class: "painel" }, [
         controle,
+        h("div", { class: "grupo", estilo: "margin-top:8px" }, [
+          h("button", { class: "btn fantasma", type: "button", onclick: ctx.reiniciar },
+            "Reiniciar exemplo"),
+        ]),
         h("p", { class: "nota", estilo: "margin-top:8px" },
           "Atingir exatamente 90 dias não satisfaz a definição. O evento exige mais de 90."),
       ])),
@@ -2931,11 +2935,15 @@ Aula.slide({
         ]),
         h("div", { class: "painel cor" }, [
           h("p", { class: "apoio", estilo: "color:var(--ink);font-size:21px" }, cen.texto),
-          est.cenario === "erro"
-            ? h("button", { class: "btn", estilo: "margin-top:10px", type: "button",
-                onclick: function () { est.cenario = "ajustar"; App.montar("05"); } },
-                "Corrigir e restaurar o protocolo")
-            : null,
+          h("div", { class: "grupo", estilo: "margin-top:10px" }, [
+            est.cenario === "erro"
+              ? h("button", { class: "btn", type: "button",
+                  onclick: function () { est.cenario = "ajustar"; App.montar("05"); } },
+                  "Corrigir e restaurar o protocolo")
+              : null,
+            h("button", { class: "btn fantasma", type: "button", onclick: ctx.reiniciar },
+              "Reiniciar exemplo"),
+          ]),
         ]),
         h("p", { class: "nota" },
           "Barra sólida: contratações. Barra clara: os 12 meses até o alvo existir. " +
@@ -3201,7 +3209,14 @@ Aula.slide({
     });
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
-      h("div", { class: "painel claro centro", estilo: "display:flex;flex:0 0 auto" }, g.svg),
+      h("div", { class: "painel claro centro", estilo: "display:flex;flex:0 0 auto;flex-direction:column;justify-content:flex-start" }, [
+        h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:0 0 2px" },
+          Mat.b("z = \\beta_0 + \\sum_{j} \\beta_j\\,(x_j - \\bar{x}_j)")),
+        h("p", { class: "nota", estilo: "margin:0 0 6px;text-align:center" }, [
+          "cada barra abaixo é uma parcela da soma: ", Mat.i("\\beta_j\\,(x_j - \\bar{x}_j)"),
+        ]),
+        g.svg,
+      ]),
       h("div", { class: "coluna cresce" }, [
         h("div", { class: "painel cor", estilo: "padding:10px 16px" }, [
           h("div", { estilo: "display:flex;gap:14px;align-items:baseline;flex-wrap:wrap" }, [
@@ -4000,8 +4015,12 @@ Aula.slide({
           ]),
         ]),
         est.amostra ? h("div", { class: "painel claro cresce" }, [tabela,
+          h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:8px 0 0" },
+            Mat.b("\\mathcal{L}(\\beta) = \\frac{1}{n}\\sum_{i=1}^{n} " +
+              "-\\bigl[\\, y_i\\,\\ln p_i + (1 - y_i)\\,\\ln(1 - p_i) \\,\\bigr]")),
           h("p", { class: "nota", estilo: "margin-top:6px" },
-            "O ajuste minimiza a média das perdas, e não a perda de uma observação.")]) : null,
+            "Esta é a função que o ajuste minimiza: a média das perdas dos " + amostra.y.length +
+            " contratos, e não a perda de uma observação. Os coeficientes são os que dão o menor valor dela.")]) : null,
       ]),
     ]));
   },
@@ -4103,20 +4122,22 @@ Aula.slide({
         h("div", { class: "painel claro cresce centro", estilo: "display:flex" }, g.svg),
         h("div", { class: "painel claro" }, [
           tabela,
-          h("p", { class: "nota", estilo: "margin-top:6px" },
-            "Derivada em relação ao comprometimento: " + F.dec(beta, 2) +
-            " \u00d7 p \u00d7 (1 \u2212 p), em probabilidade por ponto percentual. " +
-            "A aproximação vale para mudanças pequenas."),
+          h("p", { class: "nota", estilo: "margin-top:6px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap" }, [
+            h("span", { estilo: "font-size:19px;color:var(--ink)" },
+              Mat.i("\\frac{\\partial p}{\\partial\\,\\mathit{comp}} = \\beta\\,p\\,(1-p) = " +
+                Mat.n(beta, 2) + "\\,p\\,(1-p)")),
+            "em probabilidade por ponto percentual; vale para mudanças pequenas.",
+          ]),
         ]),
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 470px" }, [
         h("div", { class: "painel cor" }, [
-          h("p", { estilo: "font-family:var(--serif);font-size:23px;color:var(--ink);margin:0" },
-            "\u0394comp " + F.sinal(est.dcomp, 0) + " p.p. resulta em \u0394z = " +
-            F.dec(beta, 2) + " \u00d7 " + F.dec(est.dcomp, 0) + " = " + F.dec(dz, 3)),
-          h("p", { estilo: "font-family:var(--serif);font-size:23px;color:var(--ink);margin:6px 0 0" },
-            "PD de " + F.pct(est.p0, 2) + " passa a " + F.pct(est.p0 + exata(est.p0), 2) +
-            " (" + F.ppSinal(exata(est.p0), 2) + ")"),
+          h("p", { estilo: "font-size:22px;margin:0" },
+            Mat.b("\\Delta \\mathit{comp} = " + Mat.n(est.dcomp, 0) + "\\text{ p.p.} \\;\\Rightarrow\\; " +
+              "\\Delta z = " + Mat.n(beta, 2) + "\\times " + Mat.n(est.dcomp, 0) + " = " + Mat.n(dz, 3))),
+          h("p", { estilo: "font-size:22px;margin:6px 0 0" },
+            Mat.b("p: " + Mat.pct(est.p0, 2) + " \\;\\longrightarrow\\; " + Mat.pct(est.p0 + exata(est.p0), 2) +
+              "\\quad (" + Mat.n(exata(est.p0) * 100, 2) + "\\text{ p.p.})")),
         ]),
         h("div", { class: "painel cresce" }, [
           h("div", { class: "ctrl" }, [
@@ -4717,6 +4738,8 @@ Aula.slide({
       h("div", { class: "coluna", estilo: "flex:0 0 420px" }, [
         h("div", { class: "painel cor" }, [
           h("h3", { class: "secao", estilo: "margin:0 0 6px" }, fonte.titulo),
+          h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:0 0 4px;font-size:17px" },
+            Mat.b("\\mathcal{L}_{\\text{pen}} = \\mathcal{L} + \\tfrac{1}{2C}\\textstyle\\sum_j \\beta_j^{2}")),
           h("div", { class: "kv", estilo: "font-size:18px;gap:2px 12px" }, [
             h("dt", {}, "C e força"),
             h("dd", {}, F.dec(atual.C, atual.C < 1 ? 4 : 0) + "  ·  " +
@@ -4930,6 +4953,11 @@ Aula.slide({
       "Escore original −2,025 e PD 11,66%. Novo escore −1,625 e PD aproximadamente 16,45%. Diferença aproximada de 4,79 pontos.",
       "Sobre causalidade: o cálculo descreve o modelo mantendo as demais entradas fixas. Não identifica efeito causal.",
       "Desafio opcional: sem o histórico de atraso, o escore de Bruno cai 0,80 e a PD passa de 11,66% para aproximadamente 5,66%.",
+    ],
+    cuidados: [
+      "O que dobra são as odds, não a probabilidade. Converter odds em PD exige a volta pela logística.",
+      "Os coeficientes deste exemplo foram escolhidos para ensinar, não estimados em dados. A ordem de grandeza é plausível; os valores não são um modelo.",
+      "Uma PD de Bruno não diz o que acontecerá com Bruno. Diz a frequência esperada em exposições semelhantes.",
     ],
     transicao: "Agora imagine que o modelo não some características, mas faça perguntas sucessivas: houve atraso? O comprometimento é alto? Essa é a lógica de uma árvore.",
   },
@@ -6323,6 +6351,11 @@ Aula.slide({
       "Dobrar a renda isoladamente, com o comprometimento mantido fixo, não altera esta árvore, porque a renda não é usada nas perguntas.",
       "Numa mudança econômica real o comprometimento poderia variar. A simulação é sobre a função do modelo.",
       "Desafio final: Bruno de 38% para 41% passa de 15% para 40%. Isso não prova um salto real de risco exatamente nesse limite: é uma descontinuidade da aproximação aprendida.",
+    ],
+    cuidados: [
+      "A taxa de uma folha é estimativa com incerteza, e folhas pequenas têm intervalo largo. Ler a taxa sem o tamanho da folha é o erro mais comum aqui.",
+      "A regra da árvore é associação aprendida na amostra, não relação causal: mudar a variável no cliente não move a PD dele pelo caminho da árvore.",
+      "Esta árvore vem da miniatura de 1.000 contratos, separada da base do experimento. Não compare o desempenho dela com o dos modelos treinados.",
     ],
     transicao: "Uma única árvore é clara, mas pode ser limitada ou instável. Podemos construir uma previsão melhor acrescentando várias árvores pequenas em sequência?",
   },
@@ -8053,6 +8086,11 @@ Aula.slide({
       "Sobre causalidade: uma contribuição positiva do histórico não prova que remover o atraso do cadastro reduziria o risco real.",
       "Reduzir a taxa de aprendizagem exige recalcular as rodadas e os resíduos, não dividir a PD.",
     ],
+    cuidados: [
+      "A soma das árvores acontece na escala de log odds. Somar contribuições em probabilidade dá resultado errado.",
+      "A miniatura tem 10 registros e serve para ver o mecanismo. Não é modelo ajustado nem sustenta comparação de desempenho.",
+      "Reconstruir a previsão de um cliente novo não valida o modelo: validação exige amostra fora do tempo, no bloco seguinte.",
+    ],
     transicao: "Sabemos como as três técnicas funcionam. Agora precisamos comparar as três em condições iguais e verificar o que cada métrica responde.",
   },
   impressao: function (e) { e.escolha = 1; e.conferido = true; e.passos = 2; },
@@ -9759,9 +9797,15 @@ Aula.slide({
               aberta
                 ? h("div", {}, [
                     h("p", { class: "apoio", estilo: "margin:0;font-size:16px" }, p.resposta),
-                    h("button", { class: "btn min fantasma", estilo: "margin-top:2px;padding:2px 0",
-                      type: "button", onclick: function () { ctx.ir(p.slide); } },
-                      "Rever no slide " + p.slide),
+                    h("div", { class: "grupo", estilo: "margin-top:2px;gap:10px" }, [
+                      h("button", { class: "btn min fantasma", estilo: "padding:2px 0",
+                        type: "button", onclick: function () { ctx.ir(p.slide); } },
+                        "Rever no slide " + p.slide),
+                      h("button", { class: "btn min fantasma", estilo: "padding:2px 0",
+                        type: "button", onclick: function () {
+                          delete est.respondidas[p.chave]; App.montar("50");
+                        } }, "Esconder"),
+                    ]),
                   ])
                 : h("button", { class: "btn min", type: "button", onclick: function () {
                     est.respondidas[p.chave] = true; App.montar("50");

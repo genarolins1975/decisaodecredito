@@ -110,6 +110,10 @@ Aula.slide({
       ]),
       h("div", { estilo: "flex:0 0 430px" }, h("div", { class: "painel" }, [
         controle,
+        h("div", { class: "grupo", estilo: "margin-top:8px" }, [
+          h("button", { class: "btn fantasma", type: "button", onclick: ctx.reiniciar },
+            "Reiniciar exemplo"),
+        ]),
         h("p", { class: "nota", estilo: "margin-top:8px" },
           "Atingir exatamente 90 dias não satisfaz a definição. O evento exige mais de 90."),
       ])),

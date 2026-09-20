@@ -18,6 +18,11 @@ Aula.slide({
       "Sobre causalidade: o cálculo descreve o modelo mantendo as demais entradas fixas. Não identifica efeito causal.",
       "Desafio opcional: sem o histórico de atraso, o escore de Bruno cai 0,80 e a PD passa de 11,66% para aproximadamente 5,66%.",
     ],
+    cuidados: [
+      "O que dobra são as odds, não a probabilidade. Converter odds em PD exige a volta pela logística.",
+      "Os coeficientes deste exemplo foram escolhidos para ensinar, não estimados em dados. A ordem de grandeza é plausível; os valores não são um modelo.",
+      "Uma PD de Bruno não diz o que acontecerá com Bruno. Diz a frequência esperada em exposições semelhantes.",
+    ],
     transicao: "Agora imagine que o modelo não some características, mas faça perguntas sucessivas: houve atraso? O comprometimento é alto? Essa é a lógica de uma árvore.",
   },
   impressao: function (e) { e.passos = 4; e.conferido = true; e.escolha = 1; },

@@ -92,20 +92,22 @@ Aula.slide({
         h("div", { class: "painel claro cresce centro", estilo: "display:flex" }, g.svg),
         h("div", { class: "painel claro" }, [
           tabela,
-          h("p", { class: "nota", estilo: "margin-top:6px" },
-            "Derivada em relação ao comprometimento: " + F.dec(beta, 2) +
-            " \u00d7 p \u00d7 (1 \u2212 p), em probabilidade por ponto percentual. " +
-            "A aproximação vale para mudanças pequenas."),
+          h("p", { class: "nota", estilo: "margin-top:6px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap" }, [
+            h("span", { estilo: "font-size:19px;color:var(--ink)" },
+              Mat.i("\\frac{\\partial p}{\\partial\\,\\mathit{comp}} = \\beta\\,p\\,(1-p) = " +
+                Mat.n(beta, 2) + "\\,p\\,(1-p)")),
+            "em probabilidade por ponto percentual; vale para mudanças pequenas.",
+          ]),
         ]),
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 470px" }, [
         h("div", { class: "painel cor" }, [
-          h("p", { estilo: "font-family:var(--serif);font-size:23px;color:var(--ink);margin:0" },
-            "\u0394comp " + F.sinal(est.dcomp, 0) + " p.p. resulta em \u0394z = " +
-            F.dec(beta, 2) + " \u00d7 " + F.dec(est.dcomp, 0) + " = " + F.dec(dz, 3)),
-          h("p", { estilo: "font-family:var(--serif);font-size:23px;color:var(--ink);margin:6px 0 0" },
-            "PD de " + F.pct(est.p0, 2) + " passa a " + F.pct(est.p0 + exata(est.p0), 2) +
-            " (" + F.ppSinal(exata(est.p0), 2) + ")"),
+          h("p", { estilo: "font-size:22px;margin:0" },
+            Mat.b("\\Delta \\mathit{comp} = " + Mat.n(est.dcomp, 0) + "\\text{ p.p.} \\;\\Rightarrow\\; " +
+              "\\Delta z = " + Mat.n(beta, 2) + "\\times " + Mat.n(est.dcomp, 0) + " = " + Mat.n(dz, 3))),
+          h("p", { estilo: "font-size:22px;margin:6px 0 0" },
+            Mat.b("p: " + Mat.pct(est.p0, 2) + " \\;\\longrightarrow\\; " + Mat.pct(est.p0 + exata(est.p0), 2) +
+              "\\quad (" + Mat.n(exata(est.p0) * 100, 2) + "\\text{ p.p.})")),
         ]),
         h("div", { class: "painel cresce" }, [
           h("div", { class: "ctrl" }, [

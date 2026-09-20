@@ -121,8 +121,12 @@ Aula.slide({
           ]),
         ]),
         est.amostra ? h("div", { class: "painel claro cresce" }, [tabela,
+          h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:8px 0 0" },
+            Mat.b("\\mathcal{L}(\\beta) = \\frac{1}{n}\\sum_{i=1}^{n} " +
+              "-\\bigl[\\, y_i\\,\\ln p_i + (1 - y_i)\\,\\ln(1 - p_i) \\,\\bigr]")),
           h("p", { class: "nota", estilo: "margin-top:6px" },
-            "O ajuste minimiza a média das perdas, e não a perda de uma observação.")]) : null,
+            "Esta é a função que o ajuste minimiza: a média das perdas dos " + amostra.y.length +
+            " contratos, e não a perda de uma observação. Os coeficientes são os que dão o menor valor dela.")]) : null,
       ]),
     ]));
   },
