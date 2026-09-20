@@ -1,0 +1,133 @@
+Aula.slide({
+  id: "17",
+  bloco: "logit",
+  titulo: "O comprometimento pesa igual para quem tem histórico de atraso?",
+  subtitulo: "Interação é diferença de inclinação na escala do escore",
+  conclusao: "Com interação, o efeito do comprometimento no escore depende do histórico.",
+  fonte: "Cenário separado da fórmula manual; cálculo próprio",
+  resumo: "Duas retas de escore por comprometimento, uma para cada valor de histórico, e as curvas de PD correspondentes.",
+  notas: {
+    conducao: [
+      "Comece pelo escore, com as duas retas paralelas.",
+      "Pergunte o que muda quando o termo cruzado é ativado. Só então observe a PD.",
+      "Peça que o aluno separe efeito do histórico no escore de diferença de probabilidade.",
+    ],
+    respostas: [
+      "Sem interação: inclinação 0,04 nos dois grupos, retas paralelas no escore.",
+      "Com interação de 0,03: inclinação 0,04 para histórico zero e 0,07 para histórico um.",
+      "Mesmo sem termo cruzado, a diferença de PD entre os grupos varia com o comprometimento, porque a sigmoide é não linear.",
+    ],
+    cuidados: [
+      "Os coeficientes principais são condicionais ao valor de referência das demais variáveis.",
+      "Com interação, o coeficiente do histórico não é efeito constante em qualquer comprometimento.",
+      "A leitura é associativa e pode não representar uma intervenção viável.",
+      "Ausência de termo cruzado não implica diferença constante de PD.",
+    ],
+    transicao: "Cada transformação ou interação acrescenta flexibilidade. Como evitar que isso capture particularidades da amostra?",
+  },
+  impressao: function (e) { e.delta = 0.03; },
+
+  montar: function (corpo, ctx) {
+    var est = ctx.estado;
+    if (est.comp === undefined) est.comp = 40;
+    if (est.delta === undefined) est.delta = 0;
+
+    var z0 = -3.50, bComp = 0.04, bHist = 0.80;
+    function z(comp, hist) {
+      return z0 + bComp * (comp - 30) + bHist * hist + est.delta * (comp - 30) * hist;
+    }
+
+    function grafico(escalaPD) {
+      var g = Graf.novo({ w: 600, h: 296, m: { e: 84, d: 92, c: 18, b: 54 } });
+      g.x(10, 70);
+      if (escalaPD) {
+        g.y(0, 0.7);
+        g.grade({ y: [0, 0.2, 0.4, 0.6] });
+        g.eixoY({ ticks: [0, 0.2, 0.4, 0.6], formato: function (v) { return F.pct(v, 0); },
+                  rotulo: "probabilidade de inadimplência" });
+      } else {
+        g.y(-3, 1.5);
+        g.grade({ y: [-3, -2, -1, 0, 1] });
+        g.eixoY({ ticks: [-3, -2, -1, 0, 1], rotulo: "escore z" });
+      }
+      g.eixoX({ ticks: [10, 20, 30, 40, 50, 60, 70], rotulo: "comprometimento em %" });
+      [0, 1].forEach(function (hist) {
+        var cor = hist ? "var(--alert)" : "var(--logit)";
+        var pts = M.linspace(10, 70, 121).map(function (v) {
+          return [v, escalaPD ? M.sigmoid(z(v, hist)) : z(v, hist)];
+        });
+        g.linha(pts, { cor: cor, largura: 3 });
+        var fim = pts[pts.length - 1];
+        g.texto(70, fim[1], hist ? "histórico = 1" : "histórico = 0",
+          { dx: 8, dy: 6, tamanho: 18, cor: cor });
+        var v = escalaPD ? M.sigmoid(z(est.comp, hist)) : z(est.comp, hist);
+        g.ponto(est.comp, v, { cor: cor, r: 8 });
+        g.texto(est.comp, v, escalaPD ? F.pct(v, 1) : F.dec(v, 2),
+          { dx: 10, dy: hist ? -12 : 22, tamanho: 18, cor: "var(--ink)" });
+      });
+      g.add(sv("line", { x1: g.px(est.comp), x2: g.px(est.comp), y1: g.py(g.dy[0]),
+        y2: g.py(g.dy[1]), stroke: "var(--muted)", "stroke-dasharray": "4 4" }));
+      return g.svg;
+    }
+
+    var termo = est.delta * (est.comp - 30);
+    var difEscore = z(est.comp, 1) - z(est.comp, 0);
+    var difPD = M.sigmoid(z(est.comp, 1)) - M.sigmoid(z(est.comp, 0));
+
+    corpo.appendChild(h("div", { class: "linha cresce" }, [
+      h("div", { class: "painel claro cresce centro", estilo: "display:flex" }, [
+        h("h3", { class: "secao" }, "Escala do escore: a interação aparece na inclinação"),
+        grafico(false),
+      ]),
+      h("div", { class: "painel claro cresce centro", estilo: "display:flex" }, [
+        h("h3", { class: "secao" }, "Escala da probabilidade"),
+        grafico(true),
+      ]),
+      h("div", { class: "coluna", estilo: "flex:0 0 430px" }, [
+        h("div", { class: "painel cor", estilo: "padding:10px 14px" }, [
+          h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:0;font-size:19px" },
+            "z = −3,50 + 0,04 × (comp − 30) + 0,80 × hist + " +
+            F.dec(est.delta, 2) + " × (comp − 30) × hist"),
+        ]),
+        h("div", { class: "painel" }, [
+          UI.botoes({
+            compacto: true, rotulo: "termo de interação",
+            opcoes: [{ valor: 0, rotulo: "sem interação" },
+                     { valor: 0.03, rotulo: "interação de 0,03" }],
+            valor: est.delta,
+            aoMudar: function (v) { est.delta = v; App.montar("17"); },
+          }),
+          h("div", { estilo: "margin-top:6px" }, UI.slider({
+            rotulo: "Comprometimento", min: 10, max: 70, passo: 1, valor: est.comp,
+            formato: function (v) { return "termo " + F.dec(est.delta * (v - 30), 3); },
+            aoMudar: function (v) { est.comp = v; App.montar("17"); },
+          })),
+          h("div", { class: "grupo", estilo: "margin-top:10px" }, [
+            h("button", { class: "btn", type: "button", onclick: function () {
+              est.verTermo = !est.verTermo; App.montar("17");
+            } }, est.verTermo ? "Esconder o termo" : "Ver o termo cruzado"),
+            h("button", { class: "btn fantasma", type: "button", onclick: ctx.reiniciar },
+              "Reiniciar exemplo"),
+          ]),
+          est.verTermo ? h("p", { class: "nota", estilo: "margin-top:10px" },
+            "(comp − 30) × hist = (" + F.dec(est.comp, 0) + " − 30) × hist. " +
+            "Para histórico = 0 o termo some. Para histórico = 1 vale " +
+            F.dec(est.comp - 30, 0) + ", e multiplicado por " + F.dec(est.delta, 2) +
+            " soma " + F.dec(termo, 3) + " ao escore.") : null,
+        ]),
+        h("div", { class: "painel claro cresce" }, [
+          h("h3", { class: "secao", estilo: "margin-bottom:4px" },
+            "Em comprometimento de " + F.dec(est.comp, 0) + "%"),
+          UI.kv([
+            ["inclinações no escore",
+             F.dec(bComp, 2) + " e " + F.dec(bComp + est.delta, 2) + " por ponto"],
+            ["diferença no escore", F.dec(difEscore, 3)],
+            ["diferença em PD", F.ppSinal(difPD, 2)],
+          ]),
+          h("p", { class: "nota", estilo: "margin-top:6px" },
+            "Mesmo sem interação, a diferença em PD varia com o comprometimento: a sigmoide é não linear."),
+        ]),
+      ]),
+    ]));
+  },
+});

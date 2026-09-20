@@ -1,0 +1,12 @@
+{
+  "gerado_por": "experimento.py",
+  "semente": 20260920,
+  "python": "3.11.15",
+  "plataforma": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "numpy": "2.4.6",
+  "scikit_learn": "1.9.1",
+  "arquivo_resultados": "saida/resultados.json",
+  "sha256_resultados": "11197a8b64b891beeb42d5d9b5b1f39a1ae7950e9a2d45175d5fa0a403d557b0",
+  "bytes_resultados": 356177,
+  "observacao": "Base sintética. Nenhum dado real de cliente. Os modelos são ajustados no treino, selecionados na validação, calibrados na partição de calibração e avaliados uma única vez no teste."
+}
