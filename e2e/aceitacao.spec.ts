@@ -532,6 +532,25 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   expect(await uc.locator(".uc-c").allInnerTexts()).toEqual(["5,2171", "5,2171", "5,2171"]); // selecionar não altera a proposta
   await uc.getByRole("button", { name: "E a razão de odds?" }).click();
   await expect(uc).toContainText("β × Δx = 0,7453 nas três"); await expect(uc).toContainText("≈ 2,11");
+  // c4p15: a log loss proposta a proposta; a seleção muda só o painel, nunca as barras nem a média
+  await page.goto("/aulas/c4p15");
+  const ll = page.locator('figure[data-vz="log-loss"]');
+  await expect(ll).toContainText("Como a log loss orienta a estimação");
+  await expect(ll).toContainText("Perda = −ln(PD)"); await expect(ll).toContainText("Perda = −ln(1 − PD)");
+  expect(await ll.locator(".ll-barra").count()).toBe(16);
+  await expect(ll).toContainText("Log loss média do modelo: 0,43282");
+  await expect(ll).toContainText("Proposta #2"); await expect(ll).toContainText("Default · y = 1");
+  await expect(ll).toContainText("26,65%"); await expect(ll).toContainText("−ln(0,2665) ≈ 1,3223");
+  await expect(ll).toContainText("Os coeficientes são estimados minimizando a log loss média");
+  await expect(ll).not.toContainText("zera a perda sem decorar"); // o quadro não repete a afirmação; o apoio da página vem do banco
+  await ll.getByRole("button", { name: "#15" }).click();
+  await expect(ll).toContainText("Não houve default · y = 0"); await expect(ll).toContainText("73,91%");
+  await expect(ll).toContainText("26,09%"); await expect(ll).toContainText("−ln(1 − 0,7391) ≈ 1,3435");
+  await expect(ll).toContainText("Log loss média do modelo: 0,43282"); // a média não muda com a seleção
+  await ll.getByRole("button", { name: /Proposta 12/ }).click();
+  await expect(ll).toContainText("Proposta #12"); await expect(ll).toContainText("≈ 0,0041");
+  await ll.getByRole("button", { name: "Restaurar seleção" }).click();
+  await expect(ll).toContainText("Proposta #2"); await expect(ll).toContainText("−ln(0,2665) ≈ 1,3223");
   // c4p1: os dois quadros de abertura, um só estado: características → escore → PD; +10 pp → +0,7453 em z → × 2,11 nas odds
   await page.goto("/aulas/c4p1");
   const rl = page.locator('figure[data-vz="logit-slides"]');

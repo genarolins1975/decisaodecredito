@@ -38,6 +38,7 @@ import { CoeficientePd } from "./coeficiente-pd";
 import { RazaoDeChances } from "./razao-de-chances";
 import { ImpactoPd } from "./impacto-pd";
 import { UnidadeCoeficiente } from "./unidade-coeficiente";
+import { LogLoss } from "./log-loss";
 import { LogitSlides } from "./logit-slides";
 import { TresEscalas } from "./tres-escalas";
 import { Escalas } from "./escalas";
@@ -107,7 +108,7 @@ const REGISTRO: Record<string, VisualNativo> = {
   c4p12: { Componente: ImpactoPd, substitui: "pagina" },
   c4p13: { Componente: Intercepto, substitui: "legacy" },
   c4p14: { Componente: UnidadeCoeficiente, substitui: "pagina" },
-  c4p15: { Componente: () => <DescidaCompleta modo="perda" />, substitui: "legacy" },
+  c4p15: { Componente: LogLoss, substitui: "pagina" },
   c4p16: { Componente: () => <DescidaCompleta modo="gradiente" />, substitui: "legacy" },
   c4p17: { Componente: () => <DescidaCompleta modo="descida" />, substitui: "legacy" },
   c4p19: { Componente: Fronteira, substitui: "legacy" },
