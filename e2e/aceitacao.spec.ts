@@ -904,3 +904,59 @@ test("abertura do capítulo: página própria com pergunta central, mapa das pá
   expect(ph).toContain("Roteiro: exposição");
   expect(ph).toContain("Editar o conteúdo");
 });
+
+test("aula em slides: professor conduz o baralho, aluno acompanha e não recebe as notas do professor", async ({ page }) => {
+  const prof = await apiAs(PROF);
+  const cid = await classId();
+  const meetings = await (await prof.get(`/api/professor/turmas/${cid}/encontros`)).json();
+  const aula2 = meetings.meetings.find((m: { number: number }) => m.number === 2);
+  expect(aula2, "a turma tem o encontro da Aula 2").toBeTruthy();
+  const { sessionId } = await (await prof.post(`/api/professor/turmas/${cid}/encontros/${aula2.id}/iniciar`, { data: {} })).json();
+
+  // a Aula 2 não tem capítulos: o conteúdo dela é o baralho, e os capítulos 4, 5 e 6 são o apêndice
+  const uni = await sql<{ kind: string; caps: string }>(
+    "select u.kind, coalesce(string_agg(c.slug, ',' order by c.number), '') as caps from units u left join chapters c on c.unit_id=u.id where u.id=$1 group by u.kind", [aula2.unitId]);
+  expect(uni[0].caps).toBe("");
+  const ap = await sql<{ caps: string }>(
+    "select string_agg(c.slug, ',' order by c.number) as caps from units u join chapters c on c.unit_id=u.id where u.kind='apendice' and u.edition_id=(select edition_id from units where id=$1)", [aula2.unitId]);
+  expect(ap[0].caps).toBe("c4,c5,c6");
+
+  expect((await prof.post(`/api/aovivo/${sessionId}/slide`, { data: { slide: "24" } })).status()).toBe(200);
+  expect((await prof.post(`/api/aovivo/${sessionId}/slide`, { data: { slide: "51" } })).status()).toBe(400); // fora do roteiro
+  const aluno = await apiAs(ALUNO_A);
+  expect((await aluno.post(`/api/aovivo/${sessionId}/slide`, { data: { slide: "01" } })).status()).toBe(403); // aluno não conduz
+  expect((await (await aluno.get(`/api/aovivo/${sessionId}/estado`)).json()).currentSlide).toBe("24");
+
+  await loginUi(page, ALUNO_A);
+  await page.goto(`/ao-vivo/${sessionId}`);
+  const quadro = page.locator('iframe[src*="/slides/aula-2"]');
+  await expect(quadro).toHaveCount(1);
+  await expect(quadro).toHaveAttribute("src", /modo=aluno/);
+  const dentro = page.frameLocator('iframe[src*="/slides/aula-2"]');
+  await expect(dentro.locator(".cabeca .passo")).toHaveText("slide 24 de 50");
+  await expect(dentro.locator("#barra")).toBeHidden();          // o aluno não navega sozinho enquanto segue
+  await expect(dentro.locator("#btn-professor")).toBeHidden();  // nem abre as notas do professor
+  expect(await page.content()).not.toContain("Notas do professor");
+
+  // o arquivo da aula exige sessão e matrícula
+  const anon = await apiAs(null);
+  const semSessao = await anon.get("/slides/aula-2", { maxRedirects: 0 });
+  expect(semSessao.status()).toBe(307);
+  expect(semSessao.headers().location).toContain("/entrar");
+  const semTurma = await (await apiAs(SEM)).get("/slides/aula-2", { maxRedirects: 0 });
+  expect(semTurma.status()).toBe(403);
+  expect(await semTurma.text()).not.toContain("<html");
+
+  await prof.post(`/api/aovivo/${sessionId}/status`, { data: { status: "closed" } });
+});
+
+test("prontidão: /api/health diz quantas migrações o banco aplicou, e o número bate com drizzle/", async () => {
+  const fs = await import("node:fs");
+  const arquivos = fs.readdirSync("drizzle").filter((f) => f.endsWith(".sql")).length;
+  const anon = await apiAs(null);
+  const r = await anon.get("/api/health");
+  expect(r.status()).toBe(200);
+  const j = await r.json();
+  expect(j.ok).toBe(true);
+  expect(j.migracoes, "banco atrás das migrações do repositório").toBe(arquivos);
+});

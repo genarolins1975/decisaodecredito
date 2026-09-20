@@ -7,6 +7,7 @@ import { ErrorBox, SuccessBox } from "@/components/forms";
 import { Badge } from "@/components/ui";
 import { fmtDT } from "@/lib/time";
 import type { Block } from "@/lib/services/content";
+import { rotuloUnidade } from "@/lib/content/capitulo";
 
 type Version = { id: string; versionNo: number; title: string; objective: string | null; support: string | null; connection: string | null; blocks: Block[]; teacherGuide: Record<string, unknown> | null; publishedAt: string | null };
 type Q = { id: string; slug: string; kind: string; versionNo: number; label: string | null; prompt: string; options: { alternatives?: string[]; unit?: string; maxLength?: number }; answerKey: { correct?: number | number[]; explanation?: string | null; expected?: number; tolerance?: number } | null; feedback: { modelAnswer?: string; revealHtml?: string } | null };
@@ -38,7 +39,7 @@ export function PageEditor({ data }: { data: Data }) {
     <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
       <div className="min-w-0 flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="eyebrow text-[11px] font-sans">{data.unit.kind === "trabalho" ? "Trabalho final" : `Aula ${data.unit.number}`} · Capítulo {data.chapter.number} · {data.page.slug}</h1>
+          <h1 className="eyebrow text-[11px] font-sans">{rotuloUnidade(data.unit)} · Capítulo {data.chapter.number} · {data.page.slug}</h1>
           <Badge tone={data.page.status === "published" ? "ok" : "muted"}>{data.page.status === "published" ? "publicada" : "rascunho"}</Badge>
           <div className="flex-1" />
           <Link href={`/aulas/${data.page.slug}`} className="btn btn-sm btn-ghost">Ver a versão publicada</Link>

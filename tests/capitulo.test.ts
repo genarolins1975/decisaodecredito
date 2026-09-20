@@ -24,6 +24,7 @@ describe("página de abertura do capítulo", () => {
   it("rotula a unidade e o número do capítulo", () => {
     expect(rotuloUnidade({ kind: "aula", number: 2 })).toBe("Aula 2");
     expect(rotuloUnidade({ kind: "trabalho", number: 5 })).toBe("Trabalho final");
+    expect(rotuloUnidade({ kind: "apendice", number: 1 })).toBe("Apêndice");
     expect(numeroCapitulo(4)).toBe("04"); expect(numeroCapitulo(11)).toBe("11");
   });
 });

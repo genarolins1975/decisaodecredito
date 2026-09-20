@@ -9,11 +9,35 @@ previsão à decisão de crédito.
 Abra `dist/aula_credito.html` com duplo clique. É um arquivo único, funciona sem
 internet e sem servidor, e não faz nenhuma requisição externa.
 
-Na plataforma, a mesma aula fica em `/aula_credito.html`. O `build.mjs` copia o
-arquivo para `public/` da aplicação Next a cada compilação, então os dois são
-sempre idênticos. Essa rota passa pelo `src/proxy.ts`, que redireciona para
-`/entrar` quem não tiver cookie de sessão. É conveniência de navegação, não
-controle de acesso: arquivo em `public/` não passa por `guard.ts`.
+Na plataforma, esta é a **Aula 2**. As unidades do curso ficam em `/aulas`, montadas
+pelo importador a partir de `content/original`. A Aula 2, "Entender as três
+técnicas", é conduzida por estes 50 slides e por isso não tem capítulos; as 60
+páginas dos capítulos 4, 5 e 6 formam o **apêndice** de estudo, que aparece depois
+do trabalho final.
+
+A aula é servida em `/slides/aula-2`. O `build.mjs` copia o arquivo para
+`content/slides/aula-2.html` a cada compilação, então os dois são sempre idênticos.
+A rota valida a sessão no servidor e exige turma acessível, a mesma regra dos
+materiais. O arquivo não fica em `public/` de propósito: arquivo em `public/` é
+servido antes de qualquer verificação, e o `src/proxy.ts` só confere se existe um
+cookie chamado `sessao`, o que é conveniência de navegação e não controle de acesso.
+
+O link aparece no cartão da Aula 2 em `/aulas` e em `/materiais`, cadastrado como
+material da unidade pelo `scripts/import-content.ts`.
+
+## Aula ao vivo
+
+A Aula 2 é conduzida pelo baralho, e o aluno acompanha na plataforma. No painel da
+aula, em `/professor/aovivo/<sessão>`, o bloco "Conduzir pelos slides" escolhe o
+slide, e "Projetar os slides" abre a janela de projeção. Nessa janela você navega
+com as setas, como sempre; a casca lê o `#/slide/NN` do baralho e publica na sessão,
+e a tela do aluno troca de slide sem recarregar o arquivo. O baralho continua um
+arquivo único e offline: quem fala com a API é a casca, não ele.
+
+O roteiro em `src/lib/content/roteiro-aula-2.ts` liga cada slide às páginas do
+apêndice que ele cobre. No painel, escolher uma dessas páginas carrega as perguntas
+dela, que você publica para a turma enquanto projeta o slide. As 59 páginas do
+apêndice estão cobertas; só `c5p17`, "Gini ou entropia", não tem slide.
 
 Para trabalhar no código, abra `app/index.html`, que carrega os mesmos arquivos soltos.
 

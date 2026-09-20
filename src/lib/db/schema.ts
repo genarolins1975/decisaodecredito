@@ -340,6 +340,7 @@ export const liveSessions = pgTable("live_sessions", {
   classId: text("class_id").notNull().references(() => classes.id),
   status: text("status").notNull().default("draft"), // draft | open | closed
   currentPageId: text("current_page_id").references(() => pages.id),
+  currentSlide: text("current_slide"),   // aula conduzida por slides: "01".."50" do baralho de /slides/aula-2
   stateVersion: integer("state_version").notNull().default(0),
   openedAt: ts("opened_at"),
   closedAt: ts("closed_at"),

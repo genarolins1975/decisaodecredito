@@ -4,6 +4,7 @@ import { requireStaff } from "@/lib/auth/guard";
 import { listEditionsWithClasses } from "@/lib/services/admin";
 import { courseOutline } from "@/lib/services/content";
 import { PageHeader, Badge } from "@/components/ui";
+import { rotuloUnidade } from "@/lib/content/capitulo";
 
 export const metadata: Metadata = { title: "Conteúdo" };
 
@@ -19,7 +20,7 @@ export default async function ConteudoPage({ searchParams }: { searchParams: Pro
         actions={<form className="flex gap-2 items-center"><label className="text-[13px]">Ano <select name="edicao" className="select" defaultValue={ed?.id}>{editions.map((e) => <option key={e.id} value={e.id}>{e.label}</option>)}</select></label><button className="btn btn-sm btn-secondary" type="submit">Ver</button></form>} />
       {outline.map((u) => (
         <section key={u.id} className="card mb-4">
-          <p className="eyebrow">{u.kind === "trabalho" ? "Trabalho final" : `Aula ${u.number}`} · {u.plannedMinutes} min com {u.breakMinutes} de intervalo</p>
+          <p className="eyebrow">{rotuloUnidade(u)} · {u.plannedMinutes} min com {u.breakMinutes} de intervalo</p>
           <h2 className="mb-3">{u.title}</h2>
           {u.chapters.map((c) => (
             <details key={c.id} className="mb-2">

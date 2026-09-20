@@ -6,21 +6,24 @@ import { api, ClientApiError } from "@/lib/client/api";
 import { StatusBadge } from "@/components/ui";
 import { ErrorBox } from "@/components/forms";
 import { fmtT } from "@/lib/time";
+import type { SlideAula2 } from "@/lib/content/roteiro-aula-2";
 
 type Act = { id: string; status: string; round: string; closesAt: string | null; maxAttempts: number; timeLimitS: number | null; position: number;
   question: { versionId: string; slug: string; kind: string; label: string | null; prompt: string; options: { alternatives?: string[] } };
   answerKey: { correct: number | number[] | null }; respondents: number; correct: number; distribution: number[];
   names: { name: string; userId: string; answer: unknown; isCorrect: boolean | null; at: string | null }[]; texts: { name: string; text: string; isCorrect: boolean | null }[] };
-type State = { session: { id: string; status: string; stateVersion: number; classId: string; meetingId: string }; currentPage: { slug: string; title: string } | null; enrolled: number; activities: Act[] };
+type State = { session: { id: string; status: string; stateVersion: number; classId: string; meetingId: string }; currentPage: { slug: string; title: string } | null; currentSlide: string | null; enrolled: number; activities: Act[] };
 type PageRef = { id: string; slug: string; title: string; chapter: number };
 type QRef = { slug: string; kind: string; pageId: string | null; versionId: string; prompt: string };
 
-export function LiveTeacher({ sessionId, classId, meeting, initial, pages, questions, isProfessor }: { sessionId: string; classId: string; meeting: { id: string; title: string; number: number }; initial: State; pages: PageRef[]; questions: QRef[]; isProfessor: boolean }) {
+export function LiveTeacher({ sessionId, classId, meeting, initial, pages, questions, isProfessor, slides }: { sessionId: string; classId: string; meeting: { id: string; title: string; number: number }; initial: State; pages: PageRef[]; questions: QRef[]; isProfessor: boolean; slides: SlideAula2[] }) {
   const { state, channel, refresh } = useLiveState<State>(sessionId, initial);
   const st = state ?? initial;
   const [err, setErr] = useState<string | null>(null);
   const [privateNames, setPrivateNames] = useState(false);
   const [pageSlug, setPageSlug] = useState(st.currentPage?.slug ?? pages[0]?.slug ?? "");
+  const slideAtual = useMemo(() => slides.find((x) => x.n === st.currentSlide) ?? null, [slides, st.currentSlide]);
+  const irParaSlide = (n: string) => run(async () => { await api(`/api/aovivo/${sessionId}/slide`, { body: { slide: n } }); });
   const [chamada, setChamada] = useState<{ id: string; code: string; secondsLeft: number; closesAt: string; kind: string }[]>([]);
   const [qr, setQr] = useState<string | null>(null);
   const [minutes, setMinutes] = useState(10);
@@ -51,8 +54,37 @@ export function LiveTeacher({ sessionId, classId, meeting, initial, pages, quest
         </div>
         <ErrorBox message={err} />
 
+        {slides.length > 0 && (
+          <section className="card" aria-labelledby="baralho">
+            <h2 id="baralho" className="text-base mb-2">Conduzir pelos slides</h2>
+            <div className="flex flex-wrap gap-2 items-end">
+              <label className="text-[13px] flex-1 min-w-[280px]">Slide<select className="select" value={st.currentSlide ?? ""} onChange={(e) => irParaSlide(e.target.value)}>
+                <option value="" disabled>escolha o slide</option>
+                {slides.map((x) => <option key={x.n} value={x.n}>{x.n} · {x.bloco} · {x.titulo}</option>)}
+              </select></label>
+              <button className="btn btn-sm btn-secondary" disabled={!st.currentSlide || st.currentSlide === slides[0].n}
+                onClick={() => { const i = slides.findIndex((x) => x.n === st.currentSlide); if (i > 0) irParaSlide(slides[i - 1].n); }}>Anterior</button>
+              <button className="btn btn-sm btn-secondary" disabled={st.currentSlide === slides[slides.length - 1].n}
+                onClick={() => { const i = slides.findIndex((x) => x.n === st.currentSlide); irParaSlide(slides[Math.min(i + 1, slides.length - 1)].n); }}>Próximo</button>
+              <a className="btn btn-sm" href={`/apresentacao/slides?sessao=${sessionId}`} target="_blank" rel="noreferrer">Projetar os slides</a>
+            </div>
+            <p className="hint mt-2">
+              {st.currentSlide ? `Na tela dos alunos agora: slide ${st.currentSlide}, ${slideAtual?.titulo ?? ""}.` : "Nenhum slide no ar ainda."}
+              {" "}Na janela de projeção você navega com as setas e o slide dos alunos acompanha sozinho.
+            </p>
+            {slideAtual && slideAtual.paginas.length > 0 && (
+              <p className="hint mt-1">Páginas do apêndice que este slide cobre:{" "}
+                {slideAtual.paginas.map((sl) => (
+                  <button key={sl} type="button" className="btn btn-ghost btn-sm" onClick={() => setPageSlug(sl)}>{sl}</button>
+                ))}
+                <span className="block">Escolher uma delas carrega as perguntas daquela página no bloco abaixo, sem trocar o que os alunos veem.</span>
+              </p>
+            )}
+          </section>
+        )}
+
         <section className="card" aria-labelledby="slide">
-          <h2 id="slide" className="text-base mb-2">O que os alunos veem</h2>
+          <h2 id="slide" className="text-base mb-2">{slides.length > 0 ? "Mostrar uma página em vez do slide" : "O que os alunos veem"}</h2>
           <div className="flex flex-wrap gap-2 items-end">
             <label className="text-[13px] flex-1 min-w-[260px]">Página<select className="select" value={pageSlug} onChange={(e) => setPageSlug(e.target.value)}>{pages.map((p) => <option key={p.id} value={p.slug}>{p.slug} · cap. {p.chapter} · {p.title}</option>)}</select></label>
             <button className="btn btn-sm" onClick={() => run(async () => { await api(`/api/aovivo/${sessionId}/pagina`, { body: { pageSlug } }); })}>Mostrar aos alunos</button>

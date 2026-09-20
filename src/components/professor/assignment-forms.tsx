@@ -4,6 +4,7 @@ import { useState } from "react";
 import { api, ClientApiError } from "@/lib/client/api";
 import { ErrorBox, SuccessBox } from "@/components/forms";
 import { toLocalInput } from "@/lib/time";
+import { rotuloUnidade } from "@/lib/content/capitulo";
 
 export function NewAssignmentForm({ classId, units }: { classId: string; units: { id: string; number: number; title: string; kind: string }[] }) {
   const router = useRouter();
@@ -15,7 +16,7 @@ export function NewAssignmentForm({ classId, units }: { classId: string; units: 
         <ErrorBox message={err} />
         <label className="text-[13px]">Título<input name="title" className="input" required /></label>
         <label className="text-[13px]">Identificador (letras minúsculas e hífen)<input name="slug" className="input" required pattern="[a-z0-9\-]{3,60}" placeholder="ex.: relatorio-validacao" /></label>
-        <label className="text-[13px]">Unidade<select name="unitId" className="select"><option value="">—</option>{units.map((u) => <option key={u.id} value={u.id}>{u.kind === "trabalho" ? "Trabalho final" : `Aula ${u.number}`}: {u.title}</option>)}</select></label>
+        <label className="text-[13px]">Unidade<select name="unitId" className="select"><option value="">—</option>{units.map((u) => <option key={u.id} value={u.id}>{rotuloUnidade(u)}: {u.title}</option>)}</select></label>
         <label className="text-[13px]">Modo<select name="mode" className="select"><option value="individual">individual</option><option value="grupo">grupo</option></select></label>
         <div><button className="btn btn-sm" type="submit">Criar rascunho</button></div>
       </form>
@@ -50,7 +51,7 @@ export function AssignmentEditForm({ classId, a, rubrics, units }: { classId: st
       <fieldset className="text-[13px]"><legend className="label">Formatos aceitos</legend><div className="flex flex-wrap gap-3">{["pdf", "zip", "csv", "ipynb", "md", "txt", "py", "json", "link"].map((f) => <label key={f} className="flex items-center gap-1"><input type="checkbox" name="formats" value={f} defaultChecked={a.allowedFormats.includes(f)} className="w-4 h-4 accent-ink" />{f}</label>)}</div></fieldset>
       <label className="text-[13px]">Tamanho máximo por arquivo (MB)<input name="maxFileMb" type="number" min={1} max={500} className="input" defaultValue={a.maxFileMb} /></label>
       <label className="text-[13px]">Modo<select name="mode" className="select" defaultValue={a.mode}><option value="individual">individual</option><option value="grupo">grupo (entrega coletiva, defesa individual)</option></select></label>
-      <label className="text-[13px]">Unidade<select name="unitId" className="select" defaultValue={a.unitId ?? ""}><option value="">—</option>{units.map((u) => <option key={u.id} value={u.id}>{u.kind === "trabalho" ? "Trabalho final" : `Aula ${u.number}`}: {u.title}</option>)}</select></label>
+      <label className="text-[13px]">Unidade<select name="unitId" className="select" defaultValue={a.unitId ?? ""}><option value="">—</option>{units.map((u) => <option key={u.id} value={u.id}>{rotuloUnidade(u)}: {u.title}</option>)}</select></label>
       <label className="text-[13px]">Prazo (horário de São Paulo)<input name="dueAt" type="datetime-local" className="input" defaultValue={toLocalInput(a.dueAt ? new Date(a.dueAt) : null)} /></label>
       <label className="text-[13px]">Prazo final absoluto (opcional)<input name="hard" type="datetime-local" className="input" defaultValue={toLocalInput(a.latePolicy.hardDeadlineAt ? new Date(a.latePolicy.hardDeadlineAt) : null)} /></label>
       <label className="text-[13px] flex items-center gap-2"><input type="checkbox" name="acceptLate" defaultChecked={a.latePolicy.acceptLate} className="w-4 h-4 accent-ink" />Aceitar envio atrasado</label>

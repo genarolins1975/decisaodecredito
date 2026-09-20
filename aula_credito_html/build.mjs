@@ -2,8 +2,10 @@
    1. Converte experimento/saida/resultados.json em app/dados/11-resultados.js.
    2. Escreve app/index.html com os scripts na ordem correta (versão de trabalho).
    3. Escreve dist/aula_credito.html com tudo embutido, para abrir offline.
-   4. Copia o mesmo arquivo para public/aula_credito.html, na raiz do projeto
-      Next, para a plataforma servir a aula em /aula_credito.html.
+   4. Copia o mesmo arquivo para content/slides/aula-2.html, na raiz do projeto Next,
+      que é a cópia versionada servida pela rota autenticada /slides/aula-2. Fora de
+      public/ de propósito: arquivo em public/ é servido antes de qualquer verificação
+      de sessão.
    Uso: node build.mjs */
 
 import fs from "node:fs";
@@ -13,8 +15,8 @@ import { fileURLToPath } from "node:url";
 const raiz = path.dirname(fileURLToPath(import.meta.url));
 const app = path.join(raiz, "app");
 const dist = path.join(raiz, "dist");
-/* A pasta public pertence à aplicação Next, um nível acima desta. */
-const publico = path.join(raiz, "..", "public");
+/* A pasta content pertence à aplicação Next, um nível acima desta. */
+const servidos = path.join(raiz, "..", "content", "slides");
 
 const nucleo = ["01-nucleo.js", "02-svg.js", "03-ui.js", "04-comum.js"].map((f) => path.join(app, "nucleo", f));
 const dados = ["10-dados.js", "11-resultados.js"].map((f) => path.join(app, "dados", f));
@@ -99,11 +101,11 @@ const saida = path.join(dist, "aula_credito.html");
 fs.writeFileSync(saida, cabeca(estiloInline, scriptsInline), "utf8");
 
 /* 4. cópia servida pela plataforma ----------------------------------------- */
-fs.mkdirSync(publico, { recursive: true });
-const servido = path.join(publico, "aula_credito.html");
+fs.mkdirSync(servidos, { recursive: true });
+const servido = path.join(servidos, "aula-2.html");
 fs.copyFileSync(saida, servido);
 
 const kb = (fs.statSync(saida).size / 1024).toFixed(0);
 console.log(`slides compilados: ${slides.length}`);
 console.log(`dist/aula_credito.html: ${kb} KB`);
-console.log(`public/aula_credito.html: cópia do mesmo arquivo`);
+console.log(`content/slides/aula-2.html: cópia do mesmo arquivo`);

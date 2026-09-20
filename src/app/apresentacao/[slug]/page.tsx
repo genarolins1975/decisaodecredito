@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { requireContext } from "@/lib/context";
+import { rotuloUnidade } from "@/lib/content/capitulo";
 import { getPage, neighbors } from "@/lib/services/content";
 import { Slide } from "@/components/content/slide";
 import { infograficoDoCapitulo } from "@/lib/content/infograficos";
@@ -24,7 +25,7 @@ export default async function ApresentacaoPage({ params, searchParams }: { param
     <Slide
       slug={slug} title={data.version.title} objective={data.version.objective} support={data.version.support} connection={data.version.connection}
       chapter={{ number: data.chapter.number, title: data.chapter.title, color: data.chapter.themeColor ?? "#00205B", soft: data.chapter.themeSoft ?? "#EFF3FA" }}
-      unitLabel={data.unit.kind === "trabalho" ? "Trabalho final" : `Aula ${data.unit.number}`}
+      unitLabel={rotuloUnidade(data.unit)}
       pageIndex={pageIndex} pageCount={chapterPages.length} infografico={infografico}
       blocks={data.blocks} questions={data.questions} classId={ctx.current.classId}
       prev={nav.prev?.slug ?? null} next={nav.next?.slug ?? null} position={`${nav.index + 1}/${nav.total}`}
