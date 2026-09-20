@@ -1,29 +1,43 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { requireContext } from "@/lib/context";
+import { asc, eq } from "drizzle-orm";
+import { db, schema } from "@/lib/db/client";
 import { courseOutline } from "@/lib/services/content";
 import { PageHeader, Badge } from "@/components/ui";
+import { rotuloUnidade } from "@/lib/content/capitulo";
 
 export const metadata: Metadata = { title: "Aulas" };
 
 export default async function AulasPage() {
   const ctx = await requireContext();
   const outline = await courseOutline(ctx.current.edition.id);
+  // materiais presos a uma unidade: é assim que a Aula 2 aponta para os 50 slides
+  const daUnidade = (await db.select().from(schema.materials).where(eq(schema.materials.editionId, ctx.current.edition.id)).orderBy(asc(schema.materials.position)))
+    .filter((m) => m.unitId && m.status === "published");
   return (
     <div>
       <PageHeader eyebrow={<>{ctx.current.cls.name} · edição {ctx.current.edition.label}</>} title="Aulas"
-        lead="Quatro aulas e o trabalho final. Em cada capítulo, as páginas essenciais são vistas em aula; as complementares aprofundam no seu estudo." />
+        lead="Quatro aulas, o trabalho final e o apêndice. A Aula 2 é conduzida em 50 slides; as páginas de logit, árvore e boosting ficam no apêndice, para estudo. Nos demais capítulos, as páginas essenciais são vistas em aula e as complementares aprofundam no seu estudo." />
       <div className="flex flex-col gap-6">
         {outline.map((u) => (
           <section key={u.id} className="card" aria-labelledby={`u-${u.id}`}>
             <div className="flex flex-wrap items-baseline justify-between gap-2 mb-3">
               <div>
-                <p className="eyebrow">{u.kind === "trabalho" ? "Trabalho final" : `Aula ${u.number}`}</p>
+                <p className="eyebrow">{rotuloUnidade(u)}</p>
                 <h2 id={`u-${u.id}`}>{u.title}</h2>
               </div>
               <p className="hint max-w-[48ch]"><b>Entrega:</b> {u.deliverable}</p>
             </div>
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {daUnidade.filter((m) => m.unitId === u.id).map((m) => (
+              <article key={m.id} className="panel-soft flex flex-col gap-2 mb-4">
+                <p className="eyebrow">{m.kind}</p>
+                <h3 className="text-[17px]">{m.title}</h3>
+                {m.description && <p className="text-[13.5px]">{m.description}</p>}
+                {m.url && <p className="pt-1"><a className="btn btn-sm" href={m.url} target="_blank" rel="noreferrer">Abrir</a></p>}
+              </article>
+            ))}
+            {u.chapters.length > 0 && <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {u.chapters.map((c) => {
                 const ess = c.pages.filter((p) => p.level === "essencial");
                 const mins = ess.reduce((s, p) => s + p.minutes, 0);
@@ -45,7 +59,7 @@ export default async function AulasPage() {
                   </article>
                 );
               })}
-            </div>
+            </div>}
           </section>
         ))}
       </div>

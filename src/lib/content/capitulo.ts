@@ -29,7 +29,9 @@ export function materiaisDoCapitulo<T extends { title: string }>(materials: T[],
 }
 
 export function rotuloUnidade(u: { kind: string; number: number }) {
-  return u.kind === "trabalho" ? "Trabalho final" : `Aula ${u.number}`;
+  if (u.kind === "trabalho") return "Trabalho final";
+  if (u.kind === "apendice") return "Apêndice";
+  return `Aula ${u.number}`;
 }
 
 /** Número do capítulo com dois dígitos para o cabeçalho. */

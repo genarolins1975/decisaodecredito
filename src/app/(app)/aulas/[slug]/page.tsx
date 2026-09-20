@@ -8,6 +8,7 @@ import { ContentBlocks } from "@/components/content/blocks";
 import { TeacherGuide } from "@/components/content/teacher-guide";
 import { Badge } from "@/components/ui";
 import { PageNav } from "@/components/content/page-nav";
+import { rotuloUnidade } from "@/lib/content/capitulo";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -42,7 +43,7 @@ export default async function AulaPaginaPage({ params }: { params: Promise<{ slu
         </details>
         <div className="hidden lg:block">
           <Link href="/aulas" className="voltar mb-2">Aulas</Link>
-          <p className="eyebrow mb-2">{data.unit.kind === "trabalho" ? "Trabalho final" : `Aula ${data.unit.number}`} · Capítulo {data.chapter.number}</p>
+          <p className="eyebrow mb-2">{rotuloUnidade(data.unit)} · Capítulo {data.chapter.number}</p>
           <p className="font-serif font-bold text-ink text-[15px] mb-3"><Link href={capituloHref} className="no-underline hover:underline" title="Abertura do capítulo">{data.chapter.title}</Link></p>
           <ol className="link-list list-none p-0 m-0 text-[13px] max-h-[60vh] overflow-auto">
             {chapterPages.map((p, i) => <li key={p.id}><Link href={`/aulas/${p.slug}`} aria-current={p.slug === slug ? "page" : undefined}><span className="font-mono text-[11px] text-muted mr-2">{i + 1}</span>{p.title}</Link></li>)}

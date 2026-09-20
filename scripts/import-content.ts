@@ -153,22 +153,46 @@ async function main() {
   if (!edition) throw new Error(`Edição ${editionLabel} não existe. Rode o seed ou crie pela interface.`);
   const inventory: any = { source: ex.sourceFile, sha256: ex.sourceSha256, extractedAt: ex.extractedAt, edition: edition.label, units: [], pages: [], questions: 0, rubrics: [], datasets: [], gaps: [] };
 
-  // unidades (aulas + trabalho final)
+  /* Arranjo da edição. `extract.json` é a extração fiel do original e não é editada; o rearranjo
+     fica declarado aqui. A Aula 2 é conduzida pelos 50 slides (rota /slides/aula-2) e por isso não
+     tem capítulos; os capítulos 4, 5 e 6, com as 60 páginas de logit, árvore e boosting, formam o
+     apêndice de estudo, que vem depois do trabalho final. */
+  const APENDICE = {
+    kind: "apendice", number: 1, position: 90, caps: [4, 5, 6],
+    titulo: "As três técnicas, página a página",
+    entrega: "Estudo das 60 páginas de regressão logística, árvores de decisão e gradient boosting, no seu ritmo",
+  };
+  type Unidade = { kind: string; n: number; titulo: string; entrega: string | null; caps: number[]; position: number };
+  const unidades: Unidade[] = ex.meta.aulas.map((a: any) => ({
+    kind: a.tipo === "trabalho" ? "trabalho" : "aula", n: a.n, titulo: a.titulo, entrega: a.entrega,
+    caps: (a.caps as number[]).filter((c) => !APENDICE.caps.includes(c)), position: a.n,
+  }));
+  unidades.push({ kind: APENDICE.kind, n: APENDICE.number, titulo: APENDICE.titulo, entrega: APENDICE.entrega, caps: APENDICE.caps, position: APENDICE.position });
+
   const unitIds = new Map<number, string>();
-  for (const a of ex.meta.aulas) {
-    const kind = a.tipo === "trabalho" ? "trabalho" : "aula";
-    let [u] = await db.select().from(schema.units).where(and(eq(schema.units.editionId, edition.id), eq(schema.units.kind, kind), eq(schema.units.number, a.n)));
-    if (!u) [u] = await db.insert(schema.units).values({ id: newId(), editionId: edition.id, kind, number: a.n, title: a.titulo, deliverable: a.entrega, plannedMinutes: ex.meta.durAula, breakMinutes: ex.meta.intervalo, position: a.n, status: "published" }).returning();
+  const unidadePorChave = new Map<string, string>();
+  for (const a of unidades) {
+    let [u] = await db.select().from(schema.units).where(and(eq(schema.units.editionId, edition.id), eq(schema.units.kind, a.kind), eq(schema.units.number, a.n)));
+    if (!u) [u] = await db.insert(schema.units).values({ id: newId(), editionId: edition.id, kind: a.kind, number: a.n, title: a.titulo, deliverable: a.entrega, plannedMinutes: ex.meta.durAula, breakMinutes: ex.meta.intervalo, position: a.position, status: "published" }).returning();
     for (const c of a.caps) unitIds.set(c, u.id);
-    inventory.units.push({ id: u.id, kind, number: a.n, title: a.titulo, chapters: a.caps });
+    unidadePorChave.set(`${a.kind}:${a.n}`, u.id);
+    inventory.units.push({ id: u.id, kind: a.kind, number: a.n, title: a.titulo, chapters: a.caps });
   }
-  // capítulos
+  // capítulos. A busca é pelo slug em toda a edição, não dentro da unidade: quando o arranjo muda,
+  // o capítulo existente é movido de unidade em vez de duplicado.
   const chapterIds = new Map<number, string>();
   for (const c of ex.meta.capitulos) {
     const unitId = unitIds.get(c.n)!;
-    let [ch] = await db.select().from(schema.chapters).where(and(eq(schema.chapters.unitId, unitId), eq(schema.chapters.slug, c.id)));
     const tema = ex.meta.temas[String(c.n)] ?? [null, null];
+    const [achado] = await db.select({ ch: schema.chapters }).from(schema.chapters)
+      .innerJoin(schema.units, eq(schema.units.id, schema.chapters.unitId))
+      .where(and(eq(schema.units.editionId, edition.id), eq(schema.chapters.slug, c.id)));
+    let ch = achado?.ch;
     if (!ch) [ch] = await db.insert(schema.chapters).values({ id: newId(), unitId, number: c.n, slug: c.id, title: c.nome, centralQuestion: c.pergunta, prerequisites: c.prereq, learn: c.aprende, motivation: c.motiva, activity: c.atividade, uses: c.usa, themeColor: tema[0], themeSoft: tema[1], position: c.n }).returning();
+    else if (ch.unitId !== unitId) {
+      [ch] = await db.update(schema.chapters).set({ unitId }).where(eq(schema.chapters.id, ch.id)).returning();
+      console.log(`capítulo ${c.id} movido para a unidade ${unitId}`);
+    }
     chapterIds.set(c.n, ch.id);
   }
   // páginas + versões + questões
@@ -291,10 +315,10 @@ async function main() {
   // materiais: bibliografia de apoio (obras verificadas pelo professor antes da publicação)
   /* `url` aponta para uma rota da própria plataforma; `citation` fica só nas referências bibliográficas.
      O título nomeia os capítulos porque `materiaisDoCapitulo` casa o material ao capítulo pelo título. */
-  const refs: { title: string; kind: string; description: string; url?: string }[] = [
-    { title: "Apêndice: aula panorâmica em 50 slides (Capítulo 4, Capítulo 5, Capítulo 6)", kind: "arquivo",
-      description: "Percurso único de 50 slides interativos sobre logit, árvore e boosting, com abertura no problema de crédito e fechamento em avaliação, decisão e monitoramento. Abre no navegador, funciona sem rede, traz notas do professor e modo de impressão.",
-      url: "/apendice/aula-panoramica" },
+  const refs: { title: string; kind: string; description: string; url?: string; unitId?: string }[] = [
+    { title: "Aula 2 em 50 slides: logit, árvore e boosting", kind: "arquivo",
+      description: "A aula inteira em um percurso único de 50 slides interativos, com abertura no problema de crédito e fechamento em avaliação, decisão e monitoramento. Abre no navegador, funciona sem rede, traz notas do professor e modo de impressão. As páginas dos capítulos 4, 5 e 6 ficam no apêndice, para estudo.",
+      url: "/slides/aula-2", unitId: unidadePorChave.get("aula:2") },
     { title: "Siddiqi, N. Intelligent Credit Scoring: Building and Implementing Better Credit Risk Scorecards. 2. ed. Wiley, 2017.", kind: "referencia", description: "Construção de scorecards, WoE/IV, segmentação e implantação." },
     { title: "Thomas, L. C.; Crook, J. N.; Edelman, D. B. Credit Scoring and Its Applications. 2. ed. SIAM, 2017.", kind: "referencia", description: "Fundamentos estatísticos de credit scoring, validação e decisão." },
     { title: "Hastie, T.; Tibshirani, R.; Friedman, J. The Elements of Statistical Learning. 2. ed. Springer, 2009.", kind: "referencia", description: "Árvores, boosting e viés-variância (capítulos 9 e 10)." },
@@ -307,7 +331,7 @@ async function main() {
   const existingMats = await db.select({ title: schema.materials.title }).from(schema.materials).where(eq(schema.materials.editionId, edition.id));
   const have = new Set(existingMats.map((m) => m.title));
   let mpos = 0;
-  for (const r of refs) if (!have.has(r.title)) await db.insert(schema.materials).values({ id: newId(), editionId: edition.id, title: r.title, kind: r.kind, description: r.description, url: r.url ?? null, citation: r.url ? null : r.title, status: "published", position: mpos++ });
+  for (const r of refs) if (!have.has(r.title)) await db.insert(schema.materials).values({ id: newId(), editionId: edition.id, title: r.title, kind: r.kind, description: r.description, url: r.url ?? null, unitId: r.unitId ?? null, citation: r.url ? null : r.title, status: "published", position: mpos++ });
 
   await db.insert(schema.contentImports).values({ id: newId(), editionId: edition.id, sourceFile: ex.sourceFile, sourceSha256: ex.sourceSha256, summary: { pages: ex.pages.length, questions: qCount, rendering: stats, republish } });
   fs.writeFileSync(path.join(GEN, "inventory.json"), JSON.stringify(inventory, null, 1));

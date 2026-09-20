@@ -1,6 +1,7 @@
 import "server-only";
 import { and, asc, eq, inArray } from "drizzle-orm";
 import { db, schema } from "@/lib/db/client";
+import { rotuloUnidade } from "@/lib/content/capitulo";
 import { renderTex } from "@/lib/tex";
 
 export type Block =
@@ -101,7 +102,7 @@ export async function chapterOverview(editionId: string, numero: number) {
   const byPage = new Map(versions.map((v) => [v.pageId, v]));
   const pages = chapter.pages.map((p) => ({ ...p, objective: byPage.get(p.id)?.objective ?? null, timeBudget: (byPage.get(p.id)?.timeBudget ?? null) as { exp?: number; ex?: number; prat?: number; disc?: number } | null }));
   const materials = await db.select().from(schema.materials).where(and(eq(schema.materials.editionId, editionId), inArray(schema.materials.status, ["published", "professor"]))).orderBy(asc(schema.materials.position));
-  const vizinho = (x: { unit: typeof unit; chapter: typeof chapter } | undefined) => x ? { number: x.chapter.number, title: x.chapter.title, unitLabel: x.unit.kind === "trabalho" ? "Trabalho final" : `Aula ${x.unit.number}` } : null;
+  const vizinho = (x: { unit: typeof unit; chapter: typeof chapter } | undefined) => x ? { number: x.chapter.number, title: x.chapter.title, unitLabel: rotuloUnidade(x.unit) } : null;
   const titles: Record<string, string> = {};
   for (const x of flat) for (const p of x.chapter.pages) titles[p.slug] = p.title;
   return {

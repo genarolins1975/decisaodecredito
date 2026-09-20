@@ -7,6 +7,7 @@ import { StatusBadge } from "@/components/ui";
 import { StartClassButton } from "@/components/professor/start-class-button";
 import { ErrorBox, SuccessBox } from "@/components/forms";
 import { fmtDT, toLocalInput } from "@/lib/time";
+import { rotuloUnidade } from "@/lib/content/capitulo";
 
 type Meeting = { id: string; number: number; title: string; unitId: string | null; scheduledAt: string | null; endsAt: string | null; location: string | null; videoUrl: string | null; status: string; countsForAttendance: boolean; preparation: string | null };
 type Session = { id: string; meetingId: string; status: string; openedAt: string | null; meetingTitle: string };
@@ -44,7 +45,7 @@ export function MeetingsPanel({ classId, meetings, sessions, units }: { classId:
             {editing === m.id && (
               <form className="form-grid form-grid-2 mt-3 panel-soft" onSubmit={(e) => { e.preventDefault(); const fd = new FormData(e.currentTarget); run(async () => { await api(`/api/professor/turmas/${classId}/encontros/${m.id}`, { method: "PATCH", body: { title: String(fd.get("title")), scheduledAt: String(fd.get("scheduledAt") || "") || null, endsAt: String(fd.get("endsAt") || "") || null, location: String(fd.get("location") || "") || null, videoUrl: String(fd.get("videoUrl") || "") || null, countsForAttendance: fd.get("counts") === "on", preparation: String(fd.get("preparation") || "") || null, status: String(fd.get("status")) as "planned", unitId: String(fd.get("unitId") || "") || null } }); setEditing(null); return "Aula atualizada."; }); }}>
                 <label className="text-[13px]">Título<input name="title" className="input" defaultValue={m.title} required /></label>
-                <label className="text-[13px]">Conteúdo desta aula<select name="unitId" className="select" defaultValue={m.unitId ?? ""}><option value="">—</option>{units.map((u) => <option key={u.id} value={u.id}>{u.kind === "trabalho" ? "Trabalho final" : `Aula ${u.number}`}: {u.title}</option>)}</select></label>
+                <label className="text-[13px]">Conteúdo desta aula<select name="unitId" className="select" defaultValue={m.unitId ?? ""}><option value="">—</option>{units.map((u) => <option key={u.id} value={u.id}>{rotuloUnidade(u)}: {u.title}</option>)}</select></label>
                 <label className="text-[13px]">Início (horário de São Paulo)<input name="scheduledAt" type="datetime-local" className="input" defaultValue={toLocalInput(m.scheduledAt ? new Date(m.scheduledAt) : null)} /></label>
                 <label className="text-[13px]">Fim<input name="endsAt" type="datetime-local" className="input" defaultValue={toLocalInput(m.endsAt ? new Date(m.endsAt) : null)} /></label>
                 <label className="text-[13px]">Local<input name="location" className="input" defaultValue={m.location ?? ""} /></label>
@@ -75,7 +76,7 @@ export function MeetingsPanel({ classId, meetings, sessions, units }: { classId:
         <form className="form-grid form-grid-2" onSubmit={(e) => { e.preventDefault(); const fd = new FormData(e.currentTarget); const form = e.currentTarget; run(async () => { await api(`/api/professor/turmas/${classId}/encontros`, { body: { title: String(fd.get("title")), scheduledAt: String(fd.get("scheduledAt") || "") || null, unitId: String(fd.get("unitId") || "") || null, replacementOfId: String(fd.get("replacementOfId") || "") || null } }); form.reset(); return "Aula criada."; }); }}>
           <label className="text-[13px]">Título<input name="title" className="input" required placeholder="Ex.: Reposição da aula 2" /></label>
           <label className="text-[13px]">Início<input name="scheduledAt" type="datetime-local" className="input" /></label>
-          <label className="text-[13px]">Conteúdo<select name="unitId" className="select"><option value="">—</option>{units.map((u) => <option key={u.id} value={u.id}>{u.kind === "trabalho" ? "Trabalho final" : `Aula ${u.number}`}: {u.title}</option>)}</select></label>
+          <label className="text-[13px]">Conteúdo<select name="unitId" className="select"><option value="">—</option>{units.map((u) => <option key={u.id} value={u.id}>{rotuloUnidade(u)}: {u.title}</option>)}</select></label>
           <label className="text-[13px]">Reposição de<select name="replacementOfId" className="select"><option value="">—</option>{meetings.map((m) => <option key={m.id} value={m.id}>Aula {m.number}: {m.title}</option>)}</select></label>
           <div><button className="btn btn-sm" type="submit">Adicionar</button></div>
         </form>

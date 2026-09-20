@@ -9,21 +9,21 @@ previsão à decisão de crédito.
 Abra `dist/aula_credito.html` com duplo clique. É um arquivo único, funciona sem
 internet e sem servidor, e não faz nenhuma requisição externa.
 
-Na plataforma, esta aula é o **apêndice do curso**, não uma das cinco aulas. As
-aulas ficam em `/aulas`, montadas a partir de `content/original` pelo importador,
-e a Aula 2 são os capítulos 4, 5 e 6. Este pacote é um percurso panorâmico que
-atravessa os capítulos 1 a 9 em 50 slides.
+Na plataforma, esta é a **Aula 2**. As unidades do curso ficam em `/aulas`, montadas
+pelo importador a partir de `content/original`. A Aula 2, "Entender as três
+técnicas", é conduzida por estes 50 slides e por isso não tem capítulos; as 60
+páginas dos capítulos 4, 5 e 6 formam o **apêndice** de estudo, que aparece depois
+do trabalho final.
 
-O apêndice é servido em `/apendice/aula-panoramica`. O `build.mjs` copia o arquivo
-para `content/apendice/aula-panoramica.html` a cada compilação, então os dois são
-sempre idênticos. A rota valida a sessão no servidor e exige turma acessível, a
-mesma regra dos materiais. O arquivo não fica em `public/` de propósito: arquivo
-em `public/` é servido antes de qualquer verificação, e o `src/proxy.ts` só
-confere se existe um cookie chamado `sessao`, o que é conveniência de navegação e
-não controle de acesso.
+A aula é servida em `/slides/aula-2`. O `build.mjs` copia o arquivo para
+`content/slides/aula-2.html` a cada compilação, então os dois são sempre idênticos.
+A rota valida a sessão no servidor e exige turma acessível, a mesma regra dos
+materiais. O arquivo não fica em `public/` de propósito: arquivo em `public/` é
+servido antes de qualquer verificação, e o `src/proxy.ts` só confere se existe um
+cookie chamado `sessao`, o que é conveniência de navegação e não controle de acesso.
 
-Ele aparece para o aluno em `/materiais` e nos capítulos 4, 5 e 6, cadastrado como
-material da edição pelo `scripts/import-content.ts`.
+O link aparece no cartão da Aula 2 em `/aulas` e em `/materiais`, cadastrado como
+material da unidade pelo `scripts/import-content.ts`.
 
 Para trabalhar no código, abra `app/index.html`, que carrega os mesmos arquivos soltos.
 
