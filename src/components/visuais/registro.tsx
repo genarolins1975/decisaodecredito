@@ -34,6 +34,7 @@ import { EscalaProbabilidade } from "./escala-probabilidade";
 import { EscalaOdds } from "./escala-odds";
 import { EscalaLogOdds } from "./escala-logodds";
 import { EscoreSoma } from "./escore-soma";
+import { CoeficientePd } from "./coeficiente-pd";
 import { LogitSlides } from "./logit-slides";
 import { TresEscalas } from "./tres-escalas";
 import { Escalas } from "./escalas";
@@ -98,6 +99,7 @@ const REGISTRO: Record<string, VisualNativo> = {
   c4p8: { Componente: EscoreSoma, substitui: "pagina" },
   c4p7: { Componente: CurvaLogistica, substitui: "legacy" },
   c4p9: { Componente: TresEscalas, substitui: "legacy" },
+  c4p10: { Componente: CoeficientePd, substitui: "pagina" },
   c4p13: { Componente: Intercepto, substitui: "legacy" },
   c4p15: { Componente: () => <DescidaCompleta modo="perda" />, substitui: "legacy" },
   c4p16: { Componente: () => <DescidaCompleta modo="gradiente" />, substitui: "legacy" },

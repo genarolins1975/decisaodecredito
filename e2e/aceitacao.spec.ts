@@ -434,6 +434,34 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(lo).toContainText("Partida em PD 1,00%."); await expect(lo).toContainText("−5,288");
   await lo.getByRole("button", { name: "Restaurar" }).click();
   await expect(lo).toContainText("Partida em PD 33,00%."); await expect(lo).not.toContainText("±16,67 pp");
+  // c4p10: o exercício de leitura do coeficiente; a resposta só aparece depois de conferir
+  await page.goto("/aulas/c4p10");
+  const cf = page.locator('figure[data-vz="coeficiente-pd"]');
+  await expect(cf).toContainText("Você interpretaria este coeficiente corretamente?");
+  await expect(cf).toContainText("70% → 80%"); await expect(cf).toContainText("5 dias → 5 dias"); await expect(cf).toContainText("β = 0,7453");
+  await expect(cf).toContainText("Antes de responder");
+  await expect(cf).not.toContainText("Correto: o acréscimo ocorre no escore");
+  await expect(page.locator("main")).not.toContainText("mistura duas escalas"); // o parágrafo herdado saiu
+  await expect(cf.getByRole("button", { name: "Conferir resposta" })).toBeDisabled();
+  await cf.getByRole("radio", { name: /A PD aumenta/ }).check();
+  await expect(cf.getByRole("button", { name: "Conferir resposta" })).toBeEnabled();
+  await expect(cf).not.toContainText("Você confundiu as escalas"); // selecionar não revela
+  await cf.getByRole("button", { name: "Conferir resposta" }).click();
+  await expect(cf).toContainText("Resposta incorreta"); await expect(cf).toContainText("Você confundiu as escalas");
+  await expect(cf).toContainText("Δx = (80 − 70) ÷ 10 = 1"); await expect(cf).toContainText("Δz = β × 1 = 0,7453");
+  await expect(cf).toContainText("0,2483"); await expect(cf).toContainText("0,9936"); await expect(cf).toContainText("56,18%"); await expect(cf).toContainText("72,98%");
+  await expect(cf).toContainText("A variação da PD neste exemplo é +16,80 pp.");
+  await expect(cf).toContainText("β soma no log odds.");
+  await cf.getByRole("button", { name: "Tentar novamente" }).click();
+  await expect(cf).toContainText("Antes de responder"); await expect(cf).not.toContainText("Você confundiu as escalas");
+  await cf.getByRole("radio", { name: /O escore em log odds/ }).check();
+  await cf.getByRole("button", { name: "Conferir resposta" }).click();
+  await expect(cf).toContainText("Resposta correta"); await expect(cf).toContainText("Correto: o acréscimo ocorre no escore");
+  await cf.getByRole("button", { name: "Tentar novamente" }).click();
+  await cf.getByRole("button", { name: "O que significa manter constante?" }).click();
+  await expect(cf).toContainText("estratégia de identificação adicionais");
+  await cf.getByRole("button", { name: "Voltar" }).click();
+  await expect(cf).toContainText("Antes de responder");
   // c4p1: os dois quadros de abertura, um só estado: características → escore → PD; +10 pp → +0,7453 em z → × 2,11 nas odds
   await page.goto("/aulas/c4p1");
   const rl = page.locator('figure[data-vz="logit-slides"]');
