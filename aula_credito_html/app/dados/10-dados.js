@@ -271,9 +271,10 @@
   };
 
   D.modelos = {
-    logit: { nome: "Logit regularizado", cor: "var(--logit)", chave: "logit" },
-    arvore: { nome: "Árvore controlada", cor: "var(--arvore)", chave: "arvore" },
-    boosting: { nome: "Gradient boosting", cor: "var(--boost)", chave: "boosting" },
-    logit_flex: { nome: "Logit flexível (sensibilidade)", cor: "var(--ink-soft)", chave: "logit_flex" },
+    logit: { nome: "Logit regularizado", curto: "Logit", cor: "var(--logit)", chave: "logit" },
+    arvore: { nome: "Árvore controlada", curto: "Árvore", cor: "var(--arvore)", chave: "arvore" },
+    boosting: { nome: "Gradient boosting", curto: "Boosting", cor: "var(--boost)", chave: "boosting" },
+    logit_flex: { nome: "Logit flexível (sensibilidade)", curto: "Logit flexível",
+                  cor: "var(--ink-soft)", chave: "logit_flex" },
   };
 })();

@@ -286,17 +286,20 @@ var Graf = (function () {
   }
 
   /* Quebra um rótulo em no máximo duas linhas de até max caracteres. */
+  /* Quebra gulosa em quantas linhas forem necessárias. Uma palavra maior que o
+     limite fica sozinha na linha: não há separação silábica, porque a casa não
+     usa hífen. */
   function quebrar(texto, max) {
     texto = String(texto || "");
     if (texto.length <= max) return [texto];
-    var palavras = texto.split(" ");
-    var l1 = "", l2 = "";
-    palavras.forEach(function (p) {
-      if (!l2 && (l1 + " " + p).trim().length <= max) l1 = (l1 + " " + p).trim();
-      else l2 = (l2 + " " + p).trim();
+    var linhas = [], atual = "";
+    texto.split(" ").forEach(function (p) {
+      if (!atual) { atual = p; return; }
+      if ((atual + " " + p).length <= max) atual = atual + " " + p;
+      else { linhas.push(atual); atual = p; }
     });
-    if (!l2) return [l1];
-    return [l1, l2];
+    if (atual) linhas.push(atual);
+    return linhas.length ? linhas : [texto];
   }
 
   function ticksAuto(a, b, alvo) {
@@ -365,13 +368,36 @@ var Graf = (function () {
     svg.appendChild(arestas);
     svg.appendChild(caixas);
 
-    var niveis = [];
+    /* Cada caixa cresce conforme as linhas que couberem na largura dada, e cada
+       nível recebe a altura da sua caixa mais alta. Sem isso, um rótulo longo
+       empurra o texto para fora da caixa e o rótulo do ramo cai sobre o filho. */
+    var maxChars = Math.max(8, Math.floor((larguraCaixa - 20) / 10.4));
+    function linhasDe(no) {
+      var l = quebrar(no.rotulo, maxChars).map(function (t) {
+        return { texto: t, principal: true };
+      });
+      if (no.detalhe) l.push({ texto: no.detalhe });
+      if (no.detalhe2) l.push({ texto: no.detalhe2 });
+      return l;
+    }
+
+    var niveis = [], alturaNivel = [];
     (function medir(no, d) {
       niveis[d] = (niveis[d] || 0) + 1;
+      no._linhas = linhasDe(no);
+      no._altura = Math.max(alturaCaixa, no._linhas.length * 21 + 14);
+      alturaNivel[d] = Math.max(alturaNivel[d] || 0, no._altura);
       (no.filhos || []).forEach(function (f) { medir(f.no, d + 1); });
     })(raizNo, 0);
     var prof = niveis.length;
-    var dy = (hh - alturaCaixa - 26) / Math.max(1, prof - 1);
+    var somaAlturas = alturaNivel.reduce(function (a, b) { return a + b; }, 0);
+    var espaco = prof > 1
+      ? Math.max(30, (hh - 26 - somaAlturas) / (prof - 1)) : 0;
+    var topoNivel = [];
+    alturaNivel.reduce(function (acc, a, i) {
+      topoNivel[i] = acc;
+      return acc + a + espaco;
+    }, 14);
 
     var contador = [];
     (function posicionar(no, d) {
@@ -384,23 +410,23 @@ var Graf = (function () {
         no._x = (Math.min.apply(null, xs) + Math.max.apply(null, xs)) / 2;
         contador[d]++;
       }
-      no._y = 14 + d * dy;
+      no._y = topoNivel[d];
     })(raizNo, 0);
 
     function cx(no) { return 22 + no._x * (w - 44); }
 
     (function desenhar(no, d) {
-      var x = cx(no), y = no._y;
+      var x = cx(no), y = no._y, base = y + no._altura;
       (no.filhos || []).forEach(function (f) {
-        var fx = cx(f.no), fy = f.no._y;
+        var fx = cx(f.no), fy = f.no._y, vao = fy - base;
         arestas.appendChild(sv("path", {
-          d: "M" + x + " " + (y + alturaCaixa) + " C" + x + " " + (y + alturaCaixa + dy / 2) +
-             ", " + fx + " " + (fy - dy / 2) + ", " + fx + " " + fy,
+          d: "M" + x + " " + base + " C" + x + " " + (base + vao / 2) +
+             ", " + fx + " " + (fy - vao / 2) + ", " + fx + " " + fy,
           fill: "none",
           stroke: f.destaque ? "var(--cor)" : "var(--rule)",
           "stroke-width": f.destaque ? 4 : 2,
         }));
-        var mx = x + (fx - x) * 0.74, my = y + alturaCaixa + dy * 0.42;
+        var mx = x + (fx - x) * 0.74, my = base + vao * 0.52;
         var larg = String(f.aresta).length * 9.5 + 14;
         arestas.appendChild(sv("rect", {
           x: mx - larg / 2, y: my - 17, width: larg, height: 25, rx: 3,
@@ -416,21 +442,13 @@ var Graf = (function () {
 
       var folha = !no.filhos || !no.filhos.length;
       var cor = no.destaque ? "var(--cor)" : "var(--rule)";
-      var nLinhas = quebrar(no.rotulo, Math.max(8, Math.floor((larguraCaixa - 20) / 10.4))).length +
-        (no.detalhe ? 1 : 0) + (no.detalhe2 ? 1 : 0);
-      var altura = Math.max(alturaCaixa, nLinhas * 21 + 14);
+      var altura = no._altura;
       caixas.appendChild(sv("rect", {
         x: x - larguraCaixa / 2, y: y, width: larguraCaixa, height: altura, rx: 5,
         fill: no.destaque ? "var(--cor-soft)" : (folha ? "var(--surface)" : "var(--paper)"),
         stroke: cor, "stroke-width": no.destaque ? 3 : 1.5,
       }));
-      /* O rótulo quebra em até duas linhas para caber na caixa. */
-      var maxChars = Math.max(8, Math.floor((larguraCaixa - 20) / 10.4));
-      var linhas = quebrar(no.rotulo, maxChars).map(function (t) {
-        return { texto: t, principal: true };
-      });
-      if (no.detalhe) linhas.push({ texto: no.detalhe });
-      if (no.detalhe2) linhas.push({ texto: no.detalhe2 });
+      var linhas = no._linhas;
       var topo = y + (altura - linhas.length * 21) / 2 + 16;
       linhas.forEach(function (t, i) {
         caixas.appendChild(sv("text", {
@@ -443,7 +461,7 @@ var Graf = (function () {
       });
       if (no.valor !== undefined) {
         caixas.appendChild(sv("text", {
-          x: x, y: y + alturaCaixa + 22, "text-anchor": "middle", "font-size": 21,
+          x: x, y: y + altura + 22, "text-anchor": "middle", "font-size": 21,
           "font-weight": 700, fill: no.destaque ? "var(--cor)" : "var(--ink)", texto: no.valor,
         }));
       }

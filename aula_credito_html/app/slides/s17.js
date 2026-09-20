@@ -38,7 +38,7 @@ Aula.slide({
     }
 
     function grafico(escalaPD) {
-      var g = Graf.novo({ w: 600, h: 296, m: { e: 84, d: 92, c: 18, b: 54 } });
+      var g = Graf.novo({ w: 470, h: 452, m: { e: 84, d: 36, c: 20, b: 56 } });
       g.x(10, 70);
       if (escalaPD) {
         g.y(0, 0.7);
@@ -46,9 +46,11 @@ Aula.slide({
         g.eixoY({ ticks: [0, 0.2, 0.4, 0.6], formato: function (v) { return F.pct(v, 0); },
                   rotulo: "probabilidade de inadimplência" });
       } else {
-        g.y(-3, 1.5);
-        g.grade({ y: [-3, -2, -1, 0, 1] });
-        g.eixoY({ ticks: [-3, -2, -1, 0, 1], rotulo: "escore z" });
+        /* O domínio cobre z em toda a faixa de comprometimento, inclusive o
+           mínimo em 10% sem histórico: a curva não é desenhada fora da moldura. */
+        g.y(-4.6, 1.4);
+        g.grade({ y: [-4, -3, -2, -1, 0, 1] });
+        g.eixoY({ ticks: [-4, -3, -2, -1, 0, 1], rotulo: "escore z" });
       }
       g.eixoX({ ticks: [10, 20, 30, 40, 50, 60, 70], rotulo: "comprometimento em %" });
       [0, 1].forEach(function (hist) {
@@ -58,16 +60,31 @@ Aula.slide({
         });
         g.linha(pts, { cor: cor, largura: 3 });
         var fim = pts[pts.length - 1];
-        g.texto(70, fim[1], hist ? "histórico = 1" : "histórico = 0",
-          { dx: 8, dy: 6, tamanho: 18, cor: cor });
         var v = escalaPD ? M.sigmoid(z(est.comp, hist)) : z(est.comp, hist);
         g.ponto(est.comp, v, { cor: cor, r: 8 });
+        var aDireita = est.comp <= 52;
+        /* Perto do piso do domínio o valor sobe, para não cair sobre o eixo. */
+        var noPiso = (v - g.dy[0]) / (g.dy[1] - g.dy[0]) < 0.14;
         g.texto(est.comp, v, escalaPD ? F.pct(v, 1) : F.dec(v, 2),
-          { dx: 10, dy: hist ? -12 : 22, tamanho: 18, cor: "var(--ink)" });
+          { ancora: aDireita ? "start" : "end", dx: aDireita ? 10 : -10,
+            dy: hist && !noPiso ? -12 : (noPiso ? -12 : 22), tamanho: 18, cor: "var(--ink)" });
       });
       g.add(sv("line", { x1: g.px(est.comp), x2: g.px(est.comp), y1: g.py(g.dy[0]),
         y2: g.py(g.dy[1]), stroke: "var(--muted)", "stroke-dasharray": "4 4" }));
       return g.svg;
+    }
+
+    /* As duas curvas se identificam em legenda acima do desenho: rótulo preso ao
+       fim da curva disputaria espaço com o valor do ponto selecionado. */
+    function legenda() {
+      return h("div", { estilo: "display:flex;gap:20px;align-self:flex-start;margin-bottom:2px" },
+        [[1, "var(--alert)", "histórico = 1"], [0, "var(--logit)", "histórico = 0"]]
+          .map(function (l) {
+            return h("span", { estilo: "display:flex;align-items:center;gap:7px" }, [
+              h("span", { estilo: "width:24px;height:4px;border-radius:2px;background:" + l[1] }),
+              h("span", { class: "apoio", estilo: "font-size:17px" }, l[2]),
+            ]);
+          }));
     }
 
     var termo = est.delta * (est.comp - 30);
@@ -75,12 +92,14 @@ Aula.slide({
     var difPD = M.sigmoid(z(est.comp, 1)) - M.sigmoid(z(est.comp, 0));
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
-      h("div", { class: "painel claro cresce centro", estilo: "display:flex" }, [
-        h("h3", { class: "secao" }, "Escala do escore: a interação aparece na inclinação"),
+      h("div", { class: "painel claro igual centro", estilo: "display:flex" }, [
+        h("h3", { class: "secao" }, "Na escala do escore"),
+        legenda(),
         grafico(false),
       ]),
-      h("div", { class: "painel claro cresce centro", estilo: "display:flex" }, [
-        h("h3", { class: "secao" }, "Escala da probabilidade"),
+      h("div", { class: "painel claro igual centro", estilo: "display:flex" }, [
+        h("h3", { class: "secao" }, "Na escala da probabilidade"),
+        legenda(),
         grafico(true),
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 430px" }, [

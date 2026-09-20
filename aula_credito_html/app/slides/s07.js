@@ -18,7 +18,11 @@ Aula.slide({
       "Coeficiente e contribuição observada são coisas diferentes: a contribuição multiplica o coeficiente pelo desvio da variável.",
       "Centrar as variáveis facilita a interpretação do intercepto e não muda a classe de funções.",
     ],
-    transicao: "O escore pode ser qualquer número. Como transformá-lo em algo entre zero e um?",
+    aprofundar: [
+      "Material original, capítulo 4, página 13: o intercepto é âncora de nível, não coeficiente comum. Naquele exemplo, utilização zero e atraso zero não existem na carteira, então o intercepto não tem leitura como PD de um cliente real.",
+      "Trocar o intercepto desloca a PD de todas as propostas e preserva a ordem de risco. É por isso que recalibrar um modelo cuja ordenação continua boa equivale a reestimar o nível, sem alterar a AUC. O mesmo fato aparece no slide 45.",
+    ],
+    transicao: "O escore pode ser qualquer número. Como converter esse escore em algo entre zero e um?",
   },
   impressao: function (e) { e.visiveis = 5; },
 
@@ -33,7 +37,7 @@ Aula.slide({
     var z = L.z(c);
 
     var g = Graf.waterfall({
-      w: 840, h: 430, larguraRot: 240,
+      w: 780, h: 430, larguraRot: 220,
       base: L.intercepto, visiveis: est.visiveis,
       rotuloBase: "intercepto " + F.dec(L.intercepto, 2),
       rotuloTotal: "escore z",
@@ -65,7 +69,7 @@ Aula.slide({
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "painel claro centro", estilo: "display:flex;flex:0 0 auto" }, g.svg),
       h("div", { class: "coluna cresce" }, [
-        h("div", { class: "painel cor" }, [
+        h("div", { class: "painel cor", estilo: "padding:10px 16px" }, [
           h("div", { estilo: "display:flex;gap:14px;align-items:baseline;flex-wrap:wrap" }, [
             h("span", { class: "apoio" }, "Cliente"),
             Comum.seletorCliente(est.cliente, function (v) {
@@ -76,7 +80,7 @@ Aula.slide({
             "Perfil de referência: renda R$ 5.000, comprometimento 30%, relacionamento 12 meses, " +
             "utilização 40% e sem histórico de atraso. O intercepto vale para esse perfil."),
         ]),
-        h("div", { class: "painel claro cresce" }, tabela),
+        h("div", { class: "painel claro cresce", estilo: "padding:10px 14px" }, tabela),
         h("div", { class: "grupo" }, [
           h("button", { class: "btn", type: "button",
             onclick: function () {

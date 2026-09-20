@@ -31,16 +31,24 @@ var F = (function () {
     return String(s).replace(/-/g, MENOS);
   }
 
+  /* O sinal some quando o arredondamento zera o valor: um resíduo de −0,001
+     exibido com duas casas vira "0,00", e não "−0,00". */
+  function zerado(x, casas) {
+    return Math.abs(x).toFixed(casas) === (0).toFixed(casas);
+  }
+
   function dec(x, casas) {
     if (x === null || x === undefined || !isFinite(x)) return "indisponível";
     casas = casas === undefined ? 2 : casas;
     var s = Math.abs(x).toFixed(casas).replace(".", ",");
-    return (x < 0 ? MENOS : "") + s;
+    return (x < 0 && !zerado(x, casas) ? MENOS : "") + s;
   }
 
   function sinal(x, casas) {
     if (!isFinite(x)) return "indisponível";
+    casas = casas === undefined ? 2 : casas;
     var s = dec(Math.abs(x), casas);
+    if (zerado(x, casas)) return s;
     return (x < 0 ? MENOS : "+") + s;
   }
 
@@ -64,7 +72,7 @@ var F = (function () {
     var s = Math.abs(x).toFixed(casas);
     var partes = s.split(".");
     partes[0] = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    return "R$ " + (x < 0 ? MENOS : "") + partes.join(",");
+    return "R$ " + (x < 0 && !zerado(x, casas) ? MENOS : "") + partes.join(",");
   }
 
   function inteiro(x) {

@@ -61,7 +61,7 @@ Aula.slide({
     var xs = grade.map(eixoForca);
     var minX = Math.min.apply(null, xs), maxX = Math.max.apply(null, xs);
 
-    var gc = Graf.novo({ w: 620, h: 330, m: { e: 88, d: 112, c: 18, b: 56 } });
+    var gc = Graf.novo({ w: 476, h: 330, m: { e: 86, d: 96, c: 18, b: 56 } });
     var todos = [];
     grade.forEach(function (g) { idx.forEach(function (j) { todos.push(g.coeficientes[j]); }); });
     var lim = Math.max(0.6, Math.ceil(Math.max.apply(null, todos.map(Math.abs)) * 2) / 2);
@@ -82,7 +82,7 @@ Aula.slide({
     gc.add(sv("line", { x1: gc.px(eixoForca(atual)), x2: gc.px(eixoForca(atual)),
       y1: gc.py(-lim), y2: gc.py(lim), stroke: "var(--muted)", "stroke-dasharray": "4 4" }));
 
-    var gp = Graf.novo({ w: 620, h: 330, m: { e: 92, d: 112, c: 18, b: 56 } });
+    var gp = Graf.novo({ w: 476, h: 330, m: { e: 88, d: 108, c: 18, b: 56 } });
     var perdas = grade.map(function (g) { return g.perda_treino; })
       .concat(grade.map(function (g) { return g.perda_validacao; }));
     var pmin = Math.min.apply(null, perdas), pmax = Math.max.apply(null, perdas);
@@ -103,15 +103,17 @@ Aula.slide({
       });
     gp.add(sv("line", { x1: gp.px(eixoForca(melhor)), x2: gp.px(eixoForca(melhor)),
       y1: gp.py(gp.dy[0]), y2: gp.py(gp.dy[1]), stroke: "var(--ok)", "stroke-width": 2 }));
+    var melhorADireita = eixoForca(melhor) > (minX + maxX) / 2;
     gp.texto(eixoForca(melhor), gp.dy[1], "escolhido na validação",
-      { dx: 6, dy: 16, tamanho: 16, peso: 400, cor: "var(--ok)" });
+      { ancora: melhorADireita ? "end" : "start", dx: melhorADireita ? -6 : 6,
+        dy: 16, tamanho: 16, peso: 400, cor: "var(--ok)" });
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
-      h("div", { class: "painel claro cresce centro", estilo: "display:flex" }, [
+      h("div", { class: "painel claro igual centro", estilo: "display:flex" }, [
         h("h3", { class: "secao" }, "Trajetórias dos coeficientes"),
         gc.svg,
       ]),
-      h("div", { class: "painel claro cresce centro", estilo: "display:flex" }, [
+      h("div", { class: "painel claro igual centro", estilo: "display:flex" }, [
         h("h3", { class: "secao" }, "Perda de treino e de validação"),
         gp.svg,
       ]),

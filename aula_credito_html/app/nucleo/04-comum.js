@@ -85,7 +85,9 @@ var Comum = (function () {
   }
 
   /* Árvore didática de 1.000 contratos.
-     op: {cliente, mostrarNumeros, mostrarPd, ocultarFolha, w, h, aoSelecionar} */
+     op: {cliente, mostrarNumeros, mostrarPd, ocultarFolha, w, h, rotuloPergunta,
+          rotuloRamo}
+     rotuloPergunta e rotuloRamo encurtam os textos quando o desenho é estreito. */
   function arvoreDidatica(op) {
     op = op || {};
     var A = D.arvore;
@@ -118,10 +120,13 @@ var Comum = (function () {
       var esqDest = ramoRevelado && caminho.some(function (p) { return p.no === no && p.esq; });
       var dirDest = ramoRevelado && caminho.some(function (p) { return p.no === no && !p.esq && !p.folha; });
       return {
-        rotulo: no.pergunta, detalhe: detalhe(no), detalhe2: valor(no), destaque: dest,
+        rotulo: op.rotuloPergunta ? op.rotuloPergunta(no) : no.pergunta,
+        detalhe: detalhe(no), detalhe2: valor(no), destaque: dest,
         filhos: [
-          { aresta: no.rotuloEsq, destaque: esqDest, no: construir(no.esq) },
-          { aresta: no.rotuloDir, destaque: dirDest, no: construir(no.dir) },
+          { aresta: op.rotuloRamo ? op.rotuloRamo(no, true) : no.rotuloEsq,
+            destaque: esqDest, no: construir(no.esq) },
+          { aresta: op.rotuloRamo ? op.rotuloRamo(no, false) : no.rotuloDir,
+            destaque: dirDest, no: construir(no.dir) },
         ],
       };
     }

@@ -45,7 +45,7 @@ Aula.slide({
 
     function rotuloProf(p) { return p < 0 ? "sem limite" : String(p); }
 
-    var g = Graf.novo({ w: 700, h: 420, m: { e: 96, d: 130, c: 24, b: 62 } });
+    var g = Graf.novo({ w: 700, h: 400, m: { e: 96, d: 130, c: 20, b: 58 } });
     var perdas = cenarios.map(function (c) { return c.perda_treino; })
       .concat(cenarios.map(function (c) { return c.perda_validacao; }));
     g.x(0, cenarios.length - 1).y(0.25, Math.max.apply(null, perdas) * 1.05);
@@ -73,7 +73,7 @@ Aula.slide({
 
     var mapas = ["2", "4", "8"].map(function (k) {
       var a = R.auxiliar_2d.arvores[k];
-      var gm = Comum.mapaCalor(a.malha, { w: 320, h: 300, max: 0.5,
+      var gm = Comum.mapaCalor(a.malha, { w: 212, h: 300, max: 0.5,
         resumo: "Regiões de previsão para profundidade " + k });
       return h("div", { class: "painel" + (String(atual.profundidade) === k ? " cor" : " claro"),
         estilo: "padding:12px" }, [
@@ -86,7 +86,7 @@ Aula.slide({
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "coluna cresce" }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
           h("h3", { class: "secao", estilo: "margin:0" },
             "Experimento auxiliar de duas variáveis: as regiões aprendidas"),
           UI.selo("experimento auxiliar, não o modelo completo", "sim"),

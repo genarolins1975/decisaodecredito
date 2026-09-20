@@ -23,6 +23,11 @@ Aula.slide({
       "A função objetivo do treino não garante o melhor desempenho futuro.",
       "Em p igual a 0 ou 1 a perda vai a infinito. As curvas são desenhadas entre 0,1% e 99,9%.",
     ],
+    aprofundar: [
+      "Material original, capítulo 4, páginas 15 a 17: a perda de cada observação determina os coeficientes, e a descida de gradiente percorre os parâmetros uma iteração por vez até a convergência.",
+      "Nesta aula a descida aparece no bloco de boosting, slides 32 a 35, com a mesma mecânica de resíduo, passo e atualização do escore.",
+      "Página 18 do original: navegador, Python com a mesma regra e sklearn chegam ao mesmo resultado, com diferença máxima de 0,000327 no intercepto. A conferência equivalente aqui está nos metadados do slide 43 e no notebook.",
+    ],
     transicao: "Mesmo com um coeficiente fixo, o efeito observado na PD muda ao longo da curva logística.",
   },
   impressao: function (e) { e.amostra = true; },

@@ -19,7 +19,7 @@ Aula.slide({
       "Sobre causalidade: uma contribuição positiva do histórico não prova que remover o atraso do cadastro reduziria o risco real.",
       "Reduzir a taxa de aprendizagem exige recalcular as rodadas e os resíduos, não dividir a PD.",
     ],
-    transicao: "Sabemos como as três técnicas funcionam. Agora precisamos compará-las em condições iguais e verificar o que cada métrica responde.",
+    transicao: "Sabemos como as três técnicas funcionam. Agora precisamos comparar as três em condições iguais e verificar o que cada métrica responde.",
   },
   impressao: function (e) { e.escolha = 1; e.conferido = true; e.passos = 2; },
 
@@ -65,7 +65,7 @@ Aula.slide({
     });
 
     var g = Graf.waterfall({
-      w: 700, h: 300, larguraRot: 230,
+      w: 578, h: 300, larguraRot: 196,
       base: F0, rotuloBase: "escore inicial", rotuloTotal: "escore final", rotuloX: "escore F",
       visiveis: est.passos >= 1 ? 2 : 0,
       itens: [
@@ -114,7 +114,7 @@ Aula.slide({
             "Reiniciar exercício"),
         ]),
       ]),
-      h("div", { class: "coluna", estilo: "flex:0 0 720px" }, [
+      h("div", { class: "coluna", estilo: "flex:0 0 620px" }, [
         h("div", { class: "painel claro cresce centro" }, [
           est.passos >= 1
             ? g.svg

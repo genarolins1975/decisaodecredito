@@ -83,7 +83,7 @@ Aula.slide({
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "coluna cresce" }, [
         h("div", { class: "painel cor" }, [
-          h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap" }, [
+          h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap" }, [
             h("h3", { class: "secao", estilo: "margin:0" },
               "Referência atual: " + est.ref),
             UI.selo("extensão pedagógica da fórmula", "neutro"),

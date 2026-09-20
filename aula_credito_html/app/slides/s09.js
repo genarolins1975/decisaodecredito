@@ -17,6 +17,10 @@ Aula.slide({
       "Um escore finito nunca produz exatamente 0 ou 1. A formatação pode arredondar para 0,00%, o que não significa impossibilidade.",
       "O ponto de 50% é referência matemática, não corte de aprovação.",
     ],
+    aprofundar: [
+      "Material original, capítulo 4, página 6: probabilidade, odds, log odds e escore de bureau são quatro réguas da mesma ordem. Lá, PD de 5% corresponde a odds 0,053, log odds −2,944 e escore didático 865.",
+      "Qualquer transformação monótona preserva a ordenação e, portanto, a AUC. O que muda é a régua de comunicação e de cálculo.",
+    ],
     transicao: "Para interpretar os coeficientes, precisamos entender a escala em que a soma foi feita: o logaritmo das odds.",
   },
   impressao: function (e) { if (e.z === undefined) e.z = Aula.dados.logit.z(Aula.dados.cliente("Bruno")); },
@@ -49,11 +53,16 @@ Aula.slide({
         { dx: -10, dy: -12, ancora: "end", tamanho: 17, peso: 400, cor: "var(--muted)" });
     }
 
+    /* O nome do perfil que está sob o cursor desce para o outro lado do ponto:
+       na mesma altura ele se sobreporia ao valor da PD. */
     D.clientes.forEach(function (c) {
       var z = L.z(c), pc = M.sigmoid(z);
       if (pc > yMax) return;
+      var selecionado = Math.abs(z - est.z) < 1e-9;
       g.ponto(z, pc, { r: 6, cor: "var(--ink)", bordaL: 1.5 });
-      g.texto(z, pc, c.nome, { dx: 9, dy: -10, tamanho: 17, peso: 400, cor: "var(--muted)" });
+      g.texto(z, pc, c.nome, { dx: selecionado ? 0 : 9, dy: selecionado ? 30 : -10,
+        ancora: selecionado ? "middle" : "start",
+        tamanho: 17, peso: 400, cor: "var(--muted)" });
     });
 
     if (p <= yMax) {

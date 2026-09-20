@@ -39,7 +39,7 @@ Aula.slide({
     ];
     if (est.zero) linhas.push({ rotulo: "folha sem eventos", n: 20, d: 0 });
 
-    var g = Graf.novo({ w: 940, h: 400, m: { e: 260, d: 130, c: 30, b: 60 } });
+    var g = Graf.novo({ w: 940, h: 400, m: { e: 260, d: 148, c: 30, b: 60 } });
     g.x(0, 0.4).y(0, linhas.length);
     g.grade({ x: [0, 0.1, 0.2, 0.3, 0.4] });
     g.eixoX({ ticks: [0, 0.1, 0.2, 0.3, 0.4], formato: function (v) { return F.pct(v, 0); },

@@ -53,7 +53,7 @@ Aula.slide({
       { ancora: "middle", tamanho: 18, peso: 400, cor: "var(--muted)" });
 
     /* Reta de probabilidade com faixas inválidas. */
-    var gr = Graf.novo({ w: 640, h: 286, m: { e: 78, d: 26, c: 16, b: 52 } });
+    var gr = Graf.novo({ w: 624, h: 268, m: { e: 78, d: 26, c: 16, b: 52 } });
     gr.x(10, 80).y(-0.4, 1.5);
     var hachAlta = gr.hachura("fora-alta", "var(--alert)");
     gr.retangulo(10, 1, 80, 1.5, { cor: hachAlta });
@@ -92,10 +92,10 @@ Aula.slide({
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 660px" }, [
         h("div", { class: "painel claro" }, [
-          h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+          h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
             h("h3", { class: "secao", estilo: "margin:0" },
               "Uma reta direto na probabilidade"),
-            UI.selo("exemplo para mostrar o problema", "sim"),
+            UI.selo("exemplo do problema", "sim"),
           ]),
           h("p", { class: "formula peq" },
             "p_linear = 0,10 + 0,03 × (comp − 30)"),

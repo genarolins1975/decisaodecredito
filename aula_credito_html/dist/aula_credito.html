@@ -148,6 +148,7 @@ p.subtitulo {
 .linha.topo { align-items: flex-start; }
 .coluna { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 .cresce { flex: 1 1 auto; min-width: 0; min-height: 0; }
+.igual { flex: 1 1 0; min-width: 0; min-height: 0; }
 .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 .g4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
@@ -306,6 +307,9 @@ table.tabela tbody tr.sel td { font-weight: 700; color: var(--ink); }
 table.tabela td.rotulo { font-weight: 700; color: var(--ink); }
 table.tabela.compacta { font-size: 19px; }
 table.tabela.compacta th, table.tabela.compacta td { padding: 5px 8px; }
+table.tabela.apertada { font-size: 18px; }
+table.tabela.apertada th, table.tabela.apertada td { padding: 4px 6px; }
+.rolagem-h { max-width: 100%; }
 
 .kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-size: 20px; }
 .kv dt { color: var(--muted); }
@@ -346,7 +350,10 @@ table.tabela.compacta th, table.tabela.compacta td { padding: 5px 8px; }
 
 /* ------------------------------------------------------------------- svg */
 
-svg { display: block; overflow: visible; }
+/* max-width impede que um desenho mais largo que o painel escorra por cima
+   do painel vizinho: com viewBox, o navegador reduz a escala e preserva a
+   proporção. Os desenhos são dimensionados para caber sem essa rede. */
+svg { display: block; overflow: visible; max-width: 100%; }
 svg text { font-family: var(--sans); fill: var(--body); }
 .eixo line, .eixo path { stroke: var(--rule); stroke-width: 1.5; fill: none; }
 .eixo text { fill: var(--muted); font-size: 18px; }
@@ -488,6 +495,21 @@ body.estudo .estudo-notas {
 }
 body.estudo .estudo-notas .painel { margin-bottom: 12px; }
 
+/* Em tela estreita as colunas laterais de largura fixa não cabem lado a lado.
+   O !important vence o estilo embutido que fixa a base de cada coluna. */
+@media (max-width: 760px) {
+  body.estudo .linha { flex-direction: column; }
+  body.estudo .linha > * { flex: 1 1 auto !important; width: 100%; min-width: 0; }
+  body.estudo .rolagem-h { overflow-x: auto; }
+  body.estudo .selo { white-space: normal; }
+  body.estudo .ctrl-linha { flex-wrap: wrap; }
+  body.estudo .ctrl input[type="range"] { min-width: 100px; }
+  body.estudo .kv { grid-template-columns: 1fr; }
+  body.estudo .kv dd { white-space: normal; }
+  body.estudo table.tabela { font-size: 13px; }
+  body.estudo table.tabela th, body.estudo table.tabela td { padding: 4px 4px; }
+}
+
 /* ---------------------------------------------------------------- impressão */
 
 #impressao { display: none; }
@@ -496,24 +518,64 @@ body.estudo .estudo-notas .painel { margin-bottom: 12px; }
   #moldura, #barra, #notas, #indice, #progresso { display: none !important; }
   body { background: #fff; }
   #impressao { display: block; }
+  /* A folha é a página inteira e o palco de 1600 por 900 entra reduzido:
+     297mm valem 1122,5px em 96 dpi, portanto a escala é 1122,5 dividido por
+     1600. Assim cada slide ocupa exatamente uma página e mantém a composição
+     da projeção. */
   .folha {
+    position: relative;
+    width: 297mm;
+    height: 209mm;
+    overflow: hidden;
+    padding: 0;
+    background: var(--ground);
     page-break-after: always;
     break-after: page;
-    padding: 12mm 14mm;
-    width: 297mm;
-    min-height: 200mm;
   }
-  .folha .titulo { font-size: 26px; }
-  .folha .subtitulo { font-size: 14px; }
-  .folha #corpo, .folha .corpo { font-size: 13px; }
-  .folha .grande { font-size: 24px; }
-  .folha .medio { font-size: 18px; }
-  .folha .formula { font-size: 15px; }
-  .folha table.tabela { font-size: 12px; }
-  .folha .apoio { font-size: 12px; }
-  .folha .nota, .folha .selo { font-size: 11px; }
-  .folha .btn, .folha input[type="range"] { display: none; }
-  .folha .grupo.imprime .btn { display: inline-block; }
+  .palco-folha {
+    position: absolute;
+    top: 20mm;
+    left: 0;
+    width: 1600px;
+    height: 900px;
+    transform-origin: top left;
+    transform: scale(0.7015);
+    background: var(--ground);
+    display: flex;
+    flex-direction: column;
+    padding: 34px 54px 22px;
+  }
+  .palco-folha .btn,
+  .palco-folha input,
+  .palco-folha textarea { display: none; }
+
+  .apendice { padding: 14mm 16mm; }
+  .apendice > .titulo { font-size: 30px; margin-bottom: 4px; }
+  .apendice > .subtitulo { font-size: 15px; margin-bottom: 10mm; }
+  .apendice .bloco-notas {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 9mm;
+    border-top: 1px solid var(--rule);
+    padding-top: 4mm;
+  }
+  .apendice .bloco-notas h2 {
+    font-family: var(--serif);
+    font-size: 17px;
+    color: var(--ink);
+    margin: 0 0 2px;
+  }
+  .apendice .bloco-notas .fonte { font-size: 11px; margin: 0 0 4px; }
+  .apendice .bloco-notas h3 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--muted);
+    margin: 5px 0 2px;
+  }
+  .apendice .bloco-notas ul { margin: 0; padding-left: 16px; }
+  .apendice .bloco-notas li,
+  .apendice .bloco-notas p { font-size: 13px; line-height: 1.4; margin: 0 0 2px; }
   @page { size: A4 landscape; margin: 0; }
 }
 
@@ -583,16 +645,24 @@ var F = (function () {
     return String(s).replace(/-/g, MENOS);
   }
 
+  /* O sinal some quando o arredondamento zera o valor: um resíduo de −0,001
+     exibido com duas casas vira "0,00", e não "−0,00". */
+  function zerado(x, casas) {
+    return Math.abs(x).toFixed(casas) === (0).toFixed(casas);
+  }
+
   function dec(x, casas) {
     if (x === null || x === undefined || !isFinite(x)) return "indisponível";
     casas = casas === undefined ? 2 : casas;
     var s = Math.abs(x).toFixed(casas).replace(".", ",");
-    return (x < 0 ? MENOS : "") + s;
+    return (x < 0 && !zerado(x, casas) ? MENOS : "") + s;
   }
 
   function sinal(x, casas) {
     if (!isFinite(x)) return "indisponível";
+    casas = casas === undefined ? 2 : casas;
     var s = dec(Math.abs(x), casas);
+    if (zerado(x, casas)) return s;
     return (x < 0 ? MENOS : "+") + s;
   }
 
@@ -616,7 +686,7 @@ var F = (function () {
     var s = Math.abs(x).toFixed(casas);
     var partes = s.split(".");
     partes[0] = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    return "R$ " + (x < 0 ? MENOS : "") + partes.join(",");
+    return "R$ " + (x < 0 && !zerado(x, casas) ? MENOS : "") + partes.join(",");
   }
 
   function inteiro(x) {
@@ -1056,17 +1126,20 @@ var Graf = (function () {
   }
 
   /* Quebra um rótulo em no máximo duas linhas de até max caracteres. */
+  /* Quebra gulosa em quantas linhas forem necessárias. Uma palavra maior que o
+     limite fica sozinha na linha: não há separação silábica, porque a casa não
+     usa hífen. */
   function quebrar(texto, max) {
     texto = String(texto || "");
     if (texto.length <= max) return [texto];
-    var palavras = texto.split(" ");
-    var l1 = "", l2 = "";
-    palavras.forEach(function (p) {
-      if (!l2 && (l1 + " " + p).trim().length <= max) l1 = (l1 + " " + p).trim();
-      else l2 = (l2 + " " + p).trim();
+    var linhas = [], atual = "";
+    texto.split(" ").forEach(function (p) {
+      if (!atual) { atual = p; return; }
+      if ((atual + " " + p).length <= max) atual = atual + " " + p;
+      else { linhas.push(atual); atual = p; }
     });
-    if (!l2) return [l1];
-    return [l1, l2];
+    if (atual) linhas.push(atual);
+    return linhas.length ? linhas : [texto];
   }
 
   function ticksAuto(a, b, alvo) {
@@ -1135,13 +1208,36 @@ var Graf = (function () {
     svg.appendChild(arestas);
     svg.appendChild(caixas);
 
-    var niveis = [];
+    /* Cada caixa cresce conforme as linhas que couberem na largura dada, e cada
+       nível recebe a altura da sua caixa mais alta. Sem isso, um rótulo longo
+       empurra o texto para fora da caixa e o rótulo do ramo cai sobre o filho. */
+    var maxChars = Math.max(8, Math.floor((larguraCaixa - 20) / 10.4));
+    function linhasDe(no) {
+      var l = quebrar(no.rotulo, maxChars).map(function (t) {
+        return { texto: t, principal: true };
+      });
+      if (no.detalhe) l.push({ texto: no.detalhe });
+      if (no.detalhe2) l.push({ texto: no.detalhe2 });
+      return l;
+    }
+
+    var niveis = [], alturaNivel = [];
     (function medir(no, d) {
       niveis[d] = (niveis[d] || 0) + 1;
+      no._linhas = linhasDe(no);
+      no._altura = Math.max(alturaCaixa, no._linhas.length * 21 + 14);
+      alturaNivel[d] = Math.max(alturaNivel[d] || 0, no._altura);
       (no.filhos || []).forEach(function (f) { medir(f.no, d + 1); });
     })(raizNo, 0);
     var prof = niveis.length;
-    var dy = (hh - alturaCaixa - 26) / Math.max(1, prof - 1);
+    var somaAlturas = alturaNivel.reduce(function (a, b) { return a + b; }, 0);
+    var espaco = prof > 1
+      ? Math.max(30, (hh - 26 - somaAlturas) / (prof - 1)) : 0;
+    var topoNivel = [];
+    alturaNivel.reduce(function (acc, a, i) {
+      topoNivel[i] = acc;
+      return acc + a + espaco;
+    }, 14);
 
     var contador = [];
     (function posicionar(no, d) {
@@ -1154,23 +1250,23 @@ var Graf = (function () {
         no._x = (Math.min.apply(null, xs) + Math.max.apply(null, xs)) / 2;
         contador[d]++;
       }
-      no._y = 14 + d * dy;
+      no._y = topoNivel[d];
     })(raizNo, 0);
 
     function cx(no) { return 22 + no._x * (w - 44); }
 
     (function desenhar(no, d) {
-      var x = cx(no), y = no._y;
+      var x = cx(no), y = no._y, base = y + no._altura;
       (no.filhos || []).forEach(function (f) {
-        var fx = cx(f.no), fy = f.no._y;
+        var fx = cx(f.no), fy = f.no._y, vao = fy - base;
         arestas.appendChild(sv("path", {
-          d: "M" + x + " " + (y + alturaCaixa) + " C" + x + " " + (y + alturaCaixa + dy / 2) +
-             ", " + fx + " " + (fy - dy / 2) + ", " + fx + " " + fy,
+          d: "M" + x + " " + base + " C" + x + " " + (base + vao / 2) +
+             ", " + fx + " " + (fy - vao / 2) + ", " + fx + " " + fy,
           fill: "none",
           stroke: f.destaque ? "var(--cor)" : "var(--rule)",
           "stroke-width": f.destaque ? 4 : 2,
         }));
-        var mx = x + (fx - x) * 0.74, my = y + alturaCaixa + dy * 0.42;
+        var mx = x + (fx - x) * 0.74, my = base + vao * 0.52;
         var larg = String(f.aresta).length * 9.5 + 14;
         arestas.appendChild(sv("rect", {
           x: mx - larg / 2, y: my - 17, width: larg, height: 25, rx: 3,
@@ -1186,21 +1282,13 @@ var Graf = (function () {
 
       var folha = !no.filhos || !no.filhos.length;
       var cor = no.destaque ? "var(--cor)" : "var(--rule)";
-      var nLinhas = quebrar(no.rotulo, Math.max(8, Math.floor((larguraCaixa - 20) / 10.4))).length +
-        (no.detalhe ? 1 : 0) + (no.detalhe2 ? 1 : 0);
-      var altura = Math.max(alturaCaixa, nLinhas * 21 + 14);
+      var altura = no._altura;
       caixas.appendChild(sv("rect", {
         x: x - larguraCaixa / 2, y: y, width: larguraCaixa, height: altura, rx: 5,
         fill: no.destaque ? "var(--cor-soft)" : (folha ? "var(--surface)" : "var(--paper)"),
         stroke: cor, "stroke-width": no.destaque ? 3 : 1.5,
       }));
-      /* O rótulo quebra em até duas linhas para caber na caixa. */
-      var maxChars = Math.max(8, Math.floor((larguraCaixa - 20) / 10.4));
-      var linhas = quebrar(no.rotulo, maxChars).map(function (t) {
-        return { texto: t, principal: true };
-      });
-      if (no.detalhe) linhas.push({ texto: no.detalhe });
-      if (no.detalhe2) linhas.push({ texto: no.detalhe2 });
+      var linhas = no._linhas;
       var topo = y + (altura - linhas.length * 21) / 2 + 16;
       linhas.forEach(function (t, i) {
         caixas.appendChild(sv("text", {
@@ -1213,7 +1301,7 @@ var Graf = (function () {
       });
       if (no.valor !== undefined) {
         caixas.appendChild(sv("text", {
-          x: x, y: y + alturaCaixa + 22, "text-anchor": "middle", "font-size": 21,
+          x: x, y: y + altura + 22, "text-anchor": "middle", "font-size": 21,
           "font-weight": 700, fill: no.destaque ? "var(--cor)" : "var(--ink)", texto: no.valor,
         }));
       }
@@ -1463,9 +1551,13 @@ var UI = (function () {
         return h(j === 0 ? "th" : "td", j === 0 ? { scope: "row", class: "rotulo" } : {}, v);
       }));
     }));
-    var t = h("table", { class: "tabela" + (op.compacta ? " compacta" : "") },
+    var t = h("table", { class: "tabela" + (op.compacta ? " compacta" : "") +
+                                 (op.apertada ? " apertada" : "") },
       [op.legenda ? h("caption", { class: "oculto-visual" }, op.legenda) : null, thead, tbody]);
-    return t;
+    /* O contêiner rola na horizontal apenas no modo estudo em tela estreita:
+       encolher a fonte até caber deixaria a tabela ilegível no celular.
+       querySelector no que volta continua alcançando thead, tbody e linhas. */
+    return h("div", { class: "rolagem-h" }, t);
   }
 
   function kv(pares) {
@@ -1581,7 +1673,9 @@ var Comum = (function () {
   }
 
   /* Árvore didática de 1.000 contratos.
-     op: {cliente, mostrarNumeros, mostrarPd, ocultarFolha, w, h, aoSelecionar} */
+     op: {cliente, mostrarNumeros, mostrarPd, ocultarFolha, w, h, rotuloPergunta,
+          rotuloRamo}
+     rotuloPergunta e rotuloRamo encurtam os textos quando o desenho é estreito. */
   function arvoreDidatica(op) {
     op = op || {};
     var A = D.arvore;
@@ -1614,10 +1708,13 @@ var Comum = (function () {
       var esqDest = ramoRevelado && caminho.some(function (p) { return p.no === no && p.esq; });
       var dirDest = ramoRevelado && caminho.some(function (p) { return p.no === no && !p.esq && !p.folha; });
       return {
-        rotulo: no.pergunta, detalhe: detalhe(no), detalhe2: valor(no), destaque: dest,
+        rotulo: op.rotuloPergunta ? op.rotuloPergunta(no) : no.pergunta,
+        detalhe: detalhe(no), detalhe2: valor(no), destaque: dest,
         filhos: [
-          { aresta: no.rotuloEsq, destaque: esqDest, no: construir(no.esq) },
-          { aresta: no.rotuloDir, destaque: dirDest, no: construir(no.dir) },
+          { aresta: op.rotuloRamo ? op.rotuloRamo(no, true) : no.rotuloEsq,
+            destaque: esqDest, no: construir(no.esq) },
+          { aresta: op.rotuloRamo ? op.rotuloRamo(no, false) : no.rotuloDir,
+            destaque: dirDest, no: construir(no.dir) },
         ],
       };
     }
@@ -2063,10 +2160,11 @@ var Comum = (function () {
   };
 
   D.modelos = {
-    logit: { nome: "Logit regularizado", cor: "var(--logit)", chave: "logit" },
-    arvore: { nome: "Árvore controlada", cor: "var(--arvore)", chave: "arvore" },
-    boosting: { nome: "Gradient boosting", cor: "var(--boost)", chave: "boosting" },
-    logit_flex: { nome: "Logit flexível (sensibilidade)", cor: "var(--ink-soft)", chave: "logit_flex" },
+    logit: { nome: "Logit regularizado", curto: "Logit", cor: "var(--logit)", chave: "logit" },
+    arvore: { nome: "Árvore controlada", curto: "Árvore", cor: "var(--arvore)", chave: "arvore" },
+    boosting: { nome: "Gradient boosting", curto: "Boosting", cor: "var(--boost)", chave: "boosting" },
+    logit_flex: { nome: "Logit flexível (sensibilidade)", curto: "Logit flexível",
+                  cor: "var(--ink-soft)", chave: "logit_flex" },
   };
 })();
 
@@ -2085,6 +2183,9 @@ Aula.metadados = {
   "arquivo_resultados": "saida/resultados.json",
   "sha256_resultados": "819746e8a01e72c2e9974080324900247cbae0f2497482e62c3184a5a6389b2e",
   "bytes_resultados": 388909,
+  "arquivo_base": "saida/base_sintetica.csv.gz",
+  "sha256_base": "fdf082bbb42ca53d038a875a634f98d7aab4536407c2ce8639322d595e96c75f",
+  "linhas_base": 28000,
   "observacao": "Base sintética. Nenhum dado real de cliente. Os modelos são ajustados no treino, selecionados na validação, calibrados na partição de calibração e avaliados uma única vez no teste."
 };
 
@@ -2128,10 +2229,10 @@ Aula.slide({
     var lista = h("div", { class: "coluna cresce", estilo: "gap:10px;justify-content:space-between" });
 
     function linhaCliente(c) {
-      var aviso = h("span", { class: "nota", "aria-live": "polite" },
-        est.mudou[c.nome] ? "você mudou sua avaliação" : "");
+      var aviso = h("span", { class: "nota", estilo: "margin-left:10px",
+        "aria-live": "polite" }, est.mudou[c.nome] ? "· você mudou sua avaliação" : "");
       var extras = h("span", { class: "apoio", hidden: !est.revelado },
-        est.revelado ? ("histórico " + (c.hist ? "sim" : "não") +
+        est.revelado ? (" · histórico " + (c.hist ? "sim" : "não") +
           " · utilização " + F.dec(c.util, 0) + "% · relacionamento " + F.dec(c.rel, 0) + " meses") : "");
       var grupo = UI.botoes({
         rotulo: "decisão para " + c.nome,
@@ -2146,16 +2247,22 @@ Aula.slide({
           est.escolhas[c.nome] = v;
         },
       });
+      /* Os botões ficam encostados à direita e o texto ocupa o resto da linha:
+         com base fixa, a ficha quebrava no meio da frase. */
+      grupo.setAttribute("style", "margin-left:auto");
       return h("div", { class: "painel claro", estilo: "padding:12px 16px" },
         h("div", { estilo: "display:flex;align-items:center;gap:18px;flex-wrap:wrap" }, [
-          h("div", { estilo: "min-width:330px;flex:1 1 330px" }, [
-            h("span", { class: "medio" }, c.nome),
-            h("span", { class: "apoio", estilo: "margin-left:14px" },
-              F.reais(c.renda) + " por mês · comprometimento " + F.dec(c.comp, 0) + "%"),
-            h("div", {}, extras),
+          h("div", { estilo: "flex:1 1 300px;min-width:280px" }, [
+            h("div", { class: "medio" }, c.nome),
+            h("div", { class: "apoio" }, [
+              F.reais(c.renda) + " por mês · comprometimento " + F.dec(c.comp, 0) + "%",
+              extras,
+              /* O aviso entra no fluxo do texto: como filho da linha, ele
+                 quebrava para baixo e acrescentava uma altura por ficha. */
+              aviso,
+            ]),
           ]),
           grupo,
-          aviso,
         ]));
     }
 
@@ -2184,8 +2291,8 @@ Aula.slide({
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "coluna cresce" }, [
         lista,
-        h("div", { class: "painel cor", estilo: "padding:12px 18px" },
-          h("p", { estilo: "font-size:26px;color:var(--ink);margin:0" },
+        h("div", { class: "painel cor", estilo: "padding:10px 18px" },
+          h("p", { estilo: "font-size:24px;color:var(--ink);margin:0" },
             "Que informação faria você mudar de ideia?")),
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 400px" }, [
@@ -2318,9 +2425,9 @@ Aula.slide({
       ]);
     }
 
-    corpo.appendChild(h("div", { class: "linha topo cresce" }, [
+    corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "coluna cresce" }, [
-        h("div", { class: "painel claro" }, tabela),
+        h("div", { class: "painel claro cresce centro" }, tabela),
         h("div", { class: "grupo" }, [
           UI.alterna({
             rotulo: "Comparar dois clientes", valor: est.comparar,
@@ -2422,7 +2529,7 @@ Aula.slide({
     var cartoes = h("div", { class: "g3 cresce" }, contratos.map(function (c) {
       var s = status(c, est.mes);
       return h("div", { class: "painel claro coluna" }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 14px" }, [
           h("h3", { class: "secao", estilo: "margin:0" }, c.nome),
           UI.selo(s.chave === "evento" ? "y = 1" : s.chave === "sem" ? "y = 0" : "alvo incompleto",
             s.tipo),
@@ -2664,7 +2771,7 @@ Aula.slide({
     }] : [];
     var todas = faixas.concat(extras);
 
-    var g = Graf.novo({ w: 1040, h: 545, m: { e: 270, d: 215, c: 30, b: 60 } });
+    var g = Graf.novo({ w: 1002, h: 545, m: { e: 300, d: 228, c: 30, b: 60 } });
     g.x(2018, 2026).y(0, todas.length + 0.4);
     g.grade({ x: [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026] });
     g.eixoX({ ticks: [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026],
@@ -2688,9 +2795,9 @@ Aula.slide({
         fill: cor, opacity: conhecido ? .22 : .12 }));
       g.add(sv("text", { x: g.m.e - 14, y: yc - 2, "text-anchor": "end", "font-size": 21,
         "font-weight": 700, fill: conhecido ? "var(--ink)" : "var(--muted)", texto: f.nome }));
-      g.add(sv("text", { x: g.m.e - 14, y: yc + 20, "text-anchor": "end", "font-size": 17,
+      g.add(sv("text", { x: g.m.e - 14, y: yc + 20, "text-anchor": "end", "font-size": 16,
         fill: "var(--muted)", texto: f.rotulo + (f.n ? " · n = " + F.inteiro(f.n) : "") }));
-      g.add(sv("text", { x: g.px(f.alvo) + 8, y: yc + 6, "font-size": 17,
+      g.add(sv("text", { x: g.px(f.alvo) + 8, y: yc + 6, "font-size": 16,
         fill: conhecido ? "var(--ink)" : "var(--muted)",
         texto: "alvo em " + f.alvoRotulo + (conhecido ? "" : " (ainda não)") }));
     });
@@ -2752,7 +2859,7 @@ Aula.slide({
       "O logit não é incapaz de representar não linearidades.",
       "Nenhum painel traz PD de modelo: aqui só existe o mecanismo.",
     ],
-    transicao: "Vamos começar pela ideia mais familiar: combinar características em um escore e transformá-lo em probabilidade.",
+    transicao: "Vamos começar pela ideia mais familiar: combinar características em um escore e converter esse escore em probabilidade.",
   },
   impressao: function (e) { e.passos = { logit: 3, arvore: 3, boosting: 3 }; e.criterios = true; },
 
@@ -2804,8 +2911,9 @@ Aula.slide({
         return [7.1 + ((v + 6) / 12) * 2.6, 2.4 + M.sigmoid(v) * 5.0];
       });
       g.linha(pts, { cor: tom(passo, 3, cor), largura: 3 });
-      g.texto(7.05, 9.2, "PD entre 0% e 100%",
-        { tamanho: 15, peso: 400, cor: passo >= 3 ? "var(--ink)" : NEUTRO_TXT });
+      g.texto(9.85, 9.2, "PD entre 0% e 100%",
+        { ancora: "end", tamanho: 15, peso: 400,
+          cor: passo >= 3 ? "var(--ink)" : NEUTRO_TXT });
       return g.svg;
     }
 
@@ -2869,7 +2977,7 @@ Aula.slide({
         estilo: "display:flex;flex-direction:column;gap:6px;padding:14px;" +
                 (sel ? "border-color:" + m.cor + ";border-width:2px" : ""),
       }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:8px" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px" }, [
           h("h2", { class: "secao", estilo: "margin:0;color:" + m.cor }, m.nome),
           h("span", { class: "nota" }, passo ? "etapa " + passo + " de 3" : ""),
         ]),
@@ -2936,7 +3044,11 @@ Aula.slide({
       "Coeficiente e contribuição observada são coisas diferentes: a contribuição multiplica o coeficiente pelo desvio da variável.",
       "Centrar as variáveis facilita a interpretação do intercepto e não muda a classe de funções.",
     ],
-    transicao: "O escore pode ser qualquer número. Como transformá-lo em algo entre zero e um?",
+    aprofundar: [
+      "Material original, capítulo 4, página 13: o intercepto é âncora de nível, não coeficiente comum. Naquele exemplo, utilização zero e atraso zero não existem na carteira, então o intercepto não tem leitura como PD de um cliente real.",
+      "Trocar o intercepto desloca a PD de todas as propostas e preserva a ordem de risco. É por isso que recalibrar um modelo cuja ordenação continua boa equivale a reestimar o nível, sem alterar a AUC. O mesmo fato aparece no slide 45.",
+    ],
+    transicao: "O escore pode ser qualquer número. Como converter esse escore em algo entre zero e um?",
   },
   impressao: function (e) { e.visiveis = 5; },
 
@@ -2951,7 +3063,7 @@ Aula.slide({
     var z = L.z(c);
 
     var g = Graf.waterfall({
-      w: 840, h: 430, larguraRot: 240,
+      w: 780, h: 430, larguraRot: 220,
       base: L.intercepto, visiveis: est.visiveis,
       rotuloBase: "intercepto " + F.dec(L.intercepto, 2),
       rotuloTotal: "escore z",
@@ -2983,7 +3095,7 @@ Aula.slide({
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "painel claro centro", estilo: "display:flex;flex:0 0 auto" }, g.svg),
       h("div", { class: "coluna cresce" }, [
-        h("div", { class: "painel cor" }, [
+        h("div", { class: "painel cor", estilo: "padding:10px 16px" }, [
           h("div", { estilo: "display:flex;gap:14px;align-items:baseline;flex-wrap:wrap" }, [
             h("span", { class: "apoio" }, "Cliente"),
             Comum.seletorCliente(est.cliente, function (v) {
@@ -2994,7 +3106,7 @@ Aula.slide({
             "Perfil de referência: renda R$ 5.000, comprometimento 30%, relacionamento 12 meses, " +
             "utilização 40% e sem histórico de atraso. O intercepto vale para esse perfil."),
         ]),
-        h("div", { class: "painel claro cresce" }, tabela),
+        h("div", { class: "painel claro cresce", estilo: "padding:10px 14px" }, tabela),
         h("div", { class: "grupo" }, [
           h("button", { class: "btn", type: "button",
             onclick: function () {
@@ -3070,7 +3182,7 @@ Aula.slide({
       { ancora: "middle", tamanho: 18, peso: 400, cor: "var(--muted)" });
 
     /* Reta de probabilidade com faixas inválidas. */
-    var gr = Graf.novo({ w: 640, h: 286, m: { e: 78, d: 26, c: 16, b: 52 } });
+    var gr = Graf.novo({ w: 624, h: 268, m: { e: 78, d: 26, c: 16, b: 52 } });
     gr.x(10, 80).y(-0.4, 1.5);
     var hachAlta = gr.hachura("fora-alta", "var(--alert)");
     gr.retangulo(10, 1, 80, 1.5, { cor: hachAlta });
@@ -3109,10 +3221,10 @@ Aula.slide({
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 660px" }, [
         h("div", { class: "painel claro" }, [
-          h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+          h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
             h("h3", { class: "secao", estilo: "margin:0" },
               "Uma reta direto na probabilidade"),
-            UI.selo("exemplo para mostrar o problema", "sim"),
+            UI.selo("exemplo do problema", "sim"),
           ]),
           h("p", { class: "formula peq" },
             "p_linear = 0,10 + 0,03 × (comp − 30)"),
@@ -3162,6 +3274,10 @@ Aula.slide({
       "Um escore finito nunca produz exatamente 0 ou 1. A formatação pode arredondar para 0,00%, o que não significa impossibilidade.",
       "O ponto de 50% é referência matemática, não corte de aprovação.",
     ],
+    aprofundar: [
+      "Material original, capítulo 4, página 6: probabilidade, odds, log odds e escore de bureau são quatro réguas da mesma ordem. Lá, PD de 5% corresponde a odds 0,053, log odds −2,944 e escore didático 865.",
+      "Qualquer transformação monótona preserva a ordenação e, portanto, a AUC. O que muda é a régua de comunicação e de cálculo.",
+    ],
     transicao: "Para interpretar os coeficientes, precisamos entender a escala em que a soma foi feita: o logaritmo das odds.",
   },
   impressao: function (e) { if (e.z === undefined) e.z = Aula.dados.logit.z(Aula.dados.cliente("Bruno")); },
@@ -3194,11 +3310,16 @@ Aula.slide({
         { dx: -10, dy: -12, ancora: "end", tamanho: 17, peso: 400, cor: "var(--muted)" });
     }
 
+    /* O nome do perfil que está sob o cursor desce para o outro lado do ponto:
+       na mesma altura ele se sobreporia ao valor da PD. */
     D.clientes.forEach(function (c) {
       var z = L.z(c), pc = M.sigmoid(z);
       if (pc > yMax) return;
+      var selecionado = Math.abs(z - est.z) < 1e-9;
       g.ponto(z, pc, { r: 6, cor: "var(--ink)", bordaL: 1.5 });
-      g.texto(z, pc, c.nome, { dx: 9, dy: -10, tamanho: 17, peso: 400, cor: "var(--muted)" });
+      g.texto(z, pc, c.nome, { dx: selecionado ? 0 : 9, dy: selecionado ? 30 : -10,
+        ancora: selecionado ? "middle" : "start",
+        tamanho: 17, peso: 400, cor: "var(--muted)" });
     });
 
     if (p <= yMax) {
@@ -3401,6 +3522,11 @@ Aula.slide({
       "A leitura é associativa e condicionada às demais variáveis. Não é efeito causal.",
       "Os três riscos iniciais são cenários didáticos. Não são os quatro clientes.",
     ],
+    aprofundar: [
+      "Material original, capítulo 4, página 11: naquele exemplo, utilização a cada 10 pontos tem razão de chances 2,1071 e atraso a cada 10 dias tem 4,0370. A leitura está correta como multiplicação das chances e não autoriza leitura causal.",
+      "Página 14 do mesmo capítulo: trocar a unidade muda o coeficiente e não muda o modelo. A utilização vale 0,74530 por dezena de pontos, 0,07453 por ponto e 7,45300 por fração do limite, com PD prevista idêntica nos três casos.",
+      "Disso decorre que comparar 1,3955 com 0,7453 para dizer qual variável pesa mais não significa nada: as unidades são diferentes. A comparação legítima usa um movimento realista de cada variável, como um desvio padrão, que é o que o slide 18 faz com coeficientes padronizados.",
+    ],
     transicao: "Vamos aplicar essa interpretação a um cliente completo e conferir todas as etapas da conta.",
   },
 
@@ -3422,7 +3548,7 @@ Aula.slide({
          "Δz = " + F.dec(beta, 2) + " × " + F.dec(est.delta, 0) + " = " + F.dec(dz, 4),
          "razão de chances = e^" + F.dec(dz, 2) + " ≈ " + F.dec(razao, 4)];
 
-    var gBarras = Graf.novo({ w: 890, h: 430, m: { e: 100, d: 200, c: 30, b: 60 } });
+    var gBarras = Graf.novo({ w: 862, h: 430, m: { e: 190, d: 190, c: 30, b: 60 } });
     var maxP = Math.max.apply(null, cenarios.map(function (p) {
       return Math.max(p, M.porRazaoDeOdds(p, razao));
     }));
@@ -3453,7 +3579,7 @@ Aula.slide({
     });
 
     var tabela = UI.tabela({
-      compacta: true,
+      compacta: true, apertada: true,
       colunas: [{ rotulo: "PD inicial" }, { rotulo: "Odds antes" }, { rotulo: "Odds depois" },
                 { rotulo: "PD depois" }, { rotulo: "Diferença", unidade: "p.p." }],
       linhas: cenarios.map(function (p) {
@@ -3472,7 +3598,7 @@ Aula.slide({
           })),
         h("div", { class: "painel claro cresce centro", estilo: "display:flex" }, gBarras.svg),
       ]),
-      h("div", { class: "coluna", estilo: "flex:0 0 512px" }, [
+      h("div", { class: "coluna", estilo: "flex:0 0 548px" }, [
         h("div", { class: "painel" }, [
           h("h3", { class: "secao" }, "Mudança aplicada"),
           UI.botoes({
@@ -3559,7 +3685,7 @@ Aula.slide({
     }
 
     var ficha = h("div", { class: "painel", estilo: "display:flex;flex-direction:column;gap:10px" }, [
-      h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+      h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
         h("h3", { class: "secao", estilo: "margin:0" }, "Ficha do cliente"),
         simulado ? Comum.seloSimulacao() : UI.selo("perfil original", "neutro"),
       ]),
@@ -3667,6 +3793,11 @@ Aula.slide({
       "A perda depende do grau de confiança, não apenas do lado do corte.",
       "A função objetivo do treino não garante o melhor desempenho futuro.",
       "Em p igual a 0 ou 1 a perda vai a infinito. As curvas são desenhadas entre 0,1% e 99,9%.",
+    ],
+    aprofundar: [
+      "Material original, capítulo 4, páginas 15 a 17: a perda de cada observação determina os coeficientes, e a descida de gradiente percorre os parâmetros uma iteração por vez até a convergência.",
+      "Nesta aula a descida aparece no bloco de boosting, slides 32 a 35, com a mesma mecânica de resíduo, passo e atualização do escore.",
+      "Página 18 do original: navegador, Python com a mesma regra e sklearn chegam ao mesmo resultado, com diferença máxima de 0,000327 no intercepto. A conferência equivalente aqui está nos metadados do slide 43 e no notebook.",
     ],
     transicao: "Mesmo com um coeficiente fixo, o efeito observado na PD muda ao longo da curva logística.",
   },
@@ -3810,7 +3941,7 @@ Aula.slide({
     function exata(p) { return M.sigmoid(M.logito(p) + dz) - p; }
     function aproximada(p) { return beta * p * (1 - p) * est.dcomp; }
 
-    var g = Graf.novo({ w: 880, h: 430, m: { e: 92, d: 60, c: 22, b: 58 },
+    var g = Graf.novo({ w: 880, h: 412, m: { e: 92, d: 60, c: 20, b: 54 },
       resumo: "Curva logística com três deslocamentos de mesma largura em escores diferentes." });
     g.x(-6, 3).y(0, 0.75);
     g.grade({ y: [0, 0.2, 0.4, 0.6], x: [-6, -4, -2, 0, 2] });
@@ -4004,7 +4135,7 @@ Aula.slide({
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "coluna cresce" }, [
         h("div", { class: "painel cor" }, [
-          h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap" }, [
+          h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap" }, [
             h("h3", { class: "secao", estilo: "margin:0" },
               "Referência atual: " + est.ref),
             UI.selo("extensão pedagógica da fórmula", "neutro"),
@@ -4078,6 +4209,11 @@ Aula.slide({
       "Este é um exemplo linear por partes, não uma spline cúbica.",
       "Árvores não são necessárias para representar toda não linearidade.",
     ],
+    aprofundar: [
+      "Material original, capítulo 4, página 21: faixas devolvem flexibilidade sem trocar de família, ao custo de um coeficiente por faixa em vez de um por variável.",
+      "As regras declaradas lá continuam válidas: volume mínimo por faixa, monotonicidade quando existe hipótese econômica de direção, estabilidade das fronteiras nas safras seguintes e fronteiras definidas antes de olhar o alvo.",
+      "O WoE é esse mesmo tratamento com um valor específico por faixa, o logaritmo da razão entre a distribuição dos adimplentes e a dos inadimplentes. A mudança de inclinação deste slide é a alternativa contínua, com um parâmetro adicional apenas.",
+    ],
     transicao: "Além de mudar a forma de um efeito, podemos permitir que ele dependa de outra característica.",
   },
   impressao: function (e) { e.flex = true; },
@@ -4094,7 +4230,7 @@ Aula.slide({
     function z(comp, flex) { return z0 + contrib(comp, flex); }
 
     function grafico(escalaPD) {
-      var g = Graf.novo({ w: 640, h: 330, m: { e: 86, d: 26, c: 22, b: 58 } });
+      var g = Graf.novo({ w: 476, h: 330, m: { e: 84, d: 24, c: 22, b: 58 } });
       g.x(10, 70);
       if (escalaPD) {
         g.y(0, 0.35);
@@ -4135,11 +4271,11 @@ Aula.slide({
       : "z = −3,50 + 0,04 × (comp − 30)";
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
-      h("div", { class: "painel claro cresce centro", estilo: "display:flex" }, [
+      h("div", { class: "painel claro igual centro", estilo: "display:flex" }, [
         h("h3", { class: "secao" }, "Na escala do escore"),
         grafico(false),
       ]),
-      h("div", { class: "painel claro cresce centro", estilo: "display:flex" }, [
+      h("div", { class: "painel claro igual centro", estilo: "display:flex" }, [
         h("h3", { class: "secao" }, "Na escala da probabilidade"),
         grafico(true),
       ]),
@@ -4233,7 +4369,7 @@ Aula.slide({
     }
 
     function grafico(escalaPD) {
-      var g = Graf.novo({ w: 600, h: 296, m: { e: 84, d: 92, c: 18, b: 54 } });
+      var g = Graf.novo({ w: 470, h: 452, m: { e: 84, d: 36, c: 20, b: 56 } });
       g.x(10, 70);
       if (escalaPD) {
         g.y(0, 0.7);
@@ -4241,9 +4377,11 @@ Aula.slide({
         g.eixoY({ ticks: [0, 0.2, 0.4, 0.6], formato: function (v) { return F.pct(v, 0); },
                   rotulo: "probabilidade de inadimplência" });
       } else {
-        g.y(-3, 1.5);
-        g.grade({ y: [-3, -2, -1, 0, 1] });
-        g.eixoY({ ticks: [-3, -2, -1, 0, 1], rotulo: "escore z" });
+        /* O domínio cobre z em toda a faixa de comprometimento, inclusive o
+           mínimo em 10% sem histórico: a curva não é desenhada fora da moldura. */
+        g.y(-4.6, 1.4);
+        g.grade({ y: [-4, -3, -2, -1, 0, 1] });
+        g.eixoY({ ticks: [-4, -3, -2, -1, 0, 1], rotulo: "escore z" });
       }
       g.eixoX({ ticks: [10, 20, 30, 40, 50, 60, 70], rotulo: "comprometimento em %" });
       [0, 1].forEach(function (hist) {
@@ -4253,16 +4391,31 @@ Aula.slide({
         });
         g.linha(pts, { cor: cor, largura: 3 });
         var fim = pts[pts.length - 1];
-        g.texto(70, fim[1], hist ? "histórico = 1" : "histórico = 0",
-          { dx: 8, dy: 6, tamanho: 18, cor: cor });
         var v = escalaPD ? M.sigmoid(z(est.comp, hist)) : z(est.comp, hist);
         g.ponto(est.comp, v, { cor: cor, r: 8 });
+        var aDireita = est.comp <= 52;
+        /* Perto do piso do domínio o valor sobe, para não cair sobre o eixo. */
+        var noPiso = (v - g.dy[0]) / (g.dy[1] - g.dy[0]) < 0.14;
         g.texto(est.comp, v, escalaPD ? F.pct(v, 1) : F.dec(v, 2),
-          { dx: 10, dy: hist ? -12 : 22, tamanho: 18, cor: "var(--ink)" });
+          { ancora: aDireita ? "start" : "end", dx: aDireita ? 10 : -10,
+            dy: hist && !noPiso ? -12 : (noPiso ? -12 : 22), tamanho: 18, cor: "var(--ink)" });
       });
       g.add(sv("line", { x1: g.px(est.comp), x2: g.px(est.comp), y1: g.py(g.dy[0]),
         y2: g.py(g.dy[1]), stroke: "var(--muted)", "stroke-dasharray": "4 4" }));
       return g.svg;
+    }
+
+    /* As duas curvas se identificam em legenda acima do desenho: rótulo preso ao
+       fim da curva disputaria espaço com o valor do ponto selecionado. */
+    function legenda() {
+      return h("div", { estilo: "display:flex;gap:20px;align-self:flex-start;margin-bottom:2px" },
+        [[1, "var(--alert)", "histórico = 1"], [0, "var(--logit)", "histórico = 0"]]
+          .map(function (l) {
+            return h("span", { estilo: "display:flex;align-items:center;gap:7px" }, [
+              h("span", { estilo: "width:24px;height:4px;border-radius:2px;background:" + l[1] }),
+              h("span", { class: "apoio", estilo: "font-size:17px" }, l[2]),
+            ]);
+          }));
     }
 
     var termo = est.delta * (est.comp - 30);
@@ -4270,12 +4423,14 @@ Aula.slide({
     var difPD = M.sigmoid(z(est.comp, 1)) - M.sigmoid(z(est.comp, 0));
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
-      h("div", { class: "painel claro cresce centro", estilo: "display:flex" }, [
-        h("h3", { class: "secao" }, "Escala do escore: a interação aparece na inclinação"),
+      h("div", { class: "painel claro igual centro", estilo: "display:flex" }, [
+        h("h3", { class: "secao" }, "Na escala do escore"),
+        legenda(),
         grafico(false),
       ]),
-      h("div", { class: "painel claro cresce centro", estilo: "display:flex" }, [
-        h("h3", { class: "secao" }, "Escala da probabilidade"),
+      h("div", { class: "painel claro igual centro", estilo: "display:flex" }, [
+        h("h3", { class: "secao" }, "Na escala da probabilidade"),
+        legenda(),
         grafico(true),
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 430px" }, [
@@ -4392,7 +4547,7 @@ Aula.slide({
     var xs = grade.map(eixoForca);
     var minX = Math.min.apply(null, xs), maxX = Math.max.apply(null, xs);
 
-    var gc = Graf.novo({ w: 620, h: 330, m: { e: 88, d: 112, c: 18, b: 56 } });
+    var gc = Graf.novo({ w: 476, h: 330, m: { e: 86, d: 96, c: 18, b: 56 } });
     var todos = [];
     grade.forEach(function (g) { idx.forEach(function (j) { todos.push(g.coeficientes[j]); }); });
     var lim = Math.max(0.6, Math.ceil(Math.max.apply(null, todos.map(Math.abs)) * 2) / 2);
@@ -4413,7 +4568,7 @@ Aula.slide({
     gc.add(sv("line", { x1: gc.px(eixoForca(atual)), x2: gc.px(eixoForca(atual)),
       y1: gc.py(-lim), y2: gc.py(lim), stroke: "var(--muted)", "stroke-dasharray": "4 4" }));
 
-    var gp = Graf.novo({ w: 620, h: 330, m: { e: 92, d: 112, c: 18, b: 56 } });
+    var gp = Graf.novo({ w: 476, h: 330, m: { e: 88, d: 108, c: 18, b: 56 } });
     var perdas = grade.map(function (g) { return g.perda_treino; })
       .concat(grade.map(function (g) { return g.perda_validacao; }));
     var pmin = Math.min.apply(null, perdas), pmax = Math.max.apply(null, perdas);
@@ -4434,15 +4589,17 @@ Aula.slide({
       });
     gp.add(sv("line", { x1: gp.px(eixoForca(melhor)), x2: gp.px(eixoForca(melhor)),
       y1: gp.py(gp.dy[0]), y2: gp.py(gp.dy[1]), stroke: "var(--ok)", "stroke-width": 2 }));
+    var melhorADireita = eixoForca(melhor) > (minX + maxX) / 2;
     gp.texto(eixoForca(melhor), gp.dy[1], "escolhido na validação",
-      { dx: 6, dy: 16, tamanho: 16, peso: 400, cor: "var(--ok)" });
+      { ancora: melhorADireita ? "end" : "start", dx: melhorADireita ? -6 : 6,
+        dy: 16, tamanho: 16, peso: 400, cor: "var(--ok)" });
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
-      h("div", { class: "painel claro cresce centro", estilo: "display:flex" }, [
+      h("div", { class: "painel claro igual centro", estilo: "display:flex" }, [
         h("h3", { class: "secao" }, "Trajetórias dos coeficientes"),
         gc.svg,
       ]),
-      h("div", { class: "painel claro cresce centro", estilo: "display:flex" }, [
+      h("div", { class: "painel claro igual centro", estilo: "display:flex" }, [
         h("h3", { class: "secao" }, "Perda de treino e de validação"),
         gp.svg,
       ]),
@@ -4515,6 +4672,11 @@ Aula.slide({
       "O desempenho de uma formulação simples não é o limite de toda a classe.",
       "Produzir uma probabilidade não garante que ela esteja calibrada.",
     ],
+    aprofundar: [
+      "Material original, capítulo 4, página 20: a linearidade em log odds é o limite da família. Um padrão não monótono na utilização não é representável sem transformar a variável.",
+      "Página 19: a fronteira de decisão do logit é uma reta no plano das variáveis, porque o escore é uma soma. Mudar o corte desloca a reta paralelamente e mudar um coeficiente gira a reta. Compare com as regiões retangulares da árvore no slide 26.",
+      "Página 22: a síntese do capítulo original é soma, curva e limite. Os três aparecem aqui nos slides 07, 09 e neste.",
+    ],
     transicao: "Antes de mudar de técnica, vamos verificar se conseguimos usar o que aprendemos em uma decisão de interpretação.",
   },
   impressao: function (e) { e.respondeu = true; },
@@ -4555,7 +4717,7 @@ Aula.slide({
     };
     var caso = casos[est.caso];
 
-    var g = Graf.novo({ w: 700, h: 360, m: { e: 16, d: 16, c: 16, b: 16 } });
+    var g = Graf.novo({ w: 700, h: 340, m: { e: 16, d: 16, c: 14, b: 14 } });
     g.x(0, 10).y(0, 10);
     var realceSoma = caso.foco === "soma", realceCurva = caso.foco === "curva";
     ["comprometimento", "histórico", "utilização", "relacionamento"].forEach(function (t, i) {
@@ -4934,7 +5096,7 @@ Aula.slide({
       cliente: c,
       mostrarNumeros: est.denominadores,
       mostrarPd: true,
-      w: 1030, h: 420, caixaW: 250, caixaH: est.denominadores ? 62 : 46,
+      w: 962, h: 420, caixaW: 220, caixaH: est.denominadores ? 62 : 46,
       rotuloFolha: function () { return "folha"; },
       resumo: "Árvore com contagens: raiz de 1.000 contratos e 100 eventos, quatro folhas.",
     });
@@ -4964,7 +5126,7 @@ Aula.slide({
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 470px" }, [
         h("div", { class: "painel cor" }, [
-          h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+          h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
             h("h3", { class: "secao", estilo: "margin:0" }, "Folha de " + c.nome),
             UI.selo("árvore didática", "neutro"),
           ]),
@@ -5050,7 +5212,7 @@ Aula.slide({
         class: "painel" + (sel ? " cor" : " claro") + " cresce",
         estilo: sel ? "border-color:var(--arvore);border-width:2px" : "",
       }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
           h("h2", { class: "secao", estilo: "margin:0" }, cand.rotulo),
           h("button", {
             class: "btn min" + (sel ? " sel" : ""), type: "button",
@@ -5062,13 +5224,13 @@ Aula.slide({
           lados.map(function (lado) {
             var peso = lado.n / A.n;
             return h("div", {}, [
-              h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline" }, [
+              h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 14px" }, [
                 h("span", { estilo: "font-size:22px;font-weight:700;color:var(--ink)" }, lado.rotulo),
                 h("span", { class: "apoio" },
                   "n = " + F.inteiro(lado.n) + " · eventos " + F.inteiro(lado.d) +
                   " · taxa " + F.pct(lado.d / lado.n, 2)),
               ]),
-              Comum.composicao(lado.n, lado.d, { w: 560, h: 30, rotulo: false }),
+              Comum.composicao(lado.n, lado.d, { w: 468, h: 30, rotulo: false }),
               est.comparar
                 ? h("div", { estilo: "margin-top:6px" }, [
                     h("div", { estilo: "height:12px;background:var(--rule);border-radius:3px;" +
@@ -5320,7 +5482,7 @@ Aula.slide({
     ];
     if (est.zero) linhas.push({ rotulo: "folha sem eventos", n: 20, d: 0 });
 
-    var g = Graf.novo({ w: 940, h: 400, m: { e: 260, d: 130, c: 30, b: 60 } });
+    var g = Graf.novo({ w: 940, h: 400, m: { e: 260, d: 148, c: 30, b: 60 } });
     g.x(0, 0.4).y(0, linhas.length);
     g.grade({ x: [0, 0.1, 0.2, 0.3, 0.4] });
     g.eixoX({ ticks: [0, 0.1, 0.2, 0.3, 0.4], formato: function (v) { return F.pct(v, 0); },
@@ -5444,7 +5606,7 @@ Aula.slide({
     var folha = A.folhaDe(c);
 
     /* Mapa de regiões: uma faixa por valor de histórico. */
-    var g = Graf.novo({ w: 900, h: 420, m: { e: 140, d: 130, c: 40, b: 60 },
+    var g = Graf.novo({ w: 870, h: 420, m: { e: 176, d: 118, c: 40, b: 60 },
       resumo: "Duas faixas de comprometimento, uma por valor de histórico, divididas em 40%." });
     g.x(0, 80).y(0, 2);
     g.eixoX({ ticks: [0, 20, 40, 60, 80], rotulo: "comprometimento em %" });
@@ -5490,16 +5652,24 @@ Aula.slide({
 
     var arvore = Comum.arvoreDidatica({
       cliente: c, mostrarNumeros: false, mostrarPd: true,
-      w: 460, h: 218, caixaW: 148, caixaH: 42,
+      w: 518, h: 276, caixaW: 112, caixaH: 56,
       rotuloFolha: function () { return "folha"; },
+      /* Caixa estreita: a pergunta aparece na forma curta usada nas fórmulas. */
+      rotuloPergunta: function (no) {
+        return no.pergunta.indexOf("atraso") >= 0 ? "histórico?" : "comp > 40%?";
+      },
+      rotuloRamo: function (no, esq) {
+        if (no.pergunta.indexOf("atraso") >= 0) return esq ? "hist = 0" : "hist = 1";
+        return esq ? "≤ 40%" : "> 40%";
+      },
     });
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "painel claro cresce centro" }, g.svg),
-      h("div", { class: "coluna", estilo: "flex:0 0 490px" }, [
-        h("div", { class: "painel claro centro" }, arvore),
-        h("div", { class: "painel" }, [
-          h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+      h("div", { class: "coluna", estilo: "flex:0 0 560px" }, [
+        h("div", { class: "painel claro centro", estilo: "padding:8px 14px" }, arvore),
+        h("div", { class: "painel", estilo: "padding:10px 16px" }, [
+          h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
             h("span", { class: "apoio" }, "Cliente"),
             simulado ? Comum.seloSimulacao("simulação local") : UI.selo("perfil original", "neutro"),
           ]),
@@ -5529,7 +5699,7 @@ Aula.slide({
               "Reiniciar exemplo"),
           ]),
         ]),
-        h("div", { class: "painel cor" }, [
+        h("div", { class: "painel cor", estilo: "padding:10px 16px" }, [
           h("p", { estilo: "font-size:22px;color:var(--ink);margin:0" },
             "Regra atual: " + folha.regra + ", PD " +
             F.pct(folha.pd, folha.pd * 100 % 1 === 0 ? 0 : 1) + "."),
@@ -5590,7 +5760,7 @@ Aula.slide({
 
     function rotuloProf(p) { return p < 0 ? "sem limite" : String(p); }
 
-    var g = Graf.novo({ w: 700, h: 420, m: { e: 96, d: 130, c: 24, b: 62 } });
+    var g = Graf.novo({ w: 700, h: 400, m: { e: 96, d: 130, c: 20, b: 58 } });
     var perdas = cenarios.map(function (c) { return c.perda_treino; })
       .concat(cenarios.map(function (c) { return c.perda_validacao; }));
     g.x(0, cenarios.length - 1).y(0.25, Math.max.apply(null, perdas) * 1.05);
@@ -5618,7 +5788,7 @@ Aula.slide({
 
     var mapas = ["2", "4", "8"].map(function (k) {
       var a = R.auxiliar_2d.arvores[k];
-      var gm = Comum.mapaCalor(a.malha, { w: 320, h: 300, max: 0.5,
+      var gm = Comum.mapaCalor(a.malha, { w: 212, h: 300, max: 0.5,
         resumo: "Regiões de previsão para profundidade " + k });
       return h("div", { class: "painel" + (String(atual.profundidade) === k ? " cor" : " claro"),
         estilo: "padding:12px" }, [
@@ -5631,7 +5801,7 @@ Aula.slide({
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "coluna cresce" }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
           h("h3", { class: "secao", estilo: "margin:0" },
             "Experimento auxiliar de duas variáveis: as regiões aprendidas"),
           UI.selo("experimento auxiliar, não o modelo completo", "sim"),
@@ -5762,7 +5932,7 @@ Aula.slide({
     });
 
     var gb = Graf.barras({
-      w: 540, h: 196, larguraRot: 170, m: { d: 130, c: 8, b: 58 },
+      w: 540, h: 158, larguraRot: 170, m: { d: 130, c: 6, b: 46 },
       itens: aba.itens.map(function (it, k) {
         return { rotulo: it.rotulo, valor: it.c ? it.c.perda_validacao : 0,
                  cor: k === est.i ? "var(--arvore)" : "var(--rule)",
@@ -5892,15 +6062,15 @@ Aula.slide({
     var idxCliente = D.clientes.map(function (c) { return c.nome; }).indexOf(est.cliente);
 
     function painelReplica(rep, letra) {
-      return h("div", { class: "painel claro cresce centro" }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;width:100%;align-items:baseline" }, [
+      return h("div", { class: "painel claro igual centro" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;width:100%;align-items:baseline;gap:6px 14px" }, [
           h("h3", { class: "secao", estilo: "margin:0" },
             "Réplica " + letra + ": nº " + rep.replica),
           h("span", { class: "nota" },
             F.inteiro(rep.folhas) + " folhas · AUC validação " + F.dec(rep.auc_validacao, 4)),
         ]),
         Comum.arvoreTreinada(rep.estrutura, {
-          profundidade: 1, compacto: true, w: 660, h: 270, caixaW: 200, caixaH: 72,
+          profundidade: 1, compacto: true, w: 414, h: 270, caixaW: 166, caixaH: 72,
           resumo: "Árvore da réplica " + rep.replica,
         }),
         h("p", { class: "nota", estilo: "margin:0" },
@@ -5912,7 +6082,7 @@ Aula.slide({
     }
 
     /* Dispersão das previsões por cliente. */
-    var g = Graf.novo({ w: 600, h: 380, m: { e: 96, d: 60, c: 24, b: 60 } });
+    var g = Graf.novo({ w: 500, h: 296, m: { e: 132, d: 34, c: 16, b: 52 } });
     var todos = [];
     reps.forEach(function (r) { r.pd_clientes.forEach(function (v) { todos.push(v); }); });
     var topo = Math.min(1, Math.ceil(Math.max.apply(null, todos) * 10) / 10);
@@ -5939,8 +6109,10 @@ Aula.slide({
       });
       g.add(sv("line", { x1: g.px(Math.min.apply(null, vals)), x2: g.px(Math.max.apply(null, vals)),
         y1: g.py(y - 0.32), y2: g.py(y - 0.32), stroke: "var(--rule)", "stroke-width": 3 }));
-      g.add(sv("text", { x: g.px(Math.max.apply(null, vals)) + 10, y: g.py(y - 0.32) + 6,
-        "font-size": 16, fill: "var(--muted)",
+      /* A amplitude fica sob o nome, na margem: à direita dos pontos ela sairia
+         do desenho quando a maior PD está perto do fim da escala. */
+      g.add(sv("text", { x: g.m.e - 14, y: g.py(y) + 27, "text-anchor": "end", "font-size": 15,
+        fill: "var(--muted)",
         texto: F.pct(Math.min.apply(null, vals), 1) + " a " + F.pct(Math.max.apply(null, vals), 1) }));
     });
 
@@ -5962,9 +6134,10 @@ Aula.slide({
             }).join(" e ") + "."),
         ]),
       ]),
-      h("div", { class: "coluna", estilo: "flex:0 0 620px" }, [
-        h("div", { class: "painel claro cresce centro" }, [
-          h("h3", { class: "secao" }, "PD dos quatro clientes nas " + reps.length + " réplicas"),
+      h("div", { class: "coluna", estilo: "flex:0 0 540px" }, [
+        h("div", { class: "painel claro cresce centro", estilo: "padding:10px 16px" }, [
+          h("h3", { class: "secao", estilo: "margin-bottom:2px" },
+            "PD nas " + reps.length + " réplicas"),
           g.svg,
         ]),
         h("div", { class: "painel" }, [
@@ -6052,7 +6225,7 @@ Aula.slide({
       cliente: est.conferido ? carla : null,
       mostrarNumeros: true, mostrarPd: true,
       ocultarFolha: est.conferido ? null : folha,
-      w: 980, h: 380, caixaW: 236, caixaH: 74,
+      w: 812, h: 380, caixaW: 180, caixaH: 74,
       rotuloFolha: function () { return "folha"; },
     });
 
@@ -6200,11 +6373,11 @@ Aula.slide({
     var res = R.auxiliar_2d.residuos_arvore_rasa;
     var arv = R.auxiliar_2d.arvores["2"];
 
-    var gm = Comum.mapaCalor(arv.malha, { w: 500, h: 364, max: 0.5,
+    var gm = Comum.mapaCalor(arv.malha, { w: 452, h: 364, max: 0.5,
       resumo: "Previsão de uma árvore de profundidade dois em comprometimento e utilização." });
 
     /* Mapa dos resíduos médios por região, com eixo centrado em zero. */
-    var g = Graf.novo({ w: 500, h: 364, m: { e: 74, d: 26, c: 20, b: 54 } });
+    var g = Graf.novo({ w: 452, h: 364, m: { e: 74, d: 26, c: 20, b: 54 } });
     g.x(5, 80).y(0, 100);
     g.eixoX({ ticks: [20, 40, 60, 80], rotulo: "comprometimento" });
     g.eixoY({ ticks: [0, 50, 100], rotulo: "utilização" });
@@ -6222,8 +6395,10 @@ Aula.slide({
       g.retangulo(x0, y0, x1, y1,
         { cor: apagado ? "var(--paper)" : cor, borda: "var(--rule)", bordaL: 1,
           opacidade: apagado ? .35 : 1 });
-      g.texto((x0 + x1) / 2, (y0 + y1) / 2, F.dec(r.residuo_medio, 3),
-        { ancora: "middle", dy: 5, tamanho: 15, peso: 700,
+      /* Duas casas: com três, os números de células vizinhas se encostam e a
+         leitura da grade some. A cor já carrega a intensidade. */
+      g.texto((x0 + x1) / 2, (y0 + y1) / 2, F.dec(r.residuo_medio, 2),
+        { ancora: "middle", dy: 5, tamanho: 14, peso: 700,
           cor: apagado ? "var(--rule)" : "var(--ink)" });
     });
 
@@ -6486,7 +6661,7 @@ Aula.slide({
     var taxa = B.taxaObservada;
     var melhor = B.perdaConstante(taxa);
 
-    var g = Graf.novo({ w: 560, h: 340, m: { e: 82, d: 30, c: 24, b: 58 } });
+    var g = Graf.novo({ w: 560, h: 318, m: { e: 82, d: 30, c: 20, b: 54 } });
     g.x(0.01, 0.6).y(0.4, 1.4);
     g.grade({ y: [0.5, 0.75, 1, 1.25] });
     g.eixoY({ ticks: [0.5, 0.75, 1, 1.25], formato: function (v) { return F.dec(v, 2); },
@@ -6507,7 +6682,7 @@ Aula.slide({
       var lista = registros.filter(function (r) { return r.grupo === grupo; });
       var eventos = M.soma(lista.map(function (r) { return r.y; }));
       return h("div", { class: "painel claro cresce" }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 14px" }, [
           h("h3", { class: "secao", estilo: "margin:0" }, "Grupo " + grupo),
           h("span", { class: "nota" },
             "comprometimento " + lista[0].comp + "% · " + F.inteiro(eventos) + " eventos em " +
@@ -6674,7 +6849,7 @@ Aula.slide({
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "painel claro cresce" }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 14px" }, [
           h("h3", { class: "secao", estilo: "margin:0" }, "Os dez registros"),
           UI.selo("primeira ordem didática", "sim"),
         ]),
@@ -6821,7 +6996,7 @@ Aula.slide({
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "painel claro cresce" }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
           h("h3", { class: "secao", estilo: "margin:0" }, "Os mesmos dez registros"),
           UI.alterna({
             rotulo: "colunas", valor: est.depois,
@@ -6910,7 +7085,7 @@ Aula.slide({
     var pd = hist[2].grupos[grupo].p;
 
     var g = Graf.waterfall({
-      w: 760, h: 330, larguraRot: 250,
+      w: 760, h: 330, larguraRot: 282,
       base: F0, rotuloBase: "escore inicial " + F.dec(F0, 6), rotuloTotal: "escore final",
       rotuloX: "escore F",
       itens: [
@@ -6921,7 +7096,7 @@ Aula.slide({
       ],
     });
 
-    var gs = Graf.novo({ w: 380, h: 280, m: { e: 74, d: 24, c: 20, b: 52 } });
+    var gs = Graf.novo({ w: 460, h: 118, m: { e: 66, d: 20, c: 10, b: 34 } });
     gs.x(-2.4, 0.4).y(0, 0.5);
     gs.grade({ y: [0, 0.1, 0.2, 0.3, 0.4, 0.5] });
     gs.eixoY({ ticks: [0, 0.25, 0.5], formato: function (v) { return F.pct(v, 0); },
@@ -6941,7 +7116,7 @@ Aula.slide({
     var percurso = ["árvore 1", "árvore 2"].map(function (nome, k) {
       var valor = k === 0 ? h1 : h2;
       return h("div", { class: "painel claro", estilo: "padding:10px 14px" }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 14px" }, [
           h("span", { estilo: "font-weight:700;color:var(--ink);font-size:20px" }, nome),
           h("span", { class: "medio", estilo: "font-size:22px" }, F.sinal(valor, 6)),
         ]),
@@ -6966,8 +7141,8 @@ Aula.slide({
         ]),
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 520px" }, [
-        h("div", { class: "painel" }, [
-          h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+        h("div", { class: "painel", estilo: "padding:10px 16px" }, [
+          h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
             h("h3", { class: "secao", estilo: "margin:0" }, "Solicitante novo"),
             UI.selo("sem desfecho conhecido", "neutro"),
           ]),
@@ -6980,8 +7155,8 @@ Aula.slide({
             "Nenhum campo de desfecho aparece nesta ficha. O y foi usado apenas no treinamento."),
         ]),
         h("div", { class: "coluna", estilo: "gap:8px" }, percurso),
-        h("div", { class: "painel claro cresce centro" }, [
-          h("h3", { class: "secao" }, "Conversão do escore somado"),
+        h("div", { class: "painel claro cresce centro", estilo: "padding:8px 14px" }, [
+          h("h3", { class: "secao", estilo: "margin-bottom:2px" }, "Conversão do escore somado"),
           gs.svg,
         ]),
         h("div", { class: "grupo" }, [
@@ -7077,8 +7252,10 @@ Aula.slide({
         .filter(function (p) { return p[1] <= g.dy[1]; });
       g.linha(pts, { cor: cor, largura: sel ? 3.5 : 2, opacidade: sel ? 1 : .35 });
       var fim = pts[pts.length - 1];
+      var noFim = fim[0] > g.dx[0] + (g.dx[1] - g.dx[0]) * 0.72;
       g.texto(fim[0], fim[1], "η = " + F.dec(c.taxa, 2) + (sel ? ", validação" : ""),
-        { dx: 8, dy: 5, tamanho: sel ? 19 : 17, peso: sel ? 700 : 400,
+        { ancora: noFim ? "end" : "start", dx: noFim ? -8 : 8, dy: noFim ? -12 : 5,
+          tamanho: sel ? 19 : 17, peso: sel ? 700 : 400,
           cor: sel ? cor : "var(--muted)" });
       if (sel) {
         var ptsT = c.perdas_treino.map(function (v, i) { return [i + 1, v]; })
@@ -7224,7 +7401,7 @@ Aula.slide({
     var paineis = chaves.map(function (k) {
       var b = R.auxiliar_2d.boosting[k];
       var sel = String(est.prof) === k;
-      var gm = Comum.mapaCalor(b.malha, { w: 380, h: 288, max: 0.6,
+      var gm = Comum.mapaCalor(b.malha, { w: 280, h: 288, max: 0.6,
         resumo: "Superfície de PD para boosting com profundidade " + k });
       gm.ponto(est.comp, est.util, { r: 9, cor: "var(--ink)", borda: "#fff", bordaL: 2 });
       return h("div", {
@@ -7243,7 +7420,7 @@ Aula.slide({
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "coluna cresce" }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
           h("h3", { class: "secao", estilo: "margin:0" },
             "Mesma escala e mesmo domínio nos três painéis"),
           UI.selo("experimento auxiliar de duas variáveis", "sim"),
@@ -7561,8 +7738,9 @@ Aula.slide({
         ]),
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 560px" }, [
-        h("div", { class: "painel cor" }, [
-          h("h3", { class: "secao" }, "O que verificar em " + sit.rotulo.toLowerCase()),
+        h("div", { class: "painel cor", estilo: "padding:12px 16px" }, [
+          h("h3", { class: "secao", estilo: "margin-bottom:6px" },
+            "O que verificar em " + sit.rotulo.toLowerCase()),
           h("p", { estilo: "font-size:22px;color:var(--ink);margin:0" }, sit.pergunta),
           est.revelado
             ? h("div", { class: "resposta", estilo: "margin-top:10px" },
@@ -7572,8 +7750,8 @@ Aula.slide({
                 "Ver a evidência que responde"),
         ]),
         comparacao
-          ? h("div", { class: "painel claro cresce" }, [
-              h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+          ? h("div", { class: "painel claro cresce", estilo: "padding:12px 16px" }, [
+              h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
                 h("h3", { class: "secao", estilo: "margin:0" }, "Sensibilidade já calculada"),
                 UI.selo("validação, não o teste", "neutro"),
               ]),
@@ -7636,7 +7814,7 @@ Aula.slide({
                   util: "utilização", hist: "histórico", canal: "canal" };
 
     var gGlobal = Graf.barras({
-      w: 470, h: 330, larguraRot: 168, m: { d: 86, c: 14, b: 54 },
+      w: 470, h: 330, larguraRot: 180, tamanhoRot: 17, m: { d: 74, c: 14, b: 54 },
       itens: E.global_permutacao.map(function (g) {
         return { rotulo: nomes[g.variavel] || g.variavel, valor: g.queda_auc,
                  cor: est.variavel === g.variavel ? "var(--boost)" : "var(--ink-soft)",
@@ -7644,7 +7822,7 @@ Aula.slide({
       }),
       max: Math.max.apply(null, E.global_permutacao.map(function (g) { return g.queda_auc; })) * 1.25,
       formato: function (v) { return F.dec(v, 2); },
-      rotuloX: "queda de AUC ao permutar a variável",
+      rotuloX: "queda de AUC ao permutar",
     });
 
     var ordem = E.global_permutacao.map(function (g) { return g.variavel; });
@@ -7654,7 +7832,7 @@ Aula.slide({
                  : (local.contribuicoes[v] >= 0 ? "var(--alert)" : "var(--ok)") };
     });
     var gLocal = Graf.waterfall({
-      w: 470, h: 352, larguraRot: 172,
+      w: 470, h: 352, larguraRot: 200,
       base: local.base, rotuloBase: "referência " + F.dec(local.base, 3),
       rotuloTotal: "escore de " + local.cliente, rotuloX: "escore do boosting",
       itens: itens,
@@ -7664,7 +7842,7 @@ Aula.slide({
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "painel claro cresce centro" }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;width:100%;align-items:baseline;gap:10px" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;width:100%;align-items:baseline;gap:10px" }, [
           h("h3", { class: "secao", estilo: "margin:0" }, "Global: importância na carteira"),
           h("span", { class: "nota" }, E.amostra_global),
         ]),
@@ -7674,7 +7852,7 @@ Aula.slide({
           ". A barra mostra quanto a AUC cai quando os valores da variável são embaralhados."),
       ]),
       h("div", { class: "painel claro cresce centro" }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;width:100%;align-items:baseline;gap:10px" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;width:100%;align-items:baseline;gap:10px" }, [
           h("h3", { class: "secao", estilo: "margin:0" }, "Local: o escore de " + local.cliente),
           UI.selo("contribuições em escore", "neutro"),
         ]),
@@ -7751,7 +7929,7 @@ Aula.slide({
       "Sobre causalidade: uma contribuição positiva do histórico não prova que remover o atraso do cadastro reduziria o risco real.",
       "Reduzir a taxa de aprendizagem exige recalcular as rodadas e os resíduos, não dividir a PD.",
     ],
-    transicao: "Sabemos como as três técnicas funcionam. Agora precisamos compará-las em condições iguais e verificar o que cada métrica responde.",
+    transicao: "Sabemos como as três técnicas funcionam. Agora precisamos comparar as três em condições iguais e verificar o que cada métrica responde.",
   },
   impressao: function (e) { e.escolha = 1; e.conferido = true; e.passos = 2; },
 
@@ -7797,7 +7975,7 @@ Aula.slide({
     });
 
     var g = Graf.waterfall({
-      w: 700, h: 300, larguraRot: 230,
+      w: 578, h: 300, larguraRot: 196,
       base: F0, rotuloBase: "escore inicial", rotuloTotal: "escore final", rotuloX: "escore F",
       visiveis: est.passos >= 1 ? 2 : 0,
       itens: [
@@ -7846,7 +8024,7 @@ Aula.slide({
             "Reiniciar exercício"),
         ]),
       ]),
-      h("div", { class: "coluna", estilo: "flex:0 0 720px" }, [
+      h("div", { class: "coluna", estilo: "flex:0 0 620px" }, [
         h("div", { class: "painel claro cresce centro" }, [
           est.passos >= 1
             ? g.svg
@@ -7875,6 +8053,1618 @@ Aula.slide({
                 : h("p", { class: "nota" }, "A resposta aparece ao conferir a alternativa."),
             ])
           : null,
+      ]),
+    ]));
+  },
+});
+
+
+/* slides/s43.js */
+Aula.slide({
+  id: "43",
+  bloco: "decisao",
+  titulo: "Estamos comparando modelos ou comparando condições diferentes?",
+  subtitulo: "O protocolo precede qualquer métrica",
+  conclusao: "Mesmo alvo, mesma informação e teste preservado são condições da comparação.",
+  fonte: Aula.dados.fontes.experimento,
+  resumo: "Tabela do protocolo com o que é comum aos três modelos e o que é próprio de cada um, mais a tira dos quatro períodos.",
+  notas: {
+    conducao: [
+      "Recupere o slide 05 em miniatura na tira inferior.",
+      "Pergunte por que usar todos os registros em todos os modelos ainda não garante justiça.",
+      "Revele processamento e seleção, e só depois habilite a abertura dos resultados.",
+    ],
+    respostas: [
+      "Boosting com variável futura: a comparação mede vazamento, não algoritmo. Correção: remover a variável e refazer o treinamento.",
+      "Logit sem tratamento enquanto outros receberam engenharia: baseline artificialmente fraco. Correção: dar ao logit transformações e interações plausíveis, como a sensibilidade deste experimento.",
+      "Configuração escolhida pela métrica do teste: o teste deixa de ser independente. Correção: escolher na validação e usar o teste uma única vez.",
+    ],
+    cuidados: [
+      "Modelos especificados antes do teste podem ser comparados nele. Ajustes motivados por esse teste exigem nova avaliação independente.",
+      "A exploração em aula não deve produzir um campeão otimizado depois de ver o resultado.",
+      "Calibradores e cortes pertencem às partições definidas para isso.",
+    ],
+    transicao: "A primeira pergunta é se o modelo ordena corretamente os clientes de maior e menor risco.",
+  },
+  impressao: function (e) { e.protocolo = true; },
+
+  montar: function (corpo, ctx) {
+    var R = Aula.resultados;
+    var est = ctx.estado;
+    if (!R) {
+      corpo.appendChild(h("p", { class: "resposta erro" },
+        "Resultados do experimento não disponíveis: execute experimento/experimento.py e recompile."));
+      return;
+    }
+    if (est.erro === undefined) est.erro = null;
+
+    var P = R.protocolo;
+    var linhas = [
+      ["Amostra e alvo", "comum", "comum", "comum",
+       "mesmas coortes, mesmo evento e mesmo horizonte de 12 meses"],
+      ["Informação disponível", "comum", "comum", "comum",
+       "as seis características, com a mesma regra de disponibilidade"],
+      ["Pré processamento", "padronização, mais a imputação comum",
+       "imputação pela mediana do treino e indicadores de ausência",
+       "imputação pela mediana do treino e indicadores de ausência",
+       "tratamento próprio é permitido, sem vantagem de informação"],
+      ["Escolha de complexidade", "grade de penalização L2",
+       "profundidade, mínimo por folha e poda",
+       "taxa, profundidade e número de árvores",
+       "sempre pela perda na validação fora do tempo"],
+      ["Avaliação final", "teste congelado", "teste congelado", "teste congelado",
+       "uma única passagem, com regras definidas antes"],
+    ];
+
+    var tabela = UI.tabela({
+      compacta: true,
+      colunas: [{ rotulo: "Condição" }, { rotulo: "Logit regularizado" },
+                { rotulo: "Árvore controlada" }, { rotulo: "Gradient boosting" }],
+      /* A observação acompanha a condição na primeira coluna. Em coluna própria
+         ela ficaria estreita demais e estouraria a altura do painel. */
+      linhas: linhas.map(function (l) {
+        return [[l[0], h("span", { class: "nota", estilo: "display:block;font-weight:400" },
+                         l[4])], l[1], l[2], l[3]];
+      }),
+      legenda: "Condições do protocolo de comparação",
+    });
+    /* Células iguais entre modelos viram uma só: a condição comum fica visível
+       e o texto ganha a largura que gastaria repetido. */
+    [].forEach.call(tabela.querySelectorAll("tbody tr"), function (tr, i) {
+      var l = linhas[i];
+      if (l[1] === l[2] && l[2] === l[3]) {
+        var td = tr.children[1];
+        td.setAttribute("colspan", "3");
+        tr.removeChild(tr.children[3]);
+        tr.removeChild(tr.children[2]);
+        td.setAttribute("style", "text-align:center;background:var(--cor-soft);font-weight:700");
+      } else if (l[2] === l[3]) {
+        var td2 = tr.children[2];
+        td2.setAttribute("colspan", "2");
+        tr.removeChild(tr.children[3]);
+        td2.setAttribute("style", "text-align:center");
+      }
+    });
+
+    var erros = [
+      { chave: "vazamento", rotulo: "Boosting com variável do futuro",
+        texto: "Um dos modelos recebeu o atraso máximo dos 12 meses seguintes como entrada.",
+        certo: "informacao",
+        correcao: "Remover a variável e treinar de novo. A diferença medida era vazamento, não " +
+          "capacidade do algoritmo." },
+      { chave: "baseline", rotulo: "Logit sem tratamento",
+        texto: "O logit ficou sem transformações e sem interações, enquanto os demais receberam " +
+          "engenharia de atributos.",
+        certo: "preprocessamento",
+        correcao: "Dar ao logit a mesma oportunidade de especificação. Neste experimento isso " +
+          "aparece como a sensibilidade do logit flexível." },
+      { chave: "teste", rotulo: "Configuração escolhida pelo teste",
+        texto: "A profundidade da árvore foi escolhida olhando a métrica do teste final.",
+        certo: "avaliacao",
+        correcao: "Escolher hiperparâmetros na validação e usar o teste uma única vez, " +
+          "com as regras já congeladas." },
+    ];
+    var erroAtual = erros.filter(function (e) { return e.chave === est.erro; })[0];
+
+    /* Tira dos quatro períodos, em miniatura. */
+    var g = Graf.novo({ w: 972, h: 78, m: { e: 40, d: 40, c: 24, b: 28 } });
+    function anoFrac(iso) {
+      var p = iso.split("-");
+      return Number(p[0]) + (Number(p[1]) - 1) / 12;
+    }
+    g.x(2018, 2026).y(0, 1);
+    g.eixoX({ ticks: [2018, 2020, 2022, 2024, 2026],
+              formato: function (v) { return String(Math.round(v)); } });
+    var cores = { treino: "var(--ink)", validacao: "var(--logit)",
+                  calibracao: "var(--amber)", teste: "var(--arvore)" };
+    var nomes = { treino: "treino", validacao: "validação", calibracao: "calibração e política",
+                  teste: "teste" };
+    /* Só o nome sobre a barra: com o tamanho junto, os rótulos das partições
+       vizinhas se sobrepõem nesta escala. Os n vão na linha abaixo. */
+    P.particoes.forEach(function (p) {
+      g.retangulo(anoFrac(p.inicio), 0.3, anoFrac(p.fim), 0.72,
+        { cor: cores[p.nome] });
+      g.retangulo(anoFrac(p.fim), 0.38, anoFrac(p.alvo_conhecido), 0.64,
+        { cor: cores[p.nome], opacidade: .25 });
+      g.texto((anoFrac(p.inicio) + anoFrac(p.alvo_conhecido)) / 2, 0.84, nomes[p.nome],
+        { ancora: "middle", tamanho: 16, peso: 400, cor: "var(--muted)" });
+    });
+
+    corpo.appendChild(h("div", { class: "linha cresce" }, [
+      h("div", { class: "coluna cresce" }, [
+        h("div", { class: "painel claro cresce", estilo: "padding:10px 14px" }, tabela),
+        h("div", { class: "painel claro", estilo: "padding:10px 16px" }, [
+          h("h3", { class: "secao", estilo: "margin-bottom:2px" },
+            "Os quatro períodos, com a maturação de 12 meses"),
+          g.svg,
+          h("p", { class: "nota", estilo: "margin:0" },
+            P.particoes.map(function (p) {
+              return nomes[p.nome] + " " + F.inteiro(p.n);
+            }).join(" · ") + " contratos"),
+        ]),
+      ]),
+      h("div", { class: "coluna", estilo: "flex:0 0 460px" }, [
+        h("div", { class: "painel" }, [
+          h("h3", { class: "secao" }, "Detectar comparação injusta"),
+          UI.botoes({
+            vertical: true, rotulo: "erro de comparação",
+            opcoes: erros.map(function (e) { return { valor: e.chave, rotulo: e.rotulo }; }),
+            valor: est.erro,
+            aoMudar: function (v) { est.erro = v; est.revelado = false; App.montar("43"); },
+          }),
+        ]),
+        erroAtual
+          ? h("div", { class: "painel cor" }, [
+              h("p", { class: "apoio", estilo: "color:var(--ink);font-size:21px" }, erroAtual.texto),
+              h("p", { class: "nota", estilo: "margin-top:6px" },
+                "Qual condição do protocolo foi violada?"),
+              est.revelado
+                ? h("div", { class: "resposta", estilo: "margin-top:8px" }, erroAtual.correcao)
+                : h("button", { class: "btn", estilo: "margin-top:8px", type: "button",
+                    onclick: function () { est.revelado = true; App.montar("43"); } },
+                    "Como corrigir"),
+            ])
+          : null,
+        h("div", { class: "painel claro cresce" }, [
+          h("div", { class: "grupo" }, [
+            h("button", { class: "btn min", type: "button", onclick: function () {
+              est.protocolo = !est.protocolo; App.montar("43");
+            } }, est.protocolo ? "Esconder metadados" : "Ver protocolo executado"),
+            h("button", { class: "btn min fantasma", type: "button", onclick: ctx.reiniciar },
+              "Reiniciar exemplo"),
+          ]),
+          est.protocolo
+            ? h("div", { estilo: "margin-top:10px" }, [
+                UI.tabela({
+                  compacta: true,
+                  colunas: [{ rotulo: "Partição" }, { rotulo: "Contratações" }, { rotulo: "n" },
+                            { rotulo: "Eventos" }, { rotulo: "Alvo completo" }],
+                  linhas: P.particoes.map(function (p) {
+                    return [nomes[p.nome], F.mes(p.inicio) + " a " + F.mes(p.fim),
+                            F.inteiro(p.n), F.inteiro(p.eventos), F.mes(p.alvo_conhecido)];
+                  }),
+                  legenda: "Metadados das partições",
+                }),
+                h("p", { class: "nota", estilo: "margin-top:8px" },
+                  "semente " + F.inteiro(P.semente) + " · " +
+                  (Aula.metadados
+                    ? ("numpy " + Aula.metadados.numpy + " · sklearn " +
+                       Aula.metadados.scikit_learn + " · python " + Aula.metadados.python)
+                    : "versões no notebook")),
+                Aula.metadados
+                  ? h("p", { class: "nota" },
+                      "sha256 do arquivo de resultados: " +
+                      Aula.metadados.sha256_resultados.slice(0, 24) + "...")
+                  : null,
+              ])
+            : h("p", { class: "apoio", estilo: "margin-top:10px" },
+                "Antes de abrir qualquer resultado, vale conferir de onde vem cada número: " +
+                "partições, tamanhos, semente e versões."),
+        ]),
+      ]),
+    ]));
+  },
+});
+
+
+/* slides/s44.js */
+Aula.slide({
+  id: "44",
+  bloco: "decisao",
+  titulo: "Quem aparece primeiro na fila de risco?",
+  subtitulo: "AUC contada por pares e curvas do experimento sintético",
+  conclusao: "Um modelo pode ordenar bem mesmo que suas probabilidades estejam na escala errada.",
+  fonte: "Microexemplo de ranking e experimento sintético, em abas identificadas",
+  resumo: "Seis registros ordenados por escore com comparação de pares, e curvas ROC e acumuladas do KS.",
+  notas: {
+    conducao: [
+      "Comece pelo par, não pela integral.",
+      "Pergunte se o escore 0,8 significa 80% de PD calibrada. Neste exemplo não há essa evidência.",
+      "Revele as curvas como resumo da ordenação e diferencie taxa de falsos positivos de inadimplência entre aprovados.",
+    ],
+    respostas: [
+      "São 9 pares, 7 corretamente ordenados: AUC igual a 7 dividido por 9, aproximadamente 0,7778.",
+      "Empates contam meio par.",
+      "Mudar o corte não muda a AUC: ela percorre todos os cortes.",
+    ],
+    cuidados: [
+      "Orientação declarada: escore maior significa maior risco.",
+      "AUC por pares não é acurácia, taxa de acerto de aprovados nem rentabilidade.",
+      "KS e AUC resumem aspectos diferentes: um não determina o outro.",
+      "Diferenças pequenas entre modelos podem exigir avaliação de incerteza.",
+    ],
+    transicao: "Mesmo que o ranking esteja certo, precisamos perguntar se uma previsão de 10% corresponde a cerca de 10% de eventos.",
+  },
+  impressao: function (e) { e.aba = "modelos"; e.contados = true; },
+
+  montar: function (corpo, ctx) {
+    var R = Aula.resultados;
+    var est = ctx.estado;
+    if (!est.aba) est.aba = "pares";
+    if (est.sel === undefined) est.sel = null;
+
+    var inadimplentes = [0.8, 0.6, 0.4];
+    var adimplentes = [0.7, 0.3, 0.2];
+    var escores = inadimplentes.concat(adimplentes);
+    var ys = [1, 1, 1, 0, 0, 0];
+    var auc = M.aucPares(escores, ys);
+
+    function abaPares() {
+      var g = Graf.novo({ w: 700, h: 430, m: { e: 182, d: 130, c: 30, b: 58 } });
+      g.x(0, 1).y(0, 2);
+      g.eixoX({ ticks: [0, 0.2, 0.4, 0.6, 0.8, 1], rotulo: "escore de risco",
+                formato: function (v) { return F.dec(v, 1); } });
+      var linhas = [
+        { y: 1.35, lista: inadimplentes, rotulo: "inadimplentes", cor: "var(--alert)" },
+        { y: 0.55, lista: adimplentes, rotulo: "adimplentes", cor: "var(--ok)" },
+      ];
+      if (est.sel !== null) {
+        adimplentes.forEach(function (a) {
+          var ok = inadimplentes[est.sel] > a;
+          g.add(sv("line", { x1: g.px(inadimplentes[est.sel]), y1: g.py(1.35),
+            x2: g.px(a), y2: g.py(0.55),
+            stroke: ok ? "var(--ok)" : "var(--alert)", "stroke-width": 3,
+            "stroke-dasharray": ok ? null : "6 4" }));
+        });
+      }
+      linhas.forEach(function (l) {
+        g.add(sv("text", { x: g.m.e - 16, y: g.py(l.y) + 7, "text-anchor": "end",
+          "font-size": 20, "font-weight": 700, fill: l.cor, texto: l.rotulo }));
+        l.lista.forEach(function (v, i) {
+          var sel = l.cor === "var(--alert)" && est.sel === i;
+          g.ponto(v, l.y, { r: sel ? 13 : 10, cor: l.cor });
+          g.texto(v, l.y, F.dec(v, 1), { ancora: "middle", dy: -18, tamanho: 18,
+                                         cor: "var(--ink)" });
+        });
+      });
+      var acertos = est.sel === null ? null
+        : adimplentes.filter(function (a) { return inadimplentes[est.sel] > a; }).length;
+      return h("div", { class: "painel claro cresce centro" }, [
+        h("h3", { class: "secao" }, "Seis registros com desfecho conhecido"),
+        g.svg,
+        h("p", { class: "apoio", estilo: "margin:0" },
+          est.sel === null
+            ? "Selecione um inadimplente para comparar com os três adimplentes."
+            : ("O inadimplente de escore " + F.dec(inadimplentes[est.sel], 1) +
+               " está acima de " + acertos + " dos três adimplentes.")),
+      ]);
+    }
+
+    function abaModelos() {
+      if (!R) {
+        return h("p", { class: "resposta erro" },
+          "Resultados do experimento não disponíveis: execute experimento/experimento.py.");
+      }
+      if (!est.modelo) est.modelo = "boosting";
+      var aval = R.avaliacao[est.modelo];
+      var roc = aval.roc_teste;
+      var ks = aval.ks_teste;
+
+      var gr = Graf.novo({ w: 480, h: 400, m: { e: 78, d: 26, c: 22, b: 58 } });
+      gr.x(0, 1).y(0, 1);
+      gr.grade({ x: [0.25, 0.5, 0.75], y: [0.25, 0.5, 0.75] });
+      gr.eixoY({ ticks: [0, 0.5, 1], formato: function (v) { return F.pct(v, 0); },
+                 rotulo: "taxa de verdadeiros positivos" });
+      gr.eixoX({ ticks: [0, 0.5, 1], formato: function (v) { return F.pct(v, 0); },
+                 rotulo: "taxa de falsos positivos" });
+      gr.linha([[0, 0], [1, 1]], { cor: "var(--rule)", largura: 2, tracejado: "6 5" });
+      gr.linha(roc.fpr.map(function (v, i) { return [v, roc.tpr[i]]; }),
+        { cor: "var(--amber)", largura: 3 });
+      gr.texto(0.55, 0.35, "AUC " + F.dec(aval.teste.auc, 4),
+        { tamanho: 24, cor: "var(--ink)" });
+
+      var gk = Graf.novo({ w: 480, h: 400, m: { e: 78, d: 26, c: 22, b: 58 } });
+      gk.x(0, 1).y(0, 1);
+      gk.grade({ y: [0.25, 0.5, 0.75] });
+      gk.eixoY({ ticks: [0, 0.5, 1], formato: function (v) { return F.pct(v, 0); },
+                 rotulo: "proporção acumulada" });
+      gk.eixoX({ ticks: [0, 0.25, 0.5], formato: function (v) { return F.pct(v, 0); },
+                 rotulo: "PD prevista" });
+      var lim = Math.max.apply(null, ks.limites);
+      gk.x(0, Math.min(0.6, lim));
+      gk.linha(ks.limites.map(function (t, i) { return [t, ks.acum_adimplentes[i]]; }),
+        { cor: "var(--ok)", largura: 3 });
+      gk.linha(ks.limites.map(function (t, i) { return [t, ks.acum_inadimplentes[i]]; }),
+        { cor: "var(--alert)", largura: 3 });
+      var iMax = 0;
+      ks.limites.forEach(function (t, i) {
+        if (ks.acum_adimplentes[i] - ks.acum_inadimplentes[i] >
+            ks.acum_adimplentes[iMax] - ks.acum_inadimplentes[iMax]) iMax = i;
+      });
+      gk.add(sv("line", { x1: gk.px(ks.limites[iMax]), x2: gk.px(ks.limites[iMax]),
+        y1: gk.py(ks.acum_inadimplentes[iMax]), y2: gk.py(ks.acum_adimplentes[iMax]),
+        stroke: "var(--ink)", "stroke-width": 3 }));
+      gk.texto(ks.limites[iMax], ks.acum_adimplentes[iMax], "KS " + F.dec(ks.ks, 4),
+        { dx: 10, dy: -10, tamanho: 22, cor: "var(--ink)" });
+      gk.texto(gk.dx[1], 0.35, "inadimplentes",
+        { ancora: "end", tamanho: 17, peso: 400, cor: "var(--alert)" });
+      gk.texto(gk.dx[1], 0.88, "adimplentes",
+        { ancora: "end", tamanho: 17, peso: 400, cor: "var(--ok)" });
+
+      return h("div", { class: "linha cresce" }, [
+        h("div", { class: "painel claro cresce centro" }, [
+          h("h3", { class: "secao" }, "Curva ROC no teste"), gr.svg]),
+        h("div", { class: "painel claro cresce centro" }, [
+          h("h3", { class: "secao" }, "Acumuladas e distância do KS"), gk.svg]),
+      ]);
+    }
+
+    var tabelaPares = UI.tabela({
+      compacta: true,
+      colunas: [{ rotulo: "Inadimplente" }, { rotulo: "0,7" }, { rotulo: "0,3" }, { rotulo: "0,2" }],
+      linhas: inadimplentes.map(function (p) {
+        return [F.dec(p, 1)].concat(adimplentes.map(function (a) {
+          return p > a ? "acima" : p === a ? "empate" : "abaixo";
+        }));
+      }),
+      selecionada: est.sel,
+      legenda: "Comparação dos nove pares",
+    });
+
+    corpo.appendChild(h("div", { class: "linha", estilo: "align-items:center" }, [
+      UI.botoes({
+        rotulo: "visão",
+        opcoes: [{ valor: "pares", rotulo: "Microexemplo de pares" },
+                 { valor: "modelos", rotulo: "Curvas do experimento" }],
+        valor: est.aba,
+        aoMudar: function (v) { est.aba = v; App.montar("44"); },
+      }),
+      est.aba === "modelos" && R
+        ? h("div", { class: "grupo", estilo: "margin-left:auto;align-items:center" }, [
+            h("span", { class: "apoio" }, "modelo"),
+            UI.botoes({
+              compacto: true, rotulo: "modelo",
+              opcoes: ["logit", "arvore", "boosting"].map(function (k) {
+                return { valor: k, rotulo: Aula.dados.modelos[k].curto };
+              }),
+              valor: est.modelo || "boosting",
+              aoMudar: function (v) { est.modelo = v; App.montar("44"); },
+            }),
+            h("span", { class: "nota" },
+              "teste, " + F.inteiro(R.avaliacao.logit.teste.n) + " contratos de fev a jul de 2024"),
+          ])
+        : h("span", { class: "nota", estilo: "margin-left:auto" },
+            "Escores de ranking, sem alegação de calibração"),
+    ]));
+
+    if (est.aba === "pares") {
+      corpo.appendChild(h("div", { class: "linha cresce" }, [
+        abaPares(),
+        h("div", { class: "coluna", estilo: "flex:0 0 520px" }, [
+          h("div", { class: "painel claro" }, tabelaPares),
+          h("div", { class: "painel cor" }, [
+            h("h3", { class: "secao" }, "AUC por contagem de pares"),
+            h("p", { estilo: "font-size:26px;color:var(--ink);margin:0" },
+              est.contados
+                ? "7 de 9 pares corretos, AUC = " + F.dec(auc, 4)
+                : "9 pares possíveis. Quantos estão na ordem certa?"),
+            h("p", { class: "nota", estilo: "margin-top:6px" },
+              "Empates contam meio par. Aqui não há empates."),
+          ]),
+          h("div", { class: "painel" }, [
+            h("div", { class: "grupo" }, [
+              UI.botoes({
+                compacto: true, rotulo: "inadimplente selecionado",
+                opcoes: inadimplentes.map(function (p, i) {
+                  return { valor: i, rotulo: "escore " + F.dec(p, 1) };
+                }),
+                valor: est.sel,
+                aoMudar: function (v) { est.sel = est.sel === v ? null : v; App.montar("44"); },
+              }),
+              h("button", { class: "btn min", type: "button", onclick: function () {
+                est.contados = true; App.montar("44");
+              } }, "Contar todos"),
+              h("button", { class: "btn min fantasma", type: "button", onclick: ctx.reiniciar },
+                "Reiniciar exemplo"),
+            ]),
+            h("p", { class: "nota", estilo: "margin-top:10px" },
+              "O escore 0,8 não significa 80% de PD: aqui não há evidência de calibração, " +
+              "apenas de ordenação."),
+          ]),
+        ]),
+      ]));
+    } else {
+      corpo.appendChild(abaModelos());
+      if (R) {
+        var aval = R.avaliacao[est.modelo || "boosting"];
+        corpo.appendChild(h("div", { class: "painel cor",
+          estilo: "display:flex;gap:30px;flex-wrap:wrap;align-items:baseline" }, [
+          h("span", { class: "medio" }, "AUC " + F.dec(aval.teste.auc, 4)),
+          h("span", { class: "medio" }, "KS " + F.dec(aval.teste.ks, 4)),
+          h("span", { class: "apoio" },
+            "n = " + F.inteiro(aval.teste.n) + " contratos, " +
+            F.inteiro(aval.teste.eventos) + " eventos"),
+          h("span", { class: "nota" },
+            "Mudar o corte não altera a AUC. A taxa de falsos positivos do eixo não é a " +
+            "inadimplência da carteira aprovada."),
+        ]));
+      }
+    }
+  },
+});
+
+
+/* slides/s45.js */
+Aula.slide({
+  id: "45",
+  bloco: "decisao",
+  titulo: "Entre os clientes com PD próxima de 10%, quantos ficaram inadimplentes?",
+  subtitulo: "Média prevista contra frequência observada, faixa a faixa",
+  conclusao: "Calibrar é verificar a escala das probabilidades, não apenas a ordem dos clientes.",
+  fonte: Aula.dados.fontes.experimento,
+  resumo: "Diagrama de calibração com dez faixas por quantis, intervalos de Wilson e histograma das probabilidades previstas.",
+  notas: {
+    conducao: [
+      "Leia um ponto completo: probabilidade média, proporção observada, n e eventos.",
+      "Aplique a perturbação das odds e pergunte o que deve acontecer com a AUC antes de revelar.",
+      "Discuta por que PD em escala errada distorce perda esperada e política de corte.",
+    ],
+    respostas: [
+      "A transformação multiplica as odds por dois e preserva a ordem, portanto a AUC permanece idêntica.",
+      "A calibração e as perdas mudam, e a direção depende de como o modelo já estava calibrado.",
+    ],
+    cuidados: [
+      "Wilson por faixa é descrição binomial aproximada e não incorpora toda a seleção e modelagem.",
+      "Brier e log loss avaliam qualidade probabilística, mas não são medidas exclusivas de calibração.",
+      "Número de faixas, calibrador e versão não devem ser escolhidos pelo teste final.",
+      "O calibrador de Platt foi ajustado na partição de calibração e aplicado ao teste sem reajuste.",
+    ],
+    transicao: "Uma PD só vira ação quando definimos uma política. Vamos observar como um corte altera a carteira aprovada.",
+  },
+
+  montar: function (corpo, ctx) {
+    var R = Aula.resultados;
+    var est = ctx.estado;
+    if (!R) {
+      corpo.appendChild(h("p", { class: "resposta erro" },
+        "Resultados do experimento não disponíveis: execute experimento/experimento.py e recompile."));
+      return;
+    }
+    if (!est.modelo) est.modelo = "boosting";
+    if (!est.versao) est.versao = "original";
+    if (est.faixa === undefined) est.faixa = null;
+
+    var aval = R.avaliacao[est.modelo];
+    var mapa = {
+      original: { bins: aval.calibracao_teste, auc: aval.teste.auc, brier: aval.teste.brier,
+                  ll: aval.teste.log_loss, rotulo: "previsões originais" },
+      odds2: { bins: aval.calibracao_teste_odds2, auc: aval.auc_odds2, brier: aval.brier_odds2,
+               ll: aval.log_loss_odds2, rotulo: "odds multiplicadas por 2" },
+      calibrada: { bins: aval.calibracao_teste_calibrada, auc: aval.teste.auc_calibrada,
+                   brier: aval.teste.brier_calibrada, ll: aval.teste.log_loss_calibrada,
+                   rotulo: "depois da calibração de Platt" },
+    };
+    var atual = mapa[est.versao];
+    var bins = atual.bins;
+
+    var maxV = Math.max.apply(null, bins.map(function (b) {
+      return Math.max(b.prev_media, b.obs, b.wilson[1]);
+    }));
+    var lim = Math.min(1, Math.ceil(maxV * 10) / 10);
+
+    var g = Graf.novo({ w: 372, h: 420, m: { e: 88, d: 26, c: 22, b: 58 },
+      resumo: "Diagrama de calibração com dez faixas." });
+    g.x(0, lim).y(0, lim);
+    var ticks = Graf.ticks(0, lim, 5);
+    g.grade({ x: ticks, y: ticks });
+    g.eixoY({ ticks: ticks, formato: function (v) { return F.pct(v, 0); },
+              rotulo: "frequência observada" });
+    g.eixoX({ ticks: ticks, formato: function (v) { return F.pct(v, 0); },
+              rotulo: "PD média prevista na faixa" });
+    g.linha([[0, 0], [lim, lim]], { cor: "var(--rule)", largura: 2, tracejado: "6 5" });
+    bins.forEach(function (b, i) {
+      var sel = est.faixa === i;
+      g.add(sv("line", { x1: g.px(b.prev_media), x2: g.px(b.prev_media),
+        y1: g.py(b.wilson[0]), y2: g.py(b.wilson[1]),
+        stroke: "var(--amber)", "stroke-width": sel ? 4 : 2, opacity: sel ? 1 : .5 }));
+      g.ponto(b.prev_media, b.obs, { r: sel ? 11 : 7, cor: "var(--amber)" });
+    });
+    if (est.faixa !== null && bins[est.faixa]) {
+      var b = bins[est.faixa];
+      g.texto(b.prev_media, b.obs, F.pct(b.obs, 2) + " observado",
+        { dx: 12, dy: -12, tamanho: 19, cor: "var(--ink)" });
+    }
+
+    /* Histograma das probabilidades previstas, alinhado às faixas. */
+    var hist = aval.histograma_teste;
+    var gh = Graf.novo({ w: 372, h: 160, m: { e: 88, d: 26, c: 14, b: 48 } });
+    var maxC = Math.max.apply(null, hist.contagens);
+    gh.x(0, lim).y(0, maxC);
+    gh.eixoY({ ticks: [0, maxC], formato: function (v) { return F.inteiro(v); },
+               rotulo: "contratos" });
+    gh.eixoX({ ticks: ticks, formato: function (v) { return F.pct(v, 0); },
+               rotulo: "PD prevista (versão calibrada)" });
+    hist.contagens.forEach(function (c, i) {
+      var x0 = hist.bordas[i], x1 = hist.bordas[i + 1];
+      if (x0 > lim) return;
+      gh.retangulo(x0, 0, Math.min(x1, lim), c, { cor: "var(--cor-soft)", borda: "var(--amber)" });
+    });
+
+    var tabela = UI.tabela({
+      compacta: true, apertada: true,
+      colunas: [{ rotulo: "Faixa" }, { rotulo: "n" }, { rotulo: "Eventos" },
+                { rotulo: "Prevista" }, { rotulo: "Observada" }, { rotulo: "Wilson" }],
+      linhas: bins.map(function (b, i) {
+        return [String(i + 1), F.inteiro(b.n), F.inteiro(b.eventos),
+                F.pct(b.prev_media, 2), F.pct(b.obs, 2),
+                F.pct(b.wilson[0], 1) + " a " + F.pct(b.wilson[1], 1)];
+      }),
+      selecionada: est.faixa,
+      legenda: "Faixas por quantis das previsões no teste",
+    });
+    [].forEach.call(tabela.querySelectorAll("tbody tr"), function (tr, i) {
+      tr.setAttribute("style", "cursor:pointer");
+      tr.addEventListener("click", function () {
+        est.faixa = est.faixa === i ? null : i; App.montar("45");
+      });
+    });
+
+    corpo.appendChild(h("div", { class: "linha cresce" }, [
+      h("div", { class: "coluna cresce centro" }, [
+        h("div", { class: "painel claro cresce centro" }, g.svg),
+        h("div", { class: "painel claro" }, gh.svg),
+      ]),
+      h("div", { class: "coluna cresce" }, [
+        h("div", { class: "painel claro cresce" }, tabela),
+      ]),
+      h("div", { class: "coluna", estilo: "flex:0 0 400px" }, [
+        h("div", { class: "painel cor" }, [
+          h("h3", { class: "secao" }, atual.rotulo),
+          h("div", { class: "kv", estilo: "font-size:19px;gap:2px 12px" }, [
+            h("dt", {}, "AUC"), h("dd", {}, F.dec(atual.auc, 6)),
+            h("dt", {}, "Brier"), h("dd", {}, F.dec(atual.brier, 5)),
+            h("dt", {}, "log loss"), h("dd", {}, F.dec(atual.ll, 5)),
+            h("dt", {}, "PD média prevista"),
+            h("dd", {}, F.pct(est.versao === "calibrada" ? aval.teste.pd_media_calibrada
+                                                         : aval.teste.pd_media, 2)),
+            h("dt", {}, "taxa observada"),
+            h("dd", {}, F.pct(aval.teste.eventos / aval.teste.n, 2)),
+          ]),
+        ]),
+        h("div", { class: "painel" }, [
+          h("div", { class: "ctrl" }, [
+            h("label", {}, "Modelo"),
+            UI.botoes({
+              compacto: true, rotulo: "modelo",
+              opcoes: ["logit", "arvore", "boosting"].map(function (k) {
+                return { valor: k, rotulo: Aula.dados.modelos[k].curto };
+              }),
+              valor: est.modelo,
+              aoMudar: function (v) { est.modelo = v; est.faixa = null; App.montar("45"); },
+            }),
+          ]),
+          h("div", { class: "ctrl", estilo: "margin-top:10px" }, [
+            h("label", {}, "Versão das previsões"),
+            UI.botoes({
+              compacto: true, rotulo: "versão",
+              opcoes: [
+                { valor: "original", rotulo: "Originais" },
+                { valor: "odds2", rotulo: "Odds vezes 2 (perturbação)" },
+                { valor: "calibrada", rotulo: "Calibradas (Platt)" },
+              ],
+              valor: est.versao,
+              aoMudar: function (v) { est.versao = v; est.faixa = null; App.montar("45"); },
+            }),
+          ]),
+          h("button", { class: "btn min fantasma", estilo: "margin-top:10px", type: "button",
+            onclick: ctx.reiniciar }, "Reiniciar exemplo"),
+        ]),
+        h("div", { class: "painel claro cresce", estilo: "padding:10px 16px" }, [
+          h("p", { class: "apoio", estilo: "font-size:17px;margin:0" },
+            "A perturbação das odds preserva a ordem: a AUC permanece " +
+            F.dec(aval.auc_odds2, 6) + ", idêntica à original. Brier e log loss mudam. " +
+            "O calibrador de Platt foi ajustado na partição de calibração e aplicado ao teste " +
+            "sem reajuste; o efeito observado é o que aparece na tela."),
+        ]),
+      ]),
+    ]));
+  },
+});
+
+
+/* slides/s46.js */
+Aula.slide({
+  id: "46",
+  bloco: "decisao",
+  titulo: "Até qual PD vamos aprovar?",
+  subtitulo: "O corte define quem entra na carteira e o que se observa depois",
+  conclusao: "A mesma previsão pode sustentar políticas diferentes. A política é uma decisão adicional ao modelo.",
+  fonte: Aula.dados.fontes.experimento,
+  resumo: "Histograma das PDs com a linha de corte, taxa de aprovação e inadimplência observada entre aprovados.",
+  notas: {
+    conducao: [
+      "Reduza o corte e observe volume e composição.",
+      "Pergunte se menor inadimplência implica melhor resultado. Não: pode haver perda de receita.",
+      "Compare dois modelos no mesmo corte e depois no mesmo volume, e explique que são perguntas diferentes.",
+    ],
+    respostas: [
+      "Taxa de aprovação é o número de aprovados dividido pelo total avaliado.",
+      "Inadimplência entre aprovados é a soma de eventos entre aprovados dividida pelo número de aprovados. Contratos recusados não entram no denominador.",
+      "Média das PDs aprovadas e taxa observada são coisas diferentes: a primeira é previsão, a segunda é desfecho.",
+    ],
+    cuidados: [
+      "A avaliação usa contratos com desfecho conhecido da população sintética, o que permite simular recusa. Em dados reais de apenas concedidos, inferir o desempenho dos rejeitados exige hipóteses adicionais.",
+      "Limite de crédito, preço e prazo permanecem fixos aqui, para isolar a decisão de aprovação.",
+      "Empates na PD, comuns na árvore, seguem a regra de aprovar todos no limite. Nenhum desempate usa y.",
+      "Se ninguém for aprovado, a inadimplência entre aprovados fica indefinida.",
+    ],
+    transicao: "Para escolher um corte, precisamos colocar receitas e perdas na mesma conta.",
+  },
+
+  montar: function (corpo, ctx) {
+    var R = Aula.resultados;
+    var est = ctx.estado;
+    if (!R) {
+      corpo.appendChild(h("p", { class: "resposta erro" },
+        "Resultados do experimento não disponíveis: execute experimento/experimento.py e recompile."));
+      return;
+    }
+    if (!est.modelo) est.modelo = "boosting";
+    if (!est.particao) est.particao = "calibracao";
+    var congelado = R.politica[est.modelo].corte_congelado;
+    if (est.corte === undefined) est.corte = congelado;
+
+    var pol = R.politica[est.modelo][est.particao];
+    function linhaDoCorte(lista, c) {
+      var melhor = lista[0], dist = Infinity;
+      lista.forEach(function (l) {
+        var d = Math.abs(l.corte - c);
+        if (d < dist) { dist = d; melhor = l; }
+      });
+      return melhor;
+    }
+    var atual = linhaDoCorte(pol, est.corte);
+    var aval = R.avaliacao[est.modelo];
+    var hist = aval.histograma_teste;
+
+    var gh = Graf.novo({ w: 840, h: 300, m: { e: 92, d: 34, c: 20, b: 54 },
+      resumo: "Histograma das PDs previstas com a linha de corte." });
+    var maxC = Math.max.apply(null, hist.contagens);
+    gh.x(0, 0.6).y(0, maxC * 1.05);
+    gh.eixoY({ ticks: [0, Math.round(maxC / 2), maxC], formato: function (v) { return F.inteiro(v); },
+               rotulo: "contratos" });
+    gh.eixoX({ ticks: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
+               formato: function (v) { return F.pct(v, 0); }, rotulo: "PD prevista calibrada" });
+    hist.contagens.forEach(function (c, i) {
+      var x0 = hist.bordas[i], x1 = hist.bordas[i + 1];
+      var aprovado = x1 <= est.corte;
+      gh.retangulo(x0, 0, x1, c,
+        { cor: aprovado ? "var(--cor-soft)" : "var(--paper)",
+          borda: aprovado ? "var(--amber)" : "var(--rule)" });
+    });
+    gh.add(sv("line", { x1: gh.px(est.corte), x2: gh.px(est.corte), y1: gh.py(0),
+      y2: gh.py(maxC * 1.05), stroke: "var(--alert)", "stroke-width": 3 }));
+    gh.texto(est.corte, maxC * 1.05, "corte " + F.pct(est.corte, 1),
+      { dx: 8, dy: 4, tamanho: 19, cor: "var(--alert)" });
+
+    /* O nome completo da série fica no título do painel: girado no eixo, ele
+       ultrapassaria a altura do desenho. */
+    function curva(campo, cor, titulo, formato) {
+      var g = Graf.novo({ w: 420, h: 240, m: { e: 80, d: 26, c: 16, b: 50 } });
+      var vals = pol.filter(function (l) { return l[campo] !== null; })
+        .map(function (l) { return l[campo]; });
+      var topo = Math.max.apply(null, vals) * 1.1;
+      g.x(0.01, 0.5).y(0, topo);
+      var ticks = Graf.ticks(0, topo, 4);
+      g.grade({ y: ticks });
+      g.eixoY({ ticks: ticks, formato: formato, rotulo: "taxa" });
+      g.eixoX({ ticks: [0.1, 0.2, 0.3, 0.4, 0.5],
+                formato: function (v) { return F.pct(v, 0); }, rotulo: "corte" });
+      g.linha(pol.filter(function (l) { return l[campo] !== null; })
+        .map(function (l) { return [l.corte, l[campo]]; }), { cor: cor, largura: 3 });
+      g.add(sv("line", { x1: g.px(est.corte), x2: g.px(est.corte), y1: g.py(0), y2: g.py(topo),
+        stroke: "var(--alert)", "stroke-width": 2 }));
+      if (atual[campo] !== null) {
+        g.ponto(atual.corte, atual[campo], { r: 8, cor: cor });
+        g.texto(atual.corte, atual[campo], formato(atual[campo]),
+          { dx: 10, dy: -10, tamanho: 19, cor: "var(--ink)" });
+      }
+      return g.svg;
+    }
+
+    var mesmoVolume = null;
+    if (est.comparar) {
+      var alvo = atual.aprovacao;
+      mesmoVolume = ["logit", "arvore", "boosting"].map(function (k) {
+        var lista = R.politica[k][est.particao];
+        var melhor = lista[0], dist = Infinity;
+        lista.forEach(function (l) {
+          var d = Math.abs(l.aprovacao - alvo);
+          if (d < dist) { dist = d; melhor = l; }
+        });
+        return { modelo: k, linha: melhor };
+      });
+    }
+
+    corpo.appendChild(h("div", { class: "linha cresce" }, [
+      h("div", { class: "coluna cresce" }, [
+        h("div", { class: "painel claro centro" }, gh.svg),
+        h("div", { class: "linha cresce" }, [
+          h("div", { class: "painel claro cresce centro", estilo: "padding:8px 14px" }, [
+            h("h3", { class: "secao", estilo: "margin:0 0 2px" }, "Taxa de aprovação"),
+            curva("aprovacao", "var(--ink-soft)", null,
+              function (v) { return F.pct(v, 0); }),
+          ]),
+          h("div", { class: "painel claro cresce centro", estilo: "padding:8px 14px" }, [
+            h("h3", { class: "secao", estilo: "margin:0 0 2px" },
+              "Inadimplência entre aprovados"),
+            curva("inadimplencia", "var(--alert)", null,
+              function (v) { return F.pct(v, 1); }),
+          ]),
+        ]),
+      ]),
+      h("div", { class: "coluna", estilo: "flex:0 0 480px" }, [
+        h("div", { class: "painel cor" }, [
+          h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
+            h("h3", { class: "secao", estilo: "margin:0 0 4px" }, "No corte de " + F.pct(atual.corte, 1)),
+            UI.selo(est.particao === "teste"
+              ? "análise retrospectiva, não seleciona política"
+              : "partição de política", est.particao === "teste" ? "sim" : "neutro"),
+          ]),
+          h("div", { class: "kv", estilo: "font-size:18px;gap:1px 12px" }, [
+            h("dt", {}, "aprovados"),
+            h("dd", {}, F.inteiro(atual.aprovados) + " de " + F.inteiro(
+              Math.round(atual.aprovados / (atual.aprovacao || 1)))),
+            h("dt", {}, "taxa de aprovação"), h("dd", {}, F.pct(atual.aprovacao, 1)),
+            h("dt", {}, "eventos entre aprovados"), h("dd", {}, F.inteiro(atual.eventos)),
+            h("dt", {}, "inadimplência entre aprovados"),
+            h("dd", {}, atual.inadimplencia === null ? "não definida"
+                                                     : F.pct(atual.inadimplencia, 2)),
+            h("dt", {}, "PD média dos aprovados"),
+            h("dd", {}, atual.pd_media_aprovados === undefined ? "não definida"
+                                                               : F.pct(atual.pd_media_aprovados, 2)),
+          ]),
+        ]),
+        h("div", { class: "painel" }, [
+          UI.slider({
+            rotulo: "Corte de aprovação", min: 1, max: 50, passo: 0.5, valor: est.corte * 100,
+            formato: function (v) {
+              var l = linhaDoCorte(pol, v / 100);
+              return "aprovação " + F.pct(l.aprovacao, 1);
+            },
+            aoMudar: function (v) { est.corte = v / 100; App.montar("46"); },
+          }),
+          h("div", { class: "grupo", estilo: "margin-top:10px" }, [
+            UI.botoes({
+              compacto: true, rotulo: "modelo",
+              opcoes: ["logit", "arvore", "boosting"].map(function (k) {
+                return { valor: k, rotulo: Aula.dados.modelos[k].curto };
+              }),
+              valor: est.modelo,
+              aoMudar: function (v) { est.modelo = v; App.montar("46"); },
+            }),
+          ]),
+          h("div", { class: "grupo", estilo: "margin-top:8px" }, [
+            UI.botoes({
+              compacto: true, rotulo: "partição",
+              opcoes: [{ valor: "calibracao", rotulo: "Partição de política" },
+                       { valor: "teste", rotulo: "Teste, modo final" }],
+              valor: est.particao,
+              aoMudar: function (v) { est.particao = v; App.montar("46"); },
+            }),
+            h("button", { class: "btn min", type: "button", onclick: function () {
+              est.corte = congelado; App.montar("46");
+            } }, "Corte congelado " + F.pct(congelado, 0)),
+            h("button", { class: "btn min", type: "button", onclick: function () {
+              est.comparar = !est.comparar; App.montar("46");
+            } }, est.comparar ? "Esconder comparação" : "Mesmo volume de aprovação"),
+            h("button", { class: "btn min fantasma", type: "button", onclick: ctx.reiniciar },
+              "Reiniciar exemplo"),
+          ]),
+        ]),
+        mesmoVolume
+          ? h("div", { class: "painel claro cresce" }, [
+              h("h3", { class: "secao" }, "Mesmo volume de aprovação"),
+              UI.tabela({
+                compacta: true,
+                colunas: [{ rotulo: "Modelo" }, { rotulo: "Corte" }, { rotulo: "Aprovação" },
+                          { rotulo: "Inadimplência" }],
+                linhas: mesmoVolume.map(function (m) {
+                  return [Aula.dados.modelos[m.modelo].nome, F.pct(m.linha.corte, 1),
+                          F.pct(m.linha.aprovacao, 1),
+                          m.linha.inadimplencia === null ? "não definida"
+                                                         : F.pct(m.linha.inadimplencia, 2)];
+                }),
+                legenda: "Cada modelo no corte que produz aproximadamente o mesmo volume",
+              }),
+              h("p", { class: "nota", estilo: "margin-top:6px" },
+                "Mesmo corte e mesmo volume são perguntas diferentes: com cortes iguais os " +
+                "modelos aprovam quantidades distintas."),
+            ])
+          : h("p", { class: "nota" },
+              est.particao === "teste"
+                ? "No modo final o corte congelado é aplicado ao teste. Mover o controle aqui é " +
+                  "análise retrospectiva e não seleciona política."
+                : "A política é definida nesta partição, antes de qualquer olhar ao teste."),
+      ]),
+    ]));
+  },
+});
+
+
+/* slides/s47.js */
+Aula.slide({
+  id: "47",
+  bloco: "decisao",
+  titulo: "Com estas hipóteses, o equilíbrio ocorre em PD de 20%",
+  subtitulo: "Aproximação didática por operação, horizonte de 12 meses",
+  conclusao: "Um bom ranking só gera valor quando probabilidades e política se conectam à economia da operação.",
+  fonte: Aula.dados.fontes.economia,
+  resumo: "Resultado esperado por operação em função da PD, com o ponto de equilíbrio marcado e a decomposição em margem menos perda esperada.",
+  notas: {
+    conducao: [
+      "Construa a perda esperada, depois o resultado, depois o equilíbrio.",
+      "Pergunte o efeito de aumentar a fração perdida mantendo a PD.",
+      "Mostre que o mesmo cliente pode ser aceitável sob uma estrutura econômica e inviável sob outra, sem defender simplesmente aumento de taxa.",
+    ],
+    respostas: [
+      "Perda esperada é PD vezes LGD vezes EAD. Em PD de 10%: 0,10 vezes 60% vezes R$ 10.000, igual a R$ 600.",
+      "Resultado esperado é margem menos perda esperada: R$ 1.200 menos R$ 600, igual a R$ 600.",
+      "Equilíbrio: margem dividida por LGD vezes EAD, igual a 20%.",
+    ],
+    cuidados: [
+      "A margem é considerada constante e já líquida dos custos definidos, apenas nesta simplificação. Não é receita recebida em todos os cenários do mundo real.",
+      "Perda esperada não é lucro, e EAD não é o valor original do contrato sem a hipótese de igualdade.",
+      "A versão alternativa, com margem condicional ao adimplemento, tem outro corte e não deve ser misturada a este gráfico.",
+      "Resultados realizados usam y e são diferentes do valor esperado calculado com p.",
+    ],
+    transicao: "Antes de implantar, ainda precisamos saber se a relação continua válida no tempo e se conseguimos operar essa relação com controle.",
+  },
+
+  montar: function (corpo, ctx) {
+    var E = Aula.dados.economia;
+    var est = ctx.estado;
+    if (est.pd === undefined) est.pd = 0.10;
+    if (!est.par) est.par = { margem: E.margem, lgd: E.lgd, ead: E.ead };
+    if (est.alternativa === undefined) est.alternativa = false;
+
+    var par = est.par;
+    var hip = { margem: par.margem, lgd: par.lgd, ead: par.ead };
+    var el = E.perdaEsperada(est.pd, hip);
+    var resultado = E.resultado(est.pd, hip);
+    var equilibrio = E.equilibrio(hip);
+    var foraDaFaixa = equilibrio >= 1;
+
+    var g = Graf.novo({ w: 900, h: 470, m: { e: 120, d: 40, c: 28, b: 62 },
+      resumo: "Resultado esperado por operação em função da PD." });
+    var minY = E.resultado(0.5, hip), maxY = hip.margem;
+    g.x(0, 0.5).y(Math.min(minY, -100) * 1.05, maxY * 1.1);
+    var ticks = Graf.ticks(g.dy[0], g.dy[1], 6);
+    g.grade({ y: ticks, x: [0.1, 0.2, 0.3, 0.4, 0.5] });
+    g.eixoY({ ticks: ticks, formato: function (v) { return F.reais(v); },
+              rotulo: "resultado esperado por operação" });
+    g.eixoX({ ticks: [0, 0.1, 0.2, 0.3, 0.4, 0.5],
+              formato: function (v) { return F.pct(v, 0); }, rotulo: "PD" });
+    g.add(sv("line", { x1: g.px(0), x2: g.px(0.5), y1: g.py(0), y2: g.py(0),
+      stroke: "var(--muted)", "stroke-width": 1.5 }));
+    g.linha(M.linspace(0, 0.5, 120).map(function (v) { return [v, E.resultado(v, hip)]; }),
+      { cor: "var(--amber)", largura: 3.5 });
+    if (!foraDaFaixa && equilibrio <= 0.5) {
+      g.add(sv("line", { x1: g.px(equilibrio), x2: g.px(equilibrio),
+        y1: g.py(g.dy[0]), y2: g.py(0), stroke: "var(--alert)", "stroke-width": 2,
+        "stroke-dasharray": "6 4" }));
+      g.ponto(equilibrio, 0, { r: 10, cor: "var(--alert)" });
+      g.texto(equilibrio, 0, "equilíbrio em " + F.pct(equilibrio, 1),
+        { dx: 12, dy: -14, tamanho: 21, cor: "var(--alert)" });
+    }
+    g.guia(est.pd, resultado, { cor: "var(--amber)" });
+    g.ponto(est.pd, resultado, { r: 11, cor: "var(--amber)" });
+    g.texto(est.pd, resultado, F.reais(resultado),
+      { dx: 12, dy: resultado > 0 ? -14 : 24, tamanho: 22, cor: "var(--ink)" });
+
+    var gd = Graf.novo({ w: 420, h: 128, m: { e: 96, d: 24, c: 18, b: 30 } });
+    gd.x(0, 3).y(Math.min(0, resultado) * 1.15, hip.margem * 1.15);
+    gd.eixoY({ ticks: [0, hip.margem / 2, hip.margem],
+               formato: function (v) { return F.reais(v); } });
+    gd.add(sv("line", { x1: gd.px(0), x2: gd.px(3), y1: gd.py(0), y2: gd.py(0),
+      stroke: "var(--muted)", "stroke-width": 1.5 }));
+    [[0.5, hip.margem, "margem", "var(--ok)"],
+     [1.5, -el, "perda esperada", "var(--alert)"],
+     [2.5, resultado, "resultado", "var(--amber)"]].forEach(function (b) {
+      var y0 = Math.min(0, b[1]), y1 = Math.max(0, b[1]);
+      gd.retangulo(b[0] - 0.32, y0, b[0] + 0.32, y1, { cor: b[3] });
+      gd.texto(b[0], b[1] > 0 ? b[1] : 0, F.reais(b[1]),
+        { ancora: "middle", dy: -10, tamanho: 19, cor: "var(--ink)" });
+      gd.texto(b[0], gd.dy[0], b[2],
+        { ancora: "middle", dy: 26, tamanho: 17, peso: 400, cor: "var(--muted)" });
+    });
+
+    var alternativa = null;
+    if (est.alternativa) {
+      var mGood = 1400, custo = 200, perda = hip.lgd * hip.ead;
+      var corteAlt = (mGood - custo) / (mGood + perda);
+      var resAlt = (1 - est.pd) * mGood - est.pd * perda - custo;
+      alternativa = h("div", { class: "painel", estilo: "border-color:var(--ink-soft)" }, [
+        h("h3", { class: "secao" }, "Versão alternativa, separada"),
+        h("p", { class: "formula peq" },
+          "E[resultado] = (1 − p) × m_bom − p × L − c"),
+        UI.kv([
+          ["margem condicional ao adimplemento", F.reais(mGood)],
+          ["custo por operação", F.reais(custo)],
+          ["perda em caso de evento", F.reais(perda)],
+          ["resultado em PD de " + F.pct(est.pd, 1), F.reais(resAlt)],
+          ["corte desta versão", F.pct(corteAlt, 2)],
+        ]),
+        h("p", { class: "nota", estilo: "margin-top:6px" },
+          "Este corte pertence a esta formulação. Não deve ser aplicado ao gráfico da " +
+          "aproximação de margem fixa."),
+      ]);
+    }
+
+    corpo.appendChild(h("div", { class: "linha cresce" }, [
+      h("div", { class: "coluna cresce" }, [
+        h("div", { class: "painel claro cresce centro" }, g.svg),
+      ]),
+      h("div", { class: "coluna", estilo: "flex:0 0 480px" }, [
+        h("div", { class: "painel cor", estilo: "padding:12px 16px" }, [
+          h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
+            h("h3", { class: "secao", estilo: "margin:0 0 4px" }, "Hipóteses"),
+            UI.selo("aproximação didática, 12 meses", "neutro"),
+          ]),
+          h("div", { class: "kv", estilo: "font-size:18px;gap:1px 12px" }, [
+            h("dt", {}, "margem antes da perda"), h("dd", {}, F.reais(hip.margem)),
+            h("dt", {}, "EAD"), h("dd", {}, F.reais(hip.ead)),
+            h("dt", {}, "LGD"), h("dd", {}, F.pct(hip.lgd, 0)),
+            h("dt", {}, "perda esperada"), h("dd", {}, F.reais(el)),
+            h("dt", {}, "resultado esperado"), h("dd", {}, F.reais(resultado)),
+            h("dt", {}, "equilíbrio"),
+            h("dd", {}, foraDaFaixa ? "fora do intervalo de PD relevante" : F.pct(equilibrio, 2)),
+          ]),
+        ]),
+        h("div", { class: "painel" }, [
+          UI.slider({
+            rotulo: "PD do contrato", min: 0, max: 50, passo: 0.5, valor: est.pd * 100,
+            formato: function (v) { return F.reais(E.resultado(v / 100, hip)); },
+            aoMudar: function (v) { est.pd = v / 100; App.montar("47"); },
+          }),
+          h("div", { class: "grupo", estilo: "margin-top:10px" }, [
+            h("button", { class: "btn min", type: "button", onclick: function () {
+              est.hipoteses = !est.hipoteses; App.montar("47");
+            } }, est.hipoteses ? "Esconder hipóteses" : "Mudar hipóteses"),
+            h("button", { class: "btn min", type: "button", onclick: function () {
+              est.alternativa = !est.alternativa; App.montar("47");
+            } }, est.alternativa ? "Esconder a alternativa" : "Versão com margem condicional"),
+            h("button", { class: "btn min fantasma", type: "button", onclick: ctx.reiniciar },
+              "Reiniciar exemplo"),
+          ]),
+          est.hipoteses
+            ? h("div", { estilo: "margin-top:10px" }, [
+                UI.slider({
+                  rotulo: "Margem antes da perda, em R$", min: 500, max: 2500, passo: 100,
+                  valor: par.margem,
+                  formato: function (v) { return F.reais(v); },
+                  aoMudar: function (v) { par.margem = v; App.montar("47"); },
+                }),
+                h("div", { estilo: "margin-top:6px" }, UI.slider({
+                  rotulo: "LGD em %", min: 20, max: 100, passo: 5, valor: par.lgd * 100,
+                  formato: function (v) { return v + "%"; },
+                  aoMudar: function (v) { par.lgd = v / 100; App.montar("47"); },
+                })),
+                h("div", { estilo: "margin-top:6px" }, UI.slider({
+                  rotulo: "EAD em R$", min: 5000, max: 20000, passo: 1000, valor: par.ead,
+                  formato: function (v) { return F.reais(v); },
+                  aoMudar: function (v) { par.ead = v; App.montar("47"); },
+                })),
+              ])
+            : null,
+        ]),
+        alternativa || h("div", { class: "painel claro cresce centro",
+            estilo: "padding:10px 16px" }, [
+          h("h3", { class: "secao", estilo: "margin-bottom:2px" }, "Margem menos perda esperada"),
+          gd.svg,
+        ]),
+      ]),
+    ]));
+  },
+});
+
+
+/* slides/s48.js */
+Aula.slide({
+  id: "48",
+  bloco: "decisao",
+  titulo: "O que conseguimos monitorar agora? O que exige esperar?",
+  subtitulo: "Indicadores imediatos e indicadores que dependem da maturação do alvo",
+  conclusao: "Podemos observar a carteira entrando hoje, mas parte da qualidade do modelo só será conhecida depois.",
+  fonte: Aula.dados.fontes.experimento,
+  resumo: "Coortes mensais com indicadores imediatos e, para as coortes já maturadas, inadimplência observada.",
+  notas: {
+    conducao: [
+      "Pergunte se PD média crescente prova piora do modelo. Pode ser mudança da população.",
+      "Pergunte se ausência de inadimplência recente prova segurança. Pode ser falta de maturação.",
+      "Relacione à definição do alvo do slide 03 e termine com a necessidade de versionar modelo, dados, regra e explicações.",
+    ],
+    respostas: [
+      "Imediatos: distribuição de renda e comprometimento, ausentes, taxa de aprovação e PD média.",
+      "Com alvo maturado: inadimplência observada, calibração, discriminação e resultado.",
+      "A data de observação define o que pode ser medido: uma coorte só entra nas métricas de desfecho 12 meses depois da contratação.",
+    ],
+    cuidados: [
+      "PSI, se citado, é indicador de mudança de distribuição e depende de faixas e tamanho de amostra. Não use limiares universais como regra automática.",
+      "Mudança de distribuição não demonstra por si só perda de desempenho.",
+      "Os cenários são sintéticos e construídos para a aula. Não são previsão macroeconômica nem backtest real.",
+      "Nem todo alerta pede retreino: a ação depende do diagnóstico.",
+    ],
+    transicao: "Temos desempenho, probabilidades, economia e condições de operação. Agora vamos tomar uma decisão de comitê.",
+  },
+
+  montar: function (corpo, ctx) {
+    var R = Aula.resultados;
+    var est = ctx.estado;
+    if (!R) {
+      corpo.appendChild(h("p", { class: "resposta erro" },
+        "Resultados do experimento não disponíveis: execute experimento/experimento.py e recompile."));
+      return;
+    }
+
+    var coortes = R.monitoramento.coortes;
+    function mesNum(m) {
+      var p = m.split("-");
+      return Number(p[0]) * 12 + Number(p[1]) - 1;
+    }
+    var primeiro = mesNum(coortes[0].mes);
+    var ultimo = mesNum(coortes[coortes.length - 1].mes);
+    if (est.obs === undefined) est.obs = ultimo + 12;
+
+    var cenarios = R.monitoramento.cenarios;
+    var nomesCenario = {
+      composicao: "Mudança na composição dos solicitantes",
+      ausentes: "Mais ausência em uma variável",
+      relacao: "Relação entre características e risco alterada",
+    };
+    var acoes = {
+      composicao: "Investigar a origem da mudança de perfil e conferir a política no novo volume.",
+      ausentes: "Investigar a coleta antes de tocar no modelo: a imputação desloca a previsão.",
+      relacao: "Esperar a maturação, comparar coortes e avaliar reestimativa se persistir.",
+    };
+    if (!est.cenario) est.cenario = null;
+
+    var g = Graf.novo({ w: 950, h: 366, m: { e: 96, d: 34, c: 22, b: 58 },
+      resumo: "Coortes mensais com PD média prevista e inadimplência observada quando maturada." });
+    g.x(primeiro, ultimo).y(0, 0.30);
+    g.grade({ y: [0, 0.1, 0.2, 0.3] });
+    g.eixoY({ ticks: [0, 0.1, 0.2, 0.3], formato: function (v) { return F.pct(v, 0); },
+              rotulo: "taxa" });
+    var anos = [2018, 2019, 2021, 2022, 2024];
+    g.eixoX({ ticks: anos.map(function (a) { return a * 12; }),
+              formato: function (v) { return String(Math.round(v / 12)); },
+              rotulo: "coorte de contratação" });
+
+    var maturadas = coortes.filter(function (c) { return mesNum(c.mes) + 12 <= est.obs; });
+    g.linha(coortes.map(function (c) { return [mesNum(c.mes), c.pd_media]; }),
+      { cor: "var(--boost)", largura: 3 });
+    if (maturadas.length > 1) {
+      g.linha(maturadas.map(function (c) { return [mesNum(c.mes), c.inadimplencia]; }),
+        { cor: "var(--alert)", largura: 3 });
+    }
+    /* As duas séries terminam juntas no fim da escala: a identificação fica em
+       legenda acima do desenho, e não em rótulo solto ao lado da última coorte. */
+    function legenda(cor, texto) {
+      return h("span", { estilo: "display:flex;align-items:center;gap:8px" }, [
+        h("span", { estilo: "width:26px;height:4px;border-radius:2px;background:" + cor }),
+        h("span", { class: "apoio", estilo: "font-size:18px" }, texto),
+      ]);
+    }
+    var limite = est.obs - 12;
+    if (limite < ultimo) {
+      var hach = g.hachura("naoMaturado", "var(--muted)");
+      g.retangulo(Math.max(primeiro, limite), 0, ultimo, 0.30, { cor: hach, opacidade: .9 });
+      g.texto((Math.max(primeiro, limite) + ultimo) / 2, 0.285,
+        "alvo ainda não maturado", { ancora: "middle", tamanho: 17, peso: 400, cor: "var(--muted)" });
+    }
+
+    var imediatos = [
+      ["comprometimento médio da coorte mais recente",
+       F.dec(coortes[coortes.length - 1].comp_medio, 1) + "%"],
+      ["utilização média", F.dec(coortes[coortes.length - 1].util_medio, 1) + "%"],
+      ["ausência de utilização", F.pct(coortes[coortes.length - 1].ausentes_util, 1)],
+      ["taxa de aprovação no corte congelado", F.pct(coortes[coortes.length - 1].aprovacao, 1)],
+      ["PD média prevista", F.pct(coortes[coortes.length - 1].pd_media, 2)],
+    ];
+    var posteriores = maturadas.length
+      ? [["inadimplência da coorte mais recente já maturada",
+          F.pct(maturadas[maturadas.length - 1].inadimplencia, 2)],
+         ["coorte correspondente", F.mes(maturadas[maturadas.length - 1].mes + "-01")],
+         ["coortes já maturadas", F.inteiro(maturadas.length) + " de " + coortes.length]]
+      : [["inadimplência observada", "nenhuma coorte maturada nesta data"]];
+
+    var cen = est.cenario ? cenarios.filter(function (c) { return c.cenario === est.cenario; })[0] : null;
+
+    corpo.appendChild(h("div", { class: "linha cresce" }, [
+      h("div", { class: "coluna cresce" }, [
+        h("div", { class: "painel claro cresce centro" }, [
+          h("div", { estilo: "display:flex;gap:28px;align-self:flex-start;margin-bottom:2px" }, [
+            legenda("var(--boost)", "PD média prevista"),
+            maturadas.length > 1
+              ? legenda("var(--alert)", "inadimplência observada")
+              : h("span", { class: "nota" }, "nenhuma coorte maturada nesta data"),
+          ]),
+          g.svg,
+        ]),
+        h("div", { class: "g2" }, [
+          h("div", { class: "painel", estilo: "padding:10px 16px" }, [
+            h("h3", { class: "secao", estilo: "margin-bottom:4px" }, "Indicadores imediatos"),
+            h("div", { class: "kv", estilo: "font-size:18px;gap:1px 12px" },
+              imediatos.reduce(function (a, p) {
+                a.push(h("dt", {}, p[0])); a.push(h("dd", {}, p[1])); return a;
+              }, [])),
+          ]),
+          h("div", { class: "painel", estilo: "padding:10px 16px" }, [
+            h("h3", { class: "secao", estilo: "margin-bottom:4px" },
+              "Indicadores com alvo maturado"),
+            h("div", { class: "kv", estilo: "font-size:18px;gap:1px 12px" },
+              posteriores.reduce(function (a, p) {
+                a.push(h("dt", {}, p[0])); a.push(h("dd", {}, p[1])); return a;
+              }, [])),
+          ]),
+        ]),
+      ]),
+      h("div", { class: "coluna", estilo: "flex:0 0 470px" }, [
+        h("div", { class: "painel", estilo: "padding:12px 16px" }, [
+          UI.slider({
+            rotulo: "Data de observação", min: primeiro + 12, max: ultimo + 12, passo: 1,
+            valor: est.obs, discreto: true,
+            formato: function (v) {
+              return F.mes(Math.floor(v / 12) + "-" + String((v % 12) + 1).padStart(2, "0") + "-01");
+            },
+            aoMudar: function (v) { est.obs = v; App.montar("48"); },
+          }),
+          h("p", { class: "nota", estilo: "margin-top:4px" },
+            F.inteiro(maturadas.length) + " coortes com alvo completo nesta data."),
+        ]),
+        h("div", { class: "painel", estilo: "padding:12px 16px" }, [
+          h("h3", { class: "secao", estilo: "margin-bottom:5px" }, "Cenários sintéticos"),
+          UI.botoes({
+            vertical: true, rotulo: "cenário",
+            opcoes: cenarios.map(function (c) {
+              return { valor: c.cenario, rotulo: nomesCenario[c.cenario] };
+            }),
+            valor: est.cenario,
+            aoMudar: function (v) { est.cenario = v; est.acao = false; App.montar("48"); },
+          }),
+        ]),
+        cen
+          ? h("div", { class: "painel cor cresce" }, [
+              h("div", { class: "kv", estilo: "font-size:17px;gap:0 12px" }, [
+                h("dt", {}, "PD média prevista"), h("dd", {}, F.pct(cen.pd_media, 2)),
+                h("dt", {}, "taxa de aprovação"), h("dd", {}, F.pct(cen.aprovacao, 1)),
+                h("dt", {}, "ausência de utilização"), h("dd", {}, F.pct(cen.ausentes_util, 1)),
+                h("dt", {}, "comprometimento médio"), h("dd", {}, F.dec(cen.comp_medio, 1) + "%"),
+                h("dt", {}, "inadimplência, só depois de maturar"),
+                h("dd", {}, F.pct(cen.inadimplencia, 2)),
+                h("dt", {}, "AUC, só depois de maturar"), h("dd", {}, F.dec(cen.auc, 4)),
+              ]),
+              est.acao
+                ? h("div", { class: "resposta", estilo: "margin-top:8px" }, acoes[cen.cenario])
+                : h("button", { class: "btn", estilo: "margin-top:8px", type: "button",
+                    onclick: function () { est.acao = true; App.montar("48"); } },
+                    "Ação possível"),
+              h("p", { class: "nota", estilo: "margin-top:4px" },
+                "Cenário sintético de " + F.inteiro(cen.n) + " contratos."),
+            ])
+          : h("div", { class: "painel claro cresce" }, [
+              h("p", { class: "apoio", estilo: "margin:0" },
+                "Os dois primeiros indicadores de cada cenário aparecem no dia seguinte à " +
+                "contratação. Inadimplência, calibração e discriminação só existem depois dos " +
+                "12 meses de maturação."),
+            ]),
+        h("button", { class: "btn min fantasma", type: "button", onclick: ctx.reiniciar },
+          "Reiniciar exemplo"),
+      ]),
+    ]));
+  },
+});
+
+
+/* slides/s49.js */
+Aula.slide({
+  id: "49",
+  bloco: "decisao",
+  titulo: "Defenda sua recomendação para o comitê",
+  subtitulo: "Desempenho, economia, estabilidade e capacidade de execução na mesma mesa",
+  conclusao: "Uma recomendação precisa combinar desempenho, economia, estabilidade e capacidade de execução.",
+  fonte: Aula.dados.fontes.experimento,
+  resumo: "Tabela comparativa dos três modelos no teste, com política congelada, e um formulário de justificativa local.",
+  notas: {
+    conducao: [
+      "Divida a turma em três grupos ou peça decisões individuais.",
+      "Cada grupo tem dois minutos para recomendar e um minuto para defender.",
+      "Solicite uma razão que faria mudar de opinião.",
+      "Reforce que uma evidência de teste não autoriza ajustar repetidamente o modelo no mesmo teste e chamar isso de avaliação independente.",
+    ],
+    cuidados: [
+      "Os números são de base sintética e servem à aprendizagem, não a uma decisão real de concessão.",
+      "Valores próximos não autorizam declarar superioridade conclusiva.",
+      "O formulário fica apenas neste dispositivo e não envia nada.",
+      "Nenhum custo monetário de implantação é atribuído aos modelos: eles não foram medidos.",
+    ],
+    transicao: "Independentemente da escolha, quais princípios devem acompanhar qualquer modelagem de crédito?",
+  },
+  impressao: function (e) { e.argumentos = true; },
+
+  montar: function (corpo, ctx) {
+    var R = Aula.resultados;
+    var est = ctx.estado;
+    if (!R) {
+      corpo.appendChild(h("p", { class: "resposta erro" },
+        "Resultados do experimento não disponíveis: execute experimento/experimento.py e recompile."));
+      return;
+    }
+    if (!est.modelo) est.modelo = null;
+    if (!est.politica) est.politica = "congelado";
+    if (!est.form) est.form = { porque: "", risco: "", monitorar: "" };
+
+    var chaves = ["logit", "arvore", "boosting"];
+    var congelado = R.politica.logit.corte_congelado;
+
+    function linhaPolitica(k) {
+      var lista = R.politica[k].teste;
+      var alvo = est.politica === "congelado" ? congelado : R.politica[k].corte_otimo_calibracao;
+      var melhor = lista[0], dist = Infinity;
+      lista.forEach(function (l) {
+        var d = Math.abs(l.corte - alvo);
+        if (d < dist) { dist = d; melhor = l; }
+      });
+      return melhor;
+    }
+
+    var dados = chaves.map(function (k) {
+      var a = R.avaliacao[k].teste;
+      var p = linhaPolitica(k);
+      return { chave: k, aval: a, pol: p };
+    });
+
+    var tabela = UI.tabela({
+      compacta: true,
+      colunas: [{ rotulo: "Evidência no teste" }].concat(chaves.map(function (k) {
+        return { rotulo: Aula.dados.modelos[k].curto };
+      })),
+      linhas: [
+        ["AUC"].concat(dados.map(function (d) { return F.dec(d.aval.auc, 4); })),
+        ["Brier, qualidade probabilística"].concat(dados.map(function (d) {
+          return F.dec(d.aval.brier_calibrada, 5); })),
+        ["Taxa de aprovação"].concat(dados.map(function (d) { return F.pct(d.pol.aprovacao, 1); })),
+        ["Inadimplência entre aprovados"].concat(dados.map(function (d) {
+          return d.pol.inadimplencia === null ? "não definida" : F.pct(d.pol.inadimplencia, 2); })),
+        ["Resultado por aprovado"].concat(dados.map(function (d) {
+          return d.pol.resultado_medio === null ? "não definido" : F.reais(d.pol.resultado_medio); })),
+        ["Resultado total da carteira"].concat(dados.map(function (d) {
+          return F.reais(d.pol.resultado_total); })),
+      ],
+      selecionada: est.modelo ? chaves.indexOf(est.modelo) : -1,
+      legenda: "Comparação dos três modelos no teste, com a mesma política",
+    });
+    if (est.modelo) {
+      var col = chaves.indexOf(est.modelo) + 1;
+      [].forEach.call(tabela.querySelectorAll("tbody tr"), function (tr) {
+        tr.className = "";
+        tr.children[col].setAttribute("style",
+          "background:var(--cor-soft);font-weight:700;color:var(--ink)");
+      });
+      tabela.querySelector("thead tr").children[col].setAttribute("style",
+        "background:var(--cor-soft);color:var(--ink)");
+    }
+
+    var melhorAuc = dados.reduce(function (a, b) { return b.aval.auc > a.aval.auc ? b : a; });
+    var melhorRes = dados.reduce(function (a, b) {
+      return b.pol.resultado_total > a.pol.resultado_total ? b : a;
+    });
+    var difAuc = melhorAuc.aval.auc - Math.min.apply(null, dados.map(function (d) {
+      return d.aval.auc; }));
+
+    var campos = [
+      { chave: "porque", rotulo: "Por que este modelo e esta política?" },
+      { chave: "risco", rotulo: "Qual é o principal risco desta escolha?" },
+      { chave: "monitorar", rotulo: "Como monitorar depois da implantação?" },
+    ];
+
+    var restricoes = {
+      nenhuma: "Sem restrição adicional declarada.",
+      simplicidade: "Prioridade em simplicidade de manutenção: equipe enxuta, poucas " +
+        "dependências e explicação direta ao cliente e ao regulador.",
+      explicacao: "Prioridade em explicação individual auditável para cada recusa.",
+    };
+    if (!est.restricao) est.restricao = "nenhuma";
+
+    corpo.appendChild(h("div", { class: "linha cresce" }, [
+      h("div", { class: "coluna cresce" }, [
+        h("div", { class: "painel claro" }, [
+          h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
+            h("h3", { class: "secao", estilo: "margin:0" },
+              "Teste de fev a jul de 2024, " + F.inteiro(R.avaliacao.logit.teste.n) +
+              " contratos e " + F.inteiro(R.avaliacao.logit.teste.eventos) + " eventos"),
+            UI.selo("base sintética", "sim"),
+          ]),
+          tabela,
+          h("p", { class: "nota", estilo: "margin-top:6px" },
+            est.politica === "congelado"
+              ? ("Política congelada antes do teste: aprovar quando a PD calibrada não passa de " +
+                 F.pct(congelado, 0) + ", que é o ponto de equilíbrio econômico do slide 47.")
+              : "Política alternativa: o corte que maximizou o resultado na partição de política, " +
+                "escolhido antes do teste e diferente para cada modelo."),
+        ]),
+        h("div", { class: "painel" }, [
+          h("div", { class: "grupo" }, [
+            h("span", { class: "apoio" }, "Modelo candidato"),
+            UI.botoes({
+              compacto: true, rotulo: "modelo",
+              opcoes: chaves.map(function (k) {
+                return { valor: k, rotulo: Aula.dados.modelos[k].curto };
+              }),
+              valor: est.modelo,
+              aoMudar: function (v) { est.modelo = v; App.montar("49"); },
+            }),
+            h("span", { class: "apoio" }, "Política"),
+            UI.botoes({
+              compacto: true, rotulo: "política",
+              opcoes: [{ valor: "congelado", rotulo: "Corte de equilíbrio" },
+                       { valor: "otimo", rotulo: "Corte da partição de política" }],
+              valor: est.politica,
+              aoMudar: function (v) { est.politica = v; App.montar("49"); },
+            }),
+          ]),
+          h("div", { class: "grupo", estilo: "margin-top:8px" }, [
+            h("span", { class: "apoio" }, "Restrição"),
+            UI.botoes({
+              compacto: true, rotulo: "restrição",
+              opcoes: [{ valor: "nenhuma", rotulo: "Nenhuma" },
+                       { valor: "simplicidade", rotulo: "Simplicidade" },
+                       { valor: "explicacao", rotulo: "Explicação individual" }],
+              valor: est.restricao,
+              aoMudar: function (v) { est.restricao = v; App.montar("49"); },
+            }),
+            h("button", { class: "btn min", type: "button", onclick: function () {
+              est.argumentos = !est.argumentos; App.montar("49");
+            } }, est.argumentos ? "Esconder argumentos" : "Ver argumentos possíveis"),
+            h("button", { class: "btn min fantasma", type: "button", onclick: ctx.reiniciar },
+              "Reiniciar exemplo"),
+          ]),
+          h("p", { class: "nota", estilo: "margin-top:8px" }, restricoes[est.restricao]),
+        ]),
+        est.argumentos
+          ? h("div", { class: "painel cor cresce" }, [
+              h("h3", { class: "secao" }, "Argumentos que a evidência sustenta"),
+              h("ul", { class: "apoio", estilo: "margin:0;padding-left:20px;font-size:18px" }, [
+                h("li", {}, "A maior AUC no teste é de " +
+                  Aula.dados.modelos[melhorAuc.chave].curto + ", com " +
+                  F.dec(melhorAuc.aval.auc, 4) + ". A diferença para o menor é de " +
+                  F.dec(difAuc, 4) + ", pequena diante da variabilidade de uma única amostra."),
+                h("li", {}, "O maior resultado total sob a política escolhida é de " +
+                  Aula.dados.modelos[melhorRes.chave].curto + ", com " +
+                  F.reais(melhorRes.pol.resultado_total) + " em " +
+                  F.inteiro(melhorRes.pol.aprovados) + " aprovados."),
+                h("li", {}, "Aprovação e inadimplência entre aprovados mudam junto com o modelo: " +
+                  "comparar apenas AUC esconde a diferença de volume."),
+                h("li", {}, "Manter o logit como referência operacional e avaliar outro método " +
+                  "como desafiante é uma recomendação defensável, se a evidência sustentar."),
+                h("li", {}, "Nenhum resultado aqui autoriza reajustar o modelo neste mesmo teste " +
+                  "e chamar a nova medida de avaliação independente."),
+              ]),
+            ])
+          : null,
+      ]),
+      h("div", { class: "coluna", estilo: "flex:0 0 520px" }, [
+        h("div", { class: "painel" }, [
+          h("h3", { class: "secao", estilo: "margin-bottom:4px" }, "Requisitos da operação"),
+          h("ul", { class: "apoio", estilo: "margin:0;padding-left:20px;font-size:17px" }, [
+            h("li", {}, "equipe enxuta, sem time dedicado a manutenção de modelos"),
+            h("li", {}, "explicação da recusa exigida pelo canal e pela área de conduta"),
+            h("li", {}, "acompanhamento mensal, com alvo maturando 12 meses depois"),
+          ]),
+        ]),
+        h("div", { class: "painel claro cresce" }, [
+          h("h3", { class: "secao", estilo: "margin-bottom:4px" }, "Sua justificativa"),
+          h("div", { class: "coluna", estilo: "gap:8px" }, campos.map(function (c) {
+            var id = "just-" + c.chave;
+            return h("div", { class: "ctrl" }, [
+              h("label", { for: id }, c.rotulo),
+              h("textarea", {
+                id: id, rows: 2,
+                estilo: "width:100%;font:400 18px var(--sans);padding:6px 8px;" +
+                        "border:1px solid var(--rule);border-radius:4px;background:var(--surface)",
+                onchange: function (ev) { est.form[c.chave] = ev.target.value; },
+              }, est.form[c.chave] || ""),
+            ]);
+          })),
+          h("p", { class: "nota", estilo: "margin-top:6px" },
+            "O texto fica apenas neste dispositivo."),
+        ]),
+        est.modelo
+          ? h("div", { class: "painel cor" }, [
+              h("h3", { class: "secao" }, "Escolha registrada"),
+              h("p", { class: "apoio", estilo: "margin:0;color:var(--ink)" },
+                Aula.dados.modelos[est.modelo].nome + " com " +
+                (est.politica === "congelado"
+                  ? "corte de equilíbrio em " + F.pct(congelado, 0)
+                  : "corte de " + F.pct(linhaPolitica(est.modelo).corte, 1) +
+                    ", escolhido na partição de política") +
+                ": aprovação de " + F.pct(linhaPolitica(est.modelo).aprovacao, 1) +
+                " e inadimplência de " + F.pct(linhaPolitica(est.modelo).inadimplencia, 2) +
+                " entre aprovados."),
+            ])
+          : null,
+      ]),
+    ]));
+  },
+});
+
+
+/* slides/s50.js */
+Aula.slide({
+  id: "50",
+  bloco: "decisao",
+  titulo: "Você consegue explicar, comparar e usar os três modelos?",
+  subtitulo: "Definir, estimar, validar e decidir são etapas conectadas",
+  conclusao: "A técnica importa. A evidência que sustenta seu uso importa tanto quanto.",
+  fonte: "Síntese do curso",
+  resumo: "Tabela de síntese dos três modelos, três perguntas de recuperação e o roteiro de aplicação no trabalho.",
+  notas: {
+    conducao: [
+      "Peça que um aluno resuma cada técnica em uma frase.",
+      "Retome a decisão do slide 01 sem inventar quais respostas a turma deu. Se as escolhas locais foram salvas, identifique que são escolhas naquele dispositivo.",
+      "Pergunte o que agora exigiriam antes de aprovar uma mudança de modelo.",
+    ],
+    respostas: [
+      "Odds vezes 2 não é PD vezes 2: odds e probabilidade são escalas diferentes.",
+      "Sim, a mesma folha agrupa atributos distintos que satisfazem as mesmas regras.",
+      "Não: o boosting logístico soma no escore F e aplica a transformação depois.",
+    ],
+    cuidados: [
+      "Complexidade pode ser útil, e a qualidade da decisão depende do processo inteiro.",
+      "Referências, notebook e modo estudo ficam disponíveis nos recursos finais.",
+      "Não existe um 51º slide de agradecimento: o fechamento é esta síntese.",
+    ],
+    transicao: "Fim da sequência principal.",
+  },
+  impressao: function (e) { e.respondidas = { odds: true, folha: true, soma: true }; },
+
+  montar: function (corpo, ctx) {
+    var D = Aula.dados;
+    var est = ctx.estado;
+    if (!est.respondidas) est.respondidas = {};
+
+    var sintese = [
+      { nome: "Regressão logística", cor: "var(--logit)",
+        constroi: "soma funções das características em um escore e converte pela logística",
+        cuidado: "especificação, unidade das variáveis e leitura dos coeficientes",
+        evidencia: "validação da forma funcional e calibração fora do tempo" },
+      { nome: "Árvore de decisão", cor: "var(--arvore)",
+        constroi: "aprende regras sucessivas e usa a frequência observada na folha",
+        cuidado: "complexidade, tamanho de folha e instabilidade entre amostras",
+        evidencia: "desempenho fora do tempo e estabilidade entre reamostragens" },
+      { nome: "Gradient boosting", cor: "var(--boost)",
+        constroi: "acrescenta contribuições sucessivas ao escore e converte no fim",
+        cuidado: "trajetória de ajuste, complexidade de cada árvore e explicação",
+        evidencia: "curva de validação, parada definida antes e verificação de calibração" },
+    ];
+
+    var tabela = UI.tabela({
+      compacta: true,
+      colunas: [{ rotulo: "Técnica" }, { rotulo: "Como constrói a PD" },
+                { rotulo: "Principal cuidado" }, { rotulo: "Evidência necessária" }],
+      linhas: sintese.map(function (s) {
+        return [s.nome, s.constroi, s.cuidado, s.evidencia];
+      }),
+      legenda: "Síntese das três técnicas",
+    });
+    [].forEach.call(tabela.querySelectorAll("tbody tr"), function (tr, i) {
+      tr.firstChild.setAttribute("style", "color:" + sintese[i].cor);
+    });
+
+    var perguntas = [
+      { chave: "odds", pergunta: "Odds multiplicadas por 2 significam PD multiplicada por 2?",
+        resposta: "Não. Odds e probabilidade são escalas diferentes: com odds dobradas, 10% vira " +
+          F.pct(M.porRazaoDeOdds(0.10, 2), 2) + " e 40% vira " +
+          F.pct(M.porRazaoDeOdds(0.40, 2), 2) + ".",
+        slide: "11" },
+      { chave: "folha", pergunta: "A mesma folha pode conter clientes diferentes?",
+        resposta: "Sim. A folha agrupa todos os contratos que satisfazem as mesmas regras, e " +
+          "atribui a mesma previsão a todos eles.",
+        slide: "22" },
+      { chave: "soma", pergunta: "As árvores do boosting somam probabilidades?",
+        resposta: "Não. A soma acontece no escore F, e a transformação logística é aplicada uma " +
+          "única vez no final.",
+        slide: "36" },
+    ];
+
+    var roteiro = [
+      "Alvo: qual evento, em qual horizonte e para qual população elegível.",
+      "Dados: o que existia e estava acessível na data da decisão.",
+      "Referência: um modelo simples bem especificado, que os demais precisam superar.",
+      "Protocolo: partições por data, maturação do alvo e regras congeladas antes do teste.",
+      "Comparação: mesmo conjunto de informação, mesma métrica e incerteza declarada.",
+      "Decisão: corte, economia da operação e plano de monitoramento com responsável.",
+    ];
+
+    var textoRoteiro = roteiro.map(function (t, i) { return (i + 1) + ". " + t; }).join("\n");
+
+    corpo.appendChild(h("div", { class: "linha cresce" }, [
+      h("div", { class: "coluna cresce" }, [
+        h("div", { class: "painel claro" }, tabela),
+        h("div", { class: "painel cor", estilo: "padding:10px 16px" }, [
+          h("p", { class: "apoio", estilo: "color:var(--ink);margin:0;font-size:20px" },
+            [h("strong", {}, "Para os três: "),
+             "informação disponível na decisão, validação temporal, calibração das " +
+             "probabilidades e conexão com a decisão econômica."]),
+        ]),
+        h("div", { class: "painel claro cresce", estilo: "padding:10px 16px" }, [
+          h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap" }, [
+            h("h3", { class: "secao", estilo: "margin:0" },
+              "Os mesmos quatro clientes do começo"),
+            h("span", { class: "nota" }, "qual modelo, qual política e por quê?"),
+          ]),
+          h("div", { estilo: "display:flex;gap:22px;flex-wrap:wrap;margin-top:6px" },
+            D.clientes.map(function (c) {
+              return h("span", { class: "apoio", estilo: "font-size:18px" }, [
+                h("strong", { estilo: "font-size:21px" }, c.nome), " ",
+                F.reais(c.renda) + " · comp " + F.dec(c.comp, 0) + "% · hist " +
+                (c.hist ? "sim" : "não"),
+              ]);
+            })),
+        ]),
+      ]),
+      h("div", { class: "coluna", estilo: "flex:0 0 600px" }, [
+        h("div", { class: "painel", estilo: "padding:10px 16px" }, [
+          h("h3", { class: "secao", estilo: "margin-bottom:4px" },
+            "Três perguntas de recuperação"),
+          h("div", { class: "coluna", estilo: "gap:6px" }, perguntas.map(function (p) {
+            var aberta = est.respondidas[p.chave];
+            return h("div", { class: "painel" + (aberta ? " cor" : " claro"),
+              estilo: "padding:7px 12px" }, [
+              h("p", { estilo: "font-size:18px;color:var(--ink);margin:0 0 4px" }, p.pergunta),
+              aberta
+                ? h("div", {}, [
+                    h("p", { class: "apoio", estilo: "margin:0;font-size:16px" }, p.resposta),
+                    h("button", { class: "btn min fantasma", estilo: "margin-top:2px;padding:2px 0",
+                      type: "button", onclick: function () { ctx.ir(p.slide); } },
+                      "Rever no slide " + p.slide),
+                  ])
+                : h("button", { class: "btn min", type: "button", onclick: function () {
+                    est.respondidas[p.chave] = true; App.montar("50");
+                  } }, "Responder"),
+            ]);
+          })),
+        ]),
+        h("div", { class: "painel claro cresce", estilo: "padding:10px 16px" }, [
+          h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
+            h("h3", { class: "secao", estilo: "margin:0" }, "Aplicar no meu trabalho"),
+            h("button", { class: "btn min", type: "button", onclick: function (ev) {
+              var alvo = ev.target;
+              try {
+                navigator.clipboard.writeText(textoRoteiro).then(function () {
+                  alvo.textContent = "roteiro copiado";
+                }, function () { alvo.textContent = "cópia não disponível"; });
+              } catch (e) { alvo.textContent = "cópia não disponível"; }
+            } }, "Copiar roteiro"),
+          ]),
+          h("ol", { class: "apoio", estilo: "margin:3px 0 0;padding-left:20px;font-size:16px" },
+            roteiro.map(function (t) { return h("li", { estilo: "margin-bottom:1px" }, t); })),
+        ]),
+        h("div", { class: "painel cor", estilo: "padding:10px 16px" }, [
+          h("p", { class: "medio", estilo: "margin:0;font-size:22px" },
+            "Leve os seis passos para a sua carteira. A conclusão da aula está na linha " +
+            "de fechamento, abaixo."),
+        ]),
       ]),
     ]));
   },
@@ -8117,19 +9907,22 @@ var App = (function () {
 
   /* ----------------------------------------------------------- impressão */
 
+  /* Uma folha por slide, com o mesmo palco de 1600 por 900 reduzido para caber
+     na página. As notas e as respostas vão para o apêndice, depois das 50
+     folhas, como pede o critério de aceite. */
   function prepararImpressao() {
     var cx = document.getElementById("impressao");
     limpar(cx);
     Aula.slides.forEach(function (def) {
-      var folha = h("article", { class: "folha" });
-      folha.appendChild(h("div", { class: "trilho" }, [
+      var palco = h("div", { class: "palco-folha" });
+      palco.appendChild(h("div", { class: "trilho" }, [
         h("span", {}, Aula.dados.blocos[def.bloco]),
         h("span", { class: "passo" }, " slide " + def.id + " de 50"),
       ]));
-      folha.appendChild(h("h1", { class: "titulo" }, def.titulo));
-      if (def.subtitulo) folha.appendChild(h("p", { class: "subtitulo" }, def.subtitulo));
+      palco.appendChild(h("h1", { class: "titulo" }, def.titulo));
+      if (def.subtitulo) palco.appendChild(h("p", { class: "subtitulo" }, def.subtitulo));
       var corpo = h("div", { class: "corpo" });
-      folha.appendChild(corpo);
+      palco.appendChild(corpo);
       var est = JSON.parse(JSON.stringify(estadoDe(def.id)));
       if (def.impressao) def.impressao(est);
       try {
@@ -8140,15 +9933,25 @@ var App = (function () {
       } catch (e) {
         corpo.appendChild(h("p", {}, "Slide não renderizado para impressão: " + e.message));
       }
-      folha.appendChild(h("p", { class: "conclusao" }, def.conclusao || ""));
-      folha.appendChild(h("p", { class: "fonte" }, def.fonte || ""));
-      if (def.notas) {
-        folha.appendChild(h("div", { class: "painel", estilo: "margin-top:8px" }, [
-          h("h3", { class: "secao" }, "Notas e respostas"), blocosDeNotas(def),
-        ]));
-      }
-      cx.appendChild(folha);
+      palco.appendChild(h("p", { class: "conclusao" }, def.conclusao || ""));
+      palco.appendChild(h("p", { class: "fonte" }, def.fonte || ""));
+      cx.appendChild(h("article", { class: "folha" }, palco));
     });
+
+    var apendice = h("section", { class: "apendice" }, [
+      h("h1", { class: "titulo" }, "Apêndice: notas do professor e respostas"),
+      h("p", { class: "subtitulo" },
+        "Mesma ordem dos slides. Cada bloco traz condução, respostas, cuidados e transição."),
+    ]);
+    Aula.slides.forEach(function (def) {
+      if (!def.notas) return;
+      apendice.appendChild(h("div", { class: "bloco-notas" }, [
+        h("h2", {}, def.id + " · " + def.titulo),
+        h("p", { class: "fonte" }, def.fonte || ""),
+        blocosDeNotas(def),
+      ]));
+    });
+    cx.appendChild(apendice);
   }
 
   /* ------------------------------------------------------------- teclado */

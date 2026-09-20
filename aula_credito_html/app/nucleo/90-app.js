@@ -233,19 +233,22 @@ var App = (function () {
 
   /* ----------------------------------------------------------- impressão */
 
+  /* Uma folha por slide, com o mesmo palco de 1600 por 900 reduzido para caber
+     na página. As notas e as respostas vão para o apêndice, depois das 50
+     folhas, como pede o critério de aceite. */
   function prepararImpressao() {
     var cx = document.getElementById("impressao");
     limpar(cx);
     Aula.slides.forEach(function (def) {
-      var folha = h("article", { class: "folha" });
-      folha.appendChild(h("div", { class: "trilho" }, [
+      var palco = h("div", { class: "palco-folha" });
+      palco.appendChild(h("div", { class: "trilho" }, [
         h("span", {}, Aula.dados.blocos[def.bloco]),
         h("span", { class: "passo" }, " slide " + def.id + " de 50"),
       ]));
-      folha.appendChild(h("h1", { class: "titulo" }, def.titulo));
-      if (def.subtitulo) folha.appendChild(h("p", { class: "subtitulo" }, def.subtitulo));
+      palco.appendChild(h("h1", { class: "titulo" }, def.titulo));
+      if (def.subtitulo) palco.appendChild(h("p", { class: "subtitulo" }, def.subtitulo));
       var corpo = h("div", { class: "corpo" });
-      folha.appendChild(corpo);
+      palco.appendChild(corpo);
       var est = JSON.parse(JSON.stringify(estadoDe(def.id)));
       if (def.impressao) def.impressao(est);
       try {
@@ -256,15 +259,25 @@ var App = (function () {
       } catch (e) {
         corpo.appendChild(h("p", {}, "Slide não renderizado para impressão: " + e.message));
       }
-      folha.appendChild(h("p", { class: "conclusao" }, def.conclusao || ""));
-      folha.appendChild(h("p", { class: "fonte" }, def.fonte || ""));
-      if (def.notas) {
-        folha.appendChild(h("div", { class: "painel", estilo: "margin-top:8px" }, [
-          h("h3", { class: "secao" }, "Notas e respostas"), blocosDeNotas(def),
-        ]));
-      }
-      cx.appendChild(folha);
+      palco.appendChild(h("p", { class: "conclusao" }, def.conclusao || ""));
+      palco.appendChild(h("p", { class: "fonte" }, def.fonte || ""));
+      cx.appendChild(h("article", { class: "folha" }, palco));
     });
+
+    var apendice = h("section", { class: "apendice" }, [
+      h("h1", { class: "titulo" }, "Apêndice: notas do professor e respostas"),
+      h("p", { class: "subtitulo" },
+        "Mesma ordem dos slides. Cada bloco traz condução, respostas, cuidados e transição."),
+    ]);
+    Aula.slides.forEach(function (def) {
+      if (!def.notas) return;
+      apendice.appendChild(h("div", { class: "bloco-notas" }, [
+        h("h2", {}, def.id + " · " + def.titulo),
+        h("p", { class: "fonte" }, def.fonte || ""),
+        blocosDeNotas(def),
+      ]));
+    });
+    cx.appendChild(apendice);
   }
 
   /* ------------------------------------------------------------- teclado */

@@ -18,7 +18,7 @@ Aula.slide({
       "O logit não é incapaz de representar não linearidades.",
       "Nenhum painel traz PD de modelo: aqui só existe o mecanismo.",
     ],
-    transicao: "Vamos começar pela ideia mais familiar: combinar características em um escore e transformá-lo em probabilidade.",
+    transicao: "Vamos começar pela ideia mais familiar: combinar características em um escore e converter esse escore em probabilidade.",
   },
   impressao: function (e) { e.passos = { logit: 3, arvore: 3, boosting: 3 }; e.criterios = true; },
 
@@ -70,8 +70,9 @@ Aula.slide({
         return [7.1 + ((v + 6) / 12) * 2.6, 2.4 + M.sigmoid(v) * 5.0];
       });
       g.linha(pts, { cor: tom(passo, 3, cor), largura: 3 });
-      g.texto(7.05, 9.2, "PD entre 0% e 100%",
-        { tamanho: 15, peso: 400, cor: passo >= 3 ? "var(--ink)" : NEUTRO_TXT });
+      g.texto(9.85, 9.2, "PD entre 0% e 100%",
+        { ancora: "end", tamanho: 15, peso: 400,
+          cor: passo >= 3 ? "var(--ink)" : NEUTRO_TXT });
       return g.svg;
     }
 
@@ -135,7 +136,7 @@ Aula.slide({
         estilo: "display:flex;flex-direction:column;gap:6px;padding:14px;" +
                 (sel ? "border-color:" + m.cor + ";border-width:2px" : ""),
       }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:8px" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px" }, [
           h("h2", { class: "secao", estilo: "margin:0;color:" + m.cor }, m.nome),
           h("span", { class: "nota" }, passo ? "etapa " + passo + " de 3" : ""),
         ]),

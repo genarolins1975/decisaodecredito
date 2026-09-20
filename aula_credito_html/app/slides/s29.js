@@ -46,15 +46,15 @@ Aula.slide({
     var idxCliente = D.clientes.map(function (c) { return c.nome; }).indexOf(est.cliente);
 
     function painelReplica(rep, letra) {
-      return h("div", { class: "painel claro cresce centro" }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;width:100%;align-items:baseline" }, [
+      return h("div", { class: "painel claro igual centro" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;width:100%;align-items:baseline;gap:6px 14px" }, [
           h("h3", { class: "secao", estilo: "margin:0" },
             "Réplica " + letra + ": nº " + rep.replica),
           h("span", { class: "nota" },
             F.inteiro(rep.folhas) + " folhas · AUC validação " + F.dec(rep.auc_validacao, 4)),
         ]),
         Comum.arvoreTreinada(rep.estrutura, {
-          profundidade: 1, compacto: true, w: 660, h: 270, caixaW: 200, caixaH: 72,
+          profundidade: 1, compacto: true, w: 414, h: 270, caixaW: 166, caixaH: 72,
           resumo: "Árvore da réplica " + rep.replica,
         }),
         h("p", { class: "nota", estilo: "margin:0" },
@@ -66,7 +66,7 @@ Aula.slide({
     }
 
     /* Dispersão das previsões por cliente. */
-    var g = Graf.novo({ w: 600, h: 380, m: { e: 96, d: 60, c: 24, b: 60 } });
+    var g = Graf.novo({ w: 500, h: 296, m: { e: 132, d: 34, c: 16, b: 52 } });
     var todos = [];
     reps.forEach(function (r) { r.pd_clientes.forEach(function (v) { todos.push(v); }); });
     var topo = Math.min(1, Math.ceil(Math.max.apply(null, todos) * 10) / 10);
@@ -93,8 +93,10 @@ Aula.slide({
       });
       g.add(sv("line", { x1: g.px(Math.min.apply(null, vals)), x2: g.px(Math.max.apply(null, vals)),
         y1: g.py(y - 0.32), y2: g.py(y - 0.32), stroke: "var(--rule)", "stroke-width": 3 }));
-      g.add(sv("text", { x: g.px(Math.max.apply(null, vals)) + 10, y: g.py(y - 0.32) + 6,
-        "font-size": 16, fill: "var(--muted)",
+      /* A amplitude fica sob o nome, na margem: à direita dos pontos ela sairia
+         do desenho quando a maior PD está perto do fim da escala. */
+      g.add(sv("text", { x: g.m.e - 14, y: g.py(y) + 27, "text-anchor": "end", "font-size": 15,
+        fill: "var(--muted)",
         texto: F.pct(Math.min.apply(null, vals), 1) + " a " + F.pct(Math.max.apply(null, vals), 1) }));
     });
 
@@ -116,9 +118,10 @@ Aula.slide({
             }).join(" e ") + "."),
         ]),
       ]),
-      h("div", { class: "coluna", estilo: "flex:0 0 620px" }, [
-        h("div", { class: "painel claro cresce centro" }, [
-          h("h3", { class: "secao" }, "PD dos quatro clientes nas " + reps.length + " réplicas"),
+      h("div", { class: "coluna", estilo: "flex:0 0 540px" }, [
+        h("div", { class: "painel claro cresce centro", estilo: "padding:10px 16px" }, [
+          h("h3", { class: "secao", estilo: "margin-bottom:2px" },
+            "PD nas " + reps.length + " réplicas"),
           g.svg,
         ]),
         h("div", { class: "painel" }, [

@@ -66,7 +66,7 @@ Aula.slide({
     }] : [];
     var todas = faixas.concat(extras);
 
-    var g = Graf.novo({ w: 1040, h: 545, m: { e: 270, d: 215, c: 30, b: 60 } });
+    var g = Graf.novo({ w: 1002, h: 545, m: { e: 300, d: 228, c: 30, b: 60 } });
     g.x(2018, 2026).y(0, todas.length + 0.4);
     g.grade({ x: [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026] });
     g.eixoX({ ticks: [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026],
@@ -90,9 +90,9 @@ Aula.slide({
         fill: cor, opacity: conhecido ? .22 : .12 }));
       g.add(sv("text", { x: g.m.e - 14, y: yc - 2, "text-anchor": "end", "font-size": 21,
         "font-weight": 700, fill: conhecido ? "var(--ink)" : "var(--muted)", texto: f.nome }));
-      g.add(sv("text", { x: g.m.e - 14, y: yc + 20, "text-anchor": "end", "font-size": 17,
+      g.add(sv("text", { x: g.m.e - 14, y: yc + 20, "text-anchor": "end", "font-size": 16,
         fill: "var(--muted)", texto: f.rotulo + (f.n ? " · n = " + F.inteiro(f.n) : "") }));
-      g.add(sv("text", { x: g.px(f.alvo) + 8, y: yc + 6, "font-size": 17,
+      g.add(sv("text", { x: g.px(f.alvo) + 8, y: yc + 6, "font-size": 16,
         fill: conhecido ? "var(--ink)" : "var(--muted)",
         texto: "alvo em " + f.alvoRotulo + (conhecido ? "" : " (ainda não)") }));
     });

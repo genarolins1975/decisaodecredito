@@ -234,9 +234,13 @@ var UI = (function () {
         return h(j === 0 ? "th" : "td", j === 0 ? { scope: "row", class: "rotulo" } : {}, v);
       }));
     }));
-    var t = h("table", { class: "tabela" + (op.compacta ? " compacta" : "") },
+    var t = h("table", { class: "tabela" + (op.compacta ? " compacta" : "") +
+                                 (op.apertada ? " apertada" : "") },
       [op.legenda ? h("caption", { class: "oculto-visual" }, op.legenda) : null, thead, tbody]);
-    return t;
+    /* O contêiner rola na horizontal apenas no modo estudo em tela estreita:
+       encolher a fonte até caber deixaria a tabela ilegível no celular.
+       querySelector no que volta continua alcançando thead, tbody e linhas. */
+    return h("div", { class: "rolagem-h" }, t);
   }
 
   function kv(pares) {

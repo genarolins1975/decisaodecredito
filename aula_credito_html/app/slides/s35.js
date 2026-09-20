@@ -98,7 +98,7 @@ Aula.slide({
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "painel claro cresce" }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
           h("h3", { class: "secao", estilo: "margin:0" }, "Os mesmos dez registros"),
           UI.alterna({
             rotulo: "colunas", valor: est.depois,

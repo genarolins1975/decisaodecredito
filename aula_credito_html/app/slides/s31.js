@@ -34,11 +34,11 @@ Aula.slide({
     var res = R.auxiliar_2d.residuos_arvore_rasa;
     var arv = R.auxiliar_2d.arvores["2"];
 
-    var gm = Comum.mapaCalor(arv.malha, { w: 500, h: 364, max: 0.5,
+    var gm = Comum.mapaCalor(arv.malha, { w: 452, h: 364, max: 0.5,
       resumo: "Previsão de uma árvore de profundidade dois em comprometimento e utilização." });
 
     /* Mapa dos resíduos médios por região, com eixo centrado em zero. */
-    var g = Graf.novo({ w: 500, h: 364, m: { e: 74, d: 26, c: 20, b: 54 } });
+    var g = Graf.novo({ w: 452, h: 364, m: { e: 74, d: 26, c: 20, b: 54 } });
     g.x(5, 80).y(0, 100);
     g.eixoX({ ticks: [20, 40, 60, 80], rotulo: "comprometimento" });
     g.eixoY({ ticks: [0, 50, 100], rotulo: "utilização" });
@@ -56,8 +56,10 @@ Aula.slide({
       g.retangulo(x0, y0, x1, y1,
         { cor: apagado ? "var(--paper)" : cor, borda: "var(--rule)", bordaL: 1,
           opacidade: apagado ? .35 : 1 });
-      g.texto((x0 + x1) / 2, (y0 + y1) / 2, F.dec(r.residuo_medio, 3),
-        { ancora: "middle", dy: 5, tamanho: 15, peso: 700,
+      /* Duas casas: com três, os números de células vizinhas se encostam e a
+         leitura da grade some. A cor já carrega a intensidade. */
+      g.texto((x0 + x1) / 2, (y0 + y1) / 2, F.dec(r.residuo_medio, 2),
+        { ancora: "middle", dy: 5, tamanho: 14, peso: 700,
           cor: apagado ? "var(--rule)" : "var(--ink)" });
     });
 

@@ -42,7 +42,7 @@ Aula.slide({
                   util: "utilização", hist: "histórico", canal: "canal" };
 
     var gGlobal = Graf.barras({
-      w: 470, h: 330, larguraRot: 168, m: { d: 86, c: 14, b: 54 },
+      w: 470, h: 330, larguraRot: 180, tamanhoRot: 17, m: { d: 74, c: 14, b: 54 },
       itens: E.global_permutacao.map(function (g) {
         return { rotulo: nomes[g.variavel] || g.variavel, valor: g.queda_auc,
                  cor: est.variavel === g.variavel ? "var(--boost)" : "var(--ink-soft)",
@@ -50,7 +50,7 @@ Aula.slide({
       }),
       max: Math.max.apply(null, E.global_permutacao.map(function (g) { return g.queda_auc; })) * 1.25,
       formato: function (v) { return F.dec(v, 2); },
-      rotuloX: "queda de AUC ao permutar a variável",
+      rotuloX: "queda de AUC ao permutar",
     });
 
     var ordem = E.global_permutacao.map(function (g) { return g.variavel; });
@@ -60,7 +60,7 @@ Aula.slide({
                  : (local.contribuicoes[v] >= 0 ? "var(--alert)" : "var(--ok)") };
     });
     var gLocal = Graf.waterfall({
-      w: 470, h: 352, larguraRot: 172,
+      w: 470, h: 352, larguraRot: 200,
       base: local.base, rotuloBase: "referência " + F.dec(local.base, 3),
       rotuloTotal: "escore de " + local.cliente, rotuloX: "escore do boosting",
       itens: itens,
@@ -70,7 +70,7 @@ Aula.slide({
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "painel claro cresce centro" }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;width:100%;align-items:baseline;gap:10px" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;width:100%;align-items:baseline;gap:10px" }, [
           h("h3", { class: "secao", estilo: "margin:0" }, "Global: importância na carteira"),
           h("span", { class: "nota" }, E.amostra_global),
         ]),
@@ -80,7 +80,7 @@ Aula.slide({
           ". A barra mostra quanto a AUC cai quando os valores da variável são embaralhados."),
       ]),
       h("div", { class: "painel claro cresce centro" }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;width:100%;align-items:baseline;gap:10px" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;width:100%;align-items:baseline;gap:10px" }, [
           h("h3", { class: "secao", estilo: "margin:0" }, "Local: o escore de " + local.cliente),
           UI.selo("contribuições em escore", "neutro"),
         ]),

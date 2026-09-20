@@ -38,7 +38,7 @@ Aula.slide({
     var taxa = B.taxaObservada;
     var melhor = B.perdaConstante(taxa);
 
-    var g = Graf.novo({ w: 560, h: 340, m: { e: 82, d: 30, c: 24, b: 58 } });
+    var g = Graf.novo({ w: 560, h: 318, m: { e: 82, d: 30, c: 20, b: 54 } });
     g.x(0.01, 0.6).y(0.4, 1.4);
     g.grade({ y: [0.5, 0.75, 1, 1.25] });
     g.eixoY({ ticks: [0.5, 0.75, 1, 1.25], formato: function (v) { return F.dec(v, 2); },
@@ -59,7 +59,7 @@ Aula.slide({
       var lista = registros.filter(function (r) { return r.grupo === grupo; });
       var eventos = M.soma(lista.map(function (r) { return r.y; }));
       return h("div", { class: "painel claro cresce" }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 14px" }, [
           h("h3", { class: "secao", estilo: "margin:0" }, "Grupo " + grupo),
           h("span", { class: "nota" },
             "comprometimento " + lista[0].comp + "% · " + F.inteiro(eventos) + " eventos em " +

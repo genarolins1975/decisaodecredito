@@ -36,10 +36,10 @@ Aula.slide({
     var lista = h("div", { class: "coluna cresce", estilo: "gap:10px;justify-content:space-between" });
 
     function linhaCliente(c) {
-      var aviso = h("span", { class: "nota", "aria-live": "polite" },
-        est.mudou[c.nome] ? "você mudou sua avaliação" : "");
+      var aviso = h("span", { class: "nota", estilo: "margin-left:10px",
+        "aria-live": "polite" }, est.mudou[c.nome] ? "· você mudou sua avaliação" : "");
       var extras = h("span", { class: "apoio", hidden: !est.revelado },
-        est.revelado ? ("histórico " + (c.hist ? "sim" : "não") +
+        est.revelado ? (" · histórico " + (c.hist ? "sim" : "não") +
           " · utilização " + F.dec(c.util, 0) + "% · relacionamento " + F.dec(c.rel, 0) + " meses") : "");
       var grupo = UI.botoes({
         rotulo: "decisão para " + c.nome,
@@ -54,16 +54,22 @@ Aula.slide({
           est.escolhas[c.nome] = v;
         },
       });
+      /* Os botões ficam encostados à direita e o texto ocupa o resto da linha:
+         com base fixa, a ficha quebrava no meio da frase. */
+      grupo.setAttribute("style", "margin-left:auto");
       return h("div", { class: "painel claro", estilo: "padding:12px 16px" },
         h("div", { estilo: "display:flex;align-items:center;gap:18px;flex-wrap:wrap" }, [
-          h("div", { estilo: "min-width:330px;flex:1 1 330px" }, [
-            h("span", { class: "medio" }, c.nome),
-            h("span", { class: "apoio", estilo: "margin-left:14px" },
-              F.reais(c.renda) + " por mês · comprometimento " + F.dec(c.comp, 0) + "%"),
-            h("div", {}, extras),
+          h("div", { estilo: "flex:1 1 300px;min-width:280px" }, [
+            h("div", { class: "medio" }, c.nome),
+            h("div", { class: "apoio" }, [
+              F.reais(c.renda) + " por mês · comprometimento " + F.dec(c.comp, 0) + "%",
+              extras,
+              /* O aviso entra no fluxo do texto: como filho da linha, ele
+                 quebrava para baixo e acrescentava uma altura por ficha. */
+              aviso,
+            ]),
           ]),
           grupo,
-          aviso,
         ]));
     }
 
@@ -92,8 +98,8 @@ Aula.slide({
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "coluna cresce" }, [
         lista,
-        h("div", { class: "painel cor", estilo: "padding:12px 18px" },
-          h("p", { estilo: "font-size:26px;color:var(--ink);margin:0" },
+        h("div", { class: "painel cor", estilo: "padding:10px 18px" },
+          h("p", { estilo: "font-size:24px;color:var(--ink);margin:0" },
             "Que informação faria você mudar de ideia?")),
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 400px" }, [

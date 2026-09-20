@@ -38,7 +38,7 @@ Aula.slide({
       cliente: c,
       mostrarNumeros: est.denominadores,
       mostrarPd: true,
-      w: 1030, h: 420, caixaW: 250, caixaH: est.denominadores ? 62 : 46,
+      w: 962, h: 420, caixaW: 220, caixaH: est.denominadores ? 62 : 46,
       rotuloFolha: function () { return "folha"; },
       resumo: "Árvore com contagens: raiz de 1.000 contratos e 100 eventos, quatro folhas.",
     });
@@ -68,7 +68,7 @@ Aula.slide({
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 470px" }, [
         h("div", { class: "painel cor" }, [
-          h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+          h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
             h("h3", { class: "secao", estilo: "margin:0" }, "Folha de " + c.nome),
             UI.selo("árvore didática", "neutro"),
           ]),

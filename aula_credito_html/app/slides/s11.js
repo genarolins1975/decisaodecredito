@@ -22,6 +22,11 @@ Aula.slide({
       "A leitura é associativa e condicionada às demais variáveis. Não é efeito causal.",
       "Os três riscos iniciais são cenários didáticos. Não são os quatro clientes.",
     ],
+    aprofundar: [
+      "Material original, capítulo 4, página 11: naquele exemplo, utilização a cada 10 pontos tem razão de chances 2,1071 e atraso a cada 10 dias tem 4,0370. A leitura está correta como multiplicação das chances e não autoriza leitura causal.",
+      "Página 14 do mesmo capítulo: trocar a unidade muda o coeficiente e não muda o modelo. A utilização vale 0,74530 por dezena de pontos, 0,07453 por ponto e 7,45300 por fração do limite, com PD prevista idêntica nos três casos.",
+      "Disso decorre que comparar 1,3955 com 0,7453 para dizer qual variável pesa mais não significa nada: as unidades são diferentes. A comparação legítima usa um movimento realista de cada variável, como um desvio padrão, que é o que o slide 18 faz com coeficientes padronizados.",
+    ],
     transicao: "Vamos aplicar essa interpretação a um cliente completo e conferir todas as etapas da conta.",
   },
 
@@ -43,7 +48,7 @@ Aula.slide({
          "Δz = " + F.dec(beta, 2) + " × " + F.dec(est.delta, 0) + " = " + F.dec(dz, 4),
          "razão de chances = e^" + F.dec(dz, 2) + " ≈ " + F.dec(razao, 4)];
 
-    var gBarras = Graf.novo({ w: 890, h: 430, m: { e: 100, d: 200, c: 30, b: 60 } });
+    var gBarras = Graf.novo({ w: 862, h: 430, m: { e: 190, d: 190, c: 30, b: 60 } });
     var maxP = Math.max.apply(null, cenarios.map(function (p) {
       return Math.max(p, M.porRazaoDeOdds(p, razao));
     }));
@@ -74,7 +79,7 @@ Aula.slide({
     });
 
     var tabela = UI.tabela({
-      compacta: true,
+      compacta: true, apertada: true,
       colunas: [{ rotulo: "PD inicial" }, { rotulo: "Odds antes" }, { rotulo: "Odds depois" },
                 { rotulo: "PD depois" }, { rotulo: "Diferença", unidade: "p.p." }],
       linhas: cenarios.map(function (p) {
@@ -93,7 +98,7 @@ Aula.slide({
           })),
         h("div", { class: "painel claro cresce centro", estilo: "display:flex" }, gBarras.svg),
       ]),
-      h("div", { class: "coluna", estilo: "flex:0 0 512px" }, [
+      h("div", { class: "coluna", estilo: "flex:0 0 548px" }, [
         h("div", { class: "painel" }, [
           h("h3", { class: "secao" }, "Mudança aplicada"),
           UI.botoes({

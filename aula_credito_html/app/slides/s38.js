@@ -47,7 +47,7 @@ Aula.slide({
     var paineis = chaves.map(function (k) {
       var b = R.auxiliar_2d.boosting[k];
       var sel = String(est.prof) === k;
-      var gm = Comum.mapaCalor(b.malha, { w: 380, h: 288, max: 0.6,
+      var gm = Comum.mapaCalor(b.malha, { w: 280, h: 288, max: 0.6,
         resumo: "Superfície de PD para boosting com profundidade " + k });
       gm.ponto(est.comp, est.util, { r: 9, cor: "var(--ink)", borda: "#fff", bordaL: 2 });
       return h("div", {
@@ -66,7 +66,7 @@ Aula.slide({
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "coluna cresce" }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
           h("h3", { class: "secao", estilo: "margin:0" },
             "Mesma escala e mesmo domínio nos três painéis"),
           UI.selo("experimento auxiliar de duas variáveis", "sim"),

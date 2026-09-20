@@ -38,7 +38,7 @@ Aula.slide({
     function exata(p) { return M.sigmoid(M.logito(p) + dz) - p; }
     function aproximada(p) { return beta * p * (1 - p) * est.dcomp; }
 
-    var g = Graf.novo({ w: 880, h: 430, m: { e: 92, d: 60, c: 22, b: 58 },
+    var g = Graf.novo({ w: 880, h: 412, m: { e: 92, d: 60, c: 20, b: 54 },
       resumo: "Curva logística com três deslocamentos de mesma largura em escores diferentes." });
     g.x(-6, 3).y(0, 0.75);
     g.grade({ y: [0, 0.2, 0.4, 0.6], x: [-6, -4, -2, 0, 2] });

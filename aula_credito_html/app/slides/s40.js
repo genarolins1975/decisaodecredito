@@ -113,8 +113,9 @@ Aula.slide({
         ]),
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 560px" }, [
-        h("div", { class: "painel cor" }, [
-          h("h3", { class: "secao" }, "O que verificar em " + sit.rotulo.toLowerCase()),
+        h("div", { class: "painel cor", estilo: "padding:12px 16px" }, [
+          h("h3", { class: "secao", estilo: "margin-bottom:6px" },
+            "O que verificar em " + sit.rotulo.toLowerCase()),
           h("p", { estilo: "font-size:22px;color:var(--ink);margin:0" }, sit.pergunta),
           est.revelado
             ? h("div", { class: "resposta", estilo: "margin-top:10px" },
@@ -124,8 +125,8 @@ Aula.slide({
                 "Ver a evidência que responde"),
         ]),
         comparacao
-          ? h("div", { class: "painel claro cresce" }, [
-              h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+          ? h("div", { class: "painel claro cresce", estilo: "padding:12px 16px" }, [
+              h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
                 h("h3", { class: "secao", estilo: "margin:0" }, "Sensibilidade já calculada"),
                 UI.selo("validação, não o teste", "neutro"),
               ]),

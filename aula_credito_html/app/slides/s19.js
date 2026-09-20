@@ -18,6 +18,11 @@ Aula.slide({
       "O desempenho de uma formulação simples não é o limite de toda a classe.",
       "Produzir uma probabilidade não garante que ela esteja calibrada.",
     ],
+    aprofundar: [
+      "Material original, capítulo 4, página 20: a linearidade em log odds é o limite da família. Um padrão não monótono na utilização não é representável sem transformar a variável.",
+      "Página 19: a fronteira de decisão do logit é uma reta no plano das variáveis, porque o escore é uma soma. Mudar o corte desloca a reta paralelamente e mudar um coeficiente gira a reta. Compare com as regiões retangulares da árvore no slide 26.",
+      "Página 22: a síntese do capítulo original é soma, curva e limite. Os três aparecem aqui nos slides 07, 09 e neste.",
+    ],
     transicao: "Antes de mudar de técnica, vamos verificar se conseguimos usar o que aprendemos em uma decisão de interpretação.",
   },
   impressao: function (e) { e.respondeu = true; },
@@ -58,7 +63,7 @@ Aula.slide({
     };
     var caso = casos[est.caso];
 
-    var g = Graf.novo({ w: 700, h: 360, m: { e: 16, d: 16, c: 16, b: 16 } });
+    var g = Graf.novo({ w: 700, h: 340, m: { e: 16, d: 16, c: 14, b: 14 } });
     g.x(0, 10).y(0, 10);
     var realceSoma = caso.foco === "soma", realceCurva = caso.foco === "curva";
     ["comprometimento", "histórico", "utilização", "relacionamento"].forEach(function (t, i) {

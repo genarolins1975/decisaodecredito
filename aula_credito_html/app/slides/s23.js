@@ -38,7 +38,7 @@ Aula.slide({
         class: "painel" + (sel ? " cor" : " claro") + " cresce",
         estilo: sel ? "border-color:var(--arvore);border-width:2px" : "",
       }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
           h("h2", { class: "secao", estilo: "margin:0" }, cand.rotulo),
           h("button", {
             class: "btn min" + (sel ? " sel" : ""), type: "button",
@@ -50,13 +50,13 @@ Aula.slide({
           lados.map(function (lado) {
             var peso = lado.n / A.n;
             return h("div", {}, [
-              h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline" }, [
+              h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 14px" }, [
                 h("span", { estilo: "font-size:22px;font-weight:700;color:var(--ink)" }, lado.rotulo),
                 h("span", { class: "apoio" },
                   "n = " + F.inteiro(lado.n) + " · eventos " + F.inteiro(lado.d) +
                   " · taxa " + F.pct(lado.d / lado.n, 2)),
               ]),
-              Comum.composicao(lado.n, lado.d, { w: 560, h: 30, rotulo: false }),
+              Comum.composicao(lado.n, lado.d, { w: 468, h: 30, rotulo: false }),
               est.comparar
                 ? h("div", { estilo: "margin-top:6px" }, [
                     h("div", { estilo: "height:12px;background:var(--rule);border-radius:3px;" +

@@ -81,7 +81,7 @@ Aula.slide({
     var cartoes = h("div", { class: "g3 cresce" }, contratos.map(function (c) {
       var s = status(c, est.mes);
       return h("div", { class: "painel claro coluna" }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 14px" }, [
           h("h3", { class: "secao", estilo: "margin:0" }, c.nome),
           UI.selo(s.chave === "evento" ? "y = 1" : s.chave === "sem" ? "y = 0" : "alvo incompleto",
             s.tipo),

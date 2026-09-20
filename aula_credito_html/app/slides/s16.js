@@ -22,6 +22,11 @@ Aula.slide({
       "Este é um exemplo linear por partes, não uma spline cúbica.",
       "Árvores não são necessárias para representar toda não linearidade.",
     ],
+    aprofundar: [
+      "Material original, capítulo 4, página 21: faixas devolvem flexibilidade sem trocar de família, ao custo de um coeficiente por faixa em vez de um por variável.",
+      "As regras declaradas lá continuam válidas: volume mínimo por faixa, monotonicidade quando existe hipótese econômica de direção, estabilidade das fronteiras nas safras seguintes e fronteiras definidas antes de olhar o alvo.",
+      "O WoE é esse mesmo tratamento com um valor específico por faixa, o logaritmo da razão entre a distribuição dos adimplentes e a dos inadimplentes. A mudança de inclinação deste slide é a alternativa contínua, com um parâmetro adicional apenas.",
+    ],
     transicao: "Além de mudar a forma de um efeito, podemos permitir que ele dependa de outra característica.",
   },
   impressao: function (e) { e.flex = true; },
@@ -38,7 +43,7 @@ Aula.slide({
     function z(comp, flex) { return z0 + contrib(comp, flex); }
 
     function grafico(escalaPD) {
-      var g = Graf.novo({ w: 640, h: 330, m: { e: 86, d: 26, c: 22, b: 58 } });
+      var g = Graf.novo({ w: 476, h: 330, m: { e: 84, d: 24, c: 22, b: 58 } });
       g.x(10, 70);
       if (escalaPD) {
         g.y(0, 0.35);
@@ -79,11 +84,11 @@ Aula.slide({
       : "z = −3,50 + 0,04 × (comp − 30)";
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
-      h("div", { class: "painel claro cresce centro", estilo: "display:flex" }, [
+      h("div", { class: "painel claro igual centro", estilo: "display:flex" }, [
         h("h3", { class: "secao" }, "Na escala do escore"),
         grafico(false),
       ]),
-      h("div", { class: "painel claro cresce centro", estilo: "display:flex" }, [
+      h("div", { class: "painel claro igual centro", estilo: "display:flex" }, [
         h("h3", { class: "secao" }, "Na escala da probabilidade"),
         grafico(true),
       ]),

@@ -64,8 +64,10 @@ Aula.slide({
         .filter(function (p) { return p[1] <= g.dy[1]; });
       g.linha(pts, { cor: cor, largura: sel ? 3.5 : 2, opacidade: sel ? 1 : .35 });
       var fim = pts[pts.length - 1];
+      var noFim = fim[0] > g.dx[0] + (g.dx[1] - g.dx[0]) * 0.72;
       g.texto(fim[0], fim[1], "η = " + F.dec(c.taxa, 2) + (sel ? ", validação" : ""),
-        { dx: 8, dy: 5, tamanho: sel ? 19 : 17, peso: sel ? 700 : 400,
+        { ancora: noFim ? "end" : "start", dx: noFim ? -8 : 8, dy: noFim ? -12 : 5,
+          tamanho: sel ? 19 : 17, peso: sel ? 700 : 400,
           cor: sel ? cor : "var(--muted)" });
       if (sel) {
         var ptsT = c.perdas_treino.map(function (v, i) { return [i + 1, v]; })

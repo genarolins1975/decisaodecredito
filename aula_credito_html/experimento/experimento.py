@@ -10,7 +10,9 @@ saida/metadados.json e o resultado agregado em saida/resultados.json.
 
 from __future__ import annotations
 
+import gzip
 import hashlib
+import io
 import json
 import platform
 import sys
@@ -946,6 +948,33 @@ def executar(verbose=True):
     caminho.write_text(json.dumps(resultados, ensure_ascii=False, separators=(",", ":")),
                        encoding="utf-8")
 
+    # Base sintética completa, para quem quiser refazer qualquer número da aula
+    # sem executar este arquivo. Ausentes saem vazios, como no dado observado.
+    csv = SAIDA / "base_sintetica.csv.gz"
+    colunas = ["particao", "data", "renda", "comp", "rel", "util", "hist", "canal",
+               "y", "p_verdadeiro"]
+    nomes_canal = np.array(["agencia", "digital", "parceiro"])
+    def _txt(v, casas):
+        return "" if not np.isfinite(v) else f"{v:.{casas}f}"
+    # mtime fixo: sem isso o gzip carimba a hora e o resumo criptográfico muda
+    # a cada execução, mesmo com conteúdo idêntico.
+    with gzip.GzipFile(csv, "wb", compresslevel=9, mtime=0) as bruto_gz, \
+            io.TextIOWrapper(bruto_gz, encoding="utf-8", newline="\n") as fh:
+        fh.write(",".join(colunas) + "\n")
+        for i in range(len(y_todos)):
+            fh.write(",".join([
+                particao[i],
+                date.fromordinal(int(bruto["data"][i])).isoformat(),
+                _txt(bruto["renda"][i], 2),
+                _txt(bruto["comp"][i], 4),
+                _txt(bruto["rel"][i], 0),
+                _txt(bruto["util"][i], 4),
+                str(int(bruto["hist"][i])),
+                nomes_canal[int(bruto["canal"][i])],
+                str(int(y_todos[i])),
+                _txt(bruto["p_verdadeiro"][i], 6),
+            ]) + "\n")
+
     metadados = {
         "gerado_por": "experimento.py",
         "semente": SEED,
@@ -956,6 +985,9 @@ def executar(verbose=True):
         "arquivo_resultados": "saida/resultados.json",
         "sha256_resultados": hashlib.sha256(caminho.read_bytes()).hexdigest(),
         "bytes_resultados": caminho.stat().st_size,
+        "arquivo_base": "saida/base_sintetica.csv.gz",
+        "sha256_base": hashlib.sha256(csv.read_bytes()).hexdigest(),
+        "linhas_base": int(len(y_todos)),
         "observacao": ("Base sintética. Nenhum dado real de cliente. Os modelos são ajustados "
                        "no treino, selecionados na validação, calibrados na partição de "
                        "calibração e avaliados uma única vez no teste."),
@@ -963,6 +995,8 @@ def executar(verbose=True):
     (SAIDA / "metadados.json").write_text(
         json.dumps(metadados, ensure_ascii=False, indent=2), encoding="utf-8")
     log(f"\nresultados: {caminho} ({caminho.stat().st_size/1024:.0f} KB)")
+    log(f"base sintética: {csv} ({csv.stat().st_size/1024:.0f} KB, "
+        f"{len(y_todos)} linhas)")
     log(f"sha256: {metadados['sha256_resultados'][:16]}...")
     return resultados, metadados
 

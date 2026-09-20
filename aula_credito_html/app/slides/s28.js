@@ -87,7 +87,7 @@ Aula.slide({
     });
 
     var gb = Graf.barras({
-      w: 540, h: 196, larguraRot: 170, m: { d: 130, c: 8, b: 58 },
+      w: 540, h: 158, larguraRot: 170, m: { d: 130, c: 6, b: 46 },
       itens: aba.itens.map(function (it, k) {
         return { rotulo: it.rotulo, valor: it.c ? it.c.perda_validacao : 0,
                  cor: k === est.i ? "var(--arvore)" : "var(--rule)",

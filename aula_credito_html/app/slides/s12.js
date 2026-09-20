@@ -47,7 +47,7 @@ Aula.slide({
     }
 
     var ficha = h("div", { class: "painel", estilo: "display:flex;flex-direction:column;gap:10px" }, [
-      h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+      h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
         h("h3", { class: "secao", estilo: "margin:0" }, "Ficha do cliente"),
         simulado ? Comum.seloSimulacao() : UI.selo("perfil original", "neutro"),
       ]),

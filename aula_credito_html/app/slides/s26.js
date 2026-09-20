@@ -33,7 +33,7 @@ Aula.slide({
     var folha = A.folhaDe(c);
 
     /* Mapa de regiões: uma faixa por valor de histórico. */
-    var g = Graf.novo({ w: 900, h: 420, m: { e: 140, d: 130, c: 40, b: 60 },
+    var g = Graf.novo({ w: 870, h: 420, m: { e: 176, d: 118, c: 40, b: 60 },
       resumo: "Duas faixas de comprometimento, uma por valor de histórico, divididas em 40%." });
     g.x(0, 80).y(0, 2);
     g.eixoX({ ticks: [0, 20, 40, 60, 80], rotulo: "comprometimento em %" });
@@ -79,16 +79,24 @@ Aula.slide({
 
     var arvore = Comum.arvoreDidatica({
       cliente: c, mostrarNumeros: false, mostrarPd: true,
-      w: 460, h: 218, caixaW: 148, caixaH: 42,
+      w: 518, h: 276, caixaW: 112, caixaH: 56,
       rotuloFolha: function () { return "folha"; },
+      /* Caixa estreita: a pergunta aparece na forma curta usada nas fórmulas. */
+      rotuloPergunta: function (no) {
+        return no.pergunta.indexOf("atraso") >= 0 ? "histórico?" : "comp > 40%?";
+      },
+      rotuloRamo: function (no, esq) {
+        if (no.pergunta.indexOf("atraso") >= 0) return esq ? "hist = 0" : "hist = 1";
+        return esq ? "≤ 40%" : "> 40%";
+      },
     });
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "painel claro cresce centro" }, g.svg),
-      h("div", { class: "coluna", estilo: "flex:0 0 490px" }, [
-        h("div", { class: "painel claro centro" }, arvore),
-        h("div", { class: "painel" }, [
-          h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+      h("div", { class: "coluna", estilo: "flex:0 0 560px" }, [
+        h("div", { class: "painel claro centro", estilo: "padding:8px 14px" }, arvore),
+        h("div", { class: "painel", estilo: "padding:10px 16px" }, [
+          h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
             h("span", { class: "apoio" }, "Cliente"),
             simulado ? Comum.seloSimulacao("simulação local") : UI.selo("perfil original", "neutro"),
           ]),
@@ -118,7 +126,7 @@ Aula.slide({
               "Reiniciar exemplo"),
           ]),
         ]),
-        h("div", { class: "painel cor" }, [
+        h("div", { class: "painel cor", estilo: "padding:10px 16px" }, [
           h("p", { estilo: "font-size:22px;color:var(--ink);margin:0" },
             "Regra atual: " + folha.regra + ", PD " +
             F.pct(folha.pd, folha.pd * 100 % 1 === 0 ? 0 : 1) + "."),

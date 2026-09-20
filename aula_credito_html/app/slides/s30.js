@@ -41,7 +41,7 @@ Aula.slide({
       cliente: est.conferido ? carla : null,
       mostrarNumeros: true, mostrarPd: true,
       ocultarFolha: est.conferido ? null : folha,
-      w: 980, h: 380, caixaW: 236, caixaH: 74,
+      w: 812, h: 380, caixaW: 180, caixaH: 74,
       rotuloFolha: function () { return "folha"; },
     });
 

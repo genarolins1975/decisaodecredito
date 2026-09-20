@@ -41,7 +41,7 @@ Aula.slide({
     var pd = hist[2].grupos[grupo].p;
 
     var g = Graf.waterfall({
-      w: 760, h: 330, larguraRot: 250,
+      w: 760, h: 330, larguraRot: 282,
       base: F0, rotuloBase: "escore inicial " + F.dec(F0, 6), rotuloTotal: "escore final",
       rotuloX: "escore F",
       itens: [
@@ -52,7 +52,7 @@ Aula.slide({
       ],
     });
 
-    var gs = Graf.novo({ w: 380, h: 280, m: { e: 74, d: 24, c: 20, b: 52 } });
+    var gs = Graf.novo({ w: 460, h: 118, m: { e: 66, d: 20, c: 10, b: 34 } });
     gs.x(-2.4, 0.4).y(0, 0.5);
     gs.grade({ y: [0, 0.1, 0.2, 0.3, 0.4, 0.5] });
     gs.eixoY({ ticks: [0, 0.25, 0.5], formato: function (v) { return F.pct(v, 0); },
@@ -72,7 +72,7 @@ Aula.slide({
     var percurso = ["árvore 1", "árvore 2"].map(function (nome, k) {
       var valor = k === 0 ? h1 : h2;
       return h("div", { class: "painel claro", estilo: "padding:10px 14px" }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 14px" }, [
           h("span", { estilo: "font-weight:700;color:var(--ink);font-size:20px" }, nome),
           h("span", { class: "medio", estilo: "font-size:22px" }, F.sinal(valor, 6)),
         ]),
@@ -97,8 +97,8 @@ Aula.slide({
         ]),
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 520px" }, [
-        h("div", { class: "painel" }, [
-          h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+        h("div", { class: "painel", estilo: "padding:10px 16px" }, [
+          h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
             h("h3", { class: "secao", estilo: "margin:0" }, "Solicitante novo"),
             UI.selo("sem desfecho conhecido", "neutro"),
           ]),
@@ -111,8 +111,8 @@ Aula.slide({
             "Nenhum campo de desfecho aparece nesta ficha. O y foi usado apenas no treinamento."),
         ]),
         h("div", { class: "coluna", estilo: "gap:8px" }, percurso),
-        h("div", { class: "painel claro cresce centro" }, [
-          h("h3", { class: "secao" }, "Conversão do escore somado"),
+        h("div", { class: "painel claro cresce centro", estilo: "padding:8px 14px" }, [
+          h("h3", { class: "secao", estilo: "margin-bottom:2px" }, "Conversão do escore somado"),
           gs.svg,
         ]),
         h("div", { class: "grupo" }, [

@@ -113,9 +113,9 @@ Aula.slide({
       ]);
     }
 
-    corpo.appendChild(h("div", { class: "linha topo cresce" }, [
+    corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "coluna cresce" }, [
-        h("div", { class: "painel claro" }, tabela),
+        h("div", { class: "painel claro cresce centro" }, tabela),
         h("div", { class: "grupo" }, [
           UI.alterna({
             rotulo: "Comparar dois clientes", valor: est.comparar,

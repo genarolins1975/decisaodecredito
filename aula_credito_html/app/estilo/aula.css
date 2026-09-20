@@ -140,6 +140,7 @@ p.subtitulo {
 .linha.topo { align-items: flex-start; }
 .coluna { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 .cresce { flex: 1 1 auto; min-width: 0; min-height: 0; }
+.igual { flex: 1 1 0; min-width: 0; min-height: 0; }
 .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 .g4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
@@ -298,6 +299,9 @@ table.tabela tbody tr.sel td { font-weight: 700; color: var(--ink); }
 table.tabela td.rotulo { font-weight: 700; color: var(--ink); }
 table.tabela.compacta { font-size: 19px; }
 table.tabela.compacta th, table.tabela.compacta td { padding: 5px 8px; }
+table.tabela.apertada { font-size: 18px; }
+table.tabela.apertada th, table.tabela.apertada td { padding: 4px 6px; }
+.rolagem-h { max-width: 100%; }
 
 .kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-size: 20px; }
 .kv dt { color: var(--muted); }
@@ -338,7 +342,10 @@ table.tabela.compacta th, table.tabela.compacta td { padding: 5px 8px; }
 
 /* ------------------------------------------------------------------- svg */
 
-svg { display: block; overflow: visible; }
+/* max-width impede que um desenho mais largo que o painel escorra por cima
+   do painel vizinho: com viewBox, o navegador reduz a escala e preserva a
+   proporção. Os desenhos são dimensionados para caber sem essa rede. */
+svg { display: block; overflow: visible; max-width: 100%; }
 svg text { font-family: var(--sans); fill: var(--body); }
 .eixo line, .eixo path { stroke: var(--rule); stroke-width: 1.5; fill: none; }
 .eixo text { fill: var(--muted); font-size: 18px; }
@@ -480,6 +487,21 @@ body.estudo .estudo-notas {
 }
 body.estudo .estudo-notas .painel { margin-bottom: 12px; }
 
+/* Em tela estreita as colunas laterais de largura fixa não cabem lado a lado.
+   O !important vence o estilo embutido que fixa a base de cada coluna. */
+@media (max-width: 760px) {
+  body.estudo .linha { flex-direction: column; }
+  body.estudo .linha > * { flex: 1 1 auto !important; width: 100%; min-width: 0; }
+  body.estudo .rolagem-h { overflow-x: auto; }
+  body.estudo .selo { white-space: normal; }
+  body.estudo .ctrl-linha { flex-wrap: wrap; }
+  body.estudo .ctrl input[type="range"] { min-width: 100px; }
+  body.estudo .kv { grid-template-columns: 1fr; }
+  body.estudo .kv dd { white-space: normal; }
+  body.estudo table.tabela { font-size: 13px; }
+  body.estudo table.tabela th, body.estudo table.tabela td { padding: 4px 4px; }
+}
+
 /* ---------------------------------------------------------------- impressão */
 
 #impressao { display: none; }
@@ -488,24 +510,64 @@ body.estudo .estudo-notas .painel { margin-bottom: 12px; }
   #moldura, #barra, #notas, #indice, #progresso { display: none !important; }
   body { background: #fff; }
   #impressao { display: block; }
+  /* A folha é a página inteira e o palco de 1600 por 900 entra reduzido:
+     297mm valem 1122,5px em 96 dpi, portanto a escala é 1122,5 dividido por
+     1600. Assim cada slide ocupa exatamente uma página e mantém a composição
+     da projeção. */
   .folha {
+    position: relative;
+    width: 297mm;
+    height: 209mm;
+    overflow: hidden;
+    padding: 0;
+    background: var(--ground);
     page-break-after: always;
     break-after: page;
-    padding: 12mm 14mm;
-    width: 297mm;
-    min-height: 200mm;
   }
-  .folha .titulo { font-size: 26px; }
-  .folha .subtitulo { font-size: 14px; }
-  .folha #corpo, .folha .corpo { font-size: 13px; }
-  .folha .grande { font-size: 24px; }
-  .folha .medio { font-size: 18px; }
-  .folha .formula { font-size: 15px; }
-  .folha table.tabela { font-size: 12px; }
-  .folha .apoio { font-size: 12px; }
-  .folha .nota, .folha .selo { font-size: 11px; }
-  .folha .btn, .folha input[type="range"] { display: none; }
-  .folha .grupo.imprime .btn { display: inline-block; }
+  .palco-folha {
+    position: absolute;
+    top: 20mm;
+    left: 0;
+    width: 1600px;
+    height: 900px;
+    transform-origin: top left;
+    transform: scale(0.7015);
+    background: var(--ground);
+    display: flex;
+    flex-direction: column;
+    padding: 34px 54px 22px;
+  }
+  .palco-folha .btn,
+  .palco-folha input,
+  .palco-folha textarea { display: none; }
+
+  .apendice { padding: 14mm 16mm; }
+  .apendice > .titulo { font-size: 30px; margin-bottom: 4px; }
+  .apendice > .subtitulo { font-size: 15px; margin-bottom: 10mm; }
+  .apendice .bloco-notas {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 9mm;
+    border-top: 1px solid var(--rule);
+    padding-top: 4mm;
+  }
+  .apendice .bloco-notas h2 {
+    font-family: var(--serif);
+    font-size: 17px;
+    color: var(--ink);
+    margin: 0 0 2px;
+  }
+  .apendice .bloco-notas .fonte { font-size: 11px; margin: 0 0 4px; }
+  .apendice .bloco-notas h3 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--muted);
+    margin: 5px 0 2px;
+  }
+  .apendice .bloco-notas ul { margin: 0; padding-left: 16px; }
+  .apendice .bloco-notas li,
+  .apendice .bloco-notas p { font-size: 13px; line-height: 1.4; margin: 0 0 2px; }
   @page { size: A4 landscape; margin: 0; }
 }
 

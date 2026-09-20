@@ -11,5 +11,8 @@ Aula.metadados = {
   "arquivo_resultados": "saida/resultados.json",
   "sha256_resultados": "819746e8a01e72c2e9974080324900247cbae0f2497482e62c3184a5a6389b2e",
   "bytes_resultados": 388909,
+  "arquivo_base": "saida/base_sintetica.csv.gz",
+  "sha256_base": "fdf082bbb42ca53d038a875a634f98d7aab4536407c2ce8639322d595e96c75f",
+  "linhas_base": 28000,
   "observacao": "Base sintética. Nenhum dado real de cliente. Os modelos são ajustados no treino, selecionados na validação, calibrados na partição de calibração e avaliados uma única vez no teste."
 };

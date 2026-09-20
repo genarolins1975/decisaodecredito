@@ -103,7 +103,7 @@ Aula.slide({
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "painel claro cresce" }, [
-        h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline" }, [
+        h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 14px" }, [
           h("h3", { class: "secao", estilo: "margin:0" }, "Os dez registros"),
           UI.selo("primeira ordem didática", "sim"),
         ]),
