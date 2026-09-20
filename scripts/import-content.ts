@@ -289,7 +289,12 @@ async function main() {
   }
 
   // materiais: bibliografia de apoio (obras verificadas pelo professor antes da publicação)
-  const refs = [
+  /* `url` aponta para uma rota da própria plataforma; `citation` fica só nas referências bibliográficas.
+     O título nomeia os capítulos porque `materiaisDoCapitulo` casa o material ao capítulo pelo título. */
+  const refs: { title: string; kind: string; description: string; url?: string }[] = [
+    { title: "Apêndice: aula panorâmica em 50 slides (Capítulo 4, Capítulo 5, Capítulo 6)", kind: "arquivo",
+      description: "Percurso único de 50 slides interativos sobre logit, árvore e boosting, com abertura no problema de crédito e fechamento em avaliação, decisão e monitoramento. Abre no navegador, funciona sem rede, traz notas do professor e modo de impressão.",
+      url: "/apendice/aula-panoramica" },
     { title: "Siddiqi, N. Intelligent Credit Scoring: Building and Implementing Better Credit Risk Scorecards. 2. ed. Wiley, 2017.", kind: "referencia", description: "Construção de scorecards, WoE/IV, segmentação e implantação." },
     { title: "Thomas, L. C.; Crook, J. N.; Edelman, D. B. Credit Scoring and Its Applications. 2. ed. SIAM, 2017.", kind: "referencia", description: "Fundamentos estatísticos de credit scoring, validação e decisão." },
     { title: "Hastie, T.; Tibshirani, R.; Friedman, J. The Elements of Statistical Learning. 2. ed. Springer, 2009.", kind: "referencia", description: "Árvores, boosting e viés-variância (capítulos 9 e 10)." },
@@ -302,7 +307,7 @@ async function main() {
   const existingMats = await db.select({ title: schema.materials.title }).from(schema.materials).where(eq(schema.materials.editionId, edition.id));
   const have = new Set(existingMats.map((m) => m.title));
   let mpos = 0;
-  for (const r of refs) if (!have.has(r.title)) await db.insert(schema.materials).values({ id: newId(), editionId: edition.id, title: r.title, kind: r.kind, description: r.description, citation: r.title, status: "published", position: mpos++ });
+  for (const r of refs) if (!have.has(r.title)) await db.insert(schema.materials).values({ id: newId(), editionId: edition.id, title: r.title, kind: r.kind, description: r.description, url: r.url ?? null, citation: r.url ? null : r.title, status: "published", position: mpos++ });
 
   await db.insert(schema.contentImports).values({ id: newId(), editionId: edition.id, sourceFile: ex.sourceFile, sourceSha256: ex.sourceSha256, summary: { pages: ex.pages.length, questions: qCount, rendering: stats, republish } });
   fs.writeFileSync(path.join(GEN, "inventory.json"), JSON.stringify(inventory, null, 1));

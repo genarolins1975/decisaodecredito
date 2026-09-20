@@ -5,6 +5,8 @@ const nextConfig: NextConfig = {
   agentRules: false,
   poweredByHeader: false,
   serverExternalPackages: ["@node-rs/argon2", "pg"],
+  // o apêndice é lido do disco pela rota /apendice/aula-panoramica; sem isto a Vercel não o empacota
+  outputFileTracingIncludes: { "/apendice/aula-panoramica": ["./content/apendice/**"] },
   experimental: { serverActions: { bodySizeLimit: "2mb" } },
   async headers() {
     return [

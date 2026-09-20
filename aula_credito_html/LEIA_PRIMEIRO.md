@@ -9,11 +9,21 @@ previsão à decisão de crédito.
 Abra `dist/aula_credito.html` com duplo clique. É um arquivo único, funciona sem
 internet e sem servidor, e não faz nenhuma requisição externa.
 
-Na plataforma, a mesma aula fica em `/aula_credito.html`. O `build.mjs` copia o
-arquivo para `public/` da aplicação Next a cada compilação, então os dois são
-sempre idênticos. Essa rota passa pelo `src/proxy.ts`, que redireciona para
-`/entrar` quem não tiver cookie de sessão. É conveniência de navegação, não
-controle de acesso: arquivo em `public/` não passa por `guard.ts`.
+Na plataforma, esta aula é o **apêndice do curso**, não uma das cinco aulas. As
+aulas ficam em `/aulas`, montadas a partir de `content/original` pelo importador,
+e a Aula 2 são os capítulos 4, 5 e 6. Este pacote é um percurso panorâmico que
+atravessa os capítulos 1 a 9 em 50 slides.
+
+O apêndice é servido em `/apendice/aula-panoramica`. O `build.mjs` copia o arquivo
+para `content/apendice/aula-panoramica.html` a cada compilação, então os dois são
+sempre idênticos. A rota valida a sessão no servidor e exige turma acessível, a
+mesma regra dos materiais. O arquivo não fica em `public/` de propósito: arquivo
+em `public/` é servido antes de qualquer verificação, e o `src/proxy.ts` só
+confere se existe um cookie chamado `sessao`, o que é conveniência de navegação e
+não controle de acesso.
+
+Ele aparece para o aluno em `/materiais` e nos capítulos 4, 5 e 6, cadastrado como
+material da edição pelo `scripts/import-content.ts`.
 
 Para trabalhar no código, abra `app/index.html`, que carrega os mesmos arquivos soltos.
 
