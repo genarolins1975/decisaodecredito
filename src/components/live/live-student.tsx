@@ -22,18 +22,40 @@ export function LiveStudent({ sessionId, classId, meeting, initial }: { sessionI
   const [windows, setWindows] = useState<{ id: string; meetingId: string; closesAt: string }[]>([]);
 
   const st = state ?? initial;
-  const slide = follow ? st.currentSlide : null;
+  /* Aula conduzida por slides. Seguindo o professor, o baralho vem em modo aluno, sem barra e sem
+     as notas do professor. Navegando por conta própria, o aluno parte do último slide visto e usa
+     a navegação do próprio baralho, ainda sem as notas. */
+  const [meuSlide, setMeuSlide] = useState<string | null>(initial.currentSlide);
+  const slide = follow ? st.currentSlide : meuSlide;
+  const modo = follow ? "aluno" : "livre";
   const quadro = useRef<HTMLIFrameElement>(null);
-  /* O baralho de /slides/aula-2 navega por `#/slide/NN` e escuta hashchange. Trocar só o hash do
-     iframe, que é da mesma origem, move o aluno de slide sem recarregar os 863 KB do arquivo. */
+  /* O baralho navega por `#/slide/NN` e escuta hashchange. Trocar só o hash do iframe, que é da
+     mesma origem, move o aluno de slide sem recarregar os 863 KB do arquivo. */
   useEffect(() => {
-    if (!slide) return;
+    if (!follow || !slide) return;
     const alvo = `#/slide/${slide}`;
     const aplicar = () => { try { const w = quadro.current?.contentWindow; if (w && w.location.hash !== alvo) w.location.hash = alvo; } catch { /* ainda carregando */ } };
     aplicar();
     const f = quadro.current; f?.addEventListener("load", aplicar);
     return () => f?.removeEventListener("load", aplicar);
+  }, [slide, follow]);
+  /* O baralho só entra em modo projeção acima de 1100px. Dentro da coluna da aula ele ficaria
+     abaixo disso e cairia no modo estudo, cortado pela moldura. Então ele é desenhado em 1280 por
+     720 e reduzido por transform até a largura disponível. Em tela estreita, o modo estudo do
+     próprio baralho é melhor, e aí ele recebe a largura inteira e rola na vertical. */
+  const PALCO = { w: 1280, h: 720 };
+  const caixa = useRef<HTMLDivElement>(null);
+  const [larguraCaixa, setLarguraCaixa] = useState(0);
+  useEffect(() => {
+    const el = caixa.current;
+    if (!el) return;
+    // o observador dispara uma vez ao observar, então a medida inicial vem dele, não do corpo do efeito
+    const ro = new ResizeObserver(() => setLarguraCaixa(el.clientWidth));
+    ro.observe(el);
+    return () => ro.disconnect();
   }, [slide]);
+  const estreito = larguraCaixa > 0 && larguraCaixa < 900;
+  const escala = estreito ? 1 : Math.min(1, (larguraCaixa || PALCO.w) / PALCO.w);
   const slug = follow ? (st.currentPage?.slug ?? ownSlug) : ownSlug;
   useEffect(() => { if (!slug) return; api<PageData>(`/api/conteudo/pagina/${slug}?classId=${classId}`).then(setPage).catch(() => setPage(null)); }, [slug, classId]);
   useEffect(() => {
@@ -61,16 +83,20 @@ export function LiveStudent({ sessionId, classId, meeting, initial }: { sessionI
         </div>
         <div className="flex flex-wrap items-center gap-2 mb-4 no-print" role="group" aria-label="Modo de acompanhamento">
           <button type="button" className={`btn btn-sm ${follow ? "" : "btn-secondary"}`} aria-pressed={follow} onClick={() => setFollow(true)}>Seguir o professor</button>
-          <button type="button" className={`btn btn-sm ${!follow ? "" : "btn-secondary"}`} aria-pressed={!follow} onClick={() => { setSlug(slug); setFollow(false); }}>Navegar por conta própria</button>
-          {!follow && st.currentPage && <button type="button" className="btn btn-sm btn-ghost" onClick={() => { setFollow(true); setSlug(st.currentPage!.slug); }}>Voltar ao slide do professor: {st.currentPage.title}</button>}
+          <button type="button" className={`btn btn-sm ${!follow ? "" : "btn-secondary"}`} aria-pressed={!follow} onClick={() => { setSlug(slug); setMeuSlide(st.currentSlide ?? meuSlide); setFollow(false); }}>Navegar por conta própria</button>
+          {!follow && st.currentSlide && <button type="button" className="btn btn-sm btn-ghost" onClick={() => setFollow(true)}>Voltar ao slide do professor: {st.currentSlide} de 50</button>}
+          {!follow && !st.currentSlide && st.currentPage && <button type="button" className="btn btn-sm btn-ghost" onClick={() => { setFollow(true); setSlug(st.currentPage!.slug); }}>Voltar à página do professor: {st.currentPage.title}</button>}
         </div>
-        {slide && (
-          <div className="card p-0 overflow-hidden mb-4">
-            <iframe ref={quadro} title={`Slide ${slide} da aula`} src={`/slides/aula-2#/slide/${slide}`}
-              className="w-full block border-0" style={{ aspectRatio: "16 / 9", minHeight: 320 }} />
+        {slide ? (
+          <div className="card p-0 overflow-hidden">
+            <div ref={caixa} style={{ height: estreito ? "70vh" : PALCO.h * escala }}>
+              <iframe ref={quadro} title={`Slide ${slide} da aula`} src={`/slides/aula-2?modo=${modo}#/slide/${slide}`}
+                style={estreito
+                  ? { width: "100%", height: "100%", border: 0, display: "block" }
+                  : { width: PALCO.w, height: PALCO.h, border: 0, display: "block", transform: `scale(${escala})`, transformOrigin: "top left" }} />
+            </div>
           </div>
-        )}
-        {page ? (
+        ) : page ? (
           <article className="card">
             <p className="eyebrow">Capítulo {page.page.chapter.number} · {page.page.chapter.title}</p>
             <h2 className="mt-1">{page.page.title}</h2>

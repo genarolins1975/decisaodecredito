@@ -1,6 +1,8 @@
 /* Sistema visual da aula de modelagem de crédito.
-   Tokens da plataforma Laboratório de Decisão de Crédito mais as três cores de
-   identidade de modelo definidas no guia de design da aula. Tema único, claro. */
+   Tokens da plataforma Laboratório de Decisão de Crédito, valor a valor. As três cores de
+   identidade de modelo são as cores dos capítulos correspondentes no conteúdo do curso
+   (logit é o capítulo 4, árvore o 5, boosting o 6), para que o mesmo assunto tenha a mesma
+   cor na aula e no apêndice. Tema único, claro. */
 
 :root {
   --ground: #F5F4F0;
@@ -8,7 +10,7 @@
   --surface: #FFFFFF;
   --ink: #00205B;
   --ink-soft: #3D5A8A;
-  --body: #24313D;
+  --body: #333333;
   --muted: #5B6475;
   --rule: #E2DFD6;
   --gold: #C9A84C;
@@ -20,15 +22,15 @@
   --ok-soft: #F0F7F3;
   --dots: #C9D8F2;
 
-  --logit: #2457A6;
-  --logit-soft: #EAF0FA;
-  --arvore: #127C80;
-  --arvore-soft: #E7F3F3;
-  --boost: #6B4EA0;
-  --boost-soft: #F1ECF9;
+  --logit: #9A4E36;        /* capítulo 4 */
+  --logit-soft: #FAF0EC;
+  --arvore: #28725B;       /* capítulo 5 */
+  --arvore-soft: #EDF7F3;
+  --boost: #7B3E73;        /* capítulo 6 */
+  --boost-soft: #F8EFF6;
 
   --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
-  --sans: Inter, system-ui, "Segoe UI", Aptos, Roboto, Helvetica, Arial, sans-serif;
+  --sans: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --mono: "SF Mono", "Cascadia Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
   --cor: var(--ink);
@@ -574,3 +576,16 @@ body.estudo .estudo-notas .painel { margin-bottom: 12px; }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
+
+/* ------------------------------------------------------------------ embutida
+   Dentro da plataforma a aula é servida com ?modo=aluno ou ?modo=livre. O aluno não
+   tem as notas do professor nem a impressão; seguindo o professor, também não tem a
+   barra de navegação, que o tiraria do slide da aula. */
+body[data-modo] #btn-professor,
+body[data-modo] #btn-imprimir,
+body[data-modo] #notas,
+body[data-modo] #estudo-notas { display: none !important; }
+body[data-modo="aluno"] #barra { display: none; }
+/* sem a barra, o palco recupera os 58px que ela reservava e a régua de progresso desce */
+body[data-modo="aluno"] #moldura { inset: 0; }
+body[data-modo="aluno"] #progresso { bottom: 0; }

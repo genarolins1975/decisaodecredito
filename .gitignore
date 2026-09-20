@@ -18,5 +18,5 @@ tsconfig.tsbuildinfo
 aula_credito_html/qa/*.png
 __pycache__/
 
-# saída local do build da aula (a cópia versionada fica em content/apendice)
+# saída local do build da aula (a cópia versionada fica em content/slides)
 aula_credito_html/dist/

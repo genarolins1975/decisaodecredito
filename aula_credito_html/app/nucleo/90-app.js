@@ -9,6 +9,10 @@ var App = (function () {
   var professor = false;
   var estudo = false;
   var LARGURA_ESTUDO = 1100;
+  /* Embutida na plataforma, a aula perde o que não é do aluno. "aluno" segue o professor e não
+     navega; "livre" navega sozinho. Nos dois, as notas do professor e a impressão saem de cena.
+     Sem parâmetro, o arquivo é o de sempre: projeção, estudo offline, duplo clique. */
+  var MODO = (/[?&]modo=(aluno|livre)(?:&|$)/.exec(location.search) || [])[1] || "";
 
   function ordem() { return Aula.slides; }
   function indiceDe(id) {
@@ -78,7 +82,7 @@ var App = (function () {
   function montarNotasEstudo(def) {
     var velho = document.getElementById("estudo-notas");
     if (velho) velho.parentNode.removeChild(velho);
-    if (!def.notas) return;
+    if (MODO || !def.notas) return;
     var caixa = h("section", { id: "estudo-notas", class: "estudo-notas" },
       h("div", { class: "painel" }, [
         h("h3", { class: "secao" }, "Notas do professor e aprofundamento"),
@@ -181,6 +185,7 @@ var App = (function () {
   /* ---------------------------------------------------------------- modos */
 
   function alternarProfessor(v) {
+    if (MODO) return;
     professor = v === undefined ? !professor : v;
     document.getElementById("notas").hidden = !professor;
     document.getElementById("btn-professor").classList.toggle("ativo", professor);
@@ -290,6 +295,7 @@ var App = (function () {
 
   function teclado(e) {
     if (e.defaultPrevented) return;
+    if (MODO === "aluno") return;
     if (e.key === "Escape") {
       if (!document.getElementById("indice").hidden) { fecharIndice(); return; }
     }
@@ -300,7 +306,7 @@ var App = (function () {
       case "ArrowLeft": case "PageUp": passo(-1); e.preventDefault(); break;
       case "Home": navegar(Aula.slides[0].id); e.preventDefault(); break;
       case "End": navegar(Aula.slides[Aula.slides.length - 1].id); e.preventDefault(); break;
-      case "p": case "P": alternarProfessor(); break;
+      case "p": case "P": if (!MODO) alternarProfessor(); break;
       case "e": case "E": alternarEstudo(); break;
       case "f": case "F": telaCheia(); break;
       case "i": case "I":
@@ -330,6 +336,7 @@ var App = (function () {
     window.addEventListener("beforeprint", function () {
       if (!document.getElementById("impressao").childElementCount) prepararImpressao();
     });
+    if (MODO) document.body.setAttribute("data-modo", MODO);
     if (window.innerWidth < LARGURA_ESTUDO) {
       estudo = true;
       document.body.classList.add("estudo");
