@@ -40,18 +40,21 @@ Aula.slide({
 
     var passos = [
       { titulo: "1. Prever com o que já existe",
-        conta: "p = sigmoid(F) = sigmoid(" + F.dec(FAtual, 4) + ") = " + F.pct(pAtual, 4),
-        nota: "A previsão atual do grupo vem do escore acumulado até aqui." },
+        conta: Mat.b("p = \\sigma(F) = \\frac{1}{1+e^{-F}} = \\frac{1}{1+e^{" + Mat.n(-FAtual, 4) + "}} = " +
+          Mat.pct(pAtual, 4)),
+        nota: "A previsão atual do grupo vem do escore acumulado até aqui, na mesma logística do slide 09." },
       { titulo: "2. Calcular a direção de melhoria",
-        conta: "r = y − p = " + F.dec(linhaB.y, 0) + " − " + F.dec(pAtual, 4) +
-               " = " + F.dec(linhaB.r, 4),
-        nota: "Para a perda logística, o gradiente negativo em relação ao escore é y menos p." },
+        conta: Mat.b("r = -\\frac{\\partial L}{\\partial F} = y - p = " + Mat.n(linhaB.y, 0) + " - " +
+          Mat.n(pAtual, 4) + " = " + Mat.n(linhaB.r, 4)),
+        /* É aqui que o nome da técnica se justifica: o resíduo y menos p não é escolha arbitrária,
+           é o gradiente negativo da perda logística em relação ao escore. */
+        nota: "O resíduo não é escolha de conveniência: para a perda logística do slide 13, o gradiente negativo em relação ao escore é exatamente y menos p. Por isso a técnica se chama gradient boosting." },
       { titulo: "3. Ajustar uma árvore pequena aos r",
-        conta: "folha do grupo B: média dos r = " + F.dec(it1.grupos.B.h, 6),
+        conta: Mat.b("h_1(\\text{folha B}) = \\overline{r}_{\\text{B}} = " + Mat.n(it1.grupos.B.h, 6)),
         nota: "A árvore devolve um número por folha, positivo ou negativo. Não é um voto." },
       { titulo: "4. Atualizar o escore",
-        conta: "F novo = " + F.dec(FAtual, 4) + " + 1 × " + F.dec(it1.grupos.B.h, 6) +
-               " = " + F.dec(it1.grupos.B.F, 4),
+        conta: Mat.b("F_1 = F_0 + \\eta\\,h_1 = " + Mat.n(FAtual, 4) + " + 1 \\times " +
+          Mat.n(it1.grupos.B.h, 6) + " = " + Mat.n(it1.grupos.B.F, 4)),
         nota: "Só depois de somar todas as contribuições aplicamos a função logística." },
     ];
 
@@ -70,8 +73,8 @@ Aula.slide({
     marcas.forEach(function (m) {
       if (!m.visivel) return;
       g.ponto(m.F, 0.4, { r: 10, cor: "var(--boost)" });
-      g.texto(m.F, 0.4, m.rot, { ancora: "middle", dy: -22, tamanho: 18, cor: "var(--ink)" });
-      g.texto(m.F, 0.4, F.dec(m.F, 4), { ancora: "middle", dy: 30, tamanho: 17, peso: 400,
+      g.texto(m.F, 0.4, m.rot, { ancora: "middle", dy: -40, tamanho: 18, cor: "var(--ink)" });
+      g.texto(m.F, 0.4, F.dec(m.F, 4), { ancora: "middle", dy: -20, tamanho: 17, peso: 400,
         cor: "var(--muted)" });
     });
     if (est.passo >= 4) {
@@ -97,8 +100,7 @@ Aula.slide({
             h("h3", { class: "secao", estilo: "margin:0 0 6px" }, p.titulo),
             visivel
               ? h("div", {}, [
-                  h("p", { estilo: "font-family:var(--serif);font-size:22px;color:var(--ink);margin:0" },
-                    p.conta),
+                  h("p", { estilo: "font-size:21px;color:var(--ink);margin:0" }, p.conta),
                   h("p", { class: "nota", estilo: "margin-top:6px" }, p.nota),
                 ])
               : h("p", { class: "nota", estilo: "margin:0" }, "passo ainda não executado"),

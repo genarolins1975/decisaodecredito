@@ -326,6 +326,7 @@ table.tabela th, table.tabela td {
   text-align: right;
 }
 table.tabela th:first-child, table.tabela td:first-child { text-align: left; }
+table.tabela thead th.simbolo { text-transform: none; letter-spacing: 0; }
 table.tabela thead th {
   font-size: 18px;
   color: var(--muted);
@@ -1590,7 +1591,10 @@ var UI = (function () {
   /* Tabela com cabeçalho e linhas; colunas: [{rotulo, unidade, classe}] */
   function tabela(op) {
     var thead = h("thead", {}, h("tr", {}, op.colunas.map(function (c) {
-      return h("th", { scope: "col" }, c.unidade
+      /* Rótulo que vem como nó carrega notação: `p` não é `P`, `y` não é `Y`. A caixa alta do
+         cabeçalho vale para palavra, não para símbolo, então o nó desliga a transformação. */
+      var simbolo = c.rotulo && typeof c.rotulo === "object";
+      return h("th", { scope: "col", class: simbolo ? "simbolo" : "" }, c.unidade
         ? [c.rotulo, h("br"), h("span", { estilo: "font-weight:400;text-transform:none" }, c.unidade)]
         : c.rotulo);
     })));
@@ -3969,8 +3973,8 @@ Aula.slide({
 
     var tabela = UI.tabela({
       compacta: true,
-      colunas: [{ rotulo: "Observação" }, { rotulo: "y" }, { rotulo: "p prevista" },
-                { rotulo: "Perda" }],
+      colunas: [{ rotulo: "Observação" }, { rotulo: Mat.i("y") },
+                { rotulo: Mat.i("p") , unidade: "prevista" }, { rotulo: Mat.i("L") }],
       linhas: amostra.y.map(function (y, i) {
         return ["nº " + (i + 1), String(y), F.pct(amostra.p[i], 0), F.dec(perdas[i], 4)];
       }),
@@ -6681,18 +6685,21 @@ Aula.slide({
 
     var passos = [
       { titulo: "1. Prever com o que já existe",
-        conta: "p = sigmoid(F) = sigmoid(" + F.dec(FAtual, 4) + ") = " + F.pct(pAtual, 4),
-        nota: "A previsão atual do grupo vem do escore acumulado até aqui." },
+        conta: Mat.b("p = \\sigma(F) = \\frac{1}{1+e^{-F}} = \\frac{1}{1+e^{" + Mat.n(-FAtual, 4) + "}} = " +
+          Mat.pct(pAtual, 4)),
+        nota: "A previsão atual do grupo vem do escore acumulado até aqui, na mesma logística do slide 09." },
       { titulo: "2. Calcular a direção de melhoria",
-        conta: "r = y − p = " + F.dec(linhaB.y, 0) + " − " + F.dec(pAtual, 4) +
-               " = " + F.dec(linhaB.r, 4),
-        nota: "Para a perda logística, o gradiente negativo em relação ao escore é y menos p." },
+        conta: Mat.b("r = -\\frac{\\partial L}{\\partial F} = y - p = " + Mat.n(linhaB.y, 0) + " - " +
+          Mat.n(pAtual, 4) + " = " + Mat.n(linhaB.r, 4)),
+        /* É aqui que o nome da técnica se justifica: o resíduo y menos p não é escolha arbitrária,
+           é o gradiente negativo da perda logística em relação ao escore. */
+        nota: "O resíduo não é escolha de conveniência: para a perda logística do slide 13, o gradiente negativo em relação ao escore é exatamente y menos p. Por isso a técnica se chama gradient boosting." },
       { titulo: "3. Ajustar uma árvore pequena aos r",
-        conta: "folha do grupo B: média dos r = " + F.dec(it1.grupos.B.h, 6),
+        conta: Mat.b("h_1(\\text{folha B}) = \\overline{r}_{\\text{B}} = " + Mat.n(it1.grupos.B.h, 6)),
         nota: "A árvore devolve um número por folha, positivo ou negativo. Não é um voto." },
       { titulo: "4. Atualizar o escore",
-        conta: "F novo = " + F.dec(FAtual, 4) + " + 1 × " + F.dec(it1.grupos.B.h, 6) +
-               " = " + F.dec(it1.grupos.B.F, 4),
+        conta: Mat.b("F_1 = F_0 + \\eta\\,h_1 = " + Mat.n(FAtual, 4) + " + 1 \\times " +
+          Mat.n(it1.grupos.B.h, 6) + " = " + Mat.n(it1.grupos.B.F, 4)),
         nota: "Só depois de somar todas as contribuições aplicamos a função logística." },
     ];
 
@@ -6711,8 +6718,8 @@ Aula.slide({
     marcas.forEach(function (m) {
       if (!m.visivel) return;
       g.ponto(m.F, 0.4, { r: 10, cor: "var(--boost)" });
-      g.texto(m.F, 0.4, m.rot, { ancora: "middle", dy: -22, tamanho: 18, cor: "var(--ink)" });
-      g.texto(m.F, 0.4, F.dec(m.F, 4), { ancora: "middle", dy: 30, tamanho: 17, peso: 400,
+      g.texto(m.F, 0.4, m.rot, { ancora: "middle", dy: -40, tamanho: 18, cor: "var(--ink)" });
+      g.texto(m.F, 0.4, F.dec(m.F, 4), { ancora: "middle", dy: -20, tamanho: 17, peso: 400,
         cor: "var(--muted)" });
     });
     if (est.passo >= 4) {
@@ -6738,8 +6745,7 @@ Aula.slide({
             h("h3", { class: "secao", estilo: "margin:0 0 6px" }, p.titulo),
             visivel
               ? h("div", {}, [
-                  h("p", { estilo: "font-family:var(--serif);font-size:22px;color:var(--ink);margin:0" },
-                    p.conta),
+                  h("p", { estilo: "font-size:21px;color:var(--ink);margin:0" }, p.conta),
                   h("p", { class: "nota", estilo: "margin-top:6px" }, p.nota),
                 ])
               : h("p", { class: "nota", estilo: "margin:0" }, "passo ainda não executado"),
@@ -6854,8 +6860,8 @@ Aula.slide({
         ]),
         UI.tabela({
           compacta: true,
-          colunas: [{ rotulo: "Registro" }, { rotulo: "y" }, { rotulo: "p inicial" },
-                    { rotulo: "resíduo" }],
+          colunas: [{ rotulo: "Registro" }, { rotulo: Mat.i("y") },
+                    { rotulo: Mat.i("p_0") }, { rotulo: Mat.i("r = y - p_0") }],
           linhas: lista.map(function (r) {
             return ["nº " + r.id, String(r.y), F.pct(p0, 2),
                     est.residuos ? F.dec(r.y - p0, 4) : ""];
@@ -6958,9 +6964,10 @@ Aula.slide({
     });
     var tabela = UI.tabela({
       compacta: true,
-      colunas: [{ rotulo: "Registro" }, { rotulo: "Grupo" }, { rotulo: "y" },
-                { rotulo: "p atual" }, { rotulo: "r = y − p" },
-                { rotulo: "folha h" }, { rotulo: "F novo" }, { rotulo: "p novo" }],
+      colunas: [{ rotulo: "Registro" }, { rotulo: "Grupo" }, { rotulo: Mat.i("y") },
+                { rotulo: Mat.i("p_{\\text{atual}}") }, { rotulo: Mat.i("r = y - p") },
+                { rotulo: Mat.i("h(\\text{folha})") }, { rotulo: Mat.i("F_{\\text{novo}}") },
+                { rotulo: Mat.i("p_{\\text{novo}}") }],
       linhas: linhas,
       legenda: "Resíduos e atualização dos dez registros",
     });
@@ -7297,9 +7304,9 @@ Aula.slide({
       h("div", { class: "coluna cresce" }, [
         h("div", { class: "painel claro cresce centro" }, g.svg),
         h("div", { class: "painel cor", estilo: "display:flex;gap:26px;flex-wrap:wrap;align-items:baseline" }, [
-          h("span", { class: "medio" }, "escore final " + F.dec(total, 6)),
+          h("span", { class: "medio" }, Mat.i("F = " + Mat.n(total, 6))),
           est.converter
-            ? h("span", { class: "medio" }, "PD " + F.pct(pd, 4))
+            ? h("span", { class: "medio" }, Mat.i("p = \\sigma(F) = " + Mat.pct(pd, 4)))
             : h("span", { class: "apoio" }, "a PD só aparece depois da conversão"),
           h("span", { class: "apoio" },
             "grupo " + outro + " chegaria a " + F.dec(totalOutro, 6) +

@@ -67,8 +67,8 @@ Aula.slide({
         ]),
         UI.tabela({
           compacta: true,
-          colunas: [{ rotulo: "Registro" }, { rotulo: "y" }, { rotulo: "p inicial" },
-                    { rotulo: "resíduo" }],
+          colunas: [{ rotulo: "Registro" }, { rotulo: Mat.i("y") },
+                    { rotulo: Mat.i("p_0") }, { rotulo: Mat.i("r = y - p_0") }],
           linhas: lista.map(function (r) {
             return ["nº " + r.id, String(r.y), F.pct(p0, 2),
                     est.residuos ? F.dec(r.y - p0, 4) : ""];

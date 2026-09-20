@@ -71,8 +71,8 @@ Aula.slide({
 
     var tabela = UI.tabela({
       compacta: true,
-      colunas: [{ rotulo: "Observação" }, { rotulo: "y" }, { rotulo: "p prevista" },
-                { rotulo: "Perda" }],
+      colunas: [{ rotulo: "Observação" }, { rotulo: Mat.i("y") },
+                { rotulo: Mat.i("p") , unidade: "prevista" }, { rotulo: Mat.i("L") }],
       linhas: amostra.y.map(function (y, i) {
         return ["nº " + (i + 1), String(y), F.pct(amostra.p[i], 0), F.dec(perdas[i], 4)];
       }),
