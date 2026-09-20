@@ -462,6 +462,27 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(cf).toContainText("estratégia de identificação adicionais");
   await cf.getByRole("button", { name: "Voltar" }).click();
   await expect(cf).toContainText("Antes de responder");
+  // c4p11: a razão de odds multiplica odds, não PD; a conversão completa aparece só depois de conferir
+  await page.goto("/aulas/c4p11");
+  const ro = page.locator('figure[data-vz="razao-de-chances"]');
+  await expect(ro).toContainText("As odds multiplicam por 2,11. E a PD?");
+  await expect(ro).toContainText("21,1%"); await expect(ro).toContainText("19,0%"); await expect(ro).toContainText("12,1%");
+  await expect(ro).toContainText("Qual caminho você usaria?");
+  await expect(ro).not.toContainText("Portanto, aproximadamente");
+  await expect(page.locator("main")).not.toContainText("RECALCULADO AQUI");
+  await expect(ro.getByRole("button", { name: "Conferir resposta" })).toBeDisabled();
+  await ro.getByRole("radio", { name: /21,1%/ }).check();
+  await expect(ro).not.toContainText("0,2341"); // selecionar não revela a conversão
+  await ro.getByRole("button", { name: "Conferir resposta" }).click();
+  await expect(ro).toContainText("Resposta incorreta."); await expect(ro).toContainText("não diretamente sobre a PD");
+  await expect(ro).toContainText("0,1111"); await expect(ro).toContainText("0,2341"); await expect(ro).toContainText("18,97%");
+  await expect(ro).toContainText("Portanto, aproximadamente 19,0%.");
+  await expect(ro).toContainText("As odds aumentaram cerca de 111%.");
+  await ro.getByRole("button", { name: "Tentar novamente" }).click();
+  await expect(ro).toContainText("Qual caminho você usaria?"); await expect(ro).not.toContainText("Portanto, aproximadamente");
+  await ro.getByRole("radio", { name: /19,0%/ }).check();
+  await ro.getByRole("button", { name: "Conferir resposta" }).click();
+  await expect(ro).toContainText("Resposta correta."); await expect(ro).toContainText("Primeiro multiplicamos as odds");
   // c4p1: os dois quadros de abertura, um só estado: características → escore → PD; +10 pp → +0,7453 em z → × 2,11 nas odds
   await page.goto("/aulas/c4p1");
   const rl = page.locator('figure[data-vz="logit-slides"]');
