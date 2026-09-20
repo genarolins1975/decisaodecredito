@@ -43,7 +43,7 @@ import { RetaNaProbabilidade } from "./reta-na-probabilidade";
 import { LogitSlides } from "./logit-slides";
 import { TresEscalas } from "./tres-escalas";
 import { Escalas } from "./escalas";
-import { CurvaLogistica } from "./curva-logistica";
+// CurvaLogistica continua no repositório (src/components/visuais/curva-logistica.tsx), sem página registrada desde que o laboratório assumiu o c4p7
 import { Intercepto } from "./intercepto";
 import { DescidaCompleta } from "./descida-completa";
 import { Faixas } from "./faixas";
@@ -102,7 +102,7 @@ const REGISTRO: Record<string, VisualNativo> = {
   c4p5: { Componente: EscalaLogOdds, substitui: "legacy" },
   c4p6: { Componente: () => <Escalas modo="regua" />, substitui: "legacy" },
   c4p8: { Componente: EscoreSoma, substitui: "pagina" },
-  c4p7: { Componente: CurvaLogistica, substitui: "legacy" },
+  c4p7: { Componente: LabLogistica, substitui: "legacy" },
   c4p9: { Componente: TresEscalas, substitui: "legacy" },
   c4p10: { Componente: CoeficientePd, substitui: "pagina" },
   c4p11: { Componente: RazaoDeChances, substitui: "pagina" },
