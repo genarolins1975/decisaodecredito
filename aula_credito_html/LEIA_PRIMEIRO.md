@@ -25,6 +25,20 @@ cookie chamado `sessao`, o que é conveniência de navegação e não controle d
 O link aparece no cartão da Aula 2 em `/aulas` e em `/materiais`, cadastrado como
 material da unidade pelo `scripts/import-content.ts`.
 
+## Aula ao vivo
+
+A Aula 2 é conduzida pelo baralho, e o aluno acompanha na plataforma. No painel da
+aula, em `/professor/aovivo/<sessão>`, o bloco "Conduzir pelos slides" escolhe o
+slide, e "Projetar os slides" abre a janela de projeção. Nessa janela você navega
+com as setas, como sempre; a casca lê o `#/slide/NN` do baralho e publica na sessão,
+e a tela do aluno troca de slide sem recarregar o arquivo. O baralho continua um
+arquivo único e offline: quem fala com a API é a casca, não ele.
+
+O roteiro em `src/lib/content/roteiro-aula-2.ts` liga cada slide às páginas do
+apêndice que ele cobre. No painel, escolher uma dessas páginas carrega as perguntas
+dela, que você publica para a turma enquanto projeta o slide. As 59 páginas do
+apêndice estão cobertas; só `c5p17`, "Gini ou entropia", não tem slide.
+
 Para trabalhar no código, abra `app/index.html`, que carrega os mesmos arquivos soltos.
 
 ## Conduzir

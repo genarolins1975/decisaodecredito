@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useLiveState } from "@/lib/client/use-live";
 import { api, ClientApiError } from "@/lib/client/api";
@@ -9,7 +9,7 @@ import { StatusBadge } from "@/components/ui";
 import type { Block, PublicQuestion } from "@/lib/services/content";
 
 type Activity = { id: string; status: string; round: string; closesAt: string | null; maxAttempts: number; question: PublicQuestion; myAttempt: { attemptNo: number; status: string; answer: unknown; isCorrect: boolean | null; feedback: never } | null; attemptsUsed: number };
-type State = { session: { id: string; status: string; stateVersion: number; classId: string }; currentPage: { slug: string; title: string } | null; activities: Activity[] };
+type State = { session: { id: string; status: string; stateVersion: number; classId: string }; currentPage: { slug: string; title: string } | null; currentSlide: string | null; activities: Activity[] };
 type PageData = { page: { slug: string; title: string; objective: string | null; support: string | null; chapter: { number: number; title: string; color: string | null } }; blocks: Block[]; questions: PublicQuestion[]; prev: string | null; next: string | null };
 
 export function LiveStudent({ sessionId, classId, meeting, initial }: { sessionId: string; classId: string; meeting: { id: string; title: string; number: number; videoUrl: string | null }; initial: State }) {
@@ -22,6 +22,18 @@ export function LiveStudent({ sessionId, classId, meeting, initial }: { sessionI
   const [windows, setWindows] = useState<{ id: string; meetingId: string; closesAt: string }[]>([]);
 
   const st = state ?? initial;
+  const slide = follow ? st.currentSlide : null;
+  const quadro = useRef<HTMLIFrameElement>(null);
+  /* O baralho de /slides/aula-2 navega por `#/slide/NN` e escuta hashchange. Trocar só o hash do
+     iframe, que é da mesma origem, move o aluno de slide sem recarregar os 863 KB do arquivo. */
+  useEffect(() => {
+    if (!slide) return;
+    const alvo = `#/slide/${slide}`;
+    const aplicar = () => { try { const w = quadro.current?.contentWindow; if (w && w.location.hash !== alvo) w.location.hash = alvo; } catch { /* ainda carregando */ } };
+    aplicar();
+    const f = quadro.current; f?.addEventListener("load", aplicar);
+    return () => f?.removeEventListener("load", aplicar);
+  }, [slide]);
   const slug = follow ? (st.currentPage?.slug ?? ownSlug) : ownSlug;
   useEffect(() => { if (!slug) return; api<PageData>(`/api/conteudo/pagina/${slug}?classId=${classId}`).then(setPage).catch(() => setPage(null)); }, [slug, classId]);
   useEffect(() => {
@@ -52,6 +64,12 @@ export function LiveStudent({ sessionId, classId, meeting, initial }: { sessionI
           <button type="button" className={`btn btn-sm ${!follow ? "" : "btn-secondary"}`} aria-pressed={!follow} onClick={() => { setSlug(slug); setFollow(false); }}>Navegar por conta própria</button>
           {!follow && st.currentPage && <button type="button" className="btn btn-sm btn-ghost" onClick={() => { setFollow(true); setSlug(st.currentPage!.slug); }}>Voltar ao slide do professor: {st.currentPage.title}</button>}
         </div>
+        {slide && (
+          <div className="card p-0 overflow-hidden mb-4">
+            <iframe ref={quadro} title={`Slide ${slide} da aula`} src={`/slides/aula-2#/slide/${slide}`}
+              className="w-full block border-0" style={{ aspectRatio: "16 / 9", minHeight: 320 }} />
+          </div>
+        )}
         {page ? (
           <article className="card">
             <p className="eyebrow">Capítulo {page.page.chapter.number} · {page.page.chapter.title}</p>

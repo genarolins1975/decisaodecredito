@@ -5,6 +5,7 @@ import { newId } from "@/lib/ids";
 import { ApiError } from "@/lib/auth/guard";
 import { audit } from "@/lib/audit";
 import { grade, validateAnswer, type AnswerKey } from "@/lib/services/grading";
+import { slideValido } from "@/lib/content/roteiro-aula-2";
 
 async function bump(sessionId: string) {
   await db.update(schema.liveSessions).set({ stateVersion: sql`${schema.liveSessions.stateVersion} + 1` }).where(eq(schema.liveSessions.id, sessionId));
@@ -40,6 +41,18 @@ export async function setSessionStatus(sessionId: string, status: "open" | "clos
   if (status === "closed") await db.update(schema.sessionActivities).set({ status: "closed", closedAt: new Date() }).where(and(eq(schema.sessionActivities.liveSessionId, sessionId), eq(schema.sessionActivities.status, "open")));
   await bump(sessionId);
   await audit({ actorUserId: actorId, action: `live.${status}`, entity: "live_session", entityId: sessionId, classId: s.classId });
+}
+
+/**
+ * Aula conduzida por slides. O baralho de /slides/aula-2 navega por `#/slide/NN`, então basta
+ * transmitir o número: o aluno vê o mesmo slide sem recarregar o arquivo. Guardar o número em vez
+ * de uma página preserva o modo página, que continua valendo para as demais aulas.
+ */
+export async function setCurrentSlide(sessionId: string, slide: string | null) {
+  if (slide !== null && !slideValido(slide)) throw new ApiError(400, "Slide inexistente no roteiro da Aula 2");
+  await getSession(sessionId);
+  await db.update(schema.liveSessions).set({ currentSlide: slide }).where(eq(schema.liveSessions.id, sessionId));
+  await bump(sessionId);
 }
 
 export async function setCurrentPage(sessionId: string, pageSlug: string, editionId: string) {
@@ -119,7 +132,7 @@ export async function studentState(sessionId: string, userId: string) {
   const mine = ids.length ? await db.select().from(schema.attempts).where(and(eq(schema.attempts.userId, userId), inArray(schema.attempts.activityId, ids))).orderBy(desc(schema.attempts.attemptNo)) : [];
   return {
     session: { id: s.id, status: s.status, stateVersion: s.stateVersion, classId: s.classId },
-    currentPage: page,
+    currentPage: page, currentSlide: s.currentSlide,
     activities: acts.map(({ a, v, q }) => {
       const my = mine.filter((m) => m.activityId === a.id);
       const last = my[0] ?? null;
@@ -149,7 +162,7 @@ export async function teacherState(sessionId: string) {
   const enrolled = await db.select({ n: sql<number>`count(*)` }).from(schema.enrollments).where(and(eq(schema.enrollments.classId, s.classId), eq(schema.enrollments.status, "ativo"), eq(schema.enrollments.role, "aluno")));
   return {
     session: { id: s.id, status: s.status, stateVersion: s.stateVersion, classId: s.classId, meetingId: s.meetingId },
-    currentPage: page, enrolled: Number(enrolled[0]?.n ?? 0),
+    currentPage: page, currentSlide: s.currentSlide, enrolled: Number(enrolled[0]?.n ?? 0),
     activities: acts.map(({ a, v, q }) => {
       const rows = all.filter((x) => x.at.activityId === a.id);
       // última tentativa de cada aluno

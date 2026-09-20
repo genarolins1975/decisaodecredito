@@ -23,7 +23,9 @@ export async function GET() {
       headers: {
         "Content-Type": "text/html; charset=utf-8",
         "Content-Disposition": 'inline; filename="aula-2-slides.html"',
-        "Cache-Control": "private, no-store",
+        // numa turma inteira o arquivo é baixado por cada aluno, e ele só muda a cada deploy:
+        // cache privado de uma hora poupa a rede da sala sem servir versão velha por muito tempo.
+        "Cache-Control": "private, max-age=3600, must-revalidate",
       },
     });
   } catch (e) {
