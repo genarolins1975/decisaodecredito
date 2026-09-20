@@ -353,21 +353,6 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(fronteira).toContainText("6 defaults evitados · 2 boas recusadas");
   await fronteira.getByRole("button", { name: "Zerar os coeficientes" }).click();
   await expect(fronteira).toContainText("nenhuma fronteira");
-  await page.goto("/aulas/c4p2");
-  const lab = page.locator('figure[data-vz="lab-logistica"]');
-  await expect(lab).toContainText("Utilização 60%: z = 0,136, odds 1,15, PD 53,4%."); // ajuste da aula: β₀ −3,121787, β₁ 5,429194
-  await expect(lab).toContainText("PD de 53,4% para 66,3%, +13,0 pp");
-  await expect(lab).toContainText("Ajuste da aula");
-  await lab.getByRole("button", { name: "Eliminar o efeito" }).click();
-  await expect(lab).toContainText("A utilização não altera a PD: a curva é horizontal.");
-  await expect(lab).toContainText("Parâmetros exploratórios");
-  await expect(lab).not.toContainText("A curva fica horizontal: toda proposta recebe a mesma PD"); // explicação só após revelar
-  await lab.getByRole("button", { name: "Revelar explicação" }).click();
-  await expect(lab).toContainText("A curva fica horizontal: toda proposta recebe a mesma PD");
-  await lab.getByRole("button", { name: "Restaurar ajuste da aula" }).click();
-  await expect(lab).toContainText("Ajuste da aula");
-  await lab.getByRole("button", { name: "Comparar com a reta" }).click();
-  await expect(lab).toContainText("p̂ = −0,143 + 1,118 · x");
   // c4p3: escala 1, probabilidade: PD por operação, cem quadrados, limites e odds, tudo a partir do mesmo estado
   await page.goto("/aulas/c4p3");
   const ep = page.locator('figure[data-vz="escala-probabilidade"]');
@@ -551,6 +536,27 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(ll).toContainText("Proposta #12"); await expect(ll).toContainText("≈ 0,0041");
   await ll.getByRole("button", { name: "Restaurar seleção" }).click();
   await expect(ll).toContainText("Proposta #2"); await expect(ll).toContainText("−ln(0,2665) ≈ 1,3223");
+  // c4p2: a reta ajustada na probabilidade sai do intervalo válido; o truncamento cria trecho plano
+  await page.goto("/aulas/c4p2");
+  const rp = page.locator('figure[data-vz="reta-na-probabilidade"]');
+  await expect(rp).toContainText("Uma reta não garante probabilidades válidas");
+  await expect(rp).toContainText("p(u) = −0,1426 + 0,011176 × u");
+  await expect(rp).toContainText("−8,68%"); await expect(rp).toContainText("não pode ser interpretado como probabilidade");
+  await expect(rp).toContainText("a reta cruza 0% em 12,8% de utilização");
+  await expect(rp).not.toContainText("0,00%"); // o truncamento começa desligado
+  await expect(page.locator("main")).not.toContainText("DOIS DEFEITOS");
+  await rp.getByLabel("Utilização, campo em %").fill("50");
+  await expect(rp).toContainText("41,62%"); await expect(rp).toContainText("a previsão está entre 0% e 100%");
+  await rp.getByLabel("Utilização, campo em %").fill("100");
+  await expect(rp).toContainText("97,50%"); // no domínio do exemplo a reta não ultrapassa 100%
+  await expect(rp.getByRole("button", { name: /Comparar \+10 pp/ })).toBeDisabled(); // +10 pp sairia do domínio
+  await expect(rp).toContainText("sai do domínio do exemplo");
+  await rp.getByRole("button", { name: "Restaurar exemplo" }).click();
+  await rp.getByRole("button", { name: "Limitar a previsão a 0%–100%" }).click();
+  await expect(rp).toContainText("0,00%"); await expect(rp).toContainText("mín(1; máx(0; p))");
+  await rp.getByRole("button", { name: /Comparar \+10 pp/ }).click();
+  await expect(rp).toContainText("De 5% para 15% de utilização");
+  await expect(rp).toContainText("+11,18 pp"); await expect(rp).toContainText("+2,50 pp");
   // c4p1: os dois quadros de abertura, um só estado: características → escore → PD; +10 pp → +0,7453 em z → × 2,11 nas odds
   await page.goto("/aulas/c4p1");
   const rl = page.locator('figure[data-vz="logit-slides"]');

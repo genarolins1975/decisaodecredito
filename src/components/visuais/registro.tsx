@@ -39,6 +39,7 @@ import { RazaoDeChances } from "./razao-de-chances";
 import { ImpactoPd } from "./impacto-pd";
 import { UnidadeCoeficiente } from "./unidade-coeficiente";
 import { LogLoss } from "./log-loss";
+import { RetaNaProbabilidade } from "./reta-na-probabilidade";
 import { LogitSlides } from "./logit-slides";
 import { TresEscalas } from "./tres-escalas";
 import { Escalas } from "./escalas";
@@ -95,7 +96,7 @@ const REGISTRO: Record<string, VisualNativo> = {
   c3p16: { Componente: Woe, substitui: "legacy" },
   c3p17: { Componente: ValorDaInformacao, substitui: "legacy" },
   c4p1: { Componente: LogitSlides, substitui: "abertura" },
-  c4p2: { Componente: LabLogistica, substitui: "figura" },
+  c4p2: { Componente: RetaNaProbabilidade, substitui: "pagina" },
   c4p3: { Componente: EscalaProbabilidade, substitui: "legacy" },
   c4p4: { Componente: EscalaOdds, substitui: "legacy" },
   c4p5: { Componente: EscalaLogOdds, substitui: "legacy" },
