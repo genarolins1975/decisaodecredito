@@ -573,6 +573,24 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await rp.getByRole("button", { name: /Comparar \+10 pp/ }).click();
   await expect(rp).toContainText("De 5% para 15% de utilização");
   await expect(rp).toContainText("+11,18 pp"); await expect(rp).toContainText("+2,50 pp");
+  // c4p16: uma iteração do gradiente; a atualização é −ηg e os três parâmetros andam juntos
+  await page.goto("/aulas/c4p16");
+  const gp = page.locator('figure[data-vz="gradiente-passo"]');
+  await expect(gp).toContainText("Uma iteração: do gradiente aos novos coeficientes");
+  await expect(gp).toContainText("β₀ = β₁ = β₂ = 0"); await expect(gp).toContainText("50,00%"); await expect(gp).toContainText("0,69315");
+  await expect(gp).toContainText("−0,59375"); await expect(gp).toContainText("−0,23438");
+  await expect(gp).toContainText("+0,05938"); await expect(gp).toContainText("+0,02344");
+  await expect(gp).toContainText("Média das contribuições: −0,59375");
+  await expect(gp).toContainText("Somar as 16 contribuições e dividir por 16 produz g₁.");
+  expect(await gp.locator(".gp-barra").count()).toBe(16);
+  await expect(page.locator("main")).not.toContainText("distância até o ótimo");
+  await expect(gp.getByRole("button", { name: "Reiniciar" })).toBeDisabled();
+  await gp.getByRole("button", { name: "Aplicar esta atualização" }).click();
+  await expect(gp).toContainText("Estado atual, depois de 1 iteração");
+  await expect(gp).toContainText("0,67194"); await expect(gp).toContainText("antes 0,69315"); // a perda cai
+  await expect(gp).toContainText("0,05938"); await expect(gp).toContainText("0,02344"); // os três coeficientes mudaram juntos
+  await gp.getByRole("button", { name: "Reiniciar" }).click();
+  await expect(gp).toContainText("β₀ = β₁ = β₂ = 0"); await expect(gp).toContainText("0,69315");
   // c4p1: os dois quadros de abertura, um só estado: características → escore → PD; +10 pp → +0,7453 em z → × 2,11 nas odds
   await page.goto("/aulas/c4p1");
   const rl = page.locator('figure[data-vz="logit-slides"]');
@@ -670,11 +688,6 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(regua).toContainText("escore didático 865");
   await regua.getByRole("button", { name: "PD 50%" }).click();
   await expect(regua).toContainText("escore didático 600");
-  await page.goto("/aulas/c4p16");
-  const grad = page.locator('figure[data-vz="descida-gradiente"]');
-  await expect(grad).toContainText("gradiente (+0,00000; −0,59375; −0,23438)");
-  await grad.getByRole("button", { name: "Executar uma iteração" }).click();
-  await expect(grad).toContainText("Iteração 1, perda 0,67194");
   await page.goto("/aulas/c4p17");
   const desc = page.locator('figure[data-vz="descida-completa"]');
   await desc.getByRole("button", { name: "+10.000" }).click();
