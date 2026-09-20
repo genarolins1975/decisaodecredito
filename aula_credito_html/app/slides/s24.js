@@ -38,26 +38,35 @@ Aula.slide({
     var r = A.ganho(cand);
     var rOutro = A.ganho(outro);
 
+    /* Notação do bloco de árvore, introduzida aqui e reusada nos slides seguintes:
+       G é a impureza de Gini de um nó, n o tamanho do nó, p a taxa de eventos nele,
+       Ḡ a impureza dos filhos ponderada pelo tamanho e ΔG o ganho da divisão. */
     var etapas = [
       { titulo: "1. Impureza da raiz",
-        linhas: ["p = " + F.inteiro(A.d) + " / " + F.inteiro(A.n) + " = " + F.pct(A.raiz.pd, 0),
-                 "Gini = 2 × p × (1 − p) = " + F.dec(r.pai, 3)] },
+        linhas: [Mat.passos([
+          "p &= \\frac{" + Mat.int(A.d) + "}{" + Mat.int(A.n) + "} = " + Mat.pct(A.raiz.pd, 0),
+          "G(\\text{raiz}) &= 2\\,p\\,(1-p) = " + Mat.n(r.pai, 3),
+        ])] },
       { titulo: "2. Impureza de cada filho",
-        linhas: [cand.esq.rotulo + ": p = " + F.pct(cand.esq.d / cand.esq.n, 2) +
-                 ", Gini = " + F.dec(r.esq, 4),
-                 cand.dir.rotulo + ": p = " + F.pct(cand.dir.d / cand.dir.n, 2) +
-                 ", Gini = " + F.dec(r.dir, 4)] },
+        linhas: [Mat.passos([
+          "G_{\\text{esq}} &= 2\\,p_{\\text{esq}}(1-p_{\\text{esq}}) = " + Mat.n(r.esq, 4) +
+            "\\quad " + Mat.t(cand.esq.rotulo) + ",\\; p_{\\text{esq}} = " + Mat.pct(cand.esq.d / cand.esq.n, 2),
+          "G_{\\text{dir}} &= 2\\,p_{\\text{dir}}(1-p_{\\text{dir}}) = " + Mat.n(r.dir, 4) +
+            "\\quad " + Mat.t(cand.dir.rotulo) + ",\\; p_{\\text{dir}} = " + Mat.pct(cand.dir.d / cand.dir.n, 2),
+        ])] },
       { titulo: "3. Ponderação pelo tamanho",
-        linhas: ["pesos: " + F.inteiro(cand.esq.n) + "/" + F.inteiro(A.n) + " = " +
-                 F.dec(r.pesoEsq, 2) + " e " + F.inteiro(cand.dir.n) + "/" + F.inteiro(A.n) +
-                 " = " + F.dec(r.pesoDir, 2),
-                 "Gini ponderado = " + F.dec(r.pesoEsq, 2) + " × " + F.dec(r.esq, 4) +
-                 " + " + F.dec(r.pesoDir, 2) + " × " + F.dec(r.dir, 4) + " = " +
-                 F.dec(r.ponderado, 6)] },
+        linhas: [Mat.passos([
+          "\\bar{G} &= \\frac{n_{\\text{esq}}}{n}\\,G_{\\text{esq}} + \\frac{n_{\\text{dir}}}{n}\\,G_{\\text{dir}}",
+          "&= \\frac{" + Mat.int(cand.esq.n) + "}{" + Mat.int(A.n) + "}\\cdot " + Mat.n(r.esq, 4) +
+            " + \\frac{" + Mat.int(cand.dir.n) + "}{" + Mat.int(A.n) + "}\\cdot " + Mat.n(r.dir, 4),
+          "&= " + Mat.n(r.ponderado, 6),
+        ])] },
       { titulo: "4. Ganho e comparação",
-        linhas: ["ganho = " + F.dec(r.pai, 3) + " − " + F.dec(r.ponderado, 6) + " = " +
-                 F.dec(r.ganho, 6),
-                 "candidato " + outro.rotulo.toLowerCase() + ": ganho " + F.dec(rOutro.ganho, 6)] },
+        linhas: [Mat.passos([
+          "\\Delta G &= G(\\text{raiz}) - \\bar{G} = " + Mat.n(r.pai, 3) + " - " + Mat.n(r.ponderado, 6) +
+            " = " + Mat.n(r.ganho, 6),
+          "&\\text{candidato " + outro.rotulo.toLowerCase() + ": } \\Delta G = " + Mat.n(rOutro.ganho, 6),
+        ])] },
     ];
 
     var g = Graf.novo({ w: 520, h: 300, m: { e: 78, d: 24, c: 20, b: 56 } });
@@ -122,7 +131,9 @@ Aula.slide({
           ]),
         ]),
         h("div", { class: "painel claro cresce centro" }, [
-          h("h3", { class: "secao" }, "Impureza binária: 2p(1 − p)"),
+          h("h3", { class: "secao", estilo: "display:flex;gap:8px;align-items:baseline" },
+            ["Impureza binária", h("span", { estilo: "text-transform:none;letter-spacing:0" },
+              Mat.i("G = 2\\,p\\,(1-p)"))]),
           g.svg,
         ]),
         est.etapa >= 4

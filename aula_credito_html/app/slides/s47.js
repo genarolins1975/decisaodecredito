@@ -92,7 +92,7 @@ Aula.slide({
       alternativa = h("div", { class: "painel", estilo: "border-color:var(--ink-soft)" }, [
         h("h3", { class: "secao" }, "Versão alternativa, separada"),
         h("p", { class: "formula peq" },
-          "E[resultado] = (1 − p) × m_bom − p × L − c"),
+          Mat.b("\\mathbb{E}[\\text{resultado}] = (1-p)\\,m - p\\,L - c")),
         UI.kv([
           ["margem condicional ao adimplemento", F.reais(mGood)],
           ["custo por operação", F.reais(custo)],

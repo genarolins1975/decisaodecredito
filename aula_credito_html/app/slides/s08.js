@@ -98,7 +98,7 @@ Aula.slide({
             UI.selo("exemplo do problema", "sim"),
           ]),
           h("p", { class: "formula peq" },
-            "p_linear = 0,10 + 0,03 × (comp − 30)"),
+            Mat.b("p_{\\text{reta}} = 0{,}10 + 0{,}03\\,(\\mathit{comp} - 30)")),
           gr.svg,
         ]),
         h("div", { class: "painel" }, [

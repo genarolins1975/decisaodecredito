@@ -89,7 +89,7 @@ Aula.slide({
       h("div", { class: "coluna", estilo: "flex:0 0 430px" }, [
         h("div", { class: "painel cor" }, [
           h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:0" },
-            "L = −[ y · ln(p) + (1 − y) · ln(1 − p) ]"),
+            Mat.b("L = -\\bigl[\\, y\\,\\ln p + (1 - y)\\,\\ln(1 - p) \\,\\bigr]")),
           h("div", { class: "kv", estilo: "margin-top:10px;font-size:22px" }, [
             h("dt", {}, "observação"), h("dd", {}, "y = " + est.y),
             h("dt", {}, "previsão"), h("dd", {}, F.pct(est.p, 1)),

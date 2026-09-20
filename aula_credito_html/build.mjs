@@ -18,12 +18,14 @@ const dist = path.join(raiz, "dist");
 /* A pasta content pertence à aplicação Next, um nível acima desta. */
 const servidos = path.join(raiz, "..", "content", "slides");
 
-const nucleo = ["01-nucleo.js", "02-svg.js", "03-ui.js", "04-comum.js"].map((f) => path.join(app, "nucleo", f));
+const vendor = [path.join(app, "vendor", "katex.js")];
+const nucleo = ["01-nucleo.js", "02-svg.js", "03-ui.js", "04-comum.js", "05-mat.js"].map((f) => path.join(app, "nucleo", f));
 const dados = ["10-dados.js", "11-resultados.js"].map((f) => path.join(app, "dados", f));
 const slides = fs.readdirSync(path.join(app, "slides")).filter((f) => f.endsWith(".js")).sort()
   .map((f) => path.join(app, "slides", f));
 const motor = [path.join(app, "nucleo", "90-app.js")];
 const css = path.join(app, "estilo", "aula.css");
+const cssKatex = path.join(app, "vendor", "katex.css");
 
 /* 1. resultados do experimento -------------------------------------------- */
 const jsonPath = path.join(raiz, "experimento", "saida", "resultados.json");
@@ -45,7 +47,7 @@ if (fs.existsSync(jsonPath)) {
   }
 }
 
-const arquivos = [...nucleo, ...dados, ...slides, ...motor];
+const arquivos = [...vendor, ...nucleo, ...dados, ...slides, ...motor];
 
 /* 2. index de trabalho ----------------------------------------------------- */
 const rel = (f) => path.relative(app, f).split(path.sep).join("/");
@@ -89,12 +91,12 @@ ${corpoScripts}
 `;
 
 fs.writeFileSync(path.join(app, "index.html"),
-  cabeca(`<link rel="stylesheet" href="estilo/aula.css">`,
+  cabeca(`<link rel="stylesheet" href="vendor/katex.css">\n<link rel="stylesheet" href="estilo/aula.css">`,
     arquivos.map((f) => `<script src="${rel(f)}"></script>`).join("\n")), "utf8");
 
 /* 3. distribuição offline -------------------------------------------------- */
 fs.mkdirSync(dist, { recursive: true });
-const estiloInline = `<style>\n${fs.readFileSync(css, "utf8")}\n</style>`;
+const estiloInline = `<style>\n${fs.readFileSync(cssKatex, "utf8")}\n${fs.readFileSync(css, "utf8")}\n</style>`;
 const js = arquivos.map((f) => `/* ${rel(f)} */\n` + fs.readFileSync(f, "utf8")).join("\n\n");
 const scriptsInline = `<script>\n${js}\n</script>`;
 const saida = path.join(dist, "aula_credito.html");

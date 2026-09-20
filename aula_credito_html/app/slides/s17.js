@@ -105,12 +105,15 @@ Aula.slide({
       h("div", { class: "coluna", estilo: "flex:0 0 430px" }, [
         h("div", { class: "painel cor", estilo: "padding:10px 14px" }, [
           h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:0;font-size:19px" },
-            "z = −3,50 + 0,04 × (comp − 30) + 0,80 × hist + " +
-            F.dec(est.delta, 2) + " × (comp − 30) × hist"),
+            Mat.passos([
+              "z ={} & -3{,}50 + 0{,}80\\,\\mathit{hist}",
+              "& + (0{,}04 + \\delta\\,\\mathit{hist})\\,(\\mathit{comp} - 30)",
+            ])),
+
         ]),
         h("div", { class: "painel" }, [
           UI.botoes({
-            compacto: true, rotulo: "termo de interação",
+            compacto: true, rotulo: "δ, inclinação extra com histórico",
             opcoes: [{ valor: 0, rotulo: "sem interação" },
                      { valor: 0.03, rotulo: "interação de 0,03" }],
             valor: est.delta,

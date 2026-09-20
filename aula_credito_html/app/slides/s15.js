@@ -89,10 +89,10 @@ Aula.slide({
             UI.selo("extensão pedagógica da fórmula", "neutro"),
           ]),
           h("p", { class: "formula peq", estilo: "margin-top:8px" },
-            "z = " + F.dec(intercepto(), 2) +
-            outros.map(function (c) {
-              return " + " + F.dec(coef(c), 2) + " × [" + c.toLowerCase() + "]";
-            }).join("")),
+            Mat.b("z = " + Mat.n(intercepto(), 2) +
+              outros.map(function (c) {
+                return " + " + Mat.n(coef(c), 2) + "\\;\\mathbb{1}[\\text{" + c.toLowerCase() + "}]";
+              }).join(""))),
         ]),
         h("div", { class: "painel claro cresce" }, tabela),
         erro,

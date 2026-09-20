@@ -82,8 +82,10 @@ Aula.slide({
       h("div", { class: "coluna cresce" }, [
         h("div", { class: "painel cor", estilo: "display:flex;gap:28px;flex-wrap:wrap;align-items:baseline" }, [
           h("span", { class: "medio" }, "previsão inicial " + F.pct(p0, 2)),
-          h("span", { class: "apoio" },
-            "F0 = ln(" + F.dec(p0, 2) + " / " + F.dec(1 - p0, 2) + ") = " + F.dec(F0, 4)),
+          h("span", { class: "apoio", estilo: "display:flex;gap:6px;align-items:baseline" }, [
+            Mat.i("F_0 = \\ln\\!\\left(\\frac{" + Mat.n(p0, 2) + "}{" + Mat.n(1 - p0, 2) +
+              "}\\right) = " + Mat.n(F0, 4)),
+          ]),
           h("span", { class: "apoio" }, "perda média " + F.dec(perda, 4)),
           UI.selo("miniatura didática, distinta da base de comparação", "sim"),
         ]),

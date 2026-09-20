@@ -226,6 +226,20 @@ strong { color: var(--ink); }
 .formula.peq { font-size: 22px; padding: 7px 12px; }
 .formula.gg { font-size: 34px; }
 
+/* ----------------------------------------------------------------- matemática
+   Expressões renderizadas pelo KaTeX. Herdam o tamanho de quem as contém, para que a mesma
+   fórmula sirva à projeção dentro de .formula e ao texto corrido dentro de um parágrafo. */
+.mat { font-variant-numeric: normal; }
+.mat .katex { font-size: 1em; color: inherit; line-height: 1.25; }
+.mat-bloco { margin: 4px 0; }
+.mat-bloco .katex-display { margin: 0; }
+.mat-bloco .katex-display > .katex { text-align: center; white-space: normal; }
+/* dentro de uma linha de texto a expressão não pode empurrar a entrelinha */
+p .mat, li .mat, td .mat, th .mat, .kv .mat { line-height: 1; }
+.formula .mat-bloco:first-child { margin-top: 0; }
+.formula .mat-bloco:last-child { margin-bottom: 0; }
+body.estudo .mat .katex { font-size: 1em; }
+
 /* --------------------------------------------------------------- controles */
 
 .ctrl { display: flex; flex-direction: column; gap: 6px; }

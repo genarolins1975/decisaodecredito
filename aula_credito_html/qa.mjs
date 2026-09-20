@@ -88,10 +88,16 @@ for (const id of ids) {
       }
       return false;
     }
+    /* O KaTeX emite duas árvores para a mesma expressão: a visual e um MathML que ele recorta
+       para 1 por 1 pixel e deixa só para o leitor de tela. O MathML recortado continua devolvendo
+       a largura natural em getBoundingClientRect, então mediria transbordo que ninguém vê. */
+    function ocultoParaLeitorDeTela(el) {
+      return !!el.closest(".katex-mathml");
+    }
     for (const el of palco.querySelectorAll("#corpo *")) {
       const b = el.getBoundingClientRect();
       if (b.height === 0 || b.width === 0) continue;
-      if (dentroDeRolagem(el)) continue;
+      if (dentroDeRolagem(el) || ocultoParaLeitorDeTela(el)) continue;
       const dir = (b.right - r.right) / (r.width || 1);
       const v = estudo ? dir : Math.max((b.bottom - r.bottom) / (r.height || 1), dir);
       if (v > transbordo) {

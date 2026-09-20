@@ -86,7 +86,7 @@ Aula.slide({
           h("p", { estilo: "font-family:var(--serif);font-size:27px;color:var(--ink);margin:0" },
             "novo escore = escore atual + taxa de aprendizagem × contribuição da árvore"),
           h("p", { class: "formula peq", estilo: "margin-top:8px;background:none;border:none;padding:0" },
-            "F_m = F_(m−1) + η × h_m"),
+            Mat.b("F_m = F_{m-1} + \\eta\\, h_m")),
         ]),
         h("div", { class: "g2 cresce" }, passos.map(function (p, i) {
           var visivel = i < est.passo;

@@ -92,7 +92,7 @@ Aula.slide({
           h("button", { class: "btn fantasma", type: "button", onclick: ctx.reiniciar },
             "Reiniciar exemplo"),
           h("span", { class: "medio", estilo: "margin-left:auto" },
-            est.visiveis >= 5 ? "z = " + F.dec(z, 3) : "z parcial"),
+            est.visiveis >= 5 ? Mat.i("z = " + Mat.n(z, 3)) : Mat.i("z \\text{ parcial}")),
         ]),
       ]),
     ]));

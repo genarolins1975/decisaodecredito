@@ -99,10 +99,10 @@ Aula.slide({
       h("div", { class: "coluna", estilo: "flex:0 0 330px" }, [
         h("div", { class: "painel cor cresce" }, [
           h("h3", { class: "secao" }, "Conversões nos dois sentidos"),
-          h("p", { class: "formula peq" }, "odds = p / (1 − p)"),
-          h("p", { class: "formula peq" }, "p = odds / (1 + odds)"),
-          h("p", { class: "formula peq" }, "z = ln( p / (1 − p) )"),
-          h("p", { class: "formula peq" }, "p = 1 / (1 + e^−z)"),
+          h("p", { class: "formula peq" }, Mat.b("\\text{odds} = \\frac{p}{1 - p}")),
+          h("p", { class: "formula peq" }, Mat.b("p = \\frac{\\text{odds}}{1 + \\text{odds}}")),
+          h("p", { class: "formula peq" }, Mat.b("z = \\ln\\!\\left(\\frac{p}{1 - p}\\right)")),
+          h("p", { class: "formula peq" }, Mat.b("p = \\frac{1}{1 + e^{-z}}")),
           h("p", { class: "nota", estilo: "margin-top:10px" },
             "Conferência de ida e volta: partindo de " + F.pct(p, 2) +
             ", a volta por odds devolve " + F.pct(M.pDeOdds(odds), 2) +
