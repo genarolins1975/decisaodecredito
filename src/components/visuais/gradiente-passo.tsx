@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { aplicar, BETA_ZERO, DESTAQUE_GRAF, estado, ETA, ETAPAS, EXPLICACAO, fmt, fmt5, fmtAtualizacao, fmtPct, FORMULAS, LEGENDA_GRAF, mediaContrib, NOTA_TABELA, NOTA_UNIDADES, passo, PROPOSTAS, REGRA, RODAPE, TITULO_GRAF } from "@/lib/visuais/gradiente-passo";
+import { aplicar, BETA_ZERO, DESTAQUE_GRAF, estado, ETA, ETAPAS, EXPLICACAO, exemploUtilizacao, fmt, fmt5, fmtAtualizacao, fmtPct, FORMULAS, LEGENDA_GRAF, mediaContrib, NOTA_TABELA, NOTA_UNIDADES, passo, PROPOSTAS, REGRA, RODAPE, ROTULO_EXPANSAO, ROTULO_VOLTAR, TITULO_EXEMPLO, TITULO_GRAF } from "@/lib/visuais/gradiente-passo";
 
 /**
  * Slide 16 do capítulo 4 (c4p16): uma iteração, do gradiente aos novos coeficientes. Quadro 16:9 no sistema .rl.
@@ -14,12 +14,14 @@ export function GradientePasso({ pagina }: { pagina?: { index: number; total: nu
   const [beta, setBeta] = useState<readonly [number, number, number]>(BETA_ZERO);
   const [iteracao, setIteracao] = useState(0);
   const [perdaAnterior, setPerdaAnterior] = useState<number | null>(null);
+  const [contribuicoes, setContribuicoes] = useState(false);
   const e = estado(beta);
   const ls = passo(e);
   const media = mediaContrib(e);
   const escala = Math.max(1, Math.ceil(Math.max(...e.contribG1.map((v) => Math.abs(v)), Math.abs(media)) * 1.05));
   const cy = (v: number) => MT + (1 - (v + escala) / (2 * escala)) * (H - MT - MB);
-  const reiniciar = () => { setBeta(BETA_ZERO); setIteracao(0); setPerdaAnterior(null); };
+  const ex = exemploUtilizacao(e, iteracao);
+  const reiniciar = () => { setBeta(BETA_ZERO); setIteracao(0); setPerdaAnterior(null); setContribuicoes(false); };
   const avancar = () => { setPerdaAnterior(e.perda); setBeta(aplicar(e)); setIteracao((i) => i + 1); };
   return (
     <figure className="vz rl gp" data-vz="gradiente-passo">
@@ -27,14 +29,14 @@ export function GradientePasso({ pagina }: { pagina?: { index: number; total: nu
         <header className="rl-cab">
           <p className="rl-meta eyebrow"><span>Aula 2 · Capítulo 4 · Regressão logística</span><span>{pagina ? `${String(pagina.index).padStart(2, "0")} / ${pagina.total}` : "Gradiente"}</span></p>
           <h3 className="rl-tit">Uma iteração: do gradiente aos novos coeficientes</h3>
-          <p className="rl-sub">O gradiente indica a direção de aumento da perda. Atualizamos os coeficientes no sentido oposto.</p>
+          <p className="rl-sub">O gradiente aponta para o aumento da perda. O passo segue no sentido oposto.</p>
         </header>
 
         <div className="gp-estado" aria-live="polite">
-          <p className="gp-etapa"><span className="gp-n">1</span>{iteracao === 0 ? ETAPAS[0] : `Estado atual, depois de ${iteracao} ${iteracao === 1 ? "iteração" : "iterações"}`}</p>
+          <p className="gp-etapa"><span className="gp-n">1</span>{iteracao === 0 ? ETAPAS[0] : `Estado atual — iteração ${iteracao}`}</p>
           <div className="gp-estado-itens">
             <div><p className="gp-v">{e.beta.every((v) => v === 0) ? "β₀ = β₁ = β₂ = 0" : `β₀ ${fmt5(e.beta[0])} · β₁ ${fmt5(e.beta[1])} · β₂ ${fmt5(e.beta[2])}`}</p><p className="gp-k">coeficientes atuais</p></div>
-            <div><p className="gp-v">{e.mesmaPd !== null ? fmtPct(e.mesmaPd) : `${fmtPct(Math.min(...e.pd))} a ${fmtPct(Math.max(...e.pd))}`}</p><p className="gp-k">{e.mesmaPd !== null ? "PD de cada proposta" : "faixa das PDs estimadas"}</p></div>
+            <div><p className="gp-v">{fmtPct(e.mesmaPd ?? e.pdMedia)}</p><p className="gp-k">{e.mesmaPd !== null ? "PD de cada proposta" : "PD média estimada"}</p></div>
             <div><p className="gp-v">{fmt5(e.perda)}</p><p className="gp-k">log loss média{perdaAnterior !== null && <span className="gp-antes"> · antes {fmt5(perdaAnterior)}</span>}</p></div>
           </div>
         </div>
@@ -49,22 +51,39 @@ export function GradientePasso({ pagina }: { pagina?: { index: number; total: nu
             <p className="gp-unid nota">{NOTA_UNIDADES}</p>
           </div>
 
-          <div className="gp-graf">
-            <p className="rl-k">{TITULO_GRAF}</p>
-            <div className="gp-svg-wrap">
-              <svg viewBox={`0 0 ${W} ${H}`} className="gp-svg" role="img" aria-label={`Contribuições das 16 propostas para g₁; a média é ${fmt5(media)}`}>
-                {[-escala, -escala / 2, 0, escala / 2, escala].map((v) => <g key={v}><line x1={ML} x2={W - MR} y1={cy(v)} y2={cy(v)} className={v === 0 ? "gp-zero" : "gp-grade"} /><text x={ML - 8} y={cy(v) + 5} textAnchor="end" className="gp-tick">{fmt(v, 1)}</text></g>)}
-                {e.contribG1.map((v, i) => {
-                  const x = ML + i * bw + bw * 0.18, wid = bw * 0.64;
-                  const y = v >= 0 ? cy(v) : cy(0), alt = Math.max(1, Math.abs(cy(v) - cy(0)));
-                  return <g key={PROPOSTAS[i].id}><rect x={x} y={y} width={wid} height={alt} rx={2} className={`gp-barra ${v >= 0 ? "gp-barra--pos" : "gp-barra--neg"}`} /><text x={x + wid / 2} y={H - MB + 20} textAnchor="middle" className="gp-tick">{PROPOSTAS[i].id}</text></g>;
-                })}
-                <line x1={ML} x2={W - MR} y1={cy(media)} y2={cy(media)} className="gp-media" />
-                <text x={W - MR} y={MT - 6} textAnchor="end" className="gp-media-t">Média das contribuições: {fmt5(media)}</text>
-                <text x={ML} y={H - 8} className="gp-eixo">proposta</text>
-              </svg>
-            </div>
-            <p className="gp-destaque">{DESTAQUE_GRAF} <span className="gp-leg nota">{LEGENDA_GRAF}</span></p>
+          <div className="gp-lado">
+            {!contribuicoes && (
+              <div className="gp-exemplo">
+                <p className="gp-ex-k">{TITULO_EXEMPLO}</p>
+                <p className="gp-ex-g">g₁ = {fmt5(ex.g)}</p>
+                <p className="gp-ex-c">{ex.conta}</p>
+                <p className="gp-ex-r">{ex.regra}</p>
+                <p className="gp-ex-e">{ex.efeito}</p>
+                <button type="button" className="rl-btn rl-btn--mini gp-ex-b" aria-expanded={false} onClick={() => setContribuicoes(true)}>{ROTULO_EXPANSAO}</button>
+              </div>
+            )}
+            {contribuicoes && (
+              <div className="gp-graf">
+                <div className="gp-graf-cab">
+                  <p className="rl-k">{TITULO_GRAF}</p>
+                  <button type="button" className="rl-btn rl-btn--mini" aria-expanded onClick={() => setContribuicoes(false)}>{ROTULO_VOLTAR}</button>
+                </div>
+                <div className="gp-svg-wrap">
+                  <svg viewBox={`0 0 ${W} ${H}`} className="gp-svg" role="img" aria-label={`Contribuições das 16 propostas para g₁; a média é ${fmt5(media)}`}>
+                    {[-escala, -escala / 2, 0, escala / 2, escala].map((v) => <g key={v}><line x1={ML} x2={W - MR} y1={cy(v)} y2={cy(v)} className={v === 0 ? "gp-zero" : "gp-grade"} /><text x={ML - 8} y={cy(v) + 5} textAnchor="end" className="gp-tick">{fmt(v, 1)}</text></g>)}
+                    {e.contribG1.map((v, i) => {
+                      const x = ML + i * bw + bw * 0.18, wid = bw * 0.64;
+                      const y = v >= 0 ? cy(v) : cy(0), alt = Math.max(1, Math.abs(cy(v) - cy(0)));
+                      return <g key={PROPOSTAS[i].id}><rect x={x} y={y} width={wid} height={alt} rx={2} className={`gp-barra ${v >= 0 ? "gp-barra--pos" : "gp-barra--neg"}`} /><text x={x + wid / 2} y={H - MB + 20} textAnchor="middle" className="gp-tick">{PROPOSTAS[i].id}</text></g>;
+                    })}
+                    <line x1={ML} x2={W - MR} y1={cy(media)} y2={cy(media)} className="gp-media" />
+                    <text x={W - MR} y={MT - 6} textAnchor="end" className="gp-media-t">Média das contribuições: {fmt5(media)}</text>
+                    <text x={ML} y={H - 8} className="gp-eixo">proposta</text>
+                  </svg>
+                </div>
+                <p className="gp-destaque">{DESTAQUE_GRAF} <span className="gp-leg nota">{LEGENDA_GRAF}</span></p>
+              </div>
+            )}
           </div>
         </div>
 

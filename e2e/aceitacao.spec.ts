@@ -580,13 +580,20 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(gp).toContainText("β₀ = β₁ = β₂ = 0"); await expect(gp).toContainText("50,00%"); await expect(gp).toContainText("0,69315");
   await expect(gp).toContainText("−0,59375"); await expect(gp).toContainText("−0,23438");
   await expect(gp).toContainText("+0,05938"); await expect(gp).toContainText("+0,02344");
+  await expect(gp).toContainText("Exemplo: coeficiente da utilização");
+  await expect(gp).toContainText("−0,10 × (−0,59375) ≈ +0,05938");
+  await expect(gp).toContainText("Gradiente negativo dá atualização positiva.");
+  expect(await gp.locator(".gp-barra").count()).toBe(0); // o gráfico fica na expansão
+  await gp.getByRole("button", { name: "Ver contribuições por proposta" }).click();
   await expect(gp).toContainText("Média das contribuições: −0,59375");
   await expect(gp).toContainText("Somar as 16 contribuições e dividir por 16 produz g₁.");
   expect(await gp.locator(".gp-barra").count()).toBe(16);
+  await gp.getByRole("button", { name: "Voltar ao exemplo" }).click();
   await expect(page.locator("main")).not.toContainText("distância até o ótimo");
   await expect(gp.getByRole("button", { name: "Reiniciar" })).toBeDisabled();
   await gp.getByRole("button", { name: "Aplicar esta atualização" }).click();
-  await expect(gp).toContainText("Estado atual, depois de 1 iteração");
+  await expect(gp).toContainText("Estado atual — iteração 1");
+  await expect(gp).toContainText("PD média estimada"); await expect(gp).toContainText("59,14%");
   await expect(gp).toContainText("0,67194"); await expect(gp).toContainText("antes 0,69315"); // a perda cai
   await expect(gp).toContainText("0,05938"); await expect(gp).toContainText("0,02344"); // os três coeficientes mudaram juntos
   await gp.getByRole("button", { name: "Reiniciar" }).click();

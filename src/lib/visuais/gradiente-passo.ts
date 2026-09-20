@@ -20,7 +20,7 @@ export const perdaDoLogit = (z: number, y: number) => Math.max(z, 0) - y * z + M
 export type Estado = {
   beta: readonly [number, number, number];
   pd: number[]; residuos: number[]; contribG1: number[];
-  perda: number; g: [number, number, number]; mesmaPd: number | null;
+  perda: number; g: [number, number, number]; mesmaPd: number | null; pdMedia: number;
 };
 
 /** Estado do modelo em um trio de coeficientes: PDs, resíduos, perda média e as três componentes do gradiente. */
@@ -35,7 +35,7 @@ export function estado(beta: readonly [number, number, number]): Estado {
     perda += perdaDoLogit(z, p.y);
   }
   const iguais = pd.every((v) => Math.abs(v - pd[0]) < 1e-12);
-  return { beta, pd, residuos, contribG1, perda: perda / n, g: [g0 / n, g1 / n, g2 / n], mesmaPd: iguais ? pd[0] : null };
+  return { beta, pd, residuos, contribG1, perda: perda / n, g: [g0 / n, g1 / n, g2 / n], mesmaPd: iguais ? pd[0] : null, pdMedia: pd.reduce((a, b) => a + b, 0) / n };
 }
 
 export type LinhaPasso = { id: "b0" | "b1" | "b2"; rotulo: string; atual: number; g: number; atualizacao: number; seguinte: number };
@@ -72,18 +72,33 @@ export const fmt5 = (v: number, sinal = false) => {
 /** Zero exibido sem sinal, mesmo quando o valor é negativo por ruído. */
 export const fmtAtualizacao = (v: number) => (Math.abs(arredondar(Math.abs(v), 5)) < 1e-12 ? fmt5(0) : fmt5(v, true));
 
+/** Painel de exemplo do coeficiente da utilização, acompanhando o estado atual e os sinais. */
+export function exemploUtilizacao(e: Estado, iteracao: number, eta = ETA) {
+  const g = e.g[1], upd = -eta * g;
+  const zero = Math.abs(arredondar(Math.abs(g), 5)) < 1e-12;
+  return {
+    g, upd,
+    conta: `−${fmt(eta, 2)} × (${fmt5(g)}) ≈ ${fmtAtualizacao(upd)}`,
+    regra: zero ? "Gradiente nulo: o coeficiente não se move." : g < 0 ? "Gradiente negativo dá atualização positiva." : "Gradiente positivo dá atualização negativa.",
+    efeito: zero ? "O coeficiente fica onde está." : `O coeficiente ${g < 0 ? "sobe" : "desce"} ${iteracao === 0 ? "nesta primeira atualização" : "nesta atualização"}.`,
+  };
+}
+
 export const FORMULAS = [
   { id: "g0", t: "g₀ = média(p − y)" },
   { id: "g1", t: "g₁ = média[(p − y) × (u/10)]" },
   { id: "g2", t: "g₂ = média[(p − y) × (a/10)]" },
 ];
-export const NOTA_UNIDADES = "u: utilização em %; a: atraso em dias";
+export const NOTA_UNIDADES = "p: PD estimada; y: indicador de default; u: utilização em %; a: atraso em dias";
 export const ETAPAS = ["Começamos com os coeficientes em zero", "Calculamos o gradiente", "Aplicamos a atualização aos três parâmetros"];
 export const REGRA = "β novo = β atual − ηg";
 export const TITULO_GRAF = "De onde vem o gradiente da utilização?";
+export const ROTULO_EXPANSAO = "Ver contribuições por proposta";
+export const ROTULO_VOLTAR = "Voltar ao exemplo";
+export const TITULO_EXEMPLO = "Exemplo: coeficiente da utilização";
 export const LEGENDA_GRAF = "Cada barra é (pᵢ − yᵢ) × (uᵢ/10).";
 export const NOTA_ESTADO = "";
 export const DESTAQUE_GRAF = "Somar as 16 contribuições e dividir por 16 produz g₁.";
-export const EXPLICACAO = "Gradiente negativo dá atualização positiva. Os três coeficientes são atualizados juntos, a partir do mesmo estado.";
-export const NOTA_TABELA = "Exibição arredondada; contas com precisão integral.";
+export const EXPLICACAO = "Os três parâmetros usam o gradiente calculado no mesmo estado.";
+export const NOTA_TABELA = "Valores exibidos com arredondamento; contas com precisão integral.";
 export const RODAPE = "A seguir: repetir as atualizações e acompanhar a convergência.";
