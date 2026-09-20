@@ -90,7 +90,10 @@ var Comum = (function () {
     op = op || {};
     var A = D.arvore;
     var caminho = op.cliente ? A.percurso(op.cliente) : [];
-    var destacados = caminho.map(function (p) { return p.no; });
+    /* passo limita quantos nós do percurso já estão destacados, para a
+       revelação manual de três etapas do slide 21. */
+    var quantos = op.passo === undefined ? caminho.length : op.passo;
+    var destacados = caminho.slice(0, quantos).map(function (p) { return p.no; });
 
     function detalhe(no) {
       if (!op.mostrarNumeros) return null;
@@ -101,18 +104,21 @@ var Comum = (function () {
       if (op.ocultarFolha && no === op.ocultarFolha) return "PD = ?";
       return "PD " + F.pct(no.pd, no.pd * 100 % 1 === 0 ? 0 : 1);
     }
+    /* A PD entra como linha da caixa, e não solta embaixo, para não cruzar arestas. */
     function construir(no) {
       var dest = destacados.indexOf(no) >= 0;
       if (no.tipo === "folha") {
         return {
           rotulo: op.rotuloFolha ? op.rotuloFolha(no) : "folha",
-          detalhe: detalhe(no), valor: valor(no), destaque: dest,
+          detalhe: detalhe(no), detalhe2: valor(no), destaque: dest,
         };
       }
-      var esqDest = dest && caminho.some(function (p) { return p.no === no && p.esq; });
-      var dirDest = dest && caminho.some(function (p) { return p.no === no && !p.esq && !p.folha; });
+      var ordem = destacados.indexOf(no);
+      var ramoRevelado = ordem >= 0 && ordem + 1 < quantos;
+      var esqDest = ramoRevelado && caminho.some(function (p) { return p.no === no && p.esq; });
+      var dirDest = ramoRevelado && caminho.some(function (p) { return p.no === no && !p.esq && !p.folha; });
       return {
-        rotulo: no.pergunta, detalhe: detalhe(no), valor: valor(no), destaque: dest,
+        rotulo: no.pergunta, detalhe: detalhe(no), detalhe2: valor(no), destaque: dest,
         filhos: [
           { aresta: no.rotuloEsq, destaque: esqDest, no: construir(no.esq) },
           { aresta: no.rotuloDir, destaque: dirDest, no: construir(no.dir) },
@@ -121,9 +127,96 @@ var Comum = (function () {
     }
     return Graf.arvore({
       no: construir(A.raiz), w: op.w || 940, h: op.h || 360,
-      caixaW: op.caixaW || 210, caixaH: op.caixaH || (op.mostrarNumeros ? 58 : 40),
+      caixaW: op.caixaW || 210, caixaH: op.caixaH || (op.mostrarNumeros ? 58 : 44),
       resumo: op.resumo || "Árvore de profundidade dois: histórico na raiz e comprometimento em cada ramo.",
     });
+  }
+
+  var NOMES_COLUNAS = {
+    renda: "renda", comp: "comprometimento", rel: "relacionamento", util: "utilização",
+    hist: "histórico", canal_digital: "canal digital", canal_parceiro: "canal parceiro",
+    renda_ausente: "renda ausente", util_ausente: "utilização ausente",
+  };
+
+  /* Desenha uma árvore treinada do experimento, a partir da estrutura exportada. */
+  function arvoreTreinada(estrutura, op) {
+    op = op || {};
+    function unidade(v) {
+      if (v === "renda") return " R$";
+      if (v === "comp" || v === "util") return "%";
+      if (v === "rel") return " meses";
+      return "";
+    }
+    var curto = op.compacto;
+    function construir(no, nivel) {
+      var nome = curto ? no.variavel : (NOMES_COLUNAS[no.variavel] || no.variavel);
+      var base = {
+        rotulo: no.folha ? (no.resumido ? "ramo resumido" : "folha") :
+          nome + " \u2264 " + F.dec(no.limite, no.variavel === "renda" ? 0 : 1) +
+          (curto ? "" : unidade(no.variavel)),
+        detalhe: curto
+          ? "n = " + F.inteiro(no.n) + " · PD " + F.pct(no.pd, 1)
+          : "n = " + F.inteiro(no.n) + " · eventos " + F.inteiro(no.eventos),
+        detalhe2: curto ? null : "PD " + F.pct(no.pd, 1),
+      };
+      if (!no.folha && nivel < (op.profundidade || 2)) {
+        base.filhos = [
+          { aresta: "sim", no: construir(no.esq, nivel + 1) },
+          { aresta: "não", no: construir(no.dir, nivel + 1) },
+        ];
+      } else if (!no.folha) {
+        /* Nó interno além da profundidade exibida: mantém a pergunta e sinaliza o resumo. */
+        base.detalhe2 = "ramo resumido";
+      }
+      return base;
+    }
+    return Graf.arvore({
+      no: construir(estrutura, 0), w: op.w || 900, h: op.h || 340,
+      caixaW: op.caixaW || 210, caixaH: op.caixaH || 74,
+      resumo: op.resumo || "Árvore treinada no experimento sintético.",
+    });
+  }
+
+  /* Mapa de calor de uma malha {comp:[], util:[], pd:[]} do experimento auxiliar. */
+  function mapaCalor(malha, op) {
+    op = op || {};
+    var w = op.w || 300, hh = op.h || 300;
+    var m = { e: 54, d: 12, c: 12, b: 46 };
+    var nx = malha.comp.length, ny = malha.util.length;
+    var lim = op.max || 0.5;
+    var g = Graf.novo({ w: w, h: hh, m: m, resumo: op.resumo || "" });
+    g.x(malha.comp[0], malha.comp[nx - 1]).y(malha.util[0], malha.util[ny - 1]);
+    var larg = (g.largura / (nx - 1)) + 0.6, alt = (g.altura / (ny - 1)) + 0.6;
+    for (var j = 0; j < ny; j++) {
+      for (var i = 0; i < nx; i++) {
+        var pd = malha.pd[j * nx + i];
+        var t = Math.min(1, pd / lim);
+        g.add(sv("rect", {
+          x: g.px(malha.comp[i]) - larg / 2, y: g.py(malha.util[j]) - alt / 2,
+          width: larg, height: alt,
+          fill: "color-mix(in srgb, var(--cor) " + (6 + t * 88).toFixed(0) + "%, #ffffff)",
+        }));
+      }
+    }
+    g.eixoX({ ticks: op.ticksX || [20, 40, 60, 80], rotulo: op.rotuloX || "comprometimento" });
+    g.eixoY({ ticks: op.ticksY || [0, 50, 100], rotulo: op.rotuloY || "utilização" });
+    return g;
+  }
+
+  /* Faixa de legenda da escala de cor, de 0 até max. */
+  function legendaCor(max, op) {
+    op = op || {};
+    var w = op.w || 260, hh = 46;
+    var svg = sv("svg", { viewBox: "0 0 " + w + " " + hh, width: w, height: hh, role: "img",
+      "aria-label": "escala de PD de 0 a " + F.pct(max, 0) });
+    for (var i = 0; i < 40; i++) {
+      svg.appendChild(sv("rect", { x: (i * w) / 40, y: 0, width: w / 40 + 0.6, height: 18,
+        fill: "color-mix(in srgb, var(--cor) " + (6 + (i / 39) * 88).toFixed(0) + "%, #ffffff)" }));
+    }
+    svg.appendChild(sv("text", { x: 0, y: 36, "font-size": 16, fill: "var(--muted)", texto: "0%" }));
+    svg.appendChild(sv("text", { x: w, y: 36, "text-anchor": "end", "font-size": 16,
+      fill: "var(--muted)", texto: F.pct(max, 0) }));
+    return svg;
   }
 
   /* Barra horizontal de composição eventos e não eventos. */
@@ -194,5 +287,7 @@ var Comum = (function () {
     seletorCliente: seletorCliente, ficha: ficha, fichaLinha: fichaLinha, miniSigmoide: miniSigmoide,
     arvoreDidatica: arvoreDidatica, composicao: composicao, grade100: grade100,
     seloSimulacao: seloSimulacao, linhaFonte: linhaFonte, tabelaClientes: tabelaClientes,
+    arvoreTreinada: arvoreTreinada, NOMES_COLUNAS: NOMES_COLUNAS,
+    mapaCalor: mapaCalor, legendaCor: legendaCor,
   };
 })();

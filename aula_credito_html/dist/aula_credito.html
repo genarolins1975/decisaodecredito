@@ -1055,6 +1055,20 @@ var Graf = (function () {
     return g;
   }
 
+  /* Quebra um rótulo em no máximo duas linhas de até max caracteres. */
+  function quebrar(texto, max) {
+    texto = String(texto || "");
+    if (texto.length <= max) return [texto];
+    var palavras = texto.split(" ");
+    var l1 = "", l2 = "";
+    palavras.forEach(function (p) {
+      if (!l2 && (l1 + " " + p).trim().length <= max) l1 = (l1 + " " + p).trim();
+      else l2 = (l2 + " " + p).trim();
+    });
+    if (!l2) return [l1];
+    return [l1, l2];
+  }
+
   function ticksAuto(a, b, alvo) {
     var bruto = (b - a) / (alvo || 6);
     var mag = Math.pow(10, Math.floor(Math.log10(Math.abs(bruto) || 1)));
@@ -1083,10 +1097,13 @@ var Graf = (function () {
     g.grade({ x: ticks });
     g.eixoX({ ticks: ticks, rotulo: op.rotuloX, formato: op.formato });
     var alt = (g.altura / itens.length) * 0.6;
+    /* A base das barras é o zero quando ele pertence ao domínio; caso contrário,
+       é a borda do domínio, para a barra nunca começar fora do gráfico. */
+    var base = Math.min(Math.max(0, min), max);
     itens.forEach(function (it, i) {
       var yc = g.py(itens.length - i - 0.5);
-      var x0 = g.px(Math.min(0, it.valor < 0 ? it.valor : min < 0 ? 0 : min));
-      var x1 = g.px(it.valor);
+      var x0 = g.px(base);
+      var x1 = g.px(M.clamp(it.valor, min, max));
       g.add(sv("rect", {
         x: Math.min(x0, x1), y: yc - alt / 2, width: Math.max(2, Math.abs(x1 - x0)),
         height: alt, fill: it.cor || "var(--cor)", rx: 2, opacity: it.opacidade || 1,
@@ -1153,7 +1170,7 @@ var Graf = (function () {
           stroke: f.destaque ? "var(--cor)" : "var(--rule)",
           "stroke-width": f.destaque ? 4 : 2,
         }));
-        var mx = (x + fx) / 2, my = y + alturaCaixa + dy / 2 - 6;
+        var mx = x + (fx - x) * 0.74, my = y + alturaCaixa + dy * 0.42;
         var larg = String(f.aresta).length * 9.5 + 14;
         arestas.appendChild(sv("rect", {
           x: mx - larg / 2, y: my - 17, width: larg, height: 25, rx: 3,
@@ -1169,19 +1186,29 @@ var Graf = (function () {
 
       var folha = !no.filhos || !no.filhos.length;
       var cor = no.destaque ? "var(--cor)" : "var(--rule)";
+      var nLinhas = quebrar(no.rotulo, Math.max(8, Math.floor((larguraCaixa - 20) / 10.4))).length +
+        (no.detalhe ? 1 : 0) + (no.detalhe2 ? 1 : 0);
+      var altura = Math.max(alturaCaixa, nLinhas * 21 + 14);
       caixas.appendChild(sv("rect", {
-        x: x - larguraCaixa / 2, y: y, width: larguraCaixa, height: alturaCaixa, rx: 5,
+        x: x - larguraCaixa / 2, y: y, width: larguraCaixa, height: altura, rx: 5,
         fill: no.destaque ? "var(--cor-soft)" : (folha ? "var(--surface)" : "var(--paper)"),
         stroke: cor, "stroke-width": no.destaque ? 3 : 1.5,
       }));
-      var linhas = [no.rotulo].concat(no.detalhe ? [no.detalhe] : []).concat(no.detalhe2 ? [no.detalhe2] : []);
+      /* O rótulo quebra em até duas linhas para caber na caixa. */
+      var maxChars = Math.max(8, Math.floor((larguraCaixa - 20) / 10.4));
+      var linhas = quebrar(no.rotulo, maxChars).map(function (t) {
+        return { texto: t, principal: true };
+      });
+      if (no.detalhe) linhas.push({ texto: no.detalhe });
+      if (no.detalhe2) linhas.push({ texto: no.detalhe2 });
+      var topo = y + (altura - linhas.length * 21) / 2 + 16;
       linhas.forEach(function (t, i) {
         caixas.appendChild(sv("text", {
-          x: x, y: y + 24 + i * 21, "text-anchor": "middle",
-          "font-size": i === 0 ? 20 : 18,
-          "font-weight": i === 0 ? 700 : 400,
-          fill: i === 0 ? "var(--ink)" : "var(--muted)",
-          texto: t,
+          x: x, y: topo + i * 21, "text-anchor": "middle",
+          "font-size": t.principal ? 19 : 17,
+          "font-weight": t.principal ? 700 : 400,
+          fill: t.principal ? "var(--ink)" : "var(--muted)",
+          texto: t.texto,
         }));
       });
       if (no.valor !== undefined) {
@@ -1244,10 +1271,19 @@ var UI = (function () {
     numero.addEventListener("change", function () { emitir(ler(numero.value), "numero"); });
     numero.addEventListener("blur", function () { numero.value = escrever(Number(faixa.value)); });
 
+    /* Em escalas discretas (índices de cenários treinados) a entrada numérica não
+       tem significado para quem lê: mostramos apenas o rótulo do cenário. */
     var caixa = h("div", { class: "ctrl", estilo: op.largura ? "width:" + op.largura : "" }, [
       h("label", { for: idc }, op.rotulo),
-      h("div", { class: "ctrl-linha" }, [faixa, numero, saida]),
+      h("div", { class: "ctrl-linha" }, op.discreto ? [faixa, saida] : [faixa, numero, saida]),
     ]);
+    if (op.discreto) {
+      saida.setAttribute("style", "font-weight:700;color:var(--ink);min-width:140px");
+      faixa.setAttribute("aria-valuetext", op.formato ? op.formato(Number(op.valor)) : "");
+      faixa.addEventListener("input", function () {
+        faixa.setAttribute("aria-valuetext", op.formato ? op.formato(Number(faixa.value)) : "");
+      });
+    }
     caixa.definir = function (v) { emitir(v); };
     caixa.valor = function () { return Number(faixa.value); };
     return caixa;
@@ -1550,7 +1586,10 @@ var Comum = (function () {
     op = op || {};
     var A = D.arvore;
     var caminho = op.cliente ? A.percurso(op.cliente) : [];
-    var destacados = caminho.map(function (p) { return p.no; });
+    /* passo limita quantos nós do percurso já estão destacados, para a
+       revelação manual de três etapas do slide 21. */
+    var quantos = op.passo === undefined ? caminho.length : op.passo;
+    var destacados = caminho.slice(0, quantos).map(function (p) { return p.no; });
 
     function detalhe(no) {
       if (!op.mostrarNumeros) return null;
@@ -1561,18 +1600,21 @@ var Comum = (function () {
       if (op.ocultarFolha && no === op.ocultarFolha) return "PD = ?";
       return "PD " + F.pct(no.pd, no.pd * 100 % 1 === 0 ? 0 : 1);
     }
+    /* A PD entra como linha da caixa, e não solta embaixo, para não cruzar arestas. */
     function construir(no) {
       var dest = destacados.indexOf(no) >= 0;
       if (no.tipo === "folha") {
         return {
           rotulo: op.rotuloFolha ? op.rotuloFolha(no) : "folha",
-          detalhe: detalhe(no), valor: valor(no), destaque: dest,
+          detalhe: detalhe(no), detalhe2: valor(no), destaque: dest,
         };
       }
-      var esqDest = dest && caminho.some(function (p) { return p.no === no && p.esq; });
-      var dirDest = dest && caminho.some(function (p) { return p.no === no && !p.esq && !p.folha; });
+      var ordem = destacados.indexOf(no);
+      var ramoRevelado = ordem >= 0 && ordem + 1 < quantos;
+      var esqDest = ramoRevelado && caminho.some(function (p) { return p.no === no && p.esq; });
+      var dirDest = ramoRevelado && caminho.some(function (p) { return p.no === no && !p.esq && !p.folha; });
       return {
-        rotulo: no.pergunta, detalhe: detalhe(no), valor: valor(no), destaque: dest,
+        rotulo: no.pergunta, detalhe: detalhe(no), detalhe2: valor(no), destaque: dest,
         filhos: [
           { aresta: no.rotuloEsq, destaque: esqDest, no: construir(no.esq) },
           { aresta: no.rotuloDir, destaque: dirDest, no: construir(no.dir) },
@@ -1581,9 +1623,96 @@ var Comum = (function () {
     }
     return Graf.arvore({
       no: construir(A.raiz), w: op.w || 940, h: op.h || 360,
-      caixaW: op.caixaW || 210, caixaH: op.caixaH || (op.mostrarNumeros ? 58 : 40),
+      caixaW: op.caixaW || 210, caixaH: op.caixaH || (op.mostrarNumeros ? 58 : 44),
       resumo: op.resumo || "Árvore de profundidade dois: histórico na raiz e comprometimento em cada ramo.",
     });
+  }
+
+  var NOMES_COLUNAS = {
+    renda: "renda", comp: "comprometimento", rel: "relacionamento", util: "utilização",
+    hist: "histórico", canal_digital: "canal digital", canal_parceiro: "canal parceiro",
+    renda_ausente: "renda ausente", util_ausente: "utilização ausente",
+  };
+
+  /* Desenha uma árvore treinada do experimento, a partir da estrutura exportada. */
+  function arvoreTreinada(estrutura, op) {
+    op = op || {};
+    function unidade(v) {
+      if (v === "renda") return " R$";
+      if (v === "comp" || v === "util") return "%";
+      if (v === "rel") return " meses";
+      return "";
+    }
+    var curto = op.compacto;
+    function construir(no, nivel) {
+      var nome = curto ? no.variavel : (NOMES_COLUNAS[no.variavel] || no.variavel);
+      var base = {
+        rotulo: no.folha ? (no.resumido ? "ramo resumido" : "folha") :
+          nome + " \u2264 " + F.dec(no.limite, no.variavel === "renda" ? 0 : 1) +
+          (curto ? "" : unidade(no.variavel)),
+        detalhe: curto
+          ? "n = " + F.inteiro(no.n) + " · PD " + F.pct(no.pd, 1)
+          : "n = " + F.inteiro(no.n) + " · eventos " + F.inteiro(no.eventos),
+        detalhe2: curto ? null : "PD " + F.pct(no.pd, 1),
+      };
+      if (!no.folha && nivel < (op.profundidade || 2)) {
+        base.filhos = [
+          { aresta: "sim", no: construir(no.esq, nivel + 1) },
+          { aresta: "não", no: construir(no.dir, nivel + 1) },
+        ];
+      } else if (!no.folha) {
+        /* Nó interno além da profundidade exibida: mantém a pergunta e sinaliza o resumo. */
+        base.detalhe2 = "ramo resumido";
+      }
+      return base;
+    }
+    return Graf.arvore({
+      no: construir(estrutura, 0), w: op.w || 900, h: op.h || 340,
+      caixaW: op.caixaW || 210, caixaH: op.caixaH || 74,
+      resumo: op.resumo || "Árvore treinada no experimento sintético.",
+    });
+  }
+
+  /* Mapa de calor de uma malha {comp:[], util:[], pd:[]} do experimento auxiliar. */
+  function mapaCalor(malha, op) {
+    op = op || {};
+    var w = op.w || 300, hh = op.h || 300;
+    var m = { e: 54, d: 12, c: 12, b: 46 };
+    var nx = malha.comp.length, ny = malha.util.length;
+    var lim = op.max || 0.5;
+    var g = Graf.novo({ w: w, h: hh, m: m, resumo: op.resumo || "" });
+    g.x(malha.comp[0], malha.comp[nx - 1]).y(malha.util[0], malha.util[ny - 1]);
+    var larg = (g.largura / (nx - 1)) + 0.6, alt = (g.altura / (ny - 1)) + 0.6;
+    for (var j = 0; j < ny; j++) {
+      for (var i = 0; i < nx; i++) {
+        var pd = malha.pd[j * nx + i];
+        var t = Math.min(1, pd / lim);
+        g.add(sv("rect", {
+          x: g.px(malha.comp[i]) - larg / 2, y: g.py(malha.util[j]) - alt / 2,
+          width: larg, height: alt,
+          fill: "color-mix(in srgb, var(--cor) " + (6 + t * 88).toFixed(0) + "%, #ffffff)",
+        }));
+      }
+    }
+    g.eixoX({ ticks: op.ticksX || [20, 40, 60, 80], rotulo: op.rotuloX || "comprometimento" });
+    g.eixoY({ ticks: op.ticksY || [0, 50, 100], rotulo: op.rotuloY || "utilização" });
+    return g;
+  }
+
+  /* Faixa de legenda da escala de cor, de 0 até max. */
+  function legendaCor(max, op) {
+    op = op || {};
+    var w = op.w || 260, hh = 46;
+    var svg = sv("svg", { viewBox: "0 0 " + w + " " + hh, width: w, height: hh, role: "img",
+      "aria-label": "escala de PD de 0 a " + F.pct(max, 0) });
+    for (var i = 0; i < 40; i++) {
+      svg.appendChild(sv("rect", { x: (i * w) / 40, y: 0, width: w / 40 + 0.6, height: 18,
+        fill: "color-mix(in srgb, var(--cor) " + (6 + (i / 39) * 88).toFixed(0) + "%, #ffffff)" }));
+    }
+    svg.appendChild(sv("text", { x: 0, y: 36, "font-size": 16, fill: "var(--muted)", texto: "0%" }));
+    svg.appendChild(sv("text", { x: w, y: 36, "text-anchor": "end", "font-size": 16,
+      fill: "var(--muted)", texto: F.pct(max, 0) }));
+    return svg;
   }
 
   /* Barra horizontal de composição eventos e não eventos. */
@@ -1654,6 +1783,8 @@ var Comum = (function () {
     seletorCliente: seletorCliente, ficha: ficha, fichaLinha: fichaLinha, miniSigmoide: miniSigmoide,
     arvoreDidatica: arvoreDidatica, composicao: composicao, grade100: grade100,
     seloSimulacao: seloSimulacao, linhaFonte: linhaFonte, tabelaClientes: tabelaClientes,
+    arvoreTreinada: arvoreTreinada, NOMES_COLUNAS: NOMES_COLUNAS,
+    mapaCalor: mapaCalor, legendaCor: legendaCor,
   };
 })();
 
@@ -1763,14 +1894,14 @@ var Comum = (function () {
       pergunta: "Houve atraso de 15 a 89 dias?",
       campo: "hist",
       teste: function (c) { return c.hist === 0; },
-      rotuloEsq: "não (hist = 0)",
-      rotuloDir: "sim (hist = 1)",
+      rotuloEsq: "hist = 0",
+      rotuloDir: "hist = 1",
       esq: {
         pergunta: "Comprometimento acima de 40%?",
         campo: "comp",
         teste: function (c) { return c.comp <= 40; },
-        rotuloEsq: "não (comp ≤ 40%)",
-        rotuloDir: "sim (comp > 40%)",
+        rotuloEsq: "comp ≤ 40%",
+        rotuloDir: "comp > 40%",
         n: 800, d: 40,
         esq: folha("hist = 0 e comp ≤ 40%", 600, 18),
         dir: folha("hist = 0 e comp > 40%", 200, 22),
@@ -1779,8 +1910,8 @@ var Comum = (function () {
         pergunta: "Comprometimento acima de 40%?",
         campo: "comp",
         teste: function (c) { return c.comp <= 40; },
-        rotuloEsq: "não (comp ≤ 40%)",
-        rotuloDir: "sim (comp > 40%)",
+        rotuloEsq: "comp ≤ 40%",
+        rotuloDir: "comp > 40%",
         n: 200, d: 60,
         esq: folha("hist = 1 e comp ≤ 40%", 80, 12),
         dir: folha("hist = 1 e comp > 40%", 120, 48),
@@ -4329,7 +4460,7 @@ Aula.slide({
         ]),
         h("div", { class: "painel" }, [
           UI.slider({
-            rotulo: "Penalização, apenas nos valores treinados", min: 0, max: grade.length - 1,
+            rotulo: "Penalização, apenas nos valores treinados", discreto: true, min: 0, max: grade.length - 1,
             passo: 1, valor: est.indice,
             formato: function (v) { return "C = " + F.dec(grade[v].C, grade[v].C < 1 ? 4 : 0); },
             aoMudar: function (v) { est.indice = v; App.montar("18"); },
@@ -4650,6 +4781,1382 @@ Aula.slide({
       h("div", { class: "coluna", estilo: "flex:0 0 470px" }, [
         solucao,
         desafio,
+      ]),
+    ]));
+  },
+});
+
+
+/* slides/s21.js */
+Aula.slide({
+  id: "21",
+  bloco: "arvore",
+  titulo: "Houve atraso? Qual é o comprometimento?",
+  subtitulo: "Uma árvore organiza a previsão em perguntas sucessivas",
+  conclusao: "A árvore encaminha clientes semelhantes para uma mesma estimativa de risco.",
+  fonte: Aula.dados.fontes.arvore,
+  resumo: "Árvore de profundidade dois: histórico na raiz e comprometimento em cada ramo, com o percurso de um cliente destacado.",
+  notas: {
+    conducao: [
+      "Pergunte qual informação a árvore consultará primeiro.",
+      "Leve Ana à esquerda e então à folha de comprometimento até 40%.",
+      "Mostre Diego no outro ramo para criar contraste. Só depois nomeie nó, ramo e folha.",
+      "Não explique Gini neste slide.",
+    ],
+    respostas: [
+      "Ana: histórico 0 e comprometimento 22%, portanto ramo esquerdo e folha de comprometimento até 40%.",
+      "Bruno: histórico 1 e comprometimento 38%, portanto ramo direito e folha de comprometimento até 40%.",
+      "Carla: histórico 0 e comprometimento 48%, folha de comprometimento acima de 40%.",
+      "Diego: histórico 1 e comprometimento 55%, folha de comprometimento acima de 40%.",
+      "Comprometimento exatamente igual a 40 vai para o ramo até 40.",
+    ],
+    cuidados: [
+      "O percurso é determinístico, mas a previsão ao final é probabilística. Duas pessoas diferentes podem cair na mesma folha.",
+      "As perguntas e os limites são aprendidos dos dados. O limite de 40% é regra deste exemplo, não norma de crédito.",
+      "Esta árvore pequena serve para enxergar o mecanismo. Não é o resultado do experimento maior.",
+    ],
+    transicao: "Depois de encaminhar o cliente, precisamos atribuir uma PD ao grupo ao qual ele pertence.",
+  },
+  impressao: function (e) { e.passo = 3; },
+
+  montar: function (corpo, ctx) {
+    var D = Aula.dados, A = D.arvore;
+    var est = ctx.estado;
+    if (!est.cliente) est.cliente = "Ana";
+    if (est.passo === undefined) est.passo = 0;
+
+    var c = D.cliente(est.cliente);
+    var caminho = A.percurso(c);
+    var etapas = [
+      "A raiz pergunta pelo histórico.",
+      "Resposta de " + c.nome + ": " + caminho[0].rotulo + ".",
+      "Segundo nó: " + caminho[1].rotulo + ". Chega à folha.",
+    ];
+
+    var arvore = Comum.arvoreDidatica({
+      cliente: est.passo > 0 ? c : null,
+      passo: est.passo,
+      mostrarNumeros: false,
+      mostrarPd: false,
+      w: 1000, h: 380, caixaW: 250, caixaH: 46,
+      rotuloFolha: function () { return "grupo de contratos"; },
+      resumo: "Árvore de profundidade dois. Raiz: houve atraso de 15 a 89 dias. " +
+              "Cada ramo pergunta se o comprometimento passa de 40%.",
+    });
+
+    corpo.appendChild(h("div", { class: "linha cresce" }, [
+      h("div", { class: "coluna cresce" }, [
+        h("div", { class: "painel claro cresce centro" }, arvore),
+        h("div", { class: "painel" }, [
+          h("p", { class: "apoio", estilo: "margin:0" },
+            "As perguntas e seus limites são aprendidos dos dados. Aqui usamos uma árvore pequena " +
+            "para enxergar o mecanismo. As folhas ainda não mostram PD: primeiro a estrutura."),
+        ]),
+      ]),
+      h("div", { class: "coluna", estilo: "flex:0 0 440px" }, [
+        Comum.ficha(c, { cor: true, campos: ["comp", "hist"],
+          rodape: "Só estas duas entram nas perguntas desta árvore." }),
+        h("div", { class: "painel" }, [
+          h("div", { class: "ctrl" }, [
+            h("label", {}, "Cliente"),
+            Comum.seletorCliente(est.cliente, function (v) {
+              est.cliente = v; est.passo = 0; App.montar("21");
+            }, { compacto: true }),
+          ]),
+          h("div", { class: "grupo", estilo: "margin-top:12px" }, [
+            h("button", { class: "btn", type: "button", disabled: est.passo >= 3,
+              onclick: function () { est.passo = Math.min(3, est.passo + 1); App.montar("21"); } },
+              est.passo === 0 ? "Percorrer com " + c.nome : "Próximo passo"),
+            h("button", { class: "btn fantasma", type: "button", onclick: ctx.reiniciar },
+              "Reiniciar exemplo"),
+          ]),
+        ]),
+        h("div", { class: "painel claro cresce" }, [
+          h("h3", { class: "secao" }, "Percurso"),
+          h("ol", { estilo: "margin:0;padding-left:20px;font-size:19px" },
+            etapas.map(function (t, i) {
+              return h("li", { estilo: "margin-bottom:5px;color:" +
+                (i < est.passo ? "var(--ink)" : "var(--muted)") +
+                ";opacity:" + (i < est.passo ? 1 : .55) }, t);
+            })),
+          est.passo >= 3
+            ? h("p", { class: "resposta", estilo: "margin-top:10px" },
+                "Regra completa da folha: " + caminho[2].no.regra + ".")
+            : null,
+        ]),
+        h("p", { class: "nota", estilo: "margin:0" },
+          "Raiz: primeira pergunta. Nó: qualquer pergunta. Ramo: resposta que leva adiante. " +
+          "Folha: grupo final, onde a previsão é atribuída."),
+      ]),
+    ]));
+  },
+});
+
+
+/* slides/s22.js */
+Aula.slide({
+  id: "22",
+  bloco: "arvore",
+  titulo: "Nesta folha, 18 de 600 contratos ficaram inadimplentes",
+  subtitulo: "A PD da folha é a frequência observada no grupo",
+  conclusao: "A previsão é a frequência observada no grupo, sujeita à incerteza e à generalização.",
+  fonte: Aula.dados.fontes.arvore,
+  resumo: "Árvore de 1.000 contratos com contagens em cada nó e PD por folha, com o percurso do cliente selecionado.",
+  notas: {
+    conducao: [
+      "Construa a conta de Ana em voz alta e peça a de Bruno.",
+      "Pergunte se clientes da mesma folha terão a mesma previsão mesmo com rendas diferentes: sim, nesta árvore, porque a renda não entra nas perguntas.",
+    ],
+    respostas: [
+      "Ana 18/600 = 3%. Bruno 12/80 = 15%. Carla 22/200 = 11%. Diego 48/120 = 40%.",
+      "As folhas somam 1.000 contratos e 100 eventos, iguais à raiz.",
+    ],
+    cuidados: [
+      "A taxa aparente da folha não comprova calibração futura.",
+      "Este exemplo é sem pesos. Com ajuste ponderado, a fórmula da folha refletiria os pesos.",
+      "Estas PDs são da árvore didática. Não são previsões do experimento estimado, e não devem ser comparadas com as PDs manuais do logit como se uma fosse mais correta.",
+    ],
+    transicao: "Por que a primeira pergunta foi sobre histórico, e não sobre renda ou comprometimento?",
+  },
+  impressao: function (e) { e.denominadores = true; },
+
+  montar: function (corpo, ctx) {
+    var D = Aula.dados, A = D.arvore;
+    var est = ctx.estado;
+    if (!est.cliente) est.cliente = "Ana";
+    if (est.denominadores === undefined) est.denominadores = true;
+
+    var c = D.cliente(est.cliente);
+    var folha = A.folhaDe(c);
+    var folhas = A.folhas();
+
+    var arvore = Comum.arvoreDidatica({
+      cliente: c,
+      mostrarNumeros: est.denominadores,
+      mostrarPd: true,
+      w: 1030, h: 420, caixaW: 250, caixaH: est.denominadores ? 62 : 46,
+      rotuloFolha: function () { return "folha"; },
+      resumo: "Árvore com contagens: raiz de 1.000 contratos e 100 eventos, quatro folhas.",
+    });
+
+    var soma = folhas.reduce(function (a, f) { return { n: a.n + f.n, d: a.d + f.d }; },
+      { n: 0, d: 0 });
+
+    var tabela = UI.tabela({
+      compacta: true,
+      colunas: [{ rotulo: "Folha" }, { rotulo: "n" }, { rotulo: "Eventos" }, { rotulo: "PD" }],
+      linhas: folhas.map(function (f) {
+        return [f.regra, F.inteiro(f.n), F.inteiro(f.d), F.pct(f.pd, f.pd * 100 % 1 === 0 ? 0 : 1)];
+      }),
+      selecionada: folhas.indexOf(folha),
+      legenda: "Contagens e taxas das quatro folhas",
+    });
+    tabela.querySelector("tbody").appendChild(h("tr", {}, [
+      h("th", { scope: "row", class: "rotulo" }, "Soma das folhas"),
+      h("td", {}, F.inteiro(soma.n)), h("td", {}, F.inteiro(soma.d)),
+      h("td", {}, F.pct(soma.d / soma.n, 0)),
+    ]));
+
+    corpo.appendChild(h("div", { class: "linha cresce" }, [
+      h("div", { class: "coluna cresce" }, [
+        h("div", { class: "painel claro cresce centro" }, arvore),
+        h("div", { class: "painel claro" }, tabela),
+      ]),
+      h("div", { class: "coluna", estilo: "flex:0 0 470px" }, [
+        h("div", { class: "painel cor" }, [
+          h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+            h("h3", { class: "secao", estilo: "margin:0" }, "Folha de " + c.nome),
+            UI.selo("árvore didática", "neutro"),
+          ]),
+          h("p", { class: "apoio", estilo: "margin:6px 0" }, folha.regra),
+          h("p", { class: "grande" },
+            F.inteiro(folha.d) + " / " + F.inteiro(folha.n) + " = " +
+            F.pct(folha.pd, folha.pd * 100 % 1 === 0 ? 0 : 1)),
+          Comum.composicao(folha.n, folha.d, { w: 400, h: 30 }),
+          h("p", { class: "nota", estilo: "margin-top:8px" },
+            "Barra vermelha: contratos com evento. Barra clara: contratos sem evento."),
+        ]),
+        h("div", { class: "painel" }, [
+          h("div", { class: "ctrl" }, [
+            h("label", {}, "Cliente"),
+            Comum.seletorCliente(est.cliente, function (v) {
+              est.cliente = v; App.montar("22");
+            }, { compacto: true }),
+          ]),
+          h("div", { class: "grupo", estilo: "margin-top:12px" }, [
+            UI.alterna({
+              rotulo: "denominadores", valor: est.denominadores,
+              ligadoRotulo: "Leitura simples, só a taxa",
+              desligadoRotulo: "Mostrar denominadores",
+              aoMudar: function (v) { est.denominadores = v; App.montar("22"); },
+            }),
+            h("button", { class: "btn fantasma", type: "button", onclick: ctx.reiniciar },
+              "Reiniciar exemplo"),
+          ]),
+        ]),
+        h("div", { class: "painel claro cresce" }, [
+          h("h3", { class: "secao" }, "Conferência"),
+          h("p", { class: "apoio" },
+            "As quatro folhas somam " + F.inteiro(soma.n) + " contratos e " +
+            F.inteiro(soma.d) + " eventos, exatamente os totais da raiz."),
+          h("p", { class: "nota" },
+            "Mesma folha, mesma previsão: dois clientes com rendas diferentes recebem a mesma PD, " +
+            "porque a renda não participa das perguntas desta árvore."),
+        ]),
+      ]),
+    ]));
+  },
+});
+
+
+/* slides/s23.js */
+Aula.slide({
+  id: "23",
+  bloco: "arvore",
+  titulo: "Qual pergunta separa melhor os comportamentos observados?",
+  subtitulo: "Dois candidatos à primeira divisão, a partir da mesma raiz",
+  conclusao: "Uma boa divisão cria grupos mais homogêneos segundo a função objetivo.",
+  fonte: Aula.dados.fontes.arvore,
+  resumo: "Raiz de 1.000 contratos com 10% de eventos e dois candidatos de divisão, cada um com duas barras de composição.",
+  notas: {
+    conducao: [
+      "Peça que o aluno escolha visualmente e explique por quê.",
+      "Se ele usar apenas a diferença entre taxas, pergunte o que aconteceria com uma folha de duas observações.",
+      "Mostre o papel do tamanho do grupo antes de revelar a regra de escolha.",
+    ],
+    respostas: [
+      "Histórico separa em 800 contratos com 5% e 200 contratos com 30%.",
+      "Comprometimento separa em 680 contratos com aproximadamente 4,41% e 320 contratos com 21,88%.",
+      "A regra de escolha é a menor impureza ponderada, calculada no próximo slide.",
+    ],
+    cuidados: [
+      "Esta é a melhor divisão entre os candidatos comparados, não entre todas as variáveis possíveis.",
+      "A busca é gulosa e local: a melhor divisão imediata não garante a árvore globalmente ótima.",
+      "Com dados agregados não é possível varrer limiares intermediários sem inventar contagens.",
+    ],
+    transicao: "Vamos colocar essa comparação em números com o índice de Gini.",
+  },
+  impressao: function (e) { e.regra = true; },
+
+  montar: function (corpo, ctx) {
+    var A = Aula.dados.arvore;
+    var est = ctx.estado;
+    if (!est.escolha) est.escolha = null;
+
+    function painelCandidato(cand) {
+      var sel = est.escolha === cand.chave;
+      var lados = [cand.esq, cand.dir];
+      return h("div", {
+        class: "painel" + (sel ? " cor" : " claro") + " cresce",
+        estilo: sel ? "border-color:var(--arvore);border-width:2px" : "",
+      }, [
+        h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+          h("h2", { class: "secao", estilo: "margin:0" }, cand.rotulo),
+          h("button", {
+            class: "btn min" + (sel ? " sel" : ""), type: "button",
+            "aria-pressed": sel ? "true" : "false",
+            onclick: function () { est.escolha = sel ? null : cand.chave; App.montar("23"); },
+          }, sel ? "hipótese registrada" : "escolher este"),
+        ]),
+        h("div", { class: "coluna", estilo: "gap:14px;margin-top:12px" },
+          lados.map(function (lado) {
+            var peso = lado.n / A.n;
+            return h("div", {}, [
+              h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline" }, [
+                h("span", { estilo: "font-size:22px;font-weight:700;color:var(--ink)" }, lado.rotulo),
+                h("span", { class: "apoio" },
+                  "n = " + F.inteiro(lado.n) + " · eventos " + F.inteiro(lado.d) +
+                  " · taxa " + F.pct(lado.d / lado.n, 2)),
+              ]),
+              Comum.composicao(lado.n, lado.d, { w: 560, h: 30, rotulo: false }),
+              est.comparar
+                ? h("div", { estilo: "margin-top:6px" }, [
+                    h("div", { estilo: "height:12px;background:var(--rule);border-radius:3px;" +
+                      "width:" + (peso * 100).toFixed(1) + "%" }),
+                    h("span", { class: "nota" },
+                      "peso do grupo: " + F.inteiro(lado.n) + " de " + F.inteiro(A.n) +
+                      " = " + F.pct(peso, 1)),
+                  ])
+                : null,
+            ]);
+          })),
+      ]);
+    }
+
+    corpo.appendChild(h("div", { class: "linha", estilo: "align-items:center" }, [
+      h("div", { class: "painel cor cresce", estilo: "display:flex;gap:24px;align-items:center;flex-wrap:wrap" }, [
+        h("span", { class: "medio" }, "Raiz"),
+        h("span", { class: "apoio" },
+          F.inteiro(A.n) + " contratos · " + F.inteiro(A.d) + " eventos · taxa " +
+          F.pct(A.raiz.pd, 0)),
+        Comum.composicao(A.n, A.d, { w: 420, h: 30 }),
+      ]),
+    ]));
+
+    corpo.appendChild(h("div", { class: "linha cresce" }, [
+      painelCandidato(A.candidatos[0]),
+      painelCandidato(A.candidatos[1]),
+      h("div", { class: "coluna", estilo: "flex:0 0 400px" }, [
+        h("div", { class: "painel" }, [
+          h("h3", { class: "secao" }, "Exploração"),
+          h("div", { class: "grupo vert" }, [
+            UI.alterna({
+              rotulo: "composição", valor: est.comparar,
+              ligadoRotulo: "Esconder o peso dos grupos",
+              desligadoRotulo: "Comparar composição e peso",
+              aoMudar: function (v) { est.comparar = v; App.montar("23"); },
+            }),
+            h("button", { class: "btn", type: "button", onclick: function () {
+              est.regra = true; App.montar("23");
+            }, disabled: est.regra }, "Ver regra de escolha"),
+            h("button", { class: "btn fantasma", type: "button", onclick: ctx.reiniciar },
+              "Reiniciar exemplo"),
+          ]),
+        ]),
+        est.regra
+          ? h("div", { class: "resposta cresce" }, [
+              h("p", {}, [h("strong", {}, "Regra de escolha: "),
+                "a divisão escolhida é a de menor impureza ponderada, considerando " +
+                "ao mesmo tempo a mistura de classes em cada lado e o tamanho de cada lado."]),
+              h("p", { class: "nota", estilo: "margin-top:8px" },
+                "O cálculo completo com o índice de Gini vem no próximo slide."),
+            ])
+          : h("div", { class: "painel claro cresce" }, [
+              h("h3", { class: "secao" }, "Antes de calcular"),
+              h("p", { class: "apoio" },
+                "Uma diferença grande entre taxas, isoladamente, não basta: os tamanhos dos " +
+                "grupos também importam. Uma folha com duas observações pode ter taxa de 50% " +
+                "sem qualquer evidência."),
+            ]),
+        h("p", { class: "nota" },
+          "Os dois candidatos partem exatamente da mesma raiz: " + F.inteiro(A.n) +
+          " contratos e " + F.inteiro(A.d) + " eventos."),
+      ]),
+    ]));
+  },
+});
+
+
+/* slides/s24.js */
+Aula.slide({
+  id: "24",
+  bloco: "arvore",
+  titulo: "Histórico reduz o Gini de 0,180 para 0,160",
+  subtitulo: "Impureza da raiz, média ponderada dos filhos e ganho",
+  conclusao: "Não basta uma folha pura: importa como toda a amostra fica depois da divisão.",
+  fonte: Aula.dados.fontes.arvore,
+  resumo: "Três etapas do cálculo do ganho de Gini e curva de impureza binária em função da taxa de eventos.",
+  notas: {
+    conducao: [
+      "Peça a conta do Gini da raiz antes de revelar.",
+      "Antes de ponderar, pergunte por que não usar a média simples. Mostre a diferença entre 800 e 200 registros.",
+      "Termine explicitando que o algoritmo compara vários candidatos, repete o procedimento em cada nó e precisa de uma regra para parar.",
+    ],
+    respostas: [
+      "Raiz com 10% de eventos: Gini igual a 0,180.",
+      "Por histórico: 0,8 vezes 0,095 mais 0,2 vezes 0,420 resulta em 0,160, com ganho de 0,020.",
+      "Por comprometimento: impureza ponderada 0,166728 e ganho 0,013272.",
+      "Impureza zero em grupo puro; máximo de 0,5 quando a taxa é 50%.",
+    ],
+    cuidados: [
+      "Gini é critério de impureza no treino. Não é AUC, KS nem lucro.",
+      "Outras perdas podem orientar árvores. Não misture entropia e Gini no mesmo cálculo.",
+      "Ganho de impureza não é efeito causal do histórico.",
+    ],
+    transicao: "Ao dividir mais, as folhas parecem mais precisas. Mas quanto podemos confiar em uma taxa calculada com poucas observações?",
+  },
+  impressao: function (e) { e.etapa = 4; },
+
+  montar: function (corpo, ctx) {
+    var A = Aula.dados.arvore;
+    var est = ctx.estado;
+    if (est.etapa === undefined) est.etapa = 1;
+    if (!est.cand) est.cand = "hist";
+
+    var cand = A.candidatos.filter(function (c) { return c.chave === est.cand; })[0];
+    var outro = A.candidatos.filter(function (c) { return c.chave !== est.cand; })[0];
+    var r = A.ganho(cand);
+    var rOutro = A.ganho(outro);
+
+    var etapas = [
+      { titulo: "1. Impureza da raiz",
+        linhas: ["p = " + F.inteiro(A.d) + " / " + F.inteiro(A.n) + " = " + F.pct(A.raiz.pd, 0),
+                 "Gini = 2 × p × (1 − p) = " + F.dec(r.pai, 3)] },
+      { titulo: "2. Impureza de cada filho",
+        linhas: [cand.esq.rotulo + ": p = " + F.pct(cand.esq.d / cand.esq.n, 2) +
+                 ", Gini = " + F.dec(r.esq, 4),
+                 cand.dir.rotulo + ": p = " + F.pct(cand.dir.d / cand.dir.n, 2) +
+                 ", Gini = " + F.dec(r.dir, 4)] },
+      { titulo: "3. Ponderação pelo tamanho",
+        linhas: ["pesos: " + F.inteiro(cand.esq.n) + "/" + F.inteiro(A.n) + " = " +
+                 F.dec(r.pesoEsq, 2) + " e " + F.inteiro(cand.dir.n) + "/" + F.inteiro(A.n) +
+                 " = " + F.dec(r.pesoDir, 2),
+                 "Gini ponderado = " + F.dec(r.pesoEsq, 2) + " × " + F.dec(r.esq, 4) +
+                 " + " + F.dec(r.pesoDir, 2) + " × " + F.dec(r.dir, 4) + " = " +
+                 F.dec(r.ponderado, 6)] },
+      { titulo: "4. Ganho e comparação",
+        linhas: ["ganho = " + F.dec(r.pai, 3) + " − " + F.dec(r.ponderado, 6) + " = " +
+                 F.dec(r.ganho, 6),
+                 "candidato " + outro.rotulo.toLowerCase() + ": ganho " + F.dec(rOutro.ganho, 6)] },
+    ];
+
+    var g = Graf.novo({ w: 520, h: 300, m: { e: 78, d: 24, c: 20, b: 56 } });
+    g.x(0, 1).y(0, 0.55);
+    g.grade({ y: [0, 0.18, 0.5] });
+    g.eixoY({ ticks: [0, 0.1, 0.2, 0.3, 0.4, 0.5], formato: function (v) { return F.dec(v, 1); },
+              rotulo: "Gini" });
+    g.eixoX({ ticks: [0, 0.25, 0.5, 0.75, 1], formato: function (v) { return F.pct(v, 0); },
+              rotulo: "taxa de eventos no grupo" });
+    g.linha(M.linspace(0, 1, 200).map(function (v) { return [v, M.gini(v)]; }),
+      { cor: "var(--arvore)", largura: 3 });
+    var marcas = [{ p: A.raiz.pd, rot: "raiz" },
+                  { p: cand.esq.d / cand.esq.n, rot: cand.esq.rotulo },
+                  { p: cand.dir.d / cand.dir.n, rot: cand.dir.rotulo }];
+    marcas.forEach(function (m, i) {
+      g.ponto(m.p, M.gini(m.p), { r: 7, cor: i === 0 ? "var(--ink)" : "var(--arvore)" });
+      g.texto(m.p, M.gini(m.p), m.rot,
+        { dx: 10, dy: i === 2 ? 20 : -10, tamanho: 16, peso: 400, cor: "var(--muted)" });
+    });
+
+    var gb = Graf.barras({
+      w: 520, h: 200, larguraRot: 210, m: { d: 110, c: 12, b: 48 },
+      itens: A.candidatos.map(function (cc) {
+        var rr = A.ganho(cc);
+        return { rotulo: cc.rotulo, valor: rr.ganho,
+                 cor: cc.chave === est.cand ? "var(--arvore)" : "var(--rule)",
+                 texto: F.dec(rr.ganho, 4) };
+      }),
+      max: 0.025, ticks: [0, 0.005, 0.01, 0.015, 0.02, 0.025],
+      formato: function (v) { return F.dec(v, 3); },
+      rotuloX: "ganho de impureza",
+    });
+
+    corpo.appendChild(h("div", { class: "linha cresce" }, [
+      h("div", { class: "coluna cresce" },
+        etapas.map(function (e, i) {
+          var visivel = i < est.etapa;
+          return h("div", {
+            class: "painel" + (i === est.etapa - 1 ? " cor" : " claro"),
+            estilo: "padding:12px 16px" + (visivel ? "" : ";opacity:.35"),
+          }, [
+            h("h3", { class: "secao", estilo: "margin:0 0 6px" }, e.titulo),
+            visivel
+              ? h("div", {}, e.linhas.map(function (t) {
+                  return h("p", { estilo: "font-family:var(--serif);font-size:22px;" +
+                    "color:var(--ink);margin:0 0 4px" }, t);
+                }))
+              : h("p", { class: "nota", estilo: "margin:0" }, "etapa ainda não revelada"),
+          ]);
+        })),
+      h("div", { class: "coluna", estilo: "flex:0 0 560px" }, [
+        h("div", { class: "painel" }, [
+          h("div", { class: "grupo" }, [
+            h("button", { class: "btn", type: "button", disabled: est.etapa >= 4,
+              onclick: function () { est.etapa = Math.min(4, est.etapa + 1); App.montar("24"); } },
+              "Próxima etapa"),
+            h("button", { class: "btn min", type: "button", onclick: function () {
+              est.cand = est.cand === "hist" ? "comp" : "hist"; App.montar("24");
+            } }, "Trocar candidato"),
+            h("button", { class: "btn min fantasma", type: "button", onclick: ctx.reiniciar },
+              "Reiniciar exemplo"),
+          ]),
+        ]),
+        h("div", { class: "painel claro cresce centro" }, [
+          h("h3", { class: "secao" }, "Impureza binária: 2p(1 − p)"),
+          g.svg,
+        ]),
+        est.etapa >= 4
+          ? h("div", { class: "painel claro" }, [gb.svg])
+          : h("div", { class: "painel" }, [
+              h("p", { class: "apoio", estilo: "margin:0" },
+                "A média simples ignoraria que um lado tem " + F.inteiro(cand.esq.n) +
+                " contratos e o outro tem " + F.inteiro(cand.dir.n) + "."),
+            ]),
+      ]),
+    ]));
+  },
+});
+
+
+/* slides/s25.js */
+Aula.slide({
+  id: "25",
+  bloco: "arvore",
+  titulo: "Duas folhas com PD de 10%. A evidência é igual?",
+  subtitulo: "Intervalo binomial descritivo de Wilson, nominal de 95%",
+  conclusao: "10% em 20 contratos não oferece a mesma precisão que 10% em 1.000.",
+  fonte: "Pares binomiais ilustrativos; cálculo próprio",
+  resumo: "Duas linhas com ponto em 10% e intervalo de Wilson, uma com 2 eventos em 20 contratos e outra com 100 em 1.000.",
+  notas: {
+    conducao: [
+      "Pergunte qual folha transmitiria mais confiança e por quê.",
+      "Aumente o tamanho da folha e peça que o aluno narre o que mudou.",
+      "Mostre o caso de zero eventos e pergunte se o gestor poderia tratar o risco como impossível.",
+    ],
+    respostas: [
+      "2 em 20: intervalo aproximado de 2,8% a 30,1%.",
+      "100 em 1.000: intervalo aproximado de 8,3% a 12,0%.",
+      "0 em 20: o limite superior continua positivo, aproximadamente 16,1%. Zero evento não prova risco zero.",
+    ],
+    cuidados: [
+      "O intervalo descreve a dimensão binomial. Não incorpora a escolha adaptativa das folhas, a seleção da população nem a mudança temporal.",
+      "Não é correto dizer que a PD individual tem 95% de chance de cair nesse intervalo.",
+      "A incerteza real da árvore inclui a busca pelos cortes, e é maior que a mostrada aqui.",
+    ],
+    transicao: "Folhas maiores estabilizam estimativas, mas a árvore também precisa capturar diferenças relevantes entre clientes.",
+  },
+  impressao: function (e) { e.zero = true; },
+
+  montar: function (corpo, ctx) {
+    var est = ctx.estado;
+    var tamanhos = [20, 50, 100, 200, 500, 1000];
+    if (est.indice === undefined) est.indice = 0;
+    if (est.zero === undefined) est.zero = false;
+
+    var n = tamanhos[est.indice];
+    var linhas = [
+      { rotulo: "folha pequena", n: n, d: Math.round(n * 0.10) },
+      { rotulo: "folha grande", n: 1000, d: 100 },
+    ];
+    if (est.zero) linhas.push({ rotulo: "folha sem eventos", n: 20, d: 0 });
+
+    var g = Graf.novo({ w: 940, h: 400, m: { e: 260, d: 130, c: 30, b: 60 } });
+    g.x(0, 0.4).y(0, linhas.length);
+    g.grade({ x: [0, 0.1, 0.2, 0.3, 0.4] });
+    g.eixoX({ ticks: [0, 0.1, 0.2, 0.3, 0.4], formato: function (v) { return F.pct(v, 0); },
+              rotulo: "taxa de eventos na folha" });
+    linhas.forEach(function (l, i) {
+      var p = l.d / l.n;
+      var iv = M.wilson(l.d, l.n);
+      var yc = g.py(linhas.length - i - 0.5);
+      g.add(sv("line", { x1: g.px(iv[0]), x2: g.px(iv[1]), y1: yc, y2: yc,
+        stroke: "var(--arvore)", "stroke-width": 5, "stroke-linecap": "round", opacity: .45 }));
+      [iv[0], iv[1]].forEach(function (v) {
+        g.add(sv("line", { x1: g.px(v), x2: g.px(v), y1: yc - 12, y2: yc + 12,
+          stroke: "var(--arvore)", "stroke-width": 3 }));
+      });
+      g.ponto(p, linhas.length - i - 0.5, { r: 10, cor: "var(--ink)" });
+      g.add(sv("text", { x: g.m.e - 16, y: yc - 4, "text-anchor": "end", "font-size": 21,
+        "font-weight": 700, fill: "var(--ink)",
+        texto: F.inteiro(l.d) + " em " + F.inteiro(l.n) }));
+      g.add(sv("text", { x: g.m.e - 16, y: yc + 20, "text-anchor": "end", "font-size": 17,
+        fill: "var(--muted)", texto: l.rotulo + " · taxa " + F.pct(p, 1) }));
+      g.add(sv("text", { x: g.m.e + g.largura + 14, y: yc + 7, "font-size": 18,
+        fill: "var(--muted)",
+        texto: F.pct(iv[0], 1) + " a " + F.pct(iv[1], 1) }));
+    });
+
+    var tabela = UI.tabela({
+      compacta: true,
+      colunas: [{ rotulo: "Folha" }, { rotulo: "Eventos" }, { rotulo: "n" },
+                { rotulo: "Taxa" }, { rotulo: "Intervalo de Wilson" }],
+      linhas: linhas.map(function (l) {
+        var iv = M.wilson(l.d, l.n);
+        return [l.rotulo, F.inteiro(l.d), F.inteiro(l.n), F.pct(l.d / l.n, 1),
+                F.pct(iv[0], 1) + " a " + F.pct(iv[1], 1)];
+      }),
+      legenda: "Taxas iguais com evidências diferentes",
+    });
+
+    corpo.appendChild(h("div", { class: "linha cresce" }, [
+      h("div", { class: "coluna cresce" }, [
+        h("div", { class: "painel claro cresce centro" }, g.svg),
+        h("div", { class: "painel claro" }, tabela),
+      ]),
+      h("div", { class: "coluna", estilo: "flex:0 0 440px" }, [
+        h("div", { class: "painel cor" }, [
+          h("h3", { class: "secao" }, "Leitura"),
+          h("p", { class: "apoio", estilo: "color:var(--ink);font-size:21px" },
+            "Mesma taxa, evidências diferentes: com " + F.inteiro(n) +
+            " contratos o intervalo tem amplitude de " +
+            F.pp(M.wilson(Math.round(n * 0.10), n)[1] - M.wilson(Math.round(n * 0.10), n)[0], 1) +
+            "; com 1.000 contratos, " +
+            F.pp(M.wilson(100, 1000)[1] - M.wilson(100, 1000)[0], 1) + "."),
+        ]),
+        h("div", { class: "painel" }, [
+          UI.slider({
+            rotulo: "Tamanho da folha pequena, mantendo a taxa em 10%", discreto: true,
+            min: 0, max: tamanhos.length - 1, passo: 1, valor: est.indice,
+            formato: function (v) {
+              return F.inteiro(Math.round(tamanhos[v] * 0.10)) + " em " + F.inteiro(tamanhos[v]);
+            },
+            aoMudar: function (v) { est.indice = v; App.montar("25"); },
+          }),
+          h("div", { class: "grupo", estilo: "margin-top:12px" }, [
+            UI.alterna({
+              rotulo: "zero eventos", valor: est.zero,
+              ligadoRotulo: "Esconder a folha sem eventos",
+              desligadoRotulo: "Mostrar folha com zero eventos",
+              aoMudar: function (v) { est.zero = v; App.montar("25"); },
+            }),
+            h("button", { class: "btn fantasma", type: "button", onclick: ctx.reiniciar },
+              "Reiniciar exemplo"),
+          ]),
+        ]),
+        h("div", { class: "painel claro cresce" }, [
+          h("h3", { class: "secao" }, "Ressalva"),
+          h("p", { class: "apoio" },
+            "Intervalo binomial descritivo. Não incorpora a escolha adaptativa das folhas."),
+          h("p", { class: "nota" },
+            "Uma folha com zero eventos não prova risco zero: o limite superior permanece positivo."),
+          h("p", { class: "nota" },
+            "É por isso que a árvore recebe um tamanho mínimo de folha como parâmetro."),
+        ]),
+      ]),
+    ]));
+  },
+});
+
+
+/* slides/s26.js */
+Aula.slide({
+  id: "26",
+  bloco: "arvore",
+  titulo: "O mesmo aumento de comprometimento pode mudar de folha",
+  subtitulo: "As regras da árvore dividem o espaço em regiões de previsão constante",
+  conclusao: "Os efeitos dependem do caminho. Dentro de uma folha, a previsão é constante.",
+  fonte: Aula.dados.fontes.arvore,
+  resumo: "Duas faixas de comprometimento, uma para cada valor de histórico, com as quatro regiões da árvore e os quatro clientes posicionados.",
+  notas: {
+    conducao: [
+      "Mova Bruno de 38 para 41 e compare com Ana ao redor do mesmo limite.",
+      "A mudança é de 15% para 40% no ramo com histórico, e de 3% para 11% no ramo sem histórico.",
+      "Pergunte se uma mudança pequena de risco verdadeiro deveria produzir esse salto: a descontinuidade é da aproximação do modelo.",
+    ],
+    cuidados: [
+      "Árvores capturam interações porque a pergunta de um ramo depende das decisões anteriores. Isso não dispensa validação.",
+      "Uma folha define uma região constante. Ensembles produzem funções mais detalhadas.",
+      "O limite de 40% é deste exemplo. Não é política de crédito.",
+      "Histórico é categórico: as duas faixas são categorias, não um eixo contínuo.",
+    ],
+    transicao: "Se continuarmos dividindo o espaço, podemos criar regiões cada vez menores. Quando isso começa a prejudicar?",
+  },
+
+  montar: function (corpo, ctx) {
+    var D = Aula.dados, A = D.arvore;
+    var est = ctx.estado;
+    if (!est.cliente) est.cliente = "Bruno";
+    if (!est.perfil) est.perfil = D.copia(D.cliente(est.cliente));
+
+    var c = est.perfil;
+    var original = D.cliente(est.cliente);
+    var simulado = c.comp !== original.comp || c.hist !== original.hist;
+    var folha = A.folhaDe(c);
+
+    /* Mapa de regiões: uma faixa por valor de histórico. */
+    var g = Graf.novo({ w: 900, h: 420, m: { e: 140, d: 130, c: 40, b: 60 },
+      resumo: "Duas faixas de comprometimento, uma por valor de histórico, divididas em 40%." });
+    g.x(0, 80).y(0, 2);
+    g.eixoX({ ticks: [0, 20, 40, 60, 80], rotulo: "comprometimento em %" });
+
+    var escala = [0, 0.40];
+    function tom(pd) {
+      var t = Math.min(1, pd / escala[1]);
+      return "color-mix(in srgb, var(--arvore) " + (12 + t * 70).toFixed(0) + "%, #ffffff)";
+    }
+
+    [1, 0].forEach(function (hist, linhaIdx) {
+      var y = 1.5 - linhaIdx;
+      var nos = [A.raiz.esq, A.raiz.dir][hist];
+      [nos.esq, nos.dir].forEach(function (f, k) {
+        var x0 = k === 0 ? 0 : 40, x1 = k === 0 ? 40 : 80;
+        g.retangulo(x0, y - 0.34, x1, y + 0.34,
+          { cor: tom(f.pd), borda: "var(--rule)", bordaL: 1.5 });
+        g.texto((x0 + x1) / 2, y, F.pct(f.pd, f.pd * 100 % 1 === 0 ? 0 : 1),
+          { ancora: "middle", dy: 4, tamanho: 26, cor: "var(--ink)" });
+        g.texto((x0 + x1) / 2, y - 0.2, "n = " + F.inteiro(f.n) + " · eventos " + F.inteiro(f.d),
+          { ancora: "middle", dy: 4, tamanho: 16, peso: 400, cor: "var(--muted)" });
+      });
+      g.add(sv("text", { x: g.m.e - 16, y: g.py(y) + 8, "text-anchor": "end", "font-size": 21,
+        "font-weight": 700, fill: "var(--ink)",
+        texto: hist ? "histórico = 1" : "histórico = 0" }));
+    });
+    g.add(sv("line", { x1: g.px(40), x2: g.px(40), y1: g.py(0.1), y2: g.py(1.95),
+      stroke: "var(--amber)", "stroke-width": 2, "stroke-dasharray": "6 4" }));
+    g.texto(40, 1.95, "corte em 40%", { dx: 6, dy: -6, tamanho: 17, peso: 400, cor: "var(--amber)" });
+
+    D.clientes.forEach(function (cl) {
+      var y = cl.hist ? 1.5 : 0.5;
+      var selecionado = cl.nome === est.cliente;
+      if (selecionado) return;
+      g.ponto(cl.comp, y - 0.44, { r: 6, cor: "var(--muted)", bordaL: 1.5 });
+      g.texto(cl.comp, y - 0.44, cl.nome,
+        { ancora: "middle", dy: 22, tamanho: 16, peso: 400, cor: "var(--muted)" });
+    });
+    var yc = c.hist ? 1.5 : 0.5;
+    g.ponto(c.comp, yc - 0.44, { r: 10, cor: "var(--arvore)" });
+    g.texto(c.comp, yc - 0.44, est.cliente + (simulado ? " (simulação)" : ""),
+      { ancora: "middle", dy: 26, tamanho: 18, cor: "var(--ink)" });
+
+    var arvore = Comum.arvoreDidatica({
+      cliente: c, mostrarNumeros: false, mostrarPd: true,
+      w: 460, h: 218, caixaW: 148, caixaH: 42,
+      rotuloFolha: function () { return "folha"; },
+    });
+
+    corpo.appendChild(h("div", { class: "linha cresce" }, [
+      h("div", { class: "painel claro cresce centro" }, g.svg),
+      h("div", { class: "coluna", estilo: "flex:0 0 490px" }, [
+        h("div", { class: "painel claro centro" }, arvore),
+        h("div", { class: "painel" }, [
+          h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+            h("span", { class: "apoio" }, "Cliente"),
+            simulado ? Comum.seloSimulacao("simulação local") : UI.selo("perfil original", "neutro"),
+          ]),
+          Comum.seletorCliente(est.cliente, function (v) {
+            est.cliente = v; est.perfil = D.copia(D.cliente(v)); App.montar("26");
+          }, { compacto: true }),
+          h("div", { estilo: "margin-top:6px" }, UI.slider({
+            rotulo: "Comprometimento", min: 0, max: 80, passo: 1, valor: c.comp,
+            formato: function (v) {
+              var t = D.copia(c); t.comp = v;
+              return "PD " + F.pct(A.folhaDe(t).pd, 1);
+            },
+            aoMudar: function (v) { c.comp = v; App.montar("26"); },
+          })),
+          h("div", { class: "grupo", estilo: "margin-top:8px" }, [
+            UI.botoes({
+              compacto: true, rotulo: "histórico",
+              opcoes: [{ valor: 0, rotulo: "histórico = 0" }, { valor: 1, rotulo: "histórico = 1" }],
+              valor: c.hist,
+              aoMudar: function (v) { c.hist = v; App.montar("26"); },
+            }),
+            h("button", { class: "btn min", type: "button", disabled: !simulado,
+              onclick: function () {
+                est.perfil = D.copia(D.cliente(est.cliente)); App.montar("26");
+              } }, "Perfil original"),
+            h("button", { class: "btn min fantasma", type: "button", onclick: ctx.reiniciar },
+              "Reiniciar exemplo"),
+          ]),
+        ]),
+        h("div", { class: "painel cor" }, [
+          h("p", { estilo: "font-size:22px;color:var(--ink);margin:0" },
+            "Regra atual: " + folha.regra + ", PD " +
+            F.pct(folha.pd, folha.pd * 100 % 1 === 0 ? 0 : 1) + "."),
+          h("p", { class: "nota", estilo: "margin-top:6px" },
+            "Em comprometimento exatamente igual a 40, o cliente segue pelo ramo até 40."),
+        ]),
+      ]),
+    ]));
+  },
+});
+
+
+/* slides/s27.js */
+Aula.slide({
+  id: "27",
+  bloco: "arvore",
+  titulo: "A árvore cresce. O resultado fora do treino acompanha?",
+  subtitulo: "Profundidade, perda de treino e perda de validação no experimento sintético",
+  conclusao: "Uma árvore que memoriza o treino pode produzir probabilidades frágeis fora dele.",
+  fonte: Aula.dados.fontes.experimento,
+  resumo: "Mapas de regiões de um experimento auxiliar de duas variáveis para profundidades 2, 4 e 8, e curvas de perda de treino e validação por profundidade.",
+  notas: {
+    conducao: [
+      "Comece raso, aumente a complexidade e peça que comparem treino e validação.",
+      "Mostre a mediana de contratos por folha como pista de fragilidade, não como prova isolada.",
+      "A seleção usa a validação fora do tempo, nunca o teste final.",
+    ],
+    cuidados: [
+      "Os mapas vêm de um experimento auxiliar com apenas duas variáveis. Não são projeção exata do modelo completo.",
+      "A perda mostrada usa log loss com proteção numérica de 10 elevado a menos 6, porque árvores produzem probabilidades iguais a 0 ou 1 em folhas puras. O Brier está disponível na tabela.",
+      "Desempenho de uma única amostra varia. Diferenças pequenas podem não ser robustas.",
+      "Nem toda árvore profunda é ruim: a profundidade interage com tamanho de folha e poda.",
+    ],
+    transicao: "Podemos controlar o crescimento de mais de uma maneira. Cada parâmetro restringe uma parte diferente da árvore.",
+  },
+
+  montar: function (corpo, ctx) {
+    var R = Aula.resultados;
+    var est = ctx.estado;
+    if (!R) {
+      corpo.appendChild(h("p", { class: "resposta erro" },
+        "Resultados do experimento não disponíveis: execute experimento/experimento.py e recompile."));
+      return;
+    }
+
+    var cenarios = R.modelos.arvore.cenarios.filter(function (c) { return c.min_folha === 20; });
+    cenarios.sort(function (a, b) {
+      return (a.profundidade < 0 ? 99 : a.profundidade) - (b.profundidade < 0 ? 99 : b.profundidade);
+    });
+    if (est.indice === undefined) {
+      est.indice = cenarios.map(function (c) { return c.perda_validacao; })
+        .indexOf(Math.min.apply(null, cenarios.map(function (c) { return c.perda_validacao; })));
+    }
+    var atual = cenarios[est.indice];
+    var melhor = cenarios.reduce(function (a, b) {
+      return b.perda_validacao < a.perda_validacao ? b : a;
+    }, cenarios[0]);
+
+    function rotuloProf(p) { return p < 0 ? "sem limite" : String(p); }
+
+    var g = Graf.novo({ w: 700, h: 420, m: { e: 96, d: 130, c: 24, b: 62 } });
+    var perdas = cenarios.map(function (c) { return c.perda_treino; })
+      .concat(cenarios.map(function (c) { return c.perda_validacao; }));
+    g.x(0, cenarios.length - 1).y(0.25, Math.max.apply(null, perdas) * 1.05);
+    g.grade({ y: Graf.ticks(0.25, Math.max.apply(null, perdas), 5) });
+    g.eixoY({ ticks: Graf.ticks(0.25, Math.max.apply(null, perdas), 5),
+              formato: function (v) { return F.dec(v, 2); }, rotulo: "log loss" });
+    g.eixoX({ ticks: cenarios.map(function (c, i) { return i; }),
+              formato: function (v) { return rotuloProf(cenarios[v].profundidade); },
+              rotulo: "profundidade máxima" });
+    [["perda_treino", "var(--muted)", "treino"], ["perda_validacao", "var(--arvore)", "validação"]]
+      .forEach(function (par) {
+        var pts = cenarios.map(function (c, i) { return [i, c[par[0]]]; });
+        g.linha(pts, { cor: par[1], largura: 3 });
+        pts.forEach(function (pt) { g.ponto(pt[0], pt[1], { r: 5, cor: par[1], bordaL: 1.5 }); });
+        g.texto(cenarios.length - 1, pts[pts.length - 1][1], par[2],
+          { dx: 10, dy: 5, tamanho: 18, cor: par[1] });
+      });
+    g.add(sv("line", { x1: g.px(est.indice), x2: g.px(est.indice), y1: g.py(g.dy[0]),
+      y2: g.py(g.dy[1]), stroke: "var(--ink)", "stroke-dasharray": "4 4" }));
+    var iMelhor = cenarios.indexOf(melhor);
+    g.add(sv("line", { x1: g.px(iMelhor), x2: g.px(iMelhor), y1: g.py(g.dy[0]),
+      y2: g.py(g.dy[1]), stroke: "var(--ok)", "stroke-width": 2 }));
+    g.texto(iMelhor, g.dy[1], "melhor na validação",
+      { dx: 6, dy: 16, tamanho: 16, peso: 400, cor: "var(--ok)" });
+
+    var mapas = ["2", "4", "8"].map(function (k) {
+      var a = R.auxiliar_2d.arvores[k];
+      var gm = Comum.mapaCalor(a.malha, { w: 320, h: 300, max: 0.5,
+        resumo: "Regiões de previsão para profundidade " + k });
+      return h("div", { class: "painel" + (String(atual.profundidade) === k ? " cor" : " claro"),
+        estilo: "padding:12px" }, [
+        h("h3", { class: "secao", estilo: "margin:0 0 4px" }, "profundidade " + k),
+        gm.svg,
+        h("p", { class: "nota", estilo: "margin:0" },
+          F.inteiro(a.folhas) + " folhas · validação " + F.dec(a.perda_validacao, 3)),
+      ]);
+    });
+
+    corpo.appendChild(h("div", { class: "linha cresce" }, [
+      h("div", { class: "coluna cresce" }, [
+        h("div", { estilo: "display:flex;justify-content:space-between;align-items:baseline;gap:10px" }, [
+          h("h3", { class: "secao", estilo: "margin:0" },
+            "Experimento auxiliar de duas variáveis: as regiões aprendidas"),
+          UI.selo("experimento auxiliar, não o modelo completo", "sim"),
+        ]),
+        h("div", { class: "g3 cresce" }, mapas),
+        h("div", { estilo: "display:flex;gap:16px;align-items:center" }, [
+          h("span", { class: "nota" }, "escala de PD prevista"),
+          Comum.legendaCor(0.5, { w: 300 }),
+        ]),
+      ]),
+      h("div", { class: "coluna", estilo: "flex:0 0 720px" }, [
+        h("div", { class: "painel claro cresce centro" }, [
+          h("h3", { class: "secao" },
+            "Base principal: perda por profundidade, com mínimo de 20 contratos por folha"),
+          g.svg,
+        ]),
+        h("div", { class: "painel" }, [
+          UI.slider({
+            rotulo: "Profundidade máxima, apenas nos ajustes executados", discreto: true,
+            min: 0, max: cenarios.length - 1, passo: 1, valor: est.indice,
+            formato: function (v) { return rotuloProf(cenarios[v].profundidade); },
+            aoMudar: function (v) { est.indice = v; App.montar("27"); },
+          }),
+          h("div", { estilo: "display:flex;gap:26px;align-items:baseline;margin-top:10px;flex-wrap:wrap" }, [
+            h("span", { class: "medio" }, F.inteiro(atual.folhas) + " folhas"),
+            h("span", { class: "medio" },
+              "mediana de " + F.inteiro(atual.mediana_n_folha) + " contratos por folha"),
+            h("span", { class: "apoio" },
+              "treino " + F.dec(atual.perda_treino, 4) + " · validação " +
+              F.dec(atual.perda_validacao, 4)),
+            h("button", { class: "btn min fantasma", type: "button", onclick: ctx.reiniciar },
+              "Reiniciar exemplo"),
+          ]),
+        ]),
+      ]),
+    ]));
+  },
+});
+
+
+/* slides/s28.js */
+Aula.slide({
+  id: "28",
+  bloco: "arvore",
+  titulo: "Três controles, três formas de conter o excesso de divisões",
+  subtitulo: "Profundidade máxima, mínimo de contratos por folha e poda por complexidade",
+  conclusao: "Controlar complexidade é escolher quais detalhes dos dados vale a pena manter.",
+  fonte: Aula.dados.fontes.experimento,
+  resumo: "Árvore treinada resumida até o terceiro nível e três controles de complexidade com cenários efetivamente ajustados.",
+  notas: {
+    conducao: [
+      "Mostre primeiro a profundidade, depois uma folha pequena que ainda existe mesmo em árvore rasa.",
+      "Use essa folha para motivar o mínimo de contratos por folha.",
+      "Por fim, explique que a poda considera retirar partes de uma árvore já crescida.",
+    ],
+    respostas: [
+      "O parâmetro de folha é mínimo de observações, não mínimo de inadimplentes.",
+      "O alfa da poda não tem unidade universal de nós removidos: ele é o preço por folha no critério de custo e complexidade.",
+      "A seleção usa a perda de validação fora do tempo.",
+    ],
+    cuidados: [
+      "Cada configuração corresponde a uma árvore realmente treinada, não a uma ocultação visual de nós.",
+      "Aumentar o mínimo por folha não melhora calibração automaticamente.",
+      "O critério final continua sendo desempenho fora da amostra de ajuste.",
+    ],
+    transicao: "Mesmo árvores de tamanho parecido podem mudar bastante quando mudamos a amostra usada para aprender.",
+  },
+
+  montar: function (corpo, ctx) {
+    var R = Aula.resultados;
+    var est = ctx.estado;
+    if (!R) {
+      corpo.appendChild(h("p", { class: "resposta erro" },
+        "Resultados do experimento não disponíveis: execute experimento/experimento.py e recompile."));
+      return;
+    }
+    if (!est.aba) est.aba = "profundidade";
+    if (est.i === undefined) est.i = 0;
+
+    var cen = R.modelos.arvore.cenarios;
+    var escolhido = R.modelos.arvore;
+
+    var abas = {
+      profundidade: {
+        rotulo: "Profundidade máxima",
+        explicacao: "Limita quantas perguntas em sequência a árvore pode fazer. " +
+          "Aqui o mínimo por folha fica fixo em " + F.inteiro(escolhido.min_folha) + " contratos.",
+        itens: [2, 3, 4, 6].map(function (p) {
+          var c = cen.filter(function (x) {
+            return x.profundidade === p && x.min_folha === escolhido.min_folha;
+          })[0];
+          return { rotulo: "profundidade " + p, c: c, valor: p };
+        }),
+      },
+      folha: {
+        rotulo: "Mínimo de contratos por folha",
+        explicacao: "Impede que a árvore crie grupos pequenos demais para sustentar uma taxa. " +
+          "Aqui a profundidade fica fixa em " +
+          (escolhido.profundidade < 0 ? "sem limite" : escolhido.profundidade) + ".",
+        itens: [20, 50, 100, 300].map(function (f) {
+          var c = cen.filter(function (x) {
+            return x.min_folha === f && x.profundidade === escolhido.profundidade;
+          })[0];
+          return { rotulo: "mínimo " + f, c: c, valor: f };
+        }),
+      },
+      poda: {
+        rotulo: "Poda por custo e complexidade",
+        explicacao: "Cresce a árvore e depois retira ramos que não pagam seu preço por folha. " +
+          "O parâmetro alfa é esse preço.",
+        itens: R.modelos.arvore.poda.map(function (p) {
+          return { rotulo: "alfa " + F.dec(p.alpha, 6), c: {
+            folhas: p.folhas, perda_validacao: p.perda_validacao,
+            auc_validacao: p.auc_validacao,
+          }, valor: p.alpha };
+        }),
+      },
+    };
+    var aba = abas[est.aba];
+    if (est.i >= aba.itens.length) est.i = 0;
+    var item = aba.itens[est.i];
+    var anterior = est.i > 0 ? aba.itens[est.i - 1] : null;
+
+    var profArvore = est.aba === "profundidade" ? Math.min(item.valor, 3) : 3;
+    var arvore = Comum.arvoreTreinada(R.modelos.arvore.estrutura, {
+      profundidade: profArvore, compacto: true, w: 900, h: 430, caixaW: 190, caixaH: 62,
+      resumo: "Árvore treinada, resumida até o nível " + profArvore + ".",
+    });
+
+    var gb = Graf.barras({
+      w: 540, h: 196, larguraRot: 170, m: { d: 130, c: 8, b: 58 },
+      itens: aba.itens.map(function (it, k) {
+        return { rotulo: it.rotulo, valor: it.c ? it.c.perda_validacao : 0,
+                 cor: k === est.i ? "var(--arvore)" : "var(--rule)",
+                 texto: it.c ? F.dec(it.c.perda_validacao, 4) : "não calculado" };
+      }),
+      min: 0.33, max: 0.38, ticks: [0.33, 0.35, 0.37],
+      formato: function (v) { return F.dec(v, 2); },
+      rotuloX: "log loss de validação",
+    });
+
+    corpo.appendChild(h("div", { class: "linha cresce" }, [
+      h("div", { class: "coluna cresce" }, [
+        h("div", { class: "painel claro cresce centro" }, [
+          h("h3", { class: "secao" },
+            "Modelo selecionado, resumido até o nível " + profArvore),
+          arvore,
+        ]),
+        h("p", { class: "nota" },
+          "Nomes abreviados nas caixas: comp é comprometimento, hist é histórico, util é " +
+          "utilização, rel é relacionamento. Ramos além do nível mostrado aparecem resumidos. " +
+          "A árvore selecionada tem " + F.inteiro(escolhido.folhas) + " folhas."),
+      ]),
+      h("div", { class: "coluna", estilo: "flex:0 0 560px" }, [
+        h("div", { class: "grupo" }, Object.keys(abas).map(function (k) {
+          return h("button", {
+            class: "btn" + (est.aba === k ? " sel" : ""), type: "button",
+            "aria-pressed": est.aba === k ? "true" : "false",
+            onclick: function () { est.aba = k; est.i = 0; App.montar("28"); },
+          }, abas[k].rotulo);
+        })),
+        h("div", { class: "painel cor", estilo: "padding:10px 14px" }, [
+          h("p", { class: "apoio", estilo: "color:var(--ink);margin:0;font-size:18px" },
+            aba.explicacao),
+        ]),
+        h("div", { class: "painel" }, [
+          UI.slider({
+            rotulo: "Cenário treinado", discreto: true, min: 0, max: aba.itens.length - 1, passo: 1,
+            valor: est.i,
+            formato: function (v) { return aba.itens[v].rotulo; },
+            aoMudar: function (v) { est.i = v; App.montar("28"); },
+          }),
+          h("div", { estilo: "display:flex;gap:24px;margin-top:10px;flex-wrap:wrap" }, [
+            h("span", { class: "medio" }, item.c ? F.inteiro(item.c.folhas) + " folhas" : "sem ajuste"),
+            item.c && item.c.mediana_n_folha
+              ? h("span", { class: "apoio" },
+                  "mediana de " + F.inteiro(item.c.mediana_n_folha) + " contratos por folha")
+              : null,
+            h("span", { class: "apoio" },
+              item.c ? "validação " + F.dec(item.c.perda_validacao, 4) : ""),
+          ]),
+          anterior && anterior.c && item.c
+            ? h("p", { class: "nota", estilo: "margin-top:8px" },
+                "Em relação ao cenário anterior (" + anterior.rotulo + "): " +
+                F.sinal(item.c.folhas - anterior.c.folhas, 0) + " folhas e " +
+                F.sinal(item.c.perda_validacao - anterior.c.perda_validacao, 4) +
+                " na perda de validação.")
+            : null,
+        ]),
+        h("div", { class: "painel claro cresce" }, [gb.svg]),
+        h("div", { class: "grupo" }, [
+          h("button", { class: "btn min", type: "button", onclick: function () {
+            est.como = !est.como; App.montar("28");
+          } }, est.como ? "Esconder a regra" : "Como foi escolhido?"),
+          h("button", { class: "btn min fantasma", type: "button", onclick: ctx.reiniciar },
+            "Reiniciar exemplo"),
+        ]),
+        est.como
+          ? h("div", { class: "resposta" },
+              "A configuração final é a de menor log loss na validação fora do tempo, " +
+              "entre todas as combinações de profundidade e mínimo por folha treinadas: " +
+              "profundidade " + (escolhido.profundidade < 0 ? "sem limite" : escolhido.profundidade) +
+              " e mínimo de " + F.inteiro(escolhido.min_folha) + " contratos por folha. " +
+              "O teste final não participa.")
+          : null,
+      ]),
+    ]));
+  },
+});
+
+
+/* slides/s29.js */
+Aula.slide({
+  id: "29",
+  bloco: "arvore",
+  titulo: "Se mudarmos um pouco a amostra, a árvore continua contando a mesma história?",
+  subtitulo: "Vinte reamostragens do treino, com os mesmos hiperparâmetros",
+  conclusao: "Uma regra fácil de ler pode ser sensível à amostra que a produziu.",
+  fonte: Aula.dados.fontes.experimento,
+  resumo: "Duas árvores de réplicas diferentes lado a lado e a dispersão das PDs dos quatro clientes nas vinte réplicas.",
+  notas: {
+    conducao: [
+      "Pergunte qual das duas árvores é a verdadeira e use a pergunta para discutir estimativa e variabilidade.",
+      "Compare estrutura e previsão: uma raiz diferente não significa mudança enorme de PD, e previsões podem variar mesmo com raízes iguais.",
+    ],
+    cuidados: [
+      "O bootstrap ilustra sensibilidade ao treinamento. Não é intervalo preditivo calibrado do risco verdadeiro de um cliente.",
+      "Não reamostramos o teste para treinar.",
+      "As réplicas exibidas foram escolhidas por critério declarado: a primeira réplica de cada variável de raiz observada, e não a mais dramática.",
+      "Este slide não é uma aula de random forest. Apenas situa por que ensembles exploram múltiplas funções.",
+    ],
+    transicao: "Antes de combinar várias árvores, vamos verificar se sabemos interpretar uma única árvore e suas limitações.",
+  },
+
+  montar: function (corpo, ctx) {
+    var R = Aula.resultados;
+    var D = Aula.dados;
+    var est = ctx.estado;
+    if (!R) {
+      corpo.appendChild(h("p", { class: "resposta erro" },
+        "Resultados do experimento não disponíveis: execute experimento/experimento.py e recompile."));
+      return;
+    }
+
+    var reps = R.replicas_arvore.replicas;
+    var raizes = R.replicas_arvore.raizes;
+    /* Critério declarado de escolha: primeira réplica de cada variável de raiz. */
+    var variaveis = Object.keys(raizes);
+    function primeiraCom(v) {
+      for (var i = 0; i < reps.length; i++) if (reps[i].raiz_variavel === v) return i;
+      return 0;
+    }
+    if (est.a === undefined) est.a = primeiraCom(variaveis[0]);
+    if (est.b === undefined) est.b = primeiraCom(variaveis[variaveis.length - 1]);
+    if (!est.cliente) est.cliente = "Bruno";
+
+    var A = reps[est.a], B = reps[est.b];
+    var idxCliente = D.clientes.map(function (c) { return c.nome; }).indexOf(est.cliente);
+
+    function painelReplica(rep, letra) {
+      return h("div", { class: "painel claro cresce centro" }, [
+        h("div", { estilo: "display:flex;justify-content:space-between;width:100%;align-items:baseline" }, [
+          h("h3", { class: "secao", estilo: "margin:0" },
+            "Réplica " + letra + ": nº " + rep.replica),
+          h("span", { class: "nota" },
+            F.inteiro(rep.folhas) + " folhas · AUC validação " + F.dec(rep.auc_validacao, 4)),
+        ]),
+        Comum.arvoreTreinada(rep.estrutura, {
+          profundidade: 1, compacto: true, w: 660, h: 270, caixaW: 200, caixaH: 72,
+          resumo: "Árvore da réplica " + rep.replica,
+        }),
+        h("p", { class: "nota", estilo: "margin:0" },
+          "nomes abreviados nas caixas. raiz: " +
+          (Comum.NOMES_COLUNAS[rep.raiz_variavel] || rep.raiz_variavel) +
+          " ≤ " + F.dec(rep.raiz_limite, 2) +
+          " · PD de " + est.cliente + ": " + F.pct(rep.pd_clientes[idxCliente], 2)),
+      ]);
+    }
+
+    /* Dispersão das previsões por cliente. */
+    var g = Graf.novo({ w: 600, h: 380, m: { e: 96, d: 60, c: 24, b: 60 } });
+    var todos = [];
+    reps.forEach(function (r) { r.pd_clientes.forEach(function (v) { todos.push(v); }); });
+    var topo = Math.min(1, Math.ceil(Math.max.apply(null, todos) * 10) / 10);
+    g.x(0, topo).y(0, 4);
+    g.grade({ x: Graf.ticks(0, topo, 5) });
+    g.eixoX({ ticks: Graf.ticks(0, topo, 5), formato: function (v) { return F.pct(v, 0); },
+              rotulo: "PD prevista na réplica" });
+    D.clientes.forEach(function (c, i) {
+      var y = 3.5 - i;
+      var vals = reps.map(function (r) { return r.pd_clientes[i]; });
+      var media = M.media(vals);
+      g.add(sv("text", { x: g.m.e - 14, y: g.py(y) + 7, "text-anchor": "end", "font-size": 20,
+        "font-weight": 700, fill: c.nome === est.cliente ? "var(--ink)" : "var(--muted)",
+        texto: c.nome }));
+      vals.forEach(function (v, k) {
+        var destaque = c.nome === est.cliente;
+        var ehA = k === est.a, ehB = k === est.b;
+        g.ponto(v, y + (k % 5 - 2) * 0.055, {
+          r: ehA || ehB ? 8 : 5,
+          cor: ehA ? "var(--arvore)" : ehB ? "var(--amber)" : "var(--muted)",
+          bordaL: 1.2,
+        });
+        if (!destaque) return;
+      });
+      g.add(sv("line", { x1: g.px(Math.min.apply(null, vals)), x2: g.px(Math.max.apply(null, vals)),
+        y1: g.py(y - 0.32), y2: g.py(y - 0.32), stroke: "var(--rule)", "stroke-width": 3 }));
+      g.add(sv("text", { x: g.px(Math.max.apply(null, vals)) + 10, y: g.py(y - 0.32) + 6,
+        "font-size": 16, fill: "var(--muted)",
+        texto: F.pct(Math.min.apply(null, vals), 1) + " a " + F.pct(Math.max.apply(null, vals), 1) }));
+    });
+
+    corpo.appendChild(h("div", { class: "linha cresce" }, [
+      h("div", { class: "coluna cresce" }, [
+        h("div", { class: "linha cresce" }, [painelReplica(A, "A"), painelReplica(B, "B")]),
+        h("div", { class: "painel cor" }, [
+          h("p", { estilo: "font-size:21px;color:var(--ink);margin:0" },
+            A.raiz_variavel === B.raiz_variavel
+              ? ("As duas réplicas mantiveram a mesma variável na raiz, com limites " +
+                 F.dec(A.raiz_limite, 2) + " e " + F.dec(B.raiz_limite, 2) + ".")
+              : ("A raiz mudou de " + (Comum.NOMES_COLUNAS[A.raiz_variavel] || A.raiz_variavel) +
+                 " para " + (Comum.NOMES_COLUNAS[B.raiz_variavel] || B.raiz_variavel) +
+                 " apenas por reamostragem do treino.")),
+          h("p", { class: "nota", estilo: "margin-top:6px" },
+            "Entre as " + reps.length + " réplicas, a raiz foi " +
+            variaveis.map(function (v) {
+              return (Comum.NOMES_COLUNAS[v] || v) + " em " + raizes[v] + " delas";
+            }).join(" e ") + "."),
+        ]),
+      ]),
+      h("div", { class: "coluna", estilo: "flex:0 0 620px" }, [
+        h("div", { class: "painel claro cresce centro" }, [
+          h("h3", { class: "secao" }, "PD dos quatro clientes nas " + reps.length + " réplicas"),
+          g.svg,
+        ]),
+        h("div", { class: "painel" }, [
+          h("div", { class: "grupo" }, [
+            h("span", { class: "apoio" }, "Réplica A"),
+            UI.botoes({
+              compacto: true, rotulo: "réplica A",
+              opcoes: reps.slice(0, 8).map(function (r, i) {
+                return { valor: i, rotulo: String(r.replica) };
+              }),
+              valor: est.a,
+              aoMudar: function (v) { est.a = v; App.montar("29"); },
+            }),
+          ]),
+          h("div", { class: "grupo", estilo: "margin-top:8px" }, [
+            h("span", { class: "apoio" }, "Réplica B"),
+            UI.botoes({
+              compacto: true, rotulo: "réplica B",
+              opcoes: reps.slice(8, 16).map(function (r, i) {
+                return { valor: i + 8, rotulo: String(r.replica) };
+              }),
+              valor: est.b,
+              aoMudar: function (v) { est.b = v; App.montar("29"); },
+            }),
+          ]),
+          h("div", { class: "grupo", estilo: "margin-top:8px" }, [
+            Comum.seletorCliente(est.cliente, function (v) {
+              est.cliente = v; App.montar("29");
+            }, { compacto: true }),
+            h("button", { class: "btn min fantasma", type: "button", onclick: ctx.reiniciar },
+              "Reiniciar exemplo"),
+          ]),
+          h("p", { class: "nota", estilo: "margin-top:8px" },
+            "Mesma complexidade nas " + reps.length + " réplicas: profundidade " +
+            R.replicas_arvore.profundidade + " e mínimo de " +
+            F.inteiro(R.replicas_arvore.min_folha) + " contratos por folha."),
+        ]),
+      ]),
+    ]));
+  },
+});
+
+
+/* slides/s30.js */
+Aula.slide({
+  id: "30",
+  bloco: "arvore",
+  titulo: "Carla recebe qual PD nesta árvore?",
+  subtitulo: "Exercício: percorrer, calcular e questionar",
+  conclusao: "Uma regra legível ajuda a explicar o cálculo, mas não dispensa evidência de qualidade.",
+  fonte: Aula.dados.fontes.arvore,
+  resumo: "Árvore didática com a taxa da folha de Carla oculta e três tarefas: caminho, cálculo da PD e efeito de dobrar a renda.",
+  notas: {
+    conducao: [
+      "Reserve dois minutos em duplas.",
+      "Não revele a resposta ao primeiro clique em um ramo errado: explique a regra e permita corrigir.",
+      "Conclua com a importância de tamanho de folha, validação e estabilidade. Este é um bom ponto para a pausa da aula.",
+    ],
+    respostas: [
+      "Carla tem histórico 0 e comprometimento 48%, acima de 40%. Chega à folha de 22 eventos em 200 contratos, ou seja 11%.",
+      "Dobrar a renda isoladamente, com o comprometimento mantido fixo, não altera esta árvore, porque a renda não é usada nas perguntas.",
+      "Numa mudança econômica real o comprometimento poderia variar. A simulação é sobre a função do modelo.",
+      "Desafio final: Bruno de 38% para 41% passa de 15% para 40%. Isso não prova um salto real de risco exatamente nesse limite: é uma descontinuidade da aproximação aprendida.",
+    ],
+    transicao: "Uma única árvore é clara, mas pode ser limitada ou instável. Podemos construir uma previsão melhor acrescentando várias árvores pequenas em sequência?",
+  },
+  impressao: function (e) { e.conferido = true; e.pdTexto = "11"; e.ramo = "certo"; e.renda = 0; },
+
+  montar: function (corpo, ctx) {
+    var D = Aula.dados, A = D.arvore;
+    var est = ctx.estado;
+    var carla = D.cliente("Carla");
+    var folha = A.folhaDe(carla);
+    if (est.pdTexto === undefined) est.pdTexto = "";
+    if (est.ramo === undefined) est.ramo = null;
+    if (est.renda === undefined) est.renda = null;
+
+    var caminhos = [
+      { valor: "certo", rotulo: "histórico = 0, depois comprometimento acima de 40%", correto: true },
+      { valor: "esq", rotulo: "histórico = 0, depois comprometimento até 40%", correto: false },
+      { valor: "dir", rotulo: "histórico = 1, depois comprometimento acima de 40%", correto: false },
+    ];
+
+    var arvore = Comum.arvoreDidatica({
+      cliente: est.conferido ? carla : null,
+      mostrarNumeros: true, mostrarPd: true,
+      ocultarFolha: est.conferido ? null : folha,
+      w: 980, h: 380, caixaW: 236, caixaH: 74,
+      rotuloFolha: function () { return "folha"; },
+    });
+
+    function retorno(ok, texto) {
+      return h("div", { class: "resposta" + (ok ? "" : " erro"), estilo: "margin-top:8px" }, texto);
+    }
+
+    var pdValor = Number(String(est.pdTexto).replace(",", "."));
+    var pdOk = Math.abs(pdValor - 11) < 0.6;
+    var pdFracao = Math.abs(pdValor - 0.11) < 0.006;
+
+    var entrada = h("input", {
+      type: "text", inputmode: "decimal", value: est.pdTexto,
+      "aria-label": "PD da folha em porcentagem",
+      estilo: "width:130px;font:700 22px var(--sans);padding:6px 8px;border:1px solid var(--rule);" +
+              "border-radius:4px;background:var(--surface);color:var(--ink)",
+      onchange: function (ev) { est.pdTexto = ev.target.value; },
+    });
+
+    corpo.appendChild(h("div", { class: "linha cresce" }, [
+      h("div", { class: "coluna cresce" }, [
+        h("div", { class: "painel claro cresce centro" }, arvore),
+        Comum.fichaLinha(carla, { cor: true }),
+      ]),
+      h("div", { class: "coluna", estilo: "flex:0 0 620px" }, [
+        h("div", { class: "painel", estilo: "padding:10px 16px" }, [
+          h("h3", { class: "secao", estilo: "margin-bottom:5px" }, "1. Indique o caminho"),
+          UI.botoes({
+            vertical: true, rotulo: "caminho",
+            opcoes: caminhos.map(function (c) { return { valor: c.valor, rotulo: c.rotulo }; }),
+            valor: est.ramo,
+            aoMudar: function (v) { est.ramo = v; est.conferido = false; App.montar("30"); },
+          }),
+          est.conferido && est.ramo
+            ? retorno(est.ramo === "certo",
+                est.ramo === "certo"
+                  ? "Caminho correto: Carla tem histórico 0 e comprometimento 48%, acima de 40%."
+                  : est.ramo === "esq"
+                    ? "Erro de percurso no segundo nó: 48% é maior que 40%, portanto o ramo é o de comprometimento acima de 40%."
+                    : "Erro de percurso na raiz: Carla não tem histórico de atraso, portanto segue por histórico 0.")
+            : null,
+        ]),
+        h("div", { class: "painel", estilo: "padding:10px 16px" }, [
+          h("h3", { class: "secao", estilo: "margin-bottom:5px" }, "2. Calcule a PD da folha"),
+          h("div", { class: "grupo", estilo: "align-items:center" }, [
+            entrada,
+            h("span", { class: "apoio" }, "em porcentagem"),
+          ]),
+          est.conferido
+            ? retorno(pdOk,
+                pdOk ? "Correto: " + F.inteiro(folha.d) + " dividido por " + F.inteiro(folha.n) +
+                       " resulta em " + F.pct(folha.pd, 0) + "."
+                     : pdFracao
+                       ? "O valor está certo, mas na unidade errada: 0,11 é a fração. Em porcentagem, escreva 11."
+                       : "Reveja a conta: a folha tem " + F.inteiro(folha.d) + " eventos em " +
+                         F.inteiro(folha.n) + " contratos, ou seja " + F.pct(folha.pd, 0) + ".")
+            : null,
+        ]),
+        h("div", { class: "painel", estilo: "padding:10px 16px" }, [
+          h("h3", { class: "secao", estilo: "margin-bottom:5px" },
+            "3. Se a renda de Carla dobrasse, mantendo fixas as entradas usadas na árvore"),
+          UI.botoes({
+            vertical: true, rotulo: "efeito da renda",
+            opcoes: [
+              { valor: "permanece", rotulo: "A PD permanece a mesma" },
+              { valor: "metade", rotulo: "A PD cai pela metade" },
+              { valor: "impossivel", rotulo: "Não é possível avaliar a função" },
+            ],
+            valor: est.renda,
+            aoMudar: function (v) { est.renda = v; est.conferido = false; App.montar("30"); },
+          }),
+          est.conferido && est.renda
+            ? retorno(est.renda === "permanece",
+                est.renda === "permanece"
+                  ? "Correto: a renda não aparece em nenhuma pergunta desta árvore, e as demais entradas foram mantidas fixas."
+                  : "A renda não participa das perguntas desta árvore. Com as demais entradas fixas, a previsão não muda. Em uma mudança econômica real, o comprometimento poderia variar.")
+            : null,
+        ]),
+        h("div", { class: "grupo" }, [
+          h("button", { class: "btn", type: "button", onclick: function () {
+            est.conferido = true; App.montar("30");
+          } }, "Conferir"),
+          h("button", { class: "btn", type: "button", onclick: function () {
+            est.desafio = !est.desafio; App.montar("30");
+          } }, est.desafio ? "Esconder o desafio" : "Desafio final"),
+          h("button", { class: "btn fantasma", type: "button", onclick: ctx.reiniciar },
+            "Reiniciar exercício"),
+        ]),
+        est.desafio
+          ? h("div", { class: "painel cor" }, [
+              h("h3", { class: "secao" }, "Desafio final"),
+              h("p", { class: "apoio" },
+                "Bruno passa de comprometimento 38% para 41%, com os demais valores fixos. " +
+                "A PD muda de " + F.pct(A.folhaDe({ hist: 1, comp: 38 }).pd, 0) + " para " +
+                F.pct(A.folhaDe({ hist: 1, comp: 41 }).pd, 0) +
+                ". Isso prova um salto real de risco exatamente nesse limite?"),
+              est.conferido
+                ? h("p", { class: "resposta" },
+                    "Não. É uma descontinuidade da aproximação aprendida. O limite foi escolhido " +
+                    "por um critério de impureza em uma amostra, e não por um fenômeno econômico " +
+                    "que mude bruscamente em 40%.")
+                : h("p", { class: "nota" }, "A resposta aparece ao conferir."),
+            ])
+          : null,
       ]),
     ]));
   },

@@ -129,7 +129,7 @@ Aula.slide({
         ]),
         h("div", { class: "painel" }, [
           UI.slider({
-            rotulo: "Penalização, apenas nos valores treinados", min: 0, max: grade.length - 1,
+            rotulo: "Penalização, apenas nos valores treinados", discreto: true, min: 0, max: grade.length - 1,
             passo: 1, valor: est.indice,
             formato: function (v) { return "C = " + F.dec(grade[v].C, grade[v].C < 1 ? 4 : 0); },
             aoMudar: function (v) { est.indice = v; App.montar("18"); },

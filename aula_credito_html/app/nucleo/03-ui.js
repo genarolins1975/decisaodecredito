@@ -42,10 +42,19 @@ var UI = (function () {
     numero.addEventListener("change", function () { emitir(ler(numero.value), "numero"); });
     numero.addEventListener("blur", function () { numero.value = escrever(Number(faixa.value)); });
 
+    /* Em escalas discretas (índices de cenários treinados) a entrada numérica não
+       tem significado para quem lê: mostramos apenas o rótulo do cenário. */
     var caixa = h("div", { class: "ctrl", estilo: op.largura ? "width:" + op.largura : "" }, [
       h("label", { for: idc }, op.rotulo),
-      h("div", { class: "ctrl-linha" }, [faixa, numero, saida]),
+      h("div", { class: "ctrl-linha" }, op.discreto ? [faixa, saida] : [faixa, numero, saida]),
     ]);
+    if (op.discreto) {
+      saida.setAttribute("style", "font-weight:700;color:var(--ink);min-width:140px");
+      faixa.setAttribute("aria-valuetext", op.formato ? op.formato(Number(op.valor)) : "");
+      faixa.addEventListener("input", function () {
+        faixa.setAttribute("aria-valuetext", op.formato ? op.formato(Number(faixa.value)) : "");
+      });
+    }
     caixa.definir = function (v) { emitir(v); };
     caixa.valor = function () { return Number(faixa.value); };
     return caixa;

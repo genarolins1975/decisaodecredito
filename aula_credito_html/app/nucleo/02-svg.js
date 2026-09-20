@@ -285,6 +285,20 @@ var Graf = (function () {
     return g;
   }
 
+  /* Quebra um rótulo em no máximo duas linhas de até max caracteres. */
+  function quebrar(texto, max) {
+    texto = String(texto || "");
+    if (texto.length <= max) return [texto];
+    var palavras = texto.split(" ");
+    var l1 = "", l2 = "";
+    palavras.forEach(function (p) {
+      if (!l2 && (l1 + " " + p).trim().length <= max) l1 = (l1 + " " + p).trim();
+      else l2 = (l2 + " " + p).trim();
+    });
+    if (!l2) return [l1];
+    return [l1, l2];
+  }
+
   function ticksAuto(a, b, alvo) {
     var bruto = (b - a) / (alvo || 6);
     var mag = Math.pow(10, Math.floor(Math.log10(Math.abs(bruto) || 1)));
@@ -313,10 +327,13 @@ var Graf = (function () {
     g.grade({ x: ticks });
     g.eixoX({ ticks: ticks, rotulo: op.rotuloX, formato: op.formato });
     var alt = (g.altura / itens.length) * 0.6;
+    /* A base das barras é o zero quando ele pertence ao domínio; caso contrário,
+       é a borda do domínio, para a barra nunca começar fora do gráfico. */
+    var base = Math.min(Math.max(0, min), max);
     itens.forEach(function (it, i) {
       var yc = g.py(itens.length - i - 0.5);
-      var x0 = g.px(Math.min(0, it.valor < 0 ? it.valor : min < 0 ? 0 : min));
-      var x1 = g.px(it.valor);
+      var x0 = g.px(base);
+      var x1 = g.px(M.clamp(it.valor, min, max));
       g.add(sv("rect", {
         x: Math.min(x0, x1), y: yc - alt / 2, width: Math.max(2, Math.abs(x1 - x0)),
         height: alt, fill: it.cor || "var(--cor)", rx: 2, opacity: it.opacidade || 1,
@@ -383,7 +400,7 @@ var Graf = (function () {
           stroke: f.destaque ? "var(--cor)" : "var(--rule)",
           "stroke-width": f.destaque ? 4 : 2,
         }));
-        var mx = (x + fx) / 2, my = y + alturaCaixa + dy / 2 - 6;
+        var mx = x + (fx - x) * 0.74, my = y + alturaCaixa + dy * 0.42;
         var larg = String(f.aresta).length * 9.5 + 14;
         arestas.appendChild(sv("rect", {
           x: mx - larg / 2, y: my - 17, width: larg, height: 25, rx: 3,
@@ -399,19 +416,29 @@ var Graf = (function () {
 
       var folha = !no.filhos || !no.filhos.length;
       var cor = no.destaque ? "var(--cor)" : "var(--rule)";
+      var nLinhas = quebrar(no.rotulo, Math.max(8, Math.floor((larguraCaixa - 20) / 10.4))).length +
+        (no.detalhe ? 1 : 0) + (no.detalhe2 ? 1 : 0);
+      var altura = Math.max(alturaCaixa, nLinhas * 21 + 14);
       caixas.appendChild(sv("rect", {
-        x: x - larguraCaixa / 2, y: y, width: larguraCaixa, height: alturaCaixa, rx: 5,
+        x: x - larguraCaixa / 2, y: y, width: larguraCaixa, height: altura, rx: 5,
         fill: no.destaque ? "var(--cor-soft)" : (folha ? "var(--surface)" : "var(--paper)"),
         stroke: cor, "stroke-width": no.destaque ? 3 : 1.5,
       }));
-      var linhas = [no.rotulo].concat(no.detalhe ? [no.detalhe] : []).concat(no.detalhe2 ? [no.detalhe2] : []);
+      /* O rótulo quebra em até duas linhas para caber na caixa. */
+      var maxChars = Math.max(8, Math.floor((larguraCaixa - 20) / 10.4));
+      var linhas = quebrar(no.rotulo, maxChars).map(function (t) {
+        return { texto: t, principal: true };
+      });
+      if (no.detalhe) linhas.push({ texto: no.detalhe });
+      if (no.detalhe2) linhas.push({ texto: no.detalhe2 });
+      var topo = y + (altura - linhas.length * 21) / 2 + 16;
       linhas.forEach(function (t, i) {
         caixas.appendChild(sv("text", {
-          x: x, y: y + 24 + i * 21, "text-anchor": "middle",
-          "font-size": i === 0 ? 20 : 18,
-          "font-weight": i === 0 ? 700 : 400,
-          fill: i === 0 ? "var(--ink)" : "var(--muted)",
-          texto: t,
+          x: x, y: topo + i * 21, "text-anchor": "middle",
+          "font-size": t.principal ? 19 : 17,
+          "font-weight": t.principal ? 700 : 400,
+          fill: t.principal ? "var(--ink)" : "var(--muted)",
+          texto: t.texto,
         }));
       });
       if (no.valor !== undefined) {
