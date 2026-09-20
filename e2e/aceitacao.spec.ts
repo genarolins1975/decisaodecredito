@@ -949,3 +949,14 @@ test("aula em slides: professor conduz o baralho, aluno acompanha e não recebe 
 
   await prof.post(`/api/aovivo/${sessionId}/status`, { data: { status: "closed" } });
 });
+
+test("prontidão: /api/health diz quantas migrações o banco aplicou, e o número bate com drizzle/", async () => {
+  const fs = await import("node:fs");
+  const arquivos = fs.readdirSync("drizzle").filter((f) => f.endsWith(".sql")).length;
+  const anon = await apiAs(null);
+  const r = await anon.get("/api/health");
+  expect(r.status()).toBe(200);
+  const j = await r.json();
+  expect(j.ok).toBe(true);
+  expect(j.migracoes, "banco atrás das migrações do repositório").toBe(arquivos);
+});
