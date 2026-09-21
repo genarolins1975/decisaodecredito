@@ -18,6 +18,8 @@ Data de referência: 21 de setembro de 2026. Branch `claude/new-session-d2yt8t`.
 | M10 | Descrição do material da Aula 2 corrigida e propagada a bancos já importados | `scripts/import-content.ts` | nenhuma | `content:import` atualiza a descrição sem duplicar o material | feito; conferido no banco local |
 | M11 | QA da variante do aluno | `aula_credito_html/qa.mjs --aluno` | M1 | 50 de 50 | feito em 1366 (com estados) e 390 |
 | M12 | Testes: e2e "aula em slides" ampliado (troca de modo, recarga, variante sem notas, painel, projeção); teste unitário do contrato de compilação | `e2e/aceitacao.spec.ts`, `tests/aula-2-build.test.ts` | M1 a M9 | passam | feito |
+| M14 | Rede de segurança da projeção e QA por estados: `ajustarCorpo` no motor (zoom até caber, mínimo 0,6, `data-zoom`); `qa.mjs` com três rodadas de cliques por slide, sem "Reiniciar" nem navegação, cobrando `.katex-error`, estouro, corte, transbordo, rolagem e zoom abaixo de 80% após cada rodada; `--dump` para ler o estado | `app/nucleo/90-app.js`, `aula_credito_html/qa.mjs` | M1 | `node qa.mjs --estados` sem falha nas quatro resoluções e na variante do aluno | feito em 21/09/2026, segunda rodada |
+| M15 | Estados que não cabiam e rótulos fora do desenho: `Mat.t` escapa `% # & _`; slide 24 (fórmula, ticks, alturas, rótulo em duas linhas); 13 (amostra sob as curvas); 30 (coluna de 700 px, opções compactas, desafio sob a árvore); 46 (tabela no lugar das curvas, selo curto); 47 (hipóteses e alternativa exclusivas e no lugar do painel de hipóteses); 49 (argumentos no lugar dos requisitos, escolha sob os controles); 02 (coluna com `min-width` e tabela apertada); miniatura da sigmoide (margens e ticks no domínio); `Graf.arvore` com caixas por nível; `Graf.barras` com rótulo em duas linhas; 14, 16, 25, 28, 42 e 44 | `app/nucleo/02-svg.js`, `04-comum.js`, `05-mat.js`, `app/slides/s02, s13, s14, s15, s16, s24, s25, s28, s30, s42, s44, s46, s47, s49` | M14 | idem M14; 0 fórmulas com erro | feito em 21/09/2026, segunda rodada |
 | M13 | Documentação: estes quatro documentos, `README.md`, `docs/04`, `docs/05`, `docs/PROGRESSO.md`, `aula_credito_html/LEIA_PRIMEIRO.md`, `02_controle/RETOMADA.md` e `REVISAO_FINAL.md`; capturas `docs/capturas/aula2-*.png` | | | leitura | feito |
 
 ## 2. Recomendações futuras
@@ -32,6 +34,7 @@ Ordenadas por valor para a aula; nenhuma bloqueia o uso da Aula 2.
 | R4 | Validação com o professor e com alunos em uma aula real | nenhum teste com usuários foi feito | R3 | registro do que confundiu e do que faltou, por jornada | fora do repositório |
 | R5 | Impressão da variante do aluno com uma folha de "como estudar" na abertura | o aluno pode imprimir 50 folhas sem contexto de estudo | decisão pedagógica | folha inicial revisada pelo professor | pequeno |
 | R6 | Manter a regra "nenhum hífen ou travessão no texto exibido" também nas cascas React da sessão ao vivo, que hoje usam travessão em rótulos herdados | consistência editorial | nenhuma | `lint-tracos` estendido às cascas | pequeno |
+| R7 | Redesenhar os estados combinados que ainda cabem só reduzidos (82% a 99%) nos slides 04, 13, 16, 17, 18, 22, 28, 30, 31, 32, 34, 35, 36, 37, 40, 42, 43, 48 e 49 | a rede de segurança reduz o corpo em vez de cortar, mas texto reduzido lê pior no projetor | decidir por slide se dois painéis podem ficar abertos juntos | `node qa.mjs --estados` sem "coube reduzido" | médio |
 
 ## 3. Como verificar
 
@@ -53,3 +56,4 @@ Depois de qualquer alteração em `aula_credito_html/app/`, recompilar antes de 
 | Data | Situação |
 |---|---|
 | 21/09/2026 | M1 a M13 implementados e verificados no ambiente local; R1 a R6 abertas |
+| 21/09/2026, segunda rodada | M14 e M15 a partir da captura do professor no slide 24; R7 aberta |

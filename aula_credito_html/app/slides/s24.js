@@ -65,11 +65,13 @@ Aula.slide({
         linhas: [Mat.passos([
           "\\Delta G &= G(\\text{raiz}) - \\bar{G} = " + Mat.n(r.pai, 3) + " - " + Mat.n(r.ponderado, 6) +
             " = " + Mat.n(r.ganho, 6),
-          "&\\text{candidato " + outro.rotulo.toLowerCase() + ": } \\Delta G = " + Mat.n(rOutro.ganho, 6),
+          "&" + Mat.t("candidato " + outro.rotulo.toLowerCase() + ": ") + " \\Delta G = " + Mat.n(rOutro.ganho, 6),
         ])] },
     ];
 
-    var g = Graf.novo({ w: 520, h: 300, m: { e: 78, d: 24, c: 20, b: 56 } });
+    /* 230 de altura, e não 300: na etapa 4 o painel de barras entra embaixo deste, e com 300 a
+       coluna passava da altura do palco e o rótulo do eixo ficava coberto. */
+    var g = Graf.novo({ w: 520, h: 230, m: { e: 78, d: 24, c: 16, b: 52 } });
     g.x(0, 1).y(0, 0.55);
     g.grade({ y: [0, 0.18, 0.5] });
     g.eixoY({ ticks: [0, 0.1, 0.2, 0.3, 0.4, 0.5], formato: function (v) { return F.dec(v, 1); },
@@ -88,15 +90,15 @@ Aula.slide({
     });
 
     var gb = Graf.barras({
-      w: 520, h: 200, larguraRot: 210, m: { d: 110, c: 12, b: 48 },
+      w: 520, h: 140, larguraRot: 230, m: { d: 80, c: 10, b: 46 },
       itens: A.candidatos.map(function (cc) {
         var rr = A.ganho(cc);
         return { rotulo: cc.rotulo, valor: rr.ganho,
                  cor: cc.chave === est.cand ? "var(--arvore)" : "var(--rule)",
                  texto: F.dec(rr.ganho, 4) };
       }),
-      max: 0.025, ticks: [0, 0.005, 0.01, 0.015, 0.02, 0.025],
-      formato: function (v) { return F.dec(v, 3); },
+      max: 0.025, ticks: [0, 0.01, 0.02],
+      formato: function (v) { return F.dec(v, 2); },
       rotuloX: "ganho de impureza",
     });
 

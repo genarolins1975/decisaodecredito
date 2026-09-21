@@ -91,7 +91,7 @@ Aula.slide({
           h("p", { class: "formula peq", estilo: "margin-top:8px" },
             Mat.b("z = " + Mat.n(intercepto(), 2) +
               outros.map(function (c) {
-                return " + " + Mat.n(coef(c), 2) + "\\;\\mathbb{1}[\\text{" + c.toLowerCase() + "}]";
+                return " + " + Mat.n(coef(c), 2) + "\\;\\mathbb{1}[" + Mat.t(c.toLowerCase()) + "]";
               }).join(""))),
         ]),
         h("div", { class: "painel claro cresce" }, tabela),

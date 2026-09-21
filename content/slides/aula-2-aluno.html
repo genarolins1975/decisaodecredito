@@ -261,6 +261,9 @@ p .mat, li .mat, td .mat, th .mat, .kv .mat { line-height: 1; }
 .formula .mat-bloco:first-child { margin-top: 0; }
 .formula .mat-bloco:last-child { margin-bottom: 0; }
 body.estudo .mat .katex { font-size: 1em; }
+/* No celular uma expressão em bloco mais larga que a tela rola na horizontal dentro da própria
+   caixa, em vez de empurrar o painel e a página para fora da tela. */
+body.estudo .mat-bloco { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
 /* A aula deixa os SVGs transbordarem a caixa de propósito, para rótulo de gráfico não ser cortado.
    O KaTeX depende do contrário: o radical e os delimitadores grandes são SVGs de 400em que ele
    recorta pelo contêiner. Sem esta exceção, a cauda da raiz quadrada atravessa o slide. */
@@ -681,7 +684,7 @@ body[data-modo="aluno"] #progresso { bottom: 0; }
 <script>
 /* dados/00-versao.js */
 /* Gerado por build.mjs: resumo dos fontes desta compilação. Não editar à mão. */
-var AULA_VERSAO = "59f14323192a";
+var AULA_VERSAO = "de5c72c55d9b";
 
 
 /* vendor/katex.js */
@@ -1272,10 +1275,16 @@ var Graf = (function () {
         x: Math.min(x0, x1), y: yc - alt / 2, width: Math.max(2, Math.abs(x1 - x0)),
         height: alt, fill: it.cor || "var(--cor)", rx: 2, opacity: it.opacidade || 1,
       }));
-      g.add(sv("text", {
-        x: g.m.e - 12, y: yc + 6, "text-anchor": "end", "font-size": op.tamanhoRot || 20,
-        texto: it.rotulo,
-      }));
+      /* Rótulo mais largo que a coluna reservada quebra em até duas linhas; antes ele saía pela
+         esquerda do desenho e era cortado. */
+      var tam = op.tamanhoRot || 20;
+      var linhasRot = quebrar(String(it.rotulo), Math.max(6, Math.floor((g.m.e - 16) / (tam * 0.6)))).slice(0, 2);
+      linhasRot.forEach(function (t, k) {
+        g.add(sv("text", {
+          x: g.m.e - 12, y: yc + 6 + (k - (linhasRot.length - 1) / 2) * (tam + 2),
+          "text-anchor": "end", "font-size": tam, texto: t,
+        }));
+      });
       g.add(sv("text", {
         x: Math.max(x0, x1) + 10, y: yc + 6, "font-size": op.tamanhoRot || 20,
         "font-weight": 700, fill: "var(--ink)",
@@ -1299,11 +1308,22 @@ var Graf = (function () {
     svg.appendChild(arestas);
     svg.appendChild(caixas);
 
-    /* Cada caixa cresce conforme as linhas que couberem na largura dada, e cada
+    var niveis = [];
+    (function contar(no, d) {
+      niveis[d] = (niveis[d] || 0) + 1;
+      (no.filhos || []).forEach(function (f) { contar(f.no, d + 1); });
+    })(raizNo, 0);
+    /* Num nível cheio (oito folhas em 900 unidades) a caixa encolhe até caber lado a lado e o
+       rótulo quebra na largura que sobrou; sem isso as caixas se sobrepunham e a da ponta saía
+       do desenho. Nos níveis com folga a caixa mantém a largura pedida. */
+    var larguraNivel = niveis.map(function (n) {
+      return Math.max(60, Math.min(larguraCaixa, Math.floor((w - 44) / n) - 8));
+    });
+    /* Cada caixa cresce conforme as linhas que couberem na largura do nível, e cada
        nível recebe a altura da sua caixa mais alta. Sem isso, um rótulo longo
        empurra o texto para fora da caixa e o rótulo do ramo cai sobre o filho. */
-    var maxChars = Math.max(8, Math.floor((larguraCaixa - 20) / 10.4));
-    function linhasDe(no) {
+    function linhasDe(no, d) {
+      var maxChars = Math.max(6, Math.floor((larguraNivel[d] - 16) / 10.4));
       var l = quebrar(no.rotulo, maxChars).map(function (t) {
         return { texto: t, principal: true };
       });
@@ -1312,10 +1332,9 @@ var Graf = (function () {
       return l;
     }
 
-    var niveis = [], alturaNivel = [];
+    var alturaNivel = [];
     (function medir(no, d) {
-      niveis[d] = (niveis[d] || 0) + 1;
-      no._linhas = linhasDe(no);
+      no._linhas = linhasDe(no, d);
       no._altura = Math.max(alturaCaixa, no._linhas.length * 21 + 14);
       alturaNivel[d] = Math.max(alturaNivel[d] || 0, no._altura);
       (no.filhos || []).forEach(function (f) { medir(f.no, d + 1); });
@@ -1374,8 +1393,9 @@ var Graf = (function () {
       var folha = !no.filhos || !no.filhos.length;
       var cor = no.destaque ? "var(--cor)" : "var(--rule)";
       var altura = no._altura;
+      var larguraDesta = larguraNivel[d];
       caixas.appendChild(sv("rect", {
-        x: x - larguraCaixa / 2, y: y, width: larguraCaixa, height: altura, rx: 5,
+        x: x - larguraDesta / 2, y: y, width: larguraDesta, height: altura, rx: 5,
         fill: no.destaque ? "var(--cor-soft)" : (folha ? "var(--surface)" : "var(--paper)"),
         stroke: cor, "stroke-width": no.destaque ? 3 : 1.5,
       }));
@@ -1752,11 +1772,17 @@ var Comum = (function () {
   /* Curva logística pequena com um ponto marcado. */
   function miniSigmoide(z, op) {
     op = op || {};
-    var g = Graf.novo({ w: op.w || 300, h: op.h || 190, m: { e: 54, d: 14, c: 12, b: 40 } });
+    /* 52 embaixo: o título do eixo fica 46 unidades abaixo da linha, e com 40 saía do desenho. */
+    var g = Graf.novo({ w: op.w || 300, h: op.h || 190, m: { e: 64, d: 14, c: 14, b: 52 } });
     g.x(op.zmin === undefined ? -8 : op.zmin, op.zmax === undefined ? 4 : op.zmax).y(0, 1);
     g.grade({ y: [0, 0.25, 0.5, 0.75, 1] });
     g.eixoY({ ticks: [0, 0.5, 1], formato: function (v) { return F.pct(v, 0); } });
-    g.eixoX({ ticks: [-8, -4, 0, 4], rotulo: op.rotuloX || "escore z" });
+    /* Os ticks pertencem ao domínio pedido: com um recorte de escore (o slide 42 usa −2,4 a 0,4)
+       os ticks padrão cairiam fora do desenho e seriam cortados em silêncio. */
+    var ticksX = [-8, -4, 0, 4].filter(function (v) { return v >= g.dx[0] && v <= g.dx[1]; });
+    if (ticksX.length < 2) ticksX = Graf.ticks(g.dx[0], g.dx[1], 4);
+    g.eixoX({ ticks: ticksX, formato: function (v) { return F.dec(v, ticksX.some(function (t) { return t % 1; }) ? 1 : 0); },
+              rotulo: op.rotuloX || "escore z" });
     var pts = M.linspace(g.dx[0], g.dx[1], 160).map(function (v) { return [v, M.sigmoid(v)]; });
     g.linha(pts, { cor: "var(--cor)", largura: 3 });
     if (z !== null && z !== undefined) {
@@ -1838,23 +1864,29 @@ var Comum = (function () {
     var curto = op.compacto;
     function construir(no, nivel) {
       var nome = curto ? no.variavel : (NOMES_COLUNAS[no.variavel] || no.variavel);
+      /* No modo compacto, feito para níveis cheios, cada caixa traz no máximo três linhas curtas:
+         a pergunta ou "resumido", o tamanho e a PD. Um nível com oito caixas em 900 unidades
+         não comporta "n = 6.312 · PD 5,7%" numa linha só. */
+      var alem = !no.folha && nivel >= (op.profundidade || 2);
       var base = {
-        rotulo: no.folha ? (no.resumido ? "ramo resumido" : "folha") :
-          nome + " \u2264 " + F.dec(no.limite, no.variavel === "renda" ? 0 : 1) +
-          (curto ? "" : unidade(no.variavel)),
+        rotulo: no.folha
+          ? (no.resumido ? (curto ? "resumido" : "ramo resumido") : "folha")
+          : (curto && alem ? "resumido"
+             : nome + " \u2264 " + F.dec(no.limite, no.variavel === "renda" ? 0 : 1) +
+               (curto ? "" : unidade(no.variavel))),
         detalhe: curto
-          ? "n = " + F.inteiro(no.n) + " · PD " + F.pct(no.pd, 1)
+          ? "n = " + F.inteiro(no.n)
           : "n = " + F.inteiro(no.n) + " · eventos " + F.inteiro(no.eventos),
-        detalhe2: curto ? null : "PD " + F.pct(no.pd, 1),
+        detalhe2: "PD " + F.pct(no.pd, 1),
       };
-      if (!no.folha && nivel < (op.profundidade || 2)) {
+      if (!no.folha && !alem) {
         base.filhos = [
           { aresta: "sim", no: construir(no.esq, nivel + 1) },
           { aresta: "não", no: construir(no.dir, nivel + 1) },
         ];
-      } else if (!no.folha) {
+      } else if (!no.folha && !curto) {
         /* Nó interno além da profundidade exibida: mantém a pergunta e sinaliza o resumo. */
-        base.detalhe2 = "ramo resumido";
+        base.detalhe2 = "PD " + F.pct(no.pd, 1) + " · ramo resumido";
       }
       return base;
     }
@@ -2024,8 +2056,13 @@ var Mat = (function () {
   function pct(p, casas) { return n(p * 100, casas === undefined ? 2 : casas) + "\\%"; }
   /** Inteiro com separador de milhar, protegido para não virar pontuação em modo matemático. */
   function int(x) { return F.inteiro(x).replace(/\./g, "{.}"); }
-  /** Texto corrido dentro de uma expressão, com espaços preservados. */
-  function t(s) { return "\\text{" + String(s).replace(/−/g, "$-$") + "}"; }
+  /** Texto corrido dentro de uma expressão, com espaços preservados. Em modo texto o KaTeX ainda lê
+      `%` como comentário e `#`, `&` e `_` como comandos: um rótulo como "comp ≤ 40%" derrubaria a
+      expressão inteira, então esses caracteres saem escapados. O sinal de menos vira matemática. */
+  function t(s) {
+    var txt = String(s).replace(/[%#&_]/g, function (c) { return "\\" + c; }).replace(/−/g, "$-$");
+    return "\\text{" + txt + "}";
+  }
 
   return {
     /** Expressão no meio de uma frase. */
@@ -2540,9 +2577,9 @@ Aula.slide({
             Comum.seletorCliente(b2.nome, function (v) { est.parB = v; App.montar("02"); }, { compacto: true }),
           ]),
           UI.tabela({
-            compacta: true,
-            colunas: [{ rotulo: "Característica" }, { rotulo: a.nome }, { rotulo: b2.nome },
-                      { rotulo: "Diferença" }],
+            compacta: true, apertada: true,
+            colunas: [{ rotulo: "" }, { rotulo: a.nome }, { rotulo: b2.nome },
+                      { rotulo: "Dif." }],
             linhas: linhas,
             legenda: "Comparação de dois perfis, valores originais lado a lado",
           }),
@@ -2571,7 +2608,9 @@ Aula.slide({
             "Reiniciar exemplo"),
         ]),
       ]),
-      h("div", { estilo: "flex:0 0 470px" }, direita),
+      /* min-width 0: sem ele a coluna cresce até a largura mínima da tabela de comparação e
+         espreme a tabela dos clientes, que passa a ser cortada à direita. */
+      h("div", { estilo: "flex:0 0 500px;min-width:0" }, direita),
     ]));
   },
 });
@@ -3766,7 +3805,7 @@ Aula.slide({
     var mediaPerda = M.media(perdas);
 
     function curva(y, destaque) {
-      var g = Graf.novo({ w: 430, h: 330, m: { e: 74, d: 22, c: 22, b: 58 } });
+      var g = Graf.novo({ w: 430, h: 290, m: { e: 74, d: 22, c: 22, b: 58 } });
       g.x(0, 1).y(0, 5);
       g.grade({ y: [1, 2, 3, 4, 5] });
       g.eixoY({ ticks: [0, 1, 2, 3, 4, 5], rotulo: "perda da observação" });
@@ -3804,9 +3843,24 @@ Aula.slide({
       h("td", {}, ""), h("td", {}, ""), h("td", {}, F.dec(mediaPerda, 4)),
     ]));
 
+    /* A amostra inteira entra embaixo das duas curvas, com a tabela e a função lado a lado: na
+       coluna dos controles ela não cabia e o excedente ficava fora do palco. */
     corpo.appendChild(h("div", { class: "linha cresce" }, [
-      curva(1, est.y === 1),
-      curva(0, est.y === 0),
+      h("div", { class: "coluna cresce" }, [
+        h("div", { class: "linha cresce" }, [curva(1, est.y === 1), curva(0, est.y === 0)]),
+        est.amostra ? h("div", { class: "painel claro" }, h("div", { class: "linha topo" }, [
+          h("div", { estilo: "flex:1 1 0" }, tabela),
+          h("div", { class: "coluna", estilo: "flex:1 1 0;gap:6px" }, [
+            h("h3", { class: "secao", estilo: "margin:0" }, "O que o ajuste minimiza"),
+            h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:0" },
+              Mat.b("\\mathcal{L}(\\beta) = \\frac{1}{n}\\sum_{i=1}^{n} " +
+                "-\\bigl[\\, y_i\\,\\ln p_i + (1 - y_i)\\,\\ln(1 - p_i) \\,\\bigr]")),
+            h("p", { class: "nota", estilo: "margin:0" },
+              "A média das perdas dos " + amostra.y.length +
+              " contratos, e não a perda de uma observação. Os coeficientes são os que dão o menor valor dela."),
+          ]),
+        ])) : null,
+      ]),
       h("div", { class: "coluna", estilo: "flex:0 0 430px" }, [
         h("div", { class: "painel cor" }, [
           h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:0" },
@@ -3841,13 +3895,6 @@ Aula.slide({
               "Reiniciar exemplo"),
           ]),
         ]),
-        est.amostra ? h("div", { class: "painel claro cresce" }, [tabela,
-          h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:8px 0 0" },
-            Mat.b("\\mathcal{L}(\\beta) = \\frac{1}{n}\\sum_{i=1}^{n} " +
-              "-\\bigl[\\, y_i\\,\\ln p_i + (1 - y_i)\\,\\ln(1 - p_i) \\,\\bigr]")),
-          h("p", { class: "nota", estilo: "margin-top:6px" },
-            "Esta é a função que o ajuste minimiza: a média das perdas dos " + amostra.y.length +
-            " contratos, e não a perda de uma observação. Os coeficientes são os que dão o menor valor dela.")]) : null,
       ]),
     ]));
   },
@@ -3907,7 +3954,11 @@ Aula.slide({
     if (est.tangente) {
       var z0s = M.logito(est.p0);
       var incl = est.p0 * (1 - est.p0);
-      var x0 = z0s - 1.2, x1 = z0s + 1.6;
+      /* A reta tangente fica dentro do desenho: em PD inicial alta ela subiria além do topo do
+         eixo e o rótulo sairia do quadro. */
+      var yMax = g.dy[1] - 0.03, yMin = g.dy[0] + 0.02;
+      var x0 = Math.max(g.dx[0], z0s - 1.2, z0s + (yMin - est.p0) / incl);
+      var x1 = Math.min(g.dx[1], z0s + 1.6, z0s + (yMax - est.p0) / incl);
       g.linha([[x0, est.p0 + incl * (x0 - z0s)], [x1, est.p0 + incl * (x1 - z0s)]],
         { cor: "var(--amber)", largura: 2, tracejado: "6 5" });
       g.texto(x1, est.p0 + incl * (x1 - z0s), "aproximação local",
@@ -4063,7 +4114,7 @@ Aula.slide({
           h("p", { class: "formula peq", estilo: "margin-top:8px" },
             Mat.b("z = " + Mat.n(intercepto(), 2) +
               outros.map(function (c) {
-                return " + " + Mat.n(coef(c), 2) + "\\;\\mathbb{1}[\\text{" + c.toLowerCase() + "}]";
+                return " + " + Mat.n(coef(c), 2) + "\\;\\mathbb{1}[" + Mat.t(c.toLowerCase()) + "]";
               }).join(""))),
         ]),
         h("div", { class: "painel claro cresce" }, tabela),
@@ -4158,8 +4209,10 @@ Aula.slide({
       var v = escalaPD ? M.sigmoid(z(est.comp, est.flex)) : contrib(est.comp, est.flex);
       g.guia(est.comp, v, { cor: "var(--muted)" });
       g.ponto(est.comp, v, { cor: "var(--logit)", r: 9 });
+      /* Perto do topo do domínio o rótulo desce para baixo do ponto, em vez de sair do desenho. */
+      var pertoDoTopo = v > g.dy[0] + (g.dy[1] - g.dy[0]) * 0.88;
       g.texto(est.comp, v, escalaPD ? F.pct(v, 2) : F.dec(v, 3),
-        { dx: 12, dy: -12, tamanho: 21, cor: "var(--ink)" });
+        { dx: 12, dy: pertoDoTopo ? 26 : -12, tamanho: 21, cor: "var(--ink)" });
       return g.svg;
     }
 
@@ -5130,11 +5183,13 @@ Aula.slide({
         linhas: [Mat.passos([
           "\\Delta G &= G(\\text{raiz}) - \\bar{G} = " + Mat.n(r.pai, 3) + " - " + Mat.n(r.ponderado, 6) +
             " = " + Mat.n(r.ganho, 6),
-          "&\\text{candidato " + outro.rotulo.toLowerCase() + ": } \\Delta G = " + Mat.n(rOutro.ganho, 6),
+          "&" + Mat.t("candidato " + outro.rotulo.toLowerCase() + ": ") + " \\Delta G = " + Mat.n(rOutro.ganho, 6),
         ])] },
     ];
 
-    var g = Graf.novo({ w: 520, h: 300, m: { e: 78, d: 24, c: 20, b: 56 } });
+    /* 230 de altura, e não 300: na etapa 4 o painel de barras entra embaixo deste, e com 300 a
+       coluna passava da altura do palco e o rótulo do eixo ficava coberto. */
+    var g = Graf.novo({ w: 520, h: 230, m: { e: 78, d: 24, c: 16, b: 52 } });
     g.x(0, 1).y(0, 0.55);
     g.grade({ y: [0, 0.18, 0.5] });
     g.eixoY({ ticks: [0, 0.1, 0.2, 0.3, 0.4, 0.5], formato: function (v) { return F.dec(v, 1); },
@@ -5153,15 +5208,15 @@ Aula.slide({
     });
 
     var gb = Graf.barras({
-      w: 520, h: 200, larguraRot: 210, m: { d: 110, c: 12, b: 48 },
+      w: 520, h: 140, larguraRot: 230, m: { d: 80, c: 10, b: 46 },
       itens: A.candidatos.map(function (cc) {
         var rr = A.ganho(cc);
         return { rotulo: cc.rotulo, valor: rr.ganho,
                  cor: cc.chave === est.cand ? "var(--arvore)" : "var(--rule)",
                  texto: F.dec(rr.ganho, 4) };
       }),
-      max: 0.025, ticks: [0, 0.005, 0.01, 0.015, 0.02, 0.025],
-      formato: function (v) { return F.dec(v, 3); },
+      max: 0.025, ticks: [0, 0.01, 0.02],
+      formato: function (v) { return F.dec(v, 2); },
       rotuloX: "ganho de impureza",
     });
 
@@ -5238,7 +5293,7 @@ Aula.slide({
     ];
     if (est.zero) linhas.push({ rotulo: "folha sem eventos", n: 20, d: 0 });
 
-    var g = Graf.novo({ w: 940, h: 400, m: { e: 260, d: 148, c: 30, b: 60 } });
+    var g = Graf.novo({ w: 940, h: 400, m: { e: 286, d: 148, c: 30, b: 60 } });
     g.x(0, 0.4).y(0, linhas.length);
     g.grade({ x: [0, 0.1, 0.2, 0.3, 0.4] });
     g.eixoX({ ticks: [0, 0.1, 0.2, 0.3, 0.4], formato: function (v) { return F.pct(v, 0); },
@@ -5643,7 +5698,7 @@ Aula.slide({
     });
 
     var gb = Graf.barras({
-      w: 540, h: 158, larguraRot: 170, m: { d: 130, c: 6, b: 46 },
+      w: 540, h: 158, larguraRot: 170, m: { d: 130, c: 6, b: 46 }, tamanhoRot: 18,
       itens: aba.itens.map(function (it, k) {
         return { rotulo: it.rotulo, valor: it.c ? it.c.perda_validacao : 0,
                  cor: k === est.i ? "var(--arvore)" : "var(--rule)",
@@ -5909,7 +5964,7 @@ Aula.slide({
       cliente: est.conferido ? carla : null,
       mostrarNumeros: true, mostrarPd: true,
       ocultarFolha: est.conferido ? null : folha,
-      w: 812, h: 380, caixaW: 180, caixaH: 74,
+      w: 812, h: 340, caixaW: 180, caixaH: 74,
       rotuloFolha: function () { return "folha"; },
     });
 
@@ -5932,13 +5987,33 @@ Aula.slide({
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "coluna cresce" }, [
         h("div", { class: "painel claro cresce centro" }, arvore),
+        /* O desafio fica sob a árvore: na coluna das perguntas, junto com as três respostas
+           conferidas, ele passava da altura do palco. */
+        est.desafio
+          ? h("div", { class: "painel cor" }, [
+              h("h3", { class: "secao" }, "Desafio final"),
+              h("p", { class: "apoio" },
+                "Bruno passa de comprometimento 38% para 41%, com os demais valores fixos. " +
+                "A PD muda de " + F.pct(A.folhaDe({ hist: 1, comp: 38 }).pd, 0) + " para " +
+                F.pct(A.folhaDe({ hist: 1, comp: 41 }).pd, 0) +
+                ". Isso prova um salto real de risco exatamente nesse limite?"),
+              est.conferido
+                ? h("p", { class: "resposta" },
+                    "Não. É uma descontinuidade da aproximação aprendida. O limite foi escolhido " +
+                    "por um critério de impureza em uma amostra, e não por um fenômeno econômico " +
+                    "que mude bruscamente em 40%.")
+                : h("p", { class: "nota" }, "A resposta aparece ao conferir."),
+            ])
+          : null,
         Comum.fichaLinha(carla, { cor: true }),
       ]),
-      h("div", { class: "coluna", estilo: "flex:0 0 620px" }, [
+      /* 700 de largura: cada opção do caminho cabe numa linha, e as três partes conferidas
+         cabem na altura do palco. */
+      h("div", { class: "coluna", estilo: "flex:0 0 700px" }, [
         h("div", { class: "painel", estilo: "padding:10px 16px" }, [
           h("h3", { class: "secao", estilo: "margin-bottom:5px" }, "1. Indique o caminho"),
           UI.botoes({
-            vertical: true, rotulo: "caminho",
+            vertical: true, compacto: true, rotulo: "caminho",
             opcoes: caminhos.map(function (c) { return { valor: c.valor, rotulo: c.rotulo }; }),
             valor: est.ramo,
             aoMudar: function (v) { est.ramo = v; est.conferido = false; App.montar("30"); },
@@ -5972,7 +6047,7 @@ Aula.slide({
           h("h3", { class: "secao", estilo: "margin-bottom:5px" },
             "3. Se a renda de Carla dobrasse, mantendo fixas as entradas usadas na árvore"),
           UI.botoes({
-            vertical: true, rotulo: "efeito da renda",
+            compacto: true, rotulo: "efeito da renda",
             opcoes: [
               { valor: "permanece", rotulo: "A PD permanece a mesma" },
               { valor: "metade", rotulo: "A PD cai pela metade" },
@@ -5998,22 +6073,7 @@ Aula.slide({
           h("button", { class: "btn fantasma", type: "button", onclick: ctx.reiniciar },
             "Reiniciar exercício"),
         ]),
-        est.desafio
-          ? h("div", { class: "painel cor" }, [
-              h("h3", { class: "secao" }, "Desafio final"),
-              h("p", { class: "apoio" },
-                "Bruno passa de comprometimento 38% para 41%, com os demais valores fixos. " +
-                "A PD muda de " + F.pct(A.folhaDe({ hist: 1, comp: 38 }).pd, 0) + " para " +
-                F.pct(A.folhaDe({ hist: 1, comp: 41 }).pd, 0) +
-                ". Isso prova um salto real de risco exatamente nesse limite?"),
-              est.conferido
-                ? h("p", { class: "resposta" },
-                    "Não. É uma descontinuidade da aproximação aprendida. O limite foi escolhido " +
-                    "por um critério de impureza em uma amostra, e não por um fenômeno econômico " +
-                    "que mude bruscamente em 40%.")
-                : h("p", { class: "nota" }, "A resposta aparece ao conferir."),
-            ])
-          : null,
+
       ]),
     ]));
   },
@@ -7523,7 +7583,7 @@ Aula.slide({
             : h("p", { class: "apoio", estilo: "text-align:center" },
                 "A resolução aparece em duas etapas: primeiro a soma no escore, depois a conversão."),
           est.passos >= 2
-            ? h("div", { estilo: "display:flex;gap:20px;align-items:center;margin-top:10px" }, [
+            ? h("div", { estilo: "display:flex;gap:20px;align-items:center;margin-top:10px;flex-wrap:wrap;justify-content:center" }, [
                 Comum.miniSigmoide(total, { w: 320, h: 180, zmin: -2.4, zmax: 0.4 }),
                 h("div", {}, [
                   h("p", { class: "grande" }, F.pct(pd, 4)),
@@ -7837,10 +7897,14 @@ Aula.slide({
                  rotulo: "PD prevista" });
       var lim = Math.max.apply(null, ks.limites);
       gk.x(0, Math.min(0.6, lim));
-      gk.linha(ks.limites.map(function (t, i) { return [t, ks.acum_adimplentes[i]]; }),
-        { cor: "var(--ok)", largura: 3 });
-      gk.linha(ks.limites.map(function (t, i) { return [t, ks.acum_inadimplentes[i]]; }),
-        { cor: "var(--alert)", largura: 3 });
+      /* Só os limiares dentro do eixo entram na curva: além de 60% as duas proporções já estão
+         em 1 e o traço continuaria para fora do desenho, por cima do painel vizinho. */
+      function dentro(serie) {
+        return ks.limites.map(function (t, i) { return [t, serie[i]]; })
+          .filter(function (q) { return q[0] <= gk.dx[1]; });
+      }
+      gk.linha(dentro(ks.acum_adimplentes), { cor: "var(--ok)", largura: 3 });
+      gk.linha(dentro(ks.acum_inadimplentes), { cor: "var(--alert)", largura: 3 });
       var iMax = 0;
       ks.limites.forEach(function (t, i) {
         if (ks.acum_adimplentes[i] - ks.acum_inadimplentes[i] >
@@ -8220,7 +8284,28 @@ Aula.slide({
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "coluna cresce" }, [
         h("div", { class: "painel claro centro" }, gh.svg),
-        h("div", { class: "linha cresce" }, [
+        /* A tabela de mesmo volume entra no lugar das duas curvas, que são do modelo escolhido:
+           na coluna da direita ela não cabia e o excedente ficava fora do palco. */
+        mesmoVolume
+          ? h("div", { class: "painel claro cresce" }, [
+              h("h3", { class: "secao" }, "Mesmo volume de aprovação"),
+              UI.tabela({
+                compacta: true,
+                colunas: [{ rotulo: "Modelo" }, { rotulo: "Corte" }, { rotulo: "Aprovação" },
+                          { rotulo: "Inadimplência" }],
+                linhas: mesmoVolume.map(function (m) {
+                  return [Aula.dados.modelos[m.modelo].nome, F.pct(m.linha.corte, 1),
+                          F.pct(m.linha.aprovacao, 1),
+                          m.linha.inadimplencia === null ? "não definida"
+                                                         : F.pct(m.linha.inadimplencia, 2)];
+                }),
+                legenda: "Cada modelo no corte que produz aproximadamente o mesmo volume",
+              }),
+              h("p", { class: "nota", estilo: "margin-top:6px" },
+                "Mesmo corte e mesmo volume são perguntas diferentes: com cortes iguais os " +
+                "modelos aprovam quantidades distintas."),
+            ])
+          : h("div", { class: "linha cresce" }, [
           h("div", { class: "painel claro cresce centro", estilo: "padding:8px 14px" }, [
             h("h3", { class: "secao", estilo: "margin:0 0 2px;display:flex;gap:8px;align-items:baseline" },
               ["Taxa de aprovação", h("span", { estilo: "text-transform:none;letter-spacing:0;font-size:15px" },
@@ -8241,9 +8326,8 @@ Aula.slide({
         h("div", { class: "painel cor" }, [
           h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
             h("h3", { class: "secao", estilo: "margin:0 0 4px" }, "No corte de " + F.pct(atual.corte, 1)),
-            UI.selo(est.particao === "teste"
-              ? "análise retrospectiva, não seleciona política"
-              : "partição de política", est.particao === "teste" ? "sim" : "neutro"),
+            UI.selo(est.particao === "teste" ? "análise retrospectiva" : "partição de política",
+              est.particao === "teste" ? "sim" : "neutro"),
           ]),
           h("dl", { class: "kv", estilo: "font-size:18px;gap:1px 12px" }, [
             h("dt", {}, "aprovados"),
@@ -8297,27 +8381,11 @@ Aula.slide({
               "Reiniciar exemplo"),
           ]),
         ]),
-        mesmoVolume
-          ? h("div", { class: "painel claro cresce" }, [
-              h("h3", { class: "secao" }, "Mesmo volume de aprovação"),
-              UI.tabela({
-                compacta: true,
-                colunas: [{ rotulo: "Modelo" }, { rotulo: "Corte" }, { rotulo: "Aprovação" },
-                          { rotulo: "Inadimplência" }],
-                linhas: mesmoVolume.map(function (m) {
-                  return [Aula.dados.modelos[m.modelo].nome, F.pct(m.linha.corte, 1),
-                          F.pct(m.linha.aprovacao, 1),
-                          m.linha.inadimplencia === null ? "não definida"
-                                                         : F.pct(m.linha.inadimplencia, 2)];
-                }),
-                legenda: "Cada modelo no corte que produz aproximadamente o mesmo volume",
-              }),
-              h("p", { class: "nota", estilo: "margin-top:6px" },
-                "Mesmo corte e mesmo volume são perguntas diferentes: com cortes iguais os " +
-                "modelos aprovam quantidades distintas."),
-            ])
-          : h("p", { class: "nota" },
-              est.particao === "teste"
+        h("p", { class: "nota" },
+              mesmoVolume
+                ? "A tabela ao lado compara os três modelos no corte que produz o mesmo volume " +
+                  "de aprovação do corte atual."
+                : est.particao === "teste"
                 ? "No modo final o corte congelado é aplicado ao teste. Mover o controle aqui é " +
                   "análise retrospectiva e não seleciona política."
                 : "A política é definida nesta partição, antes de qualquer olhar ao teste."),
@@ -8422,7 +8490,9 @@ Aula.slide({
         h("div", { class: "painel claro cresce centro" }, g.svg),
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 480px" }, [
-        h("div", { class: "painel cor", estilo: "padding:12px 16px" }, [
+        /* A versão alternativa ocupa o lugar do painel de hipóteses enquanto está aberta: os dois
+           juntos, com os controles, passavam da altura do palco. Fechá-la traz as hipóteses de volta. */
+        est.alternativa ? alternativa : h("div", { class: "painel cor", estilo: "padding:12px 16px" }, [
           h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
             h("h3", { class: "secao", estilo: "margin:0 0 4px" }, "Hipóteses"),
             UI.selo("aproximação didática, 12 meses", "neutro"),
@@ -8447,11 +8517,13 @@ Aula.slide({
             aoMudar: function (v) { est.pd = v / 100; App.montar("47"); },
           }),
           h("div", { class: "grupo", estilo: "margin-top:10px" }, [
+            /* Um painel de cada vez: hipóteses e versão alternativa juntas não cabem na coluna, e a
+               própria tela diz que a alternativa não deve ser misturada ao gráfico principal. */
             h("button", { class: "btn min", type: "button", onclick: function () {
-              est.hipoteses = !est.hipoteses; App.montar("47");
+              est.hipoteses = !est.hipoteses; if (est.hipoteses) est.alternativa = false; App.montar("47");
             } }, est.hipoteses ? "Esconder hipóteses" : "Mudar hipóteses"),
             h("button", { class: "btn min", type: "button", onclick: function () {
-              est.alternativa = !est.alternativa; App.montar("47");
+              est.alternativa = !est.alternativa; if (est.alternativa) est.hipoteses = false; App.montar("47");
             } }, est.alternativa ? "Esconder a alternativa" : "Versão com margem condicional"),
             h("button", { class: "btn min fantasma", type: "button", onclick: ctx.reiniciar },
               "Reiniciar exemplo"),
@@ -8477,11 +8549,13 @@ Aula.slide({
               ])
             : null,
         ]),
-        alternativa || h("div", { class: "painel claro cresce centro",
+        /* Com as hipóteses abertas, os três controles ocupam o lugar da decomposição, cujos
+           números continuam no painel de hipóteses. */
+        (est.hipoteses || est.alternativa) ? null : (h("div", { class: "painel claro cresce centro",
             estilo: "padding:10px 16px" }, [
           h("h3", { class: "secao", estilo: "margin-bottom:2px" }, "Margem menos perda esperada"),
           gd.svg,
-        ]),
+        ])),
       ]),
     ]));
   },
@@ -8816,8 +8890,28 @@ Aula.slide({
           ]),
           h("p", { class: "nota", estilo: "margin-top:8px" }, restricoes[est.restricao]),
         ]),
+        /* A escolha registrada fica sob os controles: na coluna da direita, com o formulário, não cabia. */
+        est.modelo
+          ? h("div", { class: "painel cor" }, [
+              h("h3", { class: "secao" }, "Escolha registrada"),
+              h("p", { class: "apoio", estilo: "margin:0;color:var(--ink)" },
+                Aula.dados.modelos[est.modelo].nome + " com " +
+                (est.politica === "congelado"
+                  ? "corte de equilíbrio em " + F.pct(congelado, 0)
+                  : "corte de " + F.pct(linhaPolitica(est.modelo).corte, 1) +
+                    ", escolhido na partição de política") +
+                ": aprovação de " + F.pct(linhaPolitica(est.modelo).aprovacao, 1) +
+                " e inadimplência de " + F.pct(linhaPolitica(est.modelo).inadimplencia, 2) +
+                " entre aprovados."),
+            ])
+          : null,
+
+      ]),
+      h("div", { class: "coluna", estilo: "flex:0 0 520px" }, [
+        /* Os argumentos ocupam o lugar dos requisitos enquanto estão abertos: sob a tabela, na
+           coluna da esquerda, eles passavam da altura do palco. */
         est.argumentos
-          ? h("div", { class: "painel cor cresce" }, [
+          ? h("div", { class: "painel cor" }, [
               h("h3", { class: "secao" }, "Argumentos que a evidência sustenta"),
               h("ul", { class: "apoio", estilo: "margin:0;padding-left:20px;font-size:18px" }, [
                 h("li", {}, "A maior AUC no teste é de " +
@@ -8836,10 +8930,7 @@ Aula.slide({
                   "e chamar a nova medida de avaliação independente."),
               ]),
             ])
-          : null,
-      ]),
-      h("div", { class: "coluna", estilo: "flex:0 0 520px" }, [
-        h("div", { class: "painel" }, [
+          : h("div", { class: "painel" }, [
           h("h3", { class: "secao", estilo: "margin-bottom:4px" }, "Requisitos da operação"),
           h("ul", { class: "apoio", estilo: "margin:0;padding-left:20px;font-size:17px" }, [
             h("li", {}, "equipe enxuta, sem time dedicado a manutenção de modelos"),
@@ -8864,20 +8955,7 @@ Aula.slide({
           h("p", { class: "nota", estilo: "margin-top:6px" },
             "O texto fica apenas neste dispositivo."),
         ]),
-        est.modelo
-          ? h("div", { class: "painel cor" }, [
-              h("h3", { class: "secao" }, "Escolha registrada"),
-              h("p", { class: "apoio", estilo: "margin:0;color:var(--ink)" },
-                Aula.dados.modelos[est.modelo].nome + " com " +
-                (est.politica === "congelado"
-                  ? "corte de equilíbrio em " + F.pct(congelado, 0)
-                  : "corte de " + F.pct(linhaPolitica(est.modelo).corte, 1) +
-                    ", escolhido na partição de política") +
-                ": aprovação de " + F.pct(linhaPolitica(est.modelo).aprovacao, 1) +
-                " e inadimplência de " + F.pct(linhaPolitica(est.modelo).inadimplencia, 2) +
-                " entre aprovados."),
-            ])
-          : null,
+
       ]),
     ]));
   },
@@ -9167,7 +9245,44 @@ var App = (function () {
     atualizarIndice();
     if (estudo) montarNotasEstudo(def);
     escalar();
+    ajustarCorpo();
     agendarSalvar();
+  }
+
+  /* Rede de segurança da projeção. O palco tem 900 px fixos e a moldura esconde o que passa
+     deles: um estado revelado que não coubesse (um desafio aberto junto com a solução, uma
+     comparação ligada) sumiria da tela da turma sem aviso. Aqui o corpo recebe o menor zoom que
+     o faz caber, nunca abaixo de 0,6, e o fator fica em data-zoom para o QA cobrar os slides em
+     que a redução passa do aceitável. No modo estudo a página rola, e nada disto se aplica. */
+  function ajustarCorpo() {
+    var corpo = document.getElementById("corpo");
+    if (!corpo) return;
+    corpo.style.zoom = "";
+    corpo.removeAttribute("data-zoom");
+    if (estudo) return;
+    /* O que falta é o maior entre o excedente do corpo inteiro e o do painel mais espremido: um
+       painel que cresce dentro de uma coluna cheia é encolhido pelo flex e o conteúdo dele passa
+       por baixo do vizinho sem aumentar a rolagem do corpo. */
+    function faltando() {
+      var f = corpo.scrollHeight - corpo.clientHeight;
+      var paineis = corpo.querySelectorAll(".painel");
+      for (var j = 0; j < paineis.length; j++) {
+        var pn = paineis[j];
+        var cs = getComputedStyle(pn);
+        if (cs.overflowY === "auto" || cs.overflowY === "scroll") continue;
+        f = Math.max(f, pn.scrollHeight - pn.clientHeight);
+      }
+      return f;
+    }
+    var k = 1;
+    for (var i = 0; i < 5; i++) {
+      var sobra = faltando();
+      if (sobra <= 1) break;
+      k = Math.max(0.6, k * (corpo.clientHeight / (corpo.clientHeight + sobra)) * 0.995);
+      corpo.style.zoom = k.toFixed(3);
+      if (k <= 0.6) break;
+    }
+    if (k < 1) corpo.setAttribute("data-zoom", k.toFixed(2));
   }
 
   function montarNotasEstudo(def) {

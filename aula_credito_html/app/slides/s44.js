@@ -112,10 +112,14 @@ Aula.slide({
                  rotulo: "PD prevista" });
       var lim = Math.max.apply(null, ks.limites);
       gk.x(0, Math.min(0.6, lim));
-      gk.linha(ks.limites.map(function (t, i) { return [t, ks.acum_adimplentes[i]]; }),
-        { cor: "var(--ok)", largura: 3 });
-      gk.linha(ks.limites.map(function (t, i) { return [t, ks.acum_inadimplentes[i]]; }),
-        { cor: "var(--alert)", largura: 3 });
+      /* Só os limiares dentro do eixo entram na curva: além de 60% as duas proporções já estão
+         em 1 e o traço continuaria para fora do desenho, por cima do painel vizinho. */
+      function dentro(serie) {
+        return ks.limites.map(function (t, i) { return [t, serie[i]]; })
+          .filter(function (q) { return q[0] <= gk.dx[1]; });
+      }
+      gk.linha(dentro(ks.acum_adimplentes), { cor: "var(--ok)", largura: 3 });
+      gk.linha(dentro(ks.acum_inadimplentes), { cor: "var(--alert)", largura: 3 });
       var iMax = 0;
       ks.limites.forEach(function (t, i) {
         if (ks.acum_adimplentes[i] - ks.acum_inadimplentes[i] >

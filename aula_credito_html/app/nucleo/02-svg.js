@@ -353,10 +353,16 @@ var Graf = (function () {
         x: Math.min(x0, x1), y: yc - alt / 2, width: Math.max(2, Math.abs(x1 - x0)),
         height: alt, fill: it.cor || "var(--cor)", rx: 2, opacity: it.opacidade || 1,
       }));
-      g.add(sv("text", {
-        x: g.m.e - 12, y: yc + 6, "text-anchor": "end", "font-size": op.tamanhoRot || 20,
-        texto: it.rotulo,
-      }));
+      /* Rótulo mais largo que a coluna reservada quebra em até duas linhas; antes ele saía pela
+         esquerda do desenho e era cortado. */
+      var tam = op.tamanhoRot || 20;
+      var linhasRot = quebrar(String(it.rotulo), Math.max(6, Math.floor((g.m.e - 16) / (tam * 0.6)))).slice(0, 2);
+      linhasRot.forEach(function (t, k) {
+        g.add(sv("text", {
+          x: g.m.e - 12, y: yc + 6 + (k - (linhasRot.length - 1) / 2) * (tam + 2),
+          "text-anchor": "end", "font-size": tam, texto: t,
+        }));
+      });
       g.add(sv("text", {
         x: Math.max(x0, x1) + 10, y: yc + 6, "font-size": op.tamanhoRot || 20,
         "font-weight": 700, fill: "var(--ink)",
@@ -380,11 +386,22 @@ var Graf = (function () {
     svg.appendChild(arestas);
     svg.appendChild(caixas);
 
-    /* Cada caixa cresce conforme as linhas que couberem na largura dada, e cada
+    var niveis = [];
+    (function contar(no, d) {
+      niveis[d] = (niveis[d] || 0) + 1;
+      (no.filhos || []).forEach(function (f) { contar(f.no, d + 1); });
+    })(raizNo, 0);
+    /* Num nível cheio (oito folhas em 900 unidades) a caixa encolhe até caber lado a lado e o
+       rótulo quebra na largura que sobrou; sem isso as caixas se sobrepunham e a da ponta saía
+       do desenho. Nos níveis com folga a caixa mantém a largura pedida. */
+    var larguraNivel = niveis.map(function (n) {
+      return Math.max(60, Math.min(larguraCaixa, Math.floor((w - 44) / n) - 8));
+    });
+    /* Cada caixa cresce conforme as linhas que couberem na largura do nível, e cada
        nível recebe a altura da sua caixa mais alta. Sem isso, um rótulo longo
        empurra o texto para fora da caixa e o rótulo do ramo cai sobre o filho. */
-    var maxChars = Math.max(8, Math.floor((larguraCaixa - 20) / 10.4));
-    function linhasDe(no) {
+    function linhasDe(no, d) {
+      var maxChars = Math.max(6, Math.floor((larguraNivel[d] - 16) / 10.4));
       var l = quebrar(no.rotulo, maxChars).map(function (t) {
         return { texto: t, principal: true };
       });
@@ -393,10 +410,9 @@ var Graf = (function () {
       return l;
     }
 
-    var niveis = [], alturaNivel = [];
+    var alturaNivel = [];
     (function medir(no, d) {
-      niveis[d] = (niveis[d] || 0) + 1;
-      no._linhas = linhasDe(no);
+      no._linhas = linhasDe(no, d);
       no._altura = Math.max(alturaCaixa, no._linhas.length * 21 + 14);
       alturaNivel[d] = Math.max(alturaNivel[d] || 0, no._altura);
       (no.filhos || []).forEach(function (f) { medir(f.no, d + 1); });
@@ -455,8 +471,9 @@ var Graf = (function () {
       var folha = !no.filhos || !no.filhos.length;
       var cor = no.destaque ? "var(--cor)" : "var(--rule)";
       var altura = no._altura;
+      var larguraDesta = larguraNivel[d];
       caixas.appendChild(sv("rect", {
-        x: x - larguraCaixa / 2, y: y, width: larguraCaixa, height: altura, rx: 5,
+        x: x - larguraDesta / 2, y: y, width: larguraDesta, height: altura, rx: 5,
         fill: no.destaque ? "var(--cor-soft)" : (folha ? "var(--surface)" : "var(--paper)"),
         stroke: cor, "stroke-width": no.destaque ? 3 : 1.5,
       }));

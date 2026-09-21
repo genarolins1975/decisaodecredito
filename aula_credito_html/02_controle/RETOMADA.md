@@ -74,6 +74,14 @@ o QA lê a distribuição, não os arquivos soltos.
     `App.definirModo`, nunca por recarga do iframe.
 12. **Gráfico sem resumo fica `aria-hidden`** (`Graf.acessivel`). Quem quiser o gráfico
     nomeado para leitor de tela passa `resumo`.
+13. **Todo estado precisa caber nos 900 px.** `ajustarCorpo`, em `90-app.js`, reduz o corpo até
+    caber (mínimo 0,6) e grava o fator em `data-zoom`; é rede de segurança, não licença. A QA
+    falha abaixo de 80% e lista os slides que couberam reduzidos: o certo é rearranjar o slide.
+14. **`node qa.mjs --estados` é a verificação que vale.** Ela clica todos os botões três vezes,
+    sem "Reiniciar", e cobra fórmulas não montadas, estouro, corte e zoom depois de cada
+    rodada. Um slide aceito só no estado inicial não está aceito.
+15. **Texto dentro de fórmula passa por `Mat.t`**, que escapa `%`, `#`, `&` e `_`. Concatenar
+    um rótulo cru em `\text{}` derruba a expressão inteira quando ele traz `%`.
 
 ## Se for preciso mexer
 

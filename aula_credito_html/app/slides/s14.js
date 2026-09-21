@@ -67,7 +67,11 @@ Aula.slide({
     if (est.tangente) {
       var z0s = M.logito(est.p0);
       var incl = est.p0 * (1 - est.p0);
-      var x0 = z0s - 1.2, x1 = z0s + 1.6;
+      /* A reta tangente fica dentro do desenho: em PD inicial alta ela subiria além do topo do
+         eixo e o rótulo sairia do quadro. */
+      var yMax = g.dy[1] - 0.03, yMin = g.dy[0] + 0.02;
+      var x0 = Math.max(g.dx[0], z0s - 1.2, z0s + (yMin - est.p0) / incl);
+      var x1 = Math.min(g.dx[1], z0s + 1.6, z0s + (yMax - est.p0) / incl);
       g.linha([[x0, est.p0 + incl * (x0 - z0s)], [x1, est.p0 + incl * (x1 - z0s)]],
         { cor: "var(--amber)", largura: 2, tracejado: "6 5" });
       g.texto(x1, est.p0 + incl * (x1 - z0s), "aproximação local",

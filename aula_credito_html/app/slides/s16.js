@@ -74,8 +74,10 @@ Aula.slide({
       var v = escalaPD ? M.sigmoid(z(est.comp, est.flex)) : contrib(est.comp, est.flex);
       g.guia(est.comp, v, { cor: "var(--muted)" });
       g.ponto(est.comp, v, { cor: "var(--logit)", r: 9 });
+      /* Perto do topo do domínio o rótulo desce para baixo do ponto, em vez de sair do desenho. */
+      var pertoDoTopo = v > g.dy[0] + (g.dy[1] - g.dy[0]) * 0.88;
       g.texto(est.comp, v, escalaPD ? F.pct(v, 2) : F.dec(v, 3),
-        { dx: 12, dy: -12, tamanho: 21, cor: "var(--ink)" });
+        { dx: 12, dy: pertoDoTopo ? 26 : -12, tamanho: 21, cor: "var(--ink)" });
       return g.svg;
     }
 

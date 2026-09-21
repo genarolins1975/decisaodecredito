@@ -5,6 +5,9 @@
     {
       "id": "01",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -21,17 +24,58 @@
       "svgs": 0,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "02",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -48,17 +92,58 @@
       "svgs": 0,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "03",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -75,17 +160,58 @@
       "svgs": 3,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "04",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -102,17 +228,64 @@
       "svgs": 0,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.82,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 82%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.82,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 82%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.82,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 82%"
+            ]
+          }
+        ]
       }
     },
     {
       "id": "05",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -129,17 +302,58 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "06",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -156,17 +370,58 @@
       "svgs": 3,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "07",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 4,
@@ -183,17 +438,58 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "08",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -210,17 +506,58 @@
       "svgs": 3,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "09",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -237,17 +574,58 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "10",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -264,17 +642,58 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "11",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -291,17 +710,58 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "12",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -318,17 +778,58 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "13",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 4,
@@ -345,17 +846,62 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.95,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 95%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.95,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 95%"
+            ]
+          }
+        ]
       }
     },
     {
       "id": "14",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -372,17 +918,58 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "15",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -399,17 +986,58 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "16",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -426,17 +1054,62 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.86,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 86%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.86,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 86%"
+            ]
+          }
+        ]
       }
     },
     {
       "id": "17",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -453,17 +1126,62 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.91,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 91%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.91,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 91%"
+            ]
+          }
+        ]
       }
     },
     {
       "id": "18",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 2,
@@ -480,17 +1198,64 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.95,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 95%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.95,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 95%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.95,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 95%"
+            ]
+          }
+        ]
       }
     },
     {
       "id": "19",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -507,17 +1272,58 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "20",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -534,17 +1340,58 @@
       "svgs": 0,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "21",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -561,23 +1408,64 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "22",
       "estudo": false,
-      "estouro": 2,
-      "estourado": "2px | hist = 0comp ≤ 40%comp > 40%hist = 1comp",
+      "zoom": 0.99,
+      "katexErros": 0,
+      "katexAmostra": null,
+      "estouro": 0,
+      "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 665,
-      "corpoVisivel": 665,
+      "alturaCorpo": 671,
+      "corpoVisivel": 671,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -588,17 +1476,66 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
+      "problemas": [
+        "coube reduzido a 99%"
+      ],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.99,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 99%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.99,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 99%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.99,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 99%"
+            ]
+          }
+        ]
       }
     },
     {
       "id": "23",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -615,17 +1552,58 @@
       "svgs": 5,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "24",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 2,
@@ -642,17 +1620,58 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "25",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -669,17 +1688,58 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "26",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -696,17 +1756,58 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "27",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 1,
@@ -723,17 +1824,58 @@
       "svgs": 5,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 1,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 1,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 1,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "28",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -750,17 +1892,62 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.82,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 82%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.82,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 82%"
+            ]
+          }
+        ]
       }
     },
     {
       "id": "29",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 1,
       "estourado": "1px | PD nas 20 réplicas0%20%40%60%PD prevista",
       "corte": 0,
@@ -777,17 +1964,58 @@
       "svgs": 3,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 1,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 1,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 1,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "30",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -804,17 +2032,64 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.88,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 88%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.88,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 88%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.88,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 88%"
+            ]
+          }
+        ]
       }
     },
     {
       "id": "31",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -831,17 +2106,62 @@
       "svgs": 3,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.99,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 99%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.99,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 99%"
+            ]
+          }
+        ]
       }
     },
     {
       "id": "32",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -858,17 +2178,62 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.86,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 86%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.86,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 86%"
+            ]
+          }
+        ]
       }
     },
     {
       "id": "33",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 3,
@@ -885,17 +2250,58 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 3,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 3,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 3,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "34",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -912,17 +2318,60 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.98,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 98%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "35",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -939,17 +2388,62 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.96,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 96%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.96,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 96%"
+            ]
+          }
+        ]
       }
     },
     {
       "id": "36",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 1,
       "estourado": "1px | Conversão do escore somado0%25%50%PD−2−1",
       "corte": 4,
@@ -966,17 +2460,62 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.87,
+            "estouro": 1,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 87%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 1,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.87,
+            "estouro": 1,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 87%"
+            ]
+          }
+        ]
       }
     },
     {
       "id": "37",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -993,17 +2532,62 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.95,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 95%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.95,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 95%"
+            ]
+          }
+        ]
       }
     },
     {
       "id": "38",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -1020,17 +2604,58 @@
       "svgs": 4,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "39",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -1047,17 +2672,58 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "40",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -1074,17 +2740,64 @@
       "svgs": 0,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.92,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 92%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.92,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 92%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.92,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 92%"
+            ]
+          }
+        ]
       }
     },
     {
       "id": "41",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 4,
@@ -1101,17 +2814,58 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "42",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -1128,23 +2882,70 @@
       "svgs": 0,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.87,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 87%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.87,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 87%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.87,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 87%"
+            ]
+          }
+        ]
       }
     },
     {
       "id": "43",
       "estudo": false,
-      "estouro": 2,
-      "estourado": "2px | Condições do protocolo de comparaçãoCond",
-      "corte": 2,
-      "cortado": "2px | 2018",
-      "alturaCorpo": 665,
-      "corpoVisivel": 665,
+      "zoom": 0.99,
+      "katexErros": 0,
+      "katexAmostra": null,
+      "estouro": 0,
+      "estourado": null,
+      "corte": 3,
+      "cortado": "3px | 2018",
+      "alturaCorpo": 671,
+      "corpoVisivel": 671,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -1155,17 +2956,66 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
+      "problemas": [
+        "coube reduzido a 99%"
+      ],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.99,
+            "estouro": 0,
+            "corte": 3,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 99%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.99,
+            "estouro": 0,
+            "corte": 3,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 99%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.99,
+            "estouro": 0,
+            "corte": 3,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 99%"
+            ]
+          }
+        ]
       }
     },
     {
       "id": "44",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -1182,17 +3032,58 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "45",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -1209,17 +3100,58 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "46",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -1236,17 +3168,58 @@
       "svgs": 3,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "47",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 1,
       "estourado": "1px | Margem menos perda esperadaR$ 0R$ 600R$ ",
       "corte": 0,
@@ -1263,17 +3236,58 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     },
     {
       "id": "48",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -1290,17 +3304,64 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.95,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 95%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.95,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 95%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.95,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 95%"
+            ]
+          }
+        ]
       }
     },
     {
       "id": "49",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -1317,17 +3378,64 @@
       "svgs": 0,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.82,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 82%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.85,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 85%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.82,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 82%"
+            ]
+          }
+        ]
       }
     },
     {
       "id": "50",
       "estudo": false,
+      "zoom": 1,
+      "katexErros": 0,
+      "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
@@ -1344,12 +3452,50 @@
       "svgs": 0,
       "erros": 0,
       "falha": false,
+      "problemas": [],
       "estados": {
-        "estudo": false,
-        "tracos": 0,
-        "rolagemCorpo": 0,
-        "rolagemPagina": 0,
-        "erros": 0
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
       }
     }
   ],

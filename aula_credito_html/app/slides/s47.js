@@ -111,7 +111,9 @@ Aula.slide({
         h("div", { class: "painel claro cresce centro" }, g.svg),
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 480px" }, [
-        h("div", { class: "painel cor", estilo: "padding:12px 16px" }, [
+        /* A versão alternativa ocupa o lugar do painel de hipóteses enquanto está aberta: os dois
+           juntos, com os controles, passavam da altura do palco. Fechá-la traz as hipóteses de volta. */
+        est.alternativa ? alternativa : h("div", { class: "painel cor", estilo: "padding:12px 16px" }, [
           h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
             h("h3", { class: "secao", estilo: "margin:0 0 4px" }, "Hipóteses"),
             UI.selo("aproximação didática, 12 meses", "neutro"),
@@ -136,11 +138,13 @@ Aula.slide({
             aoMudar: function (v) { est.pd = v / 100; App.montar("47"); },
           }),
           h("div", { class: "grupo", estilo: "margin-top:10px" }, [
+            /* Um painel de cada vez: hipóteses e versão alternativa juntas não cabem na coluna, e a
+               própria tela diz que a alternativa não deve ser misturada ao gráfico principal. */
             h("button", { class: "btn min", type: "button", onclick: function () {
-              est.hipoteses = !est.hipoteses; App.montar("47");
+              est.hipoteses = !est.hipoteses; if (est.hipoteses) est.alternativa = false; App.montar("47");
             } }, est.hipoteses ? "Esconder hipóteses" : "Mudar hipóteses"),
             h("button", { class: "btn min", type: "button", onclick: function () {
-              est.alternativa = !est.alternativa; App.montar("47");
+              est.alternativa = !est.alternativa; if (est.alternativa) est.hipoteses = false; App.montar("47");
             } }, est.alternativa ? "Esconder a alternativa" : "Versão com margem condicional"),
             h("button", { class: "btn min fantasma", type: "button", onclick: ctx.reiniciar },
               "Reiniciar exemplo"),
@@ -166,11 +170,13 @@ Aula.slide({
               ])
             : null,
         ]),
-        alternativa || h("div", { class: "painel claro cresce centro",
+        /* Com as hipóteses abertas, os três controles ocupam o lugar da decomposição, cujos
+           números continuam no painel de hipóteses. */
+        (est.hipoteses || est.alternativa) ? null : (h("div", { class: "painel claro cresce centro",
             estilo: "padding:10px 16px" }, [
           h("h3", { class: "secao", estilo: "margin-bottom:2px" }, "Margem menos perda esperada"),
           gd.svg,
-        ]),
+        ])),
       ]),
     ]));
   },

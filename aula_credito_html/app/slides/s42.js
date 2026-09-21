@@ -126,7 +126,7 @@ Aula.slide({
             : h("p", { class: "apoio", estilo: "text-align:center" },
                 "A resolução aparece em duas etapas: primeiro a soma no escore, depois a conversão."),
           est.passos >= 2
-            ? h("div", { estilo: "display:flex;gap:20px;align-items:center;margin-top:10px" }, [
+            ? h("div", { estilo: "display:flex;gap:20px;align-items:center;margin-top:10px;flex-wrap:wrap;justify-content:center" }, [
                 Comum.miniSigmoide(total, { w: 320, h: 180, zmin: -2.4, zmax: 0.4 }),
                 h("div", {}, [
                   h("p", { class: "grande" }, F.pct(pd, 4)),

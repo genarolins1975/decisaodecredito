@@ -69,11 +69,17 @@ var Comum = (function () {
   /* Curva logística pequena com um ponto marcado. */
   function miniSigmoide(z, op) {
     op = op || {};
-    var g = Graf.novo({ w: op.w || 300, h: op.h || 190, m: { e: 54, d: 14, c: 12, b: 40 } });
+    /* 52 embaixo: o título do eixo fica 46 unidades abaixo da linha, e com 40 saía do desenho. */
+    var g = Graf.novo({ w: op.w || 300, h: op.h || 190, m: { e: 64, d: 14, c: 14, b: 52 } });
     g.x(op.zmin === undefined ? -8 : op.zmin, op.zmax === undefined ? 4 : op.zmax).y(0, 1);
     g.grade({ y: [0, 0.25, 0.5, 0.75, 1] });
     g.eixoY({ ticks: [0, 0.5, 1], formato: function (v) { return F.pct(v, 0); } });
-    g.eixoX({ ticks: [-8, -4, 0, 4], rotulo: op.rotuloX || "escore z" });
+    /* Os ticks pertencem ao domínio pedido: com um recorte de escore (o slide 42 usa −2,4 a 0,4)
+       os ticks padrão cairiam fora do desenho e seriam cortados em silêncio. */
+    var ticksX = [-8, -4, 0, 4].filter(function (v) { return v >= g.dx[0] && v <= g.dx[1]; });
+    if (ticksX.length < 2) ticksX = Graf.ticks(g.dx[0], g.dx[1], 4);
+    g.eixoX({ ticks: ticksX, formato: function (v) { return F.dec(v, ticksX.some(function (t) { return t % 1; }) ? 1 : 0); },
+              rotulo: op.rotuloX || "escore z" });
     var pts = M.linspace(g.dx[0], g.dx[1], 160).map(function (v) { return [v, M.sigmoid(v)]; });
     g.linha(pts, { cor: "var(--cor)", largura: 3 });
     if (z !== null && z !== undefined) {
@@ -155,23 +161,29 @@ var Comum = (function () {
     var curto = op.compacto;
     function construir(no, nivel) {
       var nome = curto ? no.variavel : (NOMES_COLUNAS[no.variavel] || no.variavel);
+      /* No modo compacto, feito para níveis cheios, cada caixa traz no máximo três linhas curtas:
+         a pergunta ou "resumido", o tamanho e a PD. Um nível com oito caixas em 900 unidades
+         não comporta "n = 6.312 · PD 5,7%" numa linha só. */
+      var alem = !no.folha && nivel >= (op.profundidade || 2);
       var base = {
-        rotulo: no.folha ? (no.resumido ? "ramo resumido" : "folha") :
-          nome + " \u2264 " + F.dec(no.limite, no.variavel === "renda" ? 0 : 1) +
-          (curto ? "" : unidade(no.variavel)),
+        rotulo: no.folha
+          ? (no.resumido ? (curto ? "resumido" : "ramo resumido") : "folha")
+          : (curto && alem ? "resumido"
+             : nome + " \u2264 " + F.dec(no.limite, no.variavel === "renda" ? 0 : 1) +
+               (curto ? "" : unidade(no.variavel))),
         detalhe: curto
-          ? "n = " + F.inteiro(no.n) + " · PD " + F.pct(no.pd, 1)
+          ? "n = " + F.inteiro(no.n)
           : "n = " + F.inteiro(no.n) + " · eventos " + F.inteiro(no.eventos),
-        detalhe2: curto ? null : "PD " + F.pct(no.pd, 1),
+        detalhe2: "PD " + F.pct(no.pd, 1),
       };
-      if (!no.folha && nivel < (op.profundidade || 2)) {
+      if (!no.folha && !alem) {
         base.filhos = [
           { aresta: "sim", no: construir(no.esq, nivel + 1) },
           { aresta: "não", no: construir(no.dir, nivel + 1) },
         ];
-      } else if (!no.folha) {
+      } else if (!no.folha && !curto) {
         /* Nó interno além da profundidade exibida: mantém a pergunta e sinaliza o resumo. */
-        base.detalhe2 = "ramo resumido";
+        base.detalhe2 = "PD " + F.pct(no.pd, 1) + " · ramo resumido";
       }
       return base;
     }

@@ -240,6 +240,9 @@ p .mat, li .mat, td .mat, th .mat, .kv .mat { line-height: 1; }
 .formula .mat-bloco:first-child { margin-top: 0; }
 .formula .mat-bloco:last-child { margin-bottom: 0; }
 body.estudo .mat .katex { font-size: 1em; }
+/* No celular uma expressão em bloco mais larga que a tela rola na horizontal dentro da própria
+   caixa, em vez de empurrar o painel e a página para fora da tela. */
+body.estudo .mat-bloco { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
 /* A aula deixa os SVGs transbordarem a caixa de propósito, para rótulo de gráfico não ser cortado.
    O KaTeX depende do contrário: o radical e os delimitadores grandes são SVGs de 400em que ele
    recorta pelo contêiner. Sem esta exceção, a cauda da raiz quadrada atravessa o slide. */

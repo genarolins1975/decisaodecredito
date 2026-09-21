@@ -126,7 +126,44 @@ var App = (function () {
     atualizarIndice();
     if (estudo) montarNotasEstudo(def);
     escalar();
+    ajustarCorpo();
     agendarSalvar();
+  }
+
+  /* Rede de segurança da projeção. O palco tem 900 px fixos e a moldura esconde o que passa
+     deles: um estado revelado que não coubesse (um desafio aberto junto com a solução, uma
+     comparação ligada) sumiria da tela da turma sem aviso. Aqui o corpo recebe o menor zoom que
+     o faz caber, nunca abaixo de 0,6, e o fator fica em data-zoom para o QA cobrar os slides em
+     que a redução passa do aceitável. No modo estudo a página rola, e nada disto se aplica. */
+  function ajustarCorpo() {
+    var corpo = document.getElementById("corpo");
+    if (!corpo) return;
+    corpo.style.zoom = "";
+    corpo.removeAttribute("data-zoom");
+    if (estudo) return;
+    /* O que falta é o maior entre o excedente do corpo inteiro e o do painel mais espremido: um
+       painel que cresce dentro de uma coluna cheia é encolhido pelo flex e o conteúdo dele passa
+       por baixo do vizinho sem aumentar a rolagem do corpo. */
+    function faltando() {
+      var f = corpo.scrollHeight - corpo.clientHeight;
+      var paineis = corpo.querySelectorAll(".painel");
+      for (var j = 0; j < paineis.length; j++) {
+        var pn = paineis[j];
+        var cs = getComputedStyle(pn);
+        if (cs.overflowY === "auto" || cs.overflowY === "scroll") continue;
+        f = Math.max(f, pn.scrollHeight - pn.clientHeight);
+      }
+      return f;
+    }
+    var k = 1;
+    for (var i = 0; i < 5; i++) {
+      var sobra = faltando();
+      if (sobra <= 1) break;
+      k = Math.max(0.6, k * (corpo.clientHeight / (corpo.clientHeight + sobra)) * 0.995);
+      corpo.style.zoom = k.toFixed(3);
+      if (k <= 0.6) break;
+    }
+    if (k < 1) corpo.setAttribute("data-zoom", k.toFixed(2));
   }
 
   function montarNotasEstudo(def) {

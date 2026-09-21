@@ -20,7 +20,7 @@ comando que produz a evidência, e as limitações estão declaradas no final.
 | Mapa de reaproveitamento | Entregue | `02_controle/MAPA_REAPROVEITAMENTO.md` | Capítulo 4 mapeado página a página; demais capítulos, por título |
 | Verificação numérica | Entregue | `experimento/experimento.ipynb`, seções 4 a 7 | Ver a seção "Conferências numéricas" abaixo |
 | Inspeção visual dos 50 slides | Entregue | `node qa.mjs --shots` gera `qa/slide-NN-1366.png` | Capturas não versionadas, 11 MB, refeitas em um comando; a medida por slide está nos relatórios JSON |
-| Navegação e controles | Entregue | `node qa.mjs --estados` percorre até 14 controles por slide | 50 de 50 em 1366x768, 1920x1080, 1024x768 e 390x844 |
+| Navegação e controles | Entregue | `node qa.mjs --estados` clica todos os botões de cada slide em três rodadas e mede fórmulas, estouro, corte, transbordo, rolagem e zoom após cada uma (21/09/2026) | 50 de 50 em 1366x768, 1920x1080, 1024x768 e 390x844, e na variante do aluno |
 | Abertura offline | Entregue | QA registra requisições externas; nenhuma encontrada | `qa/relatorio-1366.json`, campo `externas` vazio |
 
 ## O que a verificação automática cobre

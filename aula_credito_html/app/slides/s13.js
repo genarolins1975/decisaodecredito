@@ -45,7 +45,7 @@ Aula.slide({
     var mediaPerda = M.media(perdas);
 
     function curva(y, destaque) {
-      var g = Graf.novo({ w: 430, h: 330, m: { e: 74, d: 22, c: 22, b: 58 } });
+      var g = Graf.novo({ w: 430, h: 290, m: { e: 74, d: 22, c: 22, b: 58 } });
       g.x(0, 1).y(0, 5);
       g.grade({ y: [1, 2, 3, 4, 5] });
       g.eixoY({ ticks: [0, 1, 2, 3, 4, 5], rotulo: "perda da observação" });
@@ -83,9 +83,24 @@ Aula.slide({
       h("td", {}, ""), h("td", {}, ""), h("td", {}, F.dec(mediaPerda, 4)),
     ]));
 
+    /* A amostra inteira entra embaixo das duas curvas, com a tabela e a função lado a lado: na
+       coluna dos controles ela não cabia e o excedente ficava fora do palco. */
     corpo.appendChild(h("div", { class: "linha cresce" }, [
-      curva(1, est.y === 1),
-      curva(0, est.y === 0),
+      h("div", { class: "coluna cresce" }, [
+        h("div", { class: "linha cresce" }, [curva(1, est.y === 1), curva(0, est.y === 0)]),
+        est.amostra ? h("div", { class: "painel claro" }, h("div", { class: "linha topo" }, [
+          h("div", { estilo: "flex:1 1 0" }, tabela),
+          h("div", { class: "coluna", estilo: "flex:1 1 0;gap:6px" }, [
+            h("h3", { class: "secao", estilo: "margin:0" }, "O que o ajuste minimiza"),
+            h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:0" },
+              Mat.b("\\mathcal{L}(\\beta) = \\frac{1}{n}\\sum_{i=1}^{n} " +
+                "-\\bigl[\\, y_i\\,\\ln p_i + (1 - y_i)\\,\\ln(1 - p_i) \\,\\bigr]")),
+            h("p", { class: "nota", estilo: "margin:0" },
+              "A média das perdas dos " + amostra.y.length +
+              " contratos, e não a perda de uma observação. Os coeficientes são os que dão o menor valor dela."),
+          ]),
+        ])) : null,
+      ]),
       h("div", { class: "coluna", estilo: "flex:0 0 430px" }, [
         h("div", { class: "painel cor" }, [
           h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:0" },
@@ -120,13 +135,6 @@ Aula.slide({
               "Reiniciar exemplo"),
           ]),
         ]),
-        est.amostra ? h("div", { class: "painel claro cresce" }, [tabela,
-          h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:8px 0 0" },
-            Mat.b("\\mathcal{L}(\\beta) = \\frac{1}{n}\\sum_{i=1}^{n} " +
-              "-\\bigl[\\, y_i\\,\\ln p_i + (1 - y_i)\\,\\ln(1 - p_i) \\,\\bigr]")),
-          h("p", { class: "nota", estilo: "margin-top:6px" },
-            "Esta é a função que o ajuste minimiza: a média das perdas dos " + amostra.y.length +
-            " contratos, e não a perda de uma observação. Os coeficientes são os que dão o menor valor dela.")]) : null,
       ]),
     ]));
   },

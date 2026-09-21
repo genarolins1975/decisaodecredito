@@ -30,7 +30,7 @@ Origem das evidências: script de jornadas (dois contextos autenticados, console
 | Unidade e contrato da compilação | `npm test` | 249 testes em 26 arquivos, todos passam |
 | Aceitação da Aula 2 | `npx playwright test -g "aula em slides"` | passa (8,7 s) |
 | Aceitação completa | `npx playwright test` | 20 de 20 em 2,2 min (21/09/2026) |
-| QA do baralho completo | `node qa.mjs --estados` em 1366x768, 1920x1080, 1024x768, 390x844 | 50 de 50 em cada uma |
+| QA do baralho completo | `node qa.mjs --estados` em 1366x768, 1920x1080, 1024x768, 390x844 (três rodadas de cliques por slide, medindo fórmulas, estouro, corte, transbordo, rolagem e zoom após cada rodada) | 50 de 50 em cada uma; antes das correções da segunda rodada, 24 slides falhavam em 1366 e 1920 e 8 em 1024 e 390 |
 | QA da variante do aluno | `node qa.mjs --aluno --estados` (1366) e `--aluno --largura 390x844` | 50 de 50 |
 | Hífen e travessão no texto | `node lint-tracos.mjs` | 0 ocorrências |
 | Acessibilidade | axe-core 4.11, oito slides em modo aluno (01, 09, 12, 20, 30, 42, 46, 49) | antes: `dlitem`, `svg-img-alt`, `color-contrast` (sérias) em quatro slides; depois: nenhuma violação |
@@ -43,6 +43,7 @@ Origem das evidências: script de jornadas (dois contextos autenticados, console
 - Aviso de hidratação no painel do professor: apareceu apenas quando o script tirava uma captura de página inteira durante a hidratação; a diferença apontada foi um estilo `caret-color` que o próprio Playwright injeta para a captura. Sem captura, o painel carregou sem aviso (duas execuções). Não é defeito do produto, mas fica registrado.
 - Rede: a emulação "offline" do navegador não derruba a conexão SSE já aberta; por isso a queda do aluno foi simulada abortando as rotas de eventos e de estado, o que reproduz o que a casca vê numa queda real, não a queda em si.
 - Tempos medidos em servidor `dev` na mesma máquina: úteis para comparação, não como referência de produção.
+- Estados combinados: a varredura clica todos os botões de um slide três vezes, o que produz combinações que uma aula dificilmente produz (desafio aberto junto com toda a solução e a comparação). Nesses estados 19 slides cabem só reduzidos entre 82% e 99% pela rede de segurança do motor; nenhum fica abaixo de 80% nem é cortado. A lista está em R7 do plano.
 - Nenhuma validação com usuários. As jornadas demonstram que os caminhos funcionam e que as informações necessárias estão na tela; não demonstram que professor e alunos as compreendem sem instrução. Isso exige a aula real (R3 e R4 do plano).
 
 ## 4. Pendências
