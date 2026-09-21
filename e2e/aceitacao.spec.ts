@@ -1003,6 +1003,111 @@ test("aula em slides: professor conduz o baralho, aluno acompanha e não recebe 
   await prof.post(`/api/aovivo/${sessionId}/status`, { data: { status: "closed" } });
 });
 
+test("Aula 2 na moldura da plataforma: abertura como capítulo, uma página por slide, guias por papel, vizinhos e retorno do baralho", async ({ page }) => {
+  const aluno = await apiAs(ALUNO_A);
+  const prof = await apiAs(PROF);
+  const fs3 = await import("node:fs");
+  // o HTML do servidor traz marcas de hidratação entre trechos de texto ("slide <!-- -->12<!-- --> de <!-- -->50")
+  const desescapar = (t: string) => t.replace(/<!-- -->/g, "").replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&amp;/g, "&");
+
+  // Aulas: a Aula 2 aparece como cinco cartões, um por bloco, e não mais como um painel de arquivo em nova aba
+  const aulas = await (await aluno.get("/aulas")).text();
+  expect(aulas.match(/data-testid="cartao-aula-2"/g)?.length).toBe(5);
+  expect(aulas).not.toContain('href="/slides/aula-2"');
+  expect(aulas).toContain('href="/aulas/aula-2#bloco-1"');
+
+  // abertura no formato do capítulo: volta a Aulas, mapa dos 50 slides, vizinhos e o guia do aluno; o do professor só para a equipe
+  const abertura = await (await aluno.get("/aulas/aula-2")).text();
+  expect(abertura).toContain('data-testid="aula-2"');
+  expect(abertura).toMatch(/<a[^>]*class="voltar[^"]*"[^>]*href="\/aulas"|<a[^>]*href="\/aulas"[^>]*class="voltar/);
+  expect(abertura.match(/class="capx-pag[ "]/g)?.length).toBe(50);
+  expect(abertura).toContain('href="/aulas/aula-2/slide/01"');
+  expect(abertura).toContain('href="/aulas/capitulo/3"');
+  expect(abertura).toContain('href="/aulas/capitulo/4"');
+  expect(abertura).toContain("/api/materiais/aula-2/guia-do-aluno.pdf");
+  expect(abertura).not.toContain("guia-do-professor.pdf");
+  expect(abertura).not.toContain("Conduzir ao vivo");
+  const aberturaProf = await (await prof.get("/aulas/aula-2")).text();
+  expect(aberturaProf).toContain("/api/materiais/aula-2/guia-do-professor.pdf");
+  expect(aberturaProf).toContain("Conduzir ao vivo");
+
+  // a página do slide tem a moldura das outras aulas; o roteiro do professor só sai para a equipe
+  const notas = JSON.parse(fs3.readFileSync("content/slides/aula-2-notas.json", "utf8")) as { slides: { n: string; titulo: string; notas: { conducao: string[] } }[] };
+  const s12 = notas.slides.find((x) => x.n === "12")!;
+  const paginaAluno = desescapar(await (await aluno.get("/aulas/aula-2/slide/12")).text());
+  expect(paginaAluno).toContain('data-testid="quadro-aula-2"');
+  expect(paginaAluno).toContain("slide 12 de 50");
+  expect(paginaAluno).toContain(s12.titulo);
+  expect(paginaAluno).not.toContain("roteiro-professor");
+  expect(paginaAluno).not.toContain(s12.notas.conducao[0]);
+  const paginaProf = desescapar(await (await prof.get("/aulas/aula-2/slide/12")).text());
+  expect(paginaProf).toContain('data-testid="roteiro-professor"');
+  expect(paginaProf).toContain(s12.notas.conducao[0]);
+  // endereços: número sem o zero à esquerda redireciona; slide inexistente é 404
+  const curto = await aluno.get("/aulas/aula-2/slide/7", { maxRedirects: 0 });
+  expect(curto.status()).toBe(307);
+  expect(curto.headers().location).toContain("/aulas/aula-2/slide/07");
+  expect((await aluno.get("/aulas/aula-2/slide/51")).status()).toBe(404);
+
+  // os guias em PDF saem pela plataforma, por papel: o do aluno para a turma, o do professor para a equipe
+  const guiaAluno = await aluno.get("/api/materiais/aula-2/guia-do-aluno.pdf");
+  expect(guiaAluno.status()).toBe(200);
+  expect(guiaAluno.headers()["content-type"]).toContain("application/pdf");
+  expect((await aluno.get("/api/materiais/aula-2/guia-do-professor.pdf")).status()).toBe(403);
+  expect((await prof.get("/api/materiais/aula-2/guia-do-professor.pdf")).status()).toBe(200);
+  expect((await (await apiAs(null)).get("/api/materiais/aula-2/guia-do-aluno.pdf")).status()).toBe(401);
+  expect((await (await apiAs(SEM)).get("/api/materiais/aula-2/guia-do-aluno.pdf")).status()).toBe(403);
+  expect((await aluno.get("/api/materiais/aula-2/outro.pdf")).status()).toBe(404);
+
+  // a Aula 2 entra na sequência do curso: o capítulo 3 aponta para ela, e ela para o capítulo 4
+  expect(await (await aluno.get("/aulas/capitulo/3")).text()).toContain('href="/aulas/aula-2"');
+  expect(await (await aluno.get("/aulas/capitulo/4")).text()).toContain('href="/aulas/aula-2"');
+  // Materiais aponta para a página da aula, não para o arquivo; o guia do professor não aparece ao aluno
+  const materiais = await (await aluno.get("/materiais")).text();
+  expect(materiais).toContain('href="/aulas/aula-2"');
+  expect(materiais).not.toContain("guia-do-professor");
+  // o painel de conteúdo do professor traz o guia do professor e lista os 50 slides, cada um com "ver" e "tela cheia"
+  const painel = await (await prof.get("/professor/conteudo")).text();
+  expect(painel).toContain('data-testid="conteudo-aula-2"');
+  expect(painel).toContain("/api/materiais/aula-2/guia-do-professor.pdf");
+  expect(painel.match(/href="\/aulas\/aula-2\/slide\/\d\d"/g)?.length).toBe(50);
+  expect(painel.match(/href="\/slides\/aula-2#\/slide\/\d\d"/g)?.length).toBe(50);
+
+  // no navegador: Próxima e a lista trocam o slide sem recarregar o baralho, endereço e lateral acompanham e
+  // Voltar desfaz um passo; embutido, o baralho não mostra o link de retorno; em tela cheia mostra, e ele volta ao slide atual
+  type JanelaMarcada = Window & { __marca?: number };
+  const marca = () => page.evaluate(() => (document.querySelector("iframe")?.contentWindow as JanelaMarcada | null | undefined)?.__marca);
+  await loginUi(page, ALUNO_A);
+  await page.goto("/aulas/aula-2/slide/12");
+  const dentro = page.frameLocator('iframe[src*="/slides/aula-2"]');
+  await expect(dentro.locator(".cabeca .passo")).toHaveText("slide 12 de 50", { timeout: 30000 });
+  await expect(dentro.locator("#barra")).toBeVisible();        // modo livre: o aluno navega
+  await expect(dentro.locator("#lnk-voltar")).toBeHidden();    // a casca já tem o caminho de volta
+  await page.evaluate(() => { const w = document.querySelector("iframe")?.contentWindow as JanelaMarcada | null | undefined; if (w) w.__marca = 1; });
+  await page.locator('a[rel="next"]').click();
+  await expect(page).toHaveURL(/\/aulas\/aula-2\/slide\/13$/);
+  await expect(dentro.locator(".cabeca .passo")).toHaveText("slide 13 de 50");
+  await expect(page.locator('[data-lista="slides"] a[aria-current="page"]')).toContainText("13");
+  await expect(page.locator("article h1")).toHaveText(notas.slides.find((x) => x.n === "13")!.titulo);
+  expect(await marca()).toBe(1);
+  await page.locator('[data-lista="slides"] a[href="/aulas/aula-2/slide/30"]').click();
+  await expect(page).toHaveURL(/\/aulas\/aula-2\/slide\/30$/);
+  await expect(dentro.locator(".cabeca .passo")).toHaveText("slide 30 de 50");
+  await page.goBack();
+  await expect(page).toHaveURL(/\/aulas\/aula-2\/slide\/13$/);
+  await expect(dentro.locator(".cabeca .passo")).toHaveText("slide 13 de 50");
+  expect(await marca()).toBe(1);
+  await expect(page.locator('aside a[href="/slides/aula-2#/slide/13"]').last()).toHaveText("Ver em tela cheia");
+  await page.goto("/slides/aula-2#/slide/13");
+  await expect(page.locator("#lnk-voltar")).toBeVisible({ timeout: 30000 });
+  await expect(page.locator("#lnk-voltar")).toHaveAttribute("href", "/aulas/aula-2/slide/13");
+  await page.keyboard.press("ArrowRight");
+  await expect(page.locator("#lnk-voltar")).toHaveAttribute("href", "/aulas/aula-2/slide/14");
+  await page.locator("#lnk-voltar").click();
+  await expect(page).toHaveURL(/\/aulas\/aula-2\/slide\/14$/, { timeout: 30000 });
+  await expect(dentro.locator(".cabeca .passo")).toHaveText("slide 14 de 50", { timeout: 30000 });
+});
+
 test("prontidão: /api/health diz quantas migrações o banco aplicou, e o número bate com drizzle/", async () => {
   const fs = await import("node:fs");
   const arquivos = fs.readdirSync("drizzle").filter((f) => f.endsWith(".sql")).length;

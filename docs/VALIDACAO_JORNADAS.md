@@ -21,6 +21,23 @@ Origem das evidências: script de jornadas (dois contextos autenticados, console
 | 11 | Mudança de versão trata estados anteriores | estado gravado com outra versão, estado corrompido, outro usuário na mesma máquina | passou: descartado, apagado sem impedir a aula, isolado por usuário | verificação em jsdom |
 | 12 | Se houver autenticação, dados e ações ficam restritos ao usuário e papel | aluno tenta publicar slide (403); sem sessão (redirecionamento); sem turma (403); arquivo do aluno sem notas, do professor com notas; estado do aluno sem `answerKey` | passou | e2e "aula em slides"; jornada A15 |
 
+## 1b. Quarta rodada (21/09/2026): a Aula 2 na moldura da plataforma
+
+Motivo: a Aula 2 abria como um arquivo em nova aba, sem a moldura das outras aulas e sem caminho de volta. Cenários executados por script no navegador (66 checagens, dois contextos autenticados, 1366 por 800 e 390 por 844) e pelo teste de aceitação "moldura da plataforma".
+
+| # | Cenário | Como foi executado | Resultado | Evidência |
+|---|---|---|---|---|
+| 13 | A Aula 2 tem o mesmo formato das outras aulas | Aulas: cinco cartões, um por bloco; abertura `/aulas/aula-2` como a de um capítulo (pergunta, o que se aprende, os 50 slides, antes e depois, material, vizinhos); página por slide `/aulas/aula-2/slide/NN` com lateral, cabeçalho, baralho embutido, resumo, links do apêndice, Anterior e Próxima | passou | `aula2-aulas-cartoes.png`, `aula2-abertura.png`, `aula2-slide-12-aluno.png`; e2e "moldura da plataforma" |
+| 14 | Há caminho de volta em todo ponto | "Aulas" no alto da abertura e da página do slide; "Abertura da aula" na lateral; no baralho aberto em tela cheia, o link "Aulas" na barra volta à página do slide atual e acompanha as setas; embutido na página ou na tela ao vivo, o link fica oculto | passou | `aula2-tela-cheia-retorno.png`; e2e |
+| 15 | Navegar pela casca ou pelo baralho mantém endereço, lateral e cabeçalho em sincronia, sem recarregar | Próxima, lista lateral, setas com o foco na casca, setas e índice dentro do baralho, Voltar e Avançar do navegador | passou: uma marca posta na janela do baralho sobrevive a todas as trocas; Voltar desfaz um passo por navegação (sonda com `history.length`) | sonda de histórico; e2e |
+| 16 | O roteiro do professor não chega ao aluno | página do slide 12 como aluno e como professor; frase de condução das notas procurada no HTML | passou | `aula2-slide-12-professor.png`; e2e |
+| 17 | Guias por papel | aluno: 200 no guia do aluno e 403 no do professor; professor: 200 nos dois; anônimo 401; sem turma 403; arquivo desconhecido 404 | passou | e2e |
+| 18 | A Aula 2 entra na sequência do curso | capítulo 3 aponta para a Aula 2, que aponta para o capítulo 4; unidade sem capítulos fora da Aula 2 não entra | passou | `tests/aula-2-plataforma.test.ts`; e2e |
+| 19 | Celular | 390 por 844: página do slide sem rolagem horizontal, baralho em modo estudo com a largura inteira | passou | `aula2-slide-12-celular.png` |
+| 20 | Conteúdo, Início e Materiais levam à plataforma, não ao arquivo | Conteúdo com os 50 slides ("ver" e "tela cheia"); Início com "Abrir a aula" quando o próximo encontro é a Aula 2; Materiais com a aula em `/aulas/aula-2` e o guia do aluno; o guia do professor na abertura da aula e em Conteúdo, para a equipe | passou | `aula2-conteudo-professor.png`; e2e |
+
+Achado técnico registrado: no Chromium, um `location.replace` com fragmento feito de fora do iframe recarrega o arquivo inteiro (a marca na janela some), enquanto atribuir `location.hash` cria uma entrada a mais no histórico. A casca usa `App.trocar`, que faz `history.replaceState` dentro do próprio baralho. Não verificado em Firefox e Safari.
+
 ## 2. Verificações automatizadas executadas em 21/09/2026
 
 | Verificação | Comando | Resultado |
@@ -37,6 +54,9 @@ Origem das evidências: script de jornadas (dois contextos autenticados, console
 | Console | 50 slides sincronizados na tela do aluno | 0 erros do baralho; ver a seção 3 sobre o aviso de hidratação |
 | Guias em PDF | `node aula_credito_html/material.mjs` (terceira rodada, 21/09/2026) | nas duas edições: 0 traços no texto, 0 fórmulas com erro, 0 imagens ausentes, 0 erros de página, os 50 slides localizados no mapa, paginação estável entre as duas passagens; páginas conferidas visualmente a partir de renderizações do PDF |
 | Contrato do conteúdo dos guias | `npx vitest run tests/aula-2-material.test.ts` | 3 testes: 50 slides cobertos, exercícios nos slides 01, 04, 20, 30, 42, 49 e 50, blocos contíguos, ritmo de 165 minutos, nenhum traço no texto |
+| Sequência do curso com a Aula 2 (quarta rodada) | `npx vitest run tests/aula-2-plataforma.test.ts` | 4 testes: ordem capítulos 1, 2, 3, Aula 2, 4, 5, 7, 11; vizinhos; unidade vazia fora da Aula 2 excluída |
+| Aceitação da moldura (quarta rodada) | `npx playwright test -g "moldura da plataforma"` | passa; `npm test` com 256 testes; typecheck e lint (0 erros) repetidos |
+| QA do baralho depois da barra com o link Aulas (quarta rodada) | `node qa.mjs --estados` em 1366; `--aluno --estados`; `--largura` 1920x1080, 1024x768 e 390x844; `node lint-tracos.mjs` | 50 de 50 em cada uma; 0 traços |
 
 ## 3. Limitações do que foi verificado
 

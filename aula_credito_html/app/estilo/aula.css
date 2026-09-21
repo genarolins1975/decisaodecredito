@@ -394,6 +394,11 @@ svg text { font-family: var(--sans); fill: var(--body); }
   z-index: 20;
 }
 #barra .id { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--ink); font-size: 15px; }
+/* Retorno à plataforma: só aparece quando o baralho é aberto direto em /slides/, fora de iframe. */
+#barra #lnk-voltar { display: inline-flex; align-items: center; gap: 4px; font: 700 14px var(--sans); color: var(--ink-soft); text-decoration: none; padding: 7px 4px; white-space: nowrap; }
+#barra #lnk-voltar::before { content: "‹"; font-size: 18px; line-height: 1; }
+#barra #lnk-voltar:hover { text-decoration: underline; }
+#barra #lnk-voltar[hidden] { display: none; }
 #barra .titulinho {
   color: var(--muted);
   font-size: 14px;

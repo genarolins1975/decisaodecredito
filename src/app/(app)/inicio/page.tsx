@@ -7,6 +7,8 @@ import { listAssignments, myGroup } from "@/lib/services/assignments";
 import { flatPages } from "@/lib/services/content";
 import { PageHeader, StatusBadge, ButtonLink } from "@/components/ui";
 import { fmtL, fmtDT, relative } from "@/lib/time";
+import { ehAulaEmSlides } from "@/lib/content/capitulo";
+import { AULA_2 } from "@/lib/content/aula-2";
 
 export const metadata: Metadata = { title: "Início" };
 
@@ -49,10 +51,15 @@ export default async function InicioPage() {
             <>
               <h2 id="prox" className="mt-1">{next.title}</h2>
               <p className="mt-1 text-[15px]">{next.scheduledAt ? <><b>{fmtL(next.scheduledAt)}</b> <span className="hint">({relative(next.scheduledAt)})</span></> : <span className="hint">data a confirmar pelo professor</span>}{next.location ? ` · ${next.location}` : ""}{next.videoUrl && <> · <a href={next.videoUrl} target="_blank" rel="noreferrer">videoconferência</a></>}</p>
-              {nextUnit && <p className="mt-2 text-[14.5px]"><b>Capítulos:</b> {unitChapters.map((c) => `${c.number}. ${c.title}`).join(" · ")}</p>}
-              <p className="mt-2 text-[14.5px]"><b>O que preparar:</b> {next.preparation ?? (unitChapters.length ? `ler as páginas essenciais dos capítulos ${unitChapters.map((c) => c.number).join(", ")} e responder às perguntas de checagem.` : "o professor ainda não indicou.")}</p>
+              {nextUnit && (ehAulaEmSlides(nextUnit)
+                ? <p className="mt-2 text-[14.5px]"><b>Formato:</b> {AULA_2.total} slides interativos em cinco blocos, conduzidos pelo professor e disponíveis para estudo em Aulas.</p>
+                : <p className="mt-2 text-[14.5px]"><b>Capítulos:</b> {unitChapters.map((c) => `${c.number}. ${c.title}`).join(" · ")}</p>)}
+              <p className="mt-2 text-[14.5px]"><b>O que preparar:</b> {next.preparation ?? (unitChapters.length ? `ler as páginas essenciais dos capítulos ${unitChapters.map((c) => c.number).join(", ")} e responder às perguntas de checagem.` : nextUnit && ehAulaEmSlides(nextUnit) ? "rever os capítulos 1, 2 e 3 e percorrer os primeiros slides da aula; o guia do aluno está em Materiais." : "o professor ainda não indicou.")}</p>
               {nextUnit && <p className="mt-1 text-[14.5px]"><b>Entrega indicada:</b> {nextUnit.deliverable}</p>}
-              <div className="mt-3 flex gap-2 flex-wrap">{unitChapters[0] && <ButtonLink href="/aulas" variant="secondary">Ver o conteúdo da aula</ButtonLink>}</div>
+              <div className="mt-3 flex gap-2 flex-wrap">
+                {unitChapters[0] && <ButtonLink href="/aulas" variant="secondary">Ver o conteúdo da aula</ButtonLink>}
+                {nextUnit && ehAulaEmSlides(nextUnit) && <ButtonLink href={AULA_2.href} variant="secondary">Abrir a aula</ButtonLink>}
+              </div>
             </>
           ) : <p className="hint mt-1">Nenhuma aula marcada. Enquanto isso, estude em Aulas.</p>}
         </section>

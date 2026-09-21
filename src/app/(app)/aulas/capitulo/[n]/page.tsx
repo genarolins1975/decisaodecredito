@@ -129,8 +129,8 @@ export default async function CapituloPage({ params }: { params: Promise<{ n: st
       </section>
 
       <nav className="capx-viz" aria-label="Capítulos vizinhos">
-        {prev ? <Link href={`/aulas/capitulo/${prev.number}`} rel="prev"><span className="eyebrow">← Capítulo {prev.number} · {prev.unitLabel}</span><b>{prev.title}</b></Link> : <span />}
-        {next ? <Link href={`/aulas/capitulo/${next.number}`} rel="next" className="capx-viz--prox"><span className="eyebrow">Capítulo {next.number} · {next.unitLabel} →</span><b>{next.title}</b></Link> : <span />}
+        {prev ? <Link href={prev.href} rel="prev"><span className="eyebrow">← {prev.rotulo}</span><b>{prev.titulo}</b></Link> : <span />}
+        {next ? <Link href={next.href} rel="next" className="capx-viz--prox"><span className="eyebrow">{next.rotulo} →</span><b>{next.titulo}</b></Link> : <span />}
       </nav>
     </div>
   );

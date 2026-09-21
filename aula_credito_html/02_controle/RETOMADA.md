@@ -87,6 +87,11 @@ o QA lê a distribuição, não os arquivos soltos.
     as tabelas de `Aula.resultados`; só o texto didático (`material/conteudo/`) é escrito à
     mão, e `tests/aula-2-material.test.ts` cobra que ele cubra os 50 slides sem traços. Mudou
     um slide: `node build.mjs` e depois `node material.mjs`, nunca editar o PDF.
+17. **A casca da plataforma embute o baralho uma vez e sincroniza pelo hash.**
+    `/aulas/aula-2/slide/NN` carrega o iframe em `?modo=livre` e troca de slide por
+    `App.trocar`; nunca mudar o `src` nem chamar `location.replace` de fora do quadro, que
+    recarregam o arquivo e apagam a exploração. O link `#lnk-voltar` da barra só aparece fora
+    de iframe e em `/slides/`; `montar` o aponta para a página do slide atual.
 
 ## Se for preciso mexer
 

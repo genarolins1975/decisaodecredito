@@ -211,6 +211,8 @@ var App = (function () {
   function atualizarBarra(def, n) {
     document.getElementById("rotulo-id").textContent = def.id + "/50";
     document.getElementById("rotulo-titulo").textContent = def.titulo;
+    var voltar = document.getElementById("lnk-voltar");
+    if (voltar) voltar.href = "/aulas/aula-2/slide/" + def.id;
     document.getElementById("progresso-barra").style.width =
       ((n / Aula.slides.length) * 100).toFixed(2) + "%";
     var ant = document.getElementById("btn-anterior");
@@ -297,6 +299,17 @@ var App = (function () {
     var i = indiceDe(atual) + d;
     if (i < 0 || i >= Aula.slides.length) return;
     navegar(Aula.slides[i].id);
+  }
+  /* Troca de slide sem entrada nova no histórico do navegador. A casca da plataforma chama isto
+     quando o leitor navega pela lista lateral ou por Anterior e Próxima: o endereço da página já
+     mudou por lá, e Voltar deve desfazer um passo, não dois. Um location.replace vindo de fora do
+     quadro recarregaria o arquivo inteiro e apagaria a exploração do aluno; replaceState não. */
+  function trocar(id) {
+    if (!Aula.registro[id]) return false;
+    if (location.hash === "#/slide/" + id) return true;
+    try { history.replaceState(null, "", "#/slide/" + id); } catch (e) { navegar(id); return true; }
+    doHash();
+    return true;
   }
 
   function doHash() {
@@ -544,6 +557,11 @@ var App = (function () {
     });
     if (MODO) document.body.setAttribute("data-modo", MODO);
     if (!temNotas()) document.getElementById("btn-professor").hidden = true;
+    /* Aberto direto pela plataforma, fora de iframe (por exemplo em "Ver em tela cheia"), o baralho
+       oferece o caminho de volta à página do slide na plataforma. Embutido na tela do aluno, na
+       projeção ou aberto do disco, o link fica oculto: a casca ou o sistema já têm o retorno. */
+    var lnkVoltar = document.getElementById("lnk-voltar");
+    if (lnkVoltar && window.top === window && /^\/slides\//.test(location.pathname)) lnkVoltar.hidden = false;
     if (window.innerWidth < LARGURA_ESTUDO) {
       estudo = true;
       document.body.classList.add("estudo");
@@ -555,7 +573,7 @@ var App = (function () {
   }
 
   return {
-    iniciar: iniciar, navegar: navegar, montar: montar, estadoDe: estadoDe,
+    iniciar: iniciar, navegar: navegar, trocar: trocar, montar: montar, estadoDe: estadoDe,
     prepararImpressao: prepararImpressao, escalar: escalar,
     definirModo: definirModo, modo: function () { return MODO; },
     limparEstados: limparEstados, salvarEstado: salvarEstado,

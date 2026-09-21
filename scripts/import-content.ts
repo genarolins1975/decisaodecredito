@@ -325,10 +325,16 @@ async function main() {
   // materiais: bibliografia de apoio (obras verificadas pelo professor antes da publicação)
   /* `url` aponta para uma rota da própria plataforma; `citation` fica só nas referências bibliográficas.
      O título nomeia os capítulos porque `materiaisDoCapitulo` casa o material ao capítulo pelo título. */
-  const refs: { title: string; kind: string; description: string; url?: string; unitId?: string }[] = [
-    { title: "Aula 2 em 50 slides: logit, árvore e boosting", kind: "arquivo",
-      description: "A aula inteira em um percurso único de 50 slides interativos, com abertura no problema de crédito e fechamento em avaliação, decisão e monitoramento. Abre no navegador, funciona sem rede e imprime uma folha por slide. O aluno recebe a versão de estudo, sem as notas de condução do professor; o que você explora nos slides fica só no seu navegador. As páginas dos capítulos 4, 5 e 6 ficam no apêndice, para estudo.",
-      url: "/slides/aula-2", unitId: unidadePorChave.get("aula:2") },
+  const refs: { title: string; kind: string; description: string; url?: string; unitId?: string; status?: string }[] = [
+    { title: "Aula 2 em 50 slides: logit, árvore e boosting", kind: "aula",
+      description: "A aula inteira em um percurso único de 50 slides interativos, com abertura no problema de crédito e fechamento em avaliação, decisão e monitoramento, apresentada na plataforma com a mesma moldura das outras aulas: abertura, um endereço por slide e navegação Anterior e Próxima. O aluno recebe a versão de estudo, sem as notas de condução do professor; o que você explora nos slides fica só no seu navegador. As páginas dos capítulos 4, 5 e 6 ficam no apêndice, para estudo.",
+      url: "/aulas/aula-2", unitId: unidadePorChave.get("aula:2") },
+    { title: "Aula 2: guia do aluno (PDF)", kind: "arquivo",
+      description: "Uma página por slide, na ordem da aula: a captura do slide, como ler o que está nele, o que mexer na tela, as fórmulas na notação dos slides e os exercícios sem gabarito, para resolver no papel e conferir na tela. Fecha com a lista de verificação de saída e o glossário.",
+      url: "/api/materiais/aula-2/guia-do-aluno.pdf", unitId: unidadePorChave.get("aula:2") },
+    { title: "Aula 2: guia do professor (PDF)", kind: "arquivo",
+      description: "Condução, respostas esperadas, cuidados, aprofundamentos e transição de cada slide, com a captura no estado revelado, o ritmo proposto por bloco, a comparação dos três modelos no teste e os sinais para observar na turma. Contém gabaritos: não distribuir aos alunos.",
+      url: "/api/materiais/aula-2/guia-do-professor.pdf", unitId: unidadePorChave.get("aula:2"), status: "professor" },
     { title: "Siddiqi, N. Intelligent Credit Scoring: Building and Implementing Better Credit Risk Scorecards. 2. ed. Wiley, 2017.", kind: "referencia", description: "Construção de scorecards, WoE/IV, segmentação e implantação." },
     { title: "Thomas, L. C.; Crook, J. N.; Edelman, D. B. Credit Scoring and Its Applications. 2. ed. SIAM, 2017.", kind: "referencia", description: "Fundamentos estatísticos de credit scoring, validação e decisão." },
     { title: "Hastie, T.; Tibshirani, R.; Friedman, J. The Elements of Statistical Learning. 2. ed. Springer, 2009.", kind: "referencia", description: "Árvores, boosting e viés-variância (capítulos 9 e 10)." },
@@ -342,9 +348,9 @@ async function main() {
   const have = new Set(existingMats.map((m) => m.title));
   let mpos = 0;
   for (const r of refs) {
-    if (!have.has(r.title)) { await db.insert(schema.materials).values({ id: newId(), editionId: edition.id, title: r.title, kind: r.kind, description: r.description, url: r.url ?? null, unitId: r.unitId ?? null, citation: r.url ? null : r.title, status: "published", position: mpos++ }); continue; }
-    // material já cadastrado: a descrição do repositório é a fonte, e uma edição dela precisa chegar aos bancos já importados
-    if (r.url) await db.update(schema.materials).set({ description: r.description }).where(and(eq(schema.materials.editionId, edition.id), eq(schema.materials.title, r.title)));
+    if (!have.has(r.title)) { await db.insert(schema.materials).values({ id: newId(), editionId: edition.id, title: r.title, kind: r.kind, description: r.description, url: r.url ?? null, unitId: r.unitId ?? null, citation: r.url ? null : r.title, status: r.status ?? "published", position: mpos++ }); continue; }
+    // material já cadastrado: o repositório é a fonte do endereço, do tipo, da unidade e da descrição, e uma edição deles precisa chegar aos bancos já importados
+    if (r.url) await db.update(schema.materials).set({ description: r.description, url: r.url, kind: r.kind, unitId: r.unitId ?? null, status: r.status ?? "published" }).where(and(eq(schema.materials.editionId, edition.id), eq(schema.materials.title, r.title)));
   }
 
   await db.insert(schema.contentImports).values({ id: newId(), editionId: edition.id, sourceFile: ex.sourceFile, sourceSha256: ex.sourceSha256, summary: { pages: ex.pages.length, questions: qCount, rendering: stats, republish } });

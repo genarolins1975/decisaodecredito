@@ -26,8 +26,16 @@ saídas carregam a mesma marca de compilação (`Aula.versao`), gravada em
 servido antes de qualquer verificação, e o `src/proxy.ts` só confere se existe um
 cookie chamado `sessao`, o que é conveniência de navegação e não controle de acesso.
 
-O link aparece no cartão da Aula 2 em `/aulas` e em `/materiais`, cadastrado como
-material da unidade pelo `scripts/import-content.ts`.
+Na plataforma a aula tem a mesma moldura das outras: a abertura `/aulas/aula-2`, no
+formato da abertura de um capítulo, e uma página por slide, `/aulas/aula-2/slide/NN`,
+que embute o baralho uma única vez em `?modo=livre` e o mantém em sincronia pelo hash:
+a casca chama `App.trocar(NN)` quando o leitor usa a lista lateral, Anterior e Próxima ou
+as setas com o foco fora do quadro, e escuta `hashchange` quando ele navega dentro do
+baralho. Em `/aulas` a Aula 2 aparece como cinco cartões, um por bloco; em `/materiais`
+o material da unidade aponta para `/aulas/aula-2`, cadastrado pelo
+`scripts/import-content.ts` junto com os dois guias em PDF. Aberto direto em
+`/slides/aula-2`, fora de iframe, o baralho mostra na barra o link "Aulas", que volta à
+página do slide atual; embutido, ou aberto do disco, o link fica oculto.
 
 ## Aula ao vivo
 
@@ -77,7 +85,10 @@ arquivo local.
 Os modos, por parâmetro `?modo=`: `aluno` (segue o professor: sem barra e sem teclado),
 `livre` (navega, sem notas e sem impressão), `projecao` (janela projetada: índice,
 anterior, próximo e tela cheia, sem notas). A casca da plataforma troca o modo em tempo de
-execução por `App.definirModo`, sem recarregar.
+execução por `App.definirModo`, sem recarregar, e troca de slide por `App.trocar(id)`, que
+usa `history.replaceState` dentro do próprio baralho: um `location.replace` feito de fora
+do iframe recarrega o arquivo inteiro no Chromium, e atribuir `location.hash` de fora cria
+uma entrada a mais no histórico do navegador.
 
 O modo estudo reorganiza o slide em coluna, mostra as notas na própria página e dispensa
 o mouse. Abaixo de 1100px de largura ele entra sozinho, de modo que a aula também se lê
@@ -113,7 +124,10 @@ Todos os dados são sintéticos. Nenhum número descreve carteira real.
 
 `node material.mjs` gera, a partir do baralho compilado, dois guias em A4:
 `dist/material/aula-2-guia-do-professor.pdf` e `aula-2-guia-do-aluno.pdf`, copiados para
-`content/materiais/`. Os dois seguem a ordem dos 50 slides, com uma página por slide: a
+`content/materiais/` e servidos pela plataforma em `/api/materiais/aula-2/guia-do-aluno.pdf`
+(qualquer matriculado, listado em Materiais e na abertura da aula) e `guia-do-professor.pdf`
+(professor e monitor, listado na abertura da aula e em Conteúdo; a área Materiais do aluno
+não lista materiais com status "professor"). Os dois seguem a ordem dos 50 slides, com uma página por slide: a
 captura do slide feita no próprio Chromium (no estado revelado, que é o da impressão; na
 edição do aluno, os exercícios dos slides 04, 20, 30, 42, 49 e 50 ficam no estado inicial),
 mais o texto de `material/conteudo/`. O guia do professor traz as notas de
