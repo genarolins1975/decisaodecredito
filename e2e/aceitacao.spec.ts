@@ -920,6 +920,11 @@ test("aula em slides: professor conduz o baralho, aluno acompanha e não recebe 
   const ap = await sql<{ caps: string }>(
     "select string_agg(c.slug, ',' order by c.number) as caps from units u join chapters c on c.unit_id=u.id where u.kind='apendice' and u.edition_id=(select edition_id from units where id=$1)", [aula2.unitId]);
   expect(ap[0].caps).toBe("c4,c5,c6");
+  // o apêndice vem logo depois da Aula 2: com ele no fim, os capítulos liam 1,2,3,7,8,9,10,11,4,5,6
+  const ordem = await sql<{ kind: string; number: number }>(
+    "select kind, number from units where edition_id=(select edition_id from units where id=$1) order by position", [aula2.unitId]);
+  expect(ordem.map((u) => `${u.kind}${u.number}`)).toEqual(
+    ["aula1", "aula2", "apendice1", "aula3", "aula4", "trabalho5"]);
 
   expect((await prof.post(`/api/aovivo/${sessionId}/slide`, { data: { slide: "24" } })).status()).toBe(200);
   expect((await prof.post(`/api/aovivo/${sessionId}/slide`, { data: { slide: "51" } })).status()).toBe(400); // fora do roteiro
@@ -946,6 +951,13 @@ test("aula em slides: professor conduz o baralho, aluno acompanha e não recebe 
   const semTurma = await (await apiAs(SEM)).get("/slides/aula-2", { maxRedirects: 0 });
   expect(semTurma.status()).toBe(403);
   expect(await semTurma.text()).not.toContain("<html");
+
+  // o professor precisa de um caminho para a aula: a Aula 2 não tem capítulo, e sem o material da
+  // unidade no painel de conteúdo o cartão dela fica vazio e não há por onde entrar
+  const painel = await (await prof.get("/professor/conteudo")).text();
+  expect(painel).toContain("/slides/aula-2");
+  const painelAluno = await aluno.get("/professor/conteudo", { maxRedirects: 0 });
+  expect(painelAluno.status()).toBe(307);   // e o aluno não alcança a área do professor
 
   await prof.post(`/api/aovivo/${sessionId}/status`, { data: { status: "closed" } });
 });

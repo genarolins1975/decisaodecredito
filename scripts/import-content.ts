@@ -158,7 +158,7 @@ async function main() {
      tem capítulos; os capítulos 4, 5 e 6, com as 60 páginas de logit, árvore e boosting, formam o
      apêndice de estudo, que vem depois do trabalho final. */
   const APENDICE = {
-    kind: "apendice", number: 1, position: 90, caps: [4, 5, 6],
+    kind: "apendice", number: 1, caps: [4, 5, 6], depoisDaAula: 2,
     titulo: "As três técnicas, página a página",
     entrega: "Estudo das 60 páginas de regressão logística, árvores de decisão e gradient boosting, no seu ritmo",
   };
@@ -167,13 +167,23 @@ async function main() {
     kind: a.tipo === "trabalho" ? "trabalho" : "aula", n: a.n, titulo: a.titulo, entrega: a.entrega,
     caps: (a.caps as number[]).filter((c) => !APENDICE.caps.includes(c)), position: a.n,
   }));
-  unidades.push({ kind: APENDICE.kind, n: APENDICE.number, titulo: APENDICE.titulo, entrega: APENDICE.entrega, caps: APENDICE.caps, position: APENDICE.position });
+  unidades.push({ kind: APENDICE.kind, n: APENDICE.number, titulo: APENDICE.titulo, entrega: APENDICE.entrega, caps: APENDICE.caps, position: 0 });
+  /* O apêndice fica logo depois da aula de onde seus capítulos saíram, e não no fim do curso: com
+     ele após o trabalho final, a numeração dos capítulos lida de cima para baixo daria 1, 2, 3, 7,
+     8, 9, 10, 11, 4, 5, 6. */
+  const ondeFica = (u: Unidade) => (u.kind === APENDICE.kind ? APENDICE.depoisDaAula + 0.5 : u.n);
+  unidades.sort((x, y) => ondeFica(x) - ondeFica(y));
+  unidades.forEach((u, i) => { u.position = i + 1; });
 
   const unitIds = new Map<number, string>();
   const unidadePorChave = new Map<string, string>();
   for (const a of unidades) {
     let [u] = await db.select().from(schema.units).where(and(eq(schema.units.editionId, edition.id), eq(schema.units.kind, a.kind), eq(schema.units.number, a.n)));
     if (!u) [u] = await db.insert(schema.units).values({ id: newId(), editionId: edition.id, kind: a.kind, number: a.n, title: a.titulo, deliverable: a.entrega, plannedMinutes: ex.meta.durAula, breakMinutes: ex.meta.intervalo, position: a.position, status: "published" }).returning();
+    else if (u.position !== a.position) {
+      [u] = await db.update(schema.units).set({ position: a.position }).where(eq(schema.units.id, u.id)).returning();
+      console.log(`unidade ${a.kind} ${a.n} reposicionada para ${a.position}`);
+    }
     for (const c of a.caps) unitIds.set(c, u.id);
     unidadePorChave.set(`${a.kind}:${a.n}`, u.id);
     inventory.units.push({ id: u.id, kind: a.kind, number: a.n, title: a.titulo, chapters: a.caps });
