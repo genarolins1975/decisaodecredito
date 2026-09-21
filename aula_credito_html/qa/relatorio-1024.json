@@ -24,7 +24,51 @@
       "svgs": 0,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "02",
@@ -48,7 +92,51 @@
       "svgs": 0,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "03",
@@ -72,7 +160,51 @@
       "svgs": 3,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "04",
@@ -96,7 +228,51 @@
       "svgs": 0,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "05",
@@ -120,7 +296,51 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "06",
@@ -144,7 +364,51 @@
       "svgs": 3,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "07",
@@ -168,7 +432,51 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "08",
@@ -192,7 +500,51 @@
       "svgs": 3,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "09",
@@ -216,7 +568,51 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "10",
@@ -240,7 +636,51 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "11",
@@ -264,7 +704,51 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "12",
@@ -288,7 +772,51 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "13",
@@ -312,7 +840,51 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "14",
@@ -336,7 +908,51 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "15",
@@ -360,7 +976,51 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "16",
@@ -384,7 +1044,51 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "17",
@@ -408,7 +1112,51 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "18",
@@ -432,7 +1180,51 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "19",
@@ -456,7 +1248,51 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "20",
@@ -480,7 +1316,51 @@
       "svgs": 0,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "21",
@@ -504,7 +1384,51 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "22",
@@ -528,7 +1452,51 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "23",
@@ -552,7 +1520,51 @@
       "svgs": 5,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "24",
@@ -576,7 +1588,51 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "25",
@@ -600,7 +1656,51 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "26",
@@ -624,7 +1724,51 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "27",
@@ -648,7 +1792,51 @@
       "svgs": 5,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 1,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 1,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 1,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "28",
@@ -672,7 +1860,51 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "29",
@@ -696,7 +1928,51 @@
       "svgs": 3,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "30",
@@ -720,7 +1996,51 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "31",
@@ -744,7 +2064,51 @@
       "svgs": 3,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "32",
@@ -768,7 +2132,51 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "33",
@@ -792,7 +2200,51 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "34",
@@ -816,7 +2268,51 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "35",
@@ -840,7 +2336,51 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "36",
@@ -864,7 +2404,51 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "37",
@@ -888,7 +2472,51 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "38",
@@ -912,7 +2540,51 @@
       "svgs": 4,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "39",
@@ -936,7 +2608,51 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "40",
@@ -960,7 +2676,51 @@
       "svgs": 0,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "41",
@@ -984,7 +2744,51 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 5,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 5,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 5,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "42",
@@ -1008,7 +2812,51 @@
       "svgs": 0,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "43",
@@ -1032,7 +2880,51 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "44",
@@ -1056,7 +2948,51 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "45",
@@ -1080,7 +3016,51 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "46",
@@ -1104,7 +3084,51 @@
       "svgs": 3,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "47",
@@ -1128,7 +3152,51 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "48",
@@ -1152,7 +3220,51 @@
       "svgs": 1,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "49",
@@ -1176,7 +3288,51 @@
       "svgs": 0,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "50",
@@ -1200,7 +3356,51 @@
       "svgs": 0,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     }
   ],
   "erros": [],

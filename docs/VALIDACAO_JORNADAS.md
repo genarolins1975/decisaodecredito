@@ -56,7 +56,7 @@ Achado técnico registrado: no Chromium, um `location.replace` com fragmento fei
 | Contrato do conteúdo dos guias | `npx vitest run tests/aula-2-material.test.ts` | 3 testes: 50 slides cobertos, exercícios nos slides 01, 04, 20, 30, 42, 49 e 50, blocos contíguos, ritmo de 165 minutos, nenhum traço no texto |
 | Sequência do curso com a Aula 2 (quarta rodada) | `npx vitest run tests/aula-2-plataforma.test.ts` | 4 testes: ordem capítulos 1, 2, 3, Aula 2, 4, 5, 7, 11; vizinhos; unidade vazia fora da Aula 2 excluída |
 | Aceitação da moldura (quarta rodada) | `npx playwright test -g "moldura da plataforma"` | passa; `npm test` com 256 testes; typecheck e lint (0 erros) repetidos |
-| QA do baralho depois da barra com o link Aulas (quarta rodada) | `node qa.mjs --estados` em 1366; `--aluno --estados`; `--largura` 1920x1080, 1024x768 e 390x844; `node lint-tracos.mjs` | 50 de 50 em cada uma; 0 traços |
+| QA do baralho depois da barra com o link Aulas (quarta rodada) | `node qa.mjs --estados` em 1366x768, 1920x1080, 1024x768 e 390x844; `--aluno --estados`; `node lint-tracos.mjs` | 50 de 50 em cada uma, com as três rodadas de estados; 0 traços; relatórios em `aula_credito_html/qa/relatorio-*.json` |
 
 ## 3. Limitações do que foi verificado
 
