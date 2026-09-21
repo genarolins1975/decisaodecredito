@@ -92,7 +92,7 @@ Aula.slide({
       alternativa = h("div", { class: "painel", estilo: "border-color:var(--ink-soft)" }, [
         h("h3", { class: "secao" }, "Versão alternativa, separada"),
         h("p", { class: "formula peq" },
-          "E[resultado] = (1 − p) × m_bom − p × L − c"),
+          Mat.b("\\mathbb{E}[\\text{resultado}] = (1-p)\\,m - p\\,L - c")),
         UI.kv([
           ["margem condicional ao adimplemento", F.reais(mGood)],
           ["custo por operação", F.reais(custo)],
@@ -116,14 +116,17 @@ Aula.slide({
             h("h3", { class: "secao", estilo: "margin:0 0 4px" }, "Hipóteses"),
             UI.selo("aproximação didática, 12 meses", "neutro"),
           ]),
+          h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:0 0 4px;font-size:16px" },
+            Mat.b("\\mathbb{E}[\\text{resultado}] = m - p\\,\\text{LGD}\\,\\text{EAD}"
+              + (foraDaFaixa ? "" : "\\quad p^{*} = \\tfrac{m}{\\text{LGD}\\,\\text{EAD}} = " + Mat.pct(equilibrio, 0)))),
           h("div", { class: "kv", estilo: "font-size:18px;gap:1px 12px" }, [
             h("dt", {}, "margem antes da perda"), h("dd", {}, F.reais(hip.margem)),
             h("dt", {}, "EAD"), h("dd", {}, F.reais(hip.ead)),
             h("dt", {}, "LGD"), h("dd", {}, F.pct(hip.lgd, 0)),
             h("dt", {}, "perda esperada"), h("dd", {}, F.reais(el)),
             h("dt", {}, "resultado esperado"), h("dd", {}, F.reais(resultado)),
-            h("dt", {}, "equilíbrio"),
-            h("dd", {}, foraDaFaixa ? "fora do intervalo de PD relevante" : F.pct(equilibrio, 2)),
+            foraDaFaixa ? h("dt", {}, "equilíbrio") : null,
+            foraDaFaixa ? h("dd", {}, "fora do intervalo de PD relevante") : null,
           ]),
         ]),
         h("div", { class: "painel" }, [

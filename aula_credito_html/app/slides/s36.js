@@ -87,9 +87,9 @@ Aula.slide({
       h("div", { class: "coluna cresce" }, [
         h("div", { class: "painel claro cresce centro" }, g.svg),
         h("div", { class: "painel cor", estilo: "display:flex;gap:26px;flex-wrap:wrap;align-items:baseline" }, [
-          h("span", { class: "medio" }, "escore final " + F.dec(total, 6)),
+          h("span", { class: "medio" }, Mat.i("F = " + Mat.n(total, 6))),
           est.converter
-            ? h("span", { class: "medio" }, "PD " + F.pct(pd, 4))
+            ? h("span", { class: "medio" }, Mat.i("p = \\sigma(F) = " + Mat.pct(pd, 4)))
             : h("span", { class: "apoio" }, "a PD só aparece depois da conversão"),
           h("span", { class: "apoio" },
             "grupo " + outro + " chegaria a " + F.dec(totalOutro, 6) +

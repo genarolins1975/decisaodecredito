@@ -88,10 +88,18 @@ for (const id of ids) {
       }
       return false;
     }
+    /* O KaTeX monta a expressão com caixas internas que ele mesmo recorta: o MathML fica em 1 por
+       1 pixel para o leitor de tela e o radical usa um SVG de 400em dentro de um contêiner com
+       overflow hidden. Ambos devolvem a largura natural em getBoundingClientRect. O que se vê é a
+       caixa do .katex, e é ela que entra na medida; o miolo é detalhe de implementação. */
+    function internoDoKatex(el) {
+      const k = el.closest(".katex");
+      return !!k && k !== el;
+    }
     for (const el of palco.querySelectorAll("#corpo *")) {
       const b = el.getBoundingClientRect();
       if (b.height === 0 || b.width === 0) continue;
-      if (dentroDeRolagem(el)) continue;
+      if (dentroDeRolagem(el) || internoDoKatex(el)) continue;
       const dir = (b.right - r.right) / (r.width || 1);
       const v = estudo ? dir : Math.max((b.bottom - r.bottom) / (r.height || 1), dir);
       if (v > transbordo) {

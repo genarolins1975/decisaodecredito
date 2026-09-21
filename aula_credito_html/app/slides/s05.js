@@ -118,11 +118,15 @@ Aula.slide({
         ]),
         h("div", { class: "painel cor" }, [
           h("p", { class: "apoio", estilo: "color:var(--ink);font-size:21px" }, cen.texto),
-          est.cenario === "erro"
-            ? h("button", { class: "btn", estilo: "margin-top:10px", type: "button",
-                onclick: function () { est.cenario = "ajustar"; App.montar("05"); } },
-                "Corrigir e restaurar o protocolo")
-            : null,
+          h("div", { class: "grupo", estilo: "margin-top:10px" }, [
+            est.cenario === "erro"
+              ? h("button", { class: "btn", type: "button",
+                  onclick: function () { est.cenario = "ajustar"; App.montar("05"); } },
+                  "Corrigir e restaurar o protocolo")
+              : null,
+            h("button", { class: "btn fantasma", type: "button", onclick: ctx.reiniciar },
+              "Reiniciar exemplo"),
+          ]),
         ]),
         h("p", { class: "nota" },
           "Barra sólida: contratações. Barra clara: os 12 meses até o alvo existir. " +

@@ -119,7 +119,7 @@ Aula.slide({
         h("div", { class: "painel cor" }, [
           h("h3", { class: "secao" }, "Etapa 2: aplicar a logística"),
           h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0" },
-            "p = 1 / (1 + e^−z) = 1 / (1 + e^" + F.dec(-z, 3) + ")"),
+            Mat.b("p = \\frac{1}{1 + e^{-z}} = \\frac{1}{1 + e^{" + Mat.n(-z, 3) + "}}")),
           h("p", { class: "grande", estilo: "margin-top:10px" }, F.pct(p, 2)),
           h("p", { class: "nota" }, "valor sem arredondamento: " + p.toFixed(10).replace(".", ",")),
         ]),

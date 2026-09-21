@@ -18,6 +18,11 @@ Aula.slide({
       "Numa mudança econômica real o comprometimento poderia variar. A simulação é sobre a função do modelo.",
       "Desafio final: Bruno de 38% para 41% passa de 15% para 40%. Isso não prova um salto real de risco exatamente nesse limite: é uma descontinuidade da aproximação aprendida.",
     ],
+    cuidados: [
+      "A taxa de uma folha é estimativa com incerteza, e folhas pequenas têm intervalo largo. Ler a taxa sem o tamanho da folha é o erro mais comum aqui.",
+      "A regra da árvore é associação aprendida na amostra, não relação causal: mudar a variável no cliente não move a PD dele pelo caminho da árvore.",
+      "Esta árvore vem da miniatura de 1.000 contratos, separada da base do experimento. Não compare o desempenho dela com o dos modelos treinados.",
+    ],
     transicao: "Uma única árvore é clara, mas pode ser limitada ou instável. Podemos construir uma previsão melhor acrescentando várias árvores pequenas em sequência?",
   },
   impressao: function (e) { e.conferido = true; e.pdTexto = "11"; e.ramo = "certo"; e.renda = 0; },

@@ -67,7 +67,14 @@ Aula.slide({
     });
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
-      h("div", { class: "painel claro centro", estilo: "display:flex;flex:0 0 auto" }, g.svg),
+      h("div", { class: "painel claro centro", estilo: "display:flex;flex:0 0 auto;flex-direction:column;justify-content:flex-start" }, [
+        h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:0 0 2px" },
+          Mat.b("z = \\beta_0 + \\sum_{j} \\beta_j\\,(x_j - \\bar{x}_j)")),
+        h("p", { class: "nota", estilo: "margin:0 0 6px;text-align:center" }, [
+          "cada barra abaixo é uma parcela da soma: ", Mat.i("\\beta_j\\,(x_j - \\bar{x}_j)"),
+        ]),
+        g.svg,
+      ]),
       h("div", { class: "coluna cresce" }, [
         h("div", { class: "painel cor", estilo: "padding:10px 16px" }, [
           h("div", { estilo: "display:flex;gap:14px;align-items:baseline;flex-wrap:wrap" }, [
@@ -92,7 +99,7 @@ Aula.slide({
           h("button", { class: "btn fantasma", type: "button", onclick: ctx.reiniciar },
             "Reiniciar exemplo"),
           h("span", { class: "medio", estilo: "margin-left:auto" },
-            est.visiveis >= 5 ? "z = " + F.dec(z, 3) : "z parcial"),
+            est.visiveis >= 5 ? Mat.i("z = " + Mat.n(z, 3)) : Mat.i("z \\text{ parcial}")),
         ]),
       ]),
     ]));

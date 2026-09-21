@@ -80,8 +80,8 @@ Aula.slide({
     }
 
     var equacao = est.flex
-      ? "z = −3,50 + 0,04 × (comp − 30) + 0,04 × máx(comp − 40, 0)"
-      : "z = −3,50 + 0,04 × (comp − 30)";
+      ? "z = -3{,}50 + 0{,}04\\,(\\mathit{comp} - 30) + 0{,}04\\,\\max(\\mathit{comp} - 40,\\, 0)"
+      : "z = -3{,}50 + 0{,}04\\,(\\mathit{comp} - 30)";
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "painel claro igual centro", estilo: "display:flex" }, [
@@ -95,7 +95,7 @@ Aula.slide({
       h("div", { class: "coluna", estilo: "flex:0 0 420px" }, [
         h("div", { class: "painel cor" }, [
           h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:0" },
-            equacao),
+            Mat.b(equacao)),
           est.verEquacao ? h("p", { class: "nota", estilo: "margin-top:8px" },
             "A nova variável máx(comp − 40, 0) vale zero abaixo de 40% e cresce depois disso. " +
             "Ela entra com coeficiente próprio, e o modelo continua linear nos parâmetros.") : null,

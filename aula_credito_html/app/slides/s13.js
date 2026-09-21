@@ -71,8 +71,8 @@ Aula.slide({
 
     var tabela = UI.tabela({
       compacta: true,
-      colunas: [{ rotulo: "Observação" }, { rotulo: "y" }, { rotulo: "p prevista" },
-                { rotulo: "Perda" }],
+      colunas: [{ rotulo: "Observação" }, { rotulo: Mat.i("y") },
+                { rotulo: Mat.i("p") , unidade: "prevista" }, { rotulo: Mat.i("L") }],
       linhas: amostra.y.map(function (y, i) {
         return ["nº " + (i + 1), String(y), F.pct(amostra.p[i], 0), F.dec(perdas[i], 4)];
       }),
@@ -89,7 +89,7 @@ Aula.slide({
       h("div", { class: "coluna", estilo: "flex:0 0 430px" }, [
         h("div", { class: "painel cor" }, [
           h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:0" },
-            "L = −[ y · ln(p) + (1 − y) · ln(1 − p) ]"),
+            Mat.b("L = -\\bigl[\\, y\\,\\ln p + (1 - y)\\,\\ln(1 - p) \\,\\bigr]")),
           h("div", { class: "kv", estilo: "margin-top:10px;font-size:22px" }, [
             h("dt", {}, "observação"), h("dd", {}, "y = " + est.y),
             h("dt", {}, "previsão"), h("dd", {}, F.pct(est.p, 1)),
@@ -121,8 +121,12 @@ Aula.slide({
           ]),
         ]),
         est.amostra ? h("div", { class: "painel claro cresce" }, [tabela,
+          h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:8px 0 0" },
+            Mat.b("\\mathcal{L}(\\beta) = \\frac{1}{n}\\sum_{i=1}^{n} " +
+              "-\\bigl[\\, y_i\\,\\ln p_i + (1 - y_i)\\,\\ln(1 - p_i) \\,\\bigr]")),
           h("p", { class: "nota", estilo: "margin-top:6px" },
-            "O ajuste minimiza a média das perdas, e não a perda de uma observação.")]) : null,
+            "Esta é a função que o ajuste minimiza: a média das perdas dos " + amostra.y.length +
+            " contratos, e não a perda de uma observação. Os coeficientes são os que dão o menor valor dela.")]) : null,
       ]),
     ]));
   },

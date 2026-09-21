@@ -46,9 +46,10 @@ Aula.slide({
     });
     var tabela = UI.tabela({
       compacta: true,
-      colunas: [{ rotulo: "Registro" }, { rotulo: "Grupo" }, { rotulo: "y" },
-                { rotulo: "p atual" }, { rotulo: "r = y − p" },
-                { rotulo: "folha h" }, { rotulo: "F novo" }, { rotulo: "p novo" }],
+      colunas: [{ rotulo: "Registro" }, { rotulo: "Grupo" }, { rotulo: Mat.i("y") },
+                { rotulo: Mat.i("p_{\\text{atual}}") }, { rotulo: Mat.i("r = y - p") },
+                { rotulo: Mat.i("h(\\text{folha})") }, { rotulo: Mat.i("F_{\\text{novo}}") },
+                { rotulo: Mat.i("p_{\\text{novo}}") }],
       linhas: linhas,
       legenda: "Resíduos e atualização dos dez registros",
     });

@@ -73,9 +73,9 @@ Aula.slide({
             UI.selo("árvore didática", "neutro"),
           ]),
           h("p", { class: "apoio", estilo: "margin:6px 0" }, folha.regra),
-          h("p", { class: "grande" },
-            F.inteiro(folha.d) + " / " + F.inteiro(folha.n) + " = " +
-            F.pct(folha.pd, folha.pd * 100 % 1 === 0 ? 0 : 1)),
+          h("p", { class: "grande", estilo: "margin:2px 0;font-size:32px" },
+            Mat.i("\\hat{p} = \\frac{d}{n} = \\frac{" + Mat.int(folha.d) + "}{" + Mat.int(folha.n) + "} = " +
+              Mat.pct(folha.pd, folha.pd * 100 % 1 === 0 ? 0 : 1))),
           Comum.composicao(folha.n, folha.d, { w: 400, h: 30 }),
           h("p", { class: "nota", estilo: "margin-top:8px" },
             "Barra vermelha: contratos com evento. Barra clara: contratos sem evento."),

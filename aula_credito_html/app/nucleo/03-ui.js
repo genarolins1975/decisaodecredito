@@ -225,7 +225,10 @@ var UI = (function () {
   /* Tabela com cabeçalho e linhas; colunas: [{rotulo, unidade, classe}] */
   function tabela(op) {
     var thead = h("thead", {}, h("tr", {}, op.colunas.map(function (c) {
-      return h("th", { scope: "col" }, c.unidade
+      /* Rótulo que vem como nó carrega notação: `p` não é `P`, `y` não é `Y`. A caixa alta do
+         cabeçalho vale para palavra, não para símbolo, então o nó desliga a transformação. */
+      var simbolo = c.rotulo && typeof c.rotulo === "object";
+      return h("th", { scope: "col", class: simbolo ? "simbolo" : "" }, c.unidade
         ? [c.rotulo, h("br"), h("span", { estilo: "font-weight:400;text-transform:none" }, c.unidade)]
         : c.rotulo);
     })));

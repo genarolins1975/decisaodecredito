@@ -123,9 +123,15 @@ Aula.slide({
               aberta
                 ? h("div", {}, [
                     h("p", { class: "apoio", estilo: "margin:0;font-size:16px" }, p.resposta),
-                    h("button", { class: "btn min fantasma", estilo: "margin-top:2px;padding:2px 0",
-                      type: "button", onclick: function () { ctx.ir(p.slide); } },
-                      "Rever no slide " + p.slide),
+                    h("div", { class: "grupo", estilo: "margin-top:2px;gap:10px" }, [
+                      h("button", { class: "btn min fantasma", estilo: "padding:2px 0",
+                        type: "button", onclick: function () { ctx.ir(p.slide); } },
+                        "Rever no slide " + p.slide),
+                      h("button", { class: "btn min fantasma", estilo: "padding:2px 0",
+                        type: "button", onclick: function () {
+                          delete est.respondidas[p.chave]; App.montar("50");
+                        } }, "Esconder"),
+                    ]),
                   ])
                 : h("button", { class: "btn min", type: "button", onclick: function () {
                     est.respondidas[p.chave] = true; App.montar("50");
