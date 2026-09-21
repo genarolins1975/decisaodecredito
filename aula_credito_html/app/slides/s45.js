@@ -22,6 +22,10 @@ Aula.slide({
       "Número de faixas, calibrador e versão não devem ser escolhidos pelo teste final.",
       "O calibrador de Platt foi ajustado na partição de calibração e aplicado ao teste sem reajuste.",
     ],
+    aprofundar: [
+      "O calibrador de Platt foi ajustado na partição de calibração e aplicado ao teste sem reajuste. O efeito observado na tela é o desse procedimento, não de um recalibrador ajustado no próprio teste.",
+      "Platt é uma logística sobre o escore: p_calibrada = σ(a·z + b). Como a transformação é monotônica em z quando a é positivo, ela não altera a ordem nem a AUC, e é exatamente por isso que serve para corrigir nível sem estragar ordenação.",
+    ],
     transicao: "Uma PD só vira ação quando definimos uma política. Vamos observar como um corte altera a carteira aprovada.",
   },
 
@@ -163,11 +167,10 @@ Aula.slide({
             onclick: ctx.reiniciar }, "Reiniciar exemplo"),
         ]),
         h("div", { class: "painel claro cresce", estilo: "padding:10px 16px" }, [
-          h("p", { class: "apoio", estilo: "font-size:17px;margin:0" },
-            "A perturbação das odds preserva a ordem: a AUC permanece " +
-            F.dec(aval.auc_odds2, 6) + ", idêntica à original. Brier e log loss mudam. " +
-            "O calibrador de Platt foi ajustado na partição de calibração e aplicado ao teste " +
-            "sem reajuste; o efeito observado é o que aparece na tela."),
+          h("p", { class: "apoio", estilo: "font-size:17px;margin:0" }, [
+            h("span", { estilo: "color:var(--ink)" }, Mat.i("\\text{odds}\\times 2 \\iff z + \\ln 2")),
+            ": deslocamento constante no log odds não troca ninguém de lugar na fila, então a AUC permanece " +
+            F.dec(aval.auc_odds2, 6) + ". Brier e log loss mudam."]),
         ]),
       ]),
     ]));

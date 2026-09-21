@@ -186,10 +186,14 @@ Aula.slide({
             h("h3", { class: "secao" }, "AUC por contagem de pares"),
             h("p", { estilo: "font-size:26px;color:var(--ink);margin:0" },
               est.contados
-                ? "7 de 9 pares corretos, AUC = " + F.dec(auc, 4)
+                ? Mat.i("\\text{AUC} = 7/9 = " + Mat.n(auc, 4))
                 : "9 pares possíveis. Quantos estão na ordem certa?"),
-            h("p", { class: "nota", estilo: "margin-top:6px" },
-              "Empates contam meio par. Aqui não há empates."),
+            h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:6px 0 0;font-size:16px" },
+              Mat.b("\\text{AUC} = \\Pr\\bigl(s_+ > s_-\\bigr) + \\tfrac{1}{2}\\Pr\\bigl(s_+ = s_-\\bigr)")),
+            h("p", { class: "nota", estilo: "margin-top:4px" }, [
+              Mat.i("s_+"), " é o escore de um inadimplente sorteado e ", Mat.i("s_-"),
+              " o de um adimplente. Empate conta meio par; aqui não há empates.",
+            ]),
           ]),
           h("div", { class: "painel" }, [
             h("div", { class: "grupo" }, [

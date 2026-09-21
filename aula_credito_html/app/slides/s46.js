@@ -116,13 +116,16 @@ Aula.slide({
         h("div", { class: "painel claro centro" }, gh.svg),
         h("div", { class: "linha cresce" }, [
           h("div", { class: "painel claro cresce centro", estilo: "padding:8px 14px" }, [
-            h("h3", { class: "secao", estilo: "margin:0 0 2px" }, "Taxa de aprovação"),
+            h("h3", { class: "secao", estilo: "margin:0 0 2px;display:flex;gap:8px;align-items:baseline" },
+              ["Taxa de aprovação", h("span", { estilo: "text-transform:none;letter-spacing:0;font-size:15px" },
+                Mat.i("\\frac{\\#\\{\\hat{p} \\le c\\}}{n}"))]),
             curva("aprovacao", "var(--ink-soft)", null,
               function (v) { return F.pct(v, 0); }),
           ]),
           h("div", { class: "painel claro cresce centro", estilo: "padding:8px 14px" }, [
-            h("h3", { class: "secao", estilo: "margin:0 0 2px" },
-              "Inadimplência entre aprovados"),
+            h("h3", { class: "secao", estilo: "margin:0 0 2px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap" },
+              ["Inadimplência entre aprovados", h("span", { estilo: "text-transform:none;letter-spacing:0;font-size:15px" },
+                Mat.i("\\frac{\\sum_{\\hat{p} \\le c} y}{\\#\\{\\hat{p} \\le c\\}}"))]),
             curva("inadimplencia", "var(--alert)", null,
               function (v) { return F.pct(v, 1); }),
           ]),

@@ -8634,10 +8634,14 @@ Aula.slide({
             h("h3", { class: "secao" }, "AUC por contagem de pares"),
             h("p", { estilo: "font-size:26px;color:var(--ink);margin:0" },
               est.contados
-                ? "7 de 9 pares corretos, AUC = " + F.dec(auc, 4)
+                ? Mat.i("\\text{AUC} = 7/9 = " + Mat.n(auc, 4))
                 : "9 pares possíveis. Quantos estão na ordem certa?"),
-            h("p", { class: "nota", estilo: "margin-top:6px" },
-              "Empates contam meio par. Aqui não há empates."),
+            h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:6px 0 0;font-size:16px" },
+              Mat.b("\\text{AUC} = \\Pr\\bigl(s_+ > s_-\\bigr) + \\tfrac{1}{2}\\Pr\\bigl(s_+ = s_-\\bigr)")),
+            h("p", { class: "nota", estilo: "margin-top:4px" }, [
+              Mat.i("s_+"), " é o escore de um inadimplente sorteado e ", Mat.i("s_-"),
+              " o de um adimplente. Empate conta meio par; aqui não há empates.",
+            ]),
           ]),
           h("div", { class: "painel" }, [
             h("div", { class: "grupo" }, [
@@ -8706,6 +8710,10 @@ Aula.slide({
       "Brier e log loss avaliam qualidade probabilística, mas não são medidas exclusivas de calibração.",
       "Número de faixas, calibrador e versão não devem ser escolhidos pelo teste final.",
       "O calibrador de Platt foi ajustado na partição de calibração e aplicado ao teste sem reajuste.",
+    ],
+    aprofundar: [
+      "O calibrador de Platt foi ajustado na partição de calibração e aplicado ao teste sem reajuste. O efeito observado na tela é o desse procedimento, não de um recalibrador ajustado no próprio teste.",
+      "Platt é uma logística sobre o escore: p_calibrada = σ(a·z + b). Como a transformação é monotônica em z quando a é positivo, ela não altera a ordem nem a AUC, e é exatamente por isso que serve para corrigir nível sem estragar ordenação.",
     ],
     transicao: "Uma PD só vira ação quando definimos uma política. Vamos observar como um corte altera a carteira aprovada.",
   },
@@ -8848,11 +8856,10 @@ Aula.slide({
             onclick: ctx.reiniciar }, "Reiniciar exemplo"),
         ]),
         h("div", { class: "painel claro cresce", estilo: "padding:10px 16px" }, [
-          h("p", { class: "apoio", estilo: "font-size:17px;margin:0" },
-            "A perturbação das odds preserva a ordem: a AUC permanece " +
-            F.dec(aval.auc_odds2, 6) + ", idêntica à original. Brier e log loss mudam. " +
-            "O calibrador de Platt foi ajustado na partição de calibração e aplicado ao teste " +
-            "sem reajuste; o efeito observado é o que aparece na tela."),
+          h("p", { class: "apoio", estilo: "font-size:17px;margin:0" }, [
+            h("span", { estilo: "color:var(--ink)" }, Mat.i("\\text{odds}\\times 2 \\iff z + \\ln 2")),
+            ": deslocamento constante no log odds não troca ninguém de lugar na fila, então a AUC permanece " +
+            F.dec(aval.auc_odds2, 6) + ". Brier e log loss mudam."]),
         ]),
       ]),
     ]));
@@ -8979,13 +8986,16 @@ Aula.slide({
         h("div", { class: "painel claro centro" }, gh.svg),
         h("div", { class: "linha cresce" }, [
           h("div", { class: "painel claro cresce centro", estilo: "padding:8px 14px" }, [
-            h("h3", { class: "secao", estilo: "margin:0 0 2px" }, "Taxa de aprovação"),
+            h("h3", { class: "secao", estilo: "margin:0 0 2px;display:flex;gap:8px;align-items:baseline" },
+              ["Taxa de aprovação", h("span", { estilo: "text-transform:none;letter-spacing:0;font-size:15px" },
+                Mat.i("\\frac{\\#\\{\\hat{p} \\le c\\}}{n}"))]),
             curva("aprovacao", "var(--ink-soft)", null,
               function (v) { return F.pct(v, 0); }),
           ]),
           h("div", { class: "painel claro cresce centro", estilo: "padding:8px 14px" }, [
-            h("h3", { class: "secao", estilo: "margin:0 0 2px" },
-              "Inadimplência entre aprovados"),
+            h("h3", { class: "secao", estilo: "margin:0 0 2px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap" },
+              ["Inadimplência entre aprovados", h("span", { estilo: "text-transform:none;letter-spacing:0;font-size:15px" },
+                Mat.i("\\frac{\\sum_{\\hat{p} \\le c} y}{\\#\\{\\hat{p} \\le c\\}}"))]),
             curva("inadimplencia", "var(--alert)", null,
               function (v) { return F.pct(v, 1); }),
           ]),
@@ -9199,14 +9209,17 @@ Aula.slide({
             h("h3", { class: "secao", estilo: "margin:0 0 4px" }, "Hipóteses"),
             UI.selo("aproximação didática, 12 meses", "neutro"),
           ]),
+          h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:0 0 4px;font-size:16px" },
+            Mat.b("\\mathbb{E}[\\text{resultado}] = m - p\\,\\text{LGD}\\,\\text{EAD}"
+              + (foraDaFaixa ? "" : "\\quad p^{*} = \\tfrac{m}{\\text{LGD}\\,\\text{EAD}} = " + Mat.pct(equilibrio, 0)))),
           h("div", { class: "kv", estilo: "font-size:18px;gap:1px 12px" }, [
             h("dt", {}, "margem antes da perda"), h("dd", {}, F.reais(hip.margem)),
             h("dt", {}, "EAD"), h("dd", {}, F.reais(hip.ead)),
             h("dt", {}, "LGD"), h("dd", {}, F.pct(hip.lgd, 0)),
             h("dt", {}, "perda esperada"), h("dd", {}, F.reais(el)),
             h("dt", {}, "resultado esperado"), h("dd", {}, F.reais(resultado)),
-            h("dt", {}, "equilíbrio"),
-            h("dd", {}, foraDaFaixa ? "fora do intervalo de PD relevante" : F.pct(equilibrio, 2)),
+            foraDaFaixa ? h("dt", {}, "equilíbrio") : null,
+            foraDaFaixa ? h("dd", {}, "fora do intervalo de PD relevante") : null,
           ]),
         ]),
         h("div", { class: "painel" }, [
