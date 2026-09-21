@@ -30,23 +30,28 @@ export default async function AcompanhamentoPage() {
   const firstTry = graded.filter((q) => { const rs = responses.filter((r) => r.qv === q.vid); return rs.length === 1 && rs[0].ok === true; }).length;
   const sawAnswer = graded.filter((q) => responses.some((r) => r.qv === q.vid && r.disclosedBefore) || responses.filter((r) => r.qv === q.vid).sort((a, b) => b.attemptNo - a.attemptNo)[0]?.ok === false && responses.some((r) => r.qv === q.vid && r.revealedAt)).length;
   const grades = await db.select({ g: schema.grades, a: schema.assignments }).from(schema.grades).innerJoin(schema.assignments, eq(schema.assignments.id, schema.grades.assignmentId)).where(and(eq(schema.grades.userId, uid), eq(schema.grades.classId, cid))).orderBy(asc(schema.assignments.position));
-  const lastPage = pages.find((p) => pagesTouched.has(p.id));
+  // mesmo destino que o "Continuar de onde parou" de Início: a página seguinte à última respondida
+  const ultimaRespondida = responses.length ? qpages.find((q) => q.vid === responses[0].qv)?.pageId ?? null : null;
+  const iUltima = ultimaRespondida ? pages.findIndex((p) => p.id === ultimaRespondida) : -1;
+  const lastPage = iUltima >= 0 ? pages[Math.min(iUltima + 1, pages.length - 1)] : null;
   return (
     <div>
       <PageHeader eyebrow={ctx.current.cls.name} title="Notas e presença" lead="Sua presença, as perguntas que você respondeu e as notas publicadas. As perguntas das páginas não viram nota; servem para você e o professor verem onde está a dificuldade." />
       <div className="grid gap-3 sm:grid-cols-3 mb-6">
         <Stat label="Presença" value={mine?.ruleDefined ? (mine.pct == null ? "—" : `${mine.pct}%`) : "regra não definida"} hint={mine?.ruleDefined ? `mínimo ${rule?.minimumPct}% · ${mine.denominator} aula(s) contadas` : "o professor ainda não definiu a regra; nada é calculado"} tone={mine?.belowMinimum ? "alert" : undefined} />
-        <Stat label="Páginas com pergunta respondida" value={`${pagesTouched.size} / ${pages.length}`} hint={lastPage ? <Link href={`/aulas/${lastPage.slug}`}>continuar em {lastPage.slug}</Link> : "comece em Aulas"} />
+        <Stat label="Páginas com pergunta respondida" value={`${pagesTouched.size} / ${pages.length}`} hint={lastPage ? <Link href={`/aulas/${lastPage.slug}`}>continuar em {lastPage.title}</Link> : "comece em Aulas"} />
         <Stat label="Acertos por conta própria" value={`${ownCorrect} / ${graded.length}`} hint={`${firstTry} na primeira tentativa · ${ownCorrect - firstTry} após recuperação · ${sawAnswer} com a resposta vista · ${totalQ.filter((q) => q.kind === "single").length} questões com gabarito no curso`} />
       </div>
       <div className="grid gap-4 md:grid-cols-2">
-        <section className="card" aria-labelledby="freq">
+        <section className="card min-w-0" aria-labelledby="freq">
           <h2 id="freq" className="text-lg mb-2">Presença por aula</h2>
+          <div className="table-wrap">
           <table className="table text-[14px]"><thead><tr><th>Aula</th><th>Data</th><th>Situação</th><th><span className="sr-only">Ações</span></th></tr></thead>
             <tbody>{map.meetings.map((m, i) => { const c = mine?.cells[i]; return <tr key={m.id}><td>{m.title}</td><td>{fmtD(m.scheduledAt) || "—"}</td><td>{m.status === "cancelled" ? <span className="badge badge-muted">cancelado</span> : c?.status ? <StatusBadge status={c.status === "atrasado" ? "atrasado_freq" : c.status} /> : <span className="hint">sem registro</span>}{c?.reviewRequested && <span className="hint block">revisão solicitada</span>}</td><td>{m.status !== "cancelled" && <ReviewRequest classId={cid} meetingId={m.id} />}</td></tr>; })}</tbody></table>
+          </div>
           <p className="hint mt-2">A presença vem do código digitado em sala e é confirmada pelo professor. Se discordar de um registro, peça revisão com uma justificativa.</p>
         </section>
-        <section className="card" aria-labelledby="res">
+        <section className="card min-w-0" aria-labelledby="res">
           <h2 id="res" className="text-lg mb-2">Notas dos trabalhos</h2>
           {grades.length === 0 && <p className="hint">Nenhuma nota publicada.</p>}
           <ul className="list-none p-0 m-0 grid gap-2">{grades.map(({ g, a }) => <li key={g.id} className="flex items-center gap-2 flex-wrap border-b border-rule pb-2"><Link href={`/trabalhos/${a.id}`} className="font-semibold">{a.title}</Link>{g.publishedAt ? <><StatusBadge status={g.status} />{g.status === "corrigido" && (g.total == null ? <span className="hint">sem nota</span> : <b>{Number(g.total)}</b>)}<span className="hint">publicada {fmtDT(g.publishedAt)}</span></> : <span className="hint">correção não publicada</span>}</li>)}</ul>

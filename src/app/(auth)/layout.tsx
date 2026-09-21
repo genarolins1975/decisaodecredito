@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/session";
 import { Brand } from "@/components/brand";
@@ -11,6 +12,7 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
     <div className="min-h-screen flex flex-col">
       <header className="bg-ink text-white px-4 py-3"><Brand light sub={u.email} /></header>
       <main id="conteudo" className="flex-1 flex items-start justify-center px-4 py-10"><div className="w-full max-w-[520px]">{children}</div></main>
+      <footer className="px-4 py-6 text-center hint">Prof. Genaro Dueire Lins · Laboratório de Decisão de Crédito · <Link href="/politica-de-privacidade">Política de privacidade</Link></footer>
     </div>
   );
 }

@@ -135,7 +135,7 @@ function GradeForm({ classId, aid, sub, rubric, existing, onDone, uploadFile }: 
         <div className="grid gap-2">
           {rubric.criteria.map((c) => (
             <fieldset key={c.key} className="border border-rule rounded p-2 bg-white">
-              <legend className="text-[13px] font-semibold text-ink px-1">{c.name}{c.question ? ` — ${c.question}` : ""}</legend>
+              <legend className="text-[13px] font-semibold text-ink px-1">{c.name}{c.question ? `: ${c.question}` : ""}</legend>
               <div className="flex flex-wrap gap-2">{c.levels.map((l) => <label key={l.score} className={`text-[12.5px] border rounded px-2 py-1 cursor-pointer max-w-[260px] ${scores[c.key] === l.score ? "border-ink bg-[#EFF3FA]" : "border-rule"}`}><input type="radio" name={`r-${c.key}`} className="mr-1 accent-ink" checked={scores[c.key] === l.score} onChange={() => setScores({ ...scores, [c.key]: l.score })} /><b>{l.label}</b> {l.description}</label>)}</div>
             </fieldset>
           ))}

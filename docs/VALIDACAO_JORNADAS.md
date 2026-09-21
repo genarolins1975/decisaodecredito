@@ -38,6 +38,27 @@ Motivo: a Aula 2 abria como um arquivo em nova aba, sem a moldura das outras aul
 
 Achado técnico registrado: no Chromium, um `location.replace` com fragmento feito de fora do iframe recarrega o arquivo inteiro (a marca na janela some), enquanto atribuir `location.hash` cria uma entrada a mais no histórico. A casca usa `App.trocar`, que faz `history.replaceState` dentro do próprio baralho. Não verificado em Firefox e Safari.
 
+## 1c. Quinta rodada (21/09/2026): uniformidade de layout e UX nas 41 rotas
+
+Motivo: o pedido era uniformizar todos os layouts, não só o da Aula 2. Método: auditoria em oito dimensões (moldura do aluno, caminho de volta, área do professor, reuso de componentes e tokens, tela estreita e acessibilidade, texto e terminologia, estados vazios e erros, entradas e links mortos), cada achado submetido a duas lentes adversariais independentes (a convenção está provada em pelo menos duas outras rotas; o desvio se reproduz no HTML renderizado), mais um crítico de cobertura. Foram 89 leituras, 40 achados levantados, 21 sobreviventes e 19 refutados. Os refutados ficam registrados: a maioria caiu porque a convenção alegada não existia na plataforma, ou porque a rota apontada tinha motivo documentado para ser diferente.
+
+| # | Cenário | Como foi executado | Resultado | Evidência |
+|---|---|---|---|---|
+| 21 | Toda rota de detalhe tem caminho de volta ao nível acima | censo das rotas de detalhe do aluno e da equipe; `/trabalhos/[id]` era a única sem `.voltar` | corrigido e verificado | e2e "uniformidade das molduras" |
+| 22 | Uma rota, um h1 | contagem de h1 nas oito rotas da área do aluno; `/materiais` tinha dois PageHeader, um por coluna | corrigido: um cabeçalho de página e duas seções em h2 | e2e; script de 33 checagens |
+| 23 | `notFound()` cai em cartão da própria área | `/aulas/aula-2/slide/99`, `/aulas/naoexiste`, `/aulas/capitulo/99` nos dois papéis | corrigido: a Aula 2 ganhou not-found próprio, que cobre também a página de cada slide; o 404 global deixou de abrir um segundo `main` dentro da moldura | e2e; script |
+| 24 | O 404 fala com quem está lendo | o 404 de página de aula trazia um parágrafo dirigido ao professor e um botão que levava o aluno para fora da área | corrigido: sobrou o caminho para Aulas | e2e |
+| 25 | Quem não tem turma não fica em beco | login de `sem.matricula@example.test`; os seis destinos da barra devolvem para `/sem-turma` | corrigido: a tela virou cartão com Ativar acesso, Ajuda e Meus dados, e Ajuda abre de verdade | e2e; script |
+| 26 | Nenhuma tela do aluno rola de lado no celular | 390 por 844 em `/acompanhamento`, `/materiais`, `/trabalhos` e `/inicio` | corrigido: a tabela de presença passou a rolar dentro do cartão, e as colunas da grade receberam largura mínima zero, que era o que empurrava a página | e2e; script |
+| 27 | Âncora não fica atrás do cabeçalho grudado | alturas medidas no Chromium em 390, 768, 1024 e 1366, nas duas áreas; alvo do pulo "Ir para o conteúdo" e âncoras de bloco da Aula 2 | corrigido por `--topo-grudado`, uma variável por faixa e por área | medição; e2e |
+| 28 | A aba do navegador diz onde se está | as nove telas de `/professor/turmas/[id]` abriam com o título genérico da plataforma | corrigido por `generateMetadata` no layout da turma | e2e |
+| 29 | Bases e gabaritos conta o que promete | a consulta pegava toda entrega da turma e rotulava como trabalho final, repetindo o código da turma | corrigido: filtro por `trabalho-final`, um cartão por turma; material com url voltou a ser clicável | e2e compara o número de cartões com o de turmas e com o de entregas |
+| 30 | Regra editorial fora do baralho | varredura de hífen e travessão em `src/app`, `src/components` e `src/lib`, e nos títulos importados | corrigido em quatro rótulos React e no título de c6p18, reimportado com `--republish`; a regra virou script e contrato de teste | `npm run lint:tracos`; `tests/lint-tracos-cascas.test.ts` |
+| 31 | O retorno da ação se distingue | pedido de revisão de presença mostrava sucesso e falha na mesma linha cinza; quem redefinia a senha chegava a Entrar sem confirmação | corrigido com os blocos de sucesso e de erro já usados no resto da plataforma | script |
+| 32 | A porta de entrada tem moldura completa | telas de primeiro acesso não tinham rodapé, e `(publico)` e `(auth)` não tinham limite de erro | corrigido: rodapé com a política de privacidade e um `error.tsx` por grupo | script |
+
+Limitação declarada: as duas edições em rascunho criadas pelo teste de aceitação ainda carregam o título antigo de c6p18, porque a importação atua sobre uma edição por vez. A edição ativa e o fonte estão corrigidos.
+
 ## 2. Verificações automatizadas executadas em 21/09/2026
 
 | Verificação | Comando | Resultado |
@@ -56,6 +77,9 @@ Achado técnico registrado: no Chromium, um `location.replace` com fragmento fei
 | Contrato do conteúdo dos guias | `npx vitest run tests/aula-2-material.test.ts` | 3 testes: 50 slides cobertos, exercícios nos slides 01, 04, 20, 30, 42, 49 e 50, blocos contíguos, ritmo de 165 minutos, nenhum traço no texto |
 | Sequência do curso com a Aula 2 (quarta rodada) | `npx vitest run tests/aula-2-plataforma.test.ts` | 4 testes: ordem capítulos 1, 2, 3, Aula 2, 4, 5, 7, 11; vizinhos; unidade vazia fora da Aula 2 excluída |
 | Aceitação da moldura (quarta rodada) | `npx playwright test -g "moldura da plataforma"` | passa; `npm test` com 256 testes; typecheck e lint (0 erros) repetidos |
+| Uniformidade das molduras (quinta rodada) | `npx playwright test -g "uniformidade das molduras"` | passa: retorno em toda rota de detalhe, um h1 por rota, 404 dentro da moldura, saída para quem não tem turma, título de aba por turma, cartões de Bases por turma, âncora abaixo do cabeçalho, nenhuma rolagem lateral em 390px |
+| Regra editorial nas cascas (quinta rodada) | `npm run lint:tracos` e `npx vitest run tests/lint-tracos-cascas.test.ts` | 0 ocorrências; o contrato distingue pontuação de prosa da marca de ausência de valor |
+| Script de checagens da quinta rodada | script de navegador com 33 verificações, dois papéis e três larguras | todas passam |
 | QA do baralho depois da barra com o link Aulas (quarta rodada) | `node qa.mjs --estados` em 1366x768, 1920x1080, 1024x768 e 390x844; `--aluno --estados`; `node lint-tracos.mjs` | 50 de 50 em cada uma, com as três rodadas de estados; 0 traços; relatórios em `aula_credito_html/qa/relatorio-*.json` |
 
 ## 3. Limitações do que foi verificado

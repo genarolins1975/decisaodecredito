@@ -19,7 +19,7 @@ node aula_credito_html/material.mjs     # Aula 2: guias em PDF do professor e do
 npm run dev                             # http://localhost:3000
 ```
 
-Testes: `npm test` (unidade e reconciliação numérica), `npm run test:e2e` (aceitação com Playwright, exige servidor e banco), `node scripts/content/sweep.mjs --shots` (varredura das 180 páginas), `node scripts/content/a11y.mjs` (axe-core), `node scripts/load-test.mjs 100` (carga).
+Testes: `npm test` (unidade e reconciliação numérica), `npm run test:e2e` (aceitação com Playwright, exige servidor e banco), `npm run lint:tracos` (hífen e travessão como pontuação de prosa no texto exibido pelas cascas React), `node scripts/content/sweep.mjs --shots` (varredura das 180 páginas), `node scripts/content/a11y.mjs` (axe-core), `node scripts/load-test.mjs 100` (carga).
 
 ## Documentação
 

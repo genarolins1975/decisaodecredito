@@ -568,7 +568,7 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(rp.getByRole("button", { name: /Comparar \+10 pp/ })).toBeDisabled(); // +10 pp sairia do domínio
   await expect(rp).toContainText("sai do domínio do exemplo");
   await rp.getByRole("button", { name: "Restaurar exemplo" }).click();
-  await rp.getByRole("button", { name: "Limitar a previsão a 0%–100%" }).click();
+  await rp.getByRole("button", { name: "Limitar a previsão de 0% a 100%" }).click();
   await expect(rp).toContainText("0,00%"); await expect(rp).toContainText("mín(1; máx(0; p))");
   await rp.getByRole("button", { name: /Comparar \+10 pp/ }).click();
   await expect(rp).toContainText("De 5% para 15% de utilização");
@@ -592,7 +592,7 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(page.locator("main")).not.toContainText("distância até o ótimo");
   await expect(gp.getByRole("button", { name: "Reiniciar" })).toBeDisabled();
   await gp.getByRole("button", { name: "Aplicar esta atualização" }).click();
-  await expect(gp).toContainText("Estado atual — iteração 1");
+  await expect(gp).toContainText("Estado atual · iteração 1");
   await expect(gp).toContainText("PD média estimada"); await expect(gp).toContainText("59,14%");
   await expect(gp).toContainText("0,67194"); await expect(gp).toContainText("antes 0,69315"); // a perda cai
   await expect(gp).toContainText("0,05938"); await expect(gp).toContainText("0,02344"); // os três coeficientes mudaram juntos
@@ -1106,6 +1106,96 @@ test("Aula 2 na moldura da plataforma: abertura como capítulo, uma página por 
   await page.locator("#lnk-voltar").click();
   await expect(page).toHaveURL(/\/aulas\/aula-2\/slide\/14$/, { timeout: 30000 });
   await expect(dentro.locator(".cabeca .passo")).toHaveText("slide 14 de 50", { timeout: 30000 });
+});
+
+test("uniformidade das molduras: retorno em toda rota de detalhe, um título por página, 404 dentro da moldura e saída para quem não tem turma", async ({ page }) => {
+  const aluno = await apiAs(ALUNO_A);
+  const prof = await apiAs(PROF);
+  const cid = await classId();
+  const semTurma = await apiAs(SEM);
+  const desesc = (t: string) => t.replace(/<!-- -->/g, "").replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&amp;/g, "&");
+  const titulo = (html: string) => (/<title>([^<]*)<\/title>/.exec(html)?.[1] ?? "").replace(/&#x27;/g, "'");
+  const umH1 = (html: string) => (html.match(/<h1[\s>]/g) ?? []).length;
+
+  // toda rota de detalhe do aluno abre com o link de volta ao nível acima
+  const trabalhos = await sql<{ id: string }>("select id from assignments where class_id=$1 order by position limit 1", [cid]);
+  const detalheTrabalho = await (await aluno.get(`/trabalhos/${trabalhos[0].id}`)).text();
+  expect(detalheTrabalho).toContain('href="/trabalhos"');
+  const pgAula = await (await aluno.get("/aulas/c1p2")).text();
+  for (const html of [pgAula, await (await aluno.get("/aulas/capitulo/1")).text(), await (await aluno.get("/aulas/aula-2")).text()]) {
+    expect(html).toMatch(/class="voltar[^"]*"[^>]*href="\/aulas"|href="\/aulas"[^>]*class="voltar/);
+  }
+
+  // um h1 por rota: o título da página, com as seções em h2
+  for (const rota of ["/inicio", "/aulas", "/materiais", "/trabalhos", "/acompanhamento", "/ao-vivo", "/perfil", "/ajuda"]) {
+    expect(umH1(await (await aluno.get(rota)).text()), `um h1 em ${rota}`).toBe(1);
+  }
+  const materiais = await (await aluno.get("/materiais")).text();
+  expect(materiais).toContain('id="leituras"');
+  expect(materiais).toContain('id="bases"');
+
+  // notFound dentro da área do aluno responde 404 e traz o cartão local, não o 404 global
+  for (const rota of ["/aulas/aula-2/slide/99", "/aulas/naoexiste", "/aulas/capitulo/99"]) {
+    expect((await aluno.get(rota)).status(), `${rota} responde 404`).toBe(404);
+  }
+  // e o 404 da página de aula não oferece ao aluno um botão para a área do professor
+  expect(desesc(await (await aluno.get("/aulas/naoexiste")).text())).not.toContain("Conteúdo (professor)");
+
+  // quem não tem turma recebe uma tela com saída própria, não um beco
+  const sem = await semTurma.get("/inicio", { maxRedirects: 0 });
+  expect(sem.status()).toBe(307);
+  expect(sem.headers().location).toContain("/sem-turma");
+  const telaSem = await (await semTurma.get("/sem-turma")).text();
+  expect(titulo(telaSem)).toContain("Sem turma ativa");
+  for (const saida of ['href="/ativar"', 'href="/ajuda"', 'href="/perfil"']) expect(telaSem).toContain(saida);
+  expect((await semTurma.get("/ajuda")).status()).toBe(200);   // a saída oferecida abre mesmo
+
+  // as telas da turma nomeiam a turma na aba do navegador
+  const turma = await sql<{ name: string }>("select name from classes where id=$1", [cid]);
+  for (const aba of ["", "/alunos", "/encontros", "/trabalhos", "/notas"]) {
+    expect(titulo(await (await prof.get(`/professor/turmas/${cid}${aba}`)).text()), `título da aba ${aba || "visão geral"}`).toContain(turma[0].name);
+  }
+
+  // Bases e gabaritos conta um trabalho final por turma, não toda entrega de aula
+  const turmas = await sql<{ n: string }>("select count(*) as n from classes c join editions e on e.id=c.edition_id where e.status='active'");
+  const entregas = await sql<{ n: string }>("select count(*) as n from assignments a join classes c on c.id=a.class_id join editions e on e.id=c.edition_id where e.status='active'");
+  const bases = await (await prof.get("/professor/bases")).text();
+  // o cartão renderizado é <b>código</b> · trabalho final; o pacote RSC repete o texto solto, por isso o </b>
+  const cartoes = (bases.match(/<\/b> · trabalho final/g) ?? []).length;
+  expect(cartoes, "um cartão por turma, não um por entrega").toBe(Number(turmas[0].n));
+  expect(cartoes).toBeLessThan(Number(entregas[0].n));
+  expect(bases).toContain("/api/materiais/aula-2/guia-do-professor.pdf");   // material com url é clicável
+
+  // quem redefine a senha sabe que deu certo ao chegar em Entrar
+  expect(await (await apiAs(null)).get("/entrar?m=redefinida").then((r) => r.text())).toContain("Senha redefinida");
+
+  // no navegador: o cartão de 404 que aparece é o da própria área, dentro da moldura e com um só main
+  await loginUi(page, ALUNO_A);
+  for (const [rota, eyebrow] of [["/aulas/aula-2/slide/99", "Aula não disponível"], ["/aulas/naoexiste", "Página não disponível"], ["/aulas/capitulo/99", "Capítulo não disponível"]] as const) {
+    await page.goto(rota);
+    const visivel = (await page.locator("body").innerText()).toLowerCase();   // o eyebrow sai em maiúsculas por CSS
+    expect(visivel, `${rota} mostra o cartão local`).toContain(eyebrow.toLowerCase());
+    expect(visivel, `${rota} não cai no 404 global`).not.toContain("este endereço não existe na plataforma");
+    await expect(page.locator("main#conteudo"), `${rota} com um só main`).toHaveCount(1);
+    await expect(page.locator('a[href="/aulas"]').first()).toBeVisible();
+  }
+
+  // a moldura declara a área, e as âncoras param abaixo do cabeçalho grudado
+  await page.goto("/aulas/aula-2#bloco-3");
+  await expect(page.locator('[data-area="aluno"]')).toHaveCount(1);
+  const medida = await page.evaluate(() => {
+    const el = document.getElementById("bloco-3"); const h = document.querySelector("header");
+    return el && h ? { alvo: el.getBoundingClientRect().top, cabecalho: h.getBoundingClientRect().bottom } : null;
+  });
+  expect(medida!.alvo, "a âncora não fica atrás do cabeçalho").toBeGreaterThanOrEqual(medida!.cabecalho - 2);
+
+  // e nenhuma tabela do aluno empurra a página de lado no celular
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const rota of ["/acompanhamento", "/materiais", "/trabalhos"]) {
+    await page.goto(rota);
+    const larg = await page.evaluate(() => ({ s: document.documentElement.scrollWidth, c: document.documentElement.clientWidth }));
+    expect(larg.s, `${rota} sem rolagem lateral em 390px`).toBeLessThanOrEqual(larg.c + 1);
+  }
 });
 
 test("prontidão: /api/health diz quantas migrações o banco aplicou, e o número bate com drizzle/", async () => {

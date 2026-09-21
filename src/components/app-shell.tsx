@@ -16,7 +16,7 @@ export function AppShell({ children, nav, user, classes, currentClassId, context
   classes: { id: string; name: string; code: string; label: string }[]; currentClassId: string | null; contextLabel: string; area: "aluno" | "professor";
 }) {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col" data-area={area}>
       <header className={`${area === "professor" ? "bg-[#1B2A3A] border-b-2 border-gold" : "bg-ink"} text-white sticky top-0 z-40`}>
         {area === "professor" && <p className="m-0 bg-gold text-ink text-[11px] font-bold tracking-[0.12em] uppercase text-center py-[2px]">Área do professor</p>}
         {area === "aluno" && user.isStaff && (

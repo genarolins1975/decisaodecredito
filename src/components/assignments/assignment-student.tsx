@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { api, upload, ClientApiError } from "@/lib/client/api";
 import { StatusBadge, Callout } from "@/components/ui";
@@ -40,6 +41,7 @@ export function AssignmentStudent({ assignmentId, classId, isStudent }: { assign
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
       <div className="min-w-0 flex flex-col gap-5">
         <header>
+          <Link href="/trabalhos" className="voltar mb-1">Trabalhos</Link>
           <p className="eyebrow">{a.mode === "grupo" ? "Trabalho em grupo" : "Trabalho individual"}{d.group ? ` · ${d.group.name}` : ""}</p>
           <h1 className="mt-1">{a.title}</h1>
           <p className="mt-2 text-[15px]">{d.due.dueAt ? <>Prazo: <b>{fmtDT(d.due.dueAt)}</b> (horário de Brasília){d.due.extension && <span className="badge badge-gold ml-2">prazo individual: {d.due.extension.reason}</span>}</> : <span className="hint">Prazo a definir pelo professor.</span>}

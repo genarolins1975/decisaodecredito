@@ -38,12 +38,15 @@ export function PageEditor({ data }: { data: Data }) {
   return (
     <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
       <div className="min-w-0 flex flex-col gap-4">
-        <div className="flex flex-wrap items-center gap-3">
-          <h1 className="eyebrow text-[11px] font-sans">{rotuloUnidade(data.unit)} · Capítulo {data.chapter.number} · {data.page.slug}</h1>
-          <Badge tone={data.page.status === "published" ? "ok" : "muted"}>{data.page.status === "published" ? "publicada" : "rascunho"}</Badge>
-          <div className="flex-1" />
-          <Link href={`/aulas/${data.page.slug}`} className="btn btn-sm btn-ghost">Ver a versão publicada</Link>
-          <Link href="/professor/conteudo" className="btn btn-sm btn-ghost">Voltar ao conteúdo</Link>
+        <div>
+          <Link href="/professor/conteudo" className="voltar">Conteúdo</Link>
+          <div className="flex flex-wrap items-center gap-3 mt-1">
+            <p className="eyebrow">{rotuloUnidade(data.unit)} · Capítulo {data.chapter.number} · {data.page.slug}</p>
+            <Badge tone={data.page.status === "published" ? "ok" : "muted"}>{data.page.status === "published" ? "publicada" : "rascunho"}</Badge>
+            <div className="flex-1" />
+            <Link href={`/aulas/${data.page.slug}`} className="btn btn-sm btn-ghost">Ver a versão publicada</Link>
+          </div>
+          <h1 className="text-2xl mt-1">{base?.title ?? data.page.slug}</h1>
         </div>
         <ErrorBox message={err} /><SuccessBox message={ok} />
         <section className="card form-grid">

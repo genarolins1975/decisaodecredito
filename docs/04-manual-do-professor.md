@@ -51,6 +51,8 @@ Turma → Aulas ao vivo → "Criar as quatro aulas" (uma por unidade, sem data) 
 
 ## 6. Publicar aula e conteúdo
 - Conteúdo → escolha o ano → capítulo → página: "ver", "tela cheia" ou "editar".
+- Cada tela de turma abre com o nome da turma na aba do navegador, e o editor de página traz o link de volta a Conteúdo no alto, ao lado do título da página.
+- Bases e gabaritos mostra um cartão por turma com a situação do trabalho final e a política do OOT. Material cadastrado com endereço aparece clicável ali, inclusive o guia do professor da Aula 2.
 - A Aula 2 aparece em Conteúdo como um bloco próprio com os 50 slides: "ver" abre o slide na página da plataforma (`/aulas/aula-2/slide/NN`) e "tela cheia" abre o baralho direto nele. Os slides não se editam pelo painel: mudam nos fontes de `aula_credito_html/app/slides/` e voltam pela compilação (`node aula_credito_html/build.mjs`).
 - Editar cria uma nova versão (título, objetivo, apoio, blocos HTML com fórmulas, notas do professor, questões). "Salvar rascunho" não muda o que o aluno vê; "Publicar nova versão" torna visível. Respostas já dadas mantêm a versão anterior.
 - Página pode ser essencial ou complementar, ter minutos e ficar oculta (rascunho).

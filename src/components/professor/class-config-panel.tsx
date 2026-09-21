@@ -25,7 +25,7 @@ export function ClassConfigPanel({ classId, config, cls }: { classId: string; co
         <h2 className="text-base mb-1">Regra de presença</h2>
         <p className="hint mb-3">A plataforma não impõe percentual institucional. Sem regra definida, o mapa mostra “regra não definida” e não reprova ninguém.</p>
         <div className="form-grid">
-          <label className="text-[13px]">Frequência mínima (%) — vazio = sem regra<input className="input" inputMode="decimal" value={min} onChange={(e) => setMin(e.target.value)} placeholder="ex.: 75" /></label>
+          <label className="text-[13px]">Frequência mínima (%), em branco quando não houver regra<input className="input" inputMode="decimal" value={min} onChange={(e) => setMin(e.target.value)} placeholder="ex.: 75" /></label>
           <label className="text-[13px]">Atraso conta como<select className="select" value={late} onChange={(e) => setLate(e.target.value)}><option value="presente">presença</option><option value="meia">meia presença</option><option value="ausente">ausência</option></select></label>
           <label className="text-[13px]">Justificado conta como<select className="select" value={just} onChange={(e) => setJust(e.target.value)}><option value="presente">presença</option><option value="ausente">ausência</option><option value="excluido">excluído do denominador</option></select></label>
           <button className="btn btn-sm self-start" onClick={save}>Salvar</button>

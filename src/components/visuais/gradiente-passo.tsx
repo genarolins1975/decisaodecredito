@@ -33,7 +33,7 @@ export function GradientePasso({ pagina }: { pagina?: { index: number; total: nu
         </header>
 
         <div className="gp-estado" aria-live="polite">
-          <p className="gp-etapa"><span className="gp-n">1</span>{iteracao === 0 ? ETAPAS[0] : `Estado atual — iteração ${iteracao}`}</p>
+          <p className="gp-etapa"><span className="gp-n">1</span>{iteracao === 0 ? ETAPAS[0] : `Estado atual · iteração ${iteracao}`}</p>
           <div className="gp-estado-itens">
             <div><p className="gp-v">{e.beta.every((v) => v === 0) ? "β₀ = β₁ = β₂ = 0" : `β₀ ${fmt5(e.beta[0])} · β₁ ${fmt5(e.beta[1])} · β₂ ${fmt5(e.beta[2])}`}</p><p className="gp-k">coeficientes atuais</p></div>
             <div><p className="gp-v">{fmtPct(e.mesmaPd ?? e.pdMedia)}</p><p className="gp-k">{e.mesmaPd !== null ? "PD de cada proposta" : "PD média estimada"}</p></div>

@@ -96,6 +96,15 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .kv dd { margin: 0; }
 .status-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
 /* Caminho de volta (estilo "‹ Lugar"): sempre acima do título da tela */
+/* O cabeçalho das duas áreas é grudado, então o pulo "Ir para o conteúdo" e as âncoras de bloco
+   precisam parar abaixo dele. Alturas medidas no Chromium: aluno 117px em 390, 93px em 768 e 52px
+   a partir de 1024; professor 140px e 75px, por causa da faixa da área e da barra de seções. */
+:root { --topo-grudado: 125px; }
+[data-area="professor"] { --topo-grudado: 148px; }
+@media (min-width: 768px) { :root { --topo-grudado: 101px; } [data-area="professor"] { --topo-grudado: 124px; } }
+@media (min-width: 1024px) { :root { --topo-grudado: 60px; } [data-area="professor"] { --topo-grudado: 83px; } }
+[data-area] #conteudo, [id^="bloco-"] { scroll-margin-top: var(--topo-grudado); }
+
 .voltar { display: inline-flex; align-items: center; gap: 4px; font-size: 13.5px; color: var(--color-ink-soft); text-decoration: none; min-height: 32px; }
 .voltar::before { content: "‹"; font-size: 18px; line-height: 1; }
 .voltar:hover { text-decoration: underline; }

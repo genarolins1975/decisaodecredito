@@ -68,7 +68,7 @@ export function Projecao({ sessionId, inicial }: { sessionId: string; inicial: s
   }, [situacao]);
 
   return (
-    <div className="fixed inset-0 bg-black">
+    <div className="fixed inset-0 bg-black" id="conteudo">
       <iframe ref={quadro} title="Slides da aula" src={`/slides/aula-2?modo=projecao${inicial ? `#/slide/${inicial}` : ""}`} className="w-full h-full border-0" />
       <p className="absolute bottom-2 right-3 text-[12px] text-white/80" role="status" aria-live="polite">
         {situacao === "falha" && "Sem conexão com a sessão: tentando de novo a cada 3 s. A projeção continua; a tela dos alunos pode ficar para trás."}
