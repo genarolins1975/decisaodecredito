@@ -4,11 +4,21 @@ import { eq } from "drizzle-orm";
 import { requireClassAccess } from "@/lib/auth/guard";
 import { getSession, teacherState } from "@/lib/services/live";
 import { courseOutline, flatPages, publicQuestions } from "@/lib/services/content";
-import { ROTEIRO_AULA_2 } from "@/lib/content/roteiro-aula-2";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { ROTEIRO_AULA_2, type NotaSlideAula2 } from "@/lib/content/roteiro-aula-2";
 import { db, schema } from "@/lib/db/client";
 import { LiveTeacher } from "@/components/live/live-teacher";
 
 export const metadata: Metadata = { title: "Painel da aula" };
+
+/** Notas dos 50 slides, gravadas por `aula_credito_html/build.mjs`. Sem o arquivo, o painel mostra só o roteiro. */
+async function notasAula2(): Promise<Record<string, NotaSlideAula2>> {
+  try {
+    const j = JSON.parse(await readFile(path.join(process.cwd(), "content", "slides", "aula-2-notas.json"), "utf8")) as { slides: NotaSlideAula2[] };
+    return Object.fromEntries(j.slides.map((x) => [x.n, x]));
+  } catch { return {}; }
+}
 
 export default async function AoVivoProfessorPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -27,5 +37,5 @@ export default async function AoVivoProfessorPage({ params }: { params: Promise<
   return <LiveTeacher sessionId={id} classId={s.classId} meeting={{ id: m.id, title: m.title, number: m.number }} initial={initial}
     pages={pages.map((p) => ({ id: p.id, slug: p.slug, title: p.title, chapter: p.chapterNumber }))}
     questions={qs.map((q) => ({ slug: q.slug, kind: q.kind, pageId: q.pageId, versionId: q.versionId!, prompt: q.prompt }))} isProfessor={access.role === "professor"}
-    slides={porSlides ? ROTEIRO_AULA_2 : []} />;
+    slides={porSlides ? ROTEIRO_AULA_2 : []} notas={porSlides ? await notasAula2() : {}} />;
 }

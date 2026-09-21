@@ -17,5 +17,5 @@ export default async function SessaoPage({ params }: { params: Promise<{ id: str
   if (ctx.current.role !== "aluno") redirect(`/professor/aovivo/${id}`);
   const [m] = await db.select().from(schema.meetings).where(eq(schema.meetings.id, s.meetingId));
   const initial = JSON.parse(JSON.stringify(await studentState(id, ctx.user.id)));
-  return <LiveStudent sessionId={id} classId={ctx.current.classId} meeting={{ id: m.id, title: m.title, number: m.number, videoUrl: m.videoUrl }} initial={initial} />;
+  return <LiveStudent sessionId={id} classId={ctx.current.classId} userId={ctx.user.id} meeting={{ id: m.id, title: m.title, number: m.number, videoUrl: m.videoUrl }} initial={initial} />;
 }

@@ -5,7 +5,7 @@
  "edition": "2026",
  "units": [
   {
-   "id": "xkvsz0x58hvior0ovk5ny",
+   "id": "y35rh0p7b0s8z3fu85ovb",
    "kind": "aula",
    "number": 1,
    "title": "Formular o problema e compreender a base",
@@ -16,10 +16,17 @@
    ]
   },
   {
-   "id": "ror7rgm4xpcvuen6nc2hd",
+   "id": "q3ybr1qfo6jx2nwerj7ie",
    "kind": "aula",
    "number": 2,
    "title": "Entender as três técnicas",
+   "chapters": []
+  },
+  {
+   "id": "u34k4ljo1tiop7s4eh20a",
+   "kind": "apendice",
+   "number": 1,
+   "title": "As três técnicas, página a página",
    "chapters": [
     4,
     5,
@@ -27,7 +34,7 @@
    ]
   },
   {
-   "id": "fuw13ee3kycgpklhnqaw7",
+   "id": "rwvmk1rkyqcv9gmi3630k",
    "kind": "aula",
    "number": 3,
    "title": "Validar e transformar previsão em decisão",
@@ -37,7 +44,7 @@
    ]
   },
   {
-   "id": "ytgttzwxxtno73m12dnv1",
+   "id": "0l07byy5onrtq11bc7bio",
    "kind": "aula",
    "number": 4,
    "title": "Defender, reproduzir e monitorar",
@@ -47,7 +54,7 @@
    ]
   },
   {
-   "id": "t0ckh5z2wzd11mx28rgwt",
+   "id": "bajxjon6ttitdxiya1710",
    "kind": "trabalho",
    "number": 5,
    "title": "Construir, testar e defender o modelo de PD",
@@ -60,7 +67,7 @@
   {
    "source": "#/c1p1",
    "slug": "c1p1",
-   "pageId": "ycrj05j5xas9m7rcreww5",
+   "pageId": "t780wdyis13xuwuj3pede",
    "chapter": 1,
    "unit": 1,
    "title": "O problema da decisão de crédito",
@@ -79,7 +86,7 @@
   {
    "source": "#/c1p2",
    "slug": "c1p2",
-   "pageId": "qqdwikub7tj5vfh3d69tz",
+   "pageId": "bmnuwr16hysfffpn48v3l",
    "chapter": 1,
    "unit": 1,
    "title": "Crédito começa com uma decisão sob incerteza",
@@ -100,7 +107,7 @@
   {
    "source": "#/c1p3",
    "slug": "c1p3",
-   "pageId": "06z8snnb4oz4aex6p9njk",
+   "pageId": "aa2ol281opvg5nzdxlwwo",
    "chapter": 1,
    "unit": 1,
    "title": "Mais informação pode inverter uma decisão",
@@ -121,7 +128,7 @@
   {
    "source": "#/c1p4",
    "slug": "c1p4",
-   "pageId": "e7o3ljf5sgo7w2fsc5e09",
+   "pageId": "hnakog84y1o5t4i6e9nme",
    "chapter": 1,
    "unit": 1,
    "title": "Perfil igual, desfecho diferente",
@@ -142,7 +149,7 @@
   {
    "source": "#/c1p5",
    "slug": "c1p5",
-   "pageId": "euel24ziv6nm01sbkjeka",
+   "pageId": "swu7kqnawh66k92mgmxtp",
    "chapter": 1,
    "unit": 1,
    "title": "PD é probabilidade num horizonte declarado",
@@ -163,7 +170,7 @@
   {
    "source": "#/c1p6",
    "slug": "c1p6",
-   "pageId": "pusyjsnt4e5phiw4nwsz7",
+   "pageId": "guaxha3ff67blz13cefmn",
    "chapter": 1,
    "unit": 1,
    "title": "O horizonte faz parte da estimativa",
@@ -184,7 +191,7 @@
   {
    "source": "#/c1p7",
    "slug": "c1p7",
-   "pageId": "pu7guhslke964g9vf7c9d",
+   "pageId": "209xz8f0lo6p7guv9128a",
    "chapter": 1,
    "unit": 1,
    "title": "Mesma PD, decisões econômicas diferentes",
@@ -203,7 +210,7 @@
   {
    "source": "#/c1p8",
    "slug": "c1p8",
-   "pageId": "okgwbpmau9zp46obs5cvp",
+   "pageId": "quik716pvnkmqk0wdwk8x",
    "chapter": 1,
    "unit": 1,
    "title": "Síntese: uma PD responde uma pergunta definida",
@@ -222,7 +229,7 @@
   {
    "source": "#/c2p1",
    "slug": "c2p1",
-   "pageId": "ind7eg0cp7d7p523s82z6",
+   "pageId": "qrfw2ontao35gad7eklxu",
    "chapter": 2,
    "unit": 1,
    "title": "Fundamentos de modelagem estatística",
@@ -241,7 +248,7 @@
   {
    "source": "#/c2p2",
    "slug": "c2p2",
-   "pageId": "i0au82php0ev5lvzuwz7s",
+   "pageId": "fvxmezta96xi6uursl5z6",
    "chapter": 2,
    "unit": 1,
    "title": "O recorte do modelo na data da decisão",
@@ -260,7 +267,7 @@
   {
    "source": "#/c2p3",
    "slug": "c2p3",
-   "pageId": "dd38iv6p3mqmeh30gb1ra",
+   "pageId": "pzf2idahe4yx843oew8an",
    "chapter": 2,
    "unit": 1,
    "title": "Unidade de observação: o que é uma linha da base",
@@ -281,7 +288,7 @@
   {
    "source": "#/c2p4",
    "slug": "c2p4",
-   "pageId": "98483zwgh4kxx1ut6ket9",
+   "pageId": "a268lcypdf6kn5nvch4mj",
    "chapter": 2,
    "unit": 1,
    "title": "População, amostra e a base que de fato existe",
@@ -300,7 +307,7 @@
   {
    "source": "#/c2p5",
    "slug": "c2p5",
-   "pageId": "jgykwc0vrmszigu7x7clu",
+   "pageId": "poq3o29mjlb7cnmgt9pnl",
    "chapter": 2,
    "unit": 1,
    "title": "Alvo, preditoras e tipos de variável",
@@ -319,7 +326,7 @@
   {
    "source": "#/c2p6",
    "slug": "c2p6",
-   "pageId": "nhbfs8ud2iuzsetdywpu2",
+   "pageId": "uoefjjqz9qwk7ri0ptyx8",
    "chapter": 2,
    "unit": 1,
    "title": "Mesmas características, desfechos diferentes",
@@ -338,7 +345,7 @@
   {
    "source": "#/c2p7",
    "slug": "c2p7",
-   "pageId": "02vfq55ahsxm3dgrfd4ff",
+   "pageId": "ccsc3gr2mfsteez6yro5z",
    "chapter": 2,
    "unit": 1,
    "title": "Probabilidade condicional: estimar dentro de um grupo",
@@ -357,7 +364,7 @@
   {
    "source": "#/c2p8",
    "slug": "c2p8",
-   "pageId": "smrfgzmpl2f3m0lollvxz",
+   "pageId": "uoe5e57nfjjy7nbfzzkxb",
    "chapter": 2,
    "unit": 1,
    "title": "A forma da relação precisa ser escolhida antes de ser estimada",
@@ -376,7 +383,7 @@
   {
    "source": "#/c2p9",
    "slug": "c2p9",
-   "pageId": "qjgzn8in9e9x3el3okvyk",
+   "pageId": "5fpg6iz0ul5vhp59qwyvy",
    "chapter": 2,
    "unit": 1,
    "title": "Parâmetro, estatística e hiperparâmetro",
@@ -397,7 +404,7 @@
   {
    "source": "#/c2p10",
    "slug": "c2p10",
-   "pageId": "5r6x9u37dgch0y9a3mjrm",
+   "pageId": "1zla4ixt09smvalr3rah9",
    "chapter": 2,
    "unit": 1,
    "title": "Estimar é escolher o valor que um critério prefere",
@@ -416,7 +423,7 @@
   {
    "source": "#/c2p11",
    "slug": "c2p11",
-   "pageId": "lnl2x8gif8dcfvlxe4650",
+   "pageId": "h3a6ffxximoabqj9iy8lm",
    "chapter": 2,
    "unit": 1,
    "title": "A perda encontra a frequência do grupo",
@@ -435,7 +442,7 @@
   {
    "source": "#/c2p12",
    "slug": "c2p12",
-   "pageId": "33rt8b3gkg1drkr5q8u0p",
+   "pageId": "8t5eqvpvz1z0ihflo3lg3",
    "chapter": 2,
    "unit": 1,
    "title": "Descida de gradiente: descer a perda um passo por vez",
@@ -454,7 +461,7 @@
   {
    "source": "#/c2p13",
    "slug": "c2p13",
-   "pageId": "kbg0g1dnj6of7no64hcpy",
+   "pageId": "y800t8p3irvy377lf505v",
    "chapter": 2,
    "unit": 1,
    "title": "Treino, validação e teste",
@@ -473,7 +480,7 @@
   {
    "source": "#/c2p14",
    "slug": "c2p14",
-   "pageId": "lcl55r2l0k49go2tf2779",
+   "pageId": "7mx42825fnk4ad2n1rj9y",
    "chapter": 2,
    "unit": 1,
    "title": "Sobreajuste: quando o modelo decora a amostra",
@@ -492,7 +499,7 @@
   {
    "source": "#/c2p15",
    "slug": "c2p15",
-   "pageId": "kd8be8ikv2zacwojhsco4",
+   "pageId": "925zv7um8i6ih084irfhx",
    "chapter": 2,
    "unit": 1,
    "title": "Viés e variância: os dois modos de errar",
@@ -511,7 +518,7 @@
   {
    "source": "#/c2p16",
    "slug": "c2p16",
-   "pageId": "7q7fwgqk1ltisahei96co",
+   "pageId": "swgpb8z7ffrq238zl3dpf",
    "chapter": 2,
    "unit": 1,
    "title": "Toda estimativa vem com incerteza, e ela se calcula",
@@ -530,7 +537,7 @@
   {
    "source": "#/c2p17",
    "slug": "c2p17",
-   "pageId": "c38xsyvtwtewp3iptwtd2",
+   "pageId": "dml4gm4a39zlgrxbe7ako",
    "chapter": 2,
    "unit": 1,
    "title": "O que a inferência não entrega, por mais dados que existam",
@@ -551,7 +558,7 @@
   {
    "source": "#/c2p18",
    "slug": "c2p18",
-   "pageId": "rjv9p5m5qtx91fz0i7qlm",
+   "pageId": "27l79a0ehruxqw8oce0k1",
    "chapter": 2,
    "unit": 1,
    "title": "Síntese: o vocabulário da modelagem",
@@ -570,7 +577,7 @@
   {
    "source": "#/c3p1",
    "slug": "c3p1",
-   "pageId": "z3sxsx9wfb5lb5vl6k6p2",
+   "pageId": "jwtjame4hyltk88rq6ge2",
    "chapter": 3,
    "unit": 1,
    "title": "Dados disponíveis na data da decisão",
@@ -589,7 +596,7 @@
   {
    "source": "#/c3p2",
    "slug": "c3p2",
-   "pageId": "z2x5px574bdek7oada0dc",
+   "pageId": "k65d6uvna9z7qpn0zd8qj",
    "chapter": 3,
    "unit": 1,
    "title": "Uma linha da base representa uma unidade econômica de decisão",
@@ -610,7 +617,7 @@
   {
    "source": "#/c3p3",
    "slug": "c3p3",
-   "pageId": "8w6fuhkxrsdgsuuwi3npk",
+   "pageId": "adiig2qsv3sbs8zx4yqze",
    "chapter": 3,
    "unit": 1,
    "title": "Cada fonte enxerga uma parte diferente do cliente",
@@ -631,7 +638,7 @@
   {
    "source": "#/c3p4",
    "slug": "c3p4",
-   "pageId": "vs11ng9b5aoc814jppv9f",
+   "pageId": "wtz1scchce3uq63acgt0c",
    "chapter": 3,
    "unit": 1,
    "title": "Valor absoluto e razão respondem a perguntas diferentes",
@@ -652,7 +659,7 @@
   {
    "source": "#/c3p5",
    "slug": "c3p5",
-   "pageId": "1egiugzr20z61i1use45b",
+   "pageId": "49rmzfxsmk0uq8lzoak6d",
    "chapter": 3,
    "unit": 1,
    "title": "O mesmo nível pode esconder trajetórias opostas",
@@ -673,7 +680,7 @@
   {
    "source": "#/c3p6",
    "slug": "c3p6",
-   "pageId": "kf6uzo717uq8a075p3kax",
+   "pageId": "yodgholk9o0dq6r1onifm",
    "chapter": 3,
    "unit": 1,
    "title": "Toda variável precisa de uma hipótese econômica declarada",
@@ -694,7 +701,7 @@
   {
    "source": "#/c3p7",
    "slug": "c3p7",
-   "pageId": "6mpaeab2uak4hkhqknpwq",
+   "pageId": "y8apylzi8hybp60jizspg",
    "chapter": 3,
    "unit": 1,
    "title": "Data do evento e data de disponibilidade são coisas diferentes",
@@ -715,7 +722,7 @@
   {
    "source": "#/c3p8",
    "slug": "c3p8",
-   "pageId": "f224ep7c0kce9qdptfxkk",
+   "pageId": "aq5xrxwr9hpbacy29odsf",
    "chapter": 3,
    "unit": 1,
    "title": "A janela de observação é tudo o que o modelo pode ver",
@@ -734,7 +741,7 @@
   {
    "source": "#/c3p9",
    "slug": "c3p9",
-   "pageId": "yvqxiut1iz6wcdllyd3pk",
+   "pageId": "5lrzvbxbnpkkgtclgesjl",
    "chapter": 3,
    "unit": 1,
    "title": "A janela de performance é o que se quer prever",
@@ -753,7 +760,7 @@
   {
    "source": "#/c3p10",
    "slug": "c3p10",
-   "pageId": "p5ytl033s16k4eeu8mso5",
+   "pageId": "rcd8cc6i6aljydl8vo2hw",
    "chapter": 3,
    "unit": 1,
    "title": "Mudar a definição do alvo muda a pergunta que se prevê",
@@ -774,7 +781,7 @@
   {
    "source": "#/c3p11",
    "slug": "c3p11",
-   "pageId": "pjlpr8fyj2lkbr2m98axb",
+   "pageId": "1hrto3vdnr4x0kn6jkajs",
    "chapter": 3,
    "unit": 1,
    "title": "Uma safra só entra na base depois de maturar",
@@ -793,7 +800,7 @@
   {
    "source": "#/c3p12",
    "slug": "c3p12",
-   "pageId": "h9ejjt270pmba5l0qzemq",
+   "pageId": "cjcm0sgszsvxi0s622dwh",
    "chapter": 3,
    "unit": 1,
    "title": "Safra incompleta não é safra adimplente",
@@ -814,7 +821,7 @@
   {
    "source": "#/c3p13",
    "slug": "c3p13",
-   "pageId": "fjnrcok8w04owbjxrd7ds",
+   "pageId": "y8byq6oufn1xtp86z3g9u",
    "chapter": 3,
    "unit": 1,
    "title": "Informação do futuro torna o teste enganoso",
@@ -835,7 +842,7 @@
   {
    "source": "#/c3p14",
    "slug": "c3p14",
-   "pageId": "q5b1zobvlnxo7wytikp3p",
+   "pageId": "0rgrfc91a0jbdctgxriqp",
    "chapter": 3,
    "unit": 1,
    "title": "A política anterior seleciona quem aparece na base",
@@ -856,7 +863,7 @@
   {
    "source": "#/c3p15",
    "slug": "c3p15",
-   "pageId": "vq6w9jul2p1aqo7iql8zc",
+   "pageId": "4o2ciqlj6m858qccty8f8",
    "chapter": 3,
    "unit": 1,
    "title": "Balancear a amostra não muda o mundo",
@@ -877,7 +884,7 @@
   {
    "source": "#/c3p16",
    "slug": "c3p16",
-   "pageId": "06753ygfnpvhpz1q2to1o",
+   "pageId": "yql2nozpjjixdnxbcym5k",
    "chapter": 3,
    "unit": 1,
    "title": "WoE: a faixa vista pelos dois desfechos",
@@ -896,7 +903,7 @@
   {
    "source": "#/c3p17",
    "slug": "c3p17",
-   "pageId": "t3j13gxv8ktx23hmk1a32",
+   "pageId": "nlrcdx2j7gt1l4h95b04r",
    "chapter": 3,
    "unit": 1,
    "title": "Valor da informação por faixa",
@@ -915,7 +922,7 @@
   {
    "source": "#/c3p18",
    "slug": "c3p18",
-   "pageId": "oa0xkst1v706jufu6l03o",
+   "pageId": "l16fijl0hs8ub8fsbnxyp",
    "chapter": 3,
    "unit": 1,
    "title": "O desenho temporal desta base é cronológico e declarado",
@@ -934,7 +941,7 @@
   {
    "source": "#/c3p19",
    "slug": "c3p19",
-   "pageId": "bt3wdnz5bbvhcn0iyep3k",
+   "pageId": "upo7nwrscw9l5bjrc0gyc",
    "chapter": 3,
    "unit": 1,
    "title": "Escolha o desenho de base que sustenta a decisão",
@@ -955,7 +962,7 @@
   {
    "source": "#/c3p20",
    "slug": "c3p20",
-   "pageId": "tws3iypb1nun01n6rsz5j",
+   "pageId": "qmc1lihj088vb0uzg6xwm",
    "chapter": 3,
    "unit": 1,
    "title": "Síntese: a base respeita o tempo da decisão",
@@ -974,7 +981,7 @@
   {
    "source": "#/c4p1",
    "slug": "c4p1",
-   "pageId": "riirr8z4tzyxpeo4tintm",
+   "pageId": "33j7yir7adqg0razoei7j",
    "chapter": 4,
    "unit": 2,
    "title": "Regressão logística",
@@ -993,7 +1000,7 @@
   {
    "source": "#/c4p2",
    "slug": "c4p2",
-   "pageId": "75lj2tmk3hlbh1r3p2ftq",
+   "pageId": "drr3u8d2rrvtpicv3d0gv",
    "chapter": 4,
    "unit": 2,
    "title": "A reta na probabilidade quebra por construção",
@@ -1012,7 +1019,7 @@
   {
    "source": "#/c4p3",
    "slug": "c4p3",
-   "pageId": "di5jy2y1o707lay3rvs2u",
+   "pageId": "e6wcw98pf4d1qonndtsva",
    "chapter": 4,
    "unit": 2,
    "title": "Escala 1, probabilidade: o que ela é e onde ela aperta",
@@ -1031,7 +1038,7 @@
   {
    "source": "#/c4p4",
    "slug": "c4p4",
-   "pageId": "txef6wm7gax2od0hf407z",
+   "pageId": "ug6hoeq37giqbz6xij8uc",
    "chapter": 4,
    "unit": 2,
    "title": "Escala 2, odds: quantos defaults para cada adimplente",
@@ -1050,7 +1057,7 @@
   {
    "source": "#/c4p5",
    "slug": "c4p5",
-   "pageId": "ptlao2spizmyp66bay1gv",
+   "pageId": "xgrb84fw7vhyiech4hu4x",
    "chapter": 4,
    "unit": 2,
    "title": "Escala 3, log odds: onde somar faz sentido",
@@ -1069,7 +1076,7 @@
   {
    "source": "#/c4p6",
    "slug": "c4p6",
-   "pageId": "1psyxmmmekh5iat7p9c22",
+   "pageId": "0stgf3phpq9y93k0xcwm3",
    "chapter": 4,
    "unit": 2,
    "title": "Probabilidade, odds, log odds e escore",
@@ -1088,7 +1095,7 @@
   {
    "source": "#/c4p7",
    "slug": "c4p7",
-   "pageId": "d0uap3ff0prswjdgugbws",
+   "pageId": "ro6grss3ncu4gh50gpgz0",
    "chapter": 4,
    "unit": 2,
    "title": "A curva logística faz o caminho de volta",
@@ -1107,7 +1114,7 @@
   {
    "source": "#/c4p8",
    "slug": "c4p8",
-   "pageId": "n4yyesf59tagb1qkknvi2",
+   "pageId": "xkbwgo5p2tumcmswrubzz",
    "chapter": 4,
    "unit": 2,
    "title": "O escore é uma soma ponderada, e nada além disso",
@@ -1126,7 +1133,7 @@
   {
    "source": "#/c4p9",
    "slug": "c4p9",
-   "pageId": "bmkvibdy4ft23k4bzde35",
+   "pageId": "6oh4mhw7riqkh2nltol2s",
    "chapter": 4,
    "unit": 2,
    "title": "As três representações sincronizadas",
@@ -1145,7 +1152,7 @@
   {
    "source": "#/c4p10",
    "slug": "c4p10",
-   "pageId": "0bqv9uo52hsb0j7ucmqo0",
+   "pageId": "1puhxx9n2oxorr21xu35c",
    "chapter": 4,
    "unit": 2,
    "title": "O que um coeficiente significa, em log odds",
@@ -1166,7 +1173,7 @@
   {
    "source": "#/c4p11",
    "slug": "c4p11",
-   "pageId": "svsi8ljpldwezat5i3cj5",
+   "pageId": "hk7yfcc0r6920u5ixcbxp",
    "chapter": 4,
    "unit": 2,
    "title": "Razão de chances: o coeficiente traduzido para multiplicação",
@@ -1187,7 +1194,7 @@
   {
    "source": "#/c4p12",
    "slug": "c4p12",
-   "pageId": "mgg6kn1jd0c7jjt5gt5j9",
+   "pageId": "v14rnhrhb6nb1sxw8rhqg",
    "chapter": 4,
    "unit": 2,
    "title": "Efeito constante em odds significa efeito variável em PD",
@@ -1206,7 +1213,7 @@
   {
    "source": "#/c4p13",
    "slug": "c4p13",
-   "pageId": "a9v1yar73vrsyu6rw1zuk",
+   "pageId": "5bs6nmqt45lzss0sg03zy",
    "chapter": 4,
    "unit": 2,
    "title": "O intercepto é a âncora do nível, não um coeficiente comum",
@@ -1225,7 +1232,7 @@
   {
    "source": "#/c4p14",
    "slug": "c4p14",
-   "pageId": "zti57p04jexw3x8rs1xoj",
+   "pageId": "y082pgx58k4f73ovu04jb",
    "chapter": 4,
    "unit": 2,
    "title": "Trocar a unidade muda o coeficiente e não muda o modelo",
@@ -1244,7 +1251,7 @@
   {
    "source": "#/c4p15",
    "slug": "c4p15",
-   "pageId": "0v2gt0qrrzlunl1wevgpf",
+   "pageId": "gc6yg57mihrtvgm1lfpaz",
    "chapter": 4,
    "unit": 2,
    "title": "A perda que determina os coeficientes",
@@ -1263,7 +1270,7 @@
   {
    "source": "#/c4p16",
    "slug": "c4p16",
-   "pageId": "o99u2sxs01sa8mkgy27gm",
+   "pageId": "nnj7an3mkx7e99lzwqc45",
    "chapter": 4,
    "unit": 2,
    "title": "O gradiente com três parâmetros, uma iteração de cada vez",
@@ -1282,7 +1289,7 @@
   {
    "source": "#/c4p17",
    "slug": "c4p17",
-   "pageId": "kc9mva3i5hkrkr0mw64bz",
+   "pageId": "f1cyprkjlvi8lxevhhe7u",
    "chapter": 4,
    "unit": 2,
    "title": "A descida completa: os coeficientes aparecem",
@@ -1303,7 +1310,7 @@
   {
    "source": "#/c4p18",
    "slug": "c4p18",
-   "pageId": "y6w193wyy9tqjj7w4wehp",
+   "pageId": "obwo60abfj7lec5v58ag9",
    "chapter": 4,
    "unit": 2,
    "title": "Conferência: três implementações, o mesmo resultado",
@@ -1322,7 +1329,7 @@
   {
    "source": "#/c4p19",
    "slug": "c4p19",
-   "pageId": "tb5hsg5m5wrkvu2u1afx8",
+   "pageId": "2ivs0jcdlw5vnwj1ba1vo",
    "chapter": 4,
    "unit": 2,
    "title": "A fronteira é uma reta no plano das variáveis",
@@ -1341,7 +1348,7 @@
   {
    "source": "#/c4p20",
    "slug": "c4p20",
-   "pageId": "fvtw9s0t22tonvdq7eghl",
+   "pageId": "6amibu2f4c5ukwthf638v",
    "chapter": 4,
    "unit": 2,
    "title": "O limite da família: linearidade em log odds",
@@ -1360,7 +1367,7 @@
   {
    "source": "#/c4p21",
    "slug": "c4p21",
-   "pageId": "dc09glxj75nrkwmkp1c98",
+   "pageId": "1feu6dw6t5sd8mcnsls59",
    "chapter": 4,
    "unit": 2,
    "title": "Laboratório: faixas devolvem flexibilidade sem trocar de família",
@@ -1379,7 +1386,7 @@
   {
    "source": "#/c4p22",
    "slug": "c4p22",
-   "pageId": "88az1jp6vkv0rmks068z3",
+   "pageId": "j8a1ogd9tb9iowrz5xsfc",
    "chapter": 4,
    "unit": 2,
    "title": "Síntese: a lógica da regressão logística",
@@ -1398,7 +1405,7 @@
   {
    "source": "#/c5p1",
    "slug": "c5p1",
-   "pageId": "me5ijkwa8wuk8x2tzv46x",
+   "pageId": "56jc07dw6ieaizc97m4wj",
    "chapter": 5,
    "unit": 2,
    "title": "Árvores de decisão",
@@ -1417,7 +1424,7 @@
   {
    "source": "#/c5p2",
    "slug": "c5p2",
-   "pageId": "8bpxl3n5pqy67u1o3jam1",
+   "pageId": "7fp8s0f7o7j8pslbkmsqp",
    "chapter": 5,
    "unit": 2,
    "title": "A pergunta condicionada resolve o que a soma não resolve",
@@ -1436,7 +1443,7 @@
   {
    "source": "#/c5p3",
    "slug": "c5p3",
-   "pageId": "8duwsid5plrrq3fuwfqzn",
+   "pageId": "gxxq8pd7o36zx7x68fbx5",
    "chapter": 5,
    "unit": 2,
    "title": "Anatomia: nó, regra, ramo, folha, profundidade",
@@ -1455,7 +1462,7 @@
   {
    "source": "#/c5p4",
    "slug": "c5p4",
-   "pageId": "nbr6881aryoq9n71136d7",
+   "pageId": "9equ9ul1gaf6vdrn007qu",
    "chapter": 5,
    "unit": 2,
    "title": "Impureza: uma medida de quanto o grupo está misturado",
@@ -1474,7 +1481,7 @@
   {
    "source": "#/c5p5",
    "slug": "c5p5",
-   "pageId": "wlj0jta8c9tmfco8yylvn",
+   "pageId": "0vs1bhnsagxdeci9kebgk",
    "chapter": 5,
    "unit": 2,
    "title": "Impureza na raiz",
@@ -1493,7 +1500,7 @@
   {
    "source": "#/c5p6",
    "slug": "c5p6",
-   "pageId": "uuordlms5h5h1ivadqkzu",
+   "pageId": "2immbekh5c2ab2bgrc6mf",
    "chapter": 5,
    "unit": 2,
    "title": "Avaliar um corte candidato",
@@ -1514,7 +1521,7 @@
   {
    "source": "#/c5p7",
    "slug": "c5p7",
-   "pageId": "u0h0d8k2l4s0svnhw7d6k",
+   "pageId": "rm7cb698ozki2hny8tsm1",
    "chapter": 5,
    "unit": 2,
    "title": "A disputa entre os cortes da raiz",
@@ -1533,7 +1540,7 @@
   {
    "source": "#/c5p8",
    "slug": "c5p8",
-   "pageId": "vp5t0ql2c9eqqthbbizn3",
+   "pageId": "6gxz05muh0ej8pn380wdd",
    "chapter": 5,
    "unit": 2,
    "title": "A raiz escolhida, e o que ela já resolve",
@@ -1552,7 +1559,7 @@
   {
    "source": "#/c5p9",
    "slug": "c5p9",
-   "pageId": "d2gzryrna7razeqhiqqx7",
+   "pageId": "nk1l8nrl4394zmhtke2bb",
    "chapter": 5,
    "unit": 2,
    "title": "Recursão: a busca recomeça em cada lado",
@@ -1571,7 +1578,7 @@
   {
    "source": "#/c5p10",
    "slug": "c5p10",
-   "pageId": "f0m2rzx3zn38nany6t9rh",
+   "pageId": "6dg7xfiz96wgqp85j2q3j",
    "chapter": 5,
    "unit": 2,
    "title": "Uma proposta dentro da árvore",
@@ -1590,7 +1597,7 @@
   {
    "source": "#/c5p11",
    "slug": "c5p11",
-   "pageId": "bk2xv0tvafkyhhxbeqjg8",
+   "pageId": "49v3tpsn3d91qudaw2njg",
    "chapter": 5,
    "unit": 2,
    "title": "Percorrer a árvore: a explicação completa de uma decisão",
@@ -1609,7 +1616,7 @@
   {
    "source": "#/c5p12",
    "slug": "c5p12",
-   "pageId": "afp7lbhjjiib5m4091rfh",
+   "pageId": "62fxmh5kx4r51ns0r9ln2",
    "chapter": 5,
    "unit": 2,
    "title": "A previsão da folha é a frequência da folha, e isso não é convenção",
@@ -1628,7 +1635,7 @@
   {
    "source": "#/c5p13",
    "slug": "c5p13",
-   "pageId": "m3nut8mgl76eynhcqthr7",
+   "pageId": "6tyf87op5bu0z0ocuqico",
    "chapter": 5,
    "unit": 2,
    "title": "A confiabilidade de cada folha, calculada",
@@ -1649,7 +1656,7 @@
   {
    "source": "#/c5p14",
    "slug": "c5p14",
-   "pageId": "et15o7gbr4457f6eu1emb",
+   "pageId": "b9jjauqpsrar83ltzb92u",
    "chapter": 5,
    "unit": 2,
    "title": "Os dois freios: profundidade e mínimo de casos por folha",
@@ -1668,7 +1675,7 @@
   {
    "source": "#/c5p15",
    "slug": "c5p15",
-   "pageId": "h9fnn7nl7vi5yi2r7dcf0",
+   "pageId": "g7lr3idhnp88rqcqiw4hh",
    "chapter": 5,
    "unit": 2,
    "title": "Poda: crescer primeiro, cortar depois, com um preço por folha",
@@ -1687,7 +1694,7 @@
   {
    "source": "#/c5p16",
    "slug": "c5p16",
-   "pageId": "sivmg8330kcw53zl26q7t",
+   "pageId": "rt0xdxgdmteohkhue9l88",
    "chapter": 5,
    "unit": 2,
    "title": "Instabilidade: uma observação pode trocar a estrutura",
@@ -1708,7 +1715,7 @@
   {
    "source": "#/c5p17",
    "slug": "c5p17",
-   "pageId": "yjth2cmzcrf7ue7gu32y2",
+   "pageId": "2eqv5ggb4k6hphlm4plbp",
    "chapter": 5,
    "unit": 2,
    "title": "Gini ou entropia: o critério não muda a conclusão aqui",
@@ -1727,7 +1734,7 @@
   {
    "source": "#/c5p18",
    "slug": "c5p18",
-   "pageId": "3p3fbwx6tci5t8hcf6zxw",
+   "pageId": "d2vxav0y8g2r3ktimupp6",
    "chapter": 5,
    "unit": 2,
    "title": "Logística e árvore nos mesmos casos",
@@ -1746,7 +1753,7 @@
   {
    "source": "#/c5p19",
    "slug": "c5p19",
-   "pageId": "70q0atmpjjf44oywn2n8a",
+   "pageId": "fhnz99ayd3qxkmg8rsmuj",
    "chapter": 5,
    "unit": 2,
    "title": "Síntese: regras locais e controle de variância",
@@ -1765,7 +1772,7 @@
   {
    "source": "#/c6p1",
    "slug": "c6p1",
-   "pageId": "z8wjoomno4umek28tc2np",
+   "pageId": "lhv9bnflfxqu15nzaiu9w",
    "chapter": 6,
    "unit": 2,
    "title": "Gradient boosting com árvores",
@@ -1784,7 +1791,7 @@
   {
    "source": "#/c6p2",
    "slug": "c6p2",
-   "pageId": "tkgczwl2zona0075pf1lf",
+   "pageId": "26cvpg56vs306edxyl0ex",
    "chapter": 6,
    "unit": 2,
    "title": "A divisão de trabalho entre modelos",
@@ -1803,7 +1810,7 @@
   {
    "source": "#/c6p3",
    "slug": "c6p3",
-   "pageId": "cf3m5ya02wrs2x0d1s3fs",
+   "pageId": "36r47xpwzi5xzufpomt0x",
    "chapter": 6,
    "unit": 2,
    "title": "Oito pontos, uma tendência e erros locais",
@@ -1822,7 +1829,7 @@
   {
    "source": "#/c6p4",
    "slug": "c6p4",
-   "pageId": "fw4qj4s9h5mdhrcifvzzx",
+   "pageId": "a0kz2f96mojc46l65bw1d",
    "chapter": 6,
    "unit": 2,
    "title": "F₀: o melhor palpite sem usar nenhuma variável",
@@ -1841,7 +1848,7 @@
   {
    "source": "#/c6p5",
    "slug": "c6p5",
-   "pageId": "x4molokgapoizrv4mrsrd",
+   "pageId": "qje0068keua9kc7s69qfb",
    "chapter": 6,
    "unit": 2,
    "title": "O erro como novo alvo",
@@ -1860,7 +1867,7 @@
   {
    "source": "#/c6p6",
    "slug": "c6p6",
-   "pageId": "nmywc2yjfa8algdjmikjb",
+   "pageId": "drayo5i90504p2i6b9ea6",
    "chapter": 6,
    "unit": 2,
    "title": "A primeira árvore de correção",
@@ -1879,7 +1886,7 @@
   {
    "source": "#/c6p7",
    "slug": "c6p7",
-   "pageId": "jgrv7k4doec4aqsfvtj8l",
+   "pageId": "vz9fp9hmo2xnnsgubwz9s",
    "chapter": 6,
    "unit": 2,
    "title": "Taxa de aprendizagem: somar só um pedaço da correção",
@@ -1898,7 +1905,7 @@
   {
    "source": "#/c6p8",
    "slug": "c6p8",
-   "pageId": "t1z5x1mkkfarsnkkhybpu",
+   "pageId": "s1szgccxzv5eriq0rmqw2",
    "chapter": 6,
    "unit": 2,
    "title": "O que cada árvore acrescentou",
@@ -1919,7 +1926,7 @@
   {
    "source": "#/c6p9",
    "slug": "c6p9",
-   "pageId": "hr04e1q0g3aymrmvhdhap",
+   "pageId": "urtsyc48419wdr41mznqn",
    "chapter": 6,
    "unit": 2,
    "title": "Quatro correções, uma previsão",
@@ -1938,7 +1945,7 @@
   {
    "source": "#/c6p10",
    "slug": "c6p10",
-   "pageId": "u0znr0arlbbfe2bxs5avq",
+   "pageId": "x30ve6mx6rxi9m96jj3l3",
    "chapter": 6,
    "unit": 2,
    "title": "A fórmula depois da história",
@@ -1957,7 +1964,7 @@
   {
    "source": "#/c6p11",
    "slug": "c6p11",
-   "pageId": "2fseosy8uv4yepfn9jpum",
+   "pageId": "umhhkprq2pnoq1s5ydsat",
    "chapter": 6,
    "unit": 2,
    "title": "Voltando ao crédito: onde a soma acontece",
@@ -1976,7 +1983,7 @@
   {
    "source": "#/c6p12",
    "slug": "c6p12",
-   "pageId": "e121cvk2g4ok8hqfkfrb9",
+   "pageId": "rzkmu5o6e2z990wr8or8s",
    "chapter": 6,
    "unit": 2,
    "title": "O resíduo y − p vira o alvo da próxima árvore",
@@ -1997,7 +2004,7 @@
   {
    "source": "#/c6p13",
    "slug": "c6p13",
-   "pageId": "du6thtd1ps2dp7k8dgvap",
+   "pageId": "mvzuoyqxyooc0dpuh3i1u",
    "chapter": 6,
    "unit": 2,
    "title": "Boosting de classificação, iteração por iteração",
@@ -2016,7 +2023,7 @@
   {
    "source": "#/c6p14",
    "slug": "c6p14",
-   "pageId": "x2xhya31oejtlxljc4duh",
+   "pageId": "nw3vbmhy6j6ko27cqlyiy",
    "chapter": 6,
    "unit": 2,
    "title": "O que cada árvore acrescentou, em log odds",
@@ -2035,7 +2042,7 @@
   {
    "source": "#/c6p15",
    "slug": "c6p15",
-   "pageId": "4f30f88nbmh4g14j21b9x",
+   "pageId": "6jy0dremofqerthpurqx7",
    "chapter": 6,
    "unit": 2,
    "title": "Os quatro hiperparâmetros e o que cada um controla",
@@ -2054,7 +2061,7 @@
   {
    "source": "#/c6p16",
    "slug": "c6p16",
-   "pageId": "qm050mb0dkhka15r9qdi4",
+   "pageId": "8dv20wwj3fiyv2nmo7pry",
    "chapter": 6,
    "unit": 2,
    "title": "η e M são acoplados, e por isso não se escolhem separadamente",
@@ -2073,7 +2080,7 @@
   {
    "source": "#/c6p17",
    "slug": "c6p17",
-   "pageId": "9gii3henrbbpyr59vpfyc",
+   "pageId": "aaeyt9k8imoopv5rk6ebx",
    "chapter": 6,
    "unit": 2,
    "title": "Fora da amostra: onde o boosting realmente é decidido",
@@ -2094,7 +2101,7 @@
   {
    "source": "#/c6p18",
    "slug": "c6p18",
-   "pageId": "9o67d1tuoq4f71yd3pykf",
+   "pageId": "ysklvij2zgn9skxgkhp1z",
    "chapter": 6,
    "unit": 2,
    "title": "Três limites do boosting — e como responder",
@@ -2113,7 +2120,7 @@
   {
    "source": "#/c6p19",
    "slug": "c6p19",
-   "pageId": "po4y0p3qs7jshqxcyo12m",
+   "pageId": "t4gmyuzpwe5ja2sh5jhj4",
    "chapter": 6,
    "unit": 2,
    "title": "Síntese: pequenas correções formam o boosting",
@@ -2132,7 +2139,7 @@
   {
    "source": "#/c7p1",
    "slug": "c7p1",
-   "pageId": "b11eon64l396tiw4skw6v",
+   "pageId": "m1o4gtbfk3bk4wyjuxayy",
    "chapter": 7,
    "unit": 3,
    "title": "Validação, calibração e teste fora do tempo",
@@ -2151,7 +2158,7 @@
   {
    "source": "#/c7p2",
    "slug": "c7p2",
-   "pageId": "a88cfcsqj66sdlfswnc01",
+   "pageId": "iqbn8dp1ou88xef76ogoo",
    "chapter": 7,
    "unit": 3,
    "title": "Acerto de classificação mede a prevalência, não o modelo",
@@ -2172,7 +2179,7 @@
   {
    "source": "#/c7p3",
    "slug": "c7p3",
-   "pageId": "m63hw7dyc80on6nxm2km9",
+   "pageId": "s8u6zo47uc25kf2k4c54z",
    "chapter": 7,
    "unit": 3,
    "title": "Ordenação e nível de risco",
@@ -2191,7 +2198,7 @@
   {
    "source": "#/c7p4",
    "slug": "c7p4",
-   "pageId": "kj53pqkmgwzm65to7o1nt",
+   "pageId": "f9ou3w3rkg3j9mf7fr0rv",
    "chapter": 7,
    "unit": 3,
    "title": "Ordenar é montar uma fila de risco antes de qualquer métrica",
@@ -2210,7 +2217,7 @@
   {
    "source": "#/c7p5",
    "slug": "c7p5",
-   "pageId": "kt8pdivpzw410nuazfrov",
+   "pageId": "qpgkjej4r4u3wbv876vww",
    "chapter": 7,
    "unit": 3,
    "title": "AUC é uma contagem de pares",
@@ -2229,7 +2236,7 @@
   {
    "source": "#/c7p6",
    "slug": "c7p6",
-   "pageId": "5zuv2ylsfig04fqk3d5ys",
+   "pageId": "8s6zfn6ljee77riio62m0",
    "chapter": 7,
    "unit": 3,
    "title": "A curva ROC é a consequência de percorrer todos os cortes",
@@ -2248,7 +2255,7 @@
   {
    "source": "#/c7p7",
    "slug": "c7p7",
-   "pageId": "w6dwhmp11rsb16b6uokpi",
+   "pageId": "5x8m1gwjdio95zy8py0u9",
    "chapter": 7,
    "unit": 3,
    "title": "KS é uma distância, e é preciso declarar onde ela foi medida",
@@ -2267,7 +2274,7 @@
   {
    "source": "#/c7p8",
    "slug": "c7p8",
-   "pageId": "bnngyhdug5hrs032gy06p",
+   "pageId": "u8po0zagnpenyf5yxkmkg",
    "chapter": 7,
    "unit": 3,
    "title": "Ganho e alavancagem traduzem a fila em capacidade de trabalho",
@@ -2286,7 +2293,7 @@
   {
    "source": "#/c7p9",
    "slug": "c7p9",
-   "pageId": "etdz6v08th4s6t6jb9g5b",
+   "pageId": "aad9cpqa5dbx7yc3qkpe6",
    "chapter": 7,
    "unit": 3,
    "title": "Calibração só pode ser verificada em grupos",
@@ -2305,7 +2312,7 @@
   {
    "source": "#/c7p10",
    "slug": "c7p10",
-   "pageId": "mjshzytg5uufdkiut4ul4",
+   "pageId": "dk6d7z5m6ygrhudoe4jsu",
    "chapter": 7,
    "unit": 3,
    "title": "Compatibilidade entre previsão e frequência, faixa por faixa",
@@ -2324,7 +2331,7 @@
   {
    "source": "#/c7p11",
    "slug": "c7p11",
-   "pageId": "mkh9oivkveskjwiogs9k4",
+   "pageId": "x8t45i3v3wnijhjdf936s",
    "chapter": 7,
    "unit": 3,
    "title": "Brier e log loss resumem tudo num número e por isso não isolam nada",
@@ -2345,7 +2352,7 @@
   {
    "source": "#/c7p12",
    "slug": "c7p12",
-   "pageId": "hcy6bxtcv8p1bjuej74e8",
+   "pageId": "0y9gs7xiu2fnmey9jbmxg",
    "chapter": 7,
    "unit": 3,
    "title": "Recalibração e reestimação",
@@ -2364,7 +2371,7 @@
   {
    "source": "#/c7p13",
    "slug": "c7p13",
-   "pageId": "e6ngyxbz9mshqs1ecmj6t",
+   "pageId": "sncukolxo9e22wx69mba6",
    "chapter": 7,
    "unit": 3,
    "title": "Platt corrige o nível e não pode alterar a ordenação",
@@ -2385,7 +2392,7 @@
   {
    "source": "#/c7p14",
    "slug": "c7p14",
-   "pageId": "364vniwd1ihykxt86u0m0",
+   "pageId": "uhkefm07sz0kctx8bphjf",
    "chapter": 7,
    "unit": 3,
    "title": "A métrica também é uma estatística e também tem incerteza",
@@ -2404,7 +2411,7 @@
   {
    "source": "#/c7p15",
    "slug": "c7p15",
-   "pageId": "o281maggphac6nn15ddsg",
+   "pageId": "ha2w5mj7efa85kxhux7bn",
    "chapter": 7,
    "unit": 3,
    "title": "Comparar duas AUCs na mesma amostra exige o teste de DeLong",
@@ -2425,7 +2432,7 @@
   {
    "source": "#/c7p16",
    "slug": "c7p16",
-   "pageId": "l0fk3ls4u42bc30j9udps",
+   "pageId": "4brtgf57tbeum0z2seb4x",
    "chapter": 7,
    "unit": 3,
    "title": "Treino, validação e OOT têm papéis diferentes",
@@ -2444,7 +2451,7 @@
   {
    "source": "#/c7p17",
    "slug": "c7p17",
-   "pageId": "hbce1v62snpgzco9xv732",
+   "pageId": "60y1o6kq4vbhvaeexq6j2",
    "chapter": 7,
    "unit": 3,
    "title": "O protocolo completo antes de abrir o OOT",
@@ -2463,7 +2470,7 @@
   {
    "source": "#/c7p18",
    "slug": "c7p18",
-   "pageId": "ww80a51lbg910udwn0qs1",
+   "pageId": "qh5l4wbigfq0b2rmlnxg2",
    "chapter": 7,
    "unit": 3,
    "title": "Cada decisão pede uma evidência diferente",
@@ -2482,7 +2489,7 @@
   {
    "source": "#/c7p19",
    "slug": "c7p19",
-   "pageId": "hzv9r4qup4fvndqdttgnu",
+   "pageId": "0vu12c9e5onisgqy2x2mn",
    "chapter": 7,
    "unit": 3,
    "title": "Métricas que este curso não usa, e o motivo de cada uma",
@@ -2501,7 +2508,7 @@
   {
    "source": "#/c7p20",
    "slug": "c7p20",
-   "pageId": "ubiql6s5o58c7to0yr2ev",
+   "pageId": "h9gu2w1od2od3f8b76uin",
    "chapter": 7,
    "unit": 3,
    "title": "Síntese: três perguntas de validação",
@@ -2520,7 +2527,7 @@
   {
    "source": "#/c8p1",
    "slug": "c8p1",
-   "pageId": "rbe33z57vllzskuwla0xb",
+   "pageId": "2cv25zz5azevuuppjnyut",
    "chapter": 8,
    "unit": 3,
    "title": "Da previsão à decisão econômica",
@@ -2539,7 +2546,7 @@
   {
    "source": "#/c8p2",
    "slug": "c8p2",
-   "pageId": "kn8r96srymknm3vd7c8im",
+   "pageId": "b5pend94k865bpgdygggf",
    "chapter": 8,
    "unit": 3,
    "title": "Exposição é o valor em risco no instante do default",
@@ -2560,7 +2567,7 @@
   {
    "source": "#/c8p3",
    "slug": "c8p3",
-   "pageId": "wz5vv05wpzvsrz8t6ecl3",
+   "pageId": "lzuxm542ikbzk0gjen7fr",
    "chapter": 8,
    "unit": 3,
    "title": "Default não é perder tudo, e a fração perdida é estimativa da operação",
@@ -2579,7 +2586,7 @@
   {
    "source": "#/c8p4",
    "slug": "c8p4",
-   "pageId": "y811zkriq150t2ahqvre5",
+   "pageId": "3jko0m2mkqjm1eys7unl5",
    "chapter": 8,
    "unit": 3,
    "title": "A perda esperada multiplica três fatores, e a mesma PD pode terminar em lados opostos",
@@ -2600,7 +2607,7 @@
   {
    "source": "#/c8p5",
    "slug": "c8p5",
-   "pageId": "wrzndi6op13hfm0ji4rt9",
+   "pageId": "fim17pb6sgtdhw58vlksc",
    "chapter": 8,
    "unit": 3,
    "title": "Resultado econômico por proposta",
@@ -2619,7 +2626,7 @@
   {
    "source": "#/c8p6",
    "slug": "c8p6",
-   "pageId": "l0zyg2oar59o1ynjsqg5z",
+   "pageId": "q7x8ucwmu6u7tdfznmw4m",
    "chapter": 8,
    "unit": 3,
    "title": "O ponto de equilíbrio em PD sai de uma equação resolvida, não de um palpite",
@@ -2640,7 +2647,7 @@
   {
    "source": "#/c8p7",
    "slug": "c8p7",
-   "pageId": "l7guacf2xysmcwhsiqysa",
+   "pageId": "x6zll5yo92jzal6d8r7us",
    "chapter": 8,
    "unit": 3,
    "title": "Apertar o corte troca defaults evitados por bons recusados, e a troca se conta em reais",
@@ -2659,7 +2666,7 @@
   {
    "source": "#/c8p8",
    "slug": "c8p8",
-   "pageId": "ww743lidhrltw5vq2879p",
+   "pageId": "pvaid5tfbiz508glr4wda",
    "chapter": 8,
    "unit": 3,
    "title": "A curva de resultado por corte tem um máximo, e o corte intuitivo raramente cai nele",
@@ -2680,7 +2687,7 @@
   {
    "source": "#/c8p9",
    "slug": "c8p9",
-   "pageId": "5qk96kelaxlyv1d3bhdhw",
+   "pageId": "d2kglurchbc1h5ffeli5e",
    "chapter": 8,
    "unit": 3,
    "title": "Revisão manual é compra de informação, e informação ruim infla o número que o banco reporta",
@@ -2701,7 +2708,7 @@
   {
    "source": "#/c8p10",
    "slug": "c8p10",
-   "pageId": "mpnrh2i9y6544mr9wkwq3",
+   "pageId": "j096vk05vl9hl64t95yhc",
    "chapter": 8,
    "unit": 3,
    "title": "Reconciliação é condição de aceite, não formalidade de anexo",
@@ -2720,7 +2727,7 @@
   {
    "source": "#/c8p11",
    "slug": "c8p11",
-   "pageId": "c6owncetc6s4fcguhbbex",
+   "pageId": "stvntdivuj6x0vn5wy2v2",
    "chapter": 8,
    "unit": 3,
    "title": "A política ótima se move com a fração perdida e com um choque de PD",
@@ -2739,7 +2746,7 @@
   {
    "source": "#/c8p12",
    "slug": "c8p12",
-   "pageId": "094i1k8nqb2w93o5gi6dj",
+   "pageId": "um7ezvj935yt9w3pcjxrj",
    "chapter": 8,
    "unit": 3,
    "title": "Escolha a política e prove que ela fecha consigo mesma",
@@ -2758,7 +2765,7 @@
   {
    "source": "#/c8p13",
    "slug": "c8p13",
-   "pageId": "b897tq18s62yju23oz2fa",
+   "pageId": "yc1pkmixgnfkjkjat1oiz",
    "chapter": 8,
    "unit": 3,
    "title": "Síntese: risco, valor e política",
@@ -2777,7 +2784,7 @@
   {
    "source": "#/c9p1",
    "slug": "c9p1",
-   "pageId": "yggrbnp40m4pre1b7ligk",
+   "pageId": "hccxi2tnwxsesslnc5hx7",
    "chapter": 9,
    "unit": 4,
    "title": "Monitoramento e governança",
@@ -2796,7 +2803,7 @@
   {
    "source": "#/c9p2",
    "slug": "c9p2",
-   "pageId": "4vl32d4waueovdpo8o80f",
+   "pageId": "duvylv4scla9a8itk9kpw",
    "chapter": 9,
    "unit": 4,
    "title": "Três formas de um modelo mudar em produção",
@@ -2815,7 +2822,7 @@
   {
    "source": "#/c9p3",
    "slug": "c9p3",
-   "pageId": "8qk6bufj0mfudohhparuv",
+   "pageId": "p39yvazkp9ug2wnj3iayl",
    "chapter": 9,
    "unit": 4,
    "title": "O índice de estabilidade soma, faixa a faixa, o quanto a entrada se deslocou",
@@ -2836,7 +2843,7 @@
   {
    "source": "#/c9p4",
    "slug": "c9p4",
-   "pageId": "7d561vr4bplyoszhb4hjo",
+   "pageId": "59gb9nku26eas7g3kt479",
    "chapter": 9,
    "unit": 4,
    "title": "PSI: localizar onde a entrada mudou",
@@ -2855,7 +2862,7 @@
   {
    "source": "#/c9p5",
    "slug": "c9p5",
-   "pageId": "dos33akq1s52tlw85sc5b",
+   "pageId": "ppz16joif305i2b9vibuf",
    "chapter": 9,
    "unit": 4,
    "title": "Diagnóstico antes da ação",
@@ -2874,7 +2881,7 @@
   {
    "source": "#/c9p6",
    "slug": "c9p6",
-   "pageId": "2bysqop1i7i9tdakc44z0",
+   "pageId": "jkj3nlq89nw9r85y2kean",
    "chapter": 9,
    "unit": 4,
    "title": "Equidade depende da pergunta e da incerteza",
@@ -2893,7 +2900,7 @@
   {
    "source": "#/c9p7",
    "slug": "c9p7",
-   "pageId": "4jl2da8svgfnnbu5q6wpj",
+   "pageId": "kgtksequyg2eblji302kt",
    "chapter": 9,
    "unit": 4,
    "title": "Um gatilho tem limiar, janela, responsável e ação, declarados antes da medição",
@@ -2914,7 +2921,7 @@
   {
    "source": "#/c9p8",
    "slug": "c9p8",
-   "pageId": "s1t3ddpgn1qj2zl9avpw7",
+   "pageId": "3zns1p4sj7h76ljkpuspr",
    "chapter": 9,
    "unit": 4,
    "title": "Monte um painel que leva a uma decisão",
@@ -2933,7 +2940,7 @@
   {
    "source": "#/c9p9",
    "slug": "c9p9",
-   "pageId": "43v94rs6krxhujofa2rqj",
+   "pageId": "4fnolwhtjiz6xnq0naczb",
    "chapter": 9,
    "unit": 4,
    "title": "Síntese: monitoramento que leva a uma ação",
@@ -2952,7 +2959,7 @@
   {
    "source": "#/c10p1",
    "slug": "c10p1",
-   "pageId": "av9xlmy1kt5fpjiqgtuf1",
+   "pageId": "osoalxh2g51qf6u0y2apg",
    "chapter": 10,
    "unit": 4,
    "title": "Laboratório integrado",
@@ -2971,7 +2978,7 @@
   {
    "source": "#/c10p2",
    "slug": "c10p2",
-   "pageId": "m7wf5937amxd2siwzncwa",
+   "pageId": "61r2anidjca4fbn4jfn1i",
    "chapter": 10,
    "unit": 4,
    "title": "Três clientes, três zonas da política",
@@ -2990,7 +2997,7 @@
   {
    "source": "#/c10p3",
    "slug": "c10p3",
-   "pageId": "srogl69awm0kkzleqfw91",
+   "pageId": "k9wir4ufud7rki7ltvhq3",
    "chapter": 10,
    "unit": 4,
    "title": "O quadro de decisão do comitê",
@@ -3009,7 +3016,7 @@
   {
    "source": "#/c10p4",
    "slug": "c10p4",
-   "pageId": "r3cxfrh9pbi3ipp5v6mbw",
+   "pageId": "s6rgen240bp7dmyp64xxt",
    "chapter": 10,
    "unit": 4,
    "title": "O que a evidência não diz, escrito antes que alguém pergunte",
@@ -3030,7 +3037,7 @@
   {
    "source": "#/c10p5",
    "slug": "c10p5",
-   "pageId": "dricl33bgzbmxgzgkrn7b",
+   "pageId": "73qpf9w3v8ixgjv9j6j84",
    "chapter": 10,
    "unit": 4,
    "title": "Campo 1: a recomendação diz o que fazer, com números e com prazo",
@@ -3049,7 +3056,7 @@
   {
    "source": "#/c10p6",
    "slug": "c10p6",
-   "pageId": "twyv41a9tw7t5t7ksd7pz",
+   "pageId": "tmr3dhpth7xin3frxtvw3",
    "chapter": 10,
    "unit": 4,
    "title": "Campo 2: cada número com amostra, denominador e origem",
@@ -3068,7 +3075,7 @@
   {
    "source": "#/c10p7",
    "slug": "c10p7",
-   "pageId": "302ydkdgbz2nodpvwc8hh",
+   "pageId": "c1xumt7qq7rtn55z32pbx",
    "chapter": 10,
    "unit": 4,
    "title": "Campo 3: a incerteza é declarada com número, não com adjetivo",
@@ -3087,7 +3094,7 @@
   {
    "source": "#/c10p8",
    "slug": "c10p8",
-   "pageId": "wt2pv8s85ww6fupk2ltfv",
+   "pageId": "atuu0ynoukkvhth7u48ge",
    "chapter": 10,
    "unit": 4,
    "title": "Campo 4: as condições dizem o que precisa existir antes da produção",
@@ -3106,7 +3113,7 @@
   {
    "source": "#/c10p9",
    "slug": "c10p9",
-   "pageId": "0oxjtyvs2dnez6ibljdi6",
+   "pageId": "iuef84xy1pf0154oqdflk",
    "chapter": 10,
    "unit": 4,
    "title": "Campo 5: o plano de acompanhamento vem pronto do capítulo 9",
@@ -3125,7 +3132,7 @@
   {
    "source": "#/c10p10",
    "slug": "c10p10",
-   "pageId": "zz2lb0xlnkuado0p6ik5m",
+   "pageId": "en25xp0gi2nrp1d6py6vo",
    "chapter": 10,
    "unit": 4,
    "title": "A rubrica é declarada antes da rodada, e ela precisa poder reprovar",
@@ -3146,7 +3153,7 @@
   {
    "source": "#/c10p11",
    "slug": "c10p11",
-   "pageId": "uxp3g5i10sqh31hf5649q",
+   "pageId": "djydrdgbvqo595h339twp",
    "chapter": 10,
    "unit": 4,
    "title": "Rodada 1: defesa e contra-argumento, com a política na tela",
@@ -3165,7 +3172,7 @@
   {
    "source": "#/c10p12",
    "slug": "c10p12",
-   "pageId": "zw97nq1wkjxl1p8n332se",
+   "pageId": "ez539jksl8qdkpajm8y1y",
    "chapter": 10,
    "unit": 4,
    "title": "O choque entra na mesa, e o estado dele fica visível daqui em diante",
@@ -3184,7 +3191,7 @@
   {
    "source": "#/c10p13",
    "slug": "c10p13",
-   "pageId": "odpsm3xrj023nvtxm3x43",
+   "pageId": "ms9bjl3ps99eir3mumi2w",
    "chapter": 10,
    "unit": 4,
    "title": "Rodada 2: o que mudou, o que não mudou e qual premissa caiu",
@@ -3203,7 +3210,7 @@
   {
    "source": "#/c10p14",
    "slug": "c10p14",
-   "pageId": "bd5r1790ansb2cs1bobnf",
+   "pageId": "xpsa4rgmit4u3rua0q0a2",
    "chapter": 10,
    "unit": 4,
    "title": "Síntese: uma decisão que resiste a perguntas",
@@ -3222,7 +3229,7 @@
   {
    "source": "#/c11p1",
    "slug": "c11p1",
-   "pageId": "ds06rrjy2ytmghdk2b2qz",
+   "pageId": "5eojt73d2nrker4hti89k",
    "chapter": 11,
    "unit": 5,
    "title": "Trabalho final de conclusão de curso",
@@ -3241,7 +3248,7 @@
   {
    "source": "#/c11p2",
    "slug": "c11p2",
-   "pageId": "lljs6is2kr812ymnn9fmm",
+   "pageId": "w5exzkql4ngqsrkc9b2id",
    "chapter": 11,
    "unit": 5,
    "title": "A base foi desenhada para exigir decisões reais",
@@ -3260,7 +3267,7 @@
   {
    "source": "#/c11p3",
    "slug": "c11p3",
-   "pageId": "e762u3bfuwejbodg1rfs2",
+   "pageId": "zxifipskujh6sfcj6md6j",
    "chapter": 11,
    "unit": 5,
    "title": "Missão 1 · A pergunta congelada antes dos dados",
@@ -3279,7 +3286,7 @@
   {
    "source": "#/c11p4",
    "slug": "c11p4",
-   "pageId": "nizjd9wv2d58ovuz3m41j",
+   "pageId": "kfvpy6trmlpwqgb10m7br",
    "chapter": 11,
    "unit": 5,
    "title": "Missão 2 · O dicionário como contrato",
@@ -3298,7 +3305,7 @@
   {
    "source": "#/c11p5",
    "slug": "c11p5",
-   "pageId": "99turdh8xcvrfp9y3or4m",
+   "pageId": "7rgjyfuuqkigqgxwkoiq2",
    "chapter": 11,
    "unit": 5,
    "title": "Missão 3 · Auditoria com IDs afetados",
@@ -3317,7 +3324,7 @@
   {
    "source": "#/c11p6",
    "slug": "c11p6",
-   "pageId": "amhkrssrvjuynb6m0duuu",
+   "pageId": "890633owu1gcvw89oe95v",
    "chapter": 11,
    "unit": 5,
    "title": "Missão 4 · O modelo perfeito que está errado",
@@ -3336,7 +3343,7 @@
   {
    "source": "#/c11p7",
    "slug": "c11p7",
-   "pageId": "kad3tsv300wigc80fpg97",
+   "pageId": "sfmofmwwkvcg4grk0n4sf",
    "chapter": 11,
    "unit": 5,
    "title": "Missão 5 · O calendário como protocolo",
@@ -3355,7 +3362,7 @@
   {
    "source": "#/c11p8",
    "slug": "c11p8",
-   "pageId": "s5oj32wwob958kfysk0us",
+   "pageId": "ykzmhpir7p04ssbsdks58",
    "chapter": 11,
    "unit": 5,
    "title": "Missão 6 · A régua mínima",
@@ -3374,7 +3381,7 @@
   {
    "source": "#/c11p9",
    "slug": "c11p9",
-   "pageId": "gxdbe7503zqglryl2wtw6",
+   "pageId": "ov9q0lpng993a0iim48ra",
    "chapter": 11,
    "unit": 5,
    "title": "Missão 7 · Pré-processamento dentro do experimento",
@@ -3393,7 +3400,7 @@
   {
    "source": "#/c11p10",
    "slug": "c11p10",
-   "pageId": "hvhkqs5jufk0cfyry97sw",
+   "pageId": "4fmgyjwly3ranyw8dipbt",
    "chapter": 11,
    "unit": 5,
    "title": "Missão 7 · Três famílias, três modos de errar",
@@ -3412,7 +3419,7 @@
   {
    "source": "#/c11p11",
    "slug": "c11p11",
-   "pageId": "u94d3wdje20x14hiotlqj",
+   "pageId": "hjvnpn0u8rsknwqhutmcc",
    "chapter": 11,
    "unit": 5,
    "title": "Missão 7 · Explicação de uma previsão",
@@ -3431,7 +3438,7 @@
   {
    "source": "#/c11p12",
    "slug": "c11p12",
-   "pageId": "etkqr4uchg69u17t6rvqw",
+   "pageId": "4po2izekcfdrha1es2hff",
    "chapter": 11,
    "unit": 5,
    "title": "Missão 8 · Roteiro de discriminação",
@@ -3450,7 +3457,7 @@
   {
    "source": "#/c11p13",
    "slug": "c11p13",
-   "pageId": "kh36xivy6m6afg2qbppyv",
+   "pageId": "6z6izfypy6cmnea835yos",
    "chapter": 11,
    "unit": 5,
    "title": "Missão 9 · Calibração: quando 10% significa 10 em 100",
@@ -3469,7 +3476,7 @@
   {
    "source": "#/c11p14",
    "slug": "c11p14",
-   "pageId": "1dasu9p453k1wo261k8tn",
+   "pageId": "77t5exge3tnzlz11j58qu",
    "chapter": 11,
    "unit": 5,
    "title": "Missão 10 · A conta econômica da PD",
@@ -3488,7 +3495,7 @@
   {
    "source": "#/c11p15",
    "slug": "c11p15",
-   "pageId": "v9411oyoa98bykegccakc",
+   "pageId": "77gz3pdm54rnjga1iexdv",
    "chapter": 11,
    "unit": 5,
    "title": "Missão 11 · A falha escondida pela média",
@@ -3507,7 +3514,7 @@
   {
    "source": "#/c11p16",
    "slug": "c11p16",
-   "pageId": "1d192yfdnow42pqjrohm5",
+   "pageId": "iv0g1fldgh5w6bst0ft98",
    "chapter": 11,
    "unit": 5,
    "title": "Missão 11 · Alertas com responsável e ação",
@@ -3526,7 +3533,7 @@
   {
    "source": "#/c11p17",
    "slug": "c11p17",
-   "pageId": "ga299oummctptbmy1u6oe",
+   "pageId": "tkhttj1trepmtg34ifcz6",
    "chapter": 11,
    "unit": 5,
    "title": "Missão 12 · Pacote congelado antes do arquivo cego",
@@ -3545,7 +3552,7 @@
   {
    "source": "#/c11p18",
    "slug": "c11p18",
-   "pageId": "jjsfy92cclzmmw9dzjyj9",
+   "pageId": "es0wcxq1okj5fo9wrareu",
    "chapter": 11,
    "unit": 5,
    "title": "Avaliação final: quatro perguntas simples",

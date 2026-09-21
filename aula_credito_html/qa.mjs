@@ -13,6 +13,7 @@
      node qa.mjs --shots 01 09 22      salva capturas dos slides indicados
      node qa.mjs --largura 1920x1080   outra resolução
      node qa.mjs --estados             percorre também os estados extras de cada slide
+     node qa.mjs --aluno               verifica dist/aula_credito_aluno.html, a variante sem notas
 */
 
 import { chromium } from "playwright";
@@ -21,7 +22,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const raiz = path.dirname(fileURLToPath(import.meta.url));
-const arquivo = path.join(raiz, "dist", "aula_credito.html");
+/* --aluno verifica a variante compilada sem as notas do professor, servida ao aluno pela plataforma. */
+const arquivo = path.join(raiz, "dist", process.argv.includes("--aluno") ? "aula_credito_aluno.html" : "aula_credito.html");
 const pastaQa = path.join(raiz, "qa");
 fs.mkdirSync(pastaQa, { recursive: true });
 

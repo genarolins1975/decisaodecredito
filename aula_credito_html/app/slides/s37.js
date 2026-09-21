@@ -107,7 +107,7 @@ Aula.slide({
         h("div", { class: "painel cor" }, [
           h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:0" },
             Mat.b("F_m = F_{m-1} + \\eta\\, h_m")),
-          h("div", { class: "kv", estilo: "margin-top:8px;font-size:19px;gap:2px 12px" }, [
+          h("dl", { class: "kv", estilo: "margin-top:8px;font-size:19px;gap:2px 12px" }, [
             h("dt", {}, "taxa de aprendizagem"), h("dd", {}, F.dec(atual.taxa, 2)),
             h("dt", {}, "árvores usadas"), h("dd", {}, F.inteiro(est.iter)),
             h("dt", {}, "log loss de validação"),

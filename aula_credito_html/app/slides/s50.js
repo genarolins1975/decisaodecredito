@@ -113,8 +113,12 @@ Aula.slide({
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 600px" }, [
         h("div", { class: "painel", estilo: "padding:10px 16px" }, [
-          h("h3", { class: "secao", estilo: "margin-bottom:4px" },
-            "Três perguntas de recuperação"),
+          h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
+            h("h3", { class: "secao", estilo: "margin-bottom:4px" },
+              "Três perguntas de recuperação"),
+            h("button", { class: "btn min fantasma", estilo: "padding:2px 0;white-space:nowrap",
+              type: "button", onclick: ctx.reiniciar, "aria-label": "Reiniciar exemplo" }, "Reiniciar"),
+          ]),
           h("div", { class: "coluna", estilo: "gap:6px" }, perguntas.map(function (p) {
             var aberta = est.respondidas[p.chave];
             return h("div", { class: "painel" + (aberta ? " cor" : " claro"),

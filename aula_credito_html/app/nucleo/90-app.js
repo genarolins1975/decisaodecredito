@@ -1,7 +1,8 @@
 /* Motor da apresentação: navegação, modos, estado por slide e impressão.
-   Regra de estado: a exploração de um slide é preservada enquanto a sessão
-   estiver aberta; "Reiniciar exemplo" devolve o slide ao estado inicial.
-   Abrir uma URL explícita prevalece sobre o slide guardado. */
+   Regra de estado: a exploração de um slide é preservada enquanto a aba estiver aberta,
+   inclusive ao recarregar a página; "Reiniciar exemplo" devolve só aquele slide ao estado
+   inicial. O estado fica em sessionStorage, por aba, e só é restaurado se a versão da aula for
+   a mesma que o gravou. Abrir uma URL explícita prevalece sobre o slide guardado. */
 
 var App = (function () {
   var estados = {};
@@ -10,9 +11,23 @@ var App = (function () {
   var estudo = false;
   var LARGURA_ESTUDO = 1100;
   /* Embutida na plataforma, a aula perde o que não é do aluno. "aluno" segue o professor e não
-     navega; "livre" navega sozinho. Nos dois, as notas do professor e a impressão saem de cena.
-     Sem parâmetro, o arquivo é o de sempre: projeção, estudo offline, duplo clique. */
-  var MODO = (/[?&]modo=(aluno|livre)(?:&|$)/.exec(location.search) || [])[1] || "";
+     navega; "livre" navega sozinho; "projecao" é a janela projetada pelo professor, sem notas e
+     sem impressão, porque as notas ficam no painel dele, e não na tela da turma. Nos três, as
+     notas do professor saem de cena. Sem parâmetro, o arquivo é o de sempre: projeção com notas,
+     estudo offline, duplo clique. O modo pode mudar em tempo de execução por App.definirModo. */
+  var MODOS = ["aluno", "livre", "projecao"];
+  var MODO = lerModo(location.search);
+  /* A plataforma passa um identificador opaco por usuário para que duas pessoas no mesmo
+     navegador não herdem as explorações uma da outra. Sem ele, a chave é a do arquivo local. */
+  var NS = (/[?&]estado=([A-Za-z0-9_-]{1,40})(?:&|$)/.exec(location.search) || [])[1] || "local";
+  var CHAVE_SLIDE = "aula-credito-slide" + (NS === "local" ? "" : ":" + NS);
+  var CHAVE_ESTADO = "aula-credito-estado:" + NS;
+  var salvarTimer = null;
+
+  function lerModo(q) {
+    var m = /[?&]modo=([a-z]+)(?:&|$)/.exec(q || "");
+    return m && MODOS.indexOf(m[1]) >= 0 ? m[1] : "";
+  }
 
   function ordem() { return Aula.slides; }
   function indiceDe(id) {
@@ -23,6 +38,40 @@ var App = (function () {
   function estadoDe(id) {
     if (!estados[id]) estados[id] = {};
     return estados[id];
+  }
+
+  /* ------------------------------------------------------- persistência */
+
+  /* O estado gravado carrega a versão da aula: uma versão nova invalida o estado antigo em vez
+     de tentar aplicá-lo a slides que podem ter mudado. Estado ilegível é descartado. */
+  function salvarEstado() {
+    salvarTimer = null;
+    try {
+      sessionStorage.setItem(CHAVE_ESTADO, JSON.stringify({ versao: Aula.versao, estados: estados }));
+    } catch (e) { /* sem persistência: a aula segue só em memória */ }
+  }
+  function agendarSalvar() {
+    if (salvarTimer) clearTimeout(salvarTimer);
+    salvarTimer = setTimeout(salvarEstado, 200);
+  }
+  function restaurarEstado() {
+    var bruto = null;
+    try { bruto = sessionStorage.getItem(CHAVE_ESTADO); } catch (e) { return; }
+    if (!bruto) return;
+    try {
+      var s = JSON.parse(bruto);
+      if (s && s.versao === Aula.versao && s.estados && typeof s.estados === "object" && !Array.isArray(s.estados)) {
+        estados = s.estados;
+        return;
+      }
+    } catch (e) { /* corrompido: cai no descarte abaixo */ }
+    try { sessionStorage.removeItem(CHAVE_ESTADO); } catch (e) { /* nada a fazer */ }
+  }
+  /* Caminho de recuperação: apaga toda exploração desta aula nesta aba e remonta o slide. */
+  function limparEstados() {
+    estados = {};
+    try { sessionStorage.removeItem(CHAVE_ESTADO); } catch (e) { /* nada a fazer */ }
+    if (atual) montar(atual);
   }
 
   /* --------------------------------------------------------------- render */
@@ -77,6 +126,7 @@ var App = (function () {
     atualizarIndice();
     if (estudo) montarNotasEstudo(def);
     escalar();
+    agendarSalvar();
   }
 
   function montarNotasEstudo(def) {
@@ -115,6 +165,7 @@ var App = (function () {
   function atualizarNotas(def) {
     var cx = document.getElementById("notas");
     limpar(cx);
+    if (MODO || !def.notas) return;
     cx.appendChild(h("h2", {}, def.id + " · " + def.titulo));
     cx.appendChild(h("p", { class: "nota" }, def.fonte || ""));
     cx.appendChild(blocosDeNotas(def));
@@ -136,6 +187,7 @@ var App = (function () {
     if (cx.childElementCount) {
       [].forEach.call(cx.querySelectorAll("a"), function (a) {
         a.classList.toggle("atual", a.getAttribute("data-id") === atual);
+        a.setAttribute("aria-current", a.getAttribute("data-id") === atual ? "true" : "false");
       });
       return;
     }
@@ -148,14 +200,50 @@ var App = (function () {
       var lista = h("div", { class: "indice-lista" }, porBloco[b].map(function (s) {
         return h("a", {
           href: "#/slide/" + s.id, "data-id": s.id,
+          /* o filtro procura no número, no título e no nome do bloco: "boosting" encontra o bloco
+             inteiro mesmo que nenhum título traga a palavra */
+          "data-busca": normalizar(s.id + " " + s.titulo + " " + Aula.dados.blocos[b] + " " + b),
           class: s.id === atual ? "atual" : "",
+          "aria-current": s.id === atual ? "true" : "false",
           onclick: function () { fecharIndice(); },
         }, [h("b", {}, s.id), h("span", {}, s.titulo)]);
       }));
-      cx.appendChild(h("div", { class: "indice-bloco" }, [
+      cx.appendChild(h("div", { class: "indice-bloco", "data-bloco": b }, [
         h("h3", {}, Aula.dados.blocos[b]), lista,
       ]));
     });
+  }
+
+  /* Filtro do índice: número ou trecho do título, sem distinguir acentos nem caixa. Blocos sem
+     resultado somem; a contagem é anunciada para leitor de tela. */
+  function normalizar(s) {
+    return String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  }
+  function filtrarIndice(termo) {
+    var q = normalizar(termo || "").trim();
+    var visiveis = 0;
+    [].forEach.call(document.querySelectorAll("#indice-lista .indice-bloco"), function (bloco) {
+      var algum = false;
+      [].forEach.call(bloco.querySelectorAll("a"), function (a) {
+        var bate = !q || (a.getAttribute("data-busca") || normalizar(a.textContent)).indexOf(q) >= 0;
+        a.hidden = !bate;
+        if (bate) { algum = true; visiveis += 1; }
+      });
+      bloco.hidden = !algum;
+    });
+    var aviso = document.getElementById("indice-contagem");
+    if (aviso) {
+      aviso.textContent = q
+        ? (visiveis === 0 ? "Nenhum slide corresponde a “" + termo + "”."
+                          : visiveis + (visiveis === 1 ? " slide encontrado." : " slides encontrados."))
+        : "";
+    }
+    return visiveis;
+  }
+  function primeiroVisivelDoIndice() {
+    var links = document.querySelectorAll("#indice-lista a");
+    for (var i = 0; i < links.length; i++) if (!links[i].hidden) return links[i];
+    return null;
   }
 
   /* ------------------------------------------------------------ navegação */
@@ -176,16 +264,24 @@ var App = (function () {
 
   function doHash() {
     var m = /^#\/slide\/(\d{2})$/.exec(location.hash || "");
-    var id = m ? m[1] : (localStorage.getItem("aula-credito-slide") || "01");
+    var guardado = null;
+    try { guardado = localStorage.getItem(CHAVE_SLIDE); } catch (e) { /* sem persistência */ }
+    var id = m ? m[1] : (guardado || "01");
     if (!Aula.registro[id]) id = "01";
     montar(id);
-    try { localStorage.setItem("aula-credito-slide", id); } catch (e) { /* sem persistência */ }
+    try { localStorage.setItem(CHAVE_SLIDE, id); } catch (e) { /* sem persistência */ }
   }
 
   /* ---------------------------------------------------------------- modos */
 
+  /* A variante compilada para o aluno não tem nota nenhuma: nela o botão Professor e a tecla p
+     não existem, em vez de abrirem um painel vazio. */
+  function temNotas() {
+    return Aula.slides.some(function (s) { return !!s.notas; });
+  }
+
   function alternarProfessor(v) {
-    if (MODO) return;
+    if (MODO || !temNotas()) return;
     professor = v === undefined ? !professor : v;
     document.getElementById("notas").hidden = !professor;
     document.getElementById("btn-professor").classList.toggle("ativo", professor);
@@ -203,6 +299,32 @@ var App = (function () {
     montar(atual);
   }
 
+  /* Troca de modo sem recarregar o arquivo: a casca da plataforma chama isto quando o aluno
+     passa de "seguir o professor" a "navegar por conta própria" e volta, e a exploração de cada
+     slide continua onde estava. Modo desconhecido é ignorado. */
+  function definirModo(novo) {
+    novo = novo || "";
+    if (novo && MODOS.indexOf(novo) < 0) return false;
+    if (novo === MODO) return true;
+    MODO = novo;
+    if (MODO) document.body.setAttribute("data-modo", MODO);
+    else document.body.removeAttribute("data-modo");
+    if (MODO) {
+      professor = false;
+      document.getElementById("notas").hidden = true;
+      document.getElementById("btn-professor").classList.remove("ativo");
+      document.getElementById("btn-professor").setAttribute("aria-pressed", "false");
+      var velho = document.getElementById("estudo-notas");
+      if (velho) velho.parentNode.removeChild(velho);
+      fecharIndice();
+    } else if (atual) {
+      atualizarNotas(Aula.registro[atual]);
+      if (estudo) montarNotasEstudo(Aula.registro[atual]);
+    }
+    escalar();
+    return true;
+  }
+
   function telaCheia() {
     if (document.fullscreenElement) document.exitFullscreen();
     else if (document.documentElement.requestFullscreen) {
@@ -210,12 +332,37 @@ var App = (function () {
     }
   }
 
+  var focoAntesDoIndice = null;
   function abrirIndice() {
-    document.getElementById("indice").hidden = false;
+    var indice = document.getElementById("indice");
+    if (!indice.hidden) return;
+    focoAntesDoIndice = document.activeElement;
+    indice.hidden = false;
+    /* Enquanto o índice está aberto, o resto da página não recebe foco nem clique. */
+    ["moldura", "barra"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.inert = true;
+    });
+    var busca = document.getElementById("indice-busca");
+    if (busca) { busca.value = ""; filtrarIndice(""); busca.focus(); return; }
     var a = document.querySelector("#indice-lista a.atual") || document.querySelector("#indice-lista a");
     if (a) a.focus();
   }
-  function fecharIndice() { document.getElementById("indice").hidden = true; }
+  function fecharIndice() {
+    var indice = document.getElementById("indice");
+    if (indice.hidden) return;
+    indice.hidden = true;
+    ["moldura", "barra"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.inert = false;
+    });
+    if (focoAntesDoIndice && focoAntesDoIndice.focus && document.contains(focoAntesDoIndice)) {
+      focoAntesDoIndice.focus();
+    } else {
+      document.getElementById("btn-indice").focus();
+    }
+    focoAntesDoIndice = null;
+  }
 
   /* ------------------------------------------------------------- escala */
 
@@ -269,13 +416,14 @@ var App = (function () {
       cx.appendChild(h("article", { class: "folha" }, palco));
     });
 
+    var comNotas = Aula.slides.filter(function (def) { return !!def.notas; });
+    if (!comNotas.length) return;
     var apendice = h("section", { class: "apendice" }, [
       h("h1", { class: "titulo" }, "Apêndice: notas do professor e respostas"),
       h("p", { class: "subtitulo" },
         "Mesma ordem dos slides. Cada bloco traz condução, respostas, cuidados e transição."),
     ]);
-    Aula.slides.forEach(function (def) {
-      if (!def.notas) return;
+    comNotas.forEach(function (def) {
       apendice.appendChild(h("div", { class: "bloco-notas" }, [
         h("h2", {}, def.id + " · " + def.titulo),
         h("p", { class: "fonte" }, def.fonte || ""),
@@ -307,7 +455,7 @@ var App = (function () {
       case "Home": navegar(Aula.slides[0].id); e.preventDefault(); break;
       case "End": navegar(Aula.slides[Aula.slides.length - 1].id); e.preventDefault(); break;
       case "p": case "P": if (!MODO) alternarProfessor(); break;
-      case "e": case "E": alternarEstudo(); break;
+      case "e": case "E": if (MODO !== "projecao") alternarEstudo(); break;
       case "f": case "F": telaCheia(); break;
       case "i": case "I":
         if (document.getElementById("indice").hidden) abrirIndice(); else fecharIndice();
@@ -330,18 +478,41 @@ var App = (function () {
       prepararImpressao();
       setTimeout(function () { window.print(); }, 60);
     });
+    var busca = document.getElementById("indice-busca");
+    if (busca) {
+      busca.addEventListener("input", function () { filtrarIndice(busca.value); });
+      busca.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          var a = primeiroVisivelDoIndice();
+          if (a) { e.preventDefault(); fecharIndice(); navegar(a.getAttribute("data-id")); }
+        } else if (e.key === "ArrowDown") {
+          var b = primeiroVisivelDoIndice();
+          if (b) { e.preventDefault(); b.focus(); }
+        }
+      });
+    }
+    var limparBtn = document.getElementById("btn-limpar-estado");
+    if (limparBtn) {
+      limparBtn.addEventListener("click", function () {
+        fecharIndice();
+        limparEstados();
+      });
+    }
     window.addEventListener("hashchange", doHash);
     window.addEventListener("resize", checarLargura);
     window.addEventListener("keydown", teclado);
+    window.addEventListener("pagehide", salvarEstado);
     window.addEventListener("beforeprint", function () {
       if (!document.getElementById("impressao").childElementCount) prepararImpressao();
     });
     if (MODO) document.body.setAttribute("data-modo", MODO);
+    if (!temNotas()) document.getElementById("btn-professor").hidden = true;
     if (window.innerWidth < LARGURA_ESTUDO) {
       estudo = true;
       document.body.classList.add("estudo");
       document.getElementById("btn-estudo").classList.add("ativo");
     }
+    restaurarEstado();
     doHash();
     escalar();
   }
@@ -349,6 +520,9 @@ var App = (function () {
   return {
     iniciar: iniciar, navegar: navegar, montar: montar, estadoDe: estadoDe,
     prepararImpressao: prepararImpressao, escalar: escalar,
+    definirModo: definirModo, modo: function () { return MODO; },
+    limparEstados: limparEstados, salvarEstado: salvarEstado,
+    atual: function () { return atual; },
   };
 })();
 

@@ -119,7 +119,7 @@ Aula.slide({
           h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:0 0 4px;font-size:16px" },
             Mat.b("\\mathbb{E}[\\text{resultado}] = m - p\\,\\text{LGD}\\,\\text{EAD}"
               + (foraDaFaixa ? "" : "\\quad p^{*} = \\tfrac{m}{\\text{LGD}\\,\\text{EAD}} = " + Mat.pct(equilibrio, 0)))),
-          h("div", { class: "kv", estilo: "font-size:18px;gap:1px 12px" }, [
+          h("dl", { class: "kv", estilo: "font-size:18px;gap:1px 12px" }, [
             h("dt", {}, "margem antes da perda"), h("dd", {}, F.reais(hip.margem)),
             h("dt", {}, "EAD"), h("dd", {}, F.reais(hip.ead)),
             h("dt", {}, "LGD"), h("dd", {}, F.pct(hip.lgd, 0)),

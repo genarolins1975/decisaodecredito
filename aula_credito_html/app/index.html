@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Modelagem de crédito: logit, árvore e boosting</title>
 <meta name="description" content="Aula interativa de 50 slides sobre regressão logística, árvore de decisão e gradient boosting aplicados à concessão de crédito pessoal.">
+<link rel="icon" href="data:,">
 <link rel="stylesheet" href="vendor/katex.css">
 <link rel="stylesheet" href="estilo/aula.css">
 </head>
@@ -25,14 +26,22 @@
   <button type="button" id="btn-imprimir">Imprimir</button>
 </nav>
 <aside id="notas" hidden aria-label="notas do professor"></aside>
-<div id="indice" hidden role="dialog" aria-label="índice dos 50 slides">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+<div id="indice" hidden role="dialog" aria-modal="true" aria-label="índice dos 50 slides">
+  <div class="indice-topo">
     <h2>Os 50 slides da aula</h2>
     <button type="button" id="btn-fechar-indice" class="btn min">Fechar</button>
   </div>
+  <label for="indice-busca" class="oculto-visual">Filtrar slides por número ou título</label>
+  <input type="search" id="indice-busca" placeholder="Filtrar por número ou título (Enter abre o primeiro)" autocomplete="off">
+  <p id="indice-contagem" aria-live="polite"></p>
   <div id="indice-lista"></div>
+  <div class="indice-rodape">
+    <span>As explorações dos slides ficam só nesta aba do navegador.</span>
+    <button type="button" id="btn-limpar-estado" class="btn min fantasma">Limpar minhas explorações</button>
+  </div>
 </div>
 <div id="impressao"></div>
+<script src="dados/00-versao.js"></script>
 <script src="vendor/katex.js"></script>
 <script src="nucleo/01-nucleo.js"></script>
 <script src="nucleo/02-svg.js"></script>

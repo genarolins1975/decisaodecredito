@@ -122,7 +122,7 @@ Aula.slide({
         h("div", { class: "g2" }, [
           h("div", { class: "painel", estilo: "padding:10px 16px" }, [
             h("h3", { class: "secao", estilo: "margin-bottom:4px" }, "Indicadores imediatos"),
-            h("div", { class: "kv", estilo: "font-size:18px;gap:1px 12px" },
+            h("dl", { class: "kv", estilo: "font-size:18px;gap:1px 12px" },
               imediatos.reduce(function (a, p) {
                 a.push(h("dt", {}, p[0])); a.push(h("dd", {}, p[1])); return a;
               }, [])),
@@ -130,7 +130,7 @@ Aula.slide({
           h("div", { class: "painel", estilo: "padding:10px 16px" }, [
             h("h3", { class: "secao", estilo: "margin-bottom:4px" },
               "Indicadores com alvo maturado"),
-            h("div", { class: "kv", estilo: "font-size:18px;gap:1px 12px" },
+            h("dl", { class: "kv", estilo: "font-size:18px;gap:1px 12px" },
               posteriores.reduce(function (a, p) {
                 a.push(h("dt", {}, p[0])); a.push(h("dd", {}, p[1])); return a;
               }, [])),
@@ -163,7 +163,7 @@ Aula.slide({
         ]),
         cen
           ? h("div", { class: "painel cor cresce" }, [
-              h("div", { class: "kv", estilo: "font-size:17px;gap:0 12px" }, [
+              h("dl", { class: "kv", estilo: "font-size:17px;gap:0 12px" }, [
                 h("dt", {}, "PD média prevista"), h("dd", {}, F.pct(cen.pd_media, 2)),
                 h("dt", {}, "taxa de aprovação"), h("dd", {}, F.pct(cen.aprovacao, 1)),
                 h("dt", {}, "ausência de utilização"), h("dd", {}, F.pct(cen.ausentes_util, 1)),

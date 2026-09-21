@@ -20,7 +20,14 @@
       "controles": 15,
       "svgs": 0,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "02",
@@ -29,8 +36,8 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 641,
-      "corpoVisivel": 641,
+      "alturaCorpo": 619,
+      "corpoVisivel": 619,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -40,7 +47,14 @@
       "controles": 12,
       "svgs": 0,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "03",
@@ -49,18 +63,25 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 1435,
-      "corpoVisivel": 1435,
+      "alturaCorpo": 1475,
+      "corpoVisivel": 1475,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
       "amostra": null,
       "culpado": null,
       "rolagemPagina": 0,
-      "controles": 2,
+      "controles": 3,
       "svgs": 3,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "04",
@@ -80,7 +101,14 @@
       "controles": 16,
       "svgs": 0,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "05",
@@ -89,18 +117,25 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 984,
-      "corpoVisivel": 984,
+      "alturaCorpo": 1026,
+      "corpoVisivel": 1026,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
       "amostra": null,
       "culpado": null,
       "rolagemPagina": 0,
-      "controles": 4,
+      "controles": 5,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "06",
@@ -120,7 +155,14 @@
       "controles": 8,
       "svgs": 3,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "07",
@@ -129,8 +171,8 @@
       "estourado": null,
       "corte": 4,
       "cortado": "4px | −2,025",
-      "alturaCorpo": 886,
-      "corpoVisivel": 886,
+      "alturaCorpo": 958,
+      "corpoVisivel": 958,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -140,7 +182,14 @@
       "controles": 7,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "08",
@@ -149,8 +198,8 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 1016,
-      "corpoVisivel": 1016,
+      "alturaCorpo": 1019,
+      "corpoVisivel": 1019,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -160,7 +209,14 @@
       "controles": 4,
       "svgs": 3,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "09",
@@ -169,8 +225,8 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 1039,
-      "corpoVisivel": 1039,
+      "alturaCorpo": 1059,
+      "corpoVisivel": 1059,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -180,7 +236,14 @@
       "controles": 8,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "10",
@@ -189,8 +252,8 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 864,
-      "corpoVisivel": 864,
+      "alturaCorpo": 940,
+      "corpoVisivel": 940,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -200,7 +263,14 @@
       "controles": 8,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "11",
@@ -220,7 +290,14 @@
       "controles": 6,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "12",
@@ -229,8 +306,8 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 1025,
-      "corpoVisivel": 1025,
+      "alturaCorpo": 1043,
+      "corpoVisivel": 1043,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -240,7 +317,14 @@
       "controles": 16,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "13",
@@ -249,8 +333,8 @@
       "estourado": null,
       "corte": 4,
       "cortado": "4px | 100%",
-      "alturaCorpo": 403,
-      "corpoVisivel": 403,
+      "alturaCorpo": 406,
+      "corpoVisivel": 406,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -260,7 +344,14 @@
       "controles": 6,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "14",
@@ -269,8 +360,8 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 1093,
-      "corpoVisivel": 1093,
+      "alturaCorpo": 1105,
+      "corpoVisivel": 1105,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -280,7 +371,14 @@
       "controles": 9,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "15",
@@ -289,8 +387,8 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 978,
-      "corpoVisivel": 978,
+      "alturaCorpo": 981,
+      "corpoVisivel": 981,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -300,7 +398,14 @@
       "controles": 7,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "16",
@@ -309,8 +414,8 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 565,
-      "corpoVisivel": 565,
+      "alturaCorpo": 568,
+      "corpoVisivel": 568,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -320,7 +425,14 @@
       "controles": 5,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "17",
@@ -329,8 +441,8 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 438,
-      "corpoVisivel": 438,
+      "alturaCorpo": 429,
+      "corpoVisivel": 429,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -340,7 +452,14 @@
       "controles": 6,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "18",
@@ -349,8 +468,8 @@
       "estourado": null,
       "corte": 2,
       "cortado": "2px | validação",
-      "alturaCorpo": 489,
-      "corpoVisivel": 489,
+      "alturaCorpo": 516,
+      "corpoVisivel": 516,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -360,7 +479,14 @@
       "controles": 4,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "19",
@@ -380,7 +506,14 @@
       "controles": 6,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "20",
@@ -389,8 +522,8 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 1012,
-      "corpoVisivel": 1012,
+      "alturaCorpo": 990,
+      "corpoVisivel": 990,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -400,7 +533,14 @@
       "controles": 9,
       "svgs": 0,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "21",
@@ -409,8 +549,8 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 1005,
-      "corpoVisivel": 1005,
+      "alturaCorpo": 983,
+      "corpoVisivel": 983,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -420,7 +560,14 @@
       "controles": 6,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "22",
@@ -429,8 +576,8 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 1197,
-      "corpoVisivel": 1197,
+      "alturaCorpo": 1200,
+      "corpoVisivel": 1200,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -440,7 +587,14 @@
       "controles": 6,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "23",
@@ -460,7 +614,14 @@
       "controles": 5,
       "svgs": 5,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "24",
@@ -469,8 +630,8 @@
       "estourado": null,
       "corte": 2,
       "cortado": "2px | 100%",
-      "alturaCorpo": 522,
-      "corpoVisivel": 522,
+      "alturaCorpo": 525,
+      "corpoVisivel": 525,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -480,7 +641,14 @@
       "controles": 3,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "25",
@@ -489,8 +657,8 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 1131,
-      "corpoVisivel": 1131,
+      "alturaCorpo": 1135,
+      "corpoVisivel": 1135,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -498,9 +666,16 @@
       "culpado": null,
       "rolagemPagina": 0,
       "controles": 3,
-      "svgs": 1,
+      "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "26",
@@ -520,7 +695,14 @@
       "controles": 10,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "27",
@@ -540,7 +722,14 @@
       "controles": 2,
       "svgs": 5,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "28",
@@ -560,7 +749,14 @@
       "controles": 6,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "29",
@@ -580,7 +776,14 @@
       "controles": 21,
       "svgs": 3,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "30",
@@ -600,7 +803,14 @@
       "controles": 10,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "31",
@@ -620,7 +830,14 @@
       "controles": 4,
       "svgs": 3,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "32",
@@ -629,8 +846,8 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 942,
-      "corpoVisivel": 942,
+      "alturaCorpo": 945,
+      "corpoVisivel": 945,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -640,7 +857,14 @@
       "controles": 3,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "33",
@@ -649,8 +873,8 @@
       "estourado": null,
       "corte": 4,
       "cortado": "4px | perda média dos 10 registros",
-      "alturaCorpo": 980,
-      "corpoVisivel": 980,
+      "alturaCorpo": 987,
+      "corpoVisivel": 987,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -660,7 +884,14 @@
       "controles": 5,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "34",
@@ -669,8 +900,8 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 1005,
-      "corpoVisivel": 1005,
+      "alturaCorpo": 1009,
+      "corpoVisivel": 1009,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -680,7 +911,14 @@
       "controles": 4,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "35",
@@ -700,7 +938,14 @@
       "controles": 4,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "36",
@@ -709,8 +954,8 @@
       "estourado": null,
       "corte": 4,
       "cortado": "4px | −1,020",
-      "alturaCorpo": 1002,
-      "corpoVisivel": 1002,
+      "alturaCorpo": 1006,
+      "corpoVisivel": 1006,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -720,7 +965,14 @@
       "controles": 6,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "37",
@@ -729,8 +981,8 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 969,
-      "corpoVisivel": 969,
+      "alturaCorpo": 972,
+      "corpoVisivel": 972,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -740,7 +992,14 @@
       "controles": 6,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "38",
@@ -760,7 +1019,14 @@
       "controles": 12,
       "svgs": 4,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "39",
@@ -780,7 +1046,14 @@
       "controles": 3,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "40",
@@ -800,7 +1073,14 @@
       "controles": 6,
       "svgs": 0,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "41",
@@ -809,8 +1089,8 @@
       "estourado": null,
       "corte": 5,
       "cortado": "5px | referência −2,056",
-      "alturaCorpo": 1384,
-      "corpoVisivel": 1384,
+      "alturaCorpo": 1358,
+      "corpoVisivel": 1358,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -820,7 +1100,14 @@
       "controles": 11,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "42",
@@ -829,8 +1116,8 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 713,
-      "corpoVisivel": 713,
+      "alturaCorpo": 691,
+      "corpoVisivel": 691,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -840,7 +1127,14 @@
       "controles": 7,
       "svgs": 0,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "43",
@@ -860,7 +1154,14 @@
       "controles": 5,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "44",
@@ -869,8 +1170,8 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 1039,
-      "corpoVisivel": 1039,
+      "alturaCorpo": 1081,
+      "corpoVisivel": 1081,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -880,7 +1181,14 @@
       "controles": 7,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "45",
@@ -889,8 +1197,8 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 1699,
-      "corpoVisivel": 1699,
+      "alturaCorpo": 1642,
+      "corpoVisivel": 1642,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -900,7 +1208,14 @@
       "controles": 7,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "46",
@@ -909,8 +1224,8 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 1168,
-      "corpoVisivel": 1168,
+      "alturaCorpo": 1178,
+      "corpoVisivel": 1178,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -920,7 +1235,14 @@
       "controles": 10,
       "svgs": 3,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "47",
@@ -929,8 +1251,8 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 1114,
-      "corpoVisivel": 1114,
+      "alturaCorpo": 1117,
+      "corpoVisivel": 1117,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -940,7 +1262,14 @@
       "controles": 5,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "48",
@@ -960,7 +1289,14 @@
       "controles": 5,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "49",
@@ -980,7 +1316,14 @@
       "controles": 10,
       "svgs": 0,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "50",
@@ -989,18 +1332,25 @@
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 1141,
-      "corpoVisivel": 1141,
+      "alturaCorpo": 1145,
+      "corpoVisivel": 1145,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
       "amostra": null,
       "culpado": null,
       "rolagemPagina": 0,
-      "controles": 4,
+      "controles": 5,
       "svgs": 0,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": true,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     }
   ],
   "erros": [],

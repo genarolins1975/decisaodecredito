@@ -122,7 +122,7 @@ Aula.slide({
           h("h3", { class: "secao", estilo: "margin:0 0 6px" }, fonte.titulo),
           h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:0 0 4px;font-size:17px" },
             Mat.b("\\mathcal{L}_{\\text{pen}} = \\mathcal{L} + \\tfrac{1}{2C}\\textstyle\\sum_j \\beta_j^{2}")),
-          h("div", { class: "kv", estilo: "font-size:18px;gap:2px 12px" }, [
+          h("dl", { class: "kv", estilo: "font-size:18px;gap:2px 12px" }, [
             h("dt", {}, "C e força"),
             h("dd", {}, F.dec(atual.C, atual.C < 1 ? 4 : 0) + "  ·  " +
               F.dec(atual.forca, atual.forca < 1 ? 3 : 0)),

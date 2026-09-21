@@ -15,10 +15,14 @@ técnicas", é conduzida por estes 50 slides e por isso não tem capítulos; as 
 páginas dos capítulos 4, 5 e 6 formam o **apêndice** de estudo, que aparece depois
 do trabalho final.
 
-A aula é servida em `/slides/aula-2`. O `build.mjs` copia o arquivo para
-`content/slides/aula-2.html` a cada compilação, então os dois são sempre idênticos.
-A rota valida a sessão no servidor e exige turma acessível, a mesma regra dos
-materiais. O arquivo não fica em `public/` de propósito: arquivo em `public/` é
+A aula é servida em `/slides/aula-2`. O `build.mjs` produz três saídas e as copia para
+`content/slides/`: `aula-2.html` (o arquivo completo, com as notas, para professor e
+monitor), `aula-2-aluno.html` (a mesma aula sem as notas do professor, removidas dos
+fontes pela árvore sintática e conferidas frase a frase) e `aula-2-notas.json` (as notas
+por slide, que o painel da aula mostra ao professor). A rota valida a sessão no servidor,
+exige turma acessível, a mesma regra dos materiais, e escolhe o arquivo pelo papel. As três
+saídas carregam a mesma marca de compilação (`Aula.versao`), gravada em
+`app/dados/00-versao.js`. O arquivo não fica em `public/` de propósito: arquivo em `public/` é
 servido antes de qualquer verificação, e o `src/proxy.ts` só confere se existe um
 cookie chamado `sessao`, o que é conveniência de navegação e não controle de acesso.
 
@@ -31,7 +35,9 @@ A Aula 2 é conduzida pelo baralho, e o aluno acompanha na plataforma. No painel
 aula, em `/professor/aovivo/<sessão>`, o bloco "Conduzir pelos slides" escolhe o
 slide, e "Projetar os slides" abre a janela de projeção. Nessa janela você navega
 com as setas, como sempre; a casca lê o `#/slide/NN` do baralho e publica na sessão,
-e a tela do aluno troca de slide sem recarregar o arquivo. O baralho continua um
+e a tela do aluno troca de slide sem recarregar o arquivo. A janela projetada abre o
+baralho em `?modo=projecao`: sem notas, sem impressão e sem modo estudo, porque é o que
+a turma vê. As notas do slide no ar ficam no painel, no bloco "Roteiro do slide no ar". O baralho continua um
 arquivo único e offline: quem fala com a API é a casca, não ele.
 
 O roteiro em `src/lib/content/roteiro-aula-2.ts` liga cada slide às páginas do
@@ -47,16 +53,31 @@ Para trabalhar no código, abra `app/index.html`, que carrega os mesmos arquivos
 |---|---|
 | Avançar e voltar | setas, PageUp e PageDown, ou os botões Anterior e Próximo |
 | Primeiro e último slide | Home e End |
-| Índice dos 50 slides | tecla `i` ou o botão Índice |
+| Índice dos 50 slides, com filtro por número, título ou bloco | tecla `i` ou o botão Índice; Enter abre o primeiro resultado |
 | Notas do professor | tecla `p` ou o botão Professor |
 | Modo estudo | tecla `e` ou o botão Estudo |
 | Tela cheia | tecla `f` ou o botão Tela cheia |
 | Imprimir | botão Imprimir, ou Ctrl+P |
 | Ir a um slide pelo endereço | `#/slide/27` no fim da URL |
 
-As notas do professor ficam ocultas por padrão. Elas trazem condução em aula, respostas
-dos exercícios, cuidados e limites, a transição para o slide seguinte e, no bloco de
-logit, aprofundamentos vindos do material original do curso.
+As notas do professor ficam ocultas por padrão no arquivo completo. Elas trazem condução
+em aula, respostas dos exercícios, cuidados e limites, a transição para o slide seguinte e,
+no bloco de logit, aprofundamentos vindos do material original do curso. No arquivo do
+aluno elas não existem, e o botão Professor não aparece.
+
+## Estado e modos
+
+A exploração de cada slide (controles, exercícios, escolhas) fica em `sessionStorage`,
+por aba, sob a chave `aula-credito-estado:<usuário>`, junto com a marca da compilação:
+sobrevive a recarregar a página, some ao fechar a aba e é descartada quando a aula muda
+de versão. "Reiniciar exemplo" devolve um slide ao início sem tocar os outros; "Limpar
+minhas explorações", no índice, apaga tudo. Sem o parâmetro `estado`, a chave é a do
+arquivo local.
+
+Os modos, por parâmetro `?modo=`: `aluno` (segue o professor: sem barra e sem teclado),
+`livre` (navega, sem notas e sem impressão), `projecao` (janela projetada: índice,
+anterior, próximo e tela cheia, sem notas). A casca da plataforma troca o modo em tempo de
+execução por `App.definirModo`, sem recarregar.
 
 O modo estudo reorganiza o slide em coluna, mostra as notas na própria página e dispensa
 o mouse. Abaixo de 1100px de largura ele entra sozinho, de modo que a aula também se lê
@@ -96,6 +117,7 @@ python3 experimento/experimento.py        # refaz o experimento
 python3 experimento/gerar_notebook.py     # remonta e executa o notebook
 node build.mjs                            # regenera app/index.html e dist/aula_credito.html
 node qa.mjs                               # verifica os 50 slides
+node qa.mjs --aluno                       # verifica a variante sem notas
 node imprimir.mjs                         # gera o PDF de impressão
 ```
 

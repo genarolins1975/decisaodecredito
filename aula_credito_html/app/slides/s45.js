@@ -127,7 +127,7 @@ Aula.slide({
       h("div", { class: "coluna", estilo: "flex:0 0 400px" }, [
         h("div", { class: "painel cor" }, [
           h("h3", { class: "secao" }, atual.rotulo),
-          h("div", { class: "kv", estilo: "font-size:19px;gap:2px 12px" }, [
+          h("dl", { class: "kv", estilo: "font-size:19px;gap:2px 12px" }, [
             h("dt", {}, "AUC"), h("dd", {}, F.dec(atual.auc, 6)),
             h("dt", {}, "Brier"), h("dd", {}, F.dec(atual.brier, 5)),
             h("dt", {}, "log loss"), h("dd", {}, F.dec(atual.ll, 5)),

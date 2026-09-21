@@ -942,6 +942,47 @@ test("aula em slides: professor conduz o baralho, aluno acompanha e não recebe 
   await expect(dentro.locator("#barra")).toBeHidden();          // o aluno não navega sozinho enquanto segue
   await expect(dentro.locator("#btn-professor")).toBeHidden();  // nem abre as notas do professor
   expect(await page.content()).not.toContain("Notas do professor");
+  expect(await page.content()).toContain("O que fica salvo");   // e lê o que é guardado onde
+
+  // "Navegar por conta própria" não recarrega o baralho: a exploração do aluno sobrevive à troca de modo.
+  // O slide 12 é a calculadora de PD: o número grande é a PD do perfil, e o segundo slider é o comprometimento.
+  await prof.post(`/api/aovivo/${sessionId}/slide`, { data: { slide: "12" } });
+  await expect(dentro.locator(".cabeca .passo")).toHaveText("slide 12 de 50");
+  const pdAntes = await dentro.locator(".grande").first().textContent();
+  await dentro.locator("input[type=range]").nth(1).focus();
+  for (let i = 0; i < 6; i++) await page.keyboard.press("ArrowRight");
+  const pdMexida = await dentro.locator(".grande").first().textContent();
+  expect(pdMexida).not.toBe(pdAntes);
+  await page.getByRole("button", { name: "Navegar por conta própria" }).click();
+  await expect(dentro.locator("#barra")).toBeVisible();
+  expect(await quadro.getAttribute("src")).toMatch(/modo=aluno/);   // o src não mudou: não houve recarga
+  expect(await dentro.locator(".grande").first().textContent()).toBe(pdMexida);
+  await page.getByRole("button", { name: /Voltar ao slide do professor/ }).click();
+  await expect(dentro.locator("#barra")).toBeHidden();
+  expect(await dentro.locator(".grande").first().textContent()).toBe(pdMexida);
+  // recarregar a página preserva a exploração (sessionStorage, por aba) e o slide do professor
+  await page.reload();
+  await expect(dentro.locator(".cabeca .passo")).toHaveText("slide 12 de 50");
+  expect(await dentro.locator(".grande").first().textContent()).toBe(pdMexida);
+  // o arquivo do aluno não oferece o botão Professor: não há nota para abrir
+  await expect(dentro.locator("#btn-professor")).toBeHidden();
+
+  // o arquivo do aluno é a variante sem notas; o do professor é a completa; o painel traz as notas do slide no ar
+  const fs2 = await import("node:fs");
+  const notas = JSON.parse(fs2.readFileSync("content/slides/aula-2-notas.json", "utf8")) as { slides: { n: string; notas: { conducao: string[] } }[] };
+  const fraseNota = notas.slides.find((x) => x.n === "12")!.notas.conducao[0];
+  const arqAluno = await (await aluno.get("/slides/aula-2")).text();
+  expect(arqAluno).toContain("Aula.slide(");
+  expect(arqAluno).not.toContain(fraseNota);
+  const arqProf = await (await prof.get("/slides/aula-2")).text();
+  expect(arqProf).toContain(fraseNota);
+  const desescapar = (t: string) => t.replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&amp;/g, "&");
+  const painelAoVivo = desescapar(await (await prof.get(`/professor/aovivo/${sessionId}`)).text());
+  expect(painelAoVivo).toContain("Roteiro do slide no ar");
+  expect(painelAoVivo).toContain(fraseNota);
+  // a janela projetada abre o baralho em modo projeção: sem notas, sem impressão
+  const projecao = await (await prof.get(`/apresentacao/slides?sessao=${sessionId}`)).text();
+  expect(projecao).toContain("/slides/aula-2?modo=projecao");
 
   // o arquivo da aula exige sessão e matrícula
   const anon = await apiAs(null);

@@ -12,8 +12,11 @@ type Activity = { id: string; status: string; round: string; closesAt: string | 
 type State = { session: { id: string; status: string; stateVersion: number; classId: string }; currentPage: { slug: string; title: string } | null; currentSlide: string | null; activities: Activity[] };
 type PageData = { page: { slug: string; title: string; objective: string | null; support: string | null; chapter: { number: number; title: string; color: string | null } }; blocks: Block[]; questions: PublicQuestion[]; prev: string | null; next: string | null };
 
-export function LiveStudent({ sessionId, classId, meeting, initial }: { sessionId: string; classId: string; meeting: { id: string; title: string; number: number; videoUrl: string | null }; initial: State }) {
-  const { state, channel, lastUpdate } = useLiveState<State>(sessionId, initial);
+type ModoBaralho = "aluno" | "livre";
+type JanelaBaralho = Window & { App?: { definirModo?: (modo: string) => boolean } };
+
+export function LiveStudent({ sessionId, classId, userId, meeting, initial }: { sessionId: string; classId: string; userId: string; meeting: { id: string; title: string; number: number; videoUrl: string | null }; initial: State }) {
+  const { state, channel, lastUpdate, stale, staleSinceMs } = useLiveState<State>(sessionId, initial);
   const [follow, setFollow] = useState(true);
   const [ownSlug, setSlug] = useState<string | null>(initial.currentPage?.slug ?? null);
   const [page, setPage] = useState<PageData | null>(null);
@@ -27,18 +30,32 @@ export function LiveStudent({ sessionId, classId, meeting, initial }: { sessionI
      a navegação do próprio baralho, ainda sem as notas. */
   const [meuSlide, setMeuSlide] = useState<string | null>(initial.currentSlide);
   const slide = follow ? st.currentSlide : meuSlide;
-  const modo = follow ? "aluno" : "livre";
+  const modo: ModoBaralho = follow ? "aluno" : "livre";
   const quadro = useRef<HTMLIFrameElement>(null);
-  /* O baralho navega por `#/slide/NN` e escuta hashchange. Trocar só o hash do iframe, que é da
-     mesma origem, move o aluno de slide sem recarregar os 863 KB do arquivo. */
+  /* O src do iframe é fixado na primeira vez em que há slide e não muda mais: trocar o src
+     recarregaria o arquivo e apagaria a exploração do aluno. O baralho navega por `#/slide/NN`
+     e escuta hashchange; a troca entre seguir e navegar por conta própria entra por
+     App.definirModo, da mesma origem, sem recarga. `estado` é um identificador opaco que separa,
+     no navegador, o que este usuário explorou do que outro usuário exploraria na mesma máquina. */
+  const [src, setSrc] = useState<string | null>(null);
+  // estado derivado do primeiro slide: fixado uma vez, na própria renderização, e nunca mais trocado
+  if (slide && src === null) setSrc(`/slides/aula-2?modo=${modo}&estado=${encodeURIComponent(userId)}#/slide/${slide}`);
   useEffect(() => {
-    if (!follow || !slide) return;
+    const f = quadro.current;
+    if (!f || !slide) return;
     const alvo = `#/slide/${slide}`;
-    const aplicar = () => { try { const w = quadro.current?.contentWindow; if (w && w.location.hash !== alvo) w.location.hash = alvo; } catch { /* ainda carregando */ } };
+    const aplicar = () => {
+      try {
+        const w = f.contentWindow as JanelaBaralho | null;
+        if (!w) return;
+        w.App?.definirModo?.(modo);
+        if (follow && w.location.hash !== alvo) w.location.hash = alvo;
+      } catch { /* ainda carregando: o load abaixo aplica */ }
+    };
     aplicar();
-    const f = quadro.current; f?.addEventListener("load", aplicar);
-    return () => f?.removeEventListener("load", aplicar);
-  }, [slide, follow]);
+    f.addEventListener("load", aplicar);
+    return () => f.removeEventListener("load", aplicar);
+  }, [slide, follow, modo, src]);
   /* O baralho só entra em modo projeção acima de 1100px. Dentro da coluna da aula ele ficaria
      abaixo disso e cairia no modo estudo, cortado pela moldura. Então ele é desenhado em 1280 por
      720 e reduzido por transform até a largura disponível. Em tela estreita, o modo estudo do
@@ -78,7 +95,10 @@ export function LiveStudent({ sessionId, classId, meeting, initial }: { sessionI
         <div className="flex flex-wrap items-center gap-3 mb-4">
           <div><Link href="/ao-vivo" className="voltar">Ao vivo</Link><p className="eyebrow">Aula {meeting.number} · ao vivo</p><h1 className="text-xl">{meeting.title}</h1></div>
           <StatusBadge status={st.session.status} />
-          <span className="hint" aria-live="polite">{channel === "sse" ? "Conectado" : channel === "polling" ? "Atualização periódica" : "Acesso revogado"} · {new Date(lastUpdate).toLocaleTimeString("pt-BR")}</span>
+          <span className="hint" aria-live="polite" role="status">
+            {stale ? `Sem atualização há ${Math.round(staleSinceMs / 1000)} s: tentando reconectar` : channel === "sse" ? "Conectado" : channel === "polling" ? "Atualização periódica" : "Acesso revogado"}
+            {lastUpdate > 0 ? ` · última atualização ${new Date(lastUpdate).toLocaleTimeString("pt-BR")}` : ""}
+          </span>
           {meeting.videoUrl && <a className="btn btn-sm btn-secondary" href={meeting.videoUrl} target="_blank" rel="noreferrer">Videoconferência</a>}
         </div>
         <div className="flex flex-wrap items-center gap-2 mb-4 no-print" role="group" aria-label="Modo de acompanhamento">
@@ -90,11 +110,15 @@ export function LiveStudent({ sessionId, classId, meeting, initial }: { sessionI
         {slide ? (
           <div className="card p-0 overflow-hidden">
             <div ref={caixa} style={{ height: estreito ? "70vh" : PALCO.h * escala }}>
-              <iframe ref={quadro} title={`Slide ${slide} da aula`} src={`/slides/aula-2?modo=${modo}#/slide/${slide}`}
+              <iframe ref={quadro} title={`Slide ${slide} da aula`} src={src ?? undefined}
                 style={estreito
                   ? { width: "100%", height: "100%", border: 0, display: "block" }
                   : { width: PALCO.w, height: PALCO.h, border: 0, display: "block", transform: `scale(${escala})`, transformOrigin: "top left" }} />
             </div>
+            <p className="hint px-4 py-2 border-t border-rule m-0" data-testid="o-que-fica-salvo">
+              <b>O que fica salvo:</b> suas respostas às perguntas do professor ficam no servidor e voltam quando você recarrega.
+              O que você mexe nos slides (controles, exercícios, escolhas) fica só nesta aba deste navegador: sobrevive a recarregar a página, some ao fechar a aba e não aparece em outro aparelho.
+            </p>
           </div>
         ) : page ? (
           <article className="card">

@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   serverExternalPackages: ["@node-rs/argon2", "pg"],
   // a aula em slides é lida do disco pela rota /slides/aula-2; sem isto a Vercel não o empacota
-  outputFileTracingIncludes: { "/slides/aula-2": ["./content/slides/**"] },
+  outputFileTracingIncludes: { "/slides/aula-2": ["./content/slides/**"], "/professor/aovivo/[id]": ["./content/slides/**"] },
   experimental: { serverActions: { bodySizeLimit: "2mb" } },
   async headers() {
     return [

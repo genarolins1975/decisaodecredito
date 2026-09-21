@@ -95,7 +95,7 @@ Aula.slide({
           var visivel = i < est.passo;
           return h("div", {
             class: "painel" + (i === est.passo - 1 ? " cor" : " claro"),
-            estilo: "padding:12px 16px" + (visivel ? "" : ";opacity:.4"),
+            estilo: "padding:12px 16px",
           }, [
             h("h3", { class: "secao", estilo: "margin:0 0 6px" }, p.titulo),
             visivel

@@ -20,7 +20,14 @@
       "controles": 15,
       "svgs": 0,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "02",
@@ -40,7 +47,14 @@
       "controles": 12,
       "svgs": 0,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "03",
@@ -60,7 +74,14 @@
       "controles": 3,
       "svgs": 3,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "04",
@@ -80,7 +101,14 @@
       "controles": 16,
       "svgs": 0,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "05",
@@ -100,7 +128,14 @@
       "controles": 5,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "06",
@@ -120,7 +155,14 @@
       "controles": 8,
       "svgs": 3,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "07",
@@ -140,7 +182,14 @@
       "controles": 7,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "08",
@@ -160,7 +209,14 @@
       "controles": 4,
       "svgs": 3,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "09",
@@ -180,7 +236,14 @@
       "controles": 8,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "10",
@@ -200,7 +263,14 @@
       "controles": 8,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "11",
@@ -220,7 +290,14 @@
       "controles": 6,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "12",
@@ -240,7 +317,14 @@
       "controles": 16,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "13",
@@ -260,7 +344,14 @@
       "controles": 6,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "14",
@@ -280,7 +371,14 @@
       "controles": 9,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "15",
@@ -300,7 +398,14 @@
       "controles": 7,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "16",
@@ -320,18 +425,25 @@
       "controles": 5,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "17",
       "estudo": false,
-      "estouro": 2,
-      "estourado": "2px | Em comprometimento de 40%inclinações no ",
+      "estouro": 0,
+      "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 666,
+      "alturaCorpo": 665,
       "corpoVisivel": 665,
-      "rolagemCorpo": 1,
+      "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
       "amostra": null,
@@ -340,7 +452,14 @@
       "controles": 6,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "18",
@@ -360,7 +479,14 @@
       "controles": 4,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "19",
@@ -380,7 +506,14 @@
       "controles": 6,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "20",
@@ -400,7 +533,14 @@
       "controles": 9,
       "svgs": 0,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "21",
@@ -420,7 +560,14 @@
       "controles": 6,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "22",
@@ -440,7 +587,14 @@
       "controles": 6,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "23",
@@ -460,7 +614,14 @@
       "controles": 5,
       "svgs": 5,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "24",
@@ -480,7 +641,14 @@
       "controles": 3,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "25",
@@ -500,7 +668,14 @@
       "controles": 3,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "26",
@@ -520,7 +695,14 @@
       "controles": 10,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "27",
@@ -540,7 +722,14 @@
       "controles": 2,
       "svgs": 5,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "28",
@@ -560,7 +749,14 @@
       "controles": 6,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "29",
@@ -580,7 +776,14 @@
       "controles": 21,
       "svgs": 3,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "30",
@@ -600,7 +803,14 @@
       "controles": 10,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "31",
@@ -620,7 +830,14 @@
       "controles": 4,
       "svgs": 3,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "32",
@@ -640,7 +857,14 @@
       "controles": 3,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "33",
@@ -660,7 +884,14 @@
       "controles": 5,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "34",
@@ -680,7 +911,14 @@
       "controles": 4,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "35",
@@ -700,7 +938,14 @@
       "controles": 4,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "36",
@@ -720,7 +965,14 @@
       "controles": 6,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "37",
@@ -740,7 +992,14 @@
       "controles": 6,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "38",
@@ -760,7 +1019,14 @@
       "controles": 12,
       "svgs": 4,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "39",
@@ -780,7 +1046,14 @@
       "controles": 3,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "40",
@@ -800,7 +1073,14 @@
       "controles": 6,
       "svgs": 0,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "41",
@@ -820,7 +1100,14 @@
       "controles": 11,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "42",
@@ -840,7 +1127,14 @@
       "controles": 7,
       "svgs": 0,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "43",
@@ -860,7 +1154,14 @@
       "controles": 5,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "44",
@@ -880,7 +1181,14 @@
       "controles": 7,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "45",
@@ -900,7 +1208,14 @@
       "controles": 7,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "46",
@@ -920,7 +1235,14 @@
       "controles": 10,
       "svgs": 3,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "47",
@@ -940,7 +1262,14 @@
       "controles": 5,
       "svgs": 2,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "48",
@@ -960,7 +1289,14 @@
       "controles": 5,
       "svgs": 1,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "49",
@@ -980,7 +1316,14 @@
       "controles": 10,
       "svgs": 0,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     },
     {
       "id": "50",
@@ -997,10 +1340,17 @@
       "amostra": null,
       "culpado": null,
       "rolagemPagina": 0,
-      "controles": 4,
+      "controles": 5,
       "svgs": 0,
       "erros": 0,
-      "falha": false
+      "falha": false,
+      "estados": {
+        "estudo": false,
+        "tracos": 0,
+        "rolagemCorpo": 0,
+        "rolagemPagina": 0,
+        "erros": 0
+      }
     }
   ],
   "erros": [],

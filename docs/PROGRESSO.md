@@ -1,6 +1,6 @@
 # Registro de progresso (para continuar em outra sessão)
 
-Última atualização: 16 de setembro de 2026. Branch: `claude/new-session-krlqm8`.
+Última atualização: 21 de setembro de 2026. Branch: `claude/new-session-d2yt8t`.
 
 ## Estado por etapa do briefing
 
@@ -20,7 +20,15 @@
 - Envio real de e-mail exige a conta Gmail conectada pelo professor.
 - Bases dos casos, pacote do trabalho final e rótulos OOT não foram fornecidos: cadastro pelo painel está pronto.
 
+## Revisão da Aula 2 (21/09/2026)
+
+Auditoria de arquitetura e experiência da aula em 50 slides, com correções implementadas e verificadas: `docs/AUDITORIA_ARQUITETURA.md`, `docs/ARQUITETURA_PROPOSTA.md`, `docs/PLANO_MELHORIAS.md` e `docs/VALIDACAO_JORNADAS.md`. Em resumo: o baralho passa a ser compilado em três saídas (completo para professor e monitor, variante sem notas para o aluno, notas em JSON para o painel); a projeção abre em modo próprio, sem notas; o painel do professor ganhou o roteiro do slide no ar; a exploração do aluno sobrevive à troca de modo e à recarga, com aviso do que fica salvo; queda de rede tem aviso e reenvio; acessibilidade dos gráficos, listas e contraste corrigida. Verificado em 21/09/2026: typecheck, lint (0 erros), `npm test` (249), `npx playwright test` (20 de 20, 2,2 min), QA do baralho 50 de 50 em quatro resoluções e na variante do aluno.
+
+Depois de editar qualquer slide: `node aula_credito_html/build.mjs`, que regrava `content/slides/aula-2.html`, `aula-2-aluno.html` e `aula-2-notas.json`; a plataforma lê essas cópias, não os fontes.
+
 ## Pendências técnicas ordenadas
+
+0. Aula 2: R1 a R6 de `docs/PLANO_MELHORIAS.md` (aviso de turma sem encontros, perguntas para slides sem página ligada, verificação em Firefox, Safari e projetor, validação com usuários).
 
 1. Portar visuais legados de maior valor para componentes nativos (lista em docs/03, seção 6).
 2. TOTP para o professor; rota agendada de manutenção (fila de e-mail e uploads órfãos).

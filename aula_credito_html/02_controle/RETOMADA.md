@@ -9,6 +9,9 @@ saber antes de mexer em qualquer parte.
 | O quê | Onde |
 |---|---|
 | Apresentação para abrir | `dist/aula_credito.html`, arquivo único, abre por duplo clique |
+| Variante do aluno, sem notas | `dist/aula_credito_aluno.html`, gerada por análise sintática dos fontes |
+| Notas por slide para o painel | `dist/aula_credito_notas.json` |
+| Marca da compilação | `app/dados/00-versao.js`, gerado |
 | Fonte, um arquivo por slide | `app/slides/s01.js` a `app/slides/s50.js` |
 | Registro, formatação e matemática | `app/nucleo/01-nucleo.js` |
 | Desenho vetorial, eixos, árvores, waterfall | `app/nucleo/02-svg.js` |
@@ -25,10 +28,11 @@ saber antes de mexer em qualquer parte.
 ## Comandos
 
 ```
-node build.mjs                      # gera app/index.html, app/dados/11-resultados.js e dist/aula_credito.html
+node build.mjs                      # gera app/index.html, 00-versao.js, 11-resultados.js e as três saídas em dist/ e content/slides/
 node qa.mjs                         # verifica os 50 slides em 1366x768
 node qa.mjs --largura 390x844       # outra resolução
 node qa.mjs --estados               # percorre também os estados interativos
+node qa.mjs --aluno --estados       # a variante do aluno
 node qa.mjs --shots 09 22           # salva capturas em qa/
 node lint-tracos.mjs                # hífen ou travessão em todo texto declarado
 node rotulos.mjs 05 48              # rótulos de SVG que saem do desenho
@@ -61,6 +65,15 @@ o QA lê a distribuição, não os arquivos soltos.
    que o painel escorra sobre o vizinho. Os desenhos são dimensionados para caber sem
    ela; a regra existe para o caso de alguém mudar uma largura.
 8. **Modo estudo abaixo de 1100px.** `LARGURA_ESTUDO` em `app/nucleo/90-app.js`.
+9. **Um bloco `notas` por slide, e só nele.** `build.mjs` remove essa propriedade para a
+   variante do aluno pela árvore sintática e para se encontrar zero ou dois blocos; texto
+   de nota fora de `notas` iria parar no arquivo do aluno.
+10. **Estado local versionado.** `sessionStorage` por aba e por usuário com `Aula.versao`;
+    versão diferente descarta. Nunca gravar exploração no servidor sem critério pedagógico.
+11. **Modos `aluno`, `livre` e `projecao`** em `90-app.js`; a casca troca por
+    `App.definirModo`, nunca por recarga do iframe.
+12. **Gráfico sem resumo fica `aria-hidden`** (`Graf.acessivel`). Quem quiser o gráfico
+    nomeado para leitor de tela passa `resumo`.
 
 ## Se for preciso mexer
 

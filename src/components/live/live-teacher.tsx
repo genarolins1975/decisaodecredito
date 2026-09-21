@@ -6,7 +6,7 @@ import { api, ClientApiError } from "@/lib/client/api";
 import { StatusBadge } from "@/components/ui";
 import { ErrorBox } from "@/components/forms";
 import { fmtT } from "@/lib/time";
-import type { SlideAula2 } from "@/lib/content/roteiro-aula-2";
+import type { NotaSlideAula2, SlideAula2 } from "@/lib/content/roteiro-aula-2";
 
 type Act = { id: string; status: string; round: string; closesAt: string | null; maxAttempts: number; timeLimitS: number | null; position: number;
   question: { versionId: string; slug: string; kind: string; label: string | null; prompt: string; options: { alternatives?: string[] } };
@@ -16,13 +16,16 @@ type State = { session: { id: string; status: string; stateVersion: number; clas
 type PageRef = { id: string; slug: string; title: string; chapter: number };
 type QRef = { slug: string; kind: string; pageId: string | null; versionId: string; prompt: string };
 
-export function LiveTeacher({ sessionId, classId, meeting, initial, pages, questions, isProfessor, slides }: { sessionId: string; classId: string; meeting: { id: string; title: string; number: number }; initial: State; pages: PageRef[]; questions: QRef[]; isProfessor: boolean; slides: SlideAula2[] }) {
+export function LiveTeacher({ sessionId, classId, meeting, initial, pages, questions, isProfessor, slides, notas = {} }: { sessionId: string; classId: string; meeting: { id: string; title: string; number: number }; initial: State; pages: PageRef[]; questions: QRef[]; isProfessor: boolean; slides: SlideAula2[]; notas?: Record<string, NotaSlideAula2> }) {
   const { state, channel, refresh } = useLiveState<State>(sessionId, initial);
   const st = state ?? initial;
   const [err, setErr] = useState<string | null>(null);
   const [privateNames, setPrivateNames] = useState(false);
   const [pageSlug, setPageSlug] = useState(st.currentPage?.slug ?? pages[0]?.slug ?? "");
   const slideAtual = useMemo(() => slides.find((x) => x.n === st.currentSlide) ?? null, [slides, st.currentSlide]);
+  // o título projetado vem da compilação do baralho; o do roteiro é o tema, que fica como apoio
+  const tituloProjetado = (n: string) => notas[n]?.titulo ?? slides.find((x) => x.n === n)?.titulo ?? "";
+  const notaAtual = st.currentSlide ? notas[st.currentSlide] : undefined;
   const irParaSlide = (n: string) => run(async () => { await api(`/api/aovivo/${sessionId}/slide`, { body: { slide: n } }); });
   const [chamada, setChamada] = useState<{ id: string; code: string; secondsLeft: number; closesAt: string; kind: string }[]>([]);
   const [qr, setQr] = useState<string | null>(null);
@@ -60,7 +63,7 @@ export function LiveTeacher({ sessionId, classId, meeting, initial, pages, quest
             <div className="flex flex-wrap gap-2 items-end">
               <label className="text-[13px] flex-1 min-w-[280px]">Slide<select className="select" value={st.currentSlide ?? ""} onChange={(e) => irParaSlide(e.target.value)}>
                 <option value="" disabled>escolha o slide</option>
-                {slides.map((x) => <option key={x.n} value={x.n}>{x.n} · {x.bloco} · {x.titulo}</option>)}
+                {slides.map((x) => <option key={x.n} value={x.n}>{x.n} · {x.bloco} · {tituloProjetado(x.n)}</option>)}
               </select></label>
               <button className="btn btn-sm btn-secondary" disabled={!st.currentSlide || st.currentSlide === slides[0].n}
                 onClick={() => { const i = slides.findIndex((x) => x.n === st.currentSlide); if (i > 0) irParaSlide(slides[i - 1].n); }}>Anterior</button>
@@ -69,8 +72,8 @@ export function LiveTeacher({ sessionId, classId, meeting, initial, pages, quest
               <a className="btn btn-sm" href={`/apresentacao/slides?sessao=${sessionId}`} target="_blank" rel="noreferrer">Projetar os slides</a>
             </div>
             <p className="hint mt-2">
-              {st.currentSlide ? `Na tela dos alunos agora: slide ${st.currentSlide}, ${slideAtual?.titulo ?? ""}.` : "Nenhum slide no ar ainda."}
-              {" "}Na janela de projeção você navega com as setas e o slide dos alunos acompanha sozinho.
+              {st.currentSlide ? `Na tela dos alunos agora: slide ${st.currentSlide}, ${tituloProjetado(st.currentSlide)}.` : "Nenhum slide no ar ainda."}
+              {" "}Na janela de projeção você navega com as setas e o slide dos alunos acompanha sozinho. A projeção não mostra as notas: elas ficam no roteiro abaixo, só na sua tela.
             </p>
             {slideAtual && slideAtual.paginas.length > 0 && (
               <p className="hint mt-1">Páginas do apêndice que este slide cobre:{" "}
@@ -79,6 +82,53 @@ export function LiveTeacher({ sessionId, classId, meeting, initial, pages, quest
                 ))}
                 <span className="block">Escolher uma delas carrega as perguntas daquela página no bloco abaixo, sem trocar o que os alunos veem.</span>
               </p>
+            )}
+          </section>
+        )}
+
+        {slides.length > 0 && (
+          <section className="card" aria-labelledby="roteiro-slide" data-testid="roteiro-slide">
+            <div className="flex flex-wrap items-baseline justify-between gap-2 mb-2">
+              <h2 id="roteiro-slide" className="text-base">Roteiro do slide no ar <span className="hint font-normal">(só na sua tela, não projete)</span></h2>
+              {notaAtual?.proximo && (
+                <button type="button" className="btn btn-sm btn-secondary" onClick={() => irParaSlide(notaAtual.proximo!.n)}>
+                  Avançar para {notaAtual.proximo.n} · {notaAtual.proximo.titulo}
+                </button>
+              )}
+            </div>
+            {!st.currentSlide && <p className="hint">Escolha um slide acima ou navegue na janela de projeção: a condução, as respostas esperadas, os cuidados e a transição aparecem aqui.</p>}
+            {st.currentSlide && !notaAtual && <p className="hint">Sem notas compiladas para o slide {st.currentSlide}. Gere content/slides/aula-2-notas.json com node aula_credito_html/build.mjs.</p>}
+            {notaAtual && (
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <p className="eyebrow">{notaAtual.n} · {notaAtual.blocoNome}{slideAtual ? ` · tema: ${slideAtual.titulo}` : ""}</p>
+                  <p className="font-semibold text-ink">{notaAtual.titulo}</p>
+                  {notaAtual.subtitulo && <p className="hint">{notaAtual.subtitulo}</p>}
+                  {notaAtual.conclusao && <p className="mt-2 text-[14px]"><b>Mensagem que fecha o slide:</b> {notaAtual.conclusao}</p>}
+                  {notaAtual.notas && notaAtual.notas.conducao.length > 0 && (
+                    <><p className="eyebrow mt-3">Condução</p><ul className="text-[14px] list-disc pl-5 m-0 grid gap-1">{notaAtual.notas.conducao.map((t, i) => <li key={i}>{t}</li>)}</ul></>
+                  )}
+                  {notaAtual.notas?.transicao && <p className="mt-3 text-[14px]"><b>Transição:</b> {notaAtual.notas.transicao}</p>}
+                </div>
+                <div>
+                  {notaAtual.notas && notaAtual.notas.respostas.length > 0 && (
+                    <details className="callout">
+                      <summary className="font-semibold text-ink cursor-pointer min-h-[32px] flex items-center">Respostas esperadas (abra quando quiser)</summary>
+                      <ul className="text-[14px] list-disc pl-5 mt-2 mb-0 grid gap-1">{notaAtual.notas.respostas.map((t, i) => <li key={i}>{t}</li>)}</ul>
+                    </details>
+                  )}
+                  {notaAtual.notas && notaAtual.notas.cuidados.length > 0 && (
+                    <><p className="eyebrow mt-3">Cuidados e limites</p><ul className="text-[14px] list-disc pl-5 m-0 grid gap-1">{notaAtual.notas.cuidados.map((t, i) => <li key={i}>{t}</li>)}</ul></>
+                  )}
+                  {notaAtual.notas && notaAtual.notas.aprofundar.length > 0 && (
+                    <details className="mt-3">
+                      <summary className="font-semibold text-ink cursor-pointer min-h-[32px] flex items-center">Aprofundamento</summary>
+                      <ul className="text-[14px] list-disc pl-5 mt-2 mb-0 grid gap-1">{notaAtual.notas.aprofundar.map((t, i) => <li key={i}>{t}</li>)}</ul>
+                    </details>
+                  )}
+                  {notaAtual.fonte && <p className="hint mt-3">Fonte dos números: {notaAtual.fonte}.</p>}
+                </div>
+              </div>
             )}
           </section>
         )}

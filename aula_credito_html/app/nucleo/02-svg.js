@@ -3,6 +3,19 @@
 
 var Graf = (function () {
 
+  /* Um desenho com resumo é uma imagem com nome para o leitor de tela. Sem resumo, ele fica
+     fora da árvore de acessibilidade: o slide já traz um resumo textual oculto do visual, e uma
+     "imagem" sem nome só produziria um item vazio na leitura. */
+  function acessivel(svg, resumo) {
+    if (resumo) {
+      svg.setAttribute("role", "img");
+      svg.setAttribute("aria-label", resumo);
+    } else {
+      svg.setAttribute("aria-hidden", "true");
+    }
+    return svg;
+  }
+
   function novo(op) {
     op = op || {};
     var w = op.w || 800, hh = op.h || 420;
@@ -10,9 +23,8 @@ var Graf = (function () {
     var svg = sv("svg", {
       viewBox: "0 0 " + w + " " + hh,
       width: w, height: hh,
-      role: "img",
-      "aria-label": op.resumo || "",
     });
+    acessivel(svg, op.resumo);
     var raiz = sv("g", {});
     svg.appendChild(raiz);
 
@@ -361,8 +373,8 @@ var Graf = (function () {
     var raizNo = op.no;
     var w = op.w || 900, hh = op.h || 420;
     var larguraCaixa = op.caixaW || 150, alturaCaixa = op.caixaH || 62;
-    var svg = sv("svg", { viewBox: "0 0 " + w + " " + hh, width: w, height: hh,
-                          role: "img", "aria-label": op.resumo || "" });
+    var svg = sv("svg", { viewBox: "0 0 " + w + " " + hh, width: w, height: hh });
+    acessivel(svg, op.resumo);
     var arestas = sv("g", {});
     var caixas = sv("g", {});
     svg.appendChild(arestas);
@@ -470,5 +482,6 @@ var Graf = (function () {
     return svg;
   }
 
-  return { novo: novo, waterfall: waterfall, barras: barras, arvore: arvore, ticks: ticksAuto };
+  return { novo: novo, waterfall: waterfall, barras: barras, arvore: arvore, ticks: ticksAuto,
+           acessivel: acessivel };
 })();

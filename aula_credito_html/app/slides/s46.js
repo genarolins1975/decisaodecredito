@@ -139,10 +139,11 @@ Aula.slide({
               ? "análise retrospectiva, não seleciona política"
               : "partição de política", est.particao === "teste" ? "sim" : "neutro"),
           ]),
-          h("div", { class: "kv", estilo: "font-size:18px;gap:1px 12px" }, [
+          h("dl", { class: "kv", estilo: "font-size:18px;gap:1px 12px" }, [
             h("dt", {}, "aprovados"),
-            h("dd", {}, F.inteiro(atual.aprovados) + " de " + F.inteiro(
-              Math.round(atual.aprovados / (atual.aprovacao || 1)))),
+            /* O total avaliado vem da partição, não da divisão aprovados/taxa: com ninguém
+               aprovado a divisão daria "0 de 0", e o denominador é conhecido. */
+            h("dd", {}, F.inteiro(atual.aprovados) + " de " + F.inteiro(aval[est.particao].n)),
             h("dt", {}, "taxa de aprovação"), h("dd", {}, F.pct(atual.aprovacao, 1)),
             h("dt", {}, "eventos entre aprovados"), h("dd", {}, F.inteiro(atual.eventos)),
             h("dt", {}, "inadimplência entre aprovados"),

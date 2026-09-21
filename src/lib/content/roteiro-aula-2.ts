@@ -17,6 +17,18 @@
  */
 export type SlideAula2 = { n: string; bloco: string; titulo: string; paginas: string[] };
 
+/**
+ * Notas de um slide, como `aula_credito_html/build.mjs` as grava em `content/slides/aula-2-notas.json`:
+ * o que o professor lê no painel enquanto a turma vê o slide. Nunca vão ao aluno: a rota /slides/aula-2
+ * serve a ele a variante compilada sem elas.
+ */
+export type NotaSlideAula2 = {
+  n: string; bloco: string; blocoNome: string; titulo: string; subtitulo: string | null; conclusao: string | null;
+  fonte: string | null; resumo: string | null;
+  notas: { conducao: string[]; respostas: string[]; cuidados: string[]; aprofundar: string[]; transicao: string | null } | null;
+  proximo: { n: string; titulo: string } | null;
+};
+
 export const ROTEIRO_AULA_2: SlideAula2[] = [
   { n: "01", bloco: "Problema", titulo: "Quem merece receber crédito?", paginas: [] },
   { n: "02", bloco: "Problema", titulo: "Quatro clientes acompanharão os três modelos", paginas: [] },

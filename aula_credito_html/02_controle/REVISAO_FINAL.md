@@ -7,7 +7,8 @@ comando que produz a evidência, e as limitações estão declaradas no final.
 
 | Item | Estado | Caminho/evidência | Limitação |
 |---|---|---|---|
-| HTML offline com 50 slides | Entregue | `dist/aula_credito.html`, 844 KB, arquivo único | Abre por `file://`; nenhuma requisição externa, confirmado pelo QA |
+| HTML offline com 50 slides | Entregue | `dist/aula_credito.html`, 1.325 KB com o KaTeX embutido, arquivo único | Abre por `file://`; nenhuma requisição externa, confirmado pelo QA |
+| Variante do aluno sem notas e notas em JSON (21/09/2026) | Entregue | `dist/aula_credito_aluno.html` (1.269 KB) e `dist/aula_credito_notas.json` (89 KB); conferência frase a frase na compilação e em `tests/aula-2-build.test.ts` | Os exercícios continuam revelando a própria resposta ao conferir, por desenho |
 | Código organizado por slide | Entregue | `app/slides/s01.js` a `s50.js` (7.321 linhas), `app/nucleo/` e `app/dados/` (1.906 linhas), `app/estilo/aula.css` | Um arquivo por slide, sem framework, `script` clássico para funcionar em `file://` |
 | Notas do professor e respostas | Entregue | Painel de notas por tecla `p` ou botão Professor; oculto por padrão | Notas de aprofundamento existem em 6 slides do bloco de logit |
 | Modo estudo | Entregue | Tecla `e` ou botão Estudo; automático abaixo de 1100px | Verificado em 1024x768 e 390x844 |
