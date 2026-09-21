@@ -132,8 +132,8 @@ Aula.slide({
         { dx: 10, dy: -10, tamanho: 22, cor: "var(--ink)" });
       gk.texto(gk.dx[1], 0.35, "inadimplentes",
         { ancora: "end", tamanho: 17, peso: 400, cor: "var(--alert)" });
-      gk.texto(gk.dx[1], 0.88, "adimplentes",
-        { ancora: "end", tamanho: 17, peso: 400, cor: "var(--ok)" });
+      gk.texto(gk.dx[1], 0.93, "adimplentes",
+        { ancora: "end", dy: 4, tamanho: 17, peso: 400, cor: "var(--ok)" });
 
       return h("div", { class: "linha cresce" }, [
         h("div", { class: "painel claro cresce centro" }, [

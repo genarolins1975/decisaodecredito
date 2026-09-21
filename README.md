@@ -15,6 +15,7 @@ node scripts/content/extract.mjs        # renderiza o HTML original em Chromium 
 node scripts/content/build-legacy.mjs   # motor legado sem guia nem gabaritos + CSS escopado
 npm run content:import                  # importa páginas, questões, rubricas, bases e trabalhos
 node aula_credito_html/build.mjs        # Aula 2: baralho completo, variante do aluno sem notas e notas em JSON (content/slides/)
+node aula_credito_html/material.mjs     # Aula 2: guias em PDF do professor e do aluno (content/materiais/), gerados do baralho compilado
 npm run dev                             # http://localhost:3000
 ```
 

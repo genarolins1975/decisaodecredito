@@ -104,3 +104,8 @@ controles visíveis na impressão e conteúdo além do palco.
    Firefox nem em Safari.
 7. **Impressão.** O PDF foi gerado pelo Chromium com A4 paisagem e margem zero.
    Impressoras com margem obrigatória podem reduzir a folha proporcionalmente.
+8. **Guias em PDF.** As capturas dos slides nos dois guias são imagens de 1600 por 900
+   pixels feitas no Chromium; os controles aparecem, mas não funcionam no papel, e o texto
+   miúdo de alguns painéis fica legível apenas com ampliação. O ritmo por bloco do guia do
+   professor é uma proposta calculada sobre os 165 minutos úteis do desenho do curso, não
+   uma medição em sala.

@@ -70,11 +70,14 @@ Aula.slide({
       { F: hist[1].grupos.B.F, rot: "depois da árvore 1", visivel: est.passo >= 4 },
       { F: hist[2].grupos.B.F, rot: "depois da árvore 2", visivel: false },
     ];
-    marcas.forEach(function (m) {
+    marcas.forEach(function (m, k) {
       if (!m.visivel) return;
+      /* Início e primeira atualização ficam a 0,2 de distância na régua: rótulos alternam
+         entre dois níveis para não se sobreporem. */
+      var nivel = k % 2 ? 44 : 0;
       g.ponto(m.F, 0.4, { r: 10, cor: "var(--boost)" });
-      g.texto(m.F, 0.4, m.rot, { ancora: "middle", dy: -40, tamanho: 18, cor: "var(--ink)" });
-      g.texto(m.F, 0.4, F.dec(m.F, 4), { ancora: "middle", dy: -20, tamanho: 17, peso: 400,
+      g.texto(m.F, 0.4, m.rot, { ancora: "middle", dy: -40 - nivel, tamanho: 18, cor: "var(--ink)" });
+      g.texto(m.F, 0.4, F.dec(m.F, 4), { ancora: "middle", dy: -20 - nivel, tamanho: 17, peso: 400,
         cor: "var(--muted)" });
     });
     if (est.passo >= 4) {

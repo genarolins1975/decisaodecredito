@@ -3217,15 +3217,15 @@
     {
       "id": "47",
       "estudo": false,
-      "zoom": 1,
+      "zoom": 0.98,
       "katexErros": 0,
       "katexAmostra": null,
       "estouro": 1,
       "estourado": "1px | Margem menos perda esperadaR$ 0R$ 600R$ ",
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 637,
-      "corpoVisivel": 637,
+      "alturaCorpo": 652,
+      "corpoVisivel": 652,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -3236,7 +3236,9 @@
       "svgs": 2,
       "erros": 0,
       "falha": false,
-      "problemas": [],
+      "problemas": [
+        "coube reduzido a 98%"
+      ],
       "estados": {
         "erros": 0,
         "rodadas": [

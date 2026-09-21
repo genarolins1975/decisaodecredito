@@ -28,6 +28,8 @@ Segunda rodada de 21/09/2026, a partir de uma captura do professor no slide 24: 
 
 Depois de editar qualquer slide: `node aula_credito_html/build.mjs`, que regrava `content/slides/aula-2.html`, `aula-2-aluno.html` e `aula-2-notas.json`; a plataforma lê essas cópias, não os fontes.
 
+Terceira rodada de 21/09/2026: dois guias da Aula 2 em PDF, gerados pelo próprio baralho (`node aula_credito_html/material.mjs`): guia do professor (captura de cada slide no estado revelado, condução, respostas, cuidados, aprofundamentos, transição, ritmo proposto por bloco, comparação dos três modelos no teste e sinais para observar na turma) e guia do aluno (captura sem gabarito nos exercícios, explicação de como ler cada slide, o que mexer na tela, fórmulas em LaTeX, exercícios sem respostas, lista de verificação de saída e glossário). Os textos didáticos ficam em `aula_credito_html/material/conteudo/`, com contrato em `tests/aula-2-material.test.ts`; as saídas versionadas ficam em `content/materiais/`. A revisão das capturas levou a correções de rótulos sobrepostos ou cortados em 17 slides (M16 em `docs/PLANO_MELHORIAS.md`).
+
 ## Pendências técnicas ordenadas
 
 0. Aula 2: R1 a R6 de `docs/PLANO_MELHORIAS.md` (aviso de turma sem encontros, perguntas para slides sem página ligada, verificação em Firefox, Safari e projetor, validação com usuários).

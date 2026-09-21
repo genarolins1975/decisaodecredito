@@ -35,7 +35,9 @@ Aula.slide({
     /* Mapa de regiões: uma faixa por valor de histórico. */
     var g = Graf.novo({ w: 870, h: 420, m: { e: 176, d: 118, c: 40, b: 60 },
       resumo: "Duas faixas de comprometimento, uma por valor de histórico, divididas em 40%." });
-    g.x(0, 80).y(0, 2);
+    /* O domínio começa abaixo de zero para os nomes dos clientes, sob as faixas, não caírem
+       sobre os números do eixo. */
+    g.x(0, 80).y(-0.3, 2);
     g.eixoX({ ticks: [0, 20, 40, 60, 80], rotulo: "comprometimento em %" });
 
     var escala = [0, 0.40];

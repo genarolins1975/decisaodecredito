@@ -58,7 +58,7 @@ Aula.slide({
       g.eixoX({ ticks: [10, 20, 30, 40, 50, 60, 70], rotulo: "comprometimento em %" });
       g.add(sv("line", { x1: g.px(no), x2: g.px(no), y1: g.py(g.dy[0]), y2: g.py(g.dy[1]),
         stroke: "var(--amber)", "stroke-width": 1.5, "stroke-dasharray": "5 4" }));
-      g.texto(no, g.dy[1], "nó em 40%", { dx: 6, dy: 18, tamanho: 16, peso: 400, cor: "var(--amber)" });
+      g.texto(no, g.dy[1], "nó em 40%", { dx: -6, dy: 18, ancora: "end", tamanho: 16, peso: 400, cor: "var(--amber)" });
 
       [[false, "var(--rule)", "linear"], [true, "var(--logit)", "com mudança de inclinação"]]
         .forEach(function (par) {

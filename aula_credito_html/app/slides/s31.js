@@ -59,7 +59,7 @@ Aula.slide({
       /* Duas casas: com três, os números de células vizinhas se encostam e a
          leitura da grade some. A cor já carrega a intensidade. */
       g.texto((x0 + x1) / 2, (y0 + y1) / 2, F.dec(r.residuo_medio, 2),
-        { ancora: "middle", dy: 5, tamanho: 14, peso: 700,
+        { ancora: "middle", dy: 4, tamanho: 12, peso: 700,
           cor: apagado ? "var(--rule)" : "var(--ink)" });
     });
 

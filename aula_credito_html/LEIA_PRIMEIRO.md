@@ -109,6 +109,25 @@ notebook `experimento/experimento.ipynb` refaz as conferências com as saídas g
 
 Todos os dados são sintéticos. Nenhum número descreve carteira real.
 
+## Guias em PDF
+
+`node material.mjs` gera, a partir do baralho compilado, dois guias em A4:
+`dist/material/aula-2-guia-do-professor.pdf` e `aula-2-guia-do-aluno.pdf`, copiados para
+`content/materiais/`. Os dois seguem a ordem dos 50 slides, com uma página por slide: a
+captura do slide feita no próprio Chromium (no estado revelado, que é o da impressão; na
+edição do aluno, os exercícios dos slides 04, 20, 30, 42, 49 e 50 ficam no estado inicial),
+mais o texto de `material/conteudo/`. O guia do professor traz as notas de
+`dist/aula_credito_notas.json` (condução, respostas, cuidados, aprofundamentos e transição),
+o ritmo proposto por bloco e a comparação dos três modelos no teste; o guia do aluno traz a
+explicação de como ler cada slide, o que mexer na tela, as fórmulas renderizadas pelo KaTeX
+embutido, os exercícios sem gabarito, a lista de verificação de saída e o glossário. As
+tabelas de comparação são calculadas de `Aula.resultados`, nunca digitadas. O gerador faz
+duas passagens para escrever no sumário, no mapa e nas aberturas de bloco a página real de
+cada seção e de cada slide, lida do PDF com PyMuPDF (`pip install pymupdf`), e falha se
+encontrar hífen ou travessão no texto, fórmula com erro, imagem ausente ou paginação
+instável. As fontes (Source Serif 4 e Source Sans 3, SIL OFL) estão em `material/fontes/`.
+O guia do professor contém gabaritos: nunca distribuir aos alunos.
+
 ## Refazer tudo
 
 ```
@@ -119,6 +138,7 @@ node build.mjs                            # regenera app/index.html e dist/aula_
 node qa.mjs                               # verifica os 50 slides
 node qa.mjs --aluno                       # verifica a variante sem notas
 node imprimir.mjs                         # gera o PDF de impressão
+node material.mjs                         # gera os guias em PDF do professor e do aluno
 ```
 
 ## Onde está o resto
@@ -131,4 +151,5 @@ node imprimir.mjs                         # gera o PDF de impressão
 | `02_controle/RETOMADA.md` | comandos, decisões globais e o que não reverter |
 | `MAPA_DOS_50_SLIDES.md` | índice dos roteiros |
 | `01_slides/` | roteiro de cada slide |
+| `material/conteudo/` | textos didáticos dos guias em PDF, por slide e por bloco |
 | `00_guias/` | narrativa, design, dados, reaproveitamento e critérios de aceite |

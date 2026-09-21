@@ -58,7 +58,8 @@ Aula.slide({
     gs.eixoY({ ticks: [0, 0.25, 0.5], formato: function (v) { return F.pct(v, 0); },
                rotulo: "PD" });
     gs.eixoX({ ticks: [-2, -1, 0], rotulo: "escore F" });
-    gs.linha(M.linspace(-2.4, 0.4, 160).map(function (v) { return [v, M.sigmoid(v)]; }),
+    gs.linha(M.linspace(-2.4, 0.4, 160).map(function (v) { return [v, M.sigmoid(v)]; })
+      .filter(function (pt) { return pt[1] <= gs.dy[1]; }),
       { cor: "var(--boost)", largura: 3 });
     if (est.converter) {
       gs.guia(total, pd, { cor: "var(--boost)" });

@@ -499,6 +499,20 @@ var Graf = (function () {
     return svg;
   }
 
+  /* Afasta rótulos que cairiam uns sobre os outros: recebe posições verticais em pixels do
+     desenho e devolve as mesmas posições com um espaçamento mínimo entre vizinhos, preservando
+     a ordem original. Usado onde várias curvas terminam quase no mesmo ponto. */
+  function espalhar(ys, gap) {
+    var ordem = ys.map(function (y, i) { return { y: y, i: i }; })
+      .sort(function (a, b) { return a.y - b.y; });
+    for (var k = 1; k < ordem.length; k++) {
+      if (ordem[k].y < ordem[k - 1].y + gap) ordem[k].y = ordem[k - 1].y + gap;
+    }
+    var out = ys.slice();
+    ordem.forEach(function (o) { out[o.i] = o.y; });
+    return out;
+  }
+
   return { novo: novo, waterfall: waterfall, barras: barras, arvore: arvore, ticks: ticksAuto,
-           acessivel: acessivel };
+           acessivel: acessivel, espalhar: espalhar };
 })();

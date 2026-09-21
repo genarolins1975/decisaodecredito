@@ -82,6 +82,11 @@ o QA lê a distribuição, não os arquivos soltos.
     rodada. Um slide aceito só no estado inicial não está aceito.
 15. **Texto dentro de fórmula passa por `Mat.t`**, que escapa `%`, `#`, `&` e `_`. Concatenar
     um rótulo cru em `\text{}` derruba a expressão inteira quando ele traz `%`.
+16. **Os guias em PDF nascem do baralho, não de textos paralelos.** `material.mjs` captura
+    cada slide do `dist/aula_credito.html` compilado, lê as notas do JSON de notas e calcula
+    as tabelas de `Aula.resultados`; só o texto didático (`material/conteudo/`) é escrito à
+    mão, e `tests/aula-2-material.test.ts` cobra que ele cubra os 50 slides sem traços. Mudou
+    um slide: `node build.mjs` e depois `node material.mjs`, nunca editar o PDF.
 
 ## Se for preciso mexer
 
@@ -89,6 +94,9 @@ o QA lê a distribuição, não os arquivos soltos.
   `node qa.mjs NN` e `node medir.mjs NN` se houver suspeita de altura.
 - **Mudar um componente compartilhado** de `app/nucleo/`: rodar o QA completo nas quatro
   resoluções e a varredura de estados, porque o componente aparece em vários slides.
+- **Mudar texto, número ou estado de um slide:** regenerar os guias com `node material.mjs`,
+  porque a captura e as notas do slide entram nos dois PDFs de `content/materiais/`. Se o
+  texto didático em `material/conteudo/` citar o número alterado, corrigir ali também.
 - **Mudar o experimento:** rodar `experimento.py`, depois `gerar_notebook.py`, depois
   `build.mjs`. O `sha256` em `metadados.json` muda e precisa ser refletido em
   `02_controle/REVISAO_FINAL.md`.

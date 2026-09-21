@@ -35,6 +35,8 @@ Origem das evidências: script de jornadas (dois contextos autenticados, console
 | Hífen e travessão no texto | `node lint-tracos.mjs` | 0 ocorrências |
 | Acessibilidade | axe-core 4.11, oito slides em modo aluno (01, 09, 12, 20, 30, 42, 46, 49) | antes: `dlitem`, `svg-img-alt`, `color-contrast` (sérias) em quatro slides; depois: nenhuma violação |
 | Console | 50 slides sincronizados na tela do aluno | 0 erros do baralho; ver a seção 3 sobre o aviso de hidratação |
+| Guias em PDF | `node aula_credito_html/material.mjs` (terceira rodada, 21/09/2026) | nas duas edições: 0 traços no texto, 0 fórmulas com erro, 0 imagens ausentes, 0 erros de página, os 50 slides localizados no mapa, paginação estável entre as duas passagens; páginas conferidas visualmente a partir de renderizações do PDF |
+| Contrato do conteúdo dos guias | `npx vitest run tests/aula-2-material.test.ts` | 3 testes: 50 slides cobertos, exercícios nos slides 01, 04, 20, 30, 42, 49 e 50, blocos contíguos, ritmo de 165 minutos, nenhum traço no texto |
 
 ## 3. Limitações do que foi verificado
 

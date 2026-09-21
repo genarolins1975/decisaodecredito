@@ -57,18 +57,23 @@ Aula.slide({
     g.eixoY({ ticks: ticksY, formato: function (v) { return F.dec(v, 3); }, rotulo: "log loss" });
     g.eixoX({ ticks: [1, 50, 100, 150, 200, 250, 300], rotulo: "número de árvores" });
 
-    cenarios.forEach(function (c) {
+    var curvas = cenarios.map(function (c) {
+      return c.perdas_validacao.map(function (v, i) { return [i + 1, v]; })
+        .filter(function (p) { return p[1] <= g.dy[1]; });
+    });
+    /* As curvas de validação terminam quase na mesma perda: os rótulos são afastados. */
+    var ysRot = Graf.espalhar(curvas.map(function (pts) { return g.py(pts[pts.length - 1][1]); }), 22);
+    cenarios.forEach(function (c, k) {
       var sel = c.taxa === est.taxa;
       var cor = cores[c.taxa] || "var(--muted)";
-      var pts = c.perdas_validacao.map(function (v, i) { return [i + 1, v]; })
-        .filter(function (p) { return p[1] <= g.dy[1]; });
+      var pts = curvas[k];
       g.linha(pts, { cor: cor, largura: sel ? 3.5 : 2, opacidade: sel ? 1 : .35 });
       var fim = pts[pts.length - 1];
       var noFim = fim[0] > g.dx[0] + (g.dx[1] - g.dx[0]) * 0.72;
-      g.texto(fim[0], fim[1], "η = " + F.dec(c.taxa, 2) + (sel ? ", validação" : ""),
-        { ancora: noFim ? "end" : "start", dx: noFim ? -8 : 8, dy: noFim ? -12 : 5,
-          tamanho: sel ? 19 : 17, peso: sel ? 700 : 400,
-          cor: sel ? cor : "var(--muted)" });
+      g.add(sv("text", { x: g.px(fim[0]) + (noFim ? -8 : 8), y: ysRot[k] + (noFim ? -12 : 5),
+        "text-anchor": noFim ? "end" : "start", "font-size": sel ? 19 : 17,
+        "font-weight": sel ? 700 : 400, fill: sel ? cor : "var(--muted)",
+        texto: "η = " + F.dec(c.taxa, 2) + (sel ? ", validação" : "") }));
       if (sel) {
         var ptsT = c.perdas_treino.map(function (v, i) { return [i + 1, v]; })
           .filter(function (p) { return p[1] <= g.dy[1]; });

@@ -60,7 +60,7 @@ Aula.slide({
     }
 
     var stump = Graf.arvore({
-      w: 520, h: 240, caixaW: 214, caixaH: 70,
+      w: 520, h: 240, caixaW: 292, caixaH: 70,
       no: {
         rotulo: "comprometimento ≤ 40%",
         detalhe: "10 registros",

@@ -86,7 +86,7 @@ Aula.slide({
     marcas.forEach(function (m, i) {
       g.ponto(m.p, M.gini(m.p), { r: 7, cor: i === 0 ? "var(--ink)" : "var(--arvore)" });
       g.texto(m.p, M.gini(m.p), m.rot,
-        { dx: 10, dy: i === 2 ? 20 : -10, tamanho: 16, peso: 400, cor: "var(--muted)" });
+        { dx: 10, dy: i === 0 ? -12 : 20, tamanho: 16, peso: 400, cor: "var(--muted)" });
     });
 
     var gb = Graf.barras({

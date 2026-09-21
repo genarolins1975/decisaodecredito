@@ -55,7 +55,7 @@ Aula.slide({
     });
 
     var segunda = Graf.arvore({
-      w: 500, h: 262, caixaW: 206, caixaH: 72,
+      w: 500, h: 262, caixaW: 292, caixaH: 72,
       no: {
         rotulo: "comprometimento ≤ 40%",
         detalhe: "mesmo corte da primeira árvore",
