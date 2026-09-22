@@ -110,6 +110,25 @@ Motivo: mesmo com a moldura uniformizada, a Aula 2 continuava estruturalmente di
 - Estados combinados: a varredura clica todos os botões de um slide três vezes, o que produz combinações que uma aula dificilmente produz (desafio aberto junto com toda a solução e a comparação). Nesses estados 19 slides cabem só reduzidos entre 82% e 99% pela rede de segurança do motor; nenhum fica abaixo de 80% nem é cortado. A lista está em R7 do plano.
 - Nenhuma validação com usuários. As jornadas demonstram que os caminhos funcionam e que as informações necessárias estão na tela; não demonstram que professor e alunos as compreendem sem instrução. Isso exige a aula real (R3 e R4 do plano).
 
+## 3d. Revisão pedagógica, sétima rodada (22/09/2026)
+
+Conferências feitas no navegador depois das correções de conteúdo e de slides. Detalhe dos achados em `docs/REVISAO_PEDAGOGICA_AULA_2.md`.
+
+| Verificação | Resultado |
+|---|---|
+| As dezesseis perguntas curadas aparecem na página, com veredito | 16 de 16, dois botões Conferir por página (a curada e a pergunta aberta), sem erro de console |
+| Recuperação em duas etapas numa resposta errada | confirmada em c5p4: "Não é essa. Leia a recuperação abaixo e tente de novo antes de ver a resposta", com Confusão, Conceito e o par "Você escolheu / Adequado", sem ponto duplicado |
+| Páginas essenciais com pergunta de veredito | 18 de 21 no banco da edição ativa; as três restantes são as aberturas de capítulo, por decisão |
+| Comparação dos três modelos no slide 50 | na tela, com Ana 3,06 / 5,62 / 5,49, Bruno 35,09 / 24,00 / 25,78, Carla 14,21 / 17,80 / 19,56 e Diego 68,51 / 60,61 / 64,91, decisão idêntica nos três |
+| Sobreposição do logit no slide 26 | o botão troca o mapa de regiões pelo gráfico de PD por comprometimento, com degrau e curva nos mesmos eixos e os quatro clientes marcados |
+| Risco por faixa no slide 19 | as três situações mudam a figura; na de amostra pequena os intervalos de Wilson com 40 contratos por faixa cobrem boa parte do gráfico, como a leitura afirma |
+| Seletor de η no slide 36 | η de 0,40 devolve 17,6347% no grupo A e 22,5912% no B, contra 14,7267% e 26,4985% com η igual a 1; conferido fora do baralho contra a mesma função |
+| QA do baralho em 1366x768 | 50 de 50 sem falha, depois de corrigir três rótulos que passaram a não caber com o texto novo (19, 34 e 42) |
+| Bateria completa | typecheck sem erro, lint com 0 erros e 5 avisos preexistentes, `lint:tracos` com 0 ocorrências, `npm test` 260 de 260, `npx playwright test` 22 de 22 |
+| PDFs regerados | 71 páginas cada, 0 traços no texto, 0 fórmulas com erro, 0 imagens ausentes |
+
+Limitação desta rodada: nenhuma das correções foi testada com alunos. As faixas observadas do slide 19 são ilustrativas e assim declaradas na tela; o ritmo por bloco continua sendo proposta aritmética, não medição em sala.
+
 ## 4. Pendências
 
 | Pendência | Situação |

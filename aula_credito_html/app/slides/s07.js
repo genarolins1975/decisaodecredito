@@ -19,6 +19,7 @@ Aula.slide({
       "Centrar as variáveis facilita a interpretação do intercepto e não muda a classe de funções.",
     ],
     aprofundar: [
+      "Os números desta tela e os do capítulo 4 são de dois exemplos, não de dois modelos rivais. Aqui o escore usa seis variáveis na forma centrada, com intercepto −3,50 e comprometimento pesando 0,40 a cada 10 pontos, o que dá razão de chances 1,49. As páginas do capítulo usam duas variáveis na forma crua, com intercepto −5,6666 e utilização pesando 0,7453 a cada 10 pontos, razão de chances 2,11. O mecanismo é o mesmo; os números são de exemplos diferentes, e nenhum se converte no outro trocando de unidade.",
       "Material original, capítulo 4, página 13: o intercepto é âncora de nível, não coeficiente comum. Naquele exemplo, utilização zero e atraso zero não existem na carteira, então o intercepto não tem leitura como PD de um cliente real.",
       "Trocar o intercepto desloca a PD de todas as propostas e preserva a ordem de risco. É por isso que recalibrar um modelo cuja ordenação continua boa equivale a reestimar o nível, sem alterar a AUC. O mesmo fato aparece no slide 45.",
     ],

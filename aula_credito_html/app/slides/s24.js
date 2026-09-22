@@ -18,6 +18,10 @@ Aula.slide({
       "Por comprometimento: impureza ponderada 0,166728 e ganho 0,013272.",
       "Impureza zero em grupo puro; máximo de 0,5 quando a taxa é 50%.",
     ],
+    aprofundar: [
+      "O capítulo 5 refaz esta mesma busca sobre outra base: dezesseis propostas com raiz em 0,500 de Gini, onde o corte vencedor é utilização ≤ 57,5% com redução de 0,28125. Aqui a raiz é de mil contratos a 10% de eventos, com Gini 0,180 e ganho de 0,020 no histórico. A regra é a mesma, a aritmética não: nenhum dos dois números se converte no outro.",
+      "Material original, capítulo 5, página 4: o Gini não é a taxa de erro do nó. O segundo nível daquela árvore derruba o Gini de 0,21875 para 0,12500 sem tirar um único erro, e é por isso que a taxa de erro não serve de critério.",
+    ],
     cuidados: [
       "Gini é critério de impureza no treino. Não é AUC, KS nem lucro.",
       "Outras perdas podem orientar árvores. Não misture entropia e Gini no mesmo cálculo.",

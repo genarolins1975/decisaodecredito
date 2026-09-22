@@ -690,7 +690,7 @@ body[data-modo="aluno"] #progresso { bottom: 0; }
 <script>
 /* dados/00-versao.js */
 /* Gerado por build.mjs: resumo dos fontes desta compilação. Não editar à mão. */
-var AULA_VERSAO = "469eb58a163a";
+var AULA_VERSAO = "2b6298264377";
 
 
 /* vendor/katex.js */
@@ -4617,7 +4617,7 @@ Aula.slide({
   subtitulo: "Adequação do logit em três situações práticas",
   conclusao: "O logit oferece uma estrutura explícita, mas a qualidade depende da especificação e da validação.",
   fonte: "Síntese conceitual aplicada; sem dados",
-  resumo: "Mecanismo do logit ao centro, com três situações práticas de adequação e uma síntese de critérios de escolha.",
+  resumo: "Risco por faixa de comprometimento com as duas curvas do logit ao centro, três situações práticas de adequação e uma síntese de critérios de escolha.",
   impressao: function (e) { e.respondeu = true; },
 
   montar: function (corpo, ctx) {
@@ -4630,56 +4630,80 @@ Aula.slide({
         situacao: "As características somam efeitos de forma estável e as faixas de risco crescem de forma regular.",
         pergunta: "As curvas de risco por faixa são compatíveis com uma soma de efeitos na escala do escore?",
         acao: "Manter o logit como referência, documentar a especificação e verificar calibração fora do tempo.",
-        foco: "soma",
       },
       interacao: {
         rotulo: "Interação relevante omitida",
         situacao: "O efeito do comprometimento parece depender do histórico, e a especificação não tem termo cruzado.",
         pergunta: "As curvas por grupo diferem além do que a especificação permite?",
         acao: "Testar um termo plausível ou um método mais flexível, escolhendo por validação e não pela aparência da curva.",
-        foco: "soma",
       },
       pequena: {
         rotulo: "Amostra pequena ou instável",
         situacao: "Poucos eventos por faixa, coortes curtas e população em mudança.",
         pergunta: "Os coeficientes mudam muito entre reamostragens e períodos?",
         acao: "Reduzir complexidade, regularizar, agrupar faixas e declarar a incerteza das estimativas.",
-        foco: "curva",
       },
       sintese: {
         rotulo: "Critérios de escolha",
         situacao: "Nenhuma técnica vence por definição. A escolha depende de evidência fora do tempo, das restrições de operação e da necessidade de explicação.",
         pergunta: "Qual evidência faria você trocar de técnica?",
         acao: "Comparação com o mesmo conjunto de informação, protocolo congelado e ganho que persiste fora da amostra de ajuste.",
-        foco: null,
       },
     };
     var caso = casos[est.caso];
 
-    var g = Graf.novo({ w: 700, h: 340, m: { e: 16, d: 16, c: 14, b: 14 } });
-    g.x(0, 10).y(0, 10);
-    var realceSoma = caso.foco === "soma", realceCurva = caso.foco === "curva";
-    ["comprometimento", "histórico", "utilização", "relacionamento"].forEach(function (t, i) {
-      var y = 8.6 - i * 1.5;
-      g.retangulo(0.2, y - 0.55, 3.2, y + 0.55,
-        { cor: realceSoma ? "var(--cor-soft)" : "var(--surface)",
-          borda: realceSoma ? "var(--logit)" : "var(--rule)" });
-      g.texto(0.45, y - 0.2, t, { tamanho: 17, peso: 400 });
-      g.add(sv("line", { x1: g.px(3.3), y1: g.py(y), x2: g.px(4.5), y2: g.py(5.2),
-        stroke: realceSoma ? "var(--logit)" : "var(--rule)", "stroke-width": 2 }));
+    /* O painel maior passa a mostrar a evidência que a pergunta de diagnóstico pede: risco por
+       faixa de comprometimento, com o que o logit prevê e o que se observou. O organograma de
+       caixas que estava aqui já aparece nos slides 06 e 07, e não respondia a nenhuma das três
+       perguntas. As faixas observadas são ilustrativas, declaradas na nota abaixo do gráfico. */
+    var L = Aula.dados.logit;
+    var FAIXAS = [20, 30, 40, 50, 60, 70];
+    function pdModelo(comp, hist) {
+      var perfil = Aula.dados.copia(L.referencia);
+      perfil.comp = comp; perfil.hist = hist;
+      return L.pd(perfil);
+    }
+    /* Desvios fixos por cenário, escritos aqui e não sorteados: o slide precisa mostrar
+       sempre a mesma figura. */
+    var CENA = {
+      aditivo:   { h0: [1, 1, 1, 1, 1, 1], h1: [1, 1, 1, 1, 1, 1], n: 900,
+                   leitura: "As faixas observadas caem sobre as duas curvas, e a distância entre elas é a mesma em toda a extensão. É o que uma soma de efeitos produz." },
+      interacao: { h0: [1, 1, 1, 1, 1, 1], h1: [0.72, 0.86, 1.06, 1.34, 1.62, 1.92], n: 900,
+                   leitura: "Com histórico, o risco observado cresce mais rápido do que o modelo permite: as duas curvas deveriam ser paralelas na escala do escore, e as faixas abrem. É interação, e a especificação não tem termo cruzado." },
+      pequena:   { h0: [0.55, 1.5, 0.7, 1.35, 0.85, 1.25], h1: [1.4, 0.65, 1.3, 0.75, 1.35, 0.7], n: 40,
+                   leitura: "As faixas saltam para os dois lados da curva, e o intervalo de cada uma cobre boa parte do gráfico. Com poucos eventos por faixa, a figura não distingue um modelo bem especificado de um mal especificado." },
+      sintese:   { h0: null, h1: null, n: 900,
+                   leitura: "Só o modelo, sem faixas observadas. É exatamente o que uma apresentação sem evidência fora da amostra entrega: uma curva bonita e nenhuma razão para acreditar nela." },
+    };
+    var cena = CENA[est.caso];
+
+    var g = Graf.novo({ w: 700, h: 340, m: { e: 74, d: 140, c: 20, b: 52 } });
+    g.x(15, 75).y(0, 0.45);
+    g.grade({ y: [0, 0.15, 0.30, 0.45] });
+    g.eixoY({ ticks: [0, 0.15, 0.30, 0.45], formato: function (v) { return F.pct(v, 0); },
+              rotulo: "PD" });
+    g.eixoX({ ticks: FAIXAS, rotulo: "comprometimento em %" });
+    [0, 1].forEach(function (hist) {
+      var pts = M.linspace(15, 75, 61).map(function (v) { return [v, pdModelo(v, hist)]; });
+      g.linha(pts, { cor: hist ? "var(--logit)" : "var(--muted)", largura: hist ? 3 : 2.4 });
+      g.texto(75, pdModelo(75, hist), hist ? "histórico = 1" : "histórico = 0",
+        { dx: 8, dy: 4, tamanho: 17, peso: 400, cor: hist ? "var(--logit)" : "var(--muted)" });
     });
-    g.add(sv("circle", { cx: g.px(5.0), cy: g.py(5.2), r: 30,
-      fill: realceSoma ? "var(--logit)" : "var(--paper)",
-      stroke: realceSoma ? "var(--logit)" : "var(--rule)", "stroke-width": 2 }));
-    g.add(sv("text", { x: g.px(5.0), y: g.py(5.2) + 9, "text-anchor": "middle", "font-size": 26,
-      "font-weight": 700, fill: realceSoma ? "#fff" : "var(--muted)", texto: "z" }));
-    var pts = M.linspace(-6, 6, 80).map(function (v) {
-      return [6.2 + ((v + 6) / 12) * 3.2, 2.6 + M.sigmoid(v) * 5.2];
-    });
-    g.linha(pts, { cor: realceCurva ? "var(--logit)" : "var(--rule)", largura: 3 });
-    g.add(sv("line", { x1: g.px(5.6), y1: g.py(5.2), x2: g.px(6.1), y2: g.py(5.2),
-      stroke: realceCurva ? "var(--logit)" : "var(--rule)", "stroke-width": 2 }));
-    g.texto(6.2, 8.6, "PD", { tamanho: 20, cor: realceCurva ? "var(--ink)" : "var(--muted)" });
+    if (cena.h0) {
+      [0, 1].forEach(function (hist) {
+        var fator = hist ? cena.h1 : cena.h0;
+        FAIXAS.forEach(function (comp, i) {
+          var pObs = M.clamp(pdModelo(comp, hist) * fator[i], 0.002, 0.44);
+          if (cena.n <= 60) {
+            var ic = M.wilson(Math.round(pObs * cena.n), cena.n);
+            g.add(sv("line", { x1: g.px(comp), x2: g.px(comp),
+              y1: g.py(Math.min(0.45, ic[1])), y2: g.py(ic[0]),
+              stroke: "var(--rule)", "stroke-width": 2.5 }));
+          }
+          g.ponto(comp, pObs, { r: 6, cor: hist ? "var(--logit)" : "var(--ink)", bordaL: 1.5 });
+        });
+      });
+    }
 
     var forcas = ["função compacta e auditável", "interpretação condicionada à codificação",
                   "previsão rápida e fácil de implantar", "regularização e transformações disponíveis"];
@@ -4691,7 +4715,15 @@ Aula.slide({
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "coluna cresce" }, [
-        h("div", { class: "painel claro cresce centro" }, g.svg),
+        h("div", { class: "painel claro cresce centro" }, [
+          g.svg,
+          h("p", { class: "nota", estilo: "margin:4px 0 0;text-align:left" }, cena.leitura),
+          h("p", { class: "nota", estilo: "margin:4px 0 0;text-align:left" },
+            "Curvas: o logit manual desta aula, no perfil de referência. Pontos: faixas ilustrativas " +
+            "escritas para a situação selecionada, não são dados observados. " +
+            (cena.n <= 60 ? "As barras são intervalos de Wilson com " + F.inteiro(cena.n) +
+             " contratos por faixa." : "")),
+        ]),
         h("div", { class: "g2" }, [
           h("div", { class: "painel" }, [
             h("h3", { class: "secao" }, "Forças"),
@@ -5426,7 +5458,7 @@ Aula.slide({
   subtitulo: "As regras da árvore dividem o espaço em regiões de previsão constante",
   conclusao: "Os efeitos dependem do caminho. Dentro de uma folha, a previsão é constante.",
   fonte: Aula.dados.fontes.arvore,
-  resumo: "Duas faixas de comprometimento, uma para cada valor de histórico, com as quatro regiões da árvore e os quatro clientes posicionados.",
+  resumo: "Duas faixas de comprometimento, uma para cada valor de histórico, com as quatro regiões da árvore, os quatro clientes posicionados e a curva do logit sobreponível.",
 
   montar: function (corpo, ctx) {
     var D = Aula.dados, A = D.arvore;
@@ -5435,6 +5467,8 @@ Aula.slide({
     if (!est.perfil) est.perfil = D.copia(D.cliente(est.cliente));
 
     var c = est.perfil;
+    var L = D.logit;
+    if (est.curva === undefined) est.curva = false;
     var original = D.cliente(est.cliente);
     var simulado = c.comp !== original.comp || c.hist !== original.hist;
     var folha = A.folhaDe(c);
@@ -5473,6 +5507,53 @@ Aula.slide({
       stroke: "var(--amber)", "stroke-width": 2, "stroke-dasharray": "6 4" }));
     g.texto(40, 1.95, "corte em 40%", { dx: 6, dy: -6, tamanho: 17, peso: 400, cor: "var(--amber)" });
 
+    /* A comparação que o capítulo 5 pede e a aula nunca mostrou: a mesma abscissa, a árvore em
+       degraus e a curva do logit manual, nos mesmos eixos de PD. É a única tela da aula em que
+       as duas famílias aparecem juntas. Substitui o mapa de regiões enquanto está ligada. */
+    var gc = null;
+    if (est.curva) {
+      gc = Graf.novo({ w: 870, h: 420, m: { e: 92, d: 152, c: 24, b: 58 },
+        resumo: "PD por comprometimento: a árvore em degraus e a curva do logit, por valor de histórico." });
+      gc.x(0, 80).y(0, 0.45);
+      gc.grade({ y: [0, 0.15, 0.30, 0.45] });
+      gc.eixoY({ ticks: [0, 0.15, 0.30, 0.45], formato: function (v) { return F.pct(v, 0); },
+                 rotulo: "PD" });
+      gc.eixoX({ ticks: [0, 20, 40, 60, 80], rotulo: "comprometimento em %" });
+      gc.add(sv("line", { x1: gc.px(40), x2: gc.px(40), y1: gc.py(0), y2: gc.py(0.45),
+        stroke: "var(--amber)", "stroke-width": 2, "stroke-dasharray": "6 4" }));
+      gc.texto(40, 0.45, "corte em 40%",
+        { dx: 6, dy: -6, tamanho: 17, peso: 400, cor: "var(--amber)" });
+      [0, 1].forEach(function (hist) {
+        var nos = [A.raiz.esq, A.raiz.dir][hist];
+        var traco = hist ? null : "7 5";
+        gc.linha([[0, nos.esq.pd], [40, nos.esq.pd]],
+          { cor: "var(--arvore)", largura: 3.4, tracejado: traco });
+        gc.linha([[40, nos.esq.pd], [40, nos.dir.pd]],
+          { cor: "var(--arvore)", largura: 3.4, tracejado: traco });
+        gc.linha([[40, nos.dir.pd], [80, nos.dir.pd]],
+          { cor: "var(--arvore)", largura: 3.4, tracejado: traco });
+        var perfil = D.copia(L.referencia);
+        perfil.hist = hist;
+        gc.linha(M.linspace(0, 80, 81).map(function (v) {
+          perfil.comp = v; return [v, L.pd(perfil)];
+        }), { cor: "var(--logit)", largura: 2.8, tracejado: traco });
+        gc.texto(80, nos.dir.pd, "árvore, hist " + hist,
+          { dx: 10, dy: 4, tamanho: 16, peso: 400, cor: "var(--arvore)" });
+        perfil.comp = 80;
+        gc.texto(80, L.pd(perfil), "logit, hist " + hist,
+          { dx: 10, dy: 4, tamanho: 16, peso: 400, cor: "var(--logit)" });
+      });
+      D.clientes.forEach(function (cl) {
+        var pdc = A.folhaDe(cl).pd;
+        gc.ponto(cl.comp, pdc, { r: cl.nome === est.cliente ? 9 : 6,
+          cor: cl.nome === est.cliente ? "var(--arvore)" : "var(--muted)", bordaL: 1.5 });
+        gc.texto(cl.comp, pdc, cl.nome,
+          { ancora: "middle", dy: cl.nome === "Carla" ? 26 : -14, tamanho: 16,
+            peso: cl.nome === est.cliente ? 700 : 400,
+            cor: cl.nome === est.cliente ? "var(--ink)" : "var(--muted)" });
+      });
+    }
+
     D.clientes.forEach(function (cl) {
       var y = cl.hist ? 1.5 : 0.5;
       var selecionado = cl.nome === est.cliente;
@@ -5501,7 +5582,7 @@ Aula.slide({
     });
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
-      h("div", { class: "painel claro cresce centro" }, g.svg),
+      h("div", { class: "painel claro cresce centro" }, est.curva ? gc.svg : g.svg),
       h("div", { class: "coluna", estilo: "flex:0 0 560px" }, [
         h("div", { class: "painel claro centro", estilo: "padding:8px 14px" }, arvore),
         h("div", { class: "painel", estilo: "padding:10px 16px" }, [
@@ -5531,6 +5612,10 @@ Aula.slide({
               onclick: function () {
                 est.perfil = D.copia(D.cliente(est.cliente)); App.montar("26");
               } }, "Perfil original"),
+            h("button", { class: "btn min" + (est.curva ? " sel" : ""), type: "button",
+              "aria-pressed": est.curva ? "true" : "false",
+              onclick: function () { est.curva = !est.curva; App.montar("26"); } },
+              est.curva ? "Ver o mapa de regiões" : "Comparar com o logit"),
             h("button", { class: "btn min fantasma", type: "button", onclick: ctx.reiniciar },
               "Reiniciar exemplo"),
           ]),
@@ -5541,6 +5626,14 @@ Aula.slide({
             F.pct(folha.pd, folha.pd * 100 % 1 === 0 ? 0 : 1) + "."),
           h("p", { class: "nota", estilo: "margin-top:6px" },
             "Em comprometimento exatamente igual a 40, o cliente segue pelo ramo até 40."),
+          est.curva
+            ? h("p", { class: "nota", estilo: "margin-top:6px" },
+                "Sobreposto: a mesma abscissa, as duas famílias. A árvore é constante dentro da " +
+                "região e salta no corte; o logit atravessa o mesmo ponto sem salto. Com histórico, " +
+                "a árvore vai de 15% a 40% de um lado para o outro dos 40%, enquanto o logit passa " +
+                "por 9,1% ali e chega a 33,2% só em 80%. Nenhuma das duas está certa por construção: " +
+                "elas erram de formas diferentes, e escolher entre elas exige o capítulo 7.")
+            : null,
         ]),
       ]),
     ]));
@@ -5981,7 +6074,7 @@ Aula.slide({
   subtitulo: "Exercício: percorrer, calcular e questionar",
   conclusao: "Uma regra legível ajuda a explicar o cálculo, mas não dispensa evidência de qualidade.",
   fonte: Aula.dados.fontes.arvore,
-  resumo: "Árvore didática com a taxa da folha de Carla oculta e três tarefas: caminho, cálculo da PD e efeito de dobrar a renda.",
+  resumo: "Árvore didática com a taxa da folha de Carla oculta, três tarefas de percurso e cálculo, e o painel de quando a árvore é uma boa escolha.",
   impressao: function (e) { e.conferido = true; e.pdTexto = "11"; e.ramo = "certo"; e.renda = 0; },
 
   montar: function (corpo, ctx) {
@@ -6045,6 +6138,26 @@ Aula.slide({
             ])
           : null,
         Comum.fichaLinha(carla, { cor: true }),
+        h("div", { class: "painel claro", estilo: "padding:10px 16px" }, [
+          h("h3", { class: "secao", estilo: "margin-bottom:5px" }, "Quando a árvore é uma boa escolha"),
+          h("div", { class: "g2" }, [
+            h("ul", { class: "apoio", estilo: "margin:0;padding-left:20px" }, [
+              h("li", {}, "o efeito de uma variável depende do valor de outra, e a interação não " +
+                "precisa ser escrita à mão"),
+              h("li", {}, "a relação não é monótona, e transformar a variável seria um chute"),
+              h("li", {}, "a regra precisa virar política operacional, legível linha a linha"),
+            ]),
+            h("ul", { class: "apoio", estilo: "margin:0;padding-left:20px" }, [
+              h("li", {}, "não escolha pela leitura do diagrama: uma observação pode trocar a " +
+                "variável de um nó"),
+              h("li", {}, "não leia a taxa da folha sem o tamanho da folha"),
+              h("li", {}, "não compare com outra família pela perda de treino"),
+            ]),
+          ]),
+          h("p", { class: "nota", estilo: "margin-top:6px" },
+            "À esquerda, o que a árvore entrega e a soma não entrega. À direita, o preço, e é o " +
+            "mesmo preço em qualquer família: só evidência fora da amostra decide."),
+        ]),
       ]),
       /* 700 de largura: cada opção do caminho cabe numa linha, e as três partes conferidas
          cabem na altura do palco. */
@@ -6535,11 +6648,11 @@ Aula.slide({
         destaque: est.passo >= 2,
         filhos: [
           { aresta: "sim (grupo A)", destaque: est.passo >= 2, no: {
-            rotulo: "folha A", detalhe: "5 registros",
+            rotulo: "folha A", detalhe: "5 registros · Ana e Bruno",
             detalhe2: est.passo >= 2 ? "h = " + F.dec(it.grupos.A.h, 6) : "h = ?",
             destaque: est.passo >= 2 } },
           { aresta: "não (grupo B)", destaque: est.passo >= 2, no: {
-            rotulo: "folha B", detalhe: "5 registros",
+            rotulo: "folha B", detalhe: "5 registros · Carla e Diego",
             detalhe2: est.passo >= 2 ? "h = " + F.dec(it.grupos.B.h, 6) : "h = ?",
             destaque: est.passo >= 2 } },
         ],
@@ -6759,8 +6872,11 @@ Aula.slide({
     var est = ctx.estado;
     if (est.comp === undefined) est.comp = 50;
     if (est.converter === undefined) est.converter = false;
+    /* A taxa de aprendizagem deixa de ser fixa aqui: é o que o slide 37 vai cobrar, e o aluno
+       precisa ter visto os resíduos serem recalculados com outro η antes de responder. */
+    if (est.eta === undefined) est.eta = 1;
 
-    var hist = B.rodar(2, 1);
+    var hist = B.rodar(2, est.eta);
     var grupo = est.comp > B.corte ? "B" : "A";
     var h1 = hist[1].grupos[grupo].h;
     var h2 = hist[2].grupos[grupo].h;
@@ -6833,11 +6949,20 @@ Aula.slide({
           ]),
           UI.slider({
             rotulo: "Comprometimento do solicitante", min: 20, max: 60, passo: 1, valor: est.comp,
-            formato: function (v) { return "grupo " + (v > B.corte ? "B" : "A"); },
+            formato: function (v) { return "grupo " + (v > B.corte ? "B" : "A") +
+              (v <= 22 ? ", como Ana" : v <= 38 ? ", como Bruno" : v <= 48 ? ", como Carla" : ", como Diego"); },
             aoMudar: function (v) { est.comp = v; App.montar("36"); },
           }),
+          h("div", { class: "ctrl", estilo: "margin-top:8px" }, [
+            h("label", {}, "Taxa de aprendizagem η"),
+            UI.botoes({ compacto: true, rotulo: "Taxa de aprendizagem", valor: est.eta,
+              opcoes: [{ rotulo: "η = 1", valor: 1 }, { rotulo: "η = 0,40", valor: 0.4 }],
+              aoMudar: function (v) { est.eta = v; App.montar("36"); } }),
+          ]),
           h("p", { class: "nota", estilo: "margin-top:8px" },
-            "Nenhum campo de desfecho aparece nesta ficha. O y foi usado apenas no treinamento."),
+            "Nenhum campo de desfecho aparece nesta ficha. O y foi usado apenas no treinamento. " +
+            "Trocar η não reescala o resultado: as mesmas duas árvores mudam de valor porque os resíduos " +
+            "da segunda são recalculados sobre o escore já atualizado pela primeira."),
         ]),
         h("div", { class: "coluna", estilo: "gap:8px" }, percurso),
         h("div", { class: "painel claro cresce centro", estilo: "padding:8px 14px" }, [
@@ -7526,11 +7651,11 @@ Aula.slide({
 Aula.slide({
   id: "42",
   bloco: "boosting",
-  titulo: "O novo cliente caiu no grupo B. Qual é a previsão?",
+  titulo: "Carla caiu no grupo B. Qual é a previsão?",
   subtitulo: "Exercício: somar em escore e converter uma única vez",
   conclusao: "Com as árvores treinadas, os atributos determinam o percurso e a soma determina a PD.",
   fonte: Aula.dados.fontes.boosting,
-  resumo: "Escore inicial e duas folhas do grupo B, com três métodos possíveis de combinação.",
+  resumo: "Escore inicial e duas folhas do grupo B, com os atributos de Carla e três métodos possíveis de combinação.",
   impressao: function (e) { e.escolha = 1; e.conferido = true; e.passos = 2; },
 
   montar: function (corpo, ctx) {
@@ -7540,6 +7665,7 @@ Aula.slide({
     if (est.passos === undefined) est.passos = 0;
 
     var hist = B.rodar(2, 1);
+    var carla = Aula.dados.cliente("Carla");
     var F0 = hist[0].grupos.B.F;
     var h1 = hist[1].grupos.B.h, h2 = hist[2].grupos.B.h;
     var total = hist[2].grupos.B.F;
@@ -7589,6 +7715,7 @@ Aula.slide({
         h("div", { class: "painel cor" }, [
           h("h3", { class: "secao" }, "O que já sabemos"),
           UI.kv([
+            ["cliente", "Carla, comp " + F.dec(carla.comp, 0) + "% · grupo B"],
             ["escore inicial F0", F.dec(F0, 6)],
             ["folha da árvore 1", F.sinal(h1, 6)],
             ["folha da árvore 2", F.sinal(h2, 6)],
@@ -9024,12 +9151,11 @@ Aula.slide({
   titulo: "Você consegue explicar, comparar e usar os três modelos?",
   subtitulo: "Definir, estimar, validar e decidir são etapas conectadas",
   conclusao: "A técnica importa. A evidência que sustenta seu uso importa tanto quanto.",
-  fonte: "Síntese do curso",
-  resumo: "Tabela de síntese dos três modelos, três perguntas de recuperação e o roteiro de aplicação no trabalho.",
+  fonte: "Síntese do curso; PDs do experimento sintético, semente 20260920",
+  resumo: "Tabela de síntese dos três modelos, a comparação das três PDs para os quatro clientes do slide 01, três perguntas de recuperação e o roteiro de aplicação no trabalho.",
   impressao: function (e) { e.respondidas = { odds: true, folha: true, soma: true }; },
 
   montar: function (corpo, ctx) {
-    var D = Aula.dados;
     var est = ctx.estado;
     if (!est.respondidas) est.respondidas = {};
 
@@ -9088,6 +9214,44 @@ Aula.slide({
 
     var textoRoteiro = roteiro.map(function (t, i) { return (i + 1) + ". " + t; }).join("\n");
 
+    /* A comparação que a aula prometeu no slide 01: os mesmos quatro clientes, agora com as três
+       PDs calibradas e a decisão no corte congelado. É a mesma tabela do material impresso. */
+    var R = Aula.resultados;
+    var corte = R.politica.logit.corte_congelado;
+    var MODELOS = [{ chave: "logit", nome: "Logit", cor: "var(--logit)" },
+                   { chave: "arvore", nome: "Árvore", cor: "var(--arvore)" },
+                   { chave: "boosting", nome: "Boosting", cor: "var(--boost)" }];
+    var pdsPorCliente = R.clientes.nomes.map(function (nome, i) {
+      return MODELOS.map(function (m) { return R.clientes.pd_modelos_calibrada[m.chave][i]; });
+    });
+    var comparacao = UI.tabela({
+      compacta: true,
+      colunas: [{ rotulo: "Cliente" }].concat(MODELOS.map(function (m) {
+        return { rotulo: m.nome, unidade: "PD calibrada" };
+      })).concat([{ rotulo: "No corte de " + F.pct(corte, 0) }]),
+      linhas: R.clientes.nomes.map(function (nome, i) {
+        var pds = pdsPorCliente[i];
+        var todosAbaixo = pds.every(function (p) { return p <= corte; });
+        var todosAcima = pds.every(function (p) { return p > corte; });
+        return [nome].concat(pds.map(function (p) { return F.pct(p, 2); }))
+          .concat([todosAbaixo ? "aprovado nos três" : todosAcima ? "recusado nos três"
+                                                                 : "depende do modelo"]);
+      }),
+      legenda: "PD calibrada dos três modelos para os quatro clientes e a decisão no corte",
+    });
+    [].forEach.call(comparacao.querySelectorAll("thead th"), function (th, j) {
+      if (j >= 1 && j <= 3) th.setAttribute("style", "color:" + MODELOS[j - 1].cor);
+    });
+    [].forEach.call(comparacao.querySelectorAll("tbody tr"), function (tr, i) {
+      var pds = pdsPorCliente[i];
+      var recusado = pds.every(function (p) { return p > corte; });
+      tr.lastChild.setAttribute("style", "color:" + (recusado ? "var(--alert)" : "var(--ok)") + ";font-weight:600");
+    });
+    var folgas = pdsPorCliente.map(function (pds) { return Math.max.apply(null, pds) - Math.min.apply(null, pds); });
+    var iMaior = folgas.indexOf(Math.max.apply(null, folgas));
+    var maiorFolga = folgas[iMaior], nomeMaiorFolga = R.clientes.nomes[iMaior];
+    var D_CARLA = R.clientes.pd_modelos_calibrada.boosting[R.clientes.nomes.indexOf("Carla")];
+
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "coluna cresce" }, [
         h("div", { class: "painel claro" }, tabela),
@@ -9098,19 +9262,20 @@ Aula.slide({
              "probabilidades e conexão com a decisão econômica."]),
         ]),
         h("div", { class: "painel claro cresce", estilo: "padding:10px 16px" }, [
-          h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap" }, [
+          h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
             h("h3", { class: "secao", estilo: "margin:0" },
               "Os mesmos quatro clientes do começo"),
-            h("span", { class: "nota" }, "qual modelo, qual política e por quê?"),
+            h("span", { class: "nota" }, "as três PDs e a decisão no corte de " + F.pct(corte, 0)),
           ]),
-          h("div", { estilo: "display:flex;gap:22px;flex-wrap:wrap;margin-top:6px" },
-            D.clientes.map(function (c) {
-              return h("span", { class: "apoio", estilo: "font-size:18px" }, [
-                h("strong", { estilo: "font-size:21px" }, c.nome), " ",
-                F.reais(c.renda) + " · comp " + F.dec(c.comp, 0) + "% · hist " +
-                (c.hist ? "sim" : "não"),
-              ]);
-            })),
+          comparacao,
+          h("p", { class: "apoio", estilo: "margin:5px 0 0;font-size:18px;color:var(--ink)" },
+            [h("strong", {}, "O que muda e o que não muda: "),
+             "as três técnicas discordam na PD, e a maior diferença é de " +
+             F.dec(maiorFolga * 100, 1) + " pontos, em " + nomeMaiorFolga + ". Mesmo assim, " +
+             "no corte de " + F.pct(corte, 0) + " os três modelos tomam a mesma decisão para os " +
+             "quatro. Carla é a que chega mais perto de virar: " +
+             F.pct(D_CARLA, 2) + " no boosting, a " + F.dec((corte - D_CARLA) * 100, 2) +
+             " ponto do corte."]),
         ]),
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 600px" }, [

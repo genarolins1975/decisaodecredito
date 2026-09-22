@@ -1,0 +1,453 @@
+{
+  "_leia": "Perguntas de múltipla escolha escritas para as páginas essenciais dos capítulos 4, 5 e 6 que só tinham a pergunta aberta de checagem, sem veredito. Mesmo formato das questões vindas do material original: uma alternativa certa, distratores que são o equívoco real do aluno (tirados dos erros previstos no guia do professor de cada página), e um diagnóstico por alternativa errada. O importador as junta às da página; a página as mostra depois do conteúdo e antes da pergunta aberta. Sem ponto final em 'seu' e 'adequado': o renderizador acrescenta um.",
+  "questoes": [
+    {
+      "pagina": "c4p3",
+      "slug": "c4p3q",
+      "rot": "O que a PD afirma",
+      "pergunta": "Uma proposta recebe PD de 12% no horizonte definido. O que exatamente esse número afirma?",
+      "alt": [
+        "Que o cliente vai pagar 88% da dívida e deixar de pagar 12%",
+        "Que entre propostas com este perfil, aproximadamente 12 em cada 100 terminam em default no horizonte",
+        "Que somar 10 pontos de PD a essa proposta a levaria a 22%, e o mesmo valeria para uma proposta de 95%"
+      ],
+      "certa": 1,
+      "porqueCerta": "PD é frequência esperada em um grupo, não fração de um contrato nem sentença sobre um cliente. Com 12%, a grade da página mostra 12 quadrados escuros em 100: a probabilidade diz quantas propostas do perfil terminam em default, não quais, e não diz nada sobre quanto se perde em cada uma.",
+      "erros": [
+        {
+          "confusao": "Probabilidade do evento foi lida como severidade da perda.",
+          "conceito": "São dois números diferentes que se multiplicam. A PD diz se o default acontece; a perda dado o default diz quanto se perde quando acontece, e é assunto do capítulo 8. Um cliente com PD de 12% ou paga tudo ou entra em default, e nesse caso a perda depende da garantia e da recuperação, não dos 12%",
+          "seu": "12% seria a parte da dívida não paga",
+          "adequado": "12% é a fração de propostas do perfil que terminam em default"
+        },
+        null,
+        {
+          "confusao": "A probabilidade foi tratada como escala aditiva, em que somar pontos funciona em qualquer ponto da faixa.",
+          "conceito": "Probabilidade é presa entre 0 e 1, e por isso nenhum efeito constante em pontos percentuais sobrevive aos extremos. Somar 10 pontos a 95% daria 105%, que não existe. É exatamente essa parede que motiva as duas próximas escalas do capítulo: odds, que não tem teto, e log odds, que é simétrica",
+          "seu": "O mesmo acréscimo de 10 pontos valeria em 12% e em 95%",
+          "adequado": "Probabilidade é excelente para decidir e ruim para modelar, porque o efeito não pode ser constante perto das bordas"
+        }
+      ]
+    },
+    {
+      "pagina": "c4p4",
+      "slug": "c4p4q",
+      "rot": "Ler odds em voz alta",
+      "pergunta": "Uma proposta tem odds de 3. Qual é a PD correspondente?",
+      "alt": [
+        "PD de 30%, porque odds e percentual são a mesma leitura em escalas diferentes",
+        "PD de 75%, porque são 3 defaults para 1 adimplente, ou seja 3 em cada 4 propostas",
+        "Odds de 3 não existe, porque a razão não passa de 1"
+      ],
+      "certa": 1,
+      "porqueCerta": "Odds é razão entre o que acontece e o que não acontece, então odds de 3 se lê por extenso: três defaults para cada adimplente. Some os dois lados e você tem quatro propostas, das quais três dão default: PD de 75%. A fórmula confirma, PD = odds ÷ (1 + odds) = 3 ÷ 4.",
+      "erros": [
+        {
+          "confusao": "A razão foi lida como se fosse um percentual.",
+          "conceito": "Odds e probabilidade são escalas diferentes e só coincidem perto de zero. Em PD de 50% as odds valem 1, e a partir daí elas crescem sem limite: a tabela da página vai de 0,010 em PD de 1% até 19,000 em PD de 95%. Ler odds como percentual erra tanto mais quanto maior o risco",
+          "seu": "Odds de 3 seria PD de 30%",
+          "adequado": "Odds de 3 é PD de 75%, porque são três defaults para um adimplente"
+        },
+        null,
+        {
+          "confusao": "O teto de 1 da probabilidade foi transferido para a razão.",
+          "conceito": "O denominador das odds é a probabilidade de não haver default, e ele encolhe conforme o risco sobe. Por isso as odds vão de zero a infinito: em PD de 95% valem 19, em PD de 99% valem 99. Resolver o teto em 1 é exatamente o que essa escala veio fazer",
+          "seu": "A razão teria teto, como a probabilidade",
+          "adequado": "Odds não tem teto: PD de 95% já dá odds de 19"
+        }
+      ]
+    },
+    {
+      "pagina": "c4p5",
+      "slug": "c4p5q",
+      "rot": "Por que somar em log odds",
+      "pergunta": "Partindo de PD de 20%, dobrar as odds leva a 33,33% e reduzi-las à metade leva a 11,11%: 13,33 pontos para cima e 8,89 para baixo. Por que o modelo soma em log odds e não em PD?",
+      "alt": [
+        "Porque em log odds os dois movimentos deslocam o mesmo 0,6931, e soma de valor fixo é justamente o que uma função linear sabe fazer",
+        "Porque o valor de log odds pode ser lido diretamente como o nível de risco daquele cliente",
+        "Porque log odds tem teto e piso, o que impede a previsão de sair do intervalo de 0 a 1"
+      ],
+      "certa": 0,
+      "porqueCerta": "A assimetria em PD, 13,33 para cima contra 8,89 para baixo, é o problema. Em log odds o mesmo movimento vale ±0,6931 nos dois sentidos, porque ln(a × b) = ln(a) + ln(b) transforma multiplicação em soma. A escolha da escala não é estética: é ela que torna defensável escrever o escore como soma de parcelas.",
+      "erros": [
+        null,
+        {
+          "confusao": "Procurou-se significado no valor absoluto de z.",
+          "conceito": "z sozinho não se interpreta: dizer que um cliente tem z de −1,386 não informa ninguém. O que se interpreta são diferenças de z, e é disso que trata a página de razão de chances. O número ganha leitura quando volta para PD pela curva logística, ou quando vira um fator multiplicativo sobre as odds",
+          "seu": "z seria lido como nível de risco",
+          "adequado": "z sozinho não se interpreta; diferenças de z, sim"
+        },
+        {
+          "confusao": "Trocou-se o papel das duas escalas: quem garante o intervalo é a logística, não o log odds.",
+          "conceito": "Log odds faz o contrário de ter teto: ele vai de menos infinito a mais infinito, e é isso que dá liberdade à soma. Quem garante que a previsão volte ao intervalo de 0 a 1 é a curva logística, que desfaz a transformação no fim. Uma abre a escala para o modelo somar, a outra fecha a escala para a decisão acontecer",
+          "seu": "Log odds seria a escala limitada",
+          "adequado": "Log odds é ilimitada; a logística é que devolve a previsão ao intervalo de 0 a 1"
+        }
+      ]
+    },
+    {
+      "pagina": "c4p7",
+      "slug": "c4p7q",
+      "rot": "O mesmo passo em z",
+      "pergunta": "Em z = −1,50 a PD é 18,2%, e somar 1 a z a leva para 37,8%, um deslocamento de 19,5 pontos. Somar o mesmo 1 partindo de z = 3 desloca a PD em quanto?",
+      "alt": [
+        "Nos mesmos 19,5 pontos, porque o efeito de uma unidade de z é constante",
+        "Em muito menos, porque a inclinação da logística é máxima em z = 0 e cai nos extremos",
+        "Não é possível dizer sem conhecer os coeficientes do modelo"
+      ],
+      "certa": 1,
+      "porqueCerta": "Em z = 3 a PD já é 95,26%, e somar 1 leva a 98,20%: menos de 3 pontos, contra 19,5 no meio da curva. A inclinação local vale p(1 − p), máxima em z = 0 onde chega a 0,25, e vai a zero nos dois extremos. É a curva em S: o mesmo passo no escore vale muito no meio e quase nada nas pontas.",
+      "erros": [
+        {
+          "confusao": "A linearidade em z foi transportada para a PD.",
+          "conceito": "O modelo é linear na escala do escore, e só nela. A logística é não linear por construção, e é justamente essa não linearidade que impede a previsão de passar de 100%. Se 19,5 pontos valessem em qualquer z, bastariam seis passos para ultrapassar o teto",
+          "seu": "O efeito de uma unidade de z seria constante em pontos de PD",
+          "adequado": "O efeito é constante em log odds e variável em PD"
+        },
+        null,
+        {
+          "confusao": "A relação entre z e PD foi confundida com a relação entre as variáveis e z.",
+          "conceito": "Os coeficientes determinam como as características viram z. Daí em diante, a passagem de z para PD é sempre a mesma função, PD = 1 ÷ (1 + e^−z), igual para qualquer modelo logístico. Por isso a pergunta se responde sem conhecer nenhum coeficiente",
+          "seu": "Seriam necessários os coeficientes",
+          "adequado": "A curva de z para PD é a mesma em qualquer modelo logístico"
+        }
+      ]
+    },
+    {
+      "pagina": "c4p8",
+      "slug": "c4p8q",
+      "rot": "Ler as parcelas do escore",
+      "pergunta": "Na proposta #11 a utilização contribui +5,2171 para o escore e o atraso contribui +0,6977. O que se pode concluir disso?",
+      "alt": [
+        "Que a utilização é a variável mais importante do modelo, por contribuir sete vezes mais",
+        "Que nesta proposta a utilização deslocou mais o escore, o que depende do coeficiente e também da unidade em que a variável foi medida",
+        "Que reduzir a utilização desta proposta baixaria a PD em 5,2171 pontos percentuais"
+      ],
+      "certa": 1,
+      "porqueCerta": "A contribuição é o coeficiente multiplicado pelo valor na escala usada: 0,7453 × 7,0 contra 1,3955 × 0,5. O coeficiente do atraso é quase o dobro do da utilização; o que faz a parcela ficar maior é a proposta ter utilização 70% e atraso de apenas 5 dias. Trocar a unidade de uma das duas trocaria os tamanhos sem mudar o modelo.",
+      "erros": [
+        {
+          "confusao": "Parcelas de variáveis medidas em escalas diferentes foram comparadas como se fossem importâncias.",
+          "conceito": "Importância exige uma régua comum, e contribuição bruta não é uma. A página 14 mostra o ponto: dividir o atraso por 100 em vez de por 10 multiplicaria o coeficiente por 10 e deixaria o modelo idêntico, com outra ordem aparente de importância. O que a tabela entrega é auditoria de uma decisão, não ranking de variáveis",
+          "seu": "A maior parcela seria a variável mais importante",
+          "adequado": "A maior parcela é o maior deslocamento nesta proposta, na unidade escolhida"
+        },
+        null,
+        {
+          "confusao": "A escala do escore foi confundida com pontos percentuais de PD, e a leitura preditiva foi confundida com efeito de intervenção.",
+          "conceito": "5,2171 está em log odds. Para saber o que sobra em PD é preciso refazer a soma, chegar ao novo z e passar pela logística; nesta proposta z = 0,2483 e PD = 56,18%. E, mesmo feita a conta, o número descreve a função aprendida, não o efeito de mudar a utilização daquele cliente no mundo",
+          "seu": "A parcela seria lida como pontos de PD",
+          "adequado": "A parcela está em log odds e só vira PD depois de somar tudo e aplicar a logística"
+        }
+      ]
+    },
+    {
+      "pagina": "c5p3",
+      "slug": "c5p3q",
+      "rot": "Profundidade conta o quê",
+      "pergunta": "Nesta árvore uma proposta atravessa três caixas da raiz até a folha. Qual é a profundidade da árvore?",
+      "alt": [
+        "3, porque são três caixas no caminho",
+        "2, porque profundidade conta as regras aplicadas, e a folha não faz pergunta",
+        "4, porque a árvore tem quatro folhas"
+      ],
+      "certa": 1,
+      "porqueCerta": "Profundidade é o número de perguntas feitas entre a raiz e a folha, e aqui são duas: utilização ≤ 57,5% e depois ≤ 27,5% ou ≤ 87,5%. A terceira caixa do caminho é a folha, que não pergunta nada, apenas produz a previsão. A distinção importa porque profundidade máxima d permite até 2 elevado a d folhas, e é o principal freio de complexidade da árvore.",
+      "erros": [
+        {
+          "confusao": "Contaram-se nós em vez de regras.",
+          "conceito": "Cada nó interno faz uma pergunta; a folha só entrega o resultado. Conte as perguntas: são duas. A conta importa porque a fórmula do limite de folhas usa a profundidade: 2 dá até 4 folhas, 3 dá até 8, 10 dá até 1.024. Errar em um nível dobra a estimativa de complexidade",
+          "seu": "A folha entraria na contagem de profundidade",
+          "adequado": "A folha é a caixa final do caminho e não conta como divisão"
+        },
+        null,
+        {
+          "confusao": "Número de folhas foi tomado como profundidade.",
+          "conceito": "São duas medidas relacionadas, mas diferentes. Nesta árvore, profundidade 2 produziu exatamente 4 folhas porque todos os ramos foram divididos; uma árvore de profundidade 2 com um ramo não dividido teria 3 folhas e a mesma profundidade. A profundidade é o teto, o número de folhas é o que de fato se construiu",
+          "seu": "Quatro folhas seriam profundidade 4",
+          "adequado": "Quatro folhas é o máximo que a profundidade 2 permite, e a profundidade continua 2"
+        }
+      ]
+    },
+    {
+      "pagina": "c5p4",
+      "slug": "c5p4q",
+      "rot": "O que o Gini mede",
+      "pergunta": "Um grupo tem 10% de defaults e outro tem 90%. Como os dois se comparam em Gini?",
+      "alt": [
+        "O grupo de 10% tem Gini muito menor, porque o risco dele é menor",
+        "Os dois têm exatamente o mesmo Gini, 0,18, porque a medida é simétrica e mede mistura, não nível de risco",
+        "O grupo de 90% tem Gini 0,90, porque a impureza acompanha a proporção de defaults"
+      ],
+      "certa": 1,
+      "porqueCerta": "Gini = 2p(1 − p) devolve o mesmo valor para p e para 1 − p: com 0,10 e com 0,90 o resultado é 0,18 nos dois casos. A medida pergunta quanto o grupo está misturado, não quão arriscado ele é. Um grupo de 90% de defaults é tão homogêneo quanto um de 10%, e a árvore fica igualmente satisfeita com os dois.",
+      "erros": [
+        {
+          "confusao": "A medida de impureza foi lida como nível de risco.",
+          "conceito": "A árvore não procura grupos de baixo risco, procura grupos homogêneos. Uma folha com 90% de defaults é uma ótima folha: ela separa bem. Confundir as duas coisas leva a achar que a árvore está tentando minimizar a PD, quando ela está tentando minimizar a mistura dentro de cada grupo",
+          "seu": "Gini baixo significaria risco baixo",
+          "adequado": "Gini baixo significa grupo homogêneo, seja ele de risco alto ou baixo"
+        },
+        null,
+        {
+          "confusao": "A impureza foi tomada como sinônimo da proporção de defaults.",
+          "conceito": "As duas coordenadas não são a mesma: a proporção vai de 0 a 1 de forma monótona, e a impureza sobe até 50% e depois desce. Por isso o gráfico da página é uma curva em forma de sino, com zero nos dois extremos e máximo de 0,5 no meio. Em 90% de defaults a proporção é alta e a impureza é baixa",
+          "seu": "Impureza cresceria junto com a proporção de defaults",
+          "adequado": "Impureza é máxima em 50% e zera nos dois extremos"
+        }
+      ]
+    },
+    {
+      "pagina": "c5p7",
+      "slug": "c5p7q",
+      "rot": "As duas margens da raiz",
+      "pergunta": "Na raiz, utilização ≤ 57,5% vence com ganho 0,28125. O corte vizinho, utilização ≤ 52,5%, fica em 0,19841, e o melhor corte de atraso fica em 0,07143. O que essas duas margens dizem?",
+      "alt": [
+        "Que a escolha da variável é estável e a do ponto de corte não: a margem sobre o atraso é de quase quatro vezes, e sobre o corte vizinho é de 1,4 vez",
+        "Que a árvore deveria usar os dois cortes de utilização na raiz, já que os dois têm ganho alto",
+        "Que existe um ótimo matemático em 57,5%, encontrado derivando a função de ganho"
+      ],
+      "certa": 0,
+      "porqueCerta": "São duas perguntas diferentes, e cada margem responde a uma. A margem sobre a outra variável decide qual característica entra na raiz, e ela é folgada: retirar qualquer uma das dezesseis propostas mantém utilização na raiz. A margem sobre o corte vizinho decide o ponto, e ela é apertada: trocar 57,5 por 52,5 custa pouco, e não muda a leitura da árvore.",
+      "erros": [
+        null,
+        {
+          "confusao": "Ganho alto de dois candidatos foi lido como autorização para usar os dois no mesmo nó.",
+          "conceito": "Cada nó faz uma única pergunta, e ela divide o grupo em dois. Os 21 candidatos competem por essa vaga; o segundo colocado não recebe nada. Um segundo corte de utilização pode aparecer no nível seguinte, dentro de um dos lados, e é exatamente o que acontece nesta árvore: 27,5 à esquerda e 87,5 à direita",
+          "seu": "Os dois cortes entrariam na mesma raiz",
+          "adequado": "Um nó tem uma regra; o segundo corte pode voltar no nível seguinte"
+        },
+        {
+          "confusao": "A busca foi imaginada como otimização com fórmula fechada.",
+          "conceito": "Não há derivada a calcular: o ganho não é suave nem tem um único pico por variável, como o gráfico da página mostra. O algoritmo avalia um por um os 21 pontos médios entre valores observados e fica com o maior. É por isso que o custo cresce com variáveis contínuas de alta cardinalidade e não com o número de variáveis",
+          "seu": "O corte viria de uma derivação",
+          "adequado": "O corte vem de avaliar exaustivamente todos os candidatos"
+        }
+      ]
+    },
+    {
+      "pagina": "c5p10",
+      "slug": "c5p10q",
+      "rot": "O que a folha autoriza",
+      "pergunta": "A proposta #15 chega a uma folha com duas propostas, uma delas em default. O que essa folha autoriza a afirmar?",
+      "alt": [
+        "Que a #15 deu default, já que caiu numa folha de risco 50%",
+        "Que a taxa observada daquele grupo é 50%, com intervalo de 9,5% a 90,5%: com duas propostas a folha não distingue um grupo excelente de um péssimo",
+        "Que o risco do grupo é 50%, e esse é o melhor número disponível para decidir"
+      ],
+      "certa": 1,
+      "porqueCerta": "A folha reúne a #15, que pagou, e a #16, que deu default. A taxa de 50% é a frequência das duas, não o desfecho de nenhuma delas, e o intervalo de 95% tem 81 pontos de largura. Taxa de folha sem o tamanho da folha não é informação: é o mesmo 50% que sairia de uma folha com 600 propostas, e lá significaria outra coisa.",
+      "erros": [
+        {
+          "confusao": "A taxa do grupo foi lida como o desfecho da proposta individual.",
+          "conceito": "A árvore atribui a mesma previsão a todos os que caem na mesma folha, e por construção ela não sabe separá-los. Nomeie os membros e conte os rótulos: um 0 e um 1. É a mesma distinção do capítulo 2 entre probabilidade de um grupo e desfecho de um caso, agora dentro de uma folha",
+          "seu": "50% seria lido como o desfecho da #15",
+          "adequado": "50% é a frequência das duas propostas da folha, e a #15 pagou"
+        },
+        null,
+        {
+          "confusao": "A taxa foi aceita como estimativa utilizável sem olhar quantas propostas a sustentam.",
+          "conceito": "Duas propostas produzem um intervalo que cobre quase toda a faixa possível. Decidir com esse número é decidir sem informação, e o remédio é estrutural: mínimo de casos por folha e poda, para que nenhuma folha chegue tão pequena. O capítulo 5 exige n e intervalo em toda tabela de folhas, sempre",
+          "seu": "50% com n igual a 2 serviria para decidir",
+          "adequado": "50% com n igual a 2 tem intervalo de 9,5% a 90,5% e não sustenta decisão"
+        }
+      ]
+    },
+    {
+      "pagina": "c5p18",
+      "slug": "c5p18q",
+      "rot": "O que a perda de treino decide",
+      "pergunta": "Nas dezesseis propostas, a log loss é 0,43282 na logística e 0,18844 na árvore. O que esse par de números decide?",
+      "alt": [
+        "Que a árvore é o melhor modelo nesta base, e por margem larga",
+        "Nada: as duas foram avaliadas na mesma amostra em que a árvore criou as folhas, e perda de treino desce com qualquer complexidade acrescentada",
+        "Que a árvore está sobreajustada, e por isso a logística deve ser escolhida"
+      ],
+      "certa": 1,
+      "porqueCerta": "A árvore foi construída escolhendo cortes que reduzem a impureza nessas mesmas dezesseis propostas, e depois foi medida nelas. É a armadilha do capítulo 2: comparar modelos na amostra em que foram estimados. A comparação honesta exige amostra fora do tempo, o mesmo conjunto de informação e critério declarado antes, que é o protocolo do capítulo 7.",
+      "erros": [
+        {
+          "confusao": "Modelos foram comparados na amostra em que foram estimados.",
+          "conceito": "Qualquer família suficientemente flexível chega perto de zero em treino: basta crescer a árvore até uma folha por proposta. O número não mede capacidade de prever, mede capacidade de memorizar. Nenhuma decisão de modelo se toma com ele, nem a favor nem contra",
+          "seu": "A menor perda de treino indicaria o melhor modelo",
+          "adequado": "Perda de treino não ordena modelos; só amostra fora da estimação ordena"
+        },
+        null,
+        {
+          "confusao": "O mesmo número de treino foi usado, com o sinal trocado, para declarar sobreajuste.",
+          "conceito": "Sobreajuste é uma afirmação sobre a diferença entre dentro e fora da amostra, e aqui só existe o dentro. A árvore pode estar sobreajustada, e provavelmente está com folhas de duas propostas, mas esse par de números não prova nem desmente. Provar exige a segunda medida, que esta página não tem",
+          "seu": "A perda baixa em treino provaria sobreajuste",
+          "adequado": "Sobreajuste é a distância entre treino e fora da amostra, e a segunda medida não está aqui"
+        }
+      ]
+    },
+    {
+      "pagina": "c6p2",
+      "slug": "c6p2q",
+      "rot": "Onde a segunda árvore aprende",
+      "pergunta": "Em um boosting, em que dados a segunda árvore é treinada?",
+      "alt": [
+        "Nos mesmos dados originais, como acontece na média de modelos independentes",
+        "Nos resíduos deixados pela primeira, ou seja, no que falta para o modelo atual acertar",
+        "Numa reamostragem dos dados originais, sorteada com reposição"
+      ],
+      "certa": 1,
+      "porqueCerta": "É essa troca de alvo que separa boosting de tudo o que veio antes. A primeira árvore prevê y; a segunda prevê o erro da primeira; a terceira prevê o erro que sobrou depois das duas. As correções são sequenciais e dependentes: cada árvore só existe em função do que a anterior deixou por fazer.",
+      "erros": [
+        {
+          "confusao": "Boosting foi confundido com média de modelos treinados em paralelo.",
+          "conceito": "Na média, os modelos são intercambiáveis e a ordem não importa: cada um vê os dados originais e a combinação é uma votação. No boosting a ordem é tudo, porque o alvo da árvore m depende do escore acumulado até m menos 1. Trocar duas árvores de posição produz outro modelo",
+          "seu": "As árvores veriam os mesmos dados e seriam promediadas",
+          "adequado": "Cada árvore vê o resíduo da anterior, e as contribuições são somadas na ordem"
+        },
+        null,
+        {
+          "confusao": "Boosting foi confundido com bagging, que é a outra forma de combinar árvores.",
+          "conceito": "Bagging sorteia amostras com reposição e faz a média, para estabilizar um modelo de alta variância. Boosting não sorteia nada nesta construção: usa a base inteira e troca o alvo a cada passo. Bagging pergunta como estabilizar vários modelos independentes; boosting pergunta o que o próximo modelo precisa corrigir",
+          "seu": "A segunda árvore veria uma reamostragem",
+          "adequado": "A segunda árvore vê a base inteira, com o resíduo no lugar de y"
+        }
+      ]
+    },
+    {
+      "pagina": "c6p5",
+      "slug": "c6p5q",
+      "rot": "Soma zero é ruído?",
+      "pergunta": "Depois de F₀ = 6,50, a soma dos oito resíduos é exatamente zero. Ainda há o que aprender?",
+      "alt": [
+        "Não: soma zero significa que o modelo já acertou na média, e o que sobra é ruído",
+        "Sim: a soma é zero por construção, porque F₀ é a média, mas os quatro primeiros resíduos são negativos e os quatro últimos positivos, e isso é padrão",
+        "Não, porque o resíduo é o erro final do modelo e ele já foi minimizado"
+      ],
+      "certa": 1,
+      "porqueCerta": "Média nula não é ausência de padrão. Os resíduos vão de −4,5 a +5,5 e crescem com x, de forma ordenada: quem tem x pequeno está sistematicamente acima do palpite e quem tem x grande, abaixo. Sobra estrutura, e é ela que a próxima árvore vai procurar. Se os resíduos fossem ruído, nenhum corte em x reduziria o erro quadrático.",
+      "erros": [
+        {
+          "confusao": "Média nula foi lida como ausência de padrão.",
+          "conceito": "A soma ser zero é consequência aritmética de F₀ ser a média, e valeria igualmente para resíduos perfeitamente ordenados ou completamente aleatórios. O que distingue os dois casos é a forma, não a soma. Olhe o gráfico: quatro negativos seguidos e quatro positivos seguidos não é o que ruído produz",
+          "seu": "Soma zero seria evidência de ruído",
+          "adequado": "Soma zero é consequência de F₀ ser a média; o padrão está na forma dos resíduos"
+        },
+        null,
+        {
+          "confusao": "Resíduo foi confundido com o erro final do modelo.",
+          "conceito": "Resíduo é sempre relativo ao modelo do momento e muda a cada árvore acrescentada. Para o caso x = 8, ele vale +5,50 agora, com uma única previsão na mesa, e cai para 1,14 depois das quatro árvores. Nada aqui foi minimizado ainda: F₀ é o melhor constante possível, e o método existe justamente porque constante não basta",
+          "seu": "O resíduo seria o erro final daquele caso",
+          "adequado": "O resíduo é o que falta agora e muda a cada árvore"
+        }
+      ]
+    },
+    {
+      "pagina": "c6p6",
+      "slug": "c6p6q",
+      "rot": "O que a árvore prevê",
+      "pergunta": "Na primeira árvore de correção, com resíduos de −2,875 de um lado e +2,875 do outro, o que a árvore devolve para um caso com x maior que 4,5?",
+      "alt": [
+        "A previsão de y para aquele caso, que substitui o palpite anterior",
+        "A correção a somar ao palpite anterior",
+        "O erro que o modelo final ainda terá naquele caso"
+      ],
+      "certa": 1,
+      "porqueCerta": "A árvore do boosting é ajustada aos resíduos, então o que ela devolve é quanto o palpite atual deveria subir ou descer, e não o valor de y. Para x = 8, somar a correção inteira leva o palpite de 6,50 para 9,375, contra 12,00 observado: a direção está certa e a soma continua sendo uma soma, não uma substituição.",
+      "erros": [
+        {
+          "confusao": "A árvore de correção foi lida como se fosse a árvore do capítulo anterior, que prevê o desfecho direto.",
+          "conceito": "No boosting cada árvore responde a uma pergunta diferente: não é quanto vale y, e sim quanto falta para o modelo atual acertar. O alvo dela é o resíduo, por isso a folha guarda −2,875 ou +2,875, que são distâncias, não previsões",
+          "seu": "A árvore substituiria o palpite por 2,875",
+          "adequado": "A árvore soma 2,875 ao palpite de 6,50, que passa a 9,375"
+        },
+        null,
+        {
+          "confusao": "O resíduo do momento foi confundido com o erro final do modelo pronto.",
+          "conceito": "A folha guarda o que falta agora, com uma árvore na mesa, e esse número muda assim que a próxima correção entra. Para x = 8 o resíduo começa em +5,50 e termina em 1,14 depois de quatro árvores. Nenhuma árvore pode prever o erro do modelo final, porque esse modelo ainda não existe quando ela é ajustada",
+          "seu": "A folha diria quanto o modelo pronto ainda erraria",
+          "adequado": "A folha diz o que falta agora, e esse valor muda a cada árvore acrescentada"
+        }
+      ]
+    },
+    {
+      "pagina": "c6p7",
+      "slug": "c6p7q",
+      "rot": "Escolher η com M fixo",
+      "pergunta": "Com quatro árvores fixas, η = 1 produz o menor erro de treino e η = 0,05 quase não sai do erro inicial. Isso estabelece que η = 1 é a melhor escolha?",
+      "alt": [
+        "Sim, porque foi o valor que produziu o menor erro",
+        "Não: η e M são acoplados, e comparar η com M fixo em quatro árvores não responde à pergunta. E o erro medido é de treino",
+        "Não, porque η menor é sempre mais seguro contra sobreajuste"
+      ],
+      "certa": 1,
+      "porqueCerta": "Reduzir η pela metade exige aproximadamente dobrar M para chegar ao mesmo ajuste, e por isso varrer um com o outro parado mede a combinação, não o parâmetro. Some a isso que a curva é de treino, e desce com qualquer complexidade acrescentada. A escolha honesta varre os dois juntos e é medida fora da amostra, que é a página 16 seguida da 17.",
+      "erros": [
+        {
+          "confusao": "Um hiperparâmetro foi otimizado com o outro fixo, sendo os dois acoplados.",
+          "conceito": "Com M preso em quatro, η grande é obrigado a vencer: é a única forma de percorrer a distância em tão poucos passos. A comparação justa daria a cada η o número de árvores de que ele precisa, e aí os resultados se aproximam. A tabela da página 16 mostra o produto η vezes M quase constante",
+          "seu": "η seria escolhido com M parado",
+          "adequado": "η e M se escolhem juntos, porque o que importa é o produto dos dois"
+        },
+        null,
+        {
+          "confusao": "η pequeno foi tomado como seguro em qualquer circunstância.",
+          "conceito": "η pequeno com M pequeno não sobreajusta e também não ajusta: o modelo fica parado perto do palpite inicial, que é subajuste. Com η de 0,05 e quatro árvores, o erro quase não sai do inicial. A segurança vem da combinação, não de um dos dois isoladamente",
+          "seu": "η menor seria sempre mais seguro",
+          "adequado": "η pequeno com M pequeno subajusta; a segurança vem da combinação dos dois"
+        }
+      ]
+    },
+    {
+      "pagina": "c6p10",
+      "slug": "c6p10q",
+      "rot": "O que η multiplica",
+      "pergunta": "Na fórmula F_m(x) = F_{m−1}(x) + η × h_m(x), o que exatamente η multiplica?",
+      "alt": [
+        "Só a nova correção h_m. O palpite inicial e as correções já somadas entram inteiros em F_{m−1}",
+        "Toda a expressão, inclusive o palpite inicial F₀",
+        "A nova correção, com um valor diferente a cada árvore, conforme a qualidade dela"
+      ],
+      "certa": 0,
+      "porqueCerta": "Os colchetes da fórmula dizem tudo: η fica do lado de fora de h_m e do lado de dentro de nada mais. F₀ entra inteiro, e cada correção já somada entrou no seu momento também multiplicada por η, mas uma única vez. Para x = 8, 6,50 + 0,5 × 2,875 = 7,94: o 6,50 não encolheu.",
+      "erros": [
+        null,
+        {
+          "confusao": "A fórmula foi lida sem atenção ao que está dentro e fora da multiplicação.",
+          "conceito": "Se η multiplicasse F_{m−1}, o palpite inicial encolheria a cada iteração e o modelo convergiria para zero em vez de convergir para os dados. Escreva a conta de x = 8 nas duas leituras: a correta dá 7,94, a outra daria 3,25 mais 1,44. Só a correção é encolhida",
+          "seu": "η encolheria também o palpite anterior",
+          "adequado": "F₀ e o acumulado entram inteiros; só a nova correção é multiplicada"
+        },
+        {
+          "confusao": "η foi entendido como um peso que o algoritmo atribui a cada árvore conforme ela é boa.",
+          "conceito": "η não é nota de qualidade: é um único número, igual para as M árvores, escolhido antes de treinar e mantido fixo durante todo o ajuste. O que muda de árvore para árvore é h_m, que reflete o resíduo daquele momento. Quem quiser dar pesos diferentes por árvore está descrevendo outro algoritmo",
+          "seu": "η variaria conforme a qualidade de cada árvore",
+          "adequado": "η é o mesmo fator nas M árvores, escolhido antes do treino"
+        }
+      ]
+    },
+    {
+      "pagina": "c6p13",
+      "slug": "c6p13q",
+      "rot": "Quatro árvores contra a logística",
+      "pergunta": "Quatro árvores levam a log loss de treino de 0,6931 a 0,4748, e a regressão logística do capítulo 4 atinge 0,43282 na mesma base. O boosting é pior?",
+      "alt": [
+        "Sim, a logística venceu nesta base",
+        "A comparação não decide nada: as duas perdas são de treino, e o número de árvores não foi escolhido por nenhum critério",
+        "Não, basta acrescentar árvores até a perda passar de 0,43282"
+      ],
+      "certa": 1,
+      "porqueCerta": "São duas coisas erradas ao mesmo tempo. A amostra é a de treino, onde qualquer complexidade acrescentada faz a perda descer, e o M de quatro é arbitrário, escolhido para caber na página e não por validação. A comparação correta fixa o protocolo antes, usa o mesmo conjunto de informação e mede fora da amostra, que é o capítulo 7.",
+      "erros": [
+        {
+          "confusao": "Um número de iterações arbitrário e uma amostra de treino foram tratados como comparação válida.",
+          "conceito": "Com M escolhido por validação e medição fora do tempo, o resultado pode se inverter ou não, e é isso que a página 17 investiga. Aqui, as quatro árvores existem para tornar o mecanismo visível, não para competir. Declarar vencedor com esses dois números é o erro que o capítulo 2 já tinha nomeado",
+          "seu": "0,4748 contra 0,43282 decidiria entre as famílias",
+          "adequado": "Nenhum dos dois números foi produzido em condições que permitam comparar"
+        },
+        null,
+        {
+          "confusao": "A perda de treino foi adotada como critério de parada.",
+          "conceito": "Essa curva desce monotonicamente com M e nunca indica onde parar: leve M ao máximo e ela continua caindo. Perseguir um alvo nela leva direto ao sobreajuste, porque o que se está minimizando é a memorização da base. Quem diz onde parar é a amostra de validação, e é ela que escolhe M",
+          "seu": "Acrescentar árvores até bater a logística resolveria",
+          "adequado": "A perda de treino não tem informação sobre onde parar; quem diz é a validação"
+        }
+      ]
+    }
+  ]
+}

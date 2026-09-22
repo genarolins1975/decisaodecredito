@@ -9,18 +9,21 @@ Aula.slide({
   notas: {
     conducao: [
       "Apresente o solicitante novo e pergunte onde está o y dele.",
+      "Antes de trocar η, peça um palpite: se somarmos 40% de cada correção, a PD final é 40% do caminho? Depois troque para 0,40 e mostre que não.",
       "Mostre que y só foi usado no treinamento das duas árvores.",
       "Faça o percurso nas duas árvores, some e converta. Compare com o waterfall do logit: ambos somam em uma escala de escore, com funções diferentes.",
     ],
     respostas: [
-      "Grupo B: −1,386294 mais 0,200000 mais 0,166078 é igual a −1,020217, e a PD é 26,4985%.",
-      "Grupo A: −1,386294 menos 0,200000 menos 0,169906 é igual a −1,756200, e a PD é 14,7267%.",
+      "Com η = 1, grupo B: −1,386294 mais 0,200000 mais 0,166078 é igual a −1,020217, e a PD é 26,4985%.",
+      "Com η = 1, grupo A: −1,386294 menos 0,200000 menos 0,169906 é igual a −1,756200, e a PD é 14,7267%.",
+      "Com η = 0,40 e as mesmas duas árvores: grupo A chega a 17,6347% e grupo B a 22,5912%.",
     ],
     cuidados: [
       "Não some as PDs de cada árvore nem chame as contribuições de probabilidades.",
       "Um conjunto real tem muitas árvores e padrões mais ricos. A miniatura de duas árvores só torna o mecanismo visível.",
       "Esta não é uma explicação por variável: é a decomposição exata da soma das árvores.",
       "Com taxa de aprendizagem diferente de 1, o que se soma é a taxa multiplicada pela contribuição.",
+      "Multiplicar as duas contribuições de η = 1 por 0,40 não dá o resultado de η = 0,40: a segunda árvore é outra, porque partiu de outro escore.",
     ],
     transicao: "Se cada passo for menor, precisaremos de mais etapas. Como escolher o tamanho dos passos e o número de árvores?",
   },
@@ -31,8 +34,11 @@ Aula.slide({
     var est = ctx.estado;
     if (est.comp === undefined) est.comp = 50;
     if (est.converter === undefined) est.converter = false;
+    /* A taxa de aprendizagem deixa de ser fixa aqui: é o que o slide 37 vai cobrar, e o aluno
+       precisa ter visto os resíduos serem recalculados com outro η antes de responder. */
+    if (est.eta === undefined) est.eta = 1;
 
-    var hist = B.rodar(2, 1);
+    var hist = B.rodar(2, est.eta);
     var grupo = est.comp > B.corte ? "B" : "A";
     var h1 = hist[1].grupos[grupo].h;
     var h2 = hist[2].grupos[grupo].h;
@@ -105,11 +111,20 @@ Aula.slide({
           ]),
           UI.slider({
             rotulo: "Comprometimento do solicitante", min: 20, max: 60, passo: 1, valor: est.comp,
-            formato: function (v) { return "grupo " + (v > B.corte ? "B" : "A"); },
+            formato: function (v) { return "grupo " + (v > B.corte ? "B" : "A") +
+              (v <= 22 ? ", como Ana" : v <= 38 ? ", como Bruno" : v <= 48 ? ", como Carla" : ", como Diego"); },
             aoMudar: function (v) { est.comp = v; App.montar("36"); },
           }),
+          h("div", { class: "ctrl", estilo: "margin-top:8px" }, [
+            h("label", {}, "Taxa de aprendizagem η"),
+            UI.botoes({ compacto: true, rotulo: "Taxa de aprendizagem", valor: est.eta,
+              opcoes: [{ rotulo: "η = 1", valor: 1 }, { rotulo: "η = 0,40", valor: 0.4 }],
+              aoMudar: function (v) { est.eta = v; App.montar("36"); } }),
+          ]),
           h("p", { class: "nota", estilo: "margin-top:8px" },
-            "Nenhum campo de desfecho aparece nesta ficha. O y foi usado apenas no treinamento."),
+            "Nenhum campo de desfecho aparece nesta ficha. O y foi usado apenas no treinamento. " +
+            "Trocar η não reescala o resultado: as mesmas duas árvores mudam de valor porque os resíduos " +
+            "da segunda são recalculados sobre o escore já atualizado pela primeira."),
         ]),
         h("div", { class: "coluna", estilo: "gap:8px" }, percurso),
         h("div", { class: "painel claro cresce centro", estilo: "padding:8px 14px" }, [

@@ -119,9 +119,22 @@ function buildBlocks(p: any): { blocks: Block[]; classification: string } {
 }
 
 /* ---------- questões ---------- */
+/* Perguntas escritas para páginas essenciais que só tinham a pergunta aberta de checagem: sem uma
+   pergunta com gabarito, o aluno responde e não recebe veredito nenhum, e o acompanhamento não
+   registra acerto. O formato é o mesmo das que vêm do material original, inclusive o diagnóstico
+   por alternativa errada, e o importador as trata do mesmo jeito. */
+const CURADAS: Record<string, any[]> = (() => {
+  const arquivo = path.join(process.cwd(), "content", "questoes-curadas.json");
+  if (!fs.existsSync(arquivo)) return {};
+  const bruto = JSON.parse(fs.readFileSync(arquivo, "utf8")) as { questoes?: any[] };
+  const por: Record<string, any[]> = {};
+  for (const q of bruto.questoes ?? []) (por[q.pagina] ??= []).push(q);
+  return por;
+})();
+
 function questionRecords(p: any) {
   const out: { slug: string; kind: string; label: string | null; prompt: string; options: unknown; answerKey: unknown; feedback: unknown }[] = [];
-  for (const q of p.questoes) {
+  for (const q of [...p.questoes, ...(CURADAS[p.id] ?? [])]) {
     const perAlt = (q.erros ?? []).map((e: any) => e ? ({
       confusion: e.confusao ?? null, concept: e.conceito ?? null, exampleHtml: e.exemplo ? sanitize(renderHtmlString(e.exemplo)) : null,
       yours: e.seu ?? null, adequate: e.adequado ?? null,

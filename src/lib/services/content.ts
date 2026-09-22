@@ -53,9 +53,12 @@ export async function getPage(editionId: string, slug: string, includeGuide: boo
     .where(and(eq(schema.units.editionId, editionId), eq(schema.pages.slug, slug), eq(schema.pages.status, "published"))).limit(1);
   if (!row) return null;
   const blocks = (row.version.blocks as Block[]).map((b) => (b.type === "html" ? { ...b, html: renderTex(b.html) } : b));
+  /* Todas as perguntas da página, e não só as ancoradas num ponto do texto: uma pergunta escrita
+     depois, sem marca no HTML original, ficaria invisível se a busca saísse apenas dos blocos. */
+  const daPagina = await db.select({ slug: schema.questions.slug }).from(schema.questions).where(eq(schema.questions.pageId, row.page.id));
   const slugs = blocks.filter((b): b is Extract<Block, { type: "question" }> => b.type === "question").map((b) => b.slug);
   const checagem = `${slug}-checagem`;
-  const qs = await publicQuestions(editionId, [...slugs, checagem]);
+  const qs = await publicQuestions(editionId, [...new Set([...slugs, ...daPagina.map((q) => q.slug), checagem])]);
   const { teacherGuide, ...version } = row.version;
   const guide = (teacherGuide ?? null) as { pre?: unknown } | null;
   return {

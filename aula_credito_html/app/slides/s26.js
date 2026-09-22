@@ -5,10 +5,11 @@ Aula.slide({
   subtitulo: "As regras da árvore dividem o espaço em regiões de previsão constante",
   conclusao: "Os efeitos dependem do caminho. Dentro de uma folha, a previsão é constante.",
   fonte: Aula.dados.fontes.arvore,
-  resumo: "Duas faixas de comprometimento, uma para cada valor de histórico, com as quatro regiões da árvore e os quatro clientes posicionados.",
+  resumo: "Duas faixas de comprometimento, uma para cada valor de histórico, com as quatro regiões da árvore, os quatro clientes posicionados e a curva do logit sobreponível.",
   notas: {
     conducao: [
       "Mova Bruno de 38 para 41 e compare com Ana ao redor do mesmo limite.",
+      "Depois clique em Sobrepor o logit. É a única tela da aula em que degrau e curva aparecem nos mesmos eixos. Pergunte qual das duas descreve melhor um cliente em 41%, e aceite que a tela não decide.",
       "A mudança é de 15% para 40% no ramo com histórico, e de 3% para 11% no ramo sem histórico.",
       "Pergunte se uma mudança pequena de risco verdadeiro deveria produzir esse salto: a descontinuidade é da aproximação do modelo.",
     ],
@@ -28,6 +29,8 @@ Aula.slide({
     if (!est.perfil) est.perfil = D.copia(D.cliente(est.cliente));
 
     var c = est.perfil;
+    var L = D.logit;
+    if (est.curva === undefined) est.curva = false;
     var original = D.cliente(est.cliente);
     var simulado = c.comp !== original.comp || c.hist !== original.hist;
     var folha = A.folhaDe(c);
@@ -66,6 +69,53 @@ Aula.slide({
       stroke: "var(--amber)", "stroke-width": 2, "stroke-dasharray": "6 4" }));
     g.texto(40, 1.95, "corte em 40%", { dx: 6, dy: -6, tamanho: 17, peso: 400, cor: "var(--amber)" });
 
+    /* A comparação que o capítulo 5 pede e a aula nunca mostrou: a mesma abscissa, a árvore em
+       degraus e a curva do logit manual, nos mesmos eixos de PD. É a única tela da aula em que
+       as duas famílias aparecem juntas. Substitui o mapa de regiões enquanto está ligada. */
+    var gc = null;
+    if (est.curva) {
+      gc = Graf.novo({ w: 870, h: 420, m: { e: 92, d: 152, c: 24, b: 58 },
+        resumo: "PD por comprometimento: a árvore em degraus e a curva do logit, por valor de histórico." });
+      gc.x(0, 80).y(0, 0.45);
+      gc.grade({ y: [0, 0.15, 0.30, 0.45] });
+      gc.eixoY({ ticks: [0, 0.15, 0.30, 0.45], formato: function (v) { return F.pct(v, 0); },
+                 rotulo: "PD" });
+      gc.eixoX({ ticks: [0, 20, 40, 60, 80], rotulo: "comprometimento em %" });
+      gc.add(sv("line", { x1: gc.px(40), x2: gc.px(40), y1: gc.py(0), y2: gc.py(0.45),
+        stroke: "var(--amber)", "stroke-width": 2, "stroke-dasharray": "6 4" }));
+      gc.texto(40, 0.45, "corte em 40%",
+        { dx: 6, dy: -6, tamanho: 17, peso: 400, cor: "var(--amber)" });
+      [0, 1].forEach(function (hist) {
+        var nos = [A.raiz.esq, A.raiz.dir][hist];
+        var traco = hist ? null : "7 5";
+        gc.linha([[0, nos.esq.pd], [40, nos.esq.pd]],
+          { cor: "var(--arvore)", largura: 3.4, tracejado: traco });
+        gc.linha([[40, nos.esq.pd], [40, nos.dir.pd]],
+          { cor: "var(--arvore)", largura: 3.4, tracejado: traco });
+        gc.linha([[40, nos.dir.pd], [80, nos.dir.pd]],
+          { cor: "var(--arvore)", largura: 3.4, tracejado: traco });
+        var perfil = D.copia(L.referencia);
+        perfil.hist = hist;
+        gc.linha(M.linspace(0, 80, 81).map(function (v) {
+          perfil.comp = v; return [v, L.pd(perfil)];
+        }), { cor: "var(--logit)", largura: 2.8, tracejado: traco });
+        gc.texto(80, nos.dir.pd, "árvore, hist " + hist,
+          { dx: 10, dy: 4, tamanho: 16, peso: 400, cor: "var(--arvore)" });
+        perfil.comp = 80;
+        gc.texto(80, L.pd(perfil), "logit, hist " + hist,
+          { dx: 10, dy: 4, tamanho: 16, peso: 400, cor: "var(--logit)" });
+      });
+      D.clientes.forEach(function (cl) {
+        var pdc = A.folhaDe(cl).pd;
+        gc.ponto(cl.comp, pdc, { r: cl.nome === est.cliente ? 9 : 6,
+          cor: cl.nome === est.cliente ? "var(--arvore)" : "var(--muted)", bordaL: 1.5 });
+        gc.texto(cl.comp, pdc, cl.nome,
+          { ancora: "middle", dy: cl.nome === "Carla" ? 26 : -14, tamanho: 16,
+            peso: cl.nome === est.cliente ? 700 : 400,
+            cor: cl.nome === est.cliente ? "var(--ink)" : "var(--muted)" });
+      });
+    }
+
     D.clientes.forEach(function (cl) {
       var y = cl.hist ? 1.5 : 0.5;
       var selecionado = cl.nome === est.cliente;
@@ -94,7 +144,7 @@ Aula.slide({
     });
 
     corpo.appendChild(h("div", { class: "linha cresce" }, [
-      h("div", { class: "painel claro cresce centro" }, g.svg),
+      h("div", { class: "painel claro cresce centro" }, est.curva ? gc.svg : g.svg),
       h("div", { class: "coluna", estilo: "flex:0 0 560px" }, [
         h("div", { class: "painel claro centro", estilo: "padding:8px 14px" }, arvore),
         h("div", { class: "painel", estilo: "padding:10px 16px" }, [
@@ -124,6 +174,10 @@ Aula.slide({
               onclick: function () {
                 est.perfil = D.copia(D.cliente(est.cliente)); App.montar("26");
               } }, "Perfil original"),
+            h("button", { class: "btn min" + (est.curva ? " sel" : ""), type: "button",
+              "aria-pressed": est.curva ? "true" : "false",
+              onclick: function () { est.curva = !est.curva; App.montar("26"); } },
+              est.curva ? "Ver o mapa de regiões" : "Comparar com o logit"),
             h("button", { class: "btn min fantasma", type: "button", onclick: ctx.reiniciar },
               "Reiniciar exemplo"),
           ]),
@@ -134,6 +188,14 @@ Aula.slide({
             F.pct(folha.pd, folha.pd * 100 % 1 === 0 ? 0 : 1) + "."),
           h("p", { class: "nota", estilo: "margin-top:6px" },
             "Em comprometimento exatamente igual a 40, o cliente segue pelo ramo até 40."),
+          est.curva
+            ? h("p", { class: "nota", estilo: "margin-top:6px" },
+                "Sobreposto: a mesma abscissa, as duas famílias. A árvore é constante dentro da " +
+                "região e salta no corte; o logit atravessa o mesmo ponto sem salto. Com histórico, " +
+                "a árvore vai de 15% a 40% de um lado para o outro dos 40%, enquanto o logit passa " +
+                "por 9,1% ali e chega a 33,2% só em 80%. Nenhuma das duas está certa por construção: " +
+                "elas erram de formas diferentes, e escolher entre elas exige o capítulo 7.")
+            : null,
         ]),
       ]),
     ]));

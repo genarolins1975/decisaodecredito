@@ -27,7 +27,7 @@ export const blocos = [
       "Vale a data em que a informação ficou disponível, não a data do fenômeno.",
       "O teste é avaliado uma única vez, com regras congeladas antes.",
     ],
-    tempo: 25,
+    tempo: 20,
   },
   {
     chave: "logit", nome: "Regressão logística", de: "07", ate: "20",
@@ -59,7 +59,7 @@ export const blocos = [
       "Não basta uma folha pura: importa como toda a amostra fica depois da divisão.",
       "Uma regra fácil de ler pode ser sensível à amostra que a produziu.",
     ],
-    tempo: 35,
+    tempo: 33,
   },
   {
     chave: "boosting", nome: "Gradient boosting", de: "31", ate: "42",
@@ -75,7 +75,7 @@ export const blocos = [
       "A soma acontece no escore F. A logística é aplicada uma única vez, no fim.",
       "Capturar padrões complexos é uma capacidade. Demonstrar que eles persistem é uma obrigação.",
     ],
-    tempo: 35,
+    tempo: 39,
   },
   {
     chave: "decisao", nome: "Avaliação e decisão", de: "43", ate: "50",
@@ -91,7 +91,7 @@ export const blocos = [
       "A política é uma decisão adicional ao modelo.",
       "Parte da qualidade do modelo só será conhecida depois da maturação do alvo.",
     ],
-    tempo: 25,
+    tempo: 28,
   },
 ];
 
@@ -110,6 +110,7 @@ export const comoUsar = {
     "Sem a plataforma, abra o arquivo completo da aula: a tecla P ou o botão Professor mostram as notas ao lado do slide. O aluno recebe uma versão compilada sem as notas, tanto na tela ao vivo quanto em Materiais.",
     "Cada slide vem capturado no estado revelado (solução aberta, etapas completas), que é o estado que a impressão do baralho também usa. Os exercícios trazem o gabarito em \"Respostas esperadas\". O guia do aluno reproduz os mesmos exercícios sem gabarito.",
     "O ritmo por bloco na tabela abaixo é uma proposta para os 165 minutos úteis do encontro, calculada a partir da duração definida no desenho do curso (180 minutos com 15 de intervalo). Não foi validada em sala: ajuste à turma.",
+    "A repartição acompanha o peso do conteúdo: somando os minutos das páginas essenciais dos capítulos correspondentes, o capítulo 4 pede 49 minutos, o 5 pede 49 e o 6 pede 67. Por isso o bloco de boosting recebe mais que o de árvore, e não o mesmo. O bloco de decisão recebe 28 porque o exercício do slide 49 consome nove minutos sozinho. A pausa cai ao fim do bloco de árvore, aos 98 dos 165 minutos.",
   ],
 };
 

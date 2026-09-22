@@ -4,12 +4,14 @@ Aula.slide({
   titulo: "Você consegue explicar, comparar e usar os três modelos?",
   subtitulo: "Definir, estimar, validar e decidir são etapas conectadas",
   conclusao: "A técnica importa. A evidência que sustenta seu uso importa tanto quanto.",
-  fonte: "Síntese do curso",
-  resumo: "Tabela de síntese dos três modelos, três perguntas de recuperação e o roteiro de aplicação no trabalho.",
+  fonte: "Síntese do curso; PDs do experimento sintético, semente 20260920",
+  resumo: "Tabela de síntese dos três modelos, a comparação das três PDs para os quatro clientes do slide 01, três perguntas de recuperação e o roteiro de aplicação no trabalho.",
   notas: {
     conducao: [
       "Peça que um aluno resuma cada técnica em uma frase.",
       "Retome a decisão do slide 01 sem inventar quais respostas a turma deu. Se as escolhas locais foram salvas, identifique que são escolhas naquele dispositivo.",
+      "Leia a tabela dos quatro clientes por linha, não por coluna: pergunte qual modelo decide diferente. Nenhum decide.",
+      "Pare em Carla. No boosting ela fica a 0,44 ponto do corte. Pergunte o que uma diferença dessas exige antes de trocar de modelo.",
       "Pergunte o que agora exigiriam antes de aprovar uma mudança de modelo.",
     ],
     respostas: [
@@ -19,6 +21,8 @@ Aula.slide({
     ],
     cuidados: [
       "Complexidade pode ser útil, e a qualidade da decisão depende do processo inteiro.",
+      "Concordar na decisão para quatro clientes não é concordar em geral: a tabela do slide 49 mostra a diferença na carteira inteira.",
+      "As PDs desta tabela são as calibradas do experimento. A PD de 11,66% de Bruno, dos slides 07 a 20, vem do logit manual e é outro universo.",
       "Referências, notebook e modo estudo ficam disponíveis nos recursos finais.",
       "Não existe um 51º slide de agradecimento: o fechamento é esta síntese.",
     ],
@@ -27,7 +31,6 @@ Aula.slide({
   impressao: function (e) { e.respondidas = { odds: true, folha: true, soma: true }; },
 
   montar: function (corpo, ctx) {
-    var D = Aula.dados;
     var est = ctx.estado;
     if (!est.respondidas) est.respondidas = {};
 
@@ -86,6 +89,44 @@ Aula.slide({
 
     var textoRoteiro = roteiro.map(function (t, i) { return (i + 1) + ". " + t; }).join("\n");
 
+    /* A comparação que a aula prometeu no slide 01: os mesmos quatro clientes, agora com as três
+       PDs calibradas e a decisão no corte congelado. É a mesma tabela do material impresso. */
+    var R = Aula.resultados;
+    var corte = R.politica.logit.corte_congelado;
+    var MODELOS = [{ chave: "logit", nome: "Logit", cor: "var(--logit)" },
+                   { chave: "arvore", nome: "Árvore", cor: "var(--arvore)" },
+                   { chave: "boosting", nome: "Boosting", cor: "var(--boost)" }];
+    var pdsPorCliente = R.clientes.nomes.map(function (nome, i) {
+      return MODELOS.map(function (m) { return R.clientes.pd_modelos_calibrada[m.chave][i]; });
+    });
+    var comparacao = UI.tabela({
+      compacta: true,
+      colunas: [{ rotulo: "Cliente" }].concat(MODELOS.map(function (m) {
+        return { rotulo: m.nome, unidade: "PD calibrada" };
+      })).concat([{ rotulo: "No corte de " + F.pct(corte, 0) }]),
+      linhas: R.clientes.nomes.map(function (nome, i) {
+        var pds = pdsPorCliente[i];
+        var todosAbaixo = pds.every(function (p) { return p <= corte; });
+        var todosAcima = pds.every(function (p) { return p > corte; });
+        return [nome].concat(pds.map(function (p) { return F.pct(p, 2); }))
+          .concat([todosAbaixo ? "aprovado nos três" : todosAcima ? "recusado nos três"
+                                                                 : "depende do modelo"]);
+      }),
+      legenda: "PD calibrada dos três modelos para os quatro clientes e a decisão no corte",
+    });
+    [].forEach.call(comparacao.querySelectorAll("thead th"), function (th, j) {
+      if (j >= 1 && j <= 3) th.setAttribute("style", "color:" + MODELOS[j - 1].cor);
+    });
+    [].forEach.call(comparacao.querySelectorAll("tbody tr"), function (tr, i) {
+      var pds = pdsPorCliente[i];
+      var recusado = pds.every(function (p) { return p > corte; });
+      tr.lastChild.setAttribute("style", "color:" + (recusado ? "var(--alert)" : "var(--ok)") + ";font-weight:600");
+    });
+    var folgas = pdsPorCliente.map(function (pds) { return Math.max.apply(null, pds) - Math.min.apply(null, pds); });
+    var iMaior = folgas.indexOf(Math.max.apply(null, folgas));
+    var maiorFolga = folgas[iMaior], nomeMaiorFolga = R.clientes.nomes[iMaior];
+    var D_CARLA = R.clientes.pd_modelos_calibrada.boosting[R.clientes.nomes.indexOf("Carla")];
+
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "coluna cresce" }, [
         h("div", { class: "painel claro" }, tabela),
@@ -96,19 +137,20 @@ Aula.slide({
              "probabilidades e conexão com a decisão econômica."]),
         ]),
         h("div", { class: "painel claro cresce", estilo: "padding:10px 16px" }, [
-          h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap" }, [
+          h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
             h("h3", { class: "secao", estilo: "margin:0" },
               "Os mesmos quatro clientes do começo"),
-            h("span", { class: "nota" }, "qual modelo, qual política e por quê?"),
+            h("span", { class: "nota" }, "as três PDs e a decisão no corte de " + F.pct(corte, 0)),
           ]),
-          h("div", { estilo: "display:flex;gap:22px;flex-wrap:wrap;margin-top:6px" },
-            D.clientes.map(function (c) {
-              return h("span", { class: "apoio", estilo: "font-size:18px" }, [
-                h("strong", { estilo: "font-size:21px" }, c.nome), " ",
-                F.reais(c.renda) + " · comp " + F.dec(c.comp, 0) + "% · hist " +
-                (c.hist ? "sim" : "não"),
-              ]);
-            })),
+          comparacao,
+          h("p", { class: "apoio", estilo: "margin:5px 0 0;font-size:18px;color:var(--ink)" },
+            [h("strong", {}, "O que muda e o que não muda: "),
+             "as três técnicas discordam na PD, e a maior diferença é de " +
+             F.dec(maiorFolga * 100, 1) + " pontos, em " + nomeMaiorFolga + ". Mesmo assim, " +
+             "no corte de " + F.pct(corte, 0) + " os três modelos tomam a mesma decisão para os " +
+             "quatro. Carla é a que chega mais perto de virar: " +
+             F.pct(D_CARLA, 2) + " no boosting, a " + F.dec((corte - D_CARLA) * 100, 2) +
+             " ponto do corte."]),
         ]),
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 600px" }, [

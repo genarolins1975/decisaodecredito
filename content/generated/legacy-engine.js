@@ -77,7 +77,7 @@ function chLinhas({series,xMin,xMax,yMin,yMax,yTicks,xTicks,yTit,xTit,yFmt=v=>pc
     if(se.area)s+=`<path d="${d}L${px(se.pts[se.pts.length-1][0]).toFixed(1)} ${py(yMin).toFixed(1)}
       L${px(se.pts[0][0]).toFixed(1)} ${py(yMin).toFixed(1)}Z" fill="${se.cor}" opacity=".09"/>`;
     s+=`<path d="${d}" fill="none" stroke="${se.cor}" stroke-width="${se.larg||2.5}"
-      ${se.tracejada?'stroke-dasharray="7 4"':''} stroke-linejoin="round"/>`;}
+      ${se.pontilhada?'stroke-dasharray="2 3"':se.tracejada?'stroke-dasharray="7 4"':''} stroke-linejoin="round"/>`;}
   if(segmentos)for(const g of segmentos)
     s+=`<line x1="${px(g.x).toFixed(1)}" y1="${py(g.y1).toFixed(1)}" x2="${px(g.x).toFixed(1)}"
       y2="${py(g.y2).toFixed(1)}" stroke="${g.cor||COR.alerta}" stroke-width="${g.larg||3}"/>
@@ -3924,7 +3924,9 @@ P({id:'c5p2',cap:5,n:2,nivel:'essencial',t:{exp:3,prat:3,disc:2},origem:'rec',
  visual:()=>`<div class="grade g2">
   <div class="painel"><div class="rot">Logística: uma reta, inclinação fixa</div>
    <div class="svgfit">${dispersaoBase({fronteira:{tipo:'logit',b:BET},w:470,h:330})}</div>
-   <p class="nota" style="margin-top:7px">A #1 e a #15 ficam do lado errado em qualquer posição da reta.</p></div>
+   <p class="nota" style="margin-top:7px">Nenhuma posição da reta acerta as dezesseis. Nesta, de PD = 50%, quatro
+   ficam do lado errado: a #2 e a #10 deram default com PD abaixo de 31%; a #5 e a #15 pagaram com PD acima
+   de 52%. Deslocar a reta troca quais erram, e o melhor que se consegue são três erros.</p></div>
   <div class="painel"><div class="rot">Árvore: cortes paralelos aos eixos</div>
    <div class="svgfit">${dispersaoBase({fronteira:{tipo:'vertical',v:57.5,r:'utilização 57,5%'},w:470,h:330})}</div>
    <p class="nota" style="margin-top:7px">Cada corte separa por uma única variável. Combinando cortes,
@@ -3985,7 +3987,14 @@ P({id:'c5p4',cap:5,n:4,nivel:'essencial',t:{exp:3,ex:3,prat:2},origem:'rec',
   <div class="revelacao" style="margin-top:10px"><h4>Como ler o Gini</h4>
   É a probabilidade de errar ao classificar uma proposta sorteada do grupo usando um rótulo sorteado com
   a mesma proporção. Grupo puro: nunca erra, Gini zero. Grupo meio a meio: erra metade das vezes,
-  Gini 0,5.</div></div></div>`,
+  Gini 0,5.</div>
+  <div class="revelacao ruim" style="margin-top:10px"><h4>Impureza não é a taxa de erro do nó</h4>
+  Um grupo com 90% de defaults erra 10% prevendo o desfecho majoritário, e tem Gini 0,18. A terceira curva
+  do gráfico é essa taxa de erro, mín(p, 1 − p): zera nos mesmos extremos e tem o mesmo máximo em 50%,
+  mas é feita de dois segmentos de reta, e por isso a média ponderada de dois filhos pode empatar com a
+  do pai. O Gini é curvo e sempre acusa a melhora. Nesta base: o segundo nível da árvore derruba o Gini
+  de 0,21875 para 0,12500 sem tirar um único erro, que continua em 2 nas dezesseis propostas. É por isso
+  que a árvore não usa a taxa de erro como critério.</div></div></div>`,
  init:()=>{const sl=document.getElementById('c54p');
   const H=p=>(p<=0||p>=1)?0:-(p*Math.log2(p)+(1-p)*Math.log2(1-p));
   const upd=()=>{const p=+sl.value/100;
@@ -3999,9 +4008,10 @@ P({id:'c5p4',cap:5,n:4,nivel:'essencial',t:{exp:3,ex:3,prat:2},origem:'rec',
      p===0||p===1?'Grupo puro. Nenhuma das duas medidas vê incerteza aqui, e a divisão não teria o que reduzir.'
      :Math.abs(p-0.5)<0.02?'Grupo máximo em impureza. É o ponto de partida da raiz nesta base.'
      :'Grupo desbalanceado. Quanto mais longe de meio a meio, menor a impureza.'}</div>`;
-   const g=[],h=[];for(let q=0;q<=1;q+=0.01){g.push([q,2*q*(1-q)]);h.push([q,H(q)]);}
+   const g=[],h=[],e=[];for(let q=0;q<=1;q+=0.01){g.push([q,2*q*(1-q)]);h.push([q,H(q)]);e.push([q,Math.min(q,1-q)]);}
    document.getElementById('c54g').innerHTML=chLinhas({
-    series:[{nome:'Gini',pts:g,cor:COR.ink},{nome:'entropia, em bits',pts:h,cor:COR.roxo,tracejada:true}],
+    series:[{nome:'Gini',pts:g,cor:COR.ink},{nome:'entropia, em bits',pts:h,cor:COR.roxo,tracejada:true},
+      {nome:'taxa de erro do nó',pts:e,cor:COR.mudo,pontilhada:true,larg:2}],
     xMin:0,xMax:1,yMin:0,yMax:1.05,yTicks:[0,0.25,0.5,0.75,1],
     xTicks:[0,0.25,0.5,0.75,1].map(v=>({v,r:pct(v,0)})),
     yTit:'impureza',xTit:'proporção de defaults no grupo',yFmt:v=>n2(v,2),
@@ -4110,6 +4120,7 @@ P({id:'c5p7',cap:5,n:7,nivel:'essencial',t:{exp:2,ex:3,prat:4,disc:1},origem:'re
     const a=avaliaCorte(v.x,bY,c,gini);lin.push({v:v.nome,rot:v.rot,c,...a});}
   lin.sort((a,b)=>b.ganho-a.ganho);
   const melhor=lin[0],segundo=lin.find(l=>!(l.v===melhor.v&&l.c===melhor.c));
+  const outraVar=lin.find(l=>l.v!==melhor.v);
   return `<div class="palcoflex"><div class="esq"><div class="svgfit">${chLinhas({
    series:VARS.map((v,i)=>({nome:v.rot,cor:i?COR.roxo:COR.ink,
      pts:cortesCandidatos(v.x).map(c=>[c,avaliaCorte(v.x,bY,c,gini).ganho])})),
@@ -4130,11 +4141,14 @@ P({id:'c5p7',cap:5,n:7,nivel:'essencial',t:{exp:2,ex:3,prat:4,disc:1},origem:'re
     </tbody></table></div>
    <p class="nota" style="margin-top:8px">Total de candidatos avaliados:
    <b>${VARS.reduce((s,v)=>s+cortesCandidatos(v.x).length,0)}</b>. ${selo('rec')}</p></div>
-   <div class="revelacao" style="margin-top:10px"><h4>A margem importa tanto quanto o vencedor</h4>
-   O primeiro colocado tem ganho de ${n2(melhor.ganho,5)} e o segundo, ${n2(segundo.ganho,5)}.
-   A distância é de ${n2(melhor.ganho-segundo.ganho,5)}, quase quatro vezes. Com margem folgada, pequena
-   perturbação na amostra não troca a raiz. Quando os dois primeiros empatam, a estrutura da árvore
-   depende de ruído, e é isso que torna árvores instáveis.</div>
+   <div class="revelacao" style="margin-top:10px"><h4>São duas margens, e elas respondem perguntas diferentes</h4>
+   Sobre o corte vizinho: o primeiro colocado tem ganho de ${n2(melhor.ganho,5)} e o segundo,
+   ${n2(segundo.ganho,5)}, uma razão de ${n2(melhor.ganho/segundo.ganho,2)} vez. É essa margem que decide o
+   <b>ponto</b> de corte, e ela é apertada: mover o corte alguns pontos custa pouco.
+   Sobre a outra variável: o melhor corte de atraso fica em ${n2(outraVar.ganho,5)},
+   quase quatro vezes atrás. É essa margem que decide a <b>variável</b> da raiz, e ela é folgada: retirar
+   qualquer uma das dezesseis propostas mantém utilização na raiz. Quando dois candidatos empatam, a
+   estrutura passa a depender de ruído, e é isso que torna árvores instáveis.</div>
    <div class="nota" style="margin-top:9px">Custo da busca: número de variáveis vezes número de valores
    distintos por variável, em cada nó. É por isso que árvores lidam bem com muitas variáveis e mal com
    variáveis contínuas de altíssima cardinalidade.</div></div></div>`;},
@@ -4484,9 +4498,12 @@ P({id:'c5p16',cap:5,n:16,nivel:'essencial',t:{exp:2,ex:2,prat:3,disc:1},origem:'
    <input type="range" id="c516r" min="0" max="16" step="1" value="0"></div>
   <div id="c516o" style="margin-top:10px"></div>
   <div class="revelacao" style="margin-top:10px"><h4>Por que a raiz resiste e o nó direito não</h4>
-  Na raiz, o primeiro colocado tem ganho de ${n2(0.28125,5)} e o segundo, ${n2(0.07143,5)}.
-  No nó direito, os dois primeiros empatam exatamente em ${n2(0.09375,5)}. Empate significa que a escolha
-  é decidida pela ordem de avaliação, e qualquer perturbação pode inverter.</div>
+  Na raiz, o vencedor tem ganho de ${n2(0.28125,5)} e o melhor corte da outra variável fica em
+  ${n2(0.07143,5)}, quase quatro vezes atrás. É essa margem que decide a variável, e é por isso que a raiz
+  resiste. Entre cortes vizinhos de utilização a margem é bem menor, ${n2(0.28125,5)} contra
+  ${n2(0.19841,5)}, mas trocar o ponto de corte não troca a leitura da árvore.
+  No nó direito, os dois primeiros empatam exatamente em ${n2(0.09375,5)}, e em variáveis diferentes.
+  Empate significa que a escolha é decidida pela ordem de avaliação, e qualquer perturbação pode inverter.</div>
   </div><div class="dir"><div class="svgfit" id="c516g"></div>
   <div class="nota" style="margin-top:8px">Instabilidade de estrutura não é o mesmo que instabilidade de
   previsão. Duas árvores com variáveis diferentes na raiz podem produzir PDs parecidas. O que se perde é
@@ -4543,6 +4560,10 @@ P({id:'c5p17',cap:5,n:17,nivel:'essencial',t:{exp:3,ex:2,prat:2,disc:1},origem:'
    <p class="nota" style="margin-top:9px">Os ganhos têm escalas diferentes, porque a entropia é medida em
    bits e o Gini não. Comparar os valores absolutos entre as duas colunas não tem significado.
    O que se compara é o corte escolhido. ${selo('rec')}</p>
+   <p class="nota" style="margin-top:7px">Uma ressalva que a tabela esconde: por Gini, os cortes de atraso
+   em 15 e em 27,5 dias empatam exatamente em ${n2(0.07143,5)}, e o critério não escolhe entre eles. Quem
+   desempata é a entropia, que prefere 27,5. A raiz não muda por isso: utilização vence pelos dois
+   critérios, com margem de quase quatro vezes.</p>
    </div><div class="dir"><div class="painel"><div class="rot">Quando a escolha do critério importa</div>
    <table style="margin-top:8px"><tbody>
    <tr><th scope="row">Quase nunca</th><td>na escolha do corte, porque as duas medidas têm o mesmo formato
@@ -4614,7 +4635,7 @@ P({id:'c5p19',cap:5,n:19,tipo:'fechamento',nivel:'essencial',t:{exp:4,disc:3,pra
    <tr><th scope="row">Gini da raiz</th><td class="num">${n2(gini(bY),5)}</td>
     <td>referência de todo ganho</td></tr>
    <tr><th scope="row">Divisão da raiz</th><td>utilização ≤ 57,5</td>
-    <td>ganho ${n2(0.28125,5)}, margem de quase quatro vezes sobre o segundo</td></tr>
+    <td>ganho ${n2(0.28125,5)}, quase quatro vezes o melhor corte de atraso</td></tr>
    <tr><th scope="row">Previsão da folha</th><td>frequência do grupo</td>
     <td>capítulo 6: define o ponto de partida do boosting</td></tr>
    <tr><th scope="row">Árvore de regressão</th><td>mesma busca, outro critério</td>
@@ -4868,7 +4889,7 @@ P({id:'c6p7',cap:6,n:7,nivel:'essencial',t:{exp:2,ex:2,prat:4,disc:1},origem:'re
    const ps=boostingRegressao(vars,brY,{eta,M:4,prof:1,minFolha:1});
    document.getElementById('c67ev').textContent=n2(eta,2);
    document.getElementById('c67o').innerHTML=`<div class="rolax"><table>
-    <thead><tr><th>Após</th><th>Erro quadrático médio</th><th>Redução acumulada</th></tr></thead><tbody>
+    <thead><tr><th>Após</th><th>Erro quadrático médio de treino</th><th>Redução acumulada</th></tr></thead><tbody>
     ${ps.map(p=>`<tr${p.m===4?' style="background:#FBF3DE"':''}>
      <th scope="row">${p.m===0?'só F₀':p.m+(p.m===1?' árvore':' árvores')}</th>
      <td class="num" style="font-weight:${p.m===4?'700':'400'}">${n2(p.mse,5)}</td>
@@ -5119,6 +5140,19 @@ P({id:'c6p13',cap:6,n:13,nivel:'essencial',t:{exp:2,ex:2,prat:5,disc:1},origem:'
  aprendizado:'O procedimento de cinco linhas roda sem alteração em classificação, e a perda cai a cada árvore acrescentada.',
  apoio:'A base de dezesseis propostas. Avance uma árvore por vez e acompanhe escore, PD e perda.',
  visual:()=>`<div>
+  <div class="painel" style="margin-bottom:10px"><div class="rot">O procedimento, em cinco linhas</div>
+   <ol style="margin:7px 0 0;padding-left:20px">
+   <li><b>F₀ = ln(π ÷ (1 − π)).</b> A prevalência desta base é 50%, então F₀ = 0,000. F é escore em
+    log odds, não probabilidade: é a escala do capítulo 4.</li>
+   <li><b>p = σ(F).</b> A mesma curva logística do capítulo 4, agora usada só para traduzir o escore.</li>
+   <li><b>Alvo de cada caso: r = y − p.</b> Em regressão era y − F. Na primeira árvore todos valem ±0,500,
+    porque todos partem de p = 50%.</li>
+   <li><b>Ajuste uma árvore rasa a r.</b> Cada folha guarda a média de r do seu grupo.</li>
+   <li><b>F ← F + η × h.</b> Volte à linha 2.</li></ol>
+   <p class="nota" style="margin-top:7px">Nada foi introduzido: são as mesmas cinco linhas da regressão,
+   com duas trocas. O alvo passou de y − F para y − p, e a leitura final passa pela logística.
+   Primeira ordem didática: a folha recebe a média do gradiente negativo, sem passo de Newton.
+   Bibliotecas reais mudam esse ponto e obtêm convergência mais rápida.</p></div>
   <div class="linhabotoes"><button class="botao sec min" id="c613a">Anterior</button>
    <button class="botao min" id="c613p">Próxima árvore</button>
    <span class="nota" id="c613s"></span></div>
@@ -5144,22 +5178,24 @@ P({id:'c6p13',cap:6,n:13,nivel:'essencial',t:{exp:2,ex:2,prat:5,disc:1},origem:'
      <td class="num" style="font-weight:700">${pct(at.p[i],0)}</td></tr>`).join('')}
     </tbody></table></div>`;
    document.getElementById('c613o').innerHTML=`<div class="grade g3">
-    <div class="painel" style="text-align:center"><div class="rot">Perda antes</div>
+    <div class="painel" style="text-align:center"><div class="rot">Perda de treino antes</div>
      <div class="numg">${n2(ant.perda,4)}</div></div>
-    <div class="painel" style="text-align:center"><div class="rot">Perda depois</div>
+    <div class="painel" style="text-align:center"><div class="rot">Perda de treino depois</div>
      <div class="numg" style="color:${COR.ok}">${n2(at.perda,4)}</div></div>
     <div class="painel" style="text-align:center"><div class="rot">Queda</div>
      <div class="numg">${n2(ant.perda-at.perda,4)}</div></div></div>
     <div class="nota" style="margin-top:8px">Confere com o gerador em Python:
     ${BC.passos.map(p=>n2(p.perda,4)).join(' · ')}. ${selo('rec')}
     Para referência, a regressão logística do capítulo 4 atinge ${n2(DID.logit.perda,5)} nesta mesma base.
-    Quatro árvores ainda não chegam lá.</div>`;
+    Quatro árvores ainda não chegam lá.
+    <b>As duas perdas são de treino</b>, nas mesmas dezesseis propostas. Perda de treino desce com qualquer
+    complexidade acrescentada, e por isso não compara modelos: a comparação honesta é a da página 17.</div>`;
    document.getElementById('c613g').innerHTML=chLinhas({
     series:[{nome:'log loss por árvore acrescentada',pts:ps.map(p=>[p.m,p.perda]),cor:COR.ink},
       {nome:'logística do capítulo 4',pts:[[0,DID.logit.perda],[4,DID.logit.perda]],cor:COR.roxo,tracejada:true}],
     xMin:0,xMax:4,yMin:0.4,yMax:0.72,yTicks:[0.4,0.48,0.56,0.64,0.72],
     xTicks:[0,1,2,3,4].map(v=>({v,r:String(v)})),
-    yTit:'log loss',xTit:'árvores acrescentadas',yFmt:v=>n2(v,2),
+    yTit:'log loss de treino',xTit:'árvores acrescentadas',yFmt:v=>n2(v,2),
     marcas:[{x:m,y:ps[m].perda,cor:COR.alerta,r:'árvore '+m}],w:560,h:250});};
   document.getElementById('c613p').addEventListener('click',()=>{m=Math.min(4,m+1);pinta();});
   document.getElementById('c613a').addEventListener('click',()=>{m=Math.max(1,m-1);pinta();});
@@ -5234,10 +5270,12 @@ P({id:'c6p15',cap:6,n:15,nivel:'essencial',t:{exp:3,ex:2,prat:4,disc:1},origem:'
    <table style="margin-top:7px"><tbody>
    <tr><th scope="row">η</th><td>quanto de cada correção é aceito. Menor significa avanço mais lento e
     menos dependência de cada árvore</td></tr>
-   <tr><th scope="row">M</th><td>quantas correções. É o freio contra o sobreajuste, e o único que precisa
-    ser escolhido observando amostra fora do treino</td></tr>
+   <tr><th scope="row">M</th><td>quantas correções. Cada árvore acrescentada aumenta a complexidade, então
+    M é o acelerador, não o freio: o freio é parar cedo. É também o que mais depende de amostra fora do
+    treino, porque a perda de treino cai com M e nunca indica onde parar. Os outros três também se
+    escolhem fora do treino</td></tr>
    <tr><th scope="row">Profundidade</th><td>quantas variáveis podem interagir dentro de uma árvore.
-    Profundidade 1 não permite interação alguma; profundidade 2 permite pares</td></tr>
+    Profundidade 1 não permite interação alguma no escore; profundidade 2 permite pares</td></tr>
    <tr><th scope="row">Mínimo por folha</th><td>quão específica pode ser uma correção. É a mesma função
     do capítulo 5, e o mesmo argumento de incerteza da folha</td></tr></tbody></table></div></div></div>`,
  init:()=>{const ids=['c615e','c615m','c615d','c615f'].map(i=>document.getElementById(i));
@@ -5292,8 +5330,8 @@ P({id:'c6p16',cap:6,n:16,nivel:'essencial',t:{exp:2,ex:2,prat:3,disc:1},origem:'
    const k=ps.findIndex(p=>p.perda<=alvo);
    return {e,k:k<0?null:k,perda60:ps[ps.length-1].perda};});
   return `<div class="palcoflex"><div class="esq"><div class="rolax"><table>
-   <thead><tr><th>η</th><th>Árvores até perda ${n2(alvo,2)}</th><th>η × árvores</th>
-    <th>Perda com 60 árvores</th></tr></thead><tbody>
+   <thead><tr><th>η</th><th>Árvores até perda de treino ${n2(alvo,2)}</th><th>η × árvores</th>
+    <th>Perda de treino com 60 árvores</th></tr></thead><tbody>
    ${linhas.map(l=>`<tr${Math.abs(l.e-BC.eta)<0.001?' style="background:#FBF3DE"':''}>
     <th scope="row">${n2(l.e,2)}</th><td class="num">${l.k===null?'não atinge':l.k}</td>
     <td class="num">${l.k===null?'—':n2(l.e*l.k,2)}</td>
@@ -5301,13 +5339,17 @@ P({id:'c6p16',cap:6,n:16,nivel:'essencial',t:{exp:2,ex:2,prat:3,disc:1},origem:'
    </tbody></table></div>
    <p class="nota" style="margin-top:8px">A terceira coluna é quase constante. Reduzir η pela metade exige
    aproximadamente dobrar M para chegar ao mesmo ponto. ${selo('rec')}</p>
+   <p class="nota" style="margin-top:7px">As duas colunas de perda são de treino. A última coluna desce
+   sem parar conforme η cresce: com dezesseis propostas e sessenta árvores, ${n2(linhas[linhas.length-1].perda60,5)}
+   é memorização, não desempenho. É por isso que a pergunta &ldquo;qual η dá a menor perda&rdquo; não se
+   responde nesta tabela.</p>
    </div><div class="dir"><div class="svgfit">${chLinhas({
     series:[{nome:'árvores necessárias',pts:linhas.filter(l=>l.k!==null).map(l=>[l.e,l.k]),cor:COR.ink,larg:2.6}],
     xMin:0.05,xMax:1.05,yMin:0,yMax:Math.max(...linhas.filter(l=>l.k!==null).map(l=>l.k))*1.15,
     yTicks:[0,10,20,30,40],xTicks:[0.1,0.25,0.5,0.75,1].map(v=>({v,r:n2(v,2)})),
     yTit:'árvores até a perda alvo',xTit:'taxa de aprendizagem η',yFmt:v=>n2(v,0),
     marcas:linhas.filter(l=>l.k!==null).map(l=>({x:l.e,y:l.k,cor:COR.alerta,r0:4.5})),w:600,h:340})}</div>
-   <div class="revelacao" style="margin-top:10px"><h4>Se o resultado é o mesmo, por que preferir η pequeno?</h4>
+   <div class="revelacao" style="margin-top:10px"><h4>Chegando à mesma perda alvo, por que preferir η pequeno?</h4>
    Porque o caminho não é idêntico. Com η pequeno, o modelo passa por muitos estágios intermediários, e a
    validação pode interromper em qualquer um deles. Com η grande, os saltos são grossos e o melhor ponto
    pode ficar entre duas iterações. A granularidade do controle é a vantagem.</div>
@@ -5336,22 +5378,30 @@ P({id:'c6p17',cap:6,n:17,nivel:'essencial',t:{exp:2,ex:2,prat:4,disc:1},origem:'
   const cores={4:COR.ok,8:COR.ink,16:COR.alerta};
   const serie=(f,k)=>({nome:f+' folhas, '+({auc_treino:'treino',auc_val:'validação',auc_oot:'fora do tempo'}[k]),
     pts:g.filter(r=>r.max_leaf_nodes===f).sort((a,b)=>a.max_iter-b.max_iter).map(r=>[r.max_iter,r[k]]),
-    cor:cores[f],tracejada:k!=='auc_treino',larg:k==='auc_treino'?2.6:1.8});
+    cor:cores[f],tracejada:k==='auc_oot',pontilhada:k==='auc_val',
+    larg:k==='auc_treino'?2.6:k==='auc_val'?2.2:1.8});
   const sel=DADOS.meta.gbm_hp;
   return `<div class="palcoflex"><div class="esq"><div class="svgfit">${chLinhas({
-   series:folhas.flatMap(f=>[serie(f,'auc_treino')]).concat(folhas.map(f=>serie(f,'auc_oot'))),
+   series:folhas.map(f=>serie(f,'auc_treino')).concat(folhas.map(f=>serie(f,'auc_val')))
+     .concat(folhas.map(f=>serie(f,'auc_oot'))),
    xMin:60,xMax:240,yMin:0.6,yMax:1.0,yTicks:[0.6,0.7,0.8,0.9,1.0],
    xTicks:[60,100,160,240].map(v=>({v,r:String(v)})),
+   marcas:[{x:sel.max_iter,y:sel.auc_val,cor:COR.alerta,r:'escolhida aqui',r0:6}],
    yTit:'AUC',xTit:'número de árvores',yFmt:v=>n2(v,2),w:640,h:400})}</div>
-   <p class="nota" style="margin-top:8px">Linhas contínuas: treino. Tracejadas: fora do tempo.
-   Mesmas cores para o mesmo número de folhas. ${selo('obs')} Base sintética de 5.000 propostas,
-   semente 20260501.</p>
+   <p class="nota" style="margin-top:8px">Linhas contínuas: treino. Pontilhadas: validação, que é a que
+   escolhe. Tracejadas: fora do tempo, lida uma única vez, depois. Mesmas cores para o mesmo número de
+   folhas. ${selo('obs')} Base sintética de 5.000 propostas, semente 20260501.</p>
+   <p class="nota" style="margin-top:7px">A ordem das três famílias na tela é a ordem do procedimento:
+   a de cima nunca decide, a do meio decide, e a de baixo só confirma.</p>
    </div><div class="dir"><div class="painel"><div class="rot">Leitura direta</div>
    <table style="margin-top:8px"><tbody>
    <tr><th scope="row">Treino</th><td>sobe com árvores e com folhas, sem exceção, até
     ${n2(Math.max(...g.map(r=>r.auc_treino)),4)}</td></tr>
-   <tr><th scope="row">Fora do tempo</th><td>desce quando a complexidade cresce, chegando a
-    ${n2(Math.min(...g.map(r=>r.auc_oot)),4)}</td></tr>
+   <tr><th scope="row">Validação</th><td>o máximo da grade é ${n2(Math.max(...g.map(r=>r.auc_val)),4)},
+    e é ele que escolhe a configuração</td></tr>
+   <tr><th scope="row">Fora do tempo</th><td>tende a descer quando a complexidade cresce, chegando a
+    ${n2(Math.min(...g.map(r=>r.auc_oot)),4)}. Com 4 folhas ela ainda sobe de 60 para 100 árvores antes
+    de cair: a queda é a tendência, não uma lei</td></tr>
    <tr><th scope="row">Distância máxima</th>
     <td>${n2(Math.max(...g.map(r=>r.auc_treino-r.auc_oot)),4)} entre treino e fora do tempo</td></tr>
    <tr style="background:#FBF3DE"><th scope="row">Escolhida por validação</th>
@@ -9885,8 +9935,9 @@ muda('c5p10',{titulo:'Uma proposta dentro da árvore',
   apoio:'Este é o caso #15 da base didática de 16 propostas. Ele não é o cliente VAL-0187 usado na comparação posterior.',
   conexao:'A taxa da folha explica a árvore; agora precisamos testar se ela generaliza.',
   visual:()=>`<div class="nv"><div class="nv-flow" style="--cols:4" aria-label="Caminho de uma proposta de crédito">
-   <div class="nv-step" data-n="1"><h3>Proposta ${FONTE_CURSO.arvoreDidatica.id}</h3><p><b>Utilização ${FONTE_CURSO.arvoreDidatica.utilizacao}%</b><br>atraso ${FONTE_CURSO.arvoreDidatica.atraso} dia<br>observado: não default</p></div><div class="nv-step gold" data-n="2"><h3>Utilização &gt; 57,5%?</h3><p><b>Sim.</b> Segue para o ramo direito.</p></div><div class="nv-step gold" data-n="3"><h3>Utilização &gt; 87,5%?</h3><p><b>Sim.</b> Entra na folha extrema.</p></div><div class="nv-step red" data-n="4"><h3>Folha</h3><p><b>${FONTE_CURSO.arvoreDidatica.folhaDefaults} default em ${FONTE_CURSO.arvoreDidatica.folhaN}</b><br>PD observada: 50%</p></div></div>
-   <div class="nv-caption"><b>Por que não é 100%?</b><span>${FONTE_CURSO.arvoreDidatica.membros}. O caminho é auditável, mas n=2 produz uma estimativa instável; profundidade, folha mínima e validação continuam necessários.</span></div></div>`,
+   <div class="nv-step" data-n="1"><h3>Proposta ${FONTE_CURSO.arvoreDidatica.id}</h3><p><b>Utilização ${FONTE_CURSO.arvoreDidatica.utilizacao}%</b><br>atraso ${FONTE_CURSO.arvoreDidatica.atraso} dia<br>observado: não default</p></div><div class="nv-step gold" data-n="2"><h3>Utilização &gt; 57,5%?</h3><p><b>Sim.</b> Segue para o ramo direito.</p></div><div class="nv-step gold" data-n="3"><h3>Utilização &gt; 87,5%?</h3><p><b>Sim.</b> Entra na folha extrema.</p></div><div class="nv-step red" data-n="4"><h3>Folha</h3><p><b>${FONTE_CURSO.arvoreDidatica.folhaDefaults} default em ${FONTE_CURSO.arvoreDidatica.folhaN}</b><br>PD observada: 50%<br>IC 95%: 9,5% a 90,5%</p></div></div>
+   <div class="nv-caption"><b>Por que não é 100%?</b><span>${FONTE_CURSO.arvoreDidatica.membros}. O caminho é auditável, mas n=2 produz uma estimativa instável; profundidade, folha mínima e validação continuam necessários.</span></div>
+   <div class="nv-caption"><b>Quanto esta folha autoriza a afirmar</b><span>A taxa é 50%, e o intervalo de 95% vai de <strong>9,5% a 90,5%</strong>: 81 pontos de largura. Com duas propostas, a folha não distingue um grupo excelente de um grupo péssimo. Taxa da folha sem o n da folha não é informação.</span></div></div>`,
   guia:undefined});
 
  muda('c6p1',{titulo:'O boosting como sequência de correções',
@@ -9915,15 +9966,22 @@ muda('c5p10',{titulo:'Uma proposta dentro da árvore',
   aprendizado:'Calcular o resíduo e entender por que ele orienta a próxima árvore.',
   apoio:'No exemplo de regressão, cada caso ganha um novo alvo: observado menos previsão atual. A árvore tenta explicar esse sinal.',
   visual:()=>`<div class="nv"><div class="nv-residual-case"><div class="nv-value"><small>observado em x = 8</small><span class="big">12,00</span></div><div class="nv-minus">−</div><div class="nv-value gold"><small>previsão atual</small><span class="big">6,50</span></div></div>
+   <div class="nv-caption"><b>De onde vem 6,50</b><span>y = 2,0 · 3,0 · 4,5 · 5,0 · 8,0 · 8,5 · 9,0 · 12,0. Soma 52,0 ÷ 8 = <strong>6,50</strong>. F₀ é a média porque o critério é erro quadrático, o mesmo argumento que dá o valor da folha no capítulo 5.</span></div>
    <div class="nv-caption"><b>Novo alvo do caso</b><span><strong>resíduo = +5,50</strong>. Sinal positivo: a previsão precisa subir; sinal negativo: precisa descer.</span></div>
+   <div class="nv-caption"><b>Resíduo não é erro final</b><span>+5,50 é o que falta <strong>agora</strong>, com uma única previsão na mesa. Depois das quatro árvores esse caso erra 1,14. Resíduo é sempre relativo ao modelo do momento e muda a cada árvore acrescentada.</span></div>
    <div class="nv-residual-bars" aria-label="Resíduos positivos e negativos de oito casos"><i style="--h:58px;--c:#3D5A8A;--side:end;--label:-18px" data-v="−4,5" data-x="x=1"></i><i style="--h:46px;--c:#3D5A8A;--side:end;--label:-18px" data-v="−3,5" data-x="x=2"></i><i style="--h:30px;--c:#3D5A8A;--side:end;--label:-18px" data-v="−2,0" data-x="x=3"></i><i style="--h:24px;--c:#3D5A8A;--side:end;--label:-18px" data-v="−1,5" data-x="x=4"></i><i style="--h:24px;--c:#8C2332;--side:start;--label:calc(100% + 5px);--xlabel:calc(100% + 24px)" data-v="+1,5" data-x="x=5"></i><i style="--h:30px;--c:#8C2332;--side:start;--label:calc(100% + 5px);--xlabel:calc(100% + 24px)" data-v="+2,0" data-x="x=6"></i><i style="--h:38px;--c:#8C2332;--side:start;--label:calc(100% + 5px);--xlabel:calc(100% + 24px)" data-v="+2,5" data-x="x=7"></i><i style="--h:70px;--c:#8C2332;--side:start;--label:calc(100% + 5px);--xlabel:calc(100% + 24px)" data-v="+5,5" data-x="x=8"></i></div></div>`});
 
  muda('c6p6',{titulo:'A primeira árvore de correção',
-  aprendizado:'Interpretar uma árvore rasa como uma regra aplicada aos resíduos.',
+  aprendizado:'Interpretar uma árvore rasa como uma regra aplicada aos resíduos, e ver o que acontece ao somar a correção inteira.',
   apoio:'A árvore não prevê novamente o valor de y. Ela prevê quanto o modelo atual deveria subir ou descer em cada região.',
   visual:()=>`<div class="nv"><div class="nv-split"><div class="nv-split-side"><small>casos com x ≤ 4,5</small><span class="big">−2,875</span><p>o palpite está alto<br><b>corrigir para baixo</b></p></div><div class="nv-stump"><b>x ≤ 4,5?</b><small>uma pergunta sobre os resíduos</small></div><div class="nv-split-side high"><small>casos com x &gt; 4,5</small><span class="big">+2,875</span><p>o palpite está baixo<br><b>corrigir para cima</b></p></div></div>
-   <div class="nv-flow" style="--cols:3"><div class="nv-step" data-n="1"><h3>Agrupar</h3><p>O corte reúne resíduos com direção parecida.</p></div><div class="nv-step gold" data-n="2"><h3>Resumir</h3><p>Cada folha guarda a correção média do grupo.</p></div><div class="nv-step green" data-n="3"><h3>Encolher</h3><p>Com η = 0,5, somamos apenas metade da correção.</p></div></div>
-   <div class="nv-caption"><b>Para x = 8</b><span>6,50 + 0,5 × 2,875 = <strong>7,94</strong>. Depois disso, todos os resíduos são recalculados.</span></div></div>`});
+   <div class="nv-flow" style="--cols:3"><div class="nv-step" data-n="1"><h3>Agrupar</h3><p>O corte reúne resíduos com direção parecida.</p></div><div class="nv-step gold" data-n="2"><h3>Resumir</h3><p>Cada folha guarda a correção média do grupo.</p></div><div class="nv-step green" data-n="3"><h3>Somar</h3><p>O palpite de cada caso anda o tamanho da folha em que ele caiu.</p></div></div>
+   <div class="nv-caption"><b>Para x = 8</b><span>6,50 + 2,875 = <strong>9,375</strong>, contra 12,00 observado. A direção está certa e o erro médio cai de 10,19 para 1,92.</span></div>
+   <div class="revelacao ruim" style="margin-top:10px"><h4>A mesma correção cai sobre quem não precisava</h4>
+   O caso x = 5 observou 8,00 e também está do lado x &gt; 4,5. Ele sobe para 9,375 e o resíduo dele passa
+   de +1,50 para −1,375: trocou de sinal. Cinco dos oito casos trocam de sinal quando o toco inteiro é
+   somado. Somar tudo acerta na média e passa do ponto caso a caso. É esse o problema que a próxima
+   página resolve.</div></div>`});
 
  const WDET=['O ponto de partida é deliberadamente simples.','A primeira correção produz o maior salto.','A segunda aprende o erro já atualizado.','A terceira corrige um padrão menor.','A quarta deixa erro 1,14; mais árvores ainda podem ajudar.'];
  function ligaWaterfall(){const d=document.getElementById('nv-wdetail');if(!d)return;document.querySelectorAll('[data-wstep]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-wstep]').forEach(x=>x.classList.remove('ativo'));b.classList.add('ativo');d.innerHTML='<b>Etapa '+b.dataset.wstep+':</b> '+WDET[+b.dataset.wstep];}));}
@@ -9935,8 +9993,9 @@ muda('c5p10',{titulo:'Uma proposta dentro da árvore',
  muda('c6p10',{titulo:'A fórmula depois da história',
   aprendizado:'Relacionar cada termo da equação ao mecanismo visual de correção.',
   apoio:'A notação apenas comprime a história: previsão anterior + fração da correção sugerida pela nova árvore.',
-  visual:()=>`<div class="nv"><div class="nv-formula-anatomy"><div class="nv-term"><span class="math">F<sub>m−1</sub>(x)</span><b>previsão anterior</b><p>o que a sequência já aprendeu</p></div><div class="nv-op">+</div><div class="nv-term"><span class="math">η</span><b>taxa de aprendizagem</b><p>quanto confiar nesta etapa</p></div><div class="nv-op">×</div><div class="nv-term"><span class="math">h<sub>m</sub>(x)</span><b>nova correção</b><p>o padrão encontrado no erro atual</p></div></div>
-   <div class="formula">F_m(x) = F_{m−1}(x) + η × h_m(x)</div><div class="nv-caption"><b>No caso x = 8</b><span>6,50 + 0,5 × 2,875 = 7,94. Só então calculamos o novo erro: 12,00 − 7,94 = 4,06.</span></div></div>`});
+  visual:()=>`<div class="nv"><div class="nv-formula-anatomy"><div class="nv-term"><span class="math">F<sub>m−1</sub>(x)</span><b>previsão anterior</b><p>o que a sequência já aprendeu</p></div><div class="nv-op">+</div><div class="nv-term"><span class="math">η</span><b>taxa de aprendizagem</b><p>o mesmo fator em todas as etapas, escolhido antes do treino</p></div><div class="nv-op">×</div><div class="nv-term"><span class="math">h<sub>m</sub>(x)</span><b>nova correção</b><p>o padrão encontrado no erro atual</p></div></div>
+   <div class="formula">F_m(x) = F_{m−1}(x) + η × h_m(x)</div><div class="nv-caption"><b>No caso x = 8</b><span>6,50 + 0,5 × 2,875 = 7,94. Só então calculamos o novo resíduo: 12,00 − 7,94 = 4,06. Resíduo, não erro final: ele vai mudar de novo na próxima árvore.</span></div>
+   <div class="nv-caption"><b>η não é um peso por árvore</b><span>Não é nota que o algoritmo dá a cada árvore conforme ela é boa. É um único número, igual para as M árvores, escolhido antes de treinar. O que muda de árvore para árvore é h<sub>m</sub>, nunca η.</span></div></div>`});
 
  muda('c11p1',{titulo:'O caso FinanCerta do início ao fim',
   aprendizado:'Enxergar a modelagem com IA como um caso encadeado, com entradas e decisões observáveis.',
@@ -10295,8 +10354,8 @@ function experienciaV13(){
  const noGini=(a)=>`<div class="v13-cena-lado"><small>${a.rot}</small><span class="big">${fmt(a.g,3)}</span><p>impureza de Gini</p></div><div class="v13-cena-main"><div class="v13-dots">${Array.from({length:a.n},(_,i)=>`<span class="v13-dot ${i<a.d?'mau':''}">${i<a.d?'D':'✓'}</span>`).join('')}</div><p>${a.frase}</p></div>`;
  muda('c5p5',{titulo:'Impureza na raiz',aprendizado:'Interpretar o Gini como mistura de desfechos dentro de um nó.',apoio:'Compare a raiz, uma folha pura e uma folha mista. A árvore procura cortes que reduzam essa mistura.',visual:()=>`<div class="v13-interativo"><div class="v13-tabs">${nosGini.map((a,i)=>`<button type="button" data-v13-gini data-i="${i}" class="${i===0?'ativo':''}">${a.rot}</button>`).join('')}</div><div class="v13-cena" id="v13-gini-out">${noGini(nosGini[0])}</div><div class="formula" data-latex="Gini(t)=2\\,p_t(1-p_t)">Gini(t) = 2 p(t) [1−p(t)]</div></div>`,init:()=>ligaTabs('[data-v13-gini]','#v13-gini-out',i=>noGini(nosGini[i]))});
 
- const divergencias=[{id:'#5',u:'40%',a:'20 d',y:0,l:'52,6%',t:'0%',d:'52,6 pp',frase:'A reta logística vê risco moderado; a árvore caiu numa folha sem defaults.'},{id:'#10',u:'65%',a:'0 d',y:1,l:'30,5%',t:'100%',d:'69,5 pp',frase:'O caminho da árvore cria uma decisão extrema; a logística suaviza.'},{id:'#15',u:'90%',a:'0 d',y:0,l:'73,9%',t:'50%',d:'23,9 pp',frase:'A árvore repete a frequência da folha; a logística continua a reta.'}];
- const divModelos=(c)=>`<div class="v13-cena-lado"><small>proposta ${c.id}</small><span class="big">${c.d}</span><p>diferença de PD</p></div><div class="v13-cena-main"><h3>Utilização ${c.u} · atraso ${c.a} · y=${c.y}</h3><div class="v13-compare"><div><small>logística</small><strong>${c.l}</strong></div><span class="vs">×</span><div><small>árvore</small><strong>${c.t}</strong></div></div><p>${c.frase}</p></div>`;
+ const divergencias=[{id:'#5',u:'40%',a:'20 d',y:0,l:'52,6%',t:'0%',n:'6',ic:'0% a 39%',d:'52,6 pp',frase:'A reta logística vê risco moderado; a árvore caiu numa folha de seis propostas sem nenhum default. 0% é a frequência daquelas seis, e o intervalo dessa folha vai até 39%.'},{id:'#10',u:'65%',a:'0 d',y:1,l:'30,5%',t:'100%',n:'6',ic:'61% a 100%',d:'69,5 pp',frase:'O caminho da árvore cria uma decisão extrema; a logística suaviza. 100% em seis propostas é compatível com risco de 61% para cima, não com certeza.'},{id:'#15',u:'90%',a:'0 d',y:0,l:'73,9%',t:'50%',n:'2',ic:'9,5% a 90,5%',d:'23,9 pp',frase:'A árvore repete a frequência da folha, que tem duas propostas e intervalo de 81 pontos; a logística continua a reta.'}];
+ const divModelos=(c)=>`<div class="v13-cena-lado"><small>proposta ${c.id}</small><span class="big">${c.d}</span><p>diferença de PD</p></div><div class="v13-cena-main"><h3>Utilização ${c.u} · atraso ${c.a} · y=${c.y}</h3><div class="v13-compare"><div><small>logística</small><strong>${c.l}</strong></div><span class="vs">×</span><div><small>árvore · n = ${c.n} · IC ${c.ic}</small><strong>${c.t}</strong></div></div><p>${c.frase}</p></div>`;
  muda('c5p18',{titulo:'Logística e árvore nos mesmos casos',aprendizado:'Comparar como uma fronteira suave e regiões em degraus tratam a mesma proposta.',apoio:'Clique nos três casos de maior divergência. O objetivo é entender o modo de errar, não proclamar um vencedor.',visual:()=>`<div class="v13-interativo"><div class="v13-tabs">${divergencias.map((c,i)=>`<button type="button" data-v13-modelos data-i="${i}" class="${i===0?'ativo':''}">${c.id}</button>`).join('')}</div><div class="v13-cena" id="v13-modelos-out">${divModelos(divergencias[0])}</div><div class="v13-alerta"><b>Treino: log loss 0,43282 × 0,18844.</b> Essa comparação não escolhe o modelo: a árvore foi avaliada na amostra que usou para criar as folhas.</div></div>`,init:()=>ligaTabs('[data-v13-modelos]','#v13-modelos-out',i=>divModelos(divergencias[i]))});
 
  const ajustesCal=[
@@ -10372,7 +10431,7 @@ function experienciaV13(){
  muda('c2p11',{titulo:'A perda encontra a frequência do grupo',aprendizado:'Ver por que a PD constante que minimiza a log loss é a frequência observada do evento.',apoio:'Teste quatro palpites para um grupo com um default em oito propostas.',visual:()=>`<div class="v13-interativo"><div class="v13-tabs">${pLossV13.map((p,i)=>`<button type="button" data-v13-ploss data-i="${i}" class="${i===0?'ativo':''}">${pct(p,1)}</button>`).join('')}</div><div class="v13-cena" id="v13-ploss-out">${pLossBloco(pLossV13[0])}</div><div class="formula" data-latex="\\mathcal L(p)=-\\frac{\\ln p+7\\ln(1-p)}{8}">perda = −[ln(p) + 7 ln(1−p)]/8</div></div>`,init:()=>ligaTabs('[data-v13-ploss]','#v13-ploss-out',i=>pLossBloco(pLossV13[i]))});
 
  const xyV13=[[1,2],[2,3],[3,4.5],[4,5],[5,8],[6,8.5],[7,9],[8,12]];
- muda('c6p3',{titulo:'Oito pontos, uma tendência e erros locais',aprendizado:'Reconhecer regressão como a tarefa de prever um número e medir o erro na própria escala de y.',apoio:'Clique num ponto: o gráfico destaca a observação e mostra o erro em relação à previsão inicial 6,5.',visual:()=>`<div class="v13-interativo"><div class="v13-cena"><div class="v13-cena-lado"><small>previsão inicial</small><span class="big">6,5</span><p>a média dos oito valores</p></div><div class="v13-cena-main"><svg viewBox="0 0 620 260" role="img" aria-label="oito pontos de regressão" style="width:100%;max-height:270px"><line x1="45" y1="225" x2="590" y2="225" stroke="#9AA5B2"/><line x1="45" y1="20" x2="45" y2="225" stroke="#9AA5B2"/><line x1="45" y1="115" x2="590" y2="115" stroke="var(--ouro)" stroke-dasharray="7 5"/>${xyV13.map((d,i)=>`<circle tabindex="0" role="button" data-v13-xy="${i}" cx="${55+i*72}" cy="${225-d[1]*16}" r="9" fill="var(--cap)"/><text x="${55+i*72}" y="245" text-anchor="middle" font-size="11">${d[0]}</text>`).join('')}<text x="590" y="108" text-anchor="end" font-size="11">F₀ = 6,5</text></svg></div></div><div class="v13-alerta" id="v13-xy-out"><b>Escolha um ponto.</b> O erro é y − 6,5 nesta primeira rodada.</div></div>`,init:()=>{const out=document.getElementById('v13-xy-out');document.querySelectorAll('[data-v13-xy]').forEach((b,i)=>b.addEventListener('click',()=>{const d=xyV13[i],e=d[1]-6.5;out.innerHTML=`<b>x=${d[0]}, y=${String(d[1]).replace('.',',')}.</b> Erro inicial: ${e>=0?'+':''}${fmt(e,1)}. A próxima árvore tenta explicar esse erro.`;}));}});
+ muda('c6p3',{titulo:'Oito pontos, uma tendência e erros locais',aprendizado:'Reconhecer regressão como a tarefa de prever um número e medir o erro na própria escala de y.',apoio:'Clique num ponto: o gráfico destaca a observação e mostra o erro em relação à previsão inicial 6,5.',visual:()=>`<div class="v13-interativo"><div class="v13-cena"><div class="v13-cena-lado"><small>previsão inicial</small><span class="big">6,5</span><p>a média dos oito valores</p></div><div class="v13-cena-main"><svg viewBox="0 0 620 260" role="img" aria-label="oito pontos de regressão" style="width:100%;max-height:270px"><line x1="45" y1="225" x2="590" y2="225" stroke="#9AA5B2"/><line x1="45" y1="20" x2="45" y2="225" stroke="#9AA5B2"/><line x1="45" y1="121" x2="590" y2="121" stroke="var(--ouro)" stroke-dasharray="7 5"/>${xyV13.map((d,i)=>`<circle tabindex="0" role="button" data-v13-xy="${i}" cx="${55+i*72}" cy="${225-d[1]*16}" r="9" fill="var(--cap)"/><text x="${55+i*72}" y="245" text-anchor="middle" font-size="11">${d[0]}</text>`).join('')}<text x="590" y="114" text-anchor="end" font-size="11">F₀ = 6,5</text></svg></div></div><div class="v13-alerta" id="v13-xy-out"><b>Escolha um ponto.</b> O erro é y − 6,5 nesta primeira rodada.</div></div>`,init:()=>{const out=document.getElementById('v13-xy-out');document.querySelectorAll('[data-v13-xy]').forEach((b,i)=>b.addEventListener('click',()=>{const d=xyV13[i],e=d[1]-6.5;out.innerHTML=`<b>x=${d[0]}, y=${String(d[1]).replace('.',',')}.</b> Erro inicial: ${e>=0?'+':''}${fmt(e,1)}. A próxima árvore tenta explicar esse erro.`;}));}});
 
  muda('c6p12',{titulo:'O resíduo y − p vira o alvo da próxima árvore',aprendizado:'Perceber que casos já bem previstos produzem resíduos pequenos e influenciam menos a correção seguinte.',apoio:'Escolha o desfecho e mova a PD. Observe o alvo da árvore se aproximar de zero quando a previsão acerta.',visual:()=>`<div class="v13-interativo"><div class="v13-tabs"><button type="button" data-v13-y="0" class="ativo">y = 0 · pagou</button><button type="button" data-v13-y="1">y = 1 · default</button></div><div class="v13-cena"><div class="v13-cena-lado"><small>PD atual</small><span class="big" id="v13-res-p">50%</span><input id="v13-res-range" type="range" min="1" max="99" value="50" style="width:100%"></div><div class="v13-cena-main"><h3>Alvo da próxima árvore</h3><div class="v13-metricas"><div><small>y</small><strong id="v13-res-y">0</strong></div><div><small>p</small><strong id="v13-res-p2">0,50</strong></div><div><small>y − p</small><strong id="v13-res-r">−0,50</strong></div></div><p id="v13-res-texto">A previsão ainda dá 50% a quem pagou: há correção negativa importante.</p></div></div><div class="formula" data-latex="r_i^{(m)}=y_i-p_i^{(m-1)}">resíduo na iteração m = y − p da iteração anterior</div></div>`,init:()=>{let y=0;const range=document.getElementById('v13-res-range');const atualiza=()=>{const p=Number(range.value)/100,r=y-p;document.getElementById('v13-res-p').textContent=pct(p,0);document.getElementById('v13-res-p2').textContent=fmt(p,2);document.getElementById('v13-res-y').textContent=y;document.getElementById('v13-res-r').textContent=(r>=0?'+':'')+fmt(r,2);document.getElementById('v13-res-texto').textContent=Math.abs(r)<.15?'Caso já bem previsto: influência pequena na correção seguinte.':'Caso ainda mal previsto: a árvore recebe uma correção relevante.';};document.querySelectorAll('[data-v13-y]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-v13-y]').forEach(x=>x.classList.remove('ativo'));b.classList.add('ativo');y=Number(b.dataset.v13Y);atualiza();}));range.addEventListener('input',atualiza);atualiza();}});
 

@@ -1,5 +1,5 @@
 {
- "versao": "469eb58a163a",
+ "versao": "2b6298264377",
  "gerado": "build.mjs; edite as notas em app/slides/sNN.js e recompile",
  "slides": [
   {
@@ -213,6 +213,7 @@
      "Centrar as variáveis facilita a interpretação do intercepto e não muda a classe de funções."
     ],
     "aprofundar": [
+     "Os números desta tela e os do capítulo 4 são de dois exemplos, não de dois modelos rivais. Aqui o escore usa seis variáveis na forma centrada, com intercepto −3,50 e comprometimento pesando 0,40 a cada 10 pontos, o que dá razão de chances 1,49. As páginas do capítulo usam duas variáveis na forma crua, com intercepto −5,6666 e utilização pesando 0,7453 a cada 10 pontos, razão de chances 2,11. O mecanismo é o mesmo; os números são de exemplos diferentes, e nenhum se converte no outro trocando de unidade.",
      "Material original, capítulo 4, página 13: o intercepto é âncora de nível, não coeficiente comum. Naquele exemplo, utilização zero e atraso zero não existem na carteira, então o intercepto não tem leitura como PD de um cliente real.",
      "Trocar o intercepto desloca a PD de todas as propostas e preserva a ordem de risco. É por isso que recalibrar um modelo cuja ordenação continua boa equivale a reestimar o nível, sem alterar a AUC. O mesmo fato aparece no slide 45."
     ],
@@ -599,15 +600,17 @@
    "subtitulo": "Adequação do logit em três situações práticas",
    "conclusao": "O logit oferece uma estrutura explícita, mas a qualidade depende da especificação e da validação.",
    "fonte": "Síntese conceitual aplicada; sem dados",
-   "resumo": "Mecanismo do logit ao centro, com três situações práticas de adequação e uma síntese de critérios de escolha.",
+   "resumo": "Risco por faixa de comprometimento com as duas curvas do logit ao centro, três situações práticas de adequação e uma síntese de critérios de escolha.",
    "notas": {
     "conducao": [
+     "Percorra as três situações olhando só o gráfico, e peça a resposta da pergunta de diagnóstico antes de revelar a ação. Na segunda, a abertura entre as faixas é visível: é o que uma interação omitida faz.",
      "Peça uma razão para manter o logit mesmo se outro algoritmo tiver AUC um pouco maior.",
      "Aceite manutenção, clareza de especificação e estabilidade, sempre condicionadas a evidência.",
      "Depois peça uma situação em que insistir em um logit mal especificado seria prejudicial."
     ],
     "respostas": [],
     "cuidados": [
+     "As faixas do gráfico são ilustrativas e servem para treinar a leitura, não para afirmar nada sobre a carteira. A figura está declarada como conceitual na fonte do slide.",
      "Interpretável depende da quantidade de termos, transformações, interações e do público. Um logit com centenas de variáveis não é automaticamente fácil de explicar.",
      "Coeficiente não é causa.",
      "O desempenho de uma formulação simples não é o limite de toda a classe.",
@@ -615,7 +618,7 @@
     ],
     "aprofundar": [
      "Material original, capítulo 4, página 20: a linearidade em log odds é o limite da família. Um padrão não monótono na utilização não é representável sem transformar a variável.",
-     "Página 19: a fronteira de decisão do logit é uma reta no plano das variáveis, porque o escore é uma soma. Mudar o corte desloca a reta paralelamente e mudar um coeficiente gira a reta. Compare com as regiões retangulares da árvore no slide 26.",
+     "Página 19: a fronteira de decisão do logit é uma reta no plano das variáveis, porque o escore é uma soma. Mudar o corte desloca a reta paralelamente e mudar um coeficiente gira a reta. A comparação com as regiões em degraus da árvore está no slide 26: o botão Sobrepor o logit desenha estas mesmas curvas por cima das quatro regiões, nos mesmos eixos.",
      "Página 22: a síntese do capítulo original é soma, curva e limite. Os três aparecem aqui nos slides 07, 09 e neste."
     ],
     "transicao": "Antes de mudar de técnica, vamos verificar se conseguimos usar o que aprendemos em uma decisão de interpretação."
@@ -785,7 +788,10 @@
      "Outras perdas podem orientar árvores. Não misture entropia e Gini no mesmo cálculo.",
      "Ganho de impureza não é efeito causal do histórico."
     ],
-    "aprofundar": [],
+    "aprofundar": [
+     "O capítulo 5 refaz esta mesma busca sobre outra base: dezesseis propostas com raiz em 0,500 de Gini, onde o corte vencedor é utilização ≤ 57,5% com redução de 0,28125. Aqui a raiz é de mil contratos a 10% de eventos, com Gini 0,180 e ganho de 0,020 no histórico. A regra é a mesma, a aritmética não: nenhum dos dois números se converte no outro.",
+     "Material original, capítulo 5, página 4: o Gini não é a taxa de erro do nó. O segundo nível daquela árvore derruba o Gini de 0,21875 para 0,12500 sem tirar um único erro, e é por isso que a taxa de erro não serve de critério."
+    ],
     "transicao": "Ao dividir mais, as folhas parecem mais precisas. Mas quanto podemos confiar em uma taxa calculada com poucas observações?"
    },
    "proximo": {
@@ -837,10 +843,11 @@
    "subtitulo": "As regras da árvore dividem o espaço em regiões de previsão constante",
    "conclusao": "Os efeitos dependem do caminho. Dentro de uma folha, a previsão é constante.",
    "fonte": "Árvore didática de 1.000 contratos; cálculo próprio",
-   "resumo": "Duas faixas de comprometimento, uma para cada valor de histórico, com as quatro regiões da árvore e os quatro clientes posicionados.",
+   "resumo": "Duas faixas de comprometimento, uma para cada valor de histórico, com as quatro regiões da árvore, os quatro clientes posicionados e a curva do logit sobreponível.",
    "notas": {
     "conducao": [
      "Mova Bruno de 38 para 41 e compare com Ana ao redor do mesmo limite.",
+     "Depois clique em Sobrepor o logit. É a única tela da aula em que degrau e curva aparecem nos mesmos eixos. Pergunte qual das duas descreve melhor um cliente em 41%, e aceite que a tela não decide.",
      "A mudança é de 15% para 40% no ramo com histórico, e de 3% para 11% no ramo sem histórico.",
      "Pergunte se uma mudança pequena de risco verdadeiro deveria produzir esse salto: a descontinuidade é da aproximação do modelo."
     ],
@@ -959,11 +966,12 @@
    "subtitulo": "Exercício: percorrer, calcular e questionar",
    "conclusao": "Uma regra legível ajuda a explicar o cálculo, mas não dispensa evidência de qualidade.",
    "fonte": "Árvore didática de 1.000 contratos; cálculo próprio",
-   "resumo": "Árvore didática com a taxa da folha de Carla oculta e três tarefas: caminho, cálculo da PD e efeito de dobrar a renda.",
+   "resumo": "Árvore didática com a taxa da folha de Carla oculta, três tarefas de percurso e cálculo, e o painel de quando a árvore é uma boa escolha.",
    "notas": {
     "conducao": [
      "Reserve dois minutos em duplas.",
      "Não revele a resposta ao primeiro clique em um ramo errado: explique a regra e permita corrigir.",
+     "Antes da pausa, leia o painel de quando a árvore é uma boa escolha, no mesmo formato do slide 19 para o logit. Peça um caso da carteira de cada aluno que caia na coluna da esquerda.",
      "Conclua com a importância de tamanho de folha, validação e estabilidade. Este é um bom ponto para a pausa da aula."
     ],
     "respostas": [
@@ -1074,7 +1082,9 @@
      "Os desfechos aqui são atributos de treinamento conhecidos, não informação sobre um cliente novo.",
      "Ao avançar para a miniatura canônica, a previsão inicial volta a 20%."
     ],
-    "aprofundar": [],
+    "aprofundar": [
+     "Material original, capítulo 6, página 13: o mesmo procedimento em classificação, escrito em cinco linhas, com F₀ = ln(π ÷ (1 − π)), alvo y − p e atualização F ← F + η × h. Lá a base tem dezesseis propostas e η é 0,40; aqui a miniatura tem dez registros. O procedimento é idêntico, os números são de exemplos diferentes."
+    ],
     "transicao": "Agora compare o que aconteceu com o que previmos: essa diferença indica a direção da primeira correção."
    },
    "proximo": {
@@ -1095,7 +1105,8 @@
     "conducao": [
      "Peça o resíduo de um evento e o de um não evento.",
      "Calcule a média do grupo B em voz alta.",
-     "Pergunte por que três adimplentes do grupo B receberam aumento. Resposta: o modelo captura o risco do grupo, não reproduz cada rótulo."
+     "Pergunte por que três adimplentes do grupo B receberam aumento. Resposta: o modelo captura o risco do grupo, não reproduz cada rótulo.",
+     "Localize os quatro clientes: com comprometimento 22 e 38, Ana e Bruno caem em A; com 48 e 55, Carla e Diego caem em B. Uma árvore só dá a mesma PD a Ana e a Bruno."
     ],
     "respostas": [
      "Em A, cinco resíduos de −0,2 e média −0,2.",
@@ -1162,18 +1173,21 @@
    "notas": {
     "conducao": [
      "Apresente o solicitante novo e pergunte onde está o y dele.",
+     "Antes de trocar η, peça um palpite: se somarmos 40% de cada correção, a PD final é 40% do caminho? Depois troque para 0,40 e mostre que não.",
      "Mostre que y só foi usado no treinamento das duas árvores.",
      "Faça o percurso nas duas árvores, some e converta. Compare com o waterfall do logit: ambos somam em uma escala de escore, com funções diferentes."
     ],
     "respostas": [
-     "Grupo B: −1,386294 mais 0,200000 mais 0,166078 é igual a −1,020217, e a PD é 26,4985%.",
-     "Grupo A: −1,386294 menos 0,200000 menos 0,169906 é igual a −1,756200, e a PD é 14,7267%."
+     "Com η = 1, grupo B: −1,386294 mais 0,200000 mais 0,166078 é igual a −1,020217, e a PD é 26,4985%.",
+     "Com η = 1, grupo A: −1,386294 menos 0,200000 menos 0,169906 é igual a −1,756200, e a PD é 14,7267%.",
+     "Com η = 0,40 e as mesmas duas árvores: grupo A chega a 17,6347% e grupo B a 22,5912%."
     ],
     "cuidados": [
      "Não some as PDs de cada árvore nem chame as contribuições de probabilidades.",
      "Um conjunto real tem muitas árvores e padrões mais ricos. A miniatura de duas árvores só torna o mecanismo visível.",
      "Esta não é uma explicação por variável: é a decomposição exata da soma das árvores.",
-     "Com taxa de aprendizagem diferente de 1, o que se soma é a taxa multiplicada pela contribuição."
+     "Com taxa de aprendizagem diferente de 1, o que se soma é a taxa multiplicada pela contribuição.",
+     "Multiplicar as duas contribuições de η = 1 por 0,40 não dá o resultado de η = 0,40: a segunda árvore é outra, porque partiu de outro escore."
     ],
     "aprofundar": [],
     "transicao": "Se cada passo for menor, precisaremos de mais etapas. Como escolher o tamanho dos passos e o número de árvores?"
@@ -1333,21 +1347,22 @@
    },
    "proximo": {
     "n": "42",
-    "titulo": "O novo cliente caiu no grupo B. Qual é a previsão?"
+    "titulo": "Carla caiu no grupo B. Qual é a previsão?"
    }
   },
   {
    "n": "42",
    "bloco": "boosting",
    "blocoNome": "Gradient boosting",
-   "titulo": "O novo cliente caiu no grupo B. Qual é a previsão?",
+   "titulo": "Carla caiu no grupo B. Qual é a previsão?",
    "subtitulo": "Exercício: somar em escore e converter uma única vez",
    "conclusao": "Com as árvores treinadas, os atributos determinam o percurso e a soma determina a PD.",
    "fonte": "Miniatura didática de 10 registros; cálculo próprio",
-   "resumo": "Escore inicial e duas folhas do grupo B, com três métodos possíveis de combinação.",
+   "resumo": "Escore inicial e duas folhas do grupo B, com os atributos de Carla e três métodos possíveis de combinação.",
    "notas": {
     "conducao": [
      "Dê um minuto individual e outro em duplas.",
+     "Lembre que Carla é a mesma do slide 01. Ana e Bruno cairiam no grupo A e receberiam a mesma PD entre si, o que já mostra por que duas árvores não bastam.",
      "Peça que verbalizem onde o desfecho y foi usado e onde deixou de ser necessário.",
      "Conclua o bloco conectando logit e boosting pela saída probabilística, com funções de escore diferentes."
     ],
@@ -1614,12 +1629,14 @@
    "titulo": "Você consegue explicar, comparar e usar os três modelos?",
    "subtitulo": "Definir, estimar, validar e decidir são etapas conectadas",
    "conclusao": "A técnica importa. A evidência que sustenta seu uso importa tanto quanto.",
-   "fonte": "Síntese do curso",
-   "resumo": "Tabela de síntese dos três modelos, três perguntas de recuperação e o roteiro de aplicação no trabalho.",
+   "fonte": "Síntese do curso; PDs do experimento sintético, semente 20260920",
+   "resumo": "Tabela de síntese dos três modelos, a comparação das três PDs para os quatro clientes do slide 01, três perguntas de recuperação e o roteiro de aplicação no trabalho.",
    "notas": {
     "conducao": [
      "Peça que um aluno resuma cada técnica em uma frase.",
      "Retome a decisão do slide 01 sem inventar quais respostas a turma deu. Se as escolhas locais foram salvas, identifique que são escolhas naquele dispositivo.",
+     "Leia a tabela dos quatro clientes por linha, não por coluna: pergunte qual modelo decide diferente. Nenhum decide.",
+     "Pare em Carla. No boosting ela fica a 0,44 ponto do corte. Pergunte o que uma diferença dessas exige antes de trocar de modelo.",
      "Pergunte o que agora exigiriam antes de aprovar uma mudança de modelo."
     ],
     "respostas": [
@@ -1629,6 +1646,8 @@
     ],
     "cuidados": [
      "Complexidade pode ser útil, e a qualidade da decisão depende do processo inteiro.",
+     "Concordar na decisão para quatro clientes não é concordar em geral: a tabela do slide 49 mostra a diferença na carteira inteira.",
+     "As PDs desta tabela são as calibradas do experimento. A PD de 11,66% de Bruno, dos slides 07 a 20, vem do logit manual e é outro universo.",
      "Referências, notebook e modo estudo ficam disponíveis nos recursos finais.",
      "Não existe um 51º slide de agradecimento: o fechamento é esta síntese."
     ],
