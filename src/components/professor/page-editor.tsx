@@ -98,7 +98,7 @@ export function PageEditor({ data }: { data: Data }) {
         </section>
         <section className="card">
           <h2 className="text-base mb-2">Versões</h2>
-          <ul className="text-[13px] list-none p-0 m-0 grid gap-1">{data.versions.map((v) => <li key={v.id} className="flex items-center gap-2"><span>v{v.versionNo}</span>{v.isPublished ? <Badge tone="ok">publicada</Badge> : <button className="btn btn-sm btn-ghost" onClick={async () => { await api(`/api/professor/conteudo/paginas/${data.page.id}/publicar`, { body: { versionId: v.id } }); router.refresh(); }}>publicar esta</button>}<span className="hint">{fmtDT(v.createdAt)}{v.changeNote ? ` · ${v.changeNote}` : ""}</span></li>)}</ul>
+          <ul className="text-[13px] list-none p-0 m-0 grid gap-1">{data.versions.map((v) => <li key={v.id} className="flex items-center gap-2"><span>v{v.versionNo}</span>{v.isPublished ? <Badge tone="ok">publicada</Badge> : <button className="btn btn-sm btn-ghost" onClick={async () => { setErr(null); try { await api(`/api/professor/conteudo/paginas/${data.page.id}/publicar`, { body: { versionId: v.id } }); router.refresh(); } catch (e) { setErr(e instanceof ClientApiError ? e.message : "Falha ao publicar esta versão."); } }}>publicar esta</button>}<span className="hint">{fmtDT(v.createdAt)}{v.changeNote ? ` · ${v.changeNote}` : ""}</span></li>)}</ul>
         </section>
       </aside>
     </div>
@@ -113,7 +113,8 @@ function QuestionEditor({ q, onSaved }: { q: Q; onSaved: () => void }) {
   const [correct, setCorrect] = useState(typeof q.answerKey?.correct === "number" ? String(q.answerKey.correct + 1) : "");
   const [explanation, setExplanation] = useState(q.answerKey?.explanation ?? "");
   const [model, setModel] = useState(q.feedback?.modelAnswer ?? "");
-  const [msg, setMsg] = useState<string | null>(null);
+  // sucesso e falha se distinguem, como em todo retorno de ação da plataforma
+  const [msg, setMsg] = useState<{ ok: boolean; texto: string } | null>(null);
   return (
     <div className="border border-rule rounded p-3 bg-paper">
       <div className="flex items-center gap-2 flex-wrap"><Badge tone="ink">{q.kind}</Badge><span className="font-mono text-[12px]">{q.slug}</span><span className="hint">v{q.versionNo}</span><span className="text-[14px] flex-1 truncate">{q.prompt}</span><button className="btn btn-sm btn-ghost" onClick={() => setOpen(!open)}>{open ? "Fechar" : "Editar"}</button></div>
@@ -126,8 +127,8 @@ function QuestionEditor({ q, onSaved }: { q: Q; onSaved: () => void }) {
           {q.kind !== "predict" && <label className="text-[13px]">Explicação (mostrada após a resposta)<textarea className="textarea" value={explanation} onChange={(e) => setExplanation(e.target.value)} /></label>}
           {q.kind === "short_text" && <label className="text-[13px]">Resposta esperada<textarea className="textarea" value={model} onChange={(e) => setModel(e.target.value)} /></label>}
           <div className="flex items-center gap-2">
-            <button className="btn btn-sm" onClick={async () => { setMsg(null); try { const options = { ...q.options, ...(["single", "multi", "predict"].includes(q.kind) ? { alternatives: alts.split("\n").map((s) => s.trim()).filter(Boolean) } : {}) }; const answerKey = q.kind === "single" ? { ...(q.answerKey ?? {}), correct: correct ? Number(correct) - 1 : null, explanation } : q.kind === "predict" ? null : { ...(q.answerKey ?? {}), explanation }; const feedback = q.kind === "short_text" ? { modelAnswer: model } : q.feedback; await api(`/api/professor/conteudo/questoes/${q.id}/versoes`, { body: { label: label || null, prompt, options, answerKey, feedback } }); setMsg("Nova versão da questão criada."); onSaved(); } catch (e) { setMsg(e instanceof ClientApiError ? e.message : "Falha"); } }}>Salvar nova versão</button>
-            {msg && <span className="hint">{msg}</span>}
+            <button className="btn btn-sm" onClick={async () => { setMsg(null); try { const options = { ...q.options, ...(["single", "multi", "predict"].includes(q.kind) ? { alternatives: alts.split("\n").map((s) => s.trim()).filter(Boolean) } : {}) }; const answerKey = q.kind === "single" ? { ...(q.answerKey ?? {}), correct: correct ? Number(correct) - 1 : null, explanation } : q.kind === "predict" ? null : { ...(q.answerKey ?? {}), explanation }; const feedback = q.kind === "short_text" ? { modelAnswer: model } : q.feedback; await api(`/api/professor/conteudo/questoes/${q.id}/versoes`, { body: { label: label || null, prompt, options, answerKey, feedback } }); setMsg({ ok: true, texto: "Nova versão da questão criada." }); onSaved(); } catch (e) { setMsg({ ok: false, texto: e instanceof ClientApiError ? e.message : "Falha ao salvar a nova versão da questão." }); } }}>Salvar nova versão</button>
+            {msg && (msg.ok ? <SuccessBox message={msg.texto} /> : <ErrorBox message={msg.texto} />)}
           </div>
           <p className="hint">A recuperação detalhada por alternativa (confusão, conceito, exemplo, nova pergunta) da versão original é preservada quando a estrutura de alternativas não muda.</p>
         </div>
