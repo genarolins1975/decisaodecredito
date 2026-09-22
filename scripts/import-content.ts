@@ -16,6 +16,7 @@ import katex from "katex";
 import { and, eq } from "drizzle-orm";
 import { db, pool, schema } from "../src/lib/db/client";
 import { newId } from "../src/lib/ids";
+import { type ConteudoPagina, mesmoConteudo, patchC11 } from "./content/conteudo-publicado";
 
 type Extract = {
   sourceFile: string; sourceSha256: string; extractedAt: string;
@@ -232,22 +233,53 @@ async function main() {
   // páginas + versões + questões
   let qCount = 0;
   const stats = { legacy: 0, static: 0, native: 0 };
+  const sincronizadas: string[] = [];   // páginas republicadas porque o HTML de origem mudou
+  const divergentes: string[] = [];     // origem mudou, mas a versão publicada foi editada por uma pessoa
+  /* Nível, minutos e posição da página também são editáveis pelo painel (`updatePageMeta`), e a tabela
+     `pages` não guarda autoria. O registro de auditoria guarda: quem ajustou uma página pelo painel
+     deixou uma linha `page.meta`. Essas páginas mantêm os metadados do professor; só o conteúdo
+     versionado é sincronizado. */
+  const metaDoProfessor = new Set((await db.select({ id: schema.auditLog.entityId }).from(schema.auditLog)
+    .where(and(eq(schema.auditLog.entity, "page"), eq(schema.auditLog.action, "page.meta"))))
+    .map((r) => r.id).filter((x): x is string => Boolean(x)));
+  let metaPreservada = 0;
   for (let i = 0; i < ex.pages.length; i++) {
     const p = ex.pages[i];
     const chapterId = chapterIds.get(p.cap)!;
     let [pg] = await db.select().from(schema.pages).where(and(eq(schema.pages.chapterId, chapterId), eq(schema.pages.slug, p.id)));
     if (!pg) [pg] = await db.insert(schema.pages).values({ id: newId(), chapterId, slug: p.id, number: p.n, position: i, level: p.nivel, level120: p.nivel120, minutes: p.min, origin: p.origem, status: "published" }).returning();
-    const { blocks, classification } = buildBlocks(p);
+    const { blocks: brutos, classification } = buildBlocks(p);
     stats[classification as keyof typeof stats]++;
-    if (!pg.publishedVersionId || republish) {
+    /* O patch do capítulo 11 é parte do conteúdo canônico, não uma correção posterior: aplicá-lo aqui
+       faz o importador e patchCapitulo11 convergirem. Sem isso um desfaz o outro a cada build. */
+    const { blocks, guia } = patchC11(p.id, brutos, p.guia);
+    /* Primeira importação publica; depois disso, republica quando o HTML de origem mudou e a versão
+       publicada ainda é a que o próprio importador escreveu. Toda edição feita pelo painel grava
+       created_by, então uma página tocada por uma pessoa nunca é sobrescrita: entra em `divergentes`
+       para o professor decidir. Idempotente por conteúdo: sem diferença, nenhuma versão nova. */
+    const atual: ConteudoPagina = { title: p.titulo, objective: p.aprendizado, support: p.apoio, connection: p.conexao, timeBudget: p.t, blocks, teacherGuide: guia };
+    const [publicada] = pg.publishedVersionId
+      ? await db.select().from(schema.pageVersions).where(eq(schema.pageVersions.id, pg.publishedVersionId))
+      : [];
+    const mudou = publicada ? !mesmoConteudo(publicada as any, atual) : true;
+    const dePessoa = Boolean(publicada?.createdBy);
+    let nota: string | null = null;
+    if (!publicada) nota = `Migração do HTML original (sha256 ${ex.sourceSha256.slice(0, 12)})`;
+    else if (republish) nota = "Reimportação";
+    else if (mudou && !dePessoa) nota = `Conteúdo de origem atualizado (sha256 ${ex.sourceSha256.slice(0, 12)})`;
+    else if (mudou && dePessoa) divergentes.push(p.id);
+    if (nota) {
       const existing = await db.select({ v: schema.pageVersions.versionNo }).from(schema.pageVersions).where(eq(schema.pageVersions.pageId, pg.id));
       const versionNo = existing.length ? Math.max(...existing.map((e) => e.v)) + 1 : 1;
       const vid = newId();
       await db.insert(schema.pageVersions).values({
         id: vid, pageId: pg.id, versionNo, title: p.titulo, objective: p.aprendizado, support: p.apoio, connection: p.conexao, timeBudget: p.t,
-        blocks, teacherGuide: p.guia, changeNote: versionNo === 1 ? `Migração do HTML original (sha256 ${ex.sourceSha256.slice(0, 12)})` : "Reimportação", publishedAt: new Date(),
+        blocks, teacherGuide: guia, changeNote: nota, publishedAt: new Date(),
       });
-      await db.update(schema.pages).set({ publishedVersionId: vid, updatedAt: new Date(), level: p.nivel, level120: p.nivel120, minutes: p.min, origin: p.origem, position: i }).where(eq(schema.pages.id, pg.id));
+      const meta = metaDoProfessor.has(pg.id) ? {} : { level: p.nivel, level120: p.nivel120, minutes: p.min, origin: p.origem, position: i };
+      if (metaDoProfessor.has(pg.id)) metaPreservada++;
+      await db.update(schema.pages).set({ publishedVersionId: vid, updatedAt: new Date(), ...meta }).where(eq(schema.pages.id, pg.id));
+      if (publicada) sincronizadas.push(p.id);
     }
     for (const q of questionRecords(p)) {
       let [qq] = await db.select().from(schema.questions).where(and(eq(schema.questions.editionId, edition.id), eq(schema.questions.slug, q.slug)));
@@ -268,6 +300,16 @@ async function main() {
   console.log();
   inventory.questions = qCount;
   inventory.rendering = stats;
+  inventory.resync = { synced: sincronizadas, diverged: divergentes };
+  if (sincronizadas.length) {
+    const lista = sincronizadas.length > 12 ? `${sincronizadas.slice(0, 12).join(", ")} e mais ${sincronizadas.length - 12}` : sincronizadas.join(", ");
+    console.log(`conteúdo de origem atualizado em ${sincronizadas.length} página(s): ${lista}`);
+  }
+  if (metaPreservada) console.log(`${metaPreservada} página(s) republicadas mantiveram nível, minutos e posição ajustados pelo painel.`);
+  if (divergentes.length) {
+    console.log(`ATENÇÃO: ${divergentes.length} página(s) mudaram na origem mas têm edição feita pelo painel e não foram tocadas: ${divergentes.join(", ")}`);
+    console.log("Abra cada uma no painel e traga a correção à mão, ou rode a importação com --republish para que a origem prevaleça (a edição do painel é perdida).");
+  }
 
   // Correções de conteúdo versionadas: aplicadas a bancos já importados (nova versão da questão, idempotente por conteúdo)
   await applyContentPatches(edition.id);
@@ -418,60 +460,6 @@ async function applyContentPatches(editionId: string) {
  * baseline 6,655%). Com 15 bases de cerca de 1 milhão de propostas e OOT de 100.000 IDs, os números fixos viram
  * referências à base do grupo. Cria nova versão publicada das páginas afetadas quando a versão corrente ainda tem o texto antigo.
  */
-const PATCH_C11: Record<string, [string, string][]> = {
- "c11p1": [
-  [
-   "60.000 propostas",
-   "1 milhão de propostas"
-  ]
- ],
- "c11p2": [
-  [
-   "<span class=\"big\">51.000</span><small>treino + validação · rótulo somente nas aprovadas</small>",
-   "<span class=\"big\">≈ 900 mil</span><small>treino + validação (jan/21 a dez/23) · rótulo somente nas aprovadas</small>"
-  ],
-  [
-   "<span class=\"big\">8.420</span><small>5.930 propostas aprovadas com rótulo</small>",
-   "<span class=\"big\">jul–dez/23</span><small>cerca de 150 mil propostas; as aprovadas com rótulo você conta na sua base</small>"
-  ],
-  [
-   "<span class=\"big\">9.000</span><small>jan–jun/24 · nenhum desfecho no pacote do aluno</small>",
-   "<span class=\"big\">100.000</span><small>jan–jun/24 · nenhum desfecho no pacote do aluno</small>"
-  ]
- ],
- "c11p7": [
-  [
-   "<small>42.580 propostas</small><small>30.938 aprovadas com rótulo</small>",
-   "<small>cerca de 750 mil propostas</small><small>aprovadas com rótulo: contar na sua base</small>"
-  ],
-  [
-   "<small>8.420 propostas</small><small>5.930 aprovadas com rótulo</small>",
-   "<small>cerca de 150 mil propostas</small><small>aprovadas com rótulo: contar na sua base</small>"
-  ],
-  [
-   "<small>9.000 IDs, sem desfecho</small>",
-   "<small>100.000 IDs, sem desfecho</small>"
-  ]
- ],
- "c11p8": [
-  [
-   "<small>baseline aprendido no treino</small><span class=\"big\">6,655%</span><p>a mesma PD para toda proposta</p>",
-   "<small>baseline aprendido no treino</small><span class=\"big\">p̂₀ da sua base</span><p>a mesma PD para toda proposta: defaults sobre aprovadas com rótulo no treino (o exemplo abaixo é do Banco Aurora)</p>"
-  ]
- ],
- "c11p9": [
-  [
-   "exatamente os mesmos 5.930 casos aprovados da validação",
-   "exatamente os mesmos casos aprovados com rótulo da validação (o número é o da sua base)"
-  ]
- ],
- "c11p17": [
-  [
-   "Exatamente 9.000 IDs; nenhuma volta para melhorar.",
-   "Exatamente 100.000 IDs; nenhuma volta para melhorar."
-  ]
- ]
-};
 async function patchCapitulo11(editionId: string) {
   // atividade central do capítulo: "base de 60.000 propostas" vira a base do grupo
   const caps = await db.select({ id: schema.chapters.id, activity: schema.chapters.activity }).from(schema.chapters)
@@ -485,16 +473,13 @@ async function patchCapitulo11(editionId: string) {
     .innerJoin(schema.pageVersions, eq(schema.pageVersions.id, schema.pages.publishedVersionId))
     .where(and(eq(schema.units.editionId, editionId), eq(schema.chapters.slug, "c11")));
   for (const { page, v } of rows) {
-    const subs = PATCH_C11[page.slug]; if (!subs) continue;
-    let json = JSON.stringify(v.blocks); let changed = false;
-    for (const [a, b] of subs) { const ea = JSON.stringify(a).slice(1, -1), eb = JSON.stringify(b).slice(1, -1); if (json.includes(ea)) { json = json.split(ea).join(eb); changed = true; } }
-    // guia docente: a saída esperada da missão 3 citava 60.000 IDs (pacote antigo)
-    let guide = v.teacherGuide; const gj = JSON.stringify(guide ?? null);
-    if (gj.includes("60.000 IDs")) { guide = JSON.parse(gj.split("60.000 IDs").join("todos os IDs da base do grupo")); changed = true; }
+    // mesma regra da sincronização: página editada pelo painel não é sobrescrita por script
+    if (v.createdBy) continue;
+    const { blocks, guia, changed } = patchC11(page.slug, v.blocks, v.teacherGuide);
     if (!changed) continue;
     const existing = await db.select({ v: schema.pageVersions.versionNo }).from(schema.pageVersions).where(eq(schema.pageVersions.pageId, page.id));
     const versionNo = Math.max(...existing.map((e) => e.v)) + 1; const vid = newId();
-    await db.insert(schema.pageVersions).values({ id: vid, pageId: page.id, versionNo, title: v.title, objective: v.objective, support: v.support, connection: v.connection, timeBudget: v.timeBudget, blocks: JSON.parse(json), teacherGuide: guide, changeNote: "Bases do trabalho final: 15 bases de cerca de 1 milhão de propostas e OOT de 100.000 IDs; números fixos do pacote antigo substituídos", publishedAt: new Date() });
+    await db.insert(schema.pageVersions).values({ id: vid, pageId: page.id, versionNo, title: v.title, objective: v.objective, support: v.support, connection: v.connection, timeBudget: v.timeBudget, blocks, teacherGuide: guia, changeNote: "Bases do trabalho final: 15 bases de cerca de 1 milhão de propostas e OOT de 100.000 IDs; números fixos do pacote antigo substituídos", publishedAt: new Date() });
     await db.update(schema.pages).set({ publishedVersionId: vid, updatedAt: new Date() }).where(eq(schema.pages.id, page.id));
     console.log(`patch ${page.slug}: nova versão ${versionNo} (números do pacote de bases)`);
   }

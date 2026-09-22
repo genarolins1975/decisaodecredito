@@ -3646,5 +3646,9 @@
   "legacy": 84,
   "static": 75,
   "native": 21
+ },
+ "resync": {
+  "synced": [],
+  "diverged": []
  }
 }
