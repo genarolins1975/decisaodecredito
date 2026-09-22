@@ -1,21 +1,10 @@
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { requireClassAccess } from "@/lib/auth/guard";
-import { getSession } from "@/lib/services/live";
-import { Projecao } from "@/components/live/projecao-slides";
-
-export const metadata: Metadata = { title: "Projetar os slides" };
+import { redirect } from "next/navigation";
 
 /**
- * Janela de projeção da aula em slides. O professor navega no próprio baralho, com as setas, e a
- * janela avisa a sessão a cada troca de slide, para a tela do aluno acompanhar. O baralho continua
- * um arquivo único e offline: quem fala com a API é esta casca, não ele.
+ * Endereço antigo da janela de projeção do baralho de 50 slides da Aula 2, aposentado em 22/09/2026. A Aula 2 é
+ * apresentada pelas páginas dos capítulos 4, 5 e 6, como as outras aulas; quem chega aqui volta ao painel da sessão.
  */
-export default async function ProjetarSlidesPage({ searchParams }: { searchParams: Promise<{ sessao?: string }> }) {
+export default async function ProjetarSlidesAposentado({ searchParams }: { searchParams: Promise<{ sessao?: string }> }) {
   const { sessao } = await searchParams;
-  if (!sessao) notFound();
-  let s;
-  try { s = await getSession(sessao); } catch { notFound(); }
-  await requireClassAccess(s.classId, ["professor", "monitor"]);
-  return <Projecao sessionId={sessao} inicial={s.currentSlide} />;
+  redirect(sessao ? `/professor/aovivo/${encodeURIComponent(sessao)}` : "/aulas/capitulo/4");
 }

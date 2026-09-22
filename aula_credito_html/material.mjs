@@ -3,7 +3,9 @@
    com o texto didático de material/conteudo/ e as notas de dist/aula_credito_notas.json.
 
    Uso: node material.mjs [--so professor|aluno] [--sem-captura] [--sem-pdf]
-   Saídas: dist/material/aula-2-guia-do-<edicao>.html e .pdf, copiados para content/materiais/.
+   Saídas: dist/material/aula-2-guia-do-<edicao>.html e .pdf. Até 22/09/2026 eram copiados para
+   content/materiais/ e servidos pela plataforma; com o baralho aposentado, os guias da Aula 2 passaram
+   a ser os dos capítulos 4, 5 e 6, gerados por scripts/apostila/gerar.mjs.
    Exige o baralho compilado (node build.mjs) e o Chromium de /opt/pw-browsers. */
 import fs from "node:fs";
 import path from "node:path";
@@ -25,7 +27,6 @@ const opc = (n) => argv.includes(n);
 const so = argv.includes("--so") ? argv[argv.indexOf("--so") + 1] : null;
 const EDICOES = (so ? [so] : ["professor", "aluno"]);
 const SAIDA = path.join(raiz, "dist", "material");
-const PUBLICO = path.join(raiz, "..", "content", "materiais");
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const BARALHO = path.join(raiz, "dist", "aula_credito.html");
 /* Slides de exercício: na edição do aluno a captura fica no estado inicial, sem a solução aberta. */
@@ -549,8 +550,6 @@ for (const edicao of EDICOES) {
   const mapa2 = paginasDosSlides(pdf);
   const estavel = JSON.stringify(mapa2.paginas) === JSON.stringify(mapa.paginas) && JSON.stringify(mapa2.secoes) === JSON.stringify(mapa.secoes);
   const faltam = notas.slides.map((s) => s.n).filter((n) => !mapa2.paginas[n]);
-  fs.mkdirSync(PUBLICO, { recursive: true });
-  fs.copyFileSync(pdf, path.join(PUBLICO, nome + ".pdf"));
   console.log(`${nome}.pdf: ${mapa2.total} páginas, ${Math.round(fs.statSync(pdf).size / 1024)} KB · slides sem página no mapa: ${faltam.length ? faltam.join(", ") : "nenhum"} · mapa estável entre as passagens: ${estavel ? "sim" : "NÃO"} · traços no texto: ${check.tracos} · fórmulas com erro: ${check.erros} · imagens ausentes: ${check.imgs} · erros de página: ${check.pageErrors.length}`);
   if (check.tracos || check.erros || check.imgs || check.pageErrors.length || faltam.length || !estavel) process.exitCode = 1;
 }

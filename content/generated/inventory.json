@@ -1,7 +1,7 @@
 {
  "source": "content/original/apresentacao-curso-pd.html",
- "sha256": "1fd8ab266e015d9cdccb87b548812ab647e7eeaa42c07f4c38e315a8f4ebd0db",
- "extractedAt": "2026-09-22T12:40:28.446Z",
+ "sha256": "1ee0c6ed00be85a09b641670f1326792c2e2cbdb626c042aaee7641646457e28",
+ "extractedAt": "2026-09-22T22:17:58.492Z",
  "edition": "2026",
  "units": [
   {
@@ -2130,6 +2130,25 @@
    "hasFormula": false
   },
   {
+   "source": "#/c6p20",
+   "slug": "c6p20",
+   "pageId": "45lihev774dacr1uk6ltd",
+   "chapter": 6,
+   "unit": 2,
+   "title": "Três modelos, as mesmas 16 propostas",
+   "level": "essencial",
+   "minutes": 6,
+   "origin": "rec",
+   "rendering": "static",
+   "controls": 0,
+   "svgs": 0,
+   "tables": 1,
+   "questions": [],
+   "predictions": [],
+   "hasGuide": true,
+   "hasFormula": false
+  },
+  {
    "source": "#/c7p1",
    "slug": "c7p1",
    "pageId": "m1o4gtbfk3bk4wyjuxayy",
@@ -3562,7 +3581,7 @@
    "hasFormula": false
   }
  ],
- "questions": 238,
+ "questions": 240,
  "rubrics": [
   {
    "slug": "comite",
@@ -3644,7 +3663,7 @@
  ],
  "rendering": {
   "legacy": 84,
-  "static": 75,
+  "static": 76,
   "native": 21
  },
  "resync": {

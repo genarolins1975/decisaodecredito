@@ -1,6 +1,8 @@
 "use client";
 import type { ComponentType } from "react";
 import { ResiduosQueEncolhem } from "./residuos-que-encolhem";
+import { OitoPontos } from "./oito-pontos";
+import { TresModelos } from "./tres-modelos";
 import { PerdaQueCai } from "./perda-que-cai";
 import { DistanciaQueSeAbre } from "./distancia-que-se-abre";
 import { IndiceQueSoma } from "./indice-que-soma";
@@ -127,6 +129,7 @@ const REGISTRO: Record<string, VisualNativo> = {
   c5p16: { Componente: () => <ArvoreQueCresce modo="instabilidade" />, substitui: "legacy" },
   c5p18: { Componente: DuasFamilias, substitui: "legacy" },
   c6p2: { Componente: TresEstrategias, substitui: "legacy" },
+  c6p3: { Componente: OitoPontos, substitui: "pagina" },
   c6p7: { Componente: () => <ResiduosQueEncolhem modo="taxa" />, substitui: "legacy" },
   c6p8: { Componente: () => <ResiduosQueEncolhem modo="arvores" />, substitui: "legacy" },
   c6p9: { Componente: () => <ResiduosQueEncolhem modo="soma" />, substitui: "legacy" },
@@ -136,6 +139,8 @@ const REGISTRO: Record<string, VisualNativo> = {
   c6p15: { Componente: Hiperparametros, substitui: "legacy" },
   c6p17: { Componente: DistanciaQueSeAbre, substitui: "figura" },
   c6p18: { Componente: TresLimites, substitui: "legacy" },
+  /* fecho da Aula 2: o gráfico substitui a tabela estática da página; a leitura e a entrega continuam do texto */
+  c6p20: { Componente: TresModelos, substitui: "figura" },
   c7p2: { Componente: AcertoQueEngana, substitui: "legacy" },
   c7p5: { Componente: Pares, substitui: "legacy" },
   c7p6: { Componente: FilaDeRisco, substitui: "legacy" },

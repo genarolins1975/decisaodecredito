@@ -72,10 +72,10 @@ export function Hiperparametros() {
               <text x={sx(M / 2)} y={H - 6} textAnchor="middle" className="vz-rotulo">árvores acrescentadas</text>
               <text x={ML + 4} y={MT - 7} className="vz-rotulo">log loss de treino</text>
               <line x1={sx(0)} x2={sx(M)} y1={sy(PERDA_LOGISTICA)} y2={sy(PERDA_LOGISTICA)} className="vz-curva vz-curva--odds vz-int-tracejada" />
-              <text x={sx(M) - 4} y={sy(PERDA_LOGISTICA) - 5} textAnchor="end" className="vz-tick vz-tick--forte">logística {fmtNum(PERDA_LOGISTICA, 5)}</text>
+              <text x={sx(0) + 6} y={sy(PERDA_LOGISTICA) + 15} className="vz-tick vz-tick--forte">logística {fmtNum(PERDA_LOGISTICA, 5)}</text>
               <path d={caminho} className="vz-curva" />
               {r.ps.length <= 41 && r.ps.map((p) => <circle key={p.m} cx={sx(p.m)} cy={sy(Math.min(0.72, p.perda))} r={M > 20 ? 2.5 : 4} className="vz-ponto" />)}
-              <g className="vz-regua-ponto" style={{ transform: `translate(${sx(M)}px, ${sy(Math.min(0.72, r.perda))}px)` }}><circle r={7} /><text x={-12} y={-10} textAnchor="end" className="vz-ponto-t">{fmtNum(r.perda, 4)} com {M} árvore{M > 1 ? "s" : ""}</text></g>
+              <g className="vz-regua-ponto" style={{ transform: `translate(${sx(M)}px, ${sy(Math.min(0.72, r.perda))}px)` }}><circle r={7} /><text x={-8} y={-22} textAnchor="end" className="vz-ponto-t">{fmtNum(r.perda, 4)} com {M} árvore{M > 1 ? "s" : ""}</text></g>
             </svg>
           </div>
           <div className="vz-tile"><p className="eyebrow">O que cada um controla</p>

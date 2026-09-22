@@ -15,7 +15,7 @@ export default async function ProfessorBasesPage({ searchParams }: { searchParam
   const edition = editions.find((e) => e.id === sp.edicao) ?? editions.find((e) => e.status === "active") ?? editions[0];
   if (!edition) return <p className="hint">Nenhuma edição cadastrada.</p>;
   const datasets = await db.select().from(schema.datasets).where(eq(schema.datasets.editionId, edition.id)).orderBy(asc(schema.datasets.code));
-  const materials = (await db.select().from(schema.materials).where(eq(schema.materials.editionId, edition.id)).orderBy(asc(schema.materials.position))).filter((m) => m.kind !== "referencia");
+  const materials = (await db.select().from(schema.materials).where(eq(schema.materials.editionId, edition.id)).orderBy(asc(schema.materials.position))).filter((m) => m.kind !== "referencia" && m.status !== "arquivado");
   const grupos = await db.select({ datasetId: schema.groups.datasetId, n: sql<number>`count(*)` }).from(schema.groups).innerJoin(schema.classes, eq(schema.classes.id, schema.groups.classId)).where(eq(schema.classes.editionId, edition.id)).groupBy(schema.groups.datasetId);
   const politicas = await db.select({ cls: schema.classes.code, policy: schema.blindTests.releasePolicy, status: schema.assignments.status }).from(schema.assignments).innerJoin(schema.classes, eq(schema.classes.id, schema.assignments.classId)).leftJoin(schema.blindTests, eq(schema.blindTests.assignmentId, schema.assignments.id)).where(and(eq(schema.classes.editionId, edition.id), eq(schema.assignments.slug, "trabalho-final")));
   const finais = politicas;

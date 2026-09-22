@@ -4,6 +4,7 @@ import did from "@/lib/visuais/did.json";
 import { fmtNum } from "@/lib/visuais/metricas";
 import type { Proposta } from "@/lib/visuais/logistica";
 import { crescer, folhas, gini } from "@/lib/visuais/arvore";
+import { SemCaixaAlta } from "./sem-caixa-alta";
 
 /**
  * Poda por custo de complexidade (capítulo 5, c5p15). Quatro árvores da mesma base, com a impureza ponderada
@@ -45,7 +46,7 @@ export function Poda() {
         <div className="vz-poda-painel">
           <label className="vz-slider"><span className="vz-slider-rotulo"><b>Preço de cada folha, α</b> <span className="vz-slider-valor">{fmtNum(alfa, 3)}</span></span>
             <input type="range" min={0} max={350} step={5} value={Math.round(alfa * 1000)} onChange={(e) => setAlfa(Number(e.target.value) / 1000)} aria-valuetext={fmtNum(alfa, 3)} /></label>
-          <div className="table-wrap"><table className="table text-[.85em]"><thead><tr><th>Árvore</th><th>Folhas</th><th>Impureza</th><th>α × folhas</th><th>Custo</th></tr></thead><tbody>
+          <div className="table-wrap"><table className="table text-[.85em]"><thead><tr><th>Árvore</th><th>Folhas</th><th>Impureza</th><th><SemCaixaAlta>α × folhas</SemCaixaAlta></th><th>Custo</th></tr></thead><tbody>
             {custos.map((t, i) => <tr key={t.rot} className={t === venc ? "vz-t-on" : ""}><th scope="row"><span className={`vz-sw ${CORES[i]}`} />{t.rot}</th><td>{t.folhas}</td><td>{fmtNum(t.R, 5)}</td><td>{fmtNum(alfa * t.folhas, 5)}</td><td className={t === venc ? "vz-t-forte" : ""}>{fmtNum(t.c, 5)}</td></tr>)}
           </tbody></table></div>
           <div className="vz-formula">custo(T) = impureza ponderada de T + α × número de folhas de T</div>

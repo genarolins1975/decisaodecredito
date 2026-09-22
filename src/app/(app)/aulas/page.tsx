@@ -12,13 +12,13 @@ export const metadata: Metadata = { title: "Aulas" };
 export default async function AulasPage() {
   const ctx = await requireContext();
   const outline = await courseOutline(ctx.current.edition.id);
-  // materiais presos a uma unidade: é assim que a Aula 2 aponta para os 50 slides que a apresentam
+  // materiais presos a uma unidade aparecem no cartão dela, depois dos capítulos
   const daUnidade = (await db.select().from(schema.materials).where(eq(schema.materials.editionId, ctx.current.edition.id)).orderBy(asc(schema.materials.position)))
     .filter((m) => m.unitId && m.status === "published");
   return (
     <div>
       <PageHeader eyebrow={<>{ctx.current.cls.name} · edição {ctx.current.edition.label}</>} title="Aulas"
-        lead="Quatro aulas e o trabalho final, cada uma com seus capítulos e páginas. As páginas essenciais são vistas em aula e as complementares aprofundam no seu estudo. A Aula 2 é apresentada em 50 slides, que percorrem os capítulos 4, 5 e 6." />
+        lead="Quatro aulas e o trabalho final, cada uma com seus capítulos e páginas. As páginas essenciais são vistas em aula e as complementares aprofundam no seu estudo." />
       <div className="flex flex-col gap-6">
         {outline.map((u) => (
           <section key={u.id} className="card" aria-labelledby={`u-${u.id}`}>

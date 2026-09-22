@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { estavel, mesmoConteudo, patchC11, PATCH_C11, type ConteudoPagina } from "../scripts/content/conteudo-publicado";
+import { atividadeCanonica, estavel, mesmaQuestao, mesmoConteudo, patchC11, PATCH_C11, questaoSincronizavel, type ConteudoPagina, type ConteudoQuestao } from "../scripts/content/conteudo-publicado";
 
 /** A importação republica uma página quando o HTML de origem mudou. Se a comparação acusar diferença
     onde não há, todo build cria uma versão nova de cada página; se deixar de acusar onde há, a correção
@@ -83,5 +83,49 @@ describe("substituições canônicas do capítulo 11", () => {
 
   it("cobre as seis páginas que citavam números do pacote antigo", () => {
     expect(Object.keys(PATCH_C11).sort()).toEqual(["c11p1", "c11p17", "c11p2", "c11p7", "c11p8", "c11p9"]);
+  });
+});
+
+/** A pergunta de checagem nasce do guia do professor. Quando o guia muda na origem, a pergunta precisa
+    mudar na base já importada; e uma questão que não mudou não pode ganhar versão nova a cada build. */
+describe("sincronização de questões", () => {
+  const checagem = (): ConteudoQuestao => ({
+    label: "Pergunta de checagem", prompt: "Qual das três ideias explica o par?",
+    options: { source: "guia", maxLength: 600 }, answerKey: null, feedback: { modelAnswer: "O Limite." },
+  });
+
+  it("não acusa diferença na ordem das chaves nem entre ausência e nulo", () => {
+    const b = checagem();
+    b.options = { maxLength: 600, source: "guia" };
+    expect(mesmaQuestao(checagem(), b)).toBe(true);
+    expect(mesmaQuestao({ ...checagem(), answerKey: undefined }, checagem())).toBe(true);
+  });
+
+  it("acusa a mudança de enunciado e de resposta modelo", () => {
+    expect(mesmaQuestao(checagem(), { ...checagem(), prompt: "Qual número desta tabela você levaria para um comitê?" })).toBe(false);
+    expect(mesmaQuestao(checagem(), { ...checagem(), feedback: { modelAnswer: "As duas razões de chances." } })).toBe(false);
+  });
+
+  it("sincroniza só o que nasce do repositório: checagem e curadas, nunca a questão original com correção própria", () => {
+    const curadas = new Set(["c6p20q"]);
+    expect(questaoSincronizavel("c4p22-checagem", curadas)).toBe(true);
+    expect(questaoSincronizavel("c6p20q", curadas)).toBe(true);
+    expect(questaoSincronizavel("c3p7q", curadas)).toBe(false);   // corrigida por applyContentPatches
+    expect(questaoSincronizavel("c4p10q", curadas)).toBe(false);
+  });
+});
+
+/** Os textos do capítulo acompanham a origem a cada importação; a atividade do capítulo 11 entra já corrigida,
+    senão o importador e patchCapitulo11 se desfariam um ao outro para sempre. */
+describe("atividade canônica do capítulo", () => {
+  it("aplica a correção do capítulo 11 e é idempotente", () => {
+    const origem = "Construir o modelo sobre uma base de 60.000 propostas, com teste fora do tempo.";
+    const uma = atividadeCanonica("c11", origem);
+    expect(uma).toBe("Construir o modelo sobre a base do grupo, com cerca de 1 milhão de propostas e teste fora do tempo.");
+    expect(atividadeCanonica("c11", uma)).toBe(uma);
+  });
+  it("não toca os outros capítulos e preserva a ausência", () => {
+    expect(atividadeCanonica("c6", "Avançar o boosting.")).toBe("Avançar o boosting.");
+    expect(atividadeCanonica("c6", undefined)).toBeNull();
   });
 });

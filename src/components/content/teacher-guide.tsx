@@ -1,10 +1,15 @@
+/** Rótulos das notas do professor, na ordem em que a aula acontece. "aula" é a narração de sala: quando a próxima
+    página é complementar, diz qual é a próxima essencial, o que dizer para chegar a ela e o que fica para o estudo. */
+export const ROTULOS_GUIA: [string, string][] = [
+  ["Função na aula", "funcao"], ["Pré-requisito", "pre"], ["Condução", "conducao"], ["Como ler a tela", "leitura"], ["Pergunta para a turma", "pergunta"],
+  ["Resposta esperada", "resposta"], ["Interação disponível", "interacao"], ["Verificação de entendimento", "verificacao"], ["Transição", "transicao"],
+  ["Em aula, a próxima essencial", "aula"],
+  ["Arquivos", "arquivos"], ["Saída esperada", "saida"], ["Alternativa sem ambiente", "alternativa"], ["Hipótese", "hipotese"],
+];
+
 /** Guia do professor: renderizado só para professor/monitor (nunca enviado ao aluno). */
 export function TeacherGuide({ guide }: { guide: Record<string, unknown> }) {
-  const rows: [string, string][] = [
-    ["Função na aula", "funcao"], ["Pré-requisito", "pre"], ["Condução", "conducao"], ["Como ler a tela", "leitura"], ["Pergunta para a turma", "pergunta"],
-    ["Resposta esperada", "resposta"], ["Interação disponível", "interacao"], ["Verificação de entendimento", "verificacao"], ["Transição", "transicao"],
-    ["Arquivos", "arquivos"], ["Saída esperada", "saida"], ["Alternativa sem ambiente", "alternativa"], ["Hipótese", "hipotese"],
-  ];
+  const rows = ROTULOS_GUIA;
   const erros = guide.erros as { alt: string; confusao: string; intervencao: string }[] | undefined;
   return (
     <details className="mt-8 rounded-md border border-gold bg-gold-soft/40 p-4 no-print" aria-label="Notas do professor (privadas)">

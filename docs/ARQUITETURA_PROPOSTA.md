@@ -1,5 +1,7 @@
 # Arquitetura proposta para a Aula 2: estrutura, fluxo de dados, estados, contratos e decisões
 
+> **Situação em 22/09/2026.** O baralho de 50 slides descrito aqui foi aposentado da plataforma: a Aula 2 é apresentada e conduzida pelas páginas dos capítulos 4, 5 e 6, como as outras aulas, e os endereços do baralho redirecionam para o conteúdo equivalente. Este documento fica como registro da arquitetura que valeu até essa data. A decisão e o desenho que a substituiu estão em `docs/NARRATIVA_AULA_2.md`.
+
 Data de referência: 21 de setembro de 2026. A proposta está implementada no branch `claude/new-session-d2yt8t` salvo onde a seção 8 diz o contrário. O princípio é proporção: a menor complexidade operacional que resolve os problemas demonstrados em `AUDITORIA_ARQUITETURA.md`. Nenhum framework, banco, serviço ou reescrita foi acrescentado.
 
 ## 1. O que não muda, e por quê

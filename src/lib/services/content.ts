@@ -43,6 +43,18 @@ export async function flatPages(editionId: string): Promise<FlatPage[]> {
   return out;
 }
 
+/** Notas do professor das páginas publicadas de uma aula, por slug. Só para professor e monitor: o painel ao vivo
+    mostra as da página que está no ar. */
+export async function guiasDaUnidade(editionId: string, unitId: string): Promise<Record<string, Record<string, unknown>>> {
+  const rows = await db.select({ slug: schema.pages.slug, guia: schema.pageVersions.teacherGuide })
+    .from(schema.pages)
+    .innerJoin(schema.pageVersions, eq(schema.pageVersions.id, schema.pages.publishedVersionId))
+    .innerJoin(schema.chapters, eq(schema.chapters.id, schema.pages.chapterId))
+    .innerJoin(schema.units, eq(schema.units.id, schema.chapters.unitId))
+    .where(and(eq(schema.units.editionId, editionId), eq(schema.units.id, unitId), eq(schema.pages.status, "published")));
+  return Object.fromEntries(rows.filter((r) => r.guia && typeof r.guia === "object").map((r) => [r.slug, r.guia as Record<string, unknown>]));
+}
+
 /** Página publicada com blocos. teacherGuide só é devolvido quando includeGuide=true (professor/monitor). */
 export async function getPage(editionId: string, slug: string, includeGuide: boolean) {
   const [row] = await db.select({ page: schema.pages, version: schema.pageVersions, chapter: schema.chapters, unit: schema.units })

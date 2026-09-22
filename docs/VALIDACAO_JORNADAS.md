@@ -1,5 +1,7 @@
 # Validação das jornadas da Aula 2: cenários, evidências, limitações e pendências
 
+> **Situação em 22/09/2026.** O baralho de 50 slides descrito aqui foi aposentado da plataforma: a Aula 2 é apresentada e conduzida pelas páginas dos capítulos 4, 5 e 6, como as outras aulas, e os endereços do baralho redirecionam para o conteúdo equivalente. Este documento fica como registro da arquitetura que valeu até essa data. A decisão e o desenho que a substituiu estão em `docs/NARRATIVA_AULA_2.md`.
+
 Data: 21 de setembro de 2026. Ambiente: máquina única com Node 22.22, PostgreSQL 16, Next.js 16.3 em modo `dev` em `http://localhost:3000`, Chromium 1194 controlado por Playwright 1.56 (headless), contas de teste da semente (`genaro.lins@gmail.com` como professor, `aluno.a@example.test` como aluno), turma 2026-A com os quatro encontros criados pela API. Nenhum teste tocou produção, enviou e-mail ou usou dados reais.
 
 Origem das evidências: script de jornadas (dois contextos autenticados, console e tempos gravados em `jornadas.json`, fora do repositório), capturas em `docs/capturas/aula2-*.png`, verificações em jsdom, `node qa.mjs`, `npm test` e `npx playwright test`. Nenhum percentual de melhoria foi estimado e nenhum teste com usuários foi realizado.

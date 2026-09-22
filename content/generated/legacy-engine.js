@@ -90,7 +90,7 @@ function chLinhas({series,xMin,xMax,yMin,yMax,yTicks,xTicks,yTit,xTit,yFmt=v=>pc
   if(marcas)for(const m of marcas){
     s+=`<circle cx="${px(m.x).toFixed(1)}" cy="${py(m.y).toFixed(1)}" r="${m.r0||5}"
       fill="${m.cor||COR.alerta}" stroke="#fff" stroke-width="1.6"/>`;
-    if(m.r)s+=`<text x="${(px(m.x)+9).toFixed(1)}" y="${(py(m.y)-8).toFixed(1)}" font-size="11.5"
+    if(m.r)s+=`<text x="${(px(m.x)+(m.dx??9)).toFixed(1)}" y="${(py(m.y)+(m.dy??-8)).toFixed(1)}" font-size="11.5"
       font-weight="700" fill="${m.cor||COR.alerta}" text-anchor="${m.anc||'start'}">${esc(m.r)}</text>`;}
   if(anotacoes)for(const a of anotacoes)
     s+=`<text x="${px(a.x).toFixed(1)}" y="${py(a.y).toFixed(1)}" font-size="11.5"
@@ -1090,7 +1090,7 @@ const CAPITULOS=[
   usa:'É o bloco de construção do capítulo 6.'},
  {n:6,id:'c6',nome:'Gradient boosting com árvores',
   pergunta:'Como uma sequência de árvores melhora uma previsão?',
-  prereq:'Capítulos 4 e 5: escore em log odds, função de perda e árvore de regressão.',
+  prereq:'Capítulos 4 e 5: escore em log odds, função de perda e a árvore do capítulo 5, que aqui passa a prever um número.',
   aprende:'Resíduo como negativo do gradiente, árvore ajustada ao resíduo, taxa de aprendizagem, soma no escore, transição para classificação, hiperparâmetros e riscos.',
   motiva:'Em vez de uma árvore enorme, é possível somar muitas correções pequenas?',
   atividade:'Avançar o boosting uma árvore por vez e explicar o que cada uma acrescentou.',
@@ -3713,7 +3713,7 @@ P({id:'c4p18',cap:4,n:18,nivel:'essencial',t:{exp:3,prat:2,disc:2},origem:'rec',
   return `<div class="palcoflex"><div class="esq"><div class="rolax"><table>
    <thead><tr><th>Parâmetro</th><th>Navegador</th><th>Python, mesma regra</th>
     <th>scikit-learn</th><th>Maior diferença</th></tr></thead><tbody>
-   ${linhas.map(l=>`<tr><th scope="row">${l[0]}</th><td class="num">${n2(l[1],6)}</td>
+   ${linhas.map(l=>`<tr><th scope="row">${l[0].replace(/^([α-ω][₀-₉]*)/,'<span class="letra-grega">$1</span>')}</th><td class="num">${n2(l[1],6)}</td>
     <td class="num">${n2(l[2],6)}</td><td class="num">${n2(l[3],6)}</td>
     <td class="num">${n2(Math.max(Math.abs(l[2]-l[1]),Math.abs(l[3]-l[1])),6)}</td></tr>`).join('')}
    </tbody></table></div>
@@ -4320,7 +4320,7 @@ P({id:'c5p12',cap:5,n:12,nivel:'essencial',t:{exp:3,ex:3,prat:2,disc:1},origem:'
     xMin:0,xMax:1,yMin:0,yMax:2.5,yTicks:[0,0.6,1.2,1.8,2.5],
     xTicks:[0,0.25,0.5,0.75,1].map(v=>({v,r:pct(v,0)})),
     yTit:'log loss',xTit:'valor atribuído à folha',yFmt:v=>n2(v,1),
-    marcas:[{x:f.p,y:perdaF(f.p),cor:COR.ok,r:'mínimo em '+pct(f.p,1)}],w:600,h:340})}</div>
+    marcas:[{x:f.p,y:perdaF(f.p),cor:COR.ok,r:'mínimo em '+pct(f.p,1),dx:0,dy:24,anc:'middle'}],w:600,h:340})}</div>
    <div class="revelacao bom" style="margin-top:10px"><h4>Consequência para calibração</h4>
    Se a folha devolve a frequência observada, a árvore é calibrada por construção na amostra de treino.
    Isso não garante calibração fora do tempo, e o capítulo 7 mostra a diferença entre as duas coisas.</div>
@@ -5330,7 +5330,7 @@ P({id:'c6p16',cap:6,n:16,nivel:'essencial',t:{exp:2,ex:2,prat:3,disc:1},origem:'
    const k=ps.findIndex(p=>p.perda<=alvo);
    return {e,k:k<0?null:k,perda60:ps[ps.length-1].perda};});
   return `<div class="palcoflex"><div class="esq"><div class="rolax"><table>
-   <thead><tr><th>η</th><th>Árvores até perda de treino ${n2(alvo,2)}</th><th>η × árvores</th>
+   <thead><tr><th><span class="letra-grega">η</span></th><th>Árvores até perda de treino ${n2(alvo,2)}</th><th><span class="letra-grega">η</span> × árvores</th>
     <th>Perda de treino com 60 árvores</th></tr></thead><tbody>
    ${linhas.map(l=>`<tr${Math.abs(l.e-BC.eta)<0.001?' style="background:#FBF3DE"':''}>
     <th scope="row">${n2(l.e,2)}</th><td class="num">${l.k===null?'não atinge':l.k}</td>
@@ -5488,6 +5488,31 @@ P({id:'c6p19',cap:6,n:19,tipo:'fechamento',nivel:'essencial',t:{exp:3,disc:3},or
    O capítulo 8 traduz a PD escolhida em política. O capítulo 10 defende a decisão em comitê.</div>
    <div class="svgfit" style="margin-top:10px">${mapaCurso(6,{compacto:true})}</div></div></div>`,
  conexao:'Capítulo 7: como decidir entre modelos.',
+ guia:undefined});
+
+/* v14 · Fecho da Aula 2. O material original fechava a aula em c6p19 com a pergunta "Temos três modelos:
+   logística, árvore e boosting. Eles discordam. Qual critério decide entre eles?"; a camada v13 trocou esse
+   fechamento pela síntese do capítulo. Esta página devolve o fecho à aula, agora com as PDs das mesmas 16
+   propostas nos três modelos. Os números saem de src/lib/visuais/tres-modelos.ts (as mesmas funções dos
+   capítulos) e são conferidos em tests/tres-modelos.test.ts; a tabela abaixo é a versão estática, que a
+   plataforma troca pelo gráfico interativo. */
+P({id:'c6p20',cap:6,n:20,tipo:'fechamento',nivel:'essencial',t:{exp:3,disc:3},origem:'rec',
+ titulo:'Três modelos, as mesmas 16 propostas',
+ aprendizado:'Ler as três famílias nos mesmos casos: elas concordam onde o caso é claro, divergem na fronteira, e a perda no treino não decide entre elas.',
+ apoio:'As 16 propostas que atravessaram a aula, com a PD de cada modelo. Percorra as linhas em que os três mais se afastam antes de responder à pergunta.',
+ visual:()=>`<div class="svgfit"><div class="rolax"><table><thead><tr><th>#</th><th>Utilização</th><th>Atraso</th><th>Desfecho</th><th>Logística</th><th>Árvore</th><th>Boosting</th></tr></thead><tbody><tr><th scope="row">#1</th><td class="num">20%</td><td class="num">25 d</td><td>pagou</td><td class="num">33,5%</td><td class="num">50,0%</td><td class="num">50,0%</td></tr><tr><th scope="row">#2</th><td class="num">25%</td><td class="num">20 d</td><td>default</td><td class="num">26,7%</td><td class="num">50,0%</td><td class="num">50,0%</td></tr><tr><th scope="row">#3</th><td class="num">30%</td><td class="num">5 d</td><td>pagou</td><td class="num">6,1%</td><td class="num">0,0%</td><td class="num">33,4%</td></tr><tr><th scope="row">#4</th><td class="num">35%</td><td class="num">10 d</td><td>pagou</td><td class="num">15,9%</td><td class="num">0,0%</td><td class="num">33,4%</td></tr><tr><th scope="row">#5</th><td class="num">40%</td><td class="num">20 d</td><td>pagou</td><td class="num">52,6%</td><td class="num">0,0%</td><td class="num">33,4%</td></tr><tr><th scope="row">#6</th><td class="num">45%</td><td class="num">0 d</td><td>pagou</td><td class="num">9,0%</td><td class="num">0,0%</td><td class="num">33,4%</td></tr><tr><th scope="row">#7</th><td class="num">50%</td><td class="num">0 d</td><td>pagou</td><td class="num">12,6%</td><td class="num">0,0%</td><td class="num">33,4%</td></tr><tr><th scope="row">#8</th><td class="num">55%</td><td class="num">5 d</td><td>pagou</td><td class="num">29,5%</td><td class="num">0,0%</td><td class="num">33,4%</td></tr><tr><th scope="row">#9</th><td class="num">60%</td><td class="num">20 d</td><td>default</td><td class="num">83,1%</td><td class="num">100,0%</td><td class="num">66,8%</td></tr><tr><th scope="row">#10</th><td class="num">65%</td><td class="num">0 d</td><td>default</td><td class="num">30,5%</td><td class="num">100,0%</td><td class="num">58,3%</td></tr><tr><th scope="row">#11</th><td class="num">70%</td><td class="num">5 d</td><td>default</td><td class="num">56,2%</td><td class="num">100,0%</td><td class="num">66,8%</td></tr><tr><th scope="row">#12</th><td class="num">75%</td><td class="num">40 d</td><td>default</td><td class="num">99,6%</td><td class="num">100,0%</td><td class="num">66,8%</td></tr><tr><th scope="row">#13</th><td class="num">80%</td><td class="num">5 d</td><td>default</td><td class="num">73,0%</td><td class="num">100,0%</td><td class="num">66,8%</td></tr><tr><th scope="row">#14</th><td class="num">85%</td><td class="num">30 d</td><td>default</td><td class="num">99,2%</td><td class="num">100,0%</td><td class="num">66,8%</td></tr><tr><th scope="row">#15</th><td class="num">90%</td><td class="num">0 d</td><td>pagou</td><td class="num">73,9%</td><td class="num">50,0%</td><td class="num">49,1%</td></tr><tr><th scope="row">#16</th><td class="num">95%</td><td class="num">20 d</td><td>default</td><td class="num">98,5%</td><td class="num">50,0%</td><td class="num">58,2%</td></tr></tbody></table></div></div>
+  <div class="grade g2" style="margin-top:11px">
+   <div class="revelacao"><h4>O que a perda no treino diz</h4>
+   No treino, a log loss média das 16 propostas é 0,43282 na logística, 0,18844 na árvore e 0,47481 no
+   boosting. A árvore parece a melhor porque cada folha repete a frequência dos casos que a formaram; o
+   boosting parece o pior porque parou em quatro árvores com η = 0,4, ainda perto dos 50% de onde partiu.
+   Com 50 árvores ele desce a 0,15503, abaixo da árvore, e com 200 a 0,05444. No treino, vence quem
+   ajusta mais, e ajustar mais não é prever melhor.</div>
+   <div class="revelacao bom"><h4>A pergunta da próxima aula</h4>
+   Os três modelos discordam, e o treino não escolhe. Qual critério decide entre eles, e quando uma
+   diferença é grande o bastante para trocar o modelo em produção? A Aula 3 responde fora da amostra:
+   ordenação, calibração e incerteza no capítulo 7, e o valor da PD na decisão no capítulo 8.</div></div>`,
+ conexao:'Aula 3, capítulo 7: como escolher entre modelos fora da amostra.',
  guia:undefined});
 
 /* ======== v3/25_cap7.js ======== */
@@ -9159,7 +9184,7 @@ const CORE_180=new Set([
  'c3p1','c3p7','c3p8','c3p9','c3p10','c3p11','c3p13','c3p19',
  'c4p1','c4p3','c4p4','c4p5','c4p7','c4p8','c4p10',
  'c5p1','c5p3','c5p4','c5p7','c5p10','c5p18',
- 'c6p1','c6p2','c6p5','c6p6','c6p7','c6p10','c6p13','c6p17',
+ 'c6p1','c6p2','c6p5','c6p6','c6p7','c6p10','c6p13','c6p17','c6p20',
  ...IA_ETAPAS.map(x=>x.id),
  'c7p1','c7p3','c7p4','c7p5','c7p6','c7p7','c7p8','c7p9','c7p10','c7p11','c7p18','c7p20',
  'c8p1','c8p2','c8p4','c8p5','c8p6','c8p7','c8p10','c8p12',
@@ -9176,7 +9201,7 @@ Object.entries(TITULOS_AULA).forEach(([id,t])=>{const p=PAGINAS.find(x=>x.id===i
 function acrescentaEntrega(id,titulo,texto){const p=PAGINAS.find(x=>x.id===id);if(!p)return;const v=p.visual;
  p.visual=()=>`${v?v():''}<div class="revelacao bom" style="margin-top:12px"><h4>${esc(titulo)}</h4>${esc(texto)}</div>`;}
 acrescentaEntrega('c3p19','Entrega da aula 1','Salvar especificacao-modelo.md, inventario-dados.md e divisao-temporal.md.');
-acrescentaEntrega('c6p17','Entrega da aula 2','Salvar a comparação conceitual das três técnicas e os exercícios de interpretação.');
+acrescentaEntrega('c6p20','Entrega da aula 2','Salvar a comparação conceitual das três técnicas e os exercícios de interpretação.');
 acrescentaEntrega('c8p12','Entrega da aula 3','Salvar o relatório de validação e a recomendação de política com hipóteses explícitas.');
 acrescentaEntrega('c10p14','Entrega da aula 4','Salvar a decisão de comitê e o plano de monitoramento que alimentarão o trabalho final.');
 
@@ -10452,10 +10477,198 @@ function experienciaV13(){
  Object.entries(titulosTrabalho).forEach(([id,titulo])=>muda(id,{titulo}));
 }
 
+/* v14 · Narrativa única da Aula 2 (22/09/2026). A aula passa a ser apresentada só pelas páginas dos
+   capítulos 4, 5 e 6, sem o baralho paralelo. Esta camada faz duas coisas:
+   1. costura o arco: as mesmas 16 propostas do começo ao fecho, com pontes entre os capítulos que
+      nomeiam o caso que a família anterior não resolve;
+   2. escreve a narração de sala. Em aula o professor percorre só as essenciais, e em 14 passagens o
+      "A seguir" de uma essencial anuncia uma complementar que a turma não vê. O campo guia.aula diz
+      qual é a próxima essencial, o que dizer para chegar a ela e o que fica para o estudo. */
+function narrativaAula2V14(){
+ const muda=(id,o)=>{const p=pagPorId(id);if(p)Object.assign(p,o);};
+ const guia=()=>undefined;
+ muda('c4p1',{apoio:'Muda o mecanismo de aprendizagem; permanecem a população, o horizonte, as variáveis permitidas e a saída probabilística. As mesmas 16 propostas atravessam os três capítulos, e a aula termina com as três PDs lado a lado.'});
+ muda('c4p22',{conexao:'Nenhuma reta separa a #15, que pagou, da #2, que deu default. O capítulo 5 troca a soma por perguntas sucessivas, nas mesmas 16 propostas.'});
+ guia('c4p22',{transicao:''});
+ muda('c5p19',{conexao:'A árvore acerta a #10, que a reta subestimava, e deixa a #15 numa folha de duas propostas. O capítulo 6 soma árvores pequenas, cada uma corrigindo o que o conjunto ainda erra.'});
+ guia('c5p19',{transicao:''});
+ muda('c6p19',{conexao:'O fecho da aula: as três PDs das mesmas 16 propostas, lado a lado.'});
+ guia('c6p19',{transicao:'O fecho da aula.'});
+ /* As sínteses dos três capítulos viraram "3 ideias para levar" na revisão v13, mas o guia continuou descrevendo a
+    tabela de resultados e a barra de progresso que saíram da página. O roteiro volta a descrever o que está na tela,
+    e a pergunta passa a ligar as ideias às propostas que atravessam a aula. */
+ const leituraSintese=(a,b,c)=>`${a}, ${b} e ${c}, cada um com a pergunta e a resposta.`;
+ const interacaoSintese='';
+ guia('c4p22',{funcao:'',
+  leitura:leituraSintese('Soma','Curva','Limite'),
+  conducao:'',
+  pergunta:'',
+  resposta:'',
+  erros:undefined,
+  interacao:interacaoSintese,
+  verificacao:''});
+ guia('c5p19',{funcao:'',
+  leitura:leituraSintese('Corte','Folha','Controle'),
+  conducao:'',
+  pergunta:'',
+  resposta:'',
+  erros:undefined,
+  interacao:interacaoSintese,
+  verificacao:''});
+ guia('c6p19',{funcao:'',
+  leitura:leituraSintese('Resíduo','Soma','Teste'),
+  conducao:'',
+  pergunta:'',
+  resposta:'',
+  erros:undefined,
+  interacao:interacaoSintese,
+  verificacao:''});
+ const emAula={
+  c4p1:'',
+  c4p5:'',
+  c4p8:'',
+  c4p10:'',
+  c5p1:'',
+  c5p4:'',
+  c5p7:'',
+  c5p10:'',
+  c5p18:'',
+  c6p2:'',
+  c6p7:'',
+  c6p10:'',
+  c6p13:'',
+  c6p17:''
+ };
+ Object.entries(emAula).forEach(([id,t])=>guia(id,{aula:t}));
+}
+
+/* ======== revisão 15 (22/09/2026): o guia do professor descreve a tela que a plataforma mostra ========
+   Nas revisões 6 e 13 e na migração para a plataforma, várias páginas dos capítulos 4, 5 e 6 trocaram de visual
+   (componentes nativos, abertura em três etapas, síntese em três ideias), e o guia continuou descrevendo o
+   visual antigo: tabelas, microtelas, controle de z, "parte 4" de uma agenda que saiu da abertura. O guia
+   aparece ao professor na página, no painel da aula ao vivo e no guia em PDF; aqui ele volta a dizer o que
+   está na tela, com os rótulos dos botões e os números que a página mostra. Conferido página a página
+   contra o texto e as capturas da plataforma. */
+function guiaDaTelaV15(){
+ const muda=(id,o)=>{const p=pagPorId(id);if(p)Object.assign(p,o);};
+ const guia=()=>undefined;
+ /* capítulo 4 */
+ guia('c4p1',{conducao:'',
+  leitura:'',
+  resposta:'',
+  interacao:'',
+  verificacao:''});
+ guia('c4p2',{leitura:'',
+  interacao:''});
+ guia('c4p3',{leitura:'',
+  interacao:''});
+ guia('c4p4',{funcao:'',
+  leitura:'',
+  interacao:''});
+ guia('c4p5',{conducao:'',
+  leitura:'',
+  verificacao:''});
+ guia('c4p6',{leitura:'',
+  erros:undefined,
+  interacao:'',
+  verificacao:''});
+ guia('c4p7',{conducao:'',
+  leitura:'',
+  pergunta:'',
+  resposta:'',
+  erros:undefined,
+  interacao:'',
+  verificacao:''});
+ guia('c4p8',{leitura:'',
+  interacao:''});
+ muda('c4p9',{apoio:'Mova as duas características e acompanhe simultaneamente as barras de contribuição, as três réguas e o ponto na curva.'});
+ guia('c4p9',{leitura:''});
+ guia('c4p10',{erros:undefined,
+  interacao:''});
+ guia('c4p11',{leitura:'',
+  erros:undefined,
+  interacao:''});
+ muda('c4p12',{apoio:'Sete níveis de PD inicial recebem exatamente o mesmo aumento de dez pontos de utilização. Abra Comparar sete cenários e compare a coluna de variação em pontos percentuais.'});
+ guia('c4p12',{conducao:'',
+  leitura:'',
+  erros:undefined,
+  interacao:''});
+ guia('c4p14',{conducao:'',
+  leitura:'',
+  resposta:'',
+  interacao:'',
+  transicao:''});
+ guia('c4p15',{conducao:'',
+  leitura:'',
+  interacao:''});
+ guia('c4p16',{conducao:'',
+  erros:undefined});
+ guia('c4p17',{conducao:''});
+ guia('c4p19',{leitura:'',
+  erros:undefined});
+ guia('c4p21',{interacao:''});
+ /* capítulo 5 */
+ guia('c5p1',{leitura:'',
+  resposta:'',
+  interacao:''});
+ guia('c5p3',{interacao:''});
+ guia('c5p5',{interacao:''});
+ guia('c5p6',{conducao:'',
+  leitura:''});
+ guia('c5p7',{leitura:'',
+  erros:undefined,
+  interacao:''});
+ guia('c5p8',{leitura:''});
+ guia('c5p9',{interacao:''});
+ guia('c5p12',{leitura:''});
+ guia('c5p13',{leitura:''});
+ guia('c5p14',{leitura:''});
+ guia('c5p16',{leitura:''});
+ guia('c5p17',{leitura:''});
+ muda('c5p18',{apoio:'Use os três atalhos, #5, #10 e #15, ou clique em qualquer proposta do plano. O objetivo é entender o modo de errar de cada família, não proclamar um vencedor.'});
+ guia('c5p18',{interacao:''});
+ /* capítulo 6 */
+ guia('c6p1',{leitura:'',
+  interacao:''});
+ guia('c6p3',{leitura:'',
+  interacao:''});
+ guia('c6p4',{leitura:''});
+ guia('c6p7',{leitura:'',
+  pergunta:'',
+  resposta:'',
+  erros:undefined});
+ muda('c6p8',{apoio:'Avance uma árvore por vez. O gráfico mostra o que sobrava e como ficou; a tabela, o que a árvore propôs para cada ponto.'});
+ guia('c6p8',{leitura:'',
+  conducao:'',
+  erros:undefined,
+  interacao:''});
+ guia('c6p10',{erros:undefined});
+ muda('c6p12',{apoio:'Avance as árvores e observe o alvo y − p encolher nas propostas que já estão bem previstas.'});
+ guia('c6p12',{leitura:'',
+  interacao:'',
+  erros:undefined});
+ guia('c6p13',{funcao:'',
+  leitura:'',
+  conducao:'',
+  interacao:'',
+  verificacao:''});
+ guia('c6p14',{leitura:'',
+  resposta:''});
+ guia('c6p15',{conducao:''});
+ guia('c6p16',{conducao:'',
+  leitura:''});
+ guia('c6p17',{conducao:'',
+  interacao:''});
+ guia('c6p18',{leitura:'',
+  interacao:''});
+}
+
 function inicia(){
   narrativaVisualV6();
   trabalhoFinalV10();
   experienciaV13();
+  narrativaAula2V14();
+  guiaDaTelaV15();
   const q=new URLSearchParams(location.hash.split('?')[1]||'');
   if(q.get('m')==='aluno')MODO='aluno';
   if(q.get('m')==='projecao')MODO='apresentacao';

@@ -13,10 +13,10 @@ import path from "node:path";
 import { JSDOM } from "jsdom";
 import createDOMPurify from "dompurify";
 import katex from "katex";
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray, ne } from "drizzle-orm";
 import { db, pool, schema } from "../src/lib/db/client";
 import { newId } from "../src/lib/ids";
-import { type ConteudoPagina, mesmoConteudo, patchC11 } from "./content/conteudo-publicado";
+import { atividadeCanonica, type ConteudoPagina, mesmaQuestao, mesmoConteudo, patchC11, questaoSincronizavel } from "./content/conteudo-publicado";
 
 type Extract = {
   sourceFile: string; sourceSha256: string; extractedAt: string;
@@ -29,6 +29,10 @@ const GEN = path.join(ROOT, "content/generated");
 const args = process.argv.slice(2);
 const editionLabel = args.includes("--edition") ? args[args.indexOf("--edition") + 1] : "2026";
 const republish = args.includes("--republish");
+/** Descrição do guia do aluno de cada capítulo em Materiais e na página do capítulo. */
+const GUIA_ALUNO = "Uma seção por página do capítulo, na ordem da plataforma: a captura da tela, como ler o que está nela, o que levar e as questões, sem gabarito. Fecha com o que você deve conseguir explicar antes da próxima aula e os erros comuns.";
+/** Endereços do baralho da Aula 2 e dos guias dele, aposentados em 22/09/2026; o importador arquiva os cadastros que apontam para eles. */
+const MATERIAIS_APOSENTADOS = ["/slides/aula-2", "/api/materiais/aula-2/guia-do-aluno.pdf", "/api/materiais/aula-2/guia-do-professor.pdf"];
 
 const ex: Extract = JSON.parse(fs.readFileSync(path.join(GEN, "extract.json"), "utf8"));
 const purify = createDOMPurify(new JSDOM("").window as any);
@@ -114,7 +118,11 @@ function buildBlocks(p: any): { blocks: Block[]; classification: string } {
   for (const part of parts) {
     const m = part.match(/^<div data-block="question" data-slug="([^"]+)"><\/div>$/);
     if (m) blocks.push({ type: "question", slug: m[1] });
-    else if (part.trim()) blocks.push({ type: "html", html: sanitize(part) });
+    else if (part.trim()) {
+      // o que sobra depois da sanitização pode ser nada (um invólucro vazio, por exemplo): não vira bloco
+      const limpo = sanitize(part);
+      if (limpo.trim()) blocks.push({ type: "html", html: limpo });
+    }
   }
   return { blocks, classification: ep || ck ? "native" : "static" };
 }
@@ -206,10 +214,21 @@ async function main() {
       .innerJoin(schema.units, eq(schema.units.id, schema.chapters.unitId))
       .where(and(eq(schema.units.editionId, edition.id), eq(schema.chapters.slug, c.id)));
     let ch = achado?.ch;
-    if (!ch) [ch] = await db.insert(schema.chapters).values({ id: newId(), unitId, number: c.n, slug: c.id, title: c.nome, centralQuestion: c.pergunta, prerequisites: c.prereq, learn: c.aprende, motivation: c.motiva, activity: c.atividade, uses: c.usa, themeColor: tema[0], themeSoft: tema[1], position: c.n }).returning();
-    else if (ch.unitId !== unitId) {
-      [ch] = await db.update(schema.chapters).set({ unitId }).where(eq(schema.chapters.id, ch.id)).returning();
-      console.log(`capítulo ${c.id} movido para a unidade ${unitId}`);
+    /* Os textos do capítulo só vêm do repositório (o painel não os edita), então a base já importada acompanha a
+       origem. A atividade do capítulo 11 entra com a correção de patchCapitulo11, para os dois não se desfazerem. */
+    const textos = { title: c.nome as string, centralQuestion: c.pergunta ?? null, prerequisites: c.prereq ?? null, learn: c.aprende ?? null, motivation: c.motiva ?? null, activity: atividadeCanonica(c.id, c.atividade), uses: c.usa ?? null };
+    if (!ch) [ch] = await db.insert(schema.chapters).values({ id: newId(), unitId, number: c.n, slug: c.id, ...textos, themeColor: tema[0], themeSoft: tema[1], position: c.n }).returning();
+    else {
+      if (ch.unitId !== unitId) {
+        [ch] = await db.update(schema.chapters).set({ unitId }).where(eq(schema.chapters.id, ch.id)).returning();
+        console.log(`capítulo ${c.id} movido para a unidade ${unitId}`);
+      }
+      const atual = ch;
+      const diferentes = (Object.keys(textos) as (keyof typeof textos)[]).filter((k) => (atual[k] ?? null) !== textos[k]);
+      if (diferentes.length) {
+        [ch] = await db.update(schema.chapters).set(textos).where(eq(schema.chapters.id, ch.id)).returning();
+        console.log(`capítulo ${c.id}: ${diferentes.join(", ")} atualizado(s) pela origem`);
+      }
     }
     chapterIds.set(c.n, ch.id);
   }
@@ -243,6 +262,12 @@ async function main() {
     .where(and(eq(schema.auditLog.entity, "page"), eq(schema.auditLog.action, "page.meta"))))
     .map((r) => r.id).filter((x): x is string => Boolean(x)));
   let metaPreservada = 0;
+  /* Questão editada pelo painel deixa `question.version` no registro de auditoria: essa nunca é sobrescrita. */
+  const questoesDoProfessor = new Set((await db.select({ id: schema.auditLog.entityId }).from(schema.auditLog)
+    .where(and(eq(schema.auditLog.entity, "question"), eq(schema.auditLog.action, "question.version"))))
+    .map((r) => r.id).filter((x): x is string => Boolean(x)));
+  const curadas = new Set(Object.values(CURADAS).flat().map((q) => q.slug as string));
+  const questoesSincronizadas: string[] = [];
   for (let i = 0; i < ex.pages.length; i++) {
     const p = ex.pages[i];
     const chapterId = chapterIds.get(p.cap)!;
@@ -284,7 +309,13 @@ async function main() {
     for (const q of questionRecords(p)) {
       let [qq] = await db.select().from(schema.questions).where(and(eq(schema.questions.editionId, edition.id), eq(schema.questions.slug, q.slug)));
       if (!qq) [qq] = await db.insert(schema.questions).values({ id: newId(), editionId: edition.id, pageId: pg.id, slug: q.slug, kind: q.kind }).returning();
-      if (!qq.currentVersionId || republish) {
+      let novaVersao = !qq.currentVersionId || republish;
+      if (!novaVersao && questaoSincronizavel(q.slug, curadas) && !questoesDoProfessor.has(qq.id)) {
+        const [v] = await db.select().from(schema.questionVersions).where(eq(schema.questionVersions.id, qq.currentVersionId!));
+        novaVersao = !v || !mesmaQuestao(v as any, q);
+        if (novaVersao) questoesSincronizadas.push(q.slug);
+      }
+      if (novaVersao) {
         const existing = await db.select({ v: schema.questionVersions.versionNo }).from(schema.questionVersions).where(eq(schema.questionVersions.questionId, qq.id));
         const versionNo = existing.length ? Math.max(...existing.map((e) => e.v)) + 1 : 1;
         const vid = newId();
@@ -305,6 +336,7 @@ async function main() {
     const lista = sincronizadas.length > 12 ? `${sincronizadas.slice(0, 12).join(", ")} e mais ${sincronizadas.length - 12}` : sincronizadas.join(", ");
     console.log(`conteúdo de origem atualizado em ${sincronizadas.length} página(s): ${lista}`);
   }
+  if (questoesSincronizadas.length) console.log(`questões atualizadas pela origem (nova versão; respostas antigas ficam na anterior): ${questoesSincronizadas.join(", ")}`);
   if (metaPreservada) console.log(`${metaPreservada} página(s) republicadas mantiveram nível, minutos e posição ajustados pelo painel.`);
   if (divergentes.length) {
     console.log(`ATENÇÃO: ${divergentes.length} página(s) mudaram na origem mas têm edição feita pelo painel e não foram tocadas: ${divergentes.join(", ")}`);
@@ -392,15 +424,9 @@ async function main() {
   /* `url` aponta para uma rota da própria plataforma; `citation` fica só nas referências bibliográficas.
      O título nomeia os capítulos porque `materiaisDoCapitulo` casa o material ao capítulo pelo título. */
   const refs: { title: string; kind: string; description: string; url?: string; unitId?: string; status?: string }[] = [
-    { title: "Aula 2 em 50 slides: logit, árvore e boosting", kind: "aula",
-      description: "A apresentação da Aula 2: os capítulos 4, 5 e 6 percorridos em 50 slides interativos, com abertura no problema de crédito e fechamento em avaliação e decisão. Abre no navegador, funciona sem rede e traz as notas de condução do professor e o modo de impressão. O conteúdo da aula continua sendo o dos capítulos, página a página; o aluno recebe a versão de estudo do baralho, sem as notas de condução.",
-      url: "/slides/aula-2", unitId: unidadePorChave.get("aula:2") },
-    { title: "Aula 2: guia do aluno (PDF)", kind: "arquivo",
-      description: "Uma página por slide, na ordem da aula: a captura do slide, como ler o que está nele, o que mexer na tela, as fórmulas na notação dos slides e os exercícios sem gabarito, para resolver no papel e conferir na tela. Fecha com a lista de verificação de saída e o glossário.",
-      url: "/api/materiais/aula-2/guia-do-aluno.pdf", unitId: unidadePorChave.get("aula:2") },
-    { title: "Aula 2: guia do professor (PDF)", kind: "arquivo",
-      description: "Condução, respostas esperadas, cuidados, aprofundamentos e transição de cada slide, com a captura no estado revelado, o ritmo proposto por bloco, a comparação dos três modelos no teste e os sinais para observar na turma. Contém gabaritos: não distribuir aos alunos.",
-      url: "/api/materiais/aula-2/guia-do-professor.pdf", unitId: unidadePorChave.get("aula:2"), status: "professor" },
+    /* guias do aluno dos capítulos da Aula 2, gerados por scripts/apostila/gerar.mjs e servidos por /api/materiais/[arquivo].
+       O guia do professor traz gabaritos e o repositório é público: ele entra pelo canal privado (bucket e "Registrar pacote"). */
+    ...[4, 5, 6].map((n) => ({ title: `Capítulo ${n}: guia do aluno (PDF)`, kind: "arquivo", url: `/api/materiais/capitulo-${String(n).padStart(2, "0")}-aluno.pdf`, description: GUIA_ALUNO })),
     { title: "Siddiqi, N. Intelligent Credit Scoring: Building and Implementing Better Credit Risk Scorecards. 2. ed. Wiley, 2017.", kind: "referencia", description: "Construção de scorecards, WoE/IV, segmentação e implantação." },
     { title: "Thomas, L. C.; Crook, J. N.; Edelman, D. B. Credit Scoring and Its Applications. 2. ed. SIAM, 2017.", kind: "referencia", description: "Fundamentos estatísticos de credit scoring, validação e decisão." },
     { title: "Hastie, T.; Tibshirani, R.; Friedman, J. The Elements of Statistical Learning. 2. ed. Springer, 2009.", kind: "referencia", description: "Árvores, boosting e viés-variância (capítulos 9 e 10)." },
@@ -410,6 +436,12 @@ async function main() {
     { title: "Basel Committee on Banking Supervision. Basel III: Finalising post-crisis reforms. BIS, dezembro de 2017.", kind: "referencia", description: "Parâmetros PD, LGD e EAD na abordagem IRB (capítulo 8). Verificar vigência e documentos complementares." },
     { title: "Conselho Monetário Nacional. Resolução CMN nº 4.966, de 25 de novembro de 2021.", kind: "referencia", description: "Perda esperada e provisão para instrumentos financeiros no Brasil (capítulos 8 e 9). Verificar alterações posteriores e vigência." },
   ];
+  /* O baralho de 50 slides da Aula 2 e os dois guias dele foram aposentados em 22/09/2026: a aula é uma só, a dos
+     capítulos 4, 5 e 6. Os cadastros saem de circulação por status, sem apagar a linha; os endereços antigos redirecionam. */
+  const arquivados = await db.update(schema.materials).set({ status: "arquivado" })
+    .where(and(eq(schema.materials.editionId, edition.id), inArray(schema.materials.url, MATERIAIS_APOSENTADOS), ne(schema.materials.status, "arquivado")))
+    .returning({ id: schema.materials.id });
+  if (arquivados.length) console.log(`baralho da Aula 2 aposentado: ${arquivados.length} material(is) arquivado(s)`);
   const existingMats = await db.select({ title: schema.materials.title }).from(schema.materials).where(eq(schema.materials.editionId, edition.id));
   const have = new Set(existingMats.map((m) => m.title));
   let mpos = 0;

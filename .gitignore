@@ -20,5 +20,8 @@ qa-plataforma/*.png
 qa-plataforma/*x*/
 __pycache__/
 
-# saída local do build da aula (a cópia versionada fica em content/slides)
+# saída local do build do baralho aposentado da Aula 2 (fonte de referência, não é mais servido)
 aula_credito_html/dist/
+
+# guia do professor contém gabaritos e o repositório é público: ele sai pelo bucket privado, nunca por aqui
+content/materiais/*-professor.pdf

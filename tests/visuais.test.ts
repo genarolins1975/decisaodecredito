@@ -140,7 +140,7 @@ describe("visuais nativos: regressão logística do capítulo 4 reproduz o gerad
   });
 });
 
-import { avaliarCorte, crescer, errosNaAmostra, folhas, melhorCorte, todosOsCandidatos, wilson } from "../src/lib/visuais/arvore";
+import { avaliarCorte, comparaNo, crescer, errosNaAmostra, folhas, melhorCorte, todosOsCandidatos, wilson } from "../src/lib/visuais/arvore";
 
 describe("visuais nativos: a árvore que cresce reproduz o gerador (capítulo 5)", () => {
   const base = did.base as Proposta[];
@@ -170,6 +170,16 @@ describe("visuais nativos: a árvore que cresce reproduz o gerador (capítulo 5)
     expect(t.corte).toMatchObject({ v: "util", valor: 57.5 }); expect(t.dir!.corte!.v).toBe("atraso");
     const sem3 = crescer(base.filter((p) => p.id !== 3), 2); expect(sem3.dir!.corte!.v).toBe("util");
   });
+  it("instabilidade: o contador compara a divisão, não o rótulo; só a #10 troca a variável do nó direito (c5p16)", () => {
+    const ref = crescer(base, 2);
+    const sem = (id: number) => crescer(base.filter((p) => p.id !== id), 2);
+    const raiz = base.map((p) => comparaNo(sem(p.id), ref));
+    expect(raiz.every((m) => m === "igual" || m === "mesma divisão")).toBe(true);
+    expect(comparaNo(sem(8), ref)).toBe("mesma divisão"); expect(sem(8).corte!.valor).toBe(55);
+    const dir = Object.fromEntries(base.map((p) => [p.id, comparaNo(sem(p.id).dir, ref.dir)]));
+    expect(Object.entries(dir).filter(([, m]) => m === "trocou de variável").map(([id]) => Number(id))).toEqual([10]);
+    expect(dir[14]).toBe("mesma divisão"); expect(dir[15]).toBe("ficou sem corte");
+  });
 });
 
 describe("boosting didático contra o gerador (capítulo 6)", async () => {
@@ -185,6 +195,14 @@ describe("boosting didático contra o gerador (capítulo 6)", async () => {
       if (m) { expect(passos[m].arvore!.corte!.valor).toBe(ref[m].toco.corte); expect(passos[m].arvore!.esq!.valor).toBeCloseTo(ref[m].toco.esq, 6); }
     }
     expect(passos[1].arvore!.corte!.valor).toBe(4.5); expect(passos[4].mse).toBeCloseTo(0.44851, 4);
+  });
+  it("η com quatro árvores fixas, no passo do controle (0,1 a 1): o menor erro de treino é o de 0,7, não o de 1; 0,1 para em 5,48 (c6p7 e c6p7q)", () => {
+    const erro = (eta: number) => boostingRegressao(PONTOS.x, PONTOS.y, eta, 4)[4].mse;
+    const etas = Array.from({ length: 10 }, (_, k) => (k + 1) / 10);
+    const menor = etas.reduce((a, b) => (erro(b) < erro(a) ? b : a));
+    expect(menor).toBe(0.7); expect(erro(0.7)).toBeCloseTo(0.1422, 4);
+    expect(erro(1)).toBeCloseTo(0.4078, 4); expect(erro(0.1)).toBeCloseTo(5.48, 2);
+    expect(boostingRegressao(PONTOS.x, PONTOS.y, 1, 1)[1].mse).toBeCloseTo(1.9219, 4);
   });
   it("classificação: 16 propostas, η 0,4, profundidade 2, folha mínima 2: perda 0,6931 → 0,4748 e árvores do gerador", () => {
     const passos = boostingClassificacao(did.base, 0.4, 4);
@@ -564,5 +582,17 @@ describe("as quatro últimas páginas herdadas: mesma PD, balancear, WoE e valor
     expect(IV_TOTAL).toBeCloseTo(0.03174, 5); expect(leituraIV(IV_TOTAL)).toBe("fraca"); expect(leituraIV(0.15)).toBe("média");
     const f = woe.renda.faixas; expect(f[0]).toMatchObject({ n: 3, woe: -0.4556, iv: 0.00041 }); expect(f.reduce((m: { iv: number }, x: { iv: number }) => (x.iv > m.iv ? x : m), f[0])).toMatchObject({ faixa: 4, n: 841, iv: 0.00867 });
     for (const x of f.slice(1)) expect(Math.log(x.pb / x.pm)).toBeCloseTo(x.woe, 2);
+  });
+});
+
+describe("letras gregas em cabeçalhos em caixa alta (c4p17, c4p19, c5p15, c6p8)", async () => {
+  const { createElement } = await import("react");
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  const { SemCaixaAlta } = await import("@/components/visuais/sem-caixa-alta");
+  const html = (t: string) => renderToStaticMarkup(createElement(SemCaixaAlta, { children: t }));
+  it("a letra grega, com o índice, sai num span que não muda de caixa; o resto do texto fica como está", () => {
+    expect(html("η × árvore")).toBe('<span class="letra-grega">η</span> × árvore');
+    expect(html("β₀ intercepto")).toBe('<span class="letra-grega">β₀</span> intercepto');
+    expect(html("Parâmetro")).toBe("Parâmetro");
   });
 });

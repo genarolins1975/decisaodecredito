@@ -9,52 +9,27 @@ previsão à decisão de crédito.
 Abra `dist/aula_credito.html` com duplo clique. É um arquivo único, funciona sem
 internet e sem servidor, e não faz nenhuma requisição externa.
 
-Na plataforma, esta é a apresentação da **Aula 2**. As unidades do curso ficam em
-`/aulas`, montadas pelo importador a partir de `content/original`. A Aula 2,
-"Entender as três técnicas", tem capítulos como as outras aulas: os capítulos 4, 5
-e 6, com 60 páginas de regressão logística, árvores de decisão e gradient boosting.
-Estes 50 slides são como essas três técnicas são apresentadas em sala; o conteúdo
-que o aluno estuda continua sendo o das páginas.
+## Situação: aposentado da plataforma em 22/09/2026
 
-A aula é servida em `/slides/aula-2`. O `build.mjs` produz três saídas e as copia para
-`content/slides/`: `aula-2.html` (o arquivo completo, com as notas, para professor e
-monitor), `aula-2-aluno.html` (a mesma aula sem as notas do professor, removidas dos
-fontes pela árvore sintática e conferidas frase a frase) e `aula-2-notas.json` (as notas
-por slide, que o painel da aula mostra ao professor). A rota valida a sessão no servidor,
-exige turma acessível, a mesma regra dos materiais, e escolhe o arquivo pelo papel. As três
-saídas carregam a mesma marca de compilação (`Aula.versao`), gravada em
-`app/dados/00-versao.js`. O arquivo não fica em `public/` de propósito: arquivo em `public/` é
-servido antes de qualquer verificação, e o `src/proxy.ts` só confere se existe um
-cookie chamado `sessao`, o que é conveniência de navegação e não controle de acesso.
+Este baralho foi a apresentação da **Aula 2** na plataforma até 22/09/2026. Desde então a
+aula é uma só, a dos capítulos 4, 5 e 6 (61 páginas, 22 essenciais), conduzida pelas
+próprias páginas, como as outras aulas. O que só existia aqui foi levado para as páginas:
+o fio das mesmas 16 propostas, as pontes entre os capítulos e o fecho com as três PDs lado
+a lado (`c6p20`, "Três modelos, as mesmas 16 propostas"). O registro completo está em
+`docs/NARRATIVA_AULA_2.md`.
 
-Na plataforma a aula não tem moldura própria: ela aparece como as outras, pelos seus
-capítulos. Em `/aulas` e em `/professor/conteudo` a Aula 2 mostra os cartões dos
-capítulos 4, 5 e 6; a abertura de cada um oferece "Apresentar pelos slides", que abre
-este baralho no slide onde aquele assunto começa. Em `/materiais` o baralho aparece como
-material da unidade, apontando para `/slides/aula-2`, cadastrado pelo
-`scripts/import-content.ts` junto com os dois guias em PDF. Os endereços antigos
-`/aulas/aula-2` e `/aulas/aula-2/slide/NN`, de quando a aula não tinha capítulos,
-continuam servindo: levam ao primeiro capítulo e à página que o slide cobre. Aberto
-direto em `/slides/aula-2`, fora de iframe, o baralho mostra na barra o link "Aulas",
-que volta para a aula; embutido, ou aberto do disco, o link fica oculto.
+O que saiu da plataforma: o material "Aula 2 em 50 slides" e os dois guias em PDF deste
+baralho (arquivados pelo importador, sem apagar a linha), o botão "Apresentar pelos slides"
+dos capítulos, o modo ao vivo por slide e a rota `/slides/aula-2`. Os endereços antigos
+redirecionam: `/slides/aula-2` e `/api/materiais/aula-2/*` levam ao capítulo 4,
+`/aulas/aula-2/slide/NN` à página que o slide cobria (o slide 50 ao fecho `c6p20`) e a
+janela de projeção ao painel da sessão. Os guias da aula passaram a ser um do aluno e um do
+professor por capítulo, gerados por `scripts/apostila/gerar.mjs`: o do aluno publicado na
+página de cada capítulo; o do professor, que traz gabaritos, pelo bucket privado.
 
-## Aula ao vivo
-
-A Aula 2 é conduzida pelo baralho, e o aluno acompanha na plataforma. No painel da
-aula, em `/professor/aovivo/<sessão>`, o bloco "Conduzir pelos slides" escolhe o
-slide, e "Projetar os slides" abre a janela de projeção. Nessa janela você navega
-com as setas, como sempre; a casca lê o `#/slide/NN` do baralho e publica na sessão,
-e a tela do aluno troca de slide sem recarregar o arquivo. A janela projetada abre o
-baralho em `?modo=projecao`: sem notas, sem impressão e sem modo estudo, porque é o que
-a turma vê. As notas do slide no ar ficam no painel, no bloco "Roteiro do slide no ar". O baralho continua um
-arquivo único e offline: quem fala com a API é a casca, não ele.
-
-O roteiro em `src/lib/content/roteiro-aula-2.ts` liga cada slide às páginas da aula
-que ele cobre, e é o que costura as duas pontas: no painel, escolher uma dessas
-páginas carrega as perguntas dela, que você publica enquanto projeta o slide, e cada
-capítulo da aula sabe por qual slide a apresentação entra no assunto dele (capítulo 4
-no slide 07, capítulo 5 no 21, capítulo 6 no 31). Das 60 páginas, 59 estão cobertas;
-só `c5p17`, "Gini ou entropia", não tem slide.
+A pasta continua no repositório como fonte de referência: o arquivo offline abre como
+antes, e `build.mjs` e `material.mjs` geram as saídas em `dist/`, mas não copiam mais nada
+para `content/`. O que está descrito abaixo vale para o arquivo offline.
 
 Para trabalhar no código, abra `app/index.html`, que carrega os mesmos arquivos soltos.
 
@@ -126,11 +101,8 @@ Todos os dados são sintéticos. Nenhum número descreve carteira real.
 ## Guias em PDF
 
 `node material.mjs` gera, a partir do baralho compilado, dois guias em A4:
-`dist/material/aula-2-guia-do-professor.pdf` e `aula-2-guia-do-aluno.pdf`, copiados para
-`content/materiais/` e servidos pela plataforma em `/api/materiais/aula-2/guia-do-aluno.pdf`
-(qualquer matriculado, listado em Materiais e na abertura da aula) e `guia-do-professor.pdf`
-(professor e monitor, listado na abertura da aula e em Conteúdo; a área Materiais do aluno
-não lista materiais com status "professor"). Os dois seguem a ordem dos 50 slides, com uma página por slide: a
+`dist/material/aula-2-guia-do-professor.pdf` e `aula-2-guia-do-aluno.pdf`. Não são mais
+servidos pela plataforma (ver "Situação", acima). Os dois seguem a ordem dos 50 slides, com uma página por slide: a
 captura do slide feita no próprio Chromium (no estado revelado, que é o da impressão; na
 edição do aluno, os exercícios dos slides 04, 20, 30, 42, 49 e 50 ficam no estado inicial),
 mais o texto de `material/conteudo/`. O guia do professor traz as notas de

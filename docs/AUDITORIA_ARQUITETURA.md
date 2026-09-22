@@ -1,5 +1,7 @@
 # Auditoria de arquitetura e experiência: Aula 2, professor e aluno
 
+> **Situação em 22/09/2026.** O baralho de 50 slides descrito aqui foi aposentado da plataforma: a Aula 2 é apresentada e conduzida pelas páginas dos capítulos 4, 5 e 6, como as outras aulas, e os endereços do baralho redirecionam para o conteúdo equivalente. Este documento fica como registro da arquitetura que valeu até essa data. A decisão e o desenho que a substituiu estão em `docs/NARRATIVA_AULA_2.md`.
+
 Data de referência: 21 de setembro de 2026. Branch `claude/new-session-d2yt8t`. Ambiente: sessão local com Node 22.22, PostgreSQL 16, Chromium 1194 (Playwright 1.56), servidor Next.js 16.3 em modo `dev`, base semeada por `db:seed` e conteúdo importado por `content:import`. Nada aqui tocou produção.
 
 Convenção usada em todo o documento: **evidência** é o que o código, o banco ou o navegador mostraram; **inferência** é o que se conclui; **recomendação** é o que fazer. Toda medida traz a origem e a data. O que não foi verificado está dito como não verificado.

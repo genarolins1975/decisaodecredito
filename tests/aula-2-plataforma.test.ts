@@ -1,11 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { sequenciaDoCurso, vizinhosNaSequencia } from "../src/lib/content/capitulo";
-import { primeiroSlideDoCapitulo, ROTEIRO_AULA_2 } from "../src/lib/content/roteiro-aula-2";
 
 /**
- * A Aula 2 é apresentada pelos 50 slides, mas o conteúdo dela são os capítulos 4, 5 e 6, como o
- * material original declara. Estes testes fixam as duas consequências: a sequência de leitura do
- * curso é só de capítulos, sem exceção, e o baralho sabe por onde abrir em cada capítulo dela.
+ * O conteúdo da Aula 2 são os capítulos 4, 5 e 6, como o material original declara, e desde 22/09/2026
+ * ela é apresentada só por eles (o baralho de 50 slides foi aposentado). Estes testes fixam a
+ * consequência: a sequência de leitura do curso é só de capítulos, sem exceção.
  */
 const OUTLINE = [
   { kind: "aula", number: 1, title: "Formular o problema e compreender a base", chapters: [{ number: 1, title: "O problema da decisão de crédito" }, { number: 2, title: "Fundamentos de modelagem estatística" }, { number: 3, title: "Construção da base e das variáveis" }] },
@@ -33,23 +32,5 @@ describe("sequência do curso", () => {
   it("ignora unidade sem capítulo, que não deve existir mas não pode quebrar a leitura", () => {
     const seq = sequenciaDoCurso([...OUTLINE, { kind: "aula", number: 9, title: "Unidade vazia", chapters: [] }]);
     expect(seq).toHaveLength(8);
-  });
-});
-
-describe("o baralho como apresentação da Aula 2", () => {
-  it("sabe por onde abrir em cada capítulo da aula", () => {
-    expect(primeiroSlideDoCapitulo(4)).toBe("07");
-    expect(primeiroSlideDoCapitulo(5)).toBe("21");
-    expect(primeiroSlideDoCapitulo(6)).toBe("31");
-  });
-
-  it("não reivindica capítulo de outra aula", () => {
-    for (const n of [1, 2, 3, 7, 8, 9, 10, 11]) expect(primeiroSlideDoCapitulo(n), `capítulo ${n}`).toBeNull();
-  });
-
-  it("cobre os três capítulos com os 50 slides do roteiro", () => {
-    expect(ROTEIRO_AULA_2).toHaveLength(50);
-    const caps = new Set(ROTEIRO_AULA_2.flatMap((s) => s.paginas).map((p) => Number(/^c(\d+)p/.exec(p)![1])));
-    expect([...caps].sort((a, b) => a - b)).toEqual([4, 5, 6]);
   });
 });

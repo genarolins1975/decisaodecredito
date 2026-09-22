@@ -86,6 +86,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .table td { padding: 9px 10px; border-bottom: 1px solid var(--color-rule); vertical-align: top; }
 .table tr:hover td { background: #FAFAF7; }
 .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+/* cabeçalhos em caixa alta transformam η em Η e β em Β, que se leem como H e B (componente SemCaixaAlta e páginas herdadas) */
+.letra-grega { text-transform: none; letter-spacing: 0; }
 .callout { border-left: 3px solid var(--color-gold); background: var(--color-paper); padding: 12px 14px; border-radius: 0 6px 6px 0; }
 .callout-alert { border-left-color: var(--color-alert); background: var(--color-alert-soft); }
 .callout-ok { border-left-color: var(--color-ok); background: var(--color-ok-soft); }
@@ -410,7 +412,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-front-id { font-size: 9px; font-weight: 700; fill: #fff; }
 .vz-curva--perda { stroke: var(--color-ink); stroke-width: 2; }
 .vz-curva--b0 { stroke: var(--color-muted); stroke-width: 1.8; } .vz-curva--b1 { stroke: var(--color-ink-soft); stroke-width: 1.8; } .vz-curva--b2 { stroke: var(--color-amber); stroke-width: 1.8; }
-.vz-tick--b0 { fill: var(--color-muted); font-weight: 700; } .vz-tick--b1 { fill: var(--color-ink-soft); font-weight: 700; } .vz-tick--b2 { fill: var(--color-amber); font-weight: 700; }
+.vz-sw--traco { width: 18px; height: 3px; border-radius: 2px; vertical-align: 3px; } .vz-sw--perda { background: var(--color-ink); } .vz-sw--b0 { background: var(--color-muted); } .vz-sw--b1 { background: var(--color-ink-soft); } .vz-sw--b2 { background: var(--color-amber); }
 .vz-fora { fill: var(--color-alert-soft); }
 .vz-curva--reta { stroke: var(--color-alert); }
 .vz-dot-plano { stroke: #fff; stroke-width: 1.5; } .vz-dot-plano--default { fill: var(--color-alert); } .vz-dot-plano--pagou { fill: #9db6de; }
@@ -630,8 +632,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-res-barra--on .vz-res-barra-fill { background: var(--color-gold); }
 .vz-res-barra-val { font-family: var(--font-mono); font-weight: 700; color: var(--color-ink); }
 .vz-t-baixo { color: var(--color-alert); font-weight: 600; } .vz-t-alto { color: #4d6fa8; font-weight: 600; }
-.vz-res-soma { display: grid; gap: 6px; }
-.vz-res-soma-linha { display: grid; grid-template-columns: minmax(64px, max-content) 1fr max-content max-content; align-items: center; gap: 8px; font-size: 14px; font-variant-numeric: tabular-nums; }
+/* uma grade para todas as linhas (subgrid): o trilho tem a mesma largura em cada linha e a marca do observado fica no mesmo x */
+.vz-res-soma { display: grid; grid-template-columns: minmax(64px, max-content) 1fr max-content max-content; gap: 6px 8px; }
+.vz-res-soma-linha { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; align-items: center; font-size: 14px; font-variant-numeric: tabular-nums; }
 .vz-res-soma-rot { text-align: right; color: var(--color-body); }
 .vz-res-soma-trilho { display: block; position: relative; height: 16px; background: #EDEBE3; border-radius: 3px; }
 .vz-res-soma-base { position: absolute; left: 0; top: 0; height: 100%; background: var(--color-ink); border-radius: 3px 0 0 3px; }
@@ -924,6 +927,54 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-poda-t--0 { fill: var(--color-muted); } .vz-poda-t--1 { fill: var(--color-ink); } .vz-poda-t--2 { fill: #6B4E8C; } .vz-poda-t--3 { fill: var(--color-alert); }
 .vz-df-ponto circle { stroke: #fff; stroke-width: 2; transition: r .2s; } .vz-df-ponto--on circle { stroke: var(--color-gold); stroke-width: 3.5; }
 .vz-df-cartao { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 10px; align-items: center; margin-top: 10px; } .vz-df-x { font-size: 26px; font-weight: 700; color: var(--color-muted); }
+/* tabelas de conferência em coluna estreita: sem isto a coluna Gini (c5p7, c5p14, c5p16, a 1.000 px) e a Diferença (c5p18, em qualquer largura) ficavam atrás da rolagem horizontal */
+.vz-arv-cand-grade .table th, .vz-arv-cand-grade .table td, .vz-df-tabela .table th, .vz-df-tabela .table td { padding-left: 6px; padding-right: 6px; }
+.vz-df-grade { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+/* Fecho da Aula 2 (c6p20): as três famílias nas mesmas 16 propostas. Cada família com a cor do próprio capítulo
+   e uma forma própria (círculo, quadrado, losango), para que a leitura não dependa só da cor. */
+[data-vz="tres-modelos"] { --tm-logistica: #9A4E36; --tm-arvore: #28725B; --tm-boosting: #7B3E73; }
+.vz-tm-chip { display: inline-flex; align-items: center; gap: 6px; }
+.vz-tm-grade { stroke: var(--color-rule); stroke-width: 1; }
+.vz-tm-meio { stroke: var(--color-muted); stroke-width: 1.2; stroke-dasharray: 4 4; }
+.vz-tm-linha { cursor: pointer; outline: none; }
+.vz-tm-faixa { fill: transparent; }
+.vz-tm-faixa--opostos { fill: #FBF2F3; }
+.vz-tm-linha:hover .vz-tm-faixa { fill: var(--color-paper); }
+.vz-tm-linha:hover .vz-tm-faixa--opostos { fill: #F7E6E9; }
+.vz-tm-linha--on .vz-tm-faixa, .vz-tm-linha--on:hover .vz-tm-faixa { fill: #EAF0F8; stroke: #9FB3D3; stroke-width: 1; }
+.vz-tm-linha:focus-visible .vz-tm-faixa { stroke: var(--color-ink); stroke-width: 2; }
+.vz-tm-dist { stroke: #B9BCC4; stroke-width: 3; stroke-linecap: round; }
+.vz-tm-rot { fill: var(--color-body); }
+.vz-tm-id { font-weight: 700; fill: var(--color-ink); }
+.vz-tm-default { fill: var(--color-alert); font-weight: 700; }
+.vz-tm-legenda { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12.5px; color: var(--color-muted); margin-top: 6px; }
+.vz-tm-legenda > span { display: inline-flex; align-items: center; gap: 6px; }
+/* a regra geral estica todo SVG do gráfico até a largura da coluna; os marcadores da legenda têm tamanho fixo */
+.vz-grafico .vz-tm-legenda svg, .vz-tm-chip svg { width: 14px; height: 14px; flex: none; }
+.vz-tm-legenda-faixa { display: inline-block; width: 22px; height: 12px; border-radius: 3px; background: #FBF2F3; border: 1px solid #E8C9CF; }
+.vz-tm-tabela { margin-top: 12px; font-size: 13px; }
+/* no palco o gráfico das 16 linhas ocupa a altura útil do slide; a tabela sai (o componente não a monta no palco) */
+.slide-inner [data-vz="tres-modelos"] .vz-grafico > svg { height: 52cqh; }
+.slide-inner [data-vz="tres-modelos"] .vz-tm-legenda { font-size: .9em; margin-top: .3cqh; gap: .3cqh 1.4cqh; }
+/* oito pontos (c6p3): o palpite constante e o erro do ponto escolhido */
+.vz-op-grade { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 16px; align-items: start; }
+.vz-op-lado { background: var(--color-paper); border-radius: 8px; padding: 12px 14px; }
+.vz-op-k { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--color-muted); font-weight: 700; margin: 0; }
+.vz-op-num { font-family: var(--font-serif); font-size: 40px; font-weight: 700; color: var(--color-ink); line-height: 1.1; margin: 2px 0 4px; }
+.vz-op-f0 { stroke: var(--color-amber); stroke-width: 1.5; stroke-dasharray: 7 5; }
+.vz-op-f0-t { fill: var(--color-ink); font-weight: 700; }
+.vz-op-erro { stroke: var(--color-ink); stroke-width: 2.5; }
+.vz-op-erro-t { fill: var(--color-ink); font-weight: 700; }
+.vz-op-ponto { cursor: pointer; outline: none; }
+/* mesmos pontos e mesmas cores de c6p7 a c6p9: marinho, e o ponto escolhido em ouro */
+.vz-op-ponto circle { fill: var(--color-ink); stroke: #fff; stroke-width: 2; }
+.vz-op-ponto--on circle { fill: var(--color-gold); stroke: var(--color-ink); stroke-width: 2.5; }
+.vz-op-ponto:focus-visible circle { stroke: var(--color-ink); stroke-width: 3; }
+@container (max-width: 560px) { .vz-op-grade { grid-template-columns: minmax(0, 1fr); } }
+.slide-inner [data-vz="oito-pontos"] .vz-grafico > svg { height: 46cqh; }
+.slide-inner .vz-op-num { font-size: clamp(20px, 4cqh, 44px); }
+.vz-tm-tabela > summary { cursor: pointer; font-weight: 700; color: var(--color-ink); }
+.vz-tm-tabela .table-wrap { margin-top: 8px; }
 @container (max-width: 760px) { .vz-ana-grade, .vz-imp-grade, .vz-cc-grade, .vz-cam-grade, .vz-poda-grade, .vz-df-grade, .vz-rec-grade, .vz-cc-lados { grid-template-columns: minmax(0, 1fr); } }
 /* palco */
 .slide-inner .vz-ana-grade, .slide-inner .vz-imp-grade, .slide-inner .vz-cc-grade, .slide-inner .vz-cam-grade, .slide-inner .vz-poda-grade, .slide-inner .vz-df-grade { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1cqh 2cqh; }

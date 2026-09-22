@@ -11,9 +11,9 @@ const arquivo = path.join(process.cwd(), "content", "questoes-curadas.json");
 const { questoes } = JSON.parse(fs.readFileSync(arquivo, "utf8")) as { questoes: Curada[] };
 
 describe("perguntas curadas", () => {
-  it("cobre as páginas essenciais dos capítulos 4, 5 e 6 que não são abertura de capítulo", () => {
+  it("cobre as páginas essenciais dos capítulos 4, 5 e 6 que não são abertura de capítulo, e o fecho da aula", () => {
     const esperadas = ["c4p3", "c4p4", "c4p5", "c4p7", "c4p8", "c5p3", "c5p4", "c5p7", "c5p10",
-                       "c5p18", "c6p2", "c6p5", "c6p6", "c6p7", "c6p10", "c6p13"];
+                       "c5p18", "c6p2", "c6p5", "c6p6", "c6p7", "c6p10", "c6p13", "c6p20"];
     expect(questoes.map((q) => q.pagina).sort()).toEqual([...esperadas].sort());
   });
 

@@ -20,7 +20,7 @@ import { db, pool, schema } from "../../src/lib/db/client";
 import { storage } from "../../src/lib/storage";
 import { prefixo, registrarPacote, type Manifesto } from "../../src/lib/services/datasets-publish";
 
-const MIME: Record<string, string> = { zip: "application/zip", csv: "text/csv", md: "text/plain", ipynb: "application/json", json: "application/json" };
+const MIME: Record<string, string> = { zip: "application/zip", csv: "text/csv", md: "text/plain", ipynb: "application/json", json: "application/json", pdf: "application/pdf" };
 function arg(name: string, fallback?: string) { const i = process.argv.indexOf(name); return i >= 0 ? process.argv[i + 1] : fallback; }
 function sha256File(p: string) { return createHash("sha256").update(fs.readFileSync(p)).digest("hex"); }
 

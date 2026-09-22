@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import did from "@/lib/visuais/did.json";
 import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
 import type { Proposta } from "@/lib/visuais/logistica";
-import { NOME_VAR, VARIAVEIS, avaliarCorte, cortesCandidatos, crescer, errosNaAmostra, folhas, rotuloCorte, todosOsCandidatos, wilson, type No, type Variavel } from "@/lib/visuais/arvore";
+import { NOME_VAR, VARIAVEIS, avaliarCorte, comparaNo, cortesCandidatos, crescer, errosNaAmostra, folhas, rotuloCorte, todosOsCandidatos, wilson, type Mudanca, type No, type Variavel } from "@/lib/visuais/arvore";
 
 /**
  * A árvore que cresce (capítulo 5). As 16 propostas no plano; a árvore nasce corte a corte e cada corte desenha uma
@@ -42,7 +42,8 @@ export function ArvoreQueCresce({ modo = "raiz" }: { modo?: ModoArvore }) {
     return () => clearTimeout(t);
   }, [crescendo, profMax, modo]);
 
-  const igual = (a?: No["corte"], b?: No["corte"]) => (!a && !b) || (!!a && !!b && a.v === b.v && a.valor === b.valor);
+  const LEITURA: Record<Mudanca, string> = { igual: "igual à base completa", "mesma divisão": "mesma divisão da base completa", "mudou o corte": "mudou o corte", "trocou de variável": "trocou de variável", "ficou sem corte": "a base completa corta aqui", "ganhou corte": "a base completa não corta aqui" };
+  const mudanca = (no?: No, ref?: No) => (modo === "instabilidade" && no ? ` · ${LEITURA[comparaNo(no, ref)]}` : "");
   const titulo = modo === "freios" ? "Ajuste os dois freios e veja a árvore obedecer." : modo === "instabilidade" ? "Retire uma proposta. A raiz resiste; o nó direito, não." : "Deixe a árvore crescer. Cada corte é o vencedor de uma disputa.";
 
   return (
@@ -92,8 +93,8 @@ export function ArvoreQueCresce({ modo = "raiz" }: { modo?: ModoArvore }) {
               </select></label>
           </div>
           <div className="vz-tiles" aria-live="polite">
-            <div className="vz-tile"><p className="eyebrow">Raiz escolhida</p><p className="vz-num vz-num--texto">{arvore.corte ? rotuloCorte(arvore.corte.v, arvore.corte.valor) : "sem corte"}</p><p className="hint">{arvore.corte ? `ganho ${fmtNum(arvore.corte.ganho, 5)}` : "profundidade zero"}{modo === "instabilidade" && arvore.corte ? (igual(arvore.corte, referencia.corte) ? " · igual à base completa" : " · mudou") : ""}</p></div>
-            <div className="vz-tile"><p className="eyebrow">Divisão do nó direito</p><p className="vz-num vz-num--texto">{arvore.dir?.corte ? rotuloCorte(arvore.dir.corte.v, arvore.dir.corte.valor) : "folha"}</p><p className="hint">{arvore.dir?.corte ? `ganho ${fmtNum(arvore.dir.corte.ganho, 5)}` : "sem corte neste nível"}{modo === "instabilidade" && arvore.dir ? (igual(arvore.dir.corte, referencia.dir!.corte) ? " · igual à base completa" : " · trocou de variável") : ""}</p></div>
+            <div className="vz-tile"><p className="eyebrow">Raiz escolhida</p><p className="vz-num vz-num--texto">{arvore.corte ? rotuloCorte(arvore.corte.v, arvore.corte.valor) : "sem corte"}</p><p className="hint">{arvore.corte ? `ganho ${fmtNum(arvore.corte.ganho, 5)}` : "profundidade zero"}{arvore.corte ? mudanca(arvore, referencia) : ""}</p></div>
+            <div className="vz-tile"><p className="eyebrow">Divisão do nó direito</p><p className="vz-num vz-num--texto">{arvore.dir?.corte ? rotuloCorte(arvore.dir.corte.v, arvore.dir.corte.valor) : "folha"}</p><p className="hint">{arvore.dir?.corte ? `ganho ${fmtNum(arvore.dir.corte.ganho, 5)}` : "sem corte neste nível"}{mudanca(arvore.dir, referencia.dir)}</p></div>
             <div className="vz-tile"><p className="eyebrow">Folhas · erros nas {base.length}</p><p className="vz-num">{fs.length} <span className="hint">·</span> {erros}</p><p className="hint">menor folha com {menor} proposta{menor > 1 ? "s" : ""}</p></div>
             <div className="vz-tile"><p className="eyebrow">Pior intervalo de folha</p><p className={`vz-num ${piorIntervalo > 0.6 ? "vz-num--default" : ""}`}>{fmtPct(piorIntervalo)}</p><p className="hint">largura do intervalo de Wilson a 95% na folha menos confiável</p></div>
           </div>
@@ -121,7 +122,7 @@ export function ArvoreQueCresce({ modo = "raiz" }: { modo?: ModoArvore }) {
           <Ganhos candidatos={candidatos} atual={cand} melhor={melhor} segundo={segundo} />
         </div>
       </div>
-      <figcaption className="vz-fonte">Ganho = Gini antes − média ponderada do Gini dos dois lados. Na base completa a raiz é utilização ≤ 57,5% com ganho 0,28125 e o segundo colocado fica em 0,07143; no nó direito, utilização ≤ 87,5% e atraso ≤ 2,5 dias empatam em 0,09375 e a ordem de avaliação decide, por isso retirar a proposta #10 troca a variável. Empates são decididos avaliando utilização antes de atraso. Erros na amostra contam a folha prevendo o desfecho majoritário. Recalculado aqui.</figcaption>
+      <figcaption className="vz-fonte">Ganho = Gini antes − média ponderada do Gini dos dois lados. Na base completa a raiz é utilização ≤ 57,5% com ganho 0,28125; o corte vizinho, utilização ≤ 52,5%, fica em 0,19841 e o melhor corte de atraso, em 0,07143; no nó direito, utilização ≤ 87,5% e atraso ≤ 2,5 dias empatam em 0,09375 e a ordem de avaliação decide, por isso retirar a proposta #10 troca a variável. Empates são decididos avaliando utilização antes de atraso. Erros na amostra contam a folha prevendo o desfecho majoritário. Recalculado aqui.</figcaption>
     </figure>
   );
 }
