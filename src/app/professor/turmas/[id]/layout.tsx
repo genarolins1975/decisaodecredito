@@ -9,7 +9,8 @@ import { StatusBadge } from "@/components/ui";
 /** Sem isto as nove telas da turma abriam com o título genérico da plataforma na aba do navegador. */
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  try { const a = await requireClassAccess(id, ["professor"]); return { title: a.cls.name }; } catch { return { title: "Turma" }; }
+  // sem acesso ou turma inexistente: não contribui título, e vale o padrão do layout raiz
+  try { const a = await requireClassAccess(id, ["professor"]); return { title: a.cls.name }; } catch { return {}; }
 }
 
 export default async function TurmaLayout({ children, params }: { children: ReactNode; params: Promise<{ id: string }> }) {

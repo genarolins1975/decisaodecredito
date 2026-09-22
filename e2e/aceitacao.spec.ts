@@ -3,7 +3,7 @@
  * com banco local. Contas de teste isoladas (domínio example.test). Nenhum e-mail sai da plataforma.
  */
 import { test, expect } from "@playwright/test";
-import { apiAs, loginUi, sql, classId, uid, PROF, ALUNO_A, ALUNO_B, OUTRA, MONITOR, SEM } from "./helpers";
+import { apiAs, loginUi, sql, classId, uid, BASE, PROF, ALUNO_A, ALUNO_B, OUTRA, MONITOR, SEM } from "./helpers";
 
 test.describe.serial("edições, turmas e isolamento", () => {
   test("edição 2026 existe; professor cria 2027 e duplica sem copiar pessoas ou registros", async () => {
@@ -240,7 +240,11 @@ test.describe.serial("trabalhos, grupos e notas", () => {
     // B não lê arquivo de A (individual)
     const b = await apiAs(ALUNO_B);
     expect((await b.get(`/api/arquivos/${good.file.id}`)).status()).toBe(403);
-    expect((await b.get(`/api/trabalhos/${asg.id}?classId=${cid}`)).json().then((d) => d.submissions.length)).resolves.toBe(0);
+    // o que importa é o isolamento: B não enxerga a entrega de A. Contar zero presumia que B nunca tivesse
+    // mexido neste trabalho, o que deixava o teste refém do estado deixado por outra execução.
+    const vistasPorB = (await (await b.get(`/api/trabalhos/${asg.id}?classId=${cid}`)).json()).submissions as { id: string }[];
+    const deA = await sql<{ id: string }>("select s.id from submissions s join users u on u.id=s.submitter_user_id where s.assignment_id=$1 and u.email=$2", [asg.id, ALUNO_A.email]);
+    expect(vistasPorB.filter((s) => deA.some((x) => x.id === s.id)), "B não enxerga entrega nenhuma de A").toEqual([]);
     // nota: sem publicar, invisível; publicada, visível; ausência de nota não vira zero
     // (o teste é reexecutável: uma nota já publicada em rodada anterior é removida; regrade de nota publicada mantém a publicação, com histórico)
     await sql("delete from grade_history where grade_id in (select g.id from grades g join users u on u.id=g.user_id where g.assignment_id=$1 and u.email=$2)", [asg.id, ALUNO_A.email]);
@@ -1179,15 +1183,89 @@ test("uniformidade das molduras: retorno em toda rota de detalhe, um título por
     await expect(page.locator("main#conteudo"), `${rota} com um só main`).toHaveCount(1);
     await expect(page.locator('a[href="/aulas"]').first()).toBeVisible();
   }
+  // um landmark e um alvo de pulo em todo 404, tenha moldura ou não: dentro da área a casca dá o main,
+  // e no endereço que não casa com rota nenhuma quem dá é a própria página de 404 da raiz
+  for (const [rota, moldura] of [["/aulas/naoexiste", true], ["/trabalhos/naoexiste", true], ["/endereco-que-nao-existe", false]] as const) {
+    await page.goto(rota);
+    await expect(page.locator("main"), `${rota} com um só main`).toHaveCount(1);
+    await expect(page.locator("#conteudo"), `${rota} com um só alvo de pulo`).toHaveCount(1);
+    await expect(page.locator('nav[aria-label="Navegação principal"]'), `${rota} com moldura ${moldura}`).toHaveCount(moldura ? 1 : 0);
+  }
+  // e o 404 da Aula 2 fala com o aluno, sem recado de compilação dirigido ao professor
+  await page.goto("/aulas/aula-2/slide/99");
+  expect(await page.locator("body").innerText()).not.toContain("build.mjs");
 
-  // a moldura declara a área, e as âncoras param abaixo do cabeçalho grudado
+  // a moldura declara a área, e as âncoras param abaixo do cabeçalho grudado, nas três molduras e nas três faixas
+  const medirAncora = async () => page.evaluate(() => {
+    const el = document.getElementById("bloco-3"); const h = document.querySelector("header");
+    return el && h ? { alvo: Math.round(el.getBoundingClientRect().top), cabecalho: Math.round(h.getBoundingClientRect().bottom) } : null;
+  });
   await page.goto("/aulas/aula-2#bloco-3");
   await expect(page.locator('[data-area="aluno"]')).toHaveCount(1);
-  const medida = await page.evaluate(() => {
-    const el = document.getElementById("bloco-3"); const h = document.querySelector("header");
-    return el && h ? { alvo: el.getBoundingClientRect().top, cabecalho: h.getBoundingClientRect().bottom } : null;
-  });
-  expect(medida!.alvo, "a âncora não fica atrás do cabeçalho").toBeGreaterThanOrEqual(medida!.cabecalho - 2);
+  await expect(page.locator('[data-faixa]')).toHaveCount(0);   // aluno não vê a faixa "vendo como aluno"
+  for (const largura of [390, 768, 1024, 1366]) {
+    await page.setViewportSize({ width: largura, height: 800 });
+    await page.goto("/aulas/aula-2#bloco-3");
+    const m = await medirAncora();
+    expect(m!.alvo, `âncora atrás do cabeçalho em ${largura}px`).toBeGreaterThanOrEqual(m!.cabecalho - 2);
+  }
+  // o professor, vendo como aluno, recebe a faixa extra no alto: o cabeçalho cresce e a margem acompanha
+  const comoAluno = await page.context().browser()!.newContext();
+  try {
+    await comoAluno.request.post("/api/auth/login", { data: PROF, headers: { "x-requested-with": "fetch" }, baseURL: BASE });
+    const pf = await comoAluno.newPage();
+    for (const largura of [390, 768, 1024, 1366]) {
+      await pf.setViewportSize({ width: largura, height: 800 });
+      await pf.goto(`${BASE}/aulas/aula-2#bloco-3`);
+      await expect(pf.locator('[data-area="aluno"][data-faixa]')).toHaveCount(1);
+      const m = await pf.evaluate(() => {
+        const el = document.getElementById("bloco-3"); const h = document.querySelector("header");
+        return el && h ? { alvo: Math.round(el.getBoundingClientRect().top), cabecalho: Math.round(h.getBoundingClientRect().bottom) } : null;
+      });
+      expect(m!.alvo, `âncora atrás da faixa "vendo como aluno" em ${largura}px`).toBeGreaterThanOrEqual(m!.cabecalho - 2);
+    }
+  } finally { await comoAluno.close(); }
+  await page.setViewportSize({ width: 1280, height: 800 });
+
+  // a confirmação divergente barra o envio: antes o aviso aparecia e a senha do primeiro campo ia assim mesmo
+  await page.goto("/perfil");
+  const chamadasSenha: string[] = [];
+  page.on("request", (r) => { if (r.url().includes("/api/auth/senha")) chamadasSenha.push(r.method()); });
+  await page.fill('input[name="current"]', "senha-que-nao-e-a-minha");   // errada de propósito: a API recusa e nada muda
+  const novas = page.locator('input[autocomplete="new-password"]');
+  await novas.nth(0).fill("abcdefghij1");
+  await novas.nth(1).fill("abcdefghij2");
+  await page.getByRole("button", { name: "Trocar senha" }).click();
+  await expect(page.locator(".callout-alert")).toContainText("As senhas não coincidem");
+  expect(chamadasSenha, "envio barrado antes de chegar à API").toEqual([]);
+  await novas.nth(1).fill("abcdefghij1");                                 // iguais: o envio acontece
+  await page.getByRole("button", { name: "Trocar senha" }).click();
+  await expect(page.locator(".callout-alert")).toContainText("Senha atual incorreta");
+  expect(chamadasSenha.length, "com as duas iguais o formulário envia").toBe(1);
+
+  // o monitor tem papel de equipe na turma, mas não é staff global: a moldura não pode prometer o que
+  // ele não alcança, e a sessão ao vivo precisa abrir para ele na vista do aluno, em vez de devolvê-lo
+  const mon = await apiAs(MONITOR);
+  const sessoes = await sql<{ id: string }>("select s.id from live_sessions s join classes c on c.id=s.class_id where c.id=$1 order by s.created_at desc limit 1", [cid]);
+  if (sessoes[0]) {
+    const abriu = await mon.get(`/ao-vivo/${sessoes[0].id}`, { maxRedirects: 0 });
+    expect(abriu.status(), "monitor abre a sessão em vez de ser devolvido").toBe(200);
+  }
+  const profAoVivo = sessoes[0] ? await prof.get(`/ao-vivo/${sessoes[0].id}`, { maxRedirects: 0 }) : null;
+  if (profAoVivo) {
+    expect(profAoVivo.status(), "professor continua indo para a condução").toBe(307);
+    expect(profAoVivo.headers().location).toContain("/professor/aovivo/");
+  }
+  for (const rota of ["/aulas/capitulo/1", "/aulas/aula-2"]) {
+    const html = await (await mon.get(rota)).text();
+    expect(html, `${rota} não oferece ao monitor a edição de conteúdo`).not.toContain('href="/professor/conteudo"');
+    expect(html, `${rota} não oferece ao monitor a condução`).not.toContain("Conduzir ao vivo");
+  }
+  expect(await (await prof.get("/aulas/capitulo/1")).text(), "o professor continua com o atalho").toContain('href="/professor/conteudo"');
+
+  // link de recuperação sem token não deixa a pessoa sem próximo passo
+  const semToken = await (await apiAs(null)).get("/senha/redefinir");
+  expect(await semToken.text()).toContain("/senha/recuperar");
 
   // e nenhuma tabela do aluno empurra a página de lado no celular
   await page.setViewportSize({ width: 390, height: 844 });

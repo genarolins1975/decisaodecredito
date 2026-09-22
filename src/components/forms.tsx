@@ -37,9 +37,19 @@ export function JsonForm({ action, method = "POST", transform, onDone, children,
   const [error, setError] = useState<string | null>(null);
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    /* O formulário é noValidate, então a divergência de senha precisa ser barrada aqui: sem isto, quem
+       errava a confirmação via o aviso vermelho e mesmo assim gravava a senha do primeiro campo. */
+    const confirmacao = fd.get("passwordConfirm");
+    if (confirmacao !== null) {
+      fd.delete("passwordConfirm");
+      if (String(confirmacao) !== String(fd.get("password") ?? "")) {
+        setError("As senhas não coincidem. Corrija a confirmação e envie de novo.");
+        return;
+      }
+    }
     setBusy(true); setError(null);
     try {
-      const fd = new FormData(e.currentTarget);
       const body = transform ? transform(fd) : Object.fromEntries(fd.entries());
       const data = await api(action, { method, body });
       onDone(data);

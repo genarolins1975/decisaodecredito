@@ -51,7 +51,7 @@ export default async function AulaDoisPage() {
           <div className="capx-acoes">
             <Link href={hrefSlide("01")} className="btn">Começar pelo slide 1 →</Link>
             <a href={AULA_2.slidesHref} className="btn btn-secondary">Apresentar em tela cheia</a>
-            {staff && <Link href="/professor/turmas" className="btn btn-ghost">Conduzir ao vivo</Link>}
+            {ctx.user.isStaff && <Link href="/professor/turmas" className="btn btn-ghost">Conduzir ao vivo</Link>}
           </div>
         </div>
       </header>

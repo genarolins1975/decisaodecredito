@@ -54,7 +54,7 @@ export default async function CapituloPage({ params }: { params: Promise<{ n: st
           <div className="capx-acoes">
             <Link href={`/aulas/${primeira.slug}`} className="btn">Começar pela página 1 →</Link>
             <Link href={`/apresentacao/${primeira.slug}`} className="btn btn-secondary">Apresentar em tela cheia</Link>
-            {staff && <Link href="/professor/conteudo" className="btn btn-ghost">Editar o conteúdo</Link>}
+            {ctx.user.isStaff && <Link href="/professor/conteudo" className="btn btn-ghost">Editar o conteúdo</Link>}
           </div>
         </div>
       </header>
