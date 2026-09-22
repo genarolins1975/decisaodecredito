@@ -18,6 +18,9 @@ Aula.slide({
       "Numa mudança econômica real o comprometimento poderia variar. A simulação é sobre a função do modelo.",
       "Desafio final: Bruno de 38% para 41% passa de 15% para 40%. Isso não prova um salto real de risco exatamente nesse limite: é uma descontinuidade da aproximação aprendida.",
     ],
+    aprofundar: [
+      "Quando a árvore é uma boa escolha, para fechar o bloco como o slide 19 fecha o do logit e o 40 o do boosting: quando o efeito de uma variável depende do valor de outra e a interação não precisa ser escrita à mão; quando a relação não é monótona e transformar a variável seria um chute; e quando a regra precisa virar política operacional, legível linha a linha. O preço é o que os slides 27 a 29 mostraram: a estrutura muda com uma observação, a taxa da folha não se lê sem o tamanho da folha, e a perda de treino não compara famílias. Não cabe em tela com o exercício revelado; está nos dois guias em PDF.",
+    ],
     cuidados: [
       "A taxa de uma folha é estimativa com incerteza, e folhas pequenas têm intervalo largo. Ler a taxa sem o tamanho da folha é o erro mais comum aqui.",
       "A regra da árvore é associação aprendida na amostra, não relação causal: mudar a variável no cliente não move a PD dele pelo caminho da árvore.",
@@ -46,7 +49,7 @@ Aula.slide({
       cliente: est.conferido ? carla : null,
       mostrarNumeros: true, mostrarPd: true,
       ocultarFolha: est.conferido ? null : folha,
-      w: 812, h: 380, caixaW: 180, caixaH: 74,
+      w: 812, h: 340, caixaW: 180, caixaH: 74,
       rotuloFolha: function () { return "folha"; },
     });
 
@@ -69,13 +72,33 @@ Aula.slide({
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "coluna cresce" }, [
         h("div", { class: "painel claro cresce centro" }, arvore),
+        /* O desafio fica sob a árvore: na coluna das perguntas, junto com as três respostas
+           conferidas, ele passava da altura do palco. */
+        est.desafio
+          ? h("div", { class: "painel cor" }, [
+              h("h3", { class: "secao" }, "Desafio final"),
+              h("p", { class: "apoio" },
+                "Bruno passa de comprometimento 38% para 41%, com os demais valores fixos. " +
+                "A PD muda de " + F.pct(A.folhaDe({ hist: 1, comp: 38 }).pd, 0) + " para " +
+                F.pct(A.folhaDe({ hist: 1, comp: 41 }).pd, 0) +
+                ". Isso prova um salto real de risco exatamente nesse limite?"),
+              est.conferido
+                ? h("p", { class: "resposta" },
+                    "Não. É uma descontinuidade da aproximação aprendida. O limite foi escolhido " +
+                    "por um critério de impureza em uma amostra, e não por um fenômeno econômico " +
+                    "que mude bruscamente em 40%.")
+                : h("p", { class: "nota" }, "A resposta aparece ao conferir."),
+            ])
+          : null,
         Comum.fichaLinha(carla, { cor: true }),
       ]),
-      h("div", { class: "coluna", estilo: "flex:0 0 620px" }, [
+      /* 700 de largura: cada opção do caminho cabe numa linha, e as três partes conferidas
+         cabem na altura do palco. */
+      h("div", { class: "coluna", estilo: "flex:0 0 700px" }, [
         h("div", { class: "painel", estilo: "padding:10px 16px" }, [
           h("h3", { class: "secao", estilo: "margin-bottom:5px" }, "1. Indique o caminho"),
           UI.botoes({
-            vertical: true, rotulo: "caminho",
+            vertical: true, compacto: true, rotulo: "caminho",
             opcoes: caminhos.map(function (c) { return { valor: c.valor, rotulo: c.rotulo }; }),
             valor: est.ramo,
             aoMudar: function (v) { est.ramo = v; est.conferido = false; App.montar("30"); },
@@ -109,7 +132,7 @@ Aula.slide({
           h("h3", { class: "secao", estilo: "margin-bottom:5px" },
             "3. Se a renda de Carla dobrasse, mantendo fixas as entradas usadas na árvore"),
           UI.botoes({
-            vertical: true, rotulo: "efeito da renda",
+            compacto: true, rotulo: "efeito da renda",
             opcoes: [
               { valor: "permanece", rotulo: "A PD permanece a mesma" },
               { valor: "metade", rotulo: "A PD cai pela metade" },
@@ -135,22 +158,7 @@ Aula.slide({
           h("button", { class: "btn fantasma", type: "button", onclick: ctx.reiniciar },
             "Reiniciar exercício"),
         ]),
-        est.desafio
-          ? h("div", { class: "painel cor" }, [
-              h("h3", { class: "secao" }, "Desafio final"),
-              h("p", { class: "apoio" },
-                "Bruno passa de comprometimento 38% para 41%, com os demais valores fixos. " +
-                "A PD muda de " + F.pct(A.folhaDe({ hist: 1, comp: 38 }).pd, 0) + " para " +
-                F.pct(A.folhaDe({ hist: 1, comp: 41 }).pd, 0) +
-                ". Isso prova um salto real de risco exatamente nesse limite?"),
-              est.conferido
-                ? h("p", { class: "resposta" },
-                    "Não. É uma descontinuidade da aproximação aprendida. O limite foi escolhido " +
-                    "por um critério de impureza em uma amostra, e não por um fenômeno econômico " +
-                    "que mude bruscamente em 40%.")
-                : h("p", { class: "nota" }, "A resposta aparece ao conferir."),
-            ])
-          : null,
+
       ]),
     ]));
   },

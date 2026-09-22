@@ -1,6 +1,8 @@
 import Link from "next/link";
 
-/** 404 global: fora das áreas com moldura (rotas inexistentes). */
+/** 404 da raiz: endereço que não casa com nenhuma rota, servido sem moldura nenhuma. Por isso ele
+    abre o próprio main, que é o alvo do pulo "Ir para o conteúdo" do layout raiz. As áreas com
+    moldura têm limite próprio em (app)/not-found.tsx e professor/not-found.tsx, sem landmark. */
 export default function NaoEncontrada() {
   return (
     <main id="conteudo" className="max-w-[720px] mx-auto px-4 py-12">

@@ -1,7 +1,7 @@
 import "server-only";
 import { and, asc, eq, inArray } from "drizzle-orm";
 import { db, schema } from "@/lib/db/client";
-import { rotuloUnidade } from "@/lib/content/capitulo";
+import { sequenciaDoCurso, vizinhosNaSequencia } from "@/lib/content/capitulo";
 import { renderTex } from "@/lib/tex";
 
 export type Block =
@@ -53,9 +53,12 @@ export async function getPage(editionId: string, slug: string, includeGuide: boo
     .where(and(eq(schema.units.editionId, editionId), eq(schema.pages.slug, slug), eq(schema.pages.status, "published"))).limit(1);
   if (!row) return null;
   const blocks = (row.version.blocks as Block[]).map((b) => (b.type === "html" ? { ...b, html: renderTex(b.html) } : b));
+  /* Todas as perguntas da página, e não só as ancoradas num ponto do texto: uma pergunta escrita
+     depois, sem marca no HTML original, ficaria invisível se a busca saísse apenas dos blocos. */
+  const daPagina = await db.select({ slug: schema.questions.slug }).from(schema.questions).where(eq(schema.questions.pageId, row.page.id));
   const slugs = blocks.filter((b): b is Extract<Block, { type: "question" }> => b.type === "question").map((b) => b.slug);
   const checagem = `${slug}-checagem`;
-  const qs = await publicQuestions(editionId, [...slugs, checagem]);
+  const qs = await publicQuestions(editionId, [...new Set([...slugs, ...daPagina.map((q) => q.slug), checagem])]);
   const { teacherGuide, ...version } = row.version;
   const guide = (teacherGuide ?? null) as { pre?: unknown } | null;
   return {
@@ -102,11 +105,11 @@ export async function chapterOverview(editionId: string, numero: number) {
   const byPage = new Map(versions.map((v) => [v.pageId, v]));
   const pages = chapter.pages.map((p) => ({ ...p, objective: byPage.get(p.id)?.objective ?? null, timeBudget: (byPage.get(p.id)?.timeBudget ?? null) as { exp?: number; ex?: number; prat?: number; disc?: number } | null }));
   const materials = await db.select().from(schema.materials).where(and(eq(schema.materials.editionId, editionId), inArray(schema.materials.status, ["published", "professor"]))).orderBy(asc(schema.materials.position));
-  const vizinho = (x: { unit: typeof unit; chapter: typeof chapter } | undefined) => x ? { number: x.chapter.number, title: x.chapter.title, unitLabel: rotuloUnidade(x.unit) } : null;
+  const { prev, next } = vizinhosNaSequencia(sequenciaDoCurso(outline), `/aulas/capitulo/${numero}`);
   const titles: Record<string, string> = {};
   for (const x of flat) for (const p of x.chapter.pages) titles[p.slug] = p.title;
   return {
     unit: { id: unit.id, kind: unit.kind, number: unit.number, title: unit.title, deliverable: unit.deliverable },
-    chapter: { ...chapter, pages }, prev: vizinho(flat[i - 1]), next: vizinho(flat[i + 1]), total: flat.length, materials, titles,
+    chapter: { ...chapter, pages }, prev, next, total: flat.length, materials, titles,
   };
 }

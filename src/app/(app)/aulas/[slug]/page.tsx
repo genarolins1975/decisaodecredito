@@ -25,6 +25,10 @@ export default async function AulaPaginaPage({ params }: { params: Promise<{ slu
   if (!data) notFound();
   const nav = await neighbors(ctx.current.edition.id, slug);
   const chapterPages = nav.all.filter((p) => p.chapterId === data.chapter.id);
+  /* Uma pergunta pode estar ancorada num ponto do texto, e aí o bloco dela manda; a que não está
+     ancorada seria invisível, então a página a mostra depois do conteúdo. */
+  const ancoradas = new Set(data.blocks.filter((b) => b.type === "question").map((b) => (b as { slug: string }).slug));
+  const naoAncoradas = data.questions.filter((q) => !ancoradas.has(q.slug) && q.slug !== `${slug}-checagem`);
   const idx = chapterPages.findIndex((p) => p.slug === slug);
   const theme = data.chapter.themeColor ?? "#00205B";
   const slugSet = new Set(nav.all.map((p) => p.slug));
@@ -78,6 +82,13 @@ export default async function AulaPaginaPage({ params }: { params: Promise<{ slu
           <h2 className="sr-only">Conteúdo da página</h2>
           <ContentBlocks blocks={data.blocks} questions={data.questions} classId={ctx.current.classId} pageSlug={slug} pagina={{ index: idx + 1, total: chapterPages.length }} />
         </div>
+        {/* Pergunta que não está ancorada no texto entra aqui, antes da checagem aberta: primeiro o
+            aluno recebe um veredito, depois escreve a explicação com as próprias palavras. */}
+        {naoAncoradas.length > 0 && (
+          <div className="mt-6 grid gap-4">
+            <ContentBlocks blocks={naoAncoradas.map((q) => ({ type: "question", slug: q.slug }))} questions={data.questions} classId={ctx.current.classId} />
+          </div>
+        )}
         {data.questions.find((q) => q.slug === `${slug}-checagem`) && (
           <div className="mt-6">
             <ContentBlocks blocks={[{ type: "question", slug: `${slug}-checagem` }]} questions={data.questions} classId={ctx.current.classId} />

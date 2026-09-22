@@ -15,7 +15,7 @@
   --rule: #E2DFD6;
   --gold: #C9A84C;
   --gold-soft: #F4ECD6;
-  --amber: #B8640F;
+  --amber: #9A5209;       /* branco sobre esta cor: 5,9:1; o tom anterior #B8640F dava 4,3:1 */
   --alert: #8C2332;
   --alert-soft: #FBF2F3;
   --ok: #2E6B4F;
@@ -138,8 +138,13 @@ p.subtitulo {
 
 /* --------------------------------------------------------------- estrutura */
 
-.linha { display: flex; gap: 20px; align-items: stretch; }
+/* Colunas alinhadas pelo topo, e nunca esticadas além do conteúdo: esticar uma caixa com
+   moldura para além do que ela contém produz um retângulo oco, que na projeção lê como
+   conteúdo faltando. O espaço que sobra vira uma faixa única embaixo, que lê como margem.
+   `.linha.esticada` devolve o comportamento antigo para quem precisar dele. */
+.linha { display: flex; gap: 20px; align-items: flex-start; }
 .linha.topo { align-items: flex-start; }
+.linha.esticada { align-items: stretch; }
 .coluna { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 .cresce { flex: 1 1 auto; min-width: 0; min-height: 0; }
 .igual { flex: 1 1 0; min-width: 0; min-height: 0; }
@@ -157,6 +162,7 @@ p.subtitulo {
 .painel.claro { background: var(--surface); }
 .painel.cor { background: var(--cor-soft); border-color: color-mix(in srgb, var(--cor) 28%, var(--rule)); }
 .painel > h2, .painel > h3 { margin: 0 0 8px; }
+.painel.pendente { border-style: dashed; background: var(--surface); }
 
 h2.secao {
   font-family: var(--serif);
@@ -239,6 +245,9 @@ p .mat, li .mat, td .mat, th .mat, .kv .mat { line-height: 1; }
 .formula .mat-bloco:first-child { margin-top: 0; }
 .formula .mat-bloco:last-child { margin-bottom: 0; }
 body.estudo .mat .katex { font-size: 1em; }
+/* No celular uma expressão em bloco mais larga que a tela rola na horizontal dentro da própria
+   caixa, em vez de empurrar o painel e a página para fora da tela. */
+body.estudo .mat-bloco { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
 /* A aula deixa os SVGs transbordarem a caixa de propósito, para rótulo de gráfico não ser cortado.
    O KaTeX depende do contrário: o radical e os delimitadores grandes são SVGs de 400em que ele
    recorta pelo contêiner. Sem esta exceção, a cauda da raiz quadrada atravessa o slide. */
@@ -324,7 +333,7 @@ table.tabela.apertada { font-size: 18px; }
 table.tabela.apertada th, table.tabela.apertada td { padding: 4px 6px; }
 .rolagem-h { max-width: 100%; }
 
-.kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-size: 20px; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-size: 20px; margin: 0; }
 .kv dt { color: var(--muted); }
 .kv dd { margin: 0; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
@@ -390,6 +399,11 @@ svg text { font-family: var(--sans); fill: var(--body); }
   z-index: 20;
 }
 #barra .id { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--ink); font-size: 15px; }
+/* Retorno à plataforma: só aparece quando o baralho é aberto direto em /slides/, fora de iframe. */
+#barra #lnk-voltar { display: inline-flex; align-items: center; gap: 4px; font: 700 14px var(--sans); color: var(--ink-soft); text-decoration: none; padding: 7px 4px; white-space: nowrap; }
+#barra #lnk-voltar::before { content: "‹"; font-size: 18px; line-height: 1; }
+#barra #lnk-voltar:hover { text-decoration: underline; }
+#barra #lnk-voltar[hidden] { display: none; }
 #barra .titulinho {
   color: var(--muted);
   font-size: 14px;
@@ -441,6 +455,13 @@ svg text { font-family: var(--sans); fill: var(--body); }
   padding: 26px 30px 80px;
 }
 #indice h2 { font-family: var(--serif); color: var(--ink); margin: 0 0 4px; font-size: 22px; }
+#indice .indice-topo { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+#indice-busca {
+  width: 100%; max-width: 520px; font: 400 16px var(--sans); padding: 9px 12px;
+  border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); color: var(--ink);
+}
+#indice-contagem { font-size: 14px; color: var(--muted); min-height: 18px; margin: 0 0 8px; }
+#indice .indice-rodape { border-top: 1px solid var(--rule); margin-top: 18px; padding-top: 10px; font-size: 14px; color: var(--muted); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 .indice-bloco { margin-bottom: 18px; }
 .indice-bloco > h3 {
   font-size: 12px; text-transform: uppercase; letter-spacing: .08em;
@@ -511,6 +532,9 @@ body.estudo .estudo-notas .painel { margin-bottom: 12px; }
 /* Em tela estreita as colunas laterais de largura fixa não cabem lado a lado.
    O !important vence o estilo embutido que fixa a base de cada coluna. */
 @media (max-width: 760px) {
+  /* No toque, todo botão do corpo tem ao menos 44px de altura, inclusive os compactos. */
+  body.estudo .btn, body.estudo .alternativa, body.estudo #barra button { min-height: 44px; }
+  body.estudo .ctrl input[type="range"] { height: 44px; }
   body.estudo .linha { flex-direction: column; }
   body.estudo .linha > * { flex: 1 1 auto !important; width: 100%; min-width: 0; }
   body.estudo .rolagem-h { overflow-x: auto; }
@@ -604,6 +628,9 @@ body[data-modo] #btn-professor,
 body[data-modo] #btn-imprimir,
 body[data-modo] #notas,
 body[data-modo] #estudo-notas { display: none !important; }
+/* Na janela projetada pelo professor só ficam índice, anterior, próximo e tela cheia: as notas
+   estão no painel dele, e o modo estudo reorganizaria a tela da turma sem querer. */
+body[data-modo="projecao"] #btn-estudo { display: none !important; }
 body[data-modo="aluno"] #barra { display: none; }
 /* sem a barra, o palco recupera os 58px que ela reservava e a régua de progresso desce */
 body[data-modo="aluno"] #moldura { inset: 0; }

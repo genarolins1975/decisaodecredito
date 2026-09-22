@@ -9,6 +9,7 @@
     "vercel-build": "bash scripts/vercel-build.sh",
     "start": "next start -p 3000",
     "lint": "eslint .",
+    "lint:tracos": "node scripts/lint-tracos-cascas.mjs",
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx --tsconfig scripts/tsconfig.json scripts/migrate.ts",

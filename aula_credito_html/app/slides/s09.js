@@ -81,7 +81,7 @@ Aula.slide({
         h("div", { class: "painel cor" }, [
           h("p", { class: "formula gg", estilo: "background:none;border:none;padding:0;margin:0" },
             Mat.b("p = \\frac{1}{1 + e^{-z}}")),
-          h("div", { class: "kv", estilo: "margin-top:12px;font-size:24px" }, [
+          h("dl", { class: "kv", estilo: "margin-top:12px;font-size:24px" }, [
             h("dt", {}, "escore z"), h("dd", {}, F.dec(est.z, 3)),
             h("dt", {}, "PD"), h("dd", {}, F.pct(p, 2)),
           ]),

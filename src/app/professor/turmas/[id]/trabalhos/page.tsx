@@ -3,7 +3,7 @@ import { and, eq, inArray, sql } from "drizzle-orm";
 import { requireClassAccess } from "@/lib/auth/guard";
 import { listAssignments } from "@/lib/services/assignments";
 import { db, schema } from "@/lib/db/client";
-import { StatusBadge } from "@/components/ui";
+import { Empty, StatusBadge } from "@/components/ui";
 import { fmtDT } from "@/lib/time";
 import { NewAssignmentForm } from "@/components/professor/assignment-forms";
 
@@ -16,6 +16,7 @@ export default async function TrabalhosProfessorPage({ params }: { params: Promi
   const units = await db.select({ id: schema.units.id, number: schema.units.number, title: schema.units.title, kind: schema.units.kind }).from(schema.units).where(eq(schema.units.editionId, access.edition.id));
   return (
     <div className="flex flex-col gap-4">
+      {list.length === 0 ? <Empty title="Nenhum trabalho nesta turma ainda">Crie o primeiro no formulário abaixo. Ele aparece para os alunos em Trabalhos quando você publicar.</Empty> : (
       <div className="table-wrap card p-0">
         <table className="table">
           <thead><tr><th>Trabalho</th><th>Modo</th><th>Prazo</th><th>Situação</th><th>Entregas vigentes</th><th><span className="sr-only">Ações</span></th></tr></thead>
@@ -37,6 +38,7 @@ export default async function TrabalhosProfessorPage({ params }: { params: Promi
           </tbody>
         </table>
       </div>
+      )}
       <NewAssignmentForm classId={id} units={units} />
     </div>
   );

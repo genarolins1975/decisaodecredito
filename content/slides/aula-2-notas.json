@@ -1,0 +1,1661 @@
+{
+ "versao": "35075a11a54e",
+ "gerado": "build.mjs; edite as notas em app/slides/sNN.js e recompile",
+ "slides": [
+  {
+   "n": "01",
+   "bloco": "problema",
+   "blocoNome": "O problema de crédito",
+   "titulo": "Você aprovaria estes quatro clientes?",
+   "subtitulo": "Crédito pessoal, horizonte de 12 meses",
+   "conclusao": "Aprovar exige estimar risco e definir uma política.",
+   "fonte": "Esquema conceitual; sem dados",
+   "resumo": "Quatro propostas de crédito pessoal com renda e comprometimento, cada uma com três opções de decisão.",
+   "notas": {
+    "conducao": [
+     "Peça 20 segundos de avaliação silenciosa e registre uma opinião por perfil.",
+     "Pergunte por que Carla, com a maior renda da mesa, ainda poderia exigir investigação.",
+     "Se alguém pedir taxa, prazo e custos, reconheça que faltam elementos da política econômica. A conta aparece no slide 47."
+    ],
+    "respostas": [],
+    "cuidados": [
+     "A seleção representa apenas a escolha neste dispositivo. Não existe contagem de turma nem resultado coletivo.",
+     "Nenhuma proposta tem desfecho conhecido. Não atribua valor moral à renda nem ao nome do cliente.",
+     "Um cliente de maior risco ainda pode ser economicamente aceitável sob certas condições. Cobrar mais não resolve qualquer risco."
+    ],
+    "aprofundar": [],
+    "transicao": "Antes de escolher uma técnica, precisamos conhecer os mesmos clientes e definir exatamente o que vamos prever."
+   },
+   "proximo": {
+    "n": "02",
+    "titulo": "O que sabemos no momento da proposta?"
+   }
+  },
+  {
+   "n": "02",
+   "bloco": "problema",
+   "blocoNome": "O problema de crédito",
+   "titulo": "O que sabemos no momento da proposta?",
+   "subtitulo": "Seis características por cliente, com unidade e momento de observação",
+   "conclusao": "Cada variável descreve uma dimensão do risco. Nenhuma decide sozinha.",
+   "fonte": "Esquema conceitual; sem dados",
+   "resumo": "Tabela de quatro clientes por seis características, com ficha ampliada do cliente selecionado.",
+   "notas": {
+    "conducao": [
+     "Compare primeiro a renda de Carla e a de Bruno. Depois revele comprometimento e utilização.",
+     "Contraste relacionamento e histórico por último.",
+     "Pergunte: qual combinação parece mais informativa que uma variável isolada? Aceite hipóteses diferentes."
+    ],
+    "respostas": [],
+    "cuidados": [
+     "Canal não é efeito causal nem evidência de qualidade moral. Uma variável útil para previsão pode refletir seleção.",
+     "Comprometimento é a parcela total mensal já incluindo a nova operação, dividida pela renda verificada.",
+     "Histórico registra atraso de 15 a 89 dias no passado. Não é inadimplência corrente.",
+     "As unidades serão preservadas em toda a aula, especialmente percentual contra fração."
+    ],
+    "aprofundar": [],
+    "transicao": "Conhecer os atributos não basta: o que significa exatamente risco nesta aula?"
+   },
+   "proximo": {
+    "n": "03",
+    "titulo": "Probabilidade de quê, para quem e até quando?"
+   }
+  },
+  {
+   "n": "03",
+   "bloco": "problema",
+   "blocoNome": "O problema de crédito",
+   "titulo": "Probabilidade de quê, para quem e até quando?",
+   "subtitulo": "Atraso superior a 90 dias em qualquer momento dos 12 meses após a contratação",
+   "conclusao": "Sem a mesma definição de inadimplência, duas PDs não são comparáveis.",
+   "fonte": "Trajetórias ilustrativas de contratos fictícios; cálculo próprio",
+   "resumo": "Três trajetórias de atraso em dias ao longo de 12 meses, com linha de 90 dias e máscara do que ainda não foi observado.",
+   "notas": {
+    "conducao": [
+     "Peça a classificação do contrato C antes de mostrar o status.",
+     "Separe explicitamente ainda não aconteceu de não acontecerá dentro da janela.",
+     "Leve o controle até o mês 12 e consolide os três elementos: população elegível, evento e horizonte."
+    ],
+    "respostas": [
+     "A atinge 95 dias no mês 8, portanto y = 1.",
+     "B fecha os 12 meses com máximo de 88 dias, portanto y = 0.",
+     "C tem apenas 6 meses observados e nenhum evento: alvo incompleto, nunca y = 0.",
+     "Chegar exatamente a 90 dias não satisfaz superior a 90 dias. No mês 7 o contrato A ainda não tem evento."
+    ],
+    "cuidados": [
+     "Esta é uma definição operacional didática. Não é transcrição de norma bancária.",
+     "Mudar o limite de atraso ou o horizonte muda o alvo previsto, e portanto muda o modelo."
+    ],
+    "aprofundar": [],
+    "transicao": "Agora sabemos o que prever. Precisamos garantir que os dados usados para prever existiam antes do resultado."
+   },
+   "proximo": {
+    "n": "04",
+    "titulo": "Esse dado existia quando o crédito foi aprovado?"
+   }
+  },
+  {
+   "n": "04",
+   "bloco": "problema",
+   "blocoNome": "O problema de crédito",
+   "titulo": "Esse dado existia quando o crédito foi aprovado?",
+   "subtitulo": "Classifique cada informação pela data em que ela ficou disponível",
+   "conclusao": "Uma variável excelente depois do evento pode ser inútil para decidir antes dele.",
+   "fonte": "Registros didáticos de disponibilidade; cálculo próprio",
+   "resumo": "Sete fichas de informação, cada uma com valor e data de disponibilidade, classificadas entre disponível na decisão e informação do futuro.",
+   "notas": {
+    "conducao": [
+     "Classifique primeiro as três fáceis: renda verificada, histórico anterior e utilização conhecida.",
+     "Use o atraso máximo dos 12 meses seguintes para estabelecer a regra.",
+     "Termine com a consulta tardia de bureau: a informação pode descrever algo anterior, mas o acesso e a versão precisam existir na decisão."
+    ],
+    "respostas": [
+     "Renda verificada, histórico anterior, utilização conhecida na data e comprometimento com a parcela proposta estão disponíveis na decisão.",
+     "Valor renegociado três meses depois, atraso máximo dos 12 meses seguintes e consulta de bureau posterior à inadimplência são informação do futuro.",
+     "O comprometimento com a parcela proposta é permitido porque a parcela é conhecida na simulação, e não depende de observar o desfecho."
+    ],
+    "cuidados": [
+     "Data de referência e data de disponibilidade são coisas diferentes.",
+     "Limpeza, imputação, seleção de variáveis e normalização também vazam informação se aprenderem com o teste."
+    ],
+    "aprofundar": [],
+    "transicao": "Além de separar passado e futuro dentro de cada proposta, precisamos separar as amostras usadas para aprender e avaliar."
+   },
+   "proximo": {
+    "n": "05",
+    "titulo": "Aprender no passado, escolher sem olhar o teste"
+   }
+  },
+  {
+   "n": "05",
+   "bloco": "problema",
+   "blocoNome": "O problema de crédito",
+   "titulo": "Aprender no passado, escolher sem olhar o teste",
+   "subtitulo": "Quatro partições, cada uma com 12 meses de maturação antes de o alvo existir",
+   "conclusao": "Separar por calendário só funciona se respeitarmos quando cada resultado ficou disponível.",
+   "fonte": "Experimento sintético; semente e versões no notebook",
+   "resumo": "Linha do tempo com quatro faixas de contratação, extensão clara de maturação de 12 meses e uma linha vertical de decisão.",
+   "notas": {
+    "conducao": [
+     "Peça que o aluno aponte a diferença entre o fim das contratações e o fim da observação.",
+     "Pergunte: podemos escolher o corte depois de ver os resultados finais? Revele que o teste avalia escolhas congeladas.",
+     "Datas completas ficam aqui nas notas; a projeção mostra apenas os anos."
+    ],
+    "respostas": [
+     "Treino: contratações de jan/2018 a dez/2019, alvo completo em dez/2020.",
+     "Validação de ajuste: jan a jun/2021, alvo completo em jun/2022.",
+     "Calibração e política: ago a dez/2022, alvo completo em dez/2023.",
+     "Teste final: fev a jul/2024, alvo completo em jul/2025."
+    ],
+    "cuidados": [
+     "Os espaços entre coortes tornam a maturação visível. Não são uma recomendação universal de desenho operacional.",
+     "Divisão aleatória não é sempre inválida. Ela apenas não testa a generalização temporal buscada aqui.",
+     "O modelo base é congelado antes da calibração, e a política antes do teste."
+    ],
+    "aprofundar": [],
+    "transicao": "Agora temos regras de comparação. Como cada técnica transforma os mesmos dados em uma PD?"
+   },
+   "proximo": {
+    "n": "06",
+    "titulo": "O mesmo cliente, três formas de aprender o risco"
+   }
+  },
+  {
+   "n": "06",
+   "bloco": "problema",
+   "blocoNome": "O problema de crédito",
+   "titulo": "O mesmo cliente, três formas de aprender o risco",
+   "subtitulo": "A ficha de entrada é a mesma nos três mecanismos",
+   "conclusao": "Os dados e o objetivo são comuns. Muda a forma de construir a previsão.",
+   "fonte": "Esquema conceitual; sem dados",
+   "resumo": "Três painéis com o mecanismo de cada técnica: soma ponderada com curva logística, percurso em árvore e contribuições sucessivas ao escore.",
+   "notas": {
+    "conducao": [
+     "Passe rapidamente pelos três mecanismos, sem fórmulas.",
+     "Pergunte qual parece mais fácil de explicar e se isso basta para escolher.",
+     "Termine selecionando logit, que abre o próximo bloco."
+    ],
+    "respostas": [],
+    "cuidados": [
+     "A árvore não é um conjunto de regras definidas pelo gestor: a estrutura é aprendida dos dados, embora o gestor imponha limites.",
+     "Boosting não é votação majoritária nem soma de probabilidades.",
+     "O logit não é incapaz de representar não linearidades.",
+     "Nenhum painel traz PD de modelo: aqui só existe o mecanismo."
+    ],
+    "aprofundar": [],
+    "transicao": "Vamos começar pela ideia mais familiar: combinar características em um escore e converter esse escore em probabilidade."
+   },
+   "proximo": {
+    "n": "07",
+    "titulo": "Cada informação altera o escore do cliente"
+   }
+  },
+  {
+   "n": "07",
+   "bloco": "logit",
+   "blocoNome": "Regressão logística",
+   "titulo": "Cada informação altera o escore do cliente",
+   "subtitulo": "Do perfil de referência às diferenças do cliente",
+   "conclusao": "O sinal e o tamanho de cada contribuição dependem do coeficiente e da unidade da variável.",
+   "fonte": "Exemplo didático de logit; cálculo próprio",
+   "resumo": "Waterfall das contribuições de cada característica ao escore, partindo do intercepto do perfil de referência.",
+   "notas": {
+    "conducao": [
+     "Comece no perfil de referência: renda R$ 5.000, comprometimento 30%, relacionamento 12 meses, utilização 40% e sem histórico de atraso.",
+     "Acrescente comprometimento e histórico. Pergunte qual teve maior contribuição neste cliente.",
+     "Mostre que um coeficiente pequeno pode gerar efeito relevante quando a variável muda muito.",
+     "Revele z e pergunte se esse número já é uma probabilidade."
+    ],
+    "respostas": [],
+    "cuidados": [
+     "A contribuição exibida é relativa à codificação de referência escolhida. Não é decomposição causal nem medida universal de importância.",
+     "Coeficiente e contribuição observada são coisas diferentes: a contribuição multiplica o coeficiente pelo desvio da variável.",
+     "Centrar as variáveis facilita a interpretação do intercepto e não muda a classe de funções."
+    ],
+    "aprofundar": [
+     "Os números desta tela e os do capítulo 4 são de dois exemplos, não de dois modelos rivais. Aqui o escore usa seis variáveis na forma centrada, com intercepto −3,50 e comprometimento pesando 0,40 a cada 10 pontos, o que dá razão de chances 1,49. As páginas do capítulo usam duas variáveis na forma crua, com intercepto −5,6666 e utilização pesando 0,7453 a cada 10 pontos, razão de chances 2,11. O mecanismo é o mesmo; os números são de exemplos diferentes, e nenhum se converte no outro trocando de unidade.",
+     "Material original, capítulo 4, página 13: o intercepto é âncora de nível, não coeficiente comum. Naquele exemplo, utilização zero e atraso zero não existem na carteira, então o intercepto não tem leitura como PD de um cliente real.",
+     "Trocar o intercepto desloca a PD de todas as propostas e preserva a ordem de risco. É por isso que recalibrar um modelo cuja ordenação continua boa equivale a reestimar o nível, sem alterar a AUC. O mesmo fato aparece no slide 45."
+    ],
+    "transicao": "O escore pode ser qualquer número. Como converter esse escore em algo entre zero e um?"
+   },
+   "proximo": {
+    "n": "08",
+    "titulo": "−2,025 não é uma probabilidade"
+   }
+  },
+  {
+   "n": "08",
+   "bloco": "logit",
+   "blocoNome": "Regressão logística",
+   "titulo": "−2,025 não é uma probabilidade",
+   "subtitulo": "Uma previsão sem restrição pode sair do intervalo entre 0% e 100%",
+   "conclusao": "A PD precisa permanecer entre 0% e 100%, qualquer que seja o escore.",
+   "fonte": "Exemplo didático de logit; cálculo próprio",
+   "resumo": "Reta numérica dos escores dos quatro clientes, régua de probabilidade sem correspondência e uma reta de probabilidade que sai dos limites.",
+   "notas": {
+    "conducao": [
+     "Peça que o aluno calcule a reta simplificada em comprometimento de 20%.",
+     "Revele o resultado negativo, leve o controle até 70% e mostre o excesso acima de 100%.",
+     "Volte a Bruno e lembre que o escore dele não foi definido como probabilidade."
+    ],
+    "respostas": [],
+    "cuidados": [
+     "A reta usada aqui existe para mostrar o problema. Não é modelo estimado.",
+     "Não conclua que todo modelo linear de probabilidade é inútil. A mensagem é a dificuldade de garantir limites.",
+     "Truncar em 0 e 1 altera a função de forma improvisada e não substitui um modelo probabilístico."
+    ],
+    "aprofundar": [],
+    "transicao": "A função logística faz exatamente essa conversão, preservando a ordem dos escores."
+   },
+   "proximo": {
+    "n": "09",
+    "titulo": "Um escore, uma probabilidade entre 0% e 100%"
+   }
+  },
+  {
+   "n": "09",
+   "bloco": "logit",
+   "blocoNome": "Regressão logística",
+   "titulo": "Um escore, uma probabilidade entre 0% e 100%",
+   "subtitulo": "A curva logística converte qualquer número real em probabilidade",
+   "conclusao": "A mesma variação de escore pode gerar mudanças muito diferentes de probabilidade.",
+   "fonte": "Exemplo didático de logit; cálculo próprio",
+   "resumo": "Curva logística com ponto móvel, guias até os eixos e marcadores dos quatro clientes.",
+   "notas": {
+    "conducao": [
+     "Comece em Bruno. Vá até z = 0 e pergunte o valor esperado antes de revelar.",
+     "Compare o efeito de somar 1 ao escore em z = −5 e em z = 0.",
+     "Termine em Ana e Bruno para mostrar que a função preserva a ordem dos escores."
+    ],
+    "respostas": [],
+    "cuidados": [
+     "A sigmoide é estritamente crescente: a ordem de z e a ordem de p são a mesma.",
+     "Um escore finito nunca produz exatamente 0 ou 1. A formatação pode arredondar para 0,00%, o que não significa impossibilidade.",
+     "O ponto de 50% é referência matemática, não corte de aprovação."
+    ],
+    "aprofundar": [
+     "Material original, capítulo 4, página 6: probabilidade, odds, log odds e escore de bureau são quatro réguas da mesma ordem. Lá, PD de 5% corresponde a odds 0,053, log odds −2,944 e escore didático 865.",
+     "Qualquer transformação monótona preserva a ordenação e, portanto, a AUC. O que muda é a régua de comunicação e de cálculo."
+    ],
+    "transicao": "Para interpretar os coeficientes, precisamos entender a escala em que a soma foi feita: o logaritmo das odds."
+   },
+   "proximo": {
+    "n": "10",
+    "titulo": "10% de PD significa odds de 1 para 9"
+   }
+  },
+  {
+   "n": "10",
+   "bloco": "logit",
+   "blocoNome": "Regressão logística",
+   "titulo": "10% de PD significa odds de 1 para 9",
+   "subtitulo": "Probabilidade, odds e log odds descrevem o mesmo risco em escalas diferentes",
+   "conclusao": "Odds comparam eventos e não eventos. Probabilidade compara eventos e total.",
+   "fonte": "Exemplo didático de logit; cálculo próprio",
+   "resumo": "Grade de cem pontos com a quantidade esperada de eventos, frações de conversão e o logaritmo das odds.",
+   "notas": {
+    "conducao": [
+     "Pergunte 10 dividido por quê antes de revelar as odds.",
+     "Mostre que trocar o denominador muda o conceito: 10 em 100 contra 10 para 90.",
+     "Vá a 50% e depois a 20%. Termine lembrando que o escore z do logit é o log odds."
+    ],
+    "respostas": [
+     "p = 50%: odds 1 e log odds 0.",
+     "p = 20%: odds 0,25 e log odds aproximadamente −1,386.",
+     "p = 10%: odds 1/9 aproximadamente 0,1111 e log odds aproximadamente −2,197."
+    ],
+    "cuidados": [
+     "Odds não são outra porcentagem de risco. Podem passar de 1 e não se limitam a 100%.",
+     "Uma razão escrita 1 para 9 é diferente do número decimal 0,1111 apenas na forma de escrever.",
+     "Em p igual a 0 ou 1 o log odds vai a infinito. Por isso a entrada principal vai de 1% a 99%."
+    ],
+    "aprofundar": [],
+    "transicao": "Agora conseguimos interpretar o que acontece quando um coeficiente aumenta o log odds."
+   },
+   "proximo": {
+    "n": "11",
+    "titulo": "Mais 10 pontos de comprometimento multiplicam as odds por 1,49"
+   }
+  },
+  {
+   "n": "11",
+   "bloco": "logit",
+   "blocoNome": "Regressão logística",
+   "titulo": "Mais 10 pontos de comprometimento multiplicam as odds por 1,49",
+   "subtitulo": "O mesmo multiplicador de odds gera mudanças diferentes de PD",
+   "conclusao": "Uma mudança na variável multiplica as odds. A mudança de PD depende do ponto de partida.",
+   "fonte": "Exemplo didático de logit; cálculo próprio",
+   "resumo": "Faixa de cálculo do multiplicador de odds e três pares de barras antes e depois para PDs iniciais de 2%, 10% e 40%.",
+   "notas": {
+    "conducao": [
+     "Peça que os alunos antecipem a PD quando as odds dobram, começando pelo cenário de 10%.",
+     "Revele primeiro 10%, depois 2% e 40%.",
+     "Explique que a leitura vale mantidas as outras variáveis do modelo."
+    ],
+    "respostas": [
+     "Com odds multiplicadas por 2: 2% vira aproximadamente 3,92%; 10% vira 18,18%; 40% vira 57,14%.",
+     "Com mais 10 pontos de comprometimento, o multiplicador é e elevado a 0,40, aproximadamente 1,4918."
+    ],
+    "cuidados": [
+     "Razão de chances de 1,49 não significa que o risco aumenta 49%.",
+     "Para uma mudança finita use a conversão exata, não o efeito marginal local.",
+     "A leitura é associativa e condicionada às demais variáveis. Não é efeito causal.",
+     "Os três riscos iniciais são cenários didáticos. Não são os quatro clientes."
+    ],
+    "aprofundar": [
+     "Material original, capítulo 4, página 11: naquele exemplo, utilização a cada 10 pontos tem razão de chances 2,1071 e atraso a cada 10 dias tem 4,0370. A leitura está correta como multiplicação das chances e não autoriza leitura causal.",
+     "Página 14 do mesmo capítulo: trocar a unidade muda o coeficiente e não muda o modelo. A utilização vale 0,74530 por dezena de pontos, 0,07453 por ponto e 7,45300 por fração do limite, com PD prevista idêntica nos três casos.",
+     "Disso decorre que comparar 1,3955 com 0,7453 para dizer qual variável pesa mais não significa nada: as unidades são diferentes. A comparação legítima usa um movimento realista de cada variável, como um desvio padrão, que é o que o slide 18 faz com coeficientes padronizados."
+    ],
+    "transicao": "Vamos aplicar essa interpretação a um cliente completo e conferir todas as etapas da conta."
+   },
+   "proximo": {
+    "n": "12",
+    "titulo": "Bruno: como chegamos à PD de 11,66%?"
+   }
+  },
+  {
+   "n": "12",
+   "bloco": "logit",
+   "blocoNome": "Regressão logística",
+   "titulo": "Bruno: como chegamos à PD de 11,66%?",
+   "subtitulo": "Duas etapas auditáveis: somar o escore e aplicar a logística",
+   "conclusao": "O cálculo tem duas etapas auditáveis: somar o escore e aplicar a logística.",
+   "fonte": "Exemplo didático de logit; cálculo próprio",
+   "resumo": "Ficha editável do cliente, decomposição do escore e medidor de PD com curva logística.",
+   "notas": {
+    "conducao": [
+     "Reconstrua a conta passo a passo antes de mexer nos controles.",
+     "Peça uma alteração que reduza a PD e outra que a aumente.",
+     "Questione se a alteração seria factível: reduzir comprometimento sem mudar parcela ou renda é uma simulação abstrata."
+    ],
+    "respostas": [
+     "Ana 1,10%, Bruno 11,66%, Carla 2,82% e Diego 27,59%, com a fórmula manual.",
+     "O recurso descreve a sensibilidade do modelo, não a garantia de uma ação causal disponível ao cliente."
+    ],
+    "cuidados": [
+     "Canal aparece na ficha e não participa desta fórmula manual.",
+     "Esta PD é do exemplo didático. Não é previsão de modelo treinado."
+    ],
+    "aprofundar": [],
+    "transicao": "Esses coeficientes foram escolhidos para tornar a conta transparente. Como um modelo aprende coeficientes a partir dos dados?"
+   },
+   "proximo": {
+    "n": "13",
+    "titulo": "O modelo aprende penalizando previsões incompatíveis com os dados"
+   }
+  },
+  {
+   "n": "13",
+   "bloco": "logit",
+   "blocoNome": "Regressão logística",
+   "titulo": "O modelo aprende penalizando previsões incompatíveis com os dados",
+   "subtitulo": "Perda logarítmica de uma observação, em função da probabilidade prevista",
+   "conclusao": "A log loss pune previsões confiantes que contradizem o que ocorreu.",
+   "fonte": "Exemplo didático de logit; cálculo próprio",
+   "resumo": "Duas curvas de perda individual em função da probabilidade prevista, uma para y igual a 1 e outra para y igual a 0.",
+   "notas": {
+    "conducao": [
+     "Escolha y = 1 com p = 10% e depois aumente p até 90%.",
+     "Troque y para 0 mantendo p = 90% e pergunte por que a penalização aumenta.",
+     "Mostre que uma observação não define sozinha os coeficientes: a perda total agrega todos os casos."
+    ],
+    "respostas": [
+     "Para y = 1: p = 0,10 gera perda aproximadamente 2,3026; p = 0,90 gera aproximadamente 0,1054.",
+     "Para y = 0 a relação se inverte: p = 0,90 gera aproximadamente 2,3026.",
+     "Minimizar a log loss equivale a maximizar a verossimilhança do modelo logístico."
+    ],
+    "cuidados": [
+     "Classificar corretamente a partir de um corte não basta para medir a qualidade da probabilidade.",
+     "A perda depende do grau de confiança, não apenas do lado do corte.",
+     "A função objetivo do treino não garante o melhor desempenho futuro.",
+     "Em p igual a 0 ou 1 a perda vai a infinito. As curvas são desenhadas entre 0,1% e 99,9%."
+    ],
+    "aprofundar": [
+     "Material original, capítulo 4, páginas 15 a 17: a perda de cada observação determina os coeficientes, e a descida de gradiente percorre os parâmetros uma iteração por vez até a convergência.",
+     "Nesta aula a descida aparece no bloco de boosting, slides 32 a 35, com a mesma mecânica de resíduo, passo e atualização do escore.",
+     "Página 18 do original: navegador, Python com a mesma regra e sklearn chegam ao mesmo resultado, com diferença máxima de 0,000327 no intercepto. A conferência equivalente aqui está nos metadados do slide 43 e no notebook."
+    ],
+    "transicao": "Mesmo com um coeficiente fixo, o efeito observado na PD muda ao longo da curva logística."
+   },
+   "proximo": {
+    "n": "14",
+    "titulo": "Aumentar o escore em 0,40 não aumenta toda PD pelo mesmo valor"
+   }
+  },
+  {
+   "n": "14",
+   "bloco": "logit",
+   "blocoNome": "Regressão logística",
+   "titulo": "Aumentar o escore em 0,40 não aumenta toda PD pelo mesmo valor",
+   "subtitulo": "O mesmo deslocamento horizontal produz alturas diferentes na sigmoide",
+   "conclusao": "A resposta em probabilidade é mais intensa na região central da curva.",
+   "fonte": "Exemplo didático de logit; cálculo próprio",
+   "resumo": "Sigmoide com três segmentos destacados, partindo de PDs de 2%, 10% e 40%, e comparação entre variação exata e aproximação pela tangente.",
+   "notas": {
+    "conducao": [
+     "Comece pelos três segmentos, todos com a mesma largura horizontal, e peça que comparem as alturas.",
+     "Revele os valores e só então a derivada.",
+     "Reduza a mudança para 1 ponto e mostre a aproximação local ficando mais próxima."
+    ],
+    "respostas": [
+     "O efeito máximo da derivada da logística ocorre em p igual a 0,5. Isso é matemática, não recomendação de operar perto de 50% de PD.",
+     "A derivada é aproximação para mudanças pequenas. Para 10 pontos de comprometimento, use a conversão exata."
+    ],
+    "cuidados": [
+     "A variação de z continua sendo o coeficiente vezes a variação da variável.",
+     "Valores em pontos percentuais não podem ser lidos em unidade de odds.",
+     "Em variação zero, os dois métodos dão exatamente zero."
+    ],
+    "aprofundar": [],
+    "transicao": "Até aqui usamos variáveis numéricas e um indicador. Como incluir uma característica com várias categorias?"
+   },
+   "proximo": {
+    "n": "15",
+    "titulo": "Canal digital não significa duas vezes agência"
+   }
+  },
+  {
+   "n": "15",
+   "bloco": "logit",
+   "blocoNome": "Regressão logística",
+   "titulo": "Canal digital não significa duas vezes agência",
+   "subtitulo": "Categorias entram por comparação com uma referência",
+   "conclusao": "O número atribuído a uma categoria não deve inventar uma ordem econômica.",
+   "fonte": "Extensão pedagógica da fórmula manual; cálculo próprio",
+   "resumo": "Três categorias de canal, tabela de indicadores e contribuição adicional ao escore, com troca da categoria de referência.",
+   "notas": {
+    "conducao": [
+     "Pergunte o que ficaria implícito ao usar canal igual a 1, 2 e 3 diretamente.",
+     "Mostre a tabela de indicadores e só então troque a referência.",
+     "Use o momento para separar interpretação de coeficientes e previsão do modelo."
+    ],
+    "respostas": [
+     "Com agência como referência: digital soma 0,30 e parceiro soma 0,60 ao escore.",
+     "Com digital como referência: intercepto passa a −3,20, agência recebe −0,30 e parceiro +0,30. As PDs por categoria não mudam.",
+     "Categoria omitida não é categoria ausente: ela está no intercepto."
+    ],
+    "cuidados": [
+     "Este é um exemplo separado, que não altera a fórmula canônica dos slides 07 a 14 nem as PDs dos quatro clientes.",
+     "Uma categoria nova em produção exige tratamento definido na codificação. Não invente coeficiente.",
+     "Canal pode refletir seleção, não causalidade.",
+     "Manter todas as indicadoras junto com o intercepto cria redundância na parametrização."
+    ],
+    "aprofundar": [],
+    "transicao": "A codificação determina a forma que o modelo enxerga a informação. Podemos também flexibilizar a forma das variáveis numéricas."
+   },
+   "proximo": {
+    "n": "16",
+    "titulo": "O efeito pode se intensificar depois de um limite"
+   }
+  },
+  {
+   "n": "16",
+   "bloco": "logit",
+   "blocoNome": "Regressão logística",
+   "titulo": "O efeito pode se intensificar depois de um limite",
+   "subtitulo": "Linearidade é nos parâmetros, não na forma das variáveis",
+   "conclusao": "A linearidade é nos parâmetros. A forma das variáveis pode ser flexível.",
+   "fonte": "Cenário separado da fórmula manual; cálculo próprio",
+   "resumo": "Contribuição ao escore e PD resultante em função do comprometimento, com e sem mudança de inclinação em 40%.",
+   "notas": {
+    "conducao": [
+     "Mostre primeiro a relação na escala do escore.",
+     "Ative a transformação e peça que identifiquem onde a inclinação muda.",
+     "Acompanhe a tradução para PD e pergunte como decidir se a flexibilidade ajudou: a resposta cita validação, não a beleza da curva."
+    ],
+    "respostas": [
+     "Antes de 40% a inclinação é 0,04 por ponto. Depois de 40% passa a 0,08 por ponto.",
+     "A função é contínua no nó: em comprometimento de 40% as duas formas coincidem."
+    ],
+    "cuidados": [
+     "Escolher o nó olhando o teste vaza informação.",
+     "Flexibilidade custa parâmetros e exige controle de complexidade.",
+     "Este é um exemplo linear por partes, não uma spline cúbica.",
+     "Árvores não são necessárias para representar toda não linearidade."
+    ],
+    "aprofundar": [
+     "Material original, capítulo 4, página 21: faixas devolvem flexibilidade sem trocar de família, ao custo de um coeficiente por faixa em vez de um por variável.",
+     "As regras declaradas lá continuam válidas: volume mínimo por faixa, monotonicidade quando existe hipótese econômica de direção, estabilidade das fronteiras nas safras seguintes e fronteiras definidas antes de olhar o alvo.",
+     "O WoE é esse mesmo tratamento com um valor específico por faixa, o logaritmo da razão entre a distribuição dos adimplentes e a dos inadimplentes. A mudança de inclinação deste slide é a alternativa contínua, com um parâmetro adicional apenas."
+    ],
+    "transicao": "Além de mudar a forma de um efeito, podemos permitir que ele dependa de outra característica."
+   },
+   "proximo": {
+    "n": "17",
+    "titulo": "O comprometimento pesa igual para quem tem histórico de atraso?"
+   }
+  },
+  {
+   "n": "17",
+   "bloco": "logit",
+   "blocoNome": "Regressão logística",
+   "titulo": "O comprometimento pesa igual para quem tem histórico de atraso?",
+   "subtitulo": "Interação é diferença de inclinação na escala do escore",
+   "conclusao": "Com interação, o efeito do comprometimento no escore depende do histórico.",
+   "fonte": "Cenário separado da fórmula manual; cálculo próprio",
+   "resumo": "Duas retas de escore por comprometimento, uma para cada valor de histórico, e as curvas de PD correspondentes.",
+   "notas": {
+    "conducao": [
+     "Comece pelo escore, com as duas retas paralelas.",
+     "Pergunte o que muda quando o termo cruzado é ativado. Só então observe a PD.",
+     "Peça que o aluno separe efeito do histórico no escore de diferença de probabilidade."
+    ],
+    "respostas": [
+     "Sem interação: inclinação 0,04 nos dois grupos, retas paralelas no escore.",
+     "Com interação de 0,03: inclinação 0,04 para histórico zero e 0,07 para histórico um.",
+     "Mesmo sem termo cruzado, a diferença de PD entre os grupos varia com o comprometimento, porque a sigmoide é não linear."
+    ],
+    "cuidados": [
+     "Os coeficientes principais são condicionais ao valor de referência das demais variáveis.",
+     "Com interação, o coeficiente do histórico não é efeito constante em qualquer comprometimento.",
+     "A leitura é associativa e pode não representar uma intervenção viável.",
+     "Ausência de termo cruzado não implica diferença constante de PD."
+    ],
+    "aprofundar": [],
+    "transicao": "Cada transformação ou interação acrescenta flexibilidade. Como evitar que isso capture particularidades da amostra?"
+   },
+   "proximo": {
+    "n": "18",
+    "titulo": "Coeficientes extremos podem estar aprendendo ruído"
+   }
+  },
+  {
+   "n": "18",
+   "bloco": "logit",
+   "blocoNome": "Regressão logística",
+   "titulo": "Coeficientes extremos podem estar aprendendo ruído",
+   "subtitulo": "Trajetórias de coeficientes e perdas, na grade de penalização efetivamente treinada",
+   "conclusao": "A melhor explicação do treino pode ser sensível demais para funcionar fora dele.",
+   "fonte": "Experimento sintético; semente e versões no notebook",
+   "resumo": "Trajetórias de coeficientes padronizados em função da força da penalização e curvas de perda de treino e validação.",
+   "notas": {
+    "conducao": [
+     "Comece com penalização fraca, observe as magnitudes e a validação.",
+     "Aumente a penalização e discuta o que melhora e o que piora.",
+     "Compare os dois cenários: na amostra completa o efeito é pequeno; na amostra reduzida ele aparece com clareza."
+    ],
+    "respostas": [],
+    "cuidados": [
+     "Regularização reduz variância em muitas situações. Não garante estabilidade em qualquer conjunto nem resolve mudança de população.",
+     "Coeficientes padronizados não são os números da fórmula manual dos slides 07 a 14.",
+     "A escolha da penalização faz parte do treinamento, e usa validação, nunca o teste.",
+     "Com variáveis correlacionadas, nem todo coeficiente diminui de magnitude de forma monótona.",
+     "A força da penalização mostrada é 1 dividido por C. C menor significa penalização maior."
+    ],
+    "aprofundar": [],
+    "transicao": "Podemos tornar o logit mais flexível e controlar sua complexidade. Em quais situações essa combinação é especialmente útil?"
+   },
+   "proximo": {
+    "n": "19",
+    "titulo": "Explicar a estrutura é vantagem; especificar a estrutura é responsabilidade"
+   }
+  },
+  {
+   "n": "19",
+   "bloco": "logit",
+   "blocoNome": "Regressão logística",
+   "titulo": "Explicar a estrutura é vantagem; especificar a estrutura é responsabilidade",
+   "subtitulo": "Adequação do logit em três situações práticas",
+   "conclusao": "O logit oferece uma estrutura explícita, mas a qualidade depende da especificação e da validação.",
+   "fonte": "Síntese conceitual aplicada; sem dados",
+   "resumo": "Risco por faixa de comprometimento com as duas curvas do logit ao centro, três situações práticas de adequação e uma síntese de critérios de escolha.",
+   "notas": {
+    "conducao": [
+     "Percorra as três situações olhando só o gráfico, e peça a resposta da pergunta de diagnóstico antes de revelar a ação. Na segunda, a abertura entre as faixas é visível: é o que uma interação omitida faz.",
+     "Peça uma razão para manter o logit mesmo se outro algoritmo tiver AUC um pouco maior.",
+     "Aceite manutenção, clareza de especificação e estabilidade, sempre condicionadas a evidência.",
+     "Depois peça uma situação em que insistir em um logit mal especificado seria prejudicial."
+    ],
+    "respostas": [],
+    "cuidados": [
+     "As faixas do gráfico são ilustrativas e servem para treinar a leitura, não para afirmar nada sobre a carteira. A figura está declarada como conceitual na fonte do slide.",
+     "Interpretável depende da quantidade de termos, transformações, interações e do público. Um logit com centenas de variáveis não é automaticamente fácil de explicar.",
+     "Coeficiente não é causa.",
+     "O desempenho de uma formulação simples não é o limite de toda a classe.",
+     "Produzir uma probabilidade não garante que ela esteja calibrada."
+    ],
+    "aprofundar": [
+     "Material original, capítulo 4, página 20: a linearidade em log odds é o limite da família. Um padrão não monótono na utilização não é representável sem transformar a variável.",
+     "Página 19: a fronteira de decisão do logit é uma reta no plano das variáveis, porque o escore é uma soma. Mudar o corte desloca a reta paralelamente e mudar um coeficiente gira a reta. A comparação com as regiões em degraus da árvore está no slide 26: o botão Sobrepor o logit desenha estas mesmas curvas por cima das quatro regiões, nos mesmos eixos.",
+     "Página 22: a síntese do capítulo original é soma, curva e limite. Os três aparecem aqui nos slides 07, 09 e neste."
+    ],
+    "transicao": "Antes de mudar de técnica, vamos verificar se conseguimos usar o que aprendemos em uma decisão de interpretação."
+   },
+   "proximo": {
+    "n": "20",
+    "titulo": "Bruno aumenta seu comprometimento de 38% para 48%. E agora?"
+   }
+  },
+  {
+   "n": "20",
+   "bloco": "logit",
+   "blocoNome": "Regressão logística",
+   "titulo": "Bruno aumenta seu comprometimento de 38% para 48%. E agora?",
+   "subtitulo": "Exercício: acompanhar a escala do escore e a escala da probabilidade",
+   "conclusao": "Entender o logit exige acompanhar a escala do escore e a escala da probabilidade.",
+   "fonte": "Exemplo didático de logit; cálculo próprio",
+   "resumo": "Perfil de Bruno com uma única alteração destacada e três alternativas de interpretação.",
+   "notas": {
+    "conducao": [
+     "Dê um minuto em duplas. Peça a explicação de quem escolheu cada alternativa, sem expor pessoas.",
+     "Use a solução para revisar a diferença entre coeficiente e alteração de PD.",
+     "Pergunte oralmente: o que podemos afirmar sobre o efeito causal de reduzir o comprometimento?"
+    ],
+    "respostas": [
+     "A alternativa correta é a segunda: o escore sobe 0,40 e as odds são multiplicadas por e elevado a 0,40.",
+     "Escore original −2,025 e PD 11,66%. Novo escore −1,625 e PD aproximadamente 16,45%. Diferença aproximada de 4,79 pontos.",
+     "Sobre causalidade: o cálculo descreve o modelo mantendo as demais entradas fixas. Não identifica efeito causal.",
+     "Desafio opcional: sem o histórico de atraso, o escore de Bruno cai 0,80 e a PD passa de 11,66% para aproximadamente 5,66%."
+    ],
+    "cuidados": [
+     "O que dobra são as odds, não a probabilidade. Converter odds em PD exige a volta pela logística.",
+     "Os coeficientes deste exemplo foram escolhidos para ensinar, não estimados em dados. A ordem de grandeza é plausível; os valores não são um modelo.",
+     "Uma PD de Bruno não diz o que acontecerá com Bruno. Diz a frequência esperada em exposições semelhantes."
+    ],
+    "aprofundar": [],
+    "transicao": "Agora imagine que o modelo não some características, mas faça perguntas sucessivas: houve atraso? O comprometimento é alto? Essa é a lógica de uma árvore."
+   },
+   "proximo": {
+    "n": "21",
+    "titulo": "Houve atraso? Qual é o comprometimento?"
+   }
+  },
+  {
+   "n": "21",
+   "bloco": "arvore",
+   "blocoNome": "Árvore de decisão",
+   "titulo": "Houve atraso? Qual é o comprometimento?",
+   "subtitulo": "Uma árvore organiza a previsão em perguntas sucessivas",
+   "conclusao": "A árvore encaminha clientes semelhantes para uma mesma estimativa de risco.",
+   "fonte": "Árvore didática de 1.000 contratos; cálculo próprio",
+   "resumo": "Árvore de profundidade dois: histórico na raiz e comprometimento em cada ramo, com o percurso de um cliente destacado.",
+   "notas": {
+    "conducao": [
+     "Pergunte qual informação a árvore consultará primeiro.",
+     "Leve Ana à esquerda e então à folha de comprometimento até 40%.",
+     "Mostre Diego no outro ramo para criar contraste. Só depois nomeie nó, ramo e folha.",
+     "Não explique Gini neste slide."
+    ],
+    "respostas": [
+     "Ana: histórico 0 e comprometimento 22%, portanto ramo esquerdo e folha de comprometimento até 40%.",
+     "Bruno: histórico 1 e comprometimento 38%, portanto ramo direito e folha de comprometimento até 40%.",
+     "Carla: histórico 0 e comprometimento 48%, folha de comprometimento acima de 40%.",
+     "Diego: histórico 1 e comprometimento 55%, folha de comprometimento acima de 40%.",
+     "Comprometimento exatamente igual a 40 vai para o ramo até 40."
+    ],
+    "cuidados": [
+     "O percurso é determinístico, mas a previsão ao final é probabilística. Duas pessoas diferentes podem cair na mesma folha.",
+     "As perguntas e os limites são aprendidos dos dados. O limite de 40% é regra deste exemplo, não norma de crédito.",
+     "Esta árvore pequena serve para enxergar o mecanismo. Não é o resultado do experimento maior."
+    ],
+    "aprofundar": [],
+    "transicao": "Depois de encaminhar o cliente, precisamos atribuir uma PD ao grupo ao qual ele pertence."
+   },
+   "proximo": {
+    "n": "22",
+    "titulo": "Nesta folha, 18 de 600 contratos ficaram inadimplentes"
+   }
+  },
+  {
+   "n": "22",
+   "bloco": "arvore",
+   "blocoNome": "Árvore de decisão",
+   "titulo": "Nesta folha, 18 de 600 contratos ficaram inadimplentes",
+   "subtitulo": "A PD da folha é a frequência observada no grupo",
+   "conclusao": "A previsão é a frequência observada no grupo, sujeita à incerteza e à generalização.",
+   "fonte": "Árvore didática de 1.000 contratos; cálculo próprio",
+   "resumo": "Árvore de 1.000 contratos com contagens em cada nó e PD por folha, com o percurso do cliente selecionado.",
+   "notas": {
+    "conducao": [
+     "Construa a conta de Ana em voz alta e peça a de Bruno.",
+     "Pergunte se clientes da mesma folha terão a mesma previsão mesmo com rendas diferentes: sim, nesta árvore, porque a renda não entra nas perguntas."
+    ],
+    "respostas": [
+     "Ana 18/600 = 3%. Bruno 12/80 = 15%. Carla 22/200 = 11%. Diego 48/120 = 40%.",
+     "As folhas somam 1.000 contratos e 100 eventos, iguais à raiz."
+    ],
+    "cuidados": [
+     "A taxa aparente da folha não comprova calibração futura.",
+     "Este exemplo é sem pesos. Com ajuste ponderado, a fórmula da folha refletiria os pesos.",
+     "Estas PDs são da árvore didática. Não são previsões do experimento estimado, e não devem ser comparadas com as PDs manuais do logit como se uma fosse mais correta."
+    ],
+    "aprofundar": [],
+    "transicao": "Por que a primeira pergunta foi sobre histórico, e não sobre renda ou comprometimento?"
+   },
+   "proximo": {
+    "n": "23",
+    "titulo": "Qual pergunta separa melhor os comportamentos observados?"
+   }
+  },
+  {
+   "n": "23",
+   "bloco": "arvore",
+   "blocoNome": "Árvore de decisão",
+   "titulo": "Qual pergunta separa melhor os comportamentos observados?",
+   "subtitulo": "Dois candidatos à primeira divisão, a partir da mesma raiz",
+   "conclusao": "Uma boa divisão cria grupos mais homogêneos segundo a função objetivo.",
+   "fonte": "Árvore didática de 1.000 contratos; cálculo próprio",
+   "resumo": "Raiz de 1.000 contratos com 10% de eventos e dois candidatos de divisão, cada um com duas barras de composição.",
+   "notas": {
+    "conducao": [
+     "Peça que o aluno escolha visualmente e explique por quê.",
+     "Se ele usar apenas a diferença entre taxas, pergunte o que aconteceria com uma folha de duas observações.",
+     "Mostre o papel do tamanho do grupo antes de revelar a regra de escolha."
+    ],
+    "respostas": [
+     "Histórico separa em 800 contratos com 5% e 200 contratos com 30%.",
+     "Comprometimento separa em 680 contratos com aproximadamente 4,41% e 320 contratos com 21,88%.",
+     "A regra de escolha é a menor impureza ponderada, calculada no próximo slide."
+    ],
+    "cuidados": [
+     "Esta é a melhor divisão entre os candidatos comparados, não entre todas as variáveis possíveis.",
+     "A busca é gulosa e local: a melhor divisão imediata não garante a árvore globalmente ótima.",
+     "Com dados agregados não é possível varrer limiares intermediários sem inventar contagens."
+    ],
+    "aprofundar": [],
+    "transicao": "Vamos colocar essa comparação em números com o índice de Gini."
+   },
+   "proximo": {
+    "n": "24",
+    "titulo": "Histórico reduz o Gini de 0,180 para 0,160"
+   }
+  },
+  {
+   "n": "24",
+   "bloco": "arvore",
+   "blocoNome": "Árvore de decisão",
+   "titulo": "Histórico reduz o Gini de 0,180 para 0,160",
+   "subtitulo": "Impureza da raiz, média ponderada dos filhos e ganho",
+   "conclusao": "Não basta uma folha pura: importa como toda a amostra fica depois da divisão.",
+   "fonte": "Árvore didática de 1.000 contratos; cálculo próprio",
+   "resumo": "Três etapas do cálculo do ganho de Gini e curva de impureza binária em função da taxa de eventos.",
+   "notas": {
+    "conducao": [
+     "Peça a conta do Gini da raiz antes de revelar.",
+     "Antes de ponderar, pergunte por que não usar a média simples. Mostre a diferença entre 800 e 200 registros.",
+     "Termine explicitando que o algoritmo compara vários candidatos, repete o procedimento em cada nó e precisa de uma regra para parar."
+    ],
+    "respostas": [
+     "Raiz com 10% de eventos: Gini igual a 0,180.",
+     "Por histórico: 0,8 vezes 0,095 mais 0,2 vezes 0,420 resulta em 0,160, com ganho de 0,020.",
+     "Por comprometimento: impureza ponderada 0,166728 e ganho 0,013272.",
+     "Impureza zero em grupo puro; máximo de 0,5 quando a taxa é 50%."
+    ],
+    "cuidados": [
+     "Gini é critério de impureza no treino. Não é AUC, KS nem lucro.",
+     "Outras perdas podem orientar árvores. Não misture entropia e Gini no mesmo cálculo.",
+     "Ganho de impureza não é efeito causal do histórico."
+    ],
+    "aprofundar": [
+     "O capítulo 5 refaz esta mesma busca sobre outra base: dezesseis propostas com raiz em 0,500 de Gini, onde o corte vencedor é utilização ≤ 57,5% com redução de 0,28125. Aqui a raiz é de mil contratos a 10% de eventos, com Gini 0,180 e ganho de 0,020 no histórico. A regra é a mesma, a aritmética não: nenhum dos dois números se converte no outro.",
+     "Material original, capítulo 5, página 4: o Gini não é a taxa de erro do nó. O segundo nível daquela árvore derruba o Gini de 0,21875 para 0,12500 sem tirar um único erro, e é por isso que a taxa de erro não serve de critério."
+    ],
+    "transicao": "Ao dividir mais, as folhas parecem mais precisas. Mas quanto podemos confiar em uma taxa calculada com poucas observações?"
+   },
+   "proximo": {
+    "n": "25",
+    "titulo": "Duas folhas com PD de 10%. A evidência é igual?"
+   }
+  },
+  {
+   "n": "25",
+   "bloco": "arvore",
+   "blocoNome": "Árvore de decisão",
+   "titulo": "Duas folhas com PD de 10%. A evidência é igual?",
+   "subtitulo": "Intervalo binomial descritivo de Wilson, nominal de 95%",
+   "conclusao": "10% em 20 contratos não oferece a mesma precisão que 10% em 1.000.",
+   "fonte": "Pares binomiais ilustrativos; cálculo próprio",
+   "resumo": "Duas linhas com ponto em 10% e intervalo de Wilson, uma com 2 eventos em 20 contratos e outra com 100 em 1.000.",
+   "notas": {
+    "conducao": [
+     "Pergunte qual folha transmitiria mais confiança e por quê.",
+     "Aumente o tamanho da folha e peça que o aluno narre o que mudou.",
+     "Mostre o caso de zero eventos e pergunte se o gestor poderia tratar o risco como impossível."
+    ],
+    "respostas": [
+     "2 em 20: intervalo aproximado de 2,8% a 30,1%.",
+     "100 em 1.000: intervalo aproximado de 8,3% a 12,0%.",
+     "0 em 20: o limite superior continua positivo, aproximadamente 16,1%. Zero evento não prova risco zero."
+    ],
+    "cuidados": [
+     "O intervalo descreve a dimensão binomial. Não incorpora a escolha adaptativa das folhas, a seleção da população nem a mudança temporal.",
+     "Não é correto dizer que a PD individual tem 95% de chance de cair nesse intervalo.",
+     "A incerteza real da árvore inclui a busca pelos cortes, e é maior que a mostrada aqui."
+    ],
+    "aprofundar": [
+     "Fórmula do intervalo de Wilson, com z igual a 1,96 para 95% nominal: o centro é (p̂ + z²/2n) dividido por (1 + z²/n), e a meia amplitude é z vezes a raiz de [p̂(1−p̂)/n + z²/4n²], dividida pelo mesmo denominador.",
+     "Wilson é preferível ao intervalo normal simples justamente no caso deste slide: taxa baixa e folha pequena, onde o intervalo normal produz limite inferior negativo."
+    ],
+    "transicao": "Folhas maiores estabilizam estimativas, mas a árvore também precisa capturar diferenças relevantes entre clientes."
+   },
+   "proximo": {
+    "n": "26",
+    "titulo": "O mesmo aumento de comprometimento pode mudar de folha"
+   }
+  },
+  {
+   "n": "26",
+   "bloco": "arvore",
+   "blocoNome": "Árvore de decisão",
+   "titulo": "O mesmo aumento de comprometimento pode mudar de folha",
+   "subtitulo": "As regras da árvore dividem o espaço em regiões de previsão constante",
+   "conclusao": "Os efeitos dependem do caminho. Dentro de uma folha, a previsão é constante.",
+   "fonte": "Árvore didática de 1.000 contratos; cálculo próprio",
+   "resumo": "Duas faixas de comprometimento, uma para cada valor de histórico, com as quatro regiões da árvore, os quatro clientes posicionados e a curva do logit sobreponível.",
+   "notas": {
+    "conducao": [
+     "Mova Bruno de 38 para 41 e compare com Ana ao redor do mesmo limite.",
+     "Depois clique em Sobrepor o logit. É a única tela da aula em que degrau e curva aparecem nos mesmos eixos. Pergunte qual das duas descreve melhor um cliente em 41%, e aceite que a tela não decide.",
+     "A mudança é de 15% para 40% no ramo com histórico, e de 3% para 11% no ramo sem histórico.",
+     "Pergunte se uma mudança pequena de risco verdadeiro deveria produzir esse salto: a descontinuidade é da aproximação do modelo."
+    ],
+    "respostas": [],
+    "cuidados": [
+     "Árvores capturam interações porque a pergunta de um ramo depende das decisões anteriores. Isso não dispensa validação.",
+     "Uma folha define uma região constante. Ensembles produzem funções mais detalhadas.",
+     "O limite de 40% é deste exemplo. Não é política de crédito.",
+     "Histórico é categórico: as duas faixas são categorias, não um eixo contínuo."
+    ],
+    "aprofundar": [],
+    "transicao": "Se continuarmos dividindo o espaço, podemos criar regiões cada vez menores. Quando isso começa a prejudicar?"
+   },
+   "proximo": {
+    "n": "27",
+    "titulo": "A árvore cresce. O resultado fora do treino acompanha?"
+   }
+  },
+  {
+   "n": "27",
+   "bloco": "arvore",
+   "blocoNome": "Árvore de decisão",
+   "titulo": "A árvore cresce. O resultado fora do treino acompanha?",
+   "subtitulo": "Profundidade, perda de treino e perda de validação no experimento sintético",
+   "conclusao": "Uma árvore que memoriza o treino pode produzir probabilidades frágeis fora dele.",
+   "fonte": "Experimento sintético; semente e versões no notebook",
+   "resumo": "Mapas de regiões de um experimento auxiliar de duas variáveis para profundidades 2, 4 e 8, e curvas de perda de treino e validação por profundidade.",
+   "notas": {
+    "conducao": [
+     "Comece raso, aumente a complexidade e peça que comparem treino e validação.",
+     "Mostre a mediana de contratos por folha como pista de fragilidade, não como prova isolada.",
+     "A seleção usa a validação fora do tempo, nunca o teste final."
+    ],
+    "respostas": [],
+    "cuidados": [
+     "Os mapas vêm de um experimento auxiliar com apenas duas variáveis. Não são projeção exata do modelo completo.",
+     "A perda mostrada usa log loss com proteção numérica de 10 elevado a menos 6, porque árvores produzem probabilidades iguais a 0 ou 1 em folhas puras. O Brier está disponível na tabela.",
+     "Desempenho de uma única amostra varia. Diferenças pequenas podem não ser robustas.",
+     "Nem toda árvore profunda é ruim: a profundidade interage com tamanho de folha e poda."
+    ],
+    "aprofundar": [],
+    "transicao": "Podemos controlar o crescimento de mais de uma maneira. Cada parâmetro restringe uma parte diferente da árvore."
+   },
+   "proximo": {
+    "n": "28",
+    "titulo": "Três controles, três formas de conter o excesso de divisões"
+   }
+  },
+  {
+   "n": "28",
+   "bloco": "arvore",
+   "blocoNome": "Árvore de decisão",
+   "titulo": "Três controles, três formas de conter o excesso de divisões",
+   "subtitulo": "Profundidade máxima, mínimo de contratos por folha e poda por complexidade",
+   "conclusao": "Controlar complexidade é escolher quais detalhes dos dados vale a pena manter.",
+   "fonte": "Experimento sintético; semente e versões no notebook",
+   "resumo": "Árvore treinada resumida até o terceiro nível e três controles de complexidade com cenários efetivamente ajustados.",
+   "notas": {
+    "conducao": [
+     "Mostre primeiro a profundidade, depois uma folha pequena que ainda existe mesmo em árvore rasa.",
+     "Use essa folha para motivar o mínimo de contratos por folha.",
+     "Por fim, explique que a poda considera retirar partes de uma árvore já crescida."
+    ],
+    "respostas": [
+     "O parâmetro de folha é mínimo de observações, não mínimo de inadimplentes.",
+     "O alfa da poda não tem unidade universal de nós removidos: ele é o preço por folha no critério de custo e complexidade.",
+     "A seleção usa a perda de validação fora do tempo."
+    ],
+    "cuidados": [
+     "Cada configuração corresponde a uma árvore realmente treinada, não a uma ocultação visual de nós.",
+     "Aumentar o mínimo por folha não melhora calibração automaticamente.",
+     "O critério final continua sendo desempenho fora da amostra de ajuste."
+    ],
+    "aprofundar": [],
+    "transicao": "Mesmo árvores de tamanho parecido podem mudar bastante quando mudamos a amostra usada para aprender."
+   },
+   "proximo": {
+    "n": "29",
+    "titulo": "Se mudarmos um pouco a amostra, a árvore continua contando a mesma história?"
+   }
+  },
+  {
+   "n": "29",
+   "bloco": "arvore",
+   "blocoNome": "Árvore de decisão",
+   "titulo": "Se mudarmos um pouco a amostra, a árvore continua contando a mesma história?",
+   "subtitulo": "Vinte reamostragens do treino, com os mesmos hiperparâmetros",
+   "conclusao": "Uma regra fácil de ler pode ser sensível à amostra que a produziu.",
+   "fonte": "Experimento sintético; semente e versões no notebook",
+   "resumo": "Duas árvores de réplicas diferentes lado a lado e a dispersão das PDs dos quatro clientes nas vinte réplicas.",
+   "notas": {
+    "conducao": [
+     "Pergunte qual das duas árvores é a verdadeira e use a pergunta para discutir estimativa e variabilidade.",
+     "Compare estrutura e previsão: uma raiz diferente não significa mudança enorme de PD, e previsões podem variar mesmo com raízes iguais."
+    ],
+    "respostas": [],
+    "cuidados": [
+     "O bootstrap ilustra sensibilidade ao treinamento. Não é intervalo preditivo calibrado do risco verdadeiro de um cliente.",
+     "Não reamostramos o teste para treinar.",
+     "As réplicas exibidas foram escolhidas por critério declarado: a primeira réplica de cada variável de raiz observada, e não a mais dramática.",
+     "Este slide não é uma aula de random forest. Apenas situa por que ensembles exploram múltiplas funções."
+    ],
+    "aprofundar": [],
+    "transicao": "Antes de combinar várias árvores, vamos verificar se sabemos interpretar uma única árvore e suas limitações."
+   },
+   "proximo": {
+    "n": "30",
+    "titulo": "Carla recebe qual PD nesta árvore?"
+   }
+  },
+  {
+   "n": "30",
+   "bloco": "arvore",
+   "blocoNome": "Árvore de decisão",
+   "titulo": "Carla recebe qual PD nesta árvore?",
+   "subtitulo": "Exercício: percorrer, calcular e questionar",
+   "conclusao": "Uma regra legível ajuda a explicar o cálculo, mas não dispensa evidência de qualidade.",
+   "fonte": "Árvore didática de 1.000 contratos; cálculo próprio",
+   "resumo": "Árvore didática com a taxa da folha de Carla oculta e três tarefas: caminho, cálculo da PD e efeito de dobrar a renda.",
+   "notas": {
+    "conducao": [
+     "Reserve dois minutos em duplas.",
+     "Não revele a resposta ao primeiro clique em um ramo errado: explique a regra e permita corrigir.",
+     "Conclua com a importância de tamanho de folha, validação e estabilidade. Este é um bom ponto para a pausa da aula."
+    ],
+    "respostas": [
+     "Carla tem histórico 0 e comprometimento 48%, acima de 40%. Chega à folha de 22 eventos em 200 contratos, ou seja 11%.",
+     "Dobrar a renda isoladamente, com o comprometimento mantido fixo, não altera esta árvore, porque a renda não é usada nas perguntas.",
+     "Numa mudança econômica real o comprometimento poderia variar. A simulação é sobre a função do modelo.",
+     "Desafio final: Bruno de 38% para 41% passa de 15% para 40%. Isso não prova um salto real de risco exatamente nesse limite: é uma descontinuidade da aproximação aprendida."
+    ],
+    "cuidados": [
+     "A taxa de uma folha é estimativa com incerteza, e folhas pequenas têm intervalo largo. Ler a taxa sem o tamanho da folha é o erro mais comum aqui.",
+     "A regra da árvore é associação aprendida na amostra, não relação causal: mudar a variável no cliente não move a PD dele pelo caminho da árvore.",
+     "Esta árvore vem da miniatura de 1.000 contratos, separada da base do experimento. Não compare o desempenho dela com o dos modelos treinados."
+    ],
+    "aprofundar": [
+     "Quando a árvore é uma boa escolha, para fechar o bloco como o slide 19 fecha o do logit e o 40 o do boosting: quando o efeito de uma variável depende do valor de outra e a interação não precisa ser escrita à mão; quando a relação não é monótona e transformar a variável seria um chute; e quando a regra precisa virar política operacional, legível linha a linha. O preço é o que os slides 27 a 29 mostraram: a estrutura muda com uma observação, a taxa da folha não se lê sem o tamanho da folha, e a perda de treino não compara famílias. Não cabe em tela com o exercício revelado; está nos dois guias em PDF."
+    ],
+    "transicao": "Uma única árvore é clara, mas pode ser limitada ou instável. Podemos construir uma previsão melhor acrescentando várias árvores pequenas em sequência?"
+   },
+   "proximo": {
+    "n": "31",
+    "titulo": "E se uma árvore pequena ainda deixar estrutura nos erros?"
+   }
+  },
+  {
+   "n": "31",
+   "bloco": "boosting",
+   "blocoNome": "Gradient boosting",
+   "titulo": "E se uma árvore pequena ainda deixar estrutura nos erros?",
+   "subtitulo": "Resíduos agregados por região, no experimento auxiliar de duas variáveis",
+   "conclusao": "Em vez de exigir tudo de uma árvore, podemos construir a previsão por acréscimos.",
+   "fonte": "Experimento auxiliar de duas variáveis; cálculo próprio",
+   "resumo": "Mapa de previsão de uma árvore rasa e média do resíduo observado menos previsto por região.",
+   "notas": {
+    "conducao": [
+     "Retome o slide 27: aumentar uma única árvore não é a única opção.",
+     "Mostre que há grupos em que a previsão ficou sistematicamente baixa ou alta.",
+     "Pergunte como uma próxima função poderia atuar nesses grupos. Termine apresentando a palavra sequencial."
+    ],
+    "respostas": [],
+    "cuidados": [
+     "Um resíduo individual não é padrão. A leitura só faz sentido na média por região.",
+     "Subajuste e variabilidade não se resolvem com boosting em todos os casos: combinar árvores também acrescenta complexidade e pode sobreajustar.",
+     "Os resíduos aqui vêm do conjunto usado no ajuste, nunca do teste.",
+     "O título é uma hipótese a ilustrar com dados, não um diagnóstico automático."
+    ],
+    "aprofundar": [],
+    "transicao": "Vamos entender a regra de construção: partir de um escore simples, calcular a direção de melhoria e acrescentar uma árvore."
+   },
+   "proximo": {
+    "n": "32",
+    "titulo": "A próxima árvore aprende a partir das previsões atuais"
+   }
+  },
+  {
+   "n": "32",
+   "bloco": "boosting",
+   "blocoNome": "Gradient boosting",
+   "titulo": "A próxima árvore aprende a partir das previsões atuais",
+   "subtitulo": "Um ciclo de atualização em quatro passos",
+   "conclusao": "Cada árvore responde ao que ainda precisa melhorar na previsão atual.",
+   "fonte": "Miniatura didática de 10 registros; cálculo próprio",
+   "resumo": "Ciclo em quatro passos: prever, calcular a direção, ajustar a correção e atualizar o escore, com a régua do escore acumulado.",
+   "notas": {
+    "conducao": [
+     "Pergunte se cada árvore produz uma nova PD a ser somada.",
+     "Revele que o objeto somado é F, um escore na escala de log odds neste caso.",
+     "Reconecte ao slide 09: só ao final aplicamos a função logística."
+    ],
+    "respostas": [
+     "Novo escore é igual ao escore atual mais a taxa de aprendizagem vezes a contribuição da árvore.",
+     "A árvore de regressão devolve números positivos ou negativos, não um voto entre adimplente e inadimplente.",
+     "Em combinação independente, os modelos são ajustados sem esse encadeamento e depois agregados."
+    ],
+    "cuidados": [
+     "O algoritmo pode otimizar perdas diferentes. Aqui o alvo é binário e a perda é logística.",
+     "O gradiente depende da função de perda escolhida.",
+     "Esta é uma apresentação de primeira ordem, didaticamente válida. Implementações podem usar atualizações diferentes nas folhas."
+    ],
+    "aprofundar": [],
+    "transicao": "Antes de corrigir qualquer coisa, precisamos de uma previsão inicial. Qual seria a melhor se tratássemos todos igualmente?"
+   },
+   "proximo": {
+    "n": "33",
+    "titulo": "Dois eventos em dez contratos: começamos em 20%"
+   }
+  },
+  {
+   "n": "33",
+   "bloco": "boosting",
+   "blocoNome": "Gradient boosting",
+   "titulo": "Dois eventos em dez contratos: começamos em 20%",
+   "subtitulo": "O melhor preditor constante da perda logarítmica no treino",
+   "conclusao": "Antes de usar características, a taxa observada fornece o ponto de partida do exemplo.",
+   "fonte": "Miniatura didática de 10 registros; cálculo próprio",
+   "resumo": "Dez registros divididos em dois grupos, previsão inicial constante e curva da perda média em função dessa constante.",
+   "notas": {
+    "conducao": [
+     "Pergunte qual PD seria razoável antes de olhar qualquer característica.",
+     "Compare 10%, 20% e 40% na perda média.",
+     "Revele que a média empírica minimiza a perda do modelo constante não ponderado, e conecte F0 à conversão do slide 10.",
+     "Só então mostre os grupos A e B, anunciando que eles permitirão melhorar a previsão uniforme."
+    ],
+    "respostas": [
+     "Média de y igual a 0,2, que é o mínimo da curva de perda.",
+     "F0 = ln(0,20 / 0,80) = −1,3863, com logaritmo natural."
+    ],
+    "cuidados": [
+     "O ponto inicial depende da perda, dos pesos e da implementação. Este exemplo é sem pesos e binário.",
+     "A taxa de 20% descreve esta miniatura. Não descreve o mercado de crédito nem a base principal.",
+     "Os desfechos aqui são atributos de treinamento conhecidos, não informação sobre um cliente novo.",
+     "Ao avançar para a miniatura canônica, a previsão inicial volta a 20%."
+    ],
+    "aprofundar": [
+     "Material original, capítulo 6, página 13: o mesmo procedimento em classificação, escrito em cinco linhas, com F₀ = ln(π ÷ (1 − π)), alvo y − p e atualização F ← F + η × h. Lá a base tem dezesseis propostas e η é 0,40; aqui a miniatura tem dez registros. O procedimento é idêntico, os números são de exemplos diferentes."
+    ],
+    "transicao": "Agora compare o que aconteceu com o que previmos: essa diferença indica a direção da primeira correção."
+   },
+   "proximo": {
+    "n": "34",
+    "titulo": "A primeira correção reduz A e aumenta B"
+   }
+  },
+  {
+   "n": "34",
+   "bloco": "boosting",
+   "blocoNome": "Gradient boosting",
+   "titulo": "A primeira correção reduz A e aumenta B",
+   "subtitulo": "Resíduos, média por folha e atualização do escore",
+   "conclusao": "A árvore aprende um padrão nos gradientes e aplica a mesma correção a quem cai na mesma folha.",
+   "fonte": "Miniatura didática de 10 registros; cálculo próprio",
+   "resumo": "Dez registros com a coluna de resíduo, um stump que divide o comprometimento em 40 e as folhas com a média dos resíduos.",
+   "notas": {
+    "conducao": [
+     "Peça o resíduo de um evento e o de um não evento.",
+     "Calcule a média do grupo B em voz alta.",
+     "Pergunte por que três adimplentes do grupo B receberam aumento. Resposta: o modelo captura o risco do grupo, não reproduz cada rótulo.",
+     "Localize os quatro clientes: com comprometimento 22 e 38, Ana e Bruno caem em A; com 48 e 55, Carla e Diego caem em B. Uma árvore só dá a mesma PD a Ana e a Bruno."
+    ],
+    "respostas": [
+     "Em A, cinco resíduos de −0,2 e média −0,2.",
+     "Em B, três resíduos de −0,2 e dois de +0,8, média +0,2.",
+     "Com taxa de aprendizagem 1: F do grupo A vai a −1,586294 e PD a 16,9906%. F do grupo B vai a −1,186294 e PD a 23,3922%."
+    ],
+    "cuidados": [
+     "y menos p é o gradiente negativo da perda logística em relação ao escore nesta parametrização.",
+     "Isso não significa que toda biblioteca use exatamente a média como valor final da folha.",
+     "As contribuições estão em unidades de escore, não em pontos percentuais de PD.",
+     "Primeira ordem didática: a folha recebe a média do gradiente negativo, sem passo de Newton."
+    ],
+    "aprofundar": [],
+    "transicao": "Depois da atualização, os resíduos mudaram. Por isso a segunda árvore precisa olhar novamente para as previsões."
+   },
+   "proximo": {
+    "n": "35",
+    "titulo": "A primeira árvore mudou as previsões. Agora mudam os gradientes"
+   }
+  },
+  {
+   "n": "35",
+   "bloco": "boosting",
+   "blocoNome": "Gradient boosting",
+   "titulo": "A primeira árvore mudou as previsões. Agora mudam os gradientes",
+   "subtitulo": "A segunda correção é recalculada depois da primeira",
+   "conclusao": "A próxima correção é recalculada depois da anterior. Ela não repete mecanicamente o mesmo passo.",
+   "fonte": "Miniatura didática de 10 registros; cálculo próprio",
+   "resumo": "Tabela com as previsões e resíduos antes e depois da primeira correção, segunda árvore com novas médias e trajetória de PD por iteração.",
+   "notas": {
+    "conducao": [
+     "Antes de revelar a média do grupo B, pergunte se ela continuará em mais 0,2.",
+     "Faça a turma perceber que o resíduo de um y = 1 diminuiu e o de um y = 0 ficou mais negativo.",
+     "Mostre que a correção média positiva persiste, mas mudou de tamanho."
+    ],
+    "respostas": [
+     "No grupo A, r1 = −0,1699058933 e a média da folha é o mesmo valor.",
+     "No grupo B, três resíduos de −0,2339223413 e dois de +0,7660776587, média +0,1660776587.",
+     "Com taxa 1: F do grupo A vai a −1,7562002544 e PD a 14,7267%. F do grupo B vai a −1,0202167024 e PD a 26,4985%."
+    ],
+    "cuidados": [
+     "Os resíduos da segunda rodada usam p1, nunca p0.",
+     "A nova árvore poderia usar outro corte em dados mais ricos. Aqui o corte permanece por construção da miniatura, que só tem dois valores de comprometimento.",
+     "Nem toda correção diminui, e as previsões individuais não caminham necessariamente de forma monótona. Isso acontece aqui pela simplicidade dos grupos.",
+     "O objetivo é reduzir a perda agregada, não acertar cada rótulo."
+    ],
+    "aprofundar": [],
+    "transicao": "Somamos duas contribuições. Vamos olhar essa soma como uma função que também pode prever um cliente novo."
+   },
+   "proximo": {
+    "n": "36",
+    "titulo": "Escore inicial mais árvore 1 mais árvore 2 é a nova PD"
+   }
+  },
+  {
+   "n": "36",
+   "bloco": "boosting",
+   "blocoNome": "Gradient boosting",
+   "titulo": "Escore inicial mais árvore 1 mais árvore 2 é a nova PD",
+   "subtitulo": "Somamos contribuições no escore e só então calculamos a probabilidade",
+   "conclusao": "Para prever, o cliente percorre as árvores já aprendidas. Não precisamos conhecer seu desfecho.",
+   "fonte": "Miniatura didática de 10 registros; cálculo próprio",
+   "resumo": "Waterfall do escore inicial e das duas contribuições, com a conversão logística ao lado e a ficha de um solicitante novo.",
+   "notas": {
+    "conducao": [
+     "Apresente o solicitante novo e pergunte onde está o y dele.",
+     "Antes de trocar η, peça um palpite: se somarmos 40% de cada correção, a PD final é 40% do caminho? Depois troque para 0,40 e mostre que não.",
+     "Mostre que y só foi usado no treinamento das duas árvores.",
+     "Faça o percurso nas duas árvores, some e converta. Compare com o waterfall do logit: ambos somam em uma escala de escore, com funções diferentes."
+    ],
+    "respostas": [
+     "Com η = 1, grupo B: −1,386294 mais 0,200000 mais 0,166078 é igual a −1,020217, e a PD é 26,4985%.",
+     "Com η = 1, grupo A: −1,386294 menos 0,200000 menos 0,169906 é igual a −1,756200, e a PD é 14,7267%.",
+     "Com η = 0,40 e as mesmas duas árvores: grupo A chega a 17,6347% e grupo B a 22,5912%."
+    ],
+    "cuidados": [
+     "Não some as PDs de cada árvore nem chame as contribuições de probabilidades.",
+     "Um conjunto real tem muitas árvores e padrões mais ricos. A miniatura de duas árvores só torna o mecanismo visível.",
+     "Esta não é uma explicação por variável: é a decomposição exata da soma das árvores.",
+     "Com taxa de aprendizagem diferente de 1, o que se soma é a taxa multiplicada pela contribuição.",
+     "Multiplicar as duas contribuições de η = 1 por 0,40 não dá o resultado de η = 0,40: a segunda árvore é outra, porque partiu de outro escore."
+    ],
+    "aprofundar": [],
+    "transicao": "Se cada passo for menor, precisaremos de mais etapas. Como escolher o tamanho dos passos e o número de árvores?"
+   },
+   "proximo": {
+    "n": "37",
+    "titulo": "Learning rate e número de árvores precisam ser escolhidos juntos"
+   }
+  },
+  {
+   "n": "37",
+   "bloco": "boosting",
+   "blocoNome": "Gradient boosting",
+   "titulo": "Learning rate e número de árvores precisam ser escolhidos juntos",
+   "subtitulo": "Trajetórias de perda treinadas com cada taxa, no experimento sintético",
+   "conclusao": "Mudar o passo altera previsões, gradientes e, portanto, o que as próximas árvores aprendem.",
+   "fonte": "Experimento sintético; semente e versões no notebook",
+   "resumo": "Perda de treino e de validação por iteração para três taxas de aprendizagem, com o ponto selecionado e a PD de um cliente.",
+   "notas": {
+    "conducao": [
+     "Compare as taxas no mesmo número de árvores e depois permita mais árvores para a taxa menor.",
+     "Pergunte se taxa menor é sempre melhor. Não: há custo computacional, subajuste com poucas árvores e comportamento que depende dos dados."
+    ],
+    "respostas": [
+     "Cada curva vem de um treinamento próprio com sua taxa. Não é a reescala de um conjunto fixo de árvores.",
+     "Multiplicar as contribuições no fim não reproduz outro treinamento, porque os resíduos dependem do escore atualizado a cada passo."
+    ],
+    "cuidados": [
+     "O produto entre taxa e número de árvores não determina sozinho o modelo final: a trajetória muda.",
+     "A taxa se relaciona com regularização, mas não substitui validação temporal.",
+     "O teste final continua fora de qualquer escolha."
+    ],
+    "aprofundar": [],
+    "transicao": "Além de quantos passos dar e do tamanho de cada passo, importa o que cada árvore consegue representar."
+   },
+   "proximo": {
+    "n": "38",
+    "titulo": "Uma correção pode depender de uma característica ou da combinação de várias"
+   }
+  },
+  {
+   "n": "38",
+   "bloco": "boosting",
+   "blocoNome": "Gradient boosting",
+   "titulo": "Uma correção pode depender de uma característica ou da combinação de várias",
+   "subtitulo": "Profundidade de cada árvore no experimento auxiliar de duas variáveis",
+   "conclusao": "Muitas regras simples somadas não são sempre equivalentes a regras que combinam condições.",
+   "fonte": "Experimento auxiliar de duas variáveis; cálculo próprio",
+   "resumo": "Superfícies de PD prevista para boosting com profundidade 1, 2 e 3, na mesma escala e no mesmo domínio.",
+   "notas": {
+    "conducao": [
+     "Mostre a combinação de comprometimento alto com utilização alta e pergunte que regra a descreve.",
+     "Compare a representação por uma única condição e por duas condições.",
+     "Revele que árvores mais profundas capturam estruturas mais complexas, e que cada passo também pode ajustar mais ruído."
+    ],
+    "respostas": [],
+    "cuidados": [
+     "Profundidade máxima não é contagem universal e exata da ordem de interações. Profundidade 2 permite caminhos com duas condições, e implementações e repetição de variável importam.",
+     "A soma de stumps é aditiva no escore F. A transformação logística pode induzir não aditividade na escala da probabilidade. Não diga que stumps não produzem interação na PD.",
+     "Este experimento auxiliar não fala sobre o desempenho na base de crédito principal."
+    ],
+    "aprofundar": [],
+    "transicao": "Temos vários controles de complexidade. O acompanhamento da validação ajuda a decidir quando interromper a construção."
+   },
+   "proximo": {
+    "n": "39",
+    "titulo": "Continuar melhorando o treino pode deixar de ajudar a validação"
+   }
+  },
+  {
+   "n": "39",
+   "bloco": "boosting",
+   "blocoNome": "Gradient boosting",
+   "titulo": "Continuar melhorando o treino pode deixar de ajudar a validação",
+   "subtitulo": "Regra de parada com tolerância e paciência, definida antes de olhar o teste",
+   "conclusao": "A melhor iteração é escolhida usando uma amostra destinada a essa escolha.",
+   "fonte": "Experimento sintético; semente e versões no notebook",
+   "resumo": "Log loss de treino e de validação por iteração, com a melhor iteração e a iteração de parada marcadas.",
+   "notas": {
+    "conducao": [
+     "Peça que a turma sugira onde parar antes de revelar toda a curva.",
+     "Compare o palpite com a regra: tolerância e paciência evitam reagir a variações pequenas.",
+     "Mostre que o mínimo aparente pode ser ruidoso."
+    ],
+    "respostas": [],
+    "cuidados": [
+     "Melhor iteração e iteração de parada são coisas diferentes. A parada acontece depois da paciência, não no mínimo.",
+     "A validação usada é fora do tempo, definida no protocolo. Não é um corte aleatório interno da biblioteca.",
+     "Escolher o número de árvores é seleção de hiperparâmetro, e usa a mesma amostra de validação.",
+     "Um eventual reajuste com mais dados precisa respeitar a disponibilidade temporal e ser definido antes de calibrar e testar."
+    ],
+    "aprofundar": [],
+    "transicao": "Com esses controles, podemos avaliar em que condições a flexibilidade do boosting oferece ganhos e quais custos ela traz."
+   },
+   "proximo": {
+    "n": "40",
+    "titulo": "Mais flexibilidade exige mais disciplina de validação"
+   }
+  },
+  {
+   "n": "40",
+   "bloco": "boosting",
+   "blocoNome": "Gradient boosting",
+   "titulo": "Mais flexibilidade exige mais disciplina de validação",
+   "subtitulo": "Quatro situações, a pergunta de diagnóstico e a evidência que a responde",
+   "conclusao": "Capturar padrões complexos é uma capacidade. Demonstrar que eles persistem é uma obrigação.",
+   "fonte": "Síntese conceitual, com um resultado calculado como exemplo",
+   "resumo": "Quatro situações de adequação do boosting, cada uma com pergunta de diagnóstico e evidência aceitável.",
+   "notas": {
+    "conducao": [
+     "Peça que a turma escolha uma situação em que começaria pelo logit e outra em que investigaria boosting.",
+     "Discuta hipóteses e as evidências necessárias em cada caso.",
+     "Não revele ainda a tabela final da comparação principal."
+    ],
+    "respostas": [],
+    "cuidados": [
+     "Implementações como XGBoost, LightGBM e CatBoost existem e diferem entre si. Aqui não há catálogo de funcionalidades nem recomendação comercial.",
+     "Suporte a dados ausentes e categóricos depende da implementação. Não é propriedade universal do método.",
+     "A frase funciona bem em dados tabulares não substitui um experimento adequado no problema.",
+     "Nenhuma nota subjetiva é atribuída aos algoritmos."
+    ],
+    "aprofundar": [],
+    "transicao": "Se o modelo usa muitas árvores, como explicar o que ele aprendeu e por que atribuiu determinada PD a um cliente?"
+   },
+   "proximo": {
+    "n": "41",
+    "titulo": "O que o modelo usa em geral? O que pesou para Bruno?"
+   }
+  },
+  {
+   "n": "41",
+   "bloco": "boosting",
+   "blocoNome": "Gradient boosting",
+   "titulo": "O que o modelo usa em geral? O que pesou para Bruno?",
+   "subtitulo": "Importância global por permutação e contribuição local no escore",
+   "conclusao": "Uma variável importante na carteira não precisa ser o principal fator da previsão de todo cliente.",
+   "fonte": "Experimento sintético; semente e versões no notebook",
+   "resumo": "Importância global por queda de AUC ao permutar cada variável e decomposição local do escore de um cliente.",
+   "notas": {
+    "conducao": [
+     "Peça a variável mais relevante na carteira e a que mais eleva a previsão de Bruno. Mostre que podem ser diferentes.",
+     "Compare Bruno e Carla mantendo as escalas.",
+     "Termine com a pergunta: se alterarmos essa variável, garantimos essa redução de risco? Resposta: explicação de previsão não identifica efeito causal."
+    ],
+    "respostas": [
+     "As duas leituras respondem a perguntas diferentes: uma descreve a carteira, a outra descreve uma previsão.",
+     "A soma da referência com as contribuições reproduz o escore do cliente, o que é conferido numericamente."
+    ],
+    "cuidados": [
+     "Importância por permutação tem unidade própria, aqui queda de AUC na validação. Não é a mesma escala das contribuições locais, que estão em escore.",
+     "Variáveis correlacionadas afetam atribuição e importância.",
+     "Importância por redução de impureza tem limitações distintas das da permutação.",
+     "As contribuições locais são valores de Shapley com expectativa intervencional sobre uma amostra de referência, calculados no notebook, e não um mecanismo econômico."
+    ],
+    "aprofundar": [],
+    "transicao": "Vamos verificar se conseguimos separar a construção da previsão de sua interpretação."
+   },
+   "proximo": {
+    "n": "42",
+    "titulo": "Carla caiu no grupo B. Qual é a previsão?"
+   }
+  },
+  {
+   "n": "42",
+   "bloco": "boosting",
+   "blocoNome": "Gradient boosting",
+   "titulo": "Carla caiu no grupo B. Qual é a previsão?",
+   "subtitulo": "Exercício: somar em escore e converter uma única vez",
+   "conclusao": "Com as árvores treinadas, os atributos determinam o percurso e a soma determina a PD.",
+   "fonte": "Miniatura didática de 10 registros; cálculo próprio",
+   "resumo": "Escore inicial e duas folhas do grupo B, com os atributos de Carla e três métodos possíveis de combinação.",
+   "notas": {
+    "conducao": [
+     "Dê um minuto individual e outro em duplas.",
+     "Lembre que Carla é a mesma do slide 01. Ana e Bruno cairiam no grupo A e receberiam a mesma PD entre si, o que já mostra por que duas árvores não bastam.",
+     "Peça que verbalizem onde o desfecho y foi usado e onde deixou de ser necessário.",
+     "Conclua o bloco conectando logit e boosting pela saída probabilística, com funções de escore diferentes."
+    ],
+    "respostas": [
+     "Soma em escore: −1,386294 mais 0,200000 mais 0,166078 é igual a −1,020217. A PD é 26,4985%.",
+     "Somar percentuais daria 20% mais 20% mais 16,6078%, o que não é a operação do modelo.",
+     "A média das duas folhas ignoraria o escore inicial e a natureza aditiva da construção.",
+     "Sobre causalidade: uma contribuição positiva do histórico não prova que remover o atraso do cadastro reduziria o risco real.",
+     "Reduzir a taxa de aprendizagem exige recalcular as rodadas e os resíduos, não dividir a PD."
+    ],
+    "cuidados": [
+     "A soma das árvores acontece na escala de log odds. Somar contribuições em probabilidade dá resultado errado.",
+     "A miniatura tem 10 registros e serve para ver o mecanismo. Não é modelo ajustado nem sustenta comparação de desempenho.",
+     "Reconstruir a previsão de um cliente novo não valida o modelo: validação exige amostra fora do tempo, no bloco seguinte."
+    ],
+    "aprofundar": [],
+    "transicao": "Sabemos como as três técnicas funcionam. Agora precisamos comparar as três em condições iguais e verificar o que cada métrica responde."
+   },
+   "proximo": {
+    "n": "43",
+    "titulo": "Estamos comparando modelos ou comparando condições diferentes?"
+   }
+  },
+  {
+   "n": "43",
+   "bloco": "decisao",
+   "blocoNome": "Avaliação e decisão",
+   "titulo": "Estamos comparando modelos ou comparando condições diferentes?",
+   "subtitulo": "O protocolo precede qualquer métrica",
+   "conclusao": "Mesmo alvo, mesma informação e teste preservado são condições da comparação.",
+   "fonte": "Experimento sintético; semente e versões no notebook",
+   "resumo": "Tabela do protocolo com o que é comum aos três modelos e o que é próprio de cada um, mais a tira dos quatro períodos.",
+   "notas": {
+    "conducao": [
+     "Recupere o slide 05 em miniatura na tira inferior.",
+     "Pergunte por que usar todos os registros em todos os modelos ainda não garante justiça.",
+     "Revele processamento e seleção, e só depois habilite a abertura dos resultados."
+    ],
+    "respostas": [
+     "Boosting com variável futura: a comparação mede vazamento, não algoritmo. Correção: remover a variável e refazer o treinamento.",
+     "Logit sem tratamento enquanto outros receberam engenharia: baseline artificialmente fraco. Correção: dar ao logit transformações e interações plausíveis, como a sensibilidade deste experimento.",
+     "Configuração escolhida pela métrica do teste: o teste deixa de ser independente. Correção: escolher na validação e usar o teste uma única vez."
+    ],
+    "cuidados": [
+     "Modelos especificados antes do teste podem ser comparados nele. Ajustes motivados por esse teste exigem nova avaliação independente.",
+     "A exploração em aula não deve produzir um campeão otimizado depois de ver o resultado.",
+     "Calibradores e cortes pertencem às partições definidas para isso."
+    ],
+    "aprofundar": [],
+    "transicao": "A primeira pergunta é se o modelo ordena corretamente os clientes de maior e menor risco."
+   },
+   "proximo": {
+    "n": "44",
+    "titulo": "Quem aparece primeiro na fila de risco?"
+   }
+  },
+  {
+   "n": "44",
+   "bloco": "decisao",
+   "blocoNome": "Avaliação e decisão",
+   "titulo": "Quem aparece primeiro na fila de risco?",
+   "subtitulo": "AUC contada por pares e curvas do experimento sintético",
+   "conclusao": "Um modelo pode ordenar bem mesmo que suas probabilidades estejam na escala errada.",
+   "fonte": "Microexemplo de ranking e experimento sintético, em abas identificadas",
+   "resumo": "Seis registros ordenados por escore com comparação de pares, e curvas ROC e acumuladas do KS.",
+   "notas": {
+    "conducao": [
+     "Comece pelo par, não pela integral.",
+     "Pergunte se o escore 0,8 significa 80% de PD calibrada. Neste exemplo não há essa evidência.",
+     "Revele as curvas como resumo da ordenação e diferencie taxa de falsos positivos de inadimplência entre aprovados."
+    ],
+    "respostas": [
+     "São 9 pares, 7 corretamente ordenados: AUC igual a 7 dividido por 9, aproximadamente 0,7778.",
+     "Empates contam meio par.",
+     "Mudar o corte não muda a AUC: ela percorre todos os cortes."
+    ],
+    "cuidados": [
+     "Orientação declarada: escore maior significa maior risco.",
+     "AUC por pares não é acurácia, taxa de acerto de aprovados nem rentabilidade.",
+     "KS e AUC resumem aspectos diferentes: um não determina o outro.",
+     "Diferenças pequenas entre modelos podem exigir avaliação de incerteza."
+    ],
+    "aprofundar": [],
+    "transicao": "Mesmo que o ranking esteja certo, precisamos perguntar se uma previsão de 10% corresponde a cerca de 10% de eventos."
+   },
+   "proximo": {
+    "n": "45",
+    "titulo": "Entre os clientes com PD próxima de 10%, quantos ficaram inadimplentes?"
+   }
+  },
+  {
+   "n": "45",
+   "bloco": "decisao",
+   "blocoNome": "Avaliação e decisão",
+   "titulo": "Entre os clientes com PD próxima de 10%, quantos ficaram inadimplentes?",
+   "subtitulo": "Média prevista contra frequência observada, faixa a faixa",
+   "conclusao": "Calibrar é verificar a escala das probabilidades, não apenas a ordem dos clientes.",
+   "fonte": "Experimento sintético; semente e versões no notebook",
+   "resumo": "Diagrama de calibração com dez faixas por quantis, intervalos de Wilson e histograma das probabilidades previstas.",
+   "notas": {
+    "conducao": [
+     "Leia um ponto completo: probabilidade média, proporção observada, n e eventos.",
+     "Aplique a perturbação das odds e pergunte o que deve acontecer com a AUC antes de revelar.",
+     "Discuta por que PD em escala errada distorce perda esperada e política de corte."
+    ],
+    "respostas": [
+     "A transformação multiplica as odds por dois e preserva a ordem, portanto a AUC permanece idêntica.",
+     "A calibração e as perdas mudam, e a direção depende de como o modelo já estava calibrado."
+    ],
+    "cuidados": [
+     "Wilson por faixa é descrição binomial aproximada e não incorpora toda a seleção e modelagem.",
+     "Brier e log loss avaliam qualidade probabilística, mas não são medidas exclusivas de calibração.",
+     "Número de faixas, calibrador e versão não devem ser escolhidos pelo teste final.",
+     "O calibrador de Platt foi ajustado na partição de calibração e aplicado ao teste sem reajuste."
+    ],
+    "aprofundar": [
+     "O calibrador de Platt foi ajustado na partição de calibração e aplicado ao teste sem reajuste. O efeito observado na tela é o desse procedimento, não de um recalibrador ajustado no próprio teste.",
+     "Platt é uma logística sobre o escore: p_calibrada = σ(a·z + b). Como a transformação é monotônica em z quando a é positivo, ela não altera a ordem nem a AUC, e é exatamente por isso que serve para corrigir nível sem estragar ordenação."
+    ],
+    "transicao": "Uma PD só vira ação quando definimos uma política. Vamos observar como um corte altera a carteira aprovada."
+   },
+   "proximo": {
+    "n": "46",
+    "titulo": "Até qual PD vamos aprovar?"
+   }
+  },
+  {
+   "n": "46",
+   "bloco": "decisao",
+   "blocoNome": "Avaliação e decisão",
+   "titulo": "Até qual PD vamos aprovar?",
+   "subtitulo": "O corte define quem entra na carteira e o que se observa depois",
+   "conclusao": "A mesma previsão pode sustentar políticas diferentes. A política é uma decisão adicional ao modelo.",
+   "fonte": "Experimento sintético; semente e versões no notebook",
+   "resumo": "Histograma das PDs com a linha de corte, taxa de aprovação e inadimplência observada entre aprovados.",
+   "notas": {
+    "conducao": [
+     "Reduza o corte e observe volume e composição.",
+     "Pergunte se menor inadimplência implica melhor resultado. Não: pode haver perda de receita.",
+     "Compare dois modelos no mesmo corte e depois no mesmo volume, e explique que são perguntas diferentes."
+    ],
+    "respostas": [
+     "Taxa de aprovação é o número de aprovados dividido pelo total avaliado.",
+     "Inadimplência entre aprovados é a soma de eventos entre aprovados dividida pelo número de aprovados. Contratos recusados não entram no denominador.",
+     "Média das PDs aprovadas e taxa observada são coisas diferentes: a primeira é previsão, a segunda é desfecho."
+    ],
+    "cuidados": [
+     "A avaliação usa contratos com desfecho conhecido da população sintética, o que permite simular recusa. Em dados reais de apenas concedidos, inferir o desempenho dos rejeitados exige hipóteses adicionais.",
+     "Limite de crédito, preço e prazo permanecem fixos aqui, para isolar a decisão de aprovação.",
+     "Empates na PD, comuns na árvore, seguem a regra de aprovar todos no limite. Nenhum desempate usa y.",
+     "Se ninguém for aprovado, a inadimplência entre aprovados fica indefinida."
+    ],
+    "aprofundar": [],
+    "transicao": "Para escolher um corte, precisamos colocar receitas e perdas na mesma conta."
+   },
+   "proximo": {
+    "n": "47",
+    "titulo": "Com estas hipóteses, o equilíbrio ocorre em PD de 20%"
+   }
+  },
+  {
+   "n": "47",
+   "bloco": "decisao",
+   "blocoNome": "Avaliação e decisão",
+   "titulo": "Com estas hipóteses, o equilíbrio ocorre em PD de 20%",
+   "subtitulo": "Aproximação didática por operação, horizonte de 12 meses",
+   "conclusao": "Um bom ranking só gera valor quando probabilidades e política se conectam à economia da operação.",
+   "fonte": "Economia didática declarada na tela; cálculo próprio",
+   "resumo": "Resultado esperado por operação em função da PD, com o ponto de equilíbrio marcado e a decomposição em margem menos perda esperada.",
+   "notas": {
+    "conducao": [
+     "Construa a perda esperada, depois o resultado, depois o equilíbrio.",
+     "Pergunte o efeito de aumentar a fração perdida mantendo a PD.",
+     "Mostre que o mesmo cliente pode ser aceitável sob uma estrutura econômica e inviável sob outra, sem defender simplesmente aumento de taxa."
+    ],
+    "respostas": [
+     "Perda esperada é PD vezes LGD vezes EAD. Em PD de 10%: 0,10 vezes 60% vezes R$ 10.000, igual a R$ 600.",
+     "Resultado esperado é margem menos perda esperada: R$ 1.200 menos R$ 600, igual a R$ 600.",
+     "Equilíbrio: margem dividida por LGD vezes EAD, igual a 20%."
+    ],
+    "cuidados": [
+     "A margem é considerada constante e já líquida dos custos definidos, apenas nesta simplificação. Não é receita recebida em todos os cenários do mundo real.",
+     "Perda esperada não é lucro, e EAD não é o valor original do contrato sem a hipótese de igualdade.",
+     "A versão alternativa, com margem condicional ao adimplemento, tem outro corte e não deve ser misturada a este gráfico.",
+     "Resultados realizados usam y e são diferentes do valor esperado calculado com p."
+    ],
+    "aprofundar": [],
+    "transicao": "Antes de implantar, ainda precisamos saber se a relação continua válida no tempo e se conseguimos operar essa relação com controle."
+   },
+   "proximo": {
+    "n": "48",
+    "titulo": "O que conseguimos monitorar agora? O que exige esperar?"
+   }
+  },
+  {
+   "n": "48",
+   "bloco": "decisao",
+   "blocoNome": "Avaliação e decisão",
+   "titulo": "O que conseguimos monitorar agora? O que exige esperar?",
+   "subtitulo": "Indicadores imediatos e indicadores que dependem da maturação do alvo",
+   "conclusao": "Podemos observar a carteira entrando hoje, mas parte da qualidade do modelo só será conhecida depois.",
+   "fonte": "Experimento sintético; semente e versões no notebook",
+   "resumo": "Coortes mensais com indicadores imediatos e, para as coortes já maturadas, inadimplência observada.",
+   "notas": {
+    "conducao": [
+     "Pergunte se PD média crescente prova piora do modelo. Pode ser mudança da população.",
+     "Pergunte se ausência de inadimplência recente prova segurança. Pode ser falta de maturação.",
+     "Relacione à definição do alvo do slide 03 e termine com a necessidade de versionar modelo, dados, regra e explicações."
+    ],
+    "respostas": [
+     "Imediatos: distribuição de renda e comprometimento, ausentes, taxa de aprovação e PD média.",
+     "Com alvo maturado: inadimplência observada, calibração, discriminação e resultado.",
+     "A data de observação define o que pode ser medido: uma coorte só entra nas métricas de desfecho 12 meses depois da contratação."
+    ],
+    "cuidados": [
+     "PSI, se citado, é indicador de mudança de distribuição e depende de faixas e tamanho de amostra. Não use limiares universais como regra automática.",
+     "Mudança de distribuição não demonstra por si só perda de desempenho.",
+     "Os cenários são sintéticos e construídos para a aula. Não são previsão macroeconômica nem backtest real.",
+     "Nem todo alerta pede retreino: a ação depende do diagnóstico."
+    ],
+    "aprofundar": [],
+    "transicao": "Temos desempenho, probabilidades, economia e condições de operação. Agora vamos tomar uma decisão de comitê."
+   },
+   "proximo": {
+    "n": "49",
+    "titulo": "Defenda sua recomendação para o comitê"
+   }
+  },
+  {
+   "n": "49",
+   "bloco": "decisao",
+   "blocoNome": "Avaliação e decisão",
+   "titulo": "Defenda sua recomendação para o comitê",
+   "subtitulo": "Desempenho, economia, estabilidade e capacidade de execução na mesma mesa",
+   "conclusao": "Uma recomendação precisa combinar desempenho, economia, estabilidade e capacidade de execução.",
+   "fonte": "Experimento sintético; semente e versões no notebook",
+   "resumo": "Tabela comparativa dos três modelos no teste, com política congelada, e um formulário de justificativa local.",
+   "notas": {
+    "conducao": [
+     "Divida a turma em três grupos ou peça decisões individuais.",
+     "Cada grupo tem dois minutos para recomendar e um minuto para defender.",
+     "Solicite uma razão que faria mudar de opinião.",
+     "Reforce que uma evidência de teste não autoriza ajustar repetidamente o modelo no mesmo teste e chamar isso de avaliação independente."
+    ],
+    "respostas": [],
+    "cuidados": [
+     "Os números são de base sintética e servem à aprendizagem, não a uma decisão real de concessão.",
+     "Valores próximos não autorizam declarar superioridade conclusiva.",
+     "O formulário fica apenas neste dispositivo e não envia nada.",
+     "Nenhum custo monetário de implantação é atribuído aos modelos: eles não foram medidos."
+    ],
+    "aprofundar": [],
+    "transicao": "Independentemente da escolha, quais princípios devem acompanhar qualquer modelagem de crédito?"
+   },
+   "proximo": {
+    "n": "50",
+    "titulo": "Você consegue explicar, comparar e usar os três modelos?"
+   }
+  },
+  {
+   "n": "50",
+   "bloco": "decisao",
+   "blocoNome": "Avaliação e decisão",
+   "titulo": "Você consegue explicar, comparar e usar os três modelos?",
+   "subtitulo": "Definir, estimar, validar e decidir são etapas conectadas",
+   "conclusao": "A técnica importa. A evidência que sustenta seu uso importa tanto quanto.",
+   "fonte": "Síntese do curso; PDs do experimento sintético, semente 20260920",
+   "resumo": "Tabela de síntese dos três modelos, a comparação das três PDs para os quatro clientes do slide 01, três perguntas de recuperação e o roteiro de aplicação no trabalho.",
+   "notas": {
+    "conducao": [
+     "Peça que um aluno resuma cada técnica em uma frase.",
+     "Retome a decisão do slide 01 sem inventar quais respostas a turma deu. Se as escolhas locais foram salvas, identifique que são escolhas naquele dispositivo.",
+     "Leia a tabela dos quatro clientes por linha, não por coluna: pergunte qual modelo decide diferente. Nenhum decide.",
+     "Pare em Carla. No boosting ela fica a 0,44 ponto do corte. Pergunte o que uma diferença dessas exige antes de trocar de modelo.",
+     "Pergunte o que agora exigiriam antes de aprovar uma mudança de modelo."
+    ],
+    "respostas": [
+     "Odds vezes 2 não é PD vezes 2: odds e probabilidade são escalas diferentes.",
+     "Sim, a mesma folha agrupa atributos distintos que satisfazem as mesmas regras.",
+     "Não: o boosting logístico soma no escore F e aplica a transformação depois."
+    ],
+    "cuidados": [
+     "Complexidade pode ser útil, e a qualidade da decisão depende do processo inteiro.",
+     "Concordar na decisão para quatro clientes não é concordar em geral: a tabela do slide 49 mostra a diferença na carteira inteira.",
+     "As PDs desta tabela são as calibradas do experimento. A PD de 11,66% de Bruno, dos slides 07 a 20, vem do logit manual e é outro universo.",
+     "Referências, notebook e modo estudo ficam disponíveis nos recursos finais.",
+     "Não existe um 51º slide de agradecimento: o fechamento é esta síntese."
+    ],
+    "aprofundar": [],
+    "transicao": "Fim da sequência principal."
+   },
+   "proximo": null
+  }
+ ]
+}

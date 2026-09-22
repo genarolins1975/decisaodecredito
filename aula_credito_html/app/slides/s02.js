@@ -96,9 +96,9 @@ Aula.slide({
             Comum.seletorCliente(b2.nome, function (v) { est.parB = v; App.montar("02"); }, { compacto: true }),
           ]),
           UI.tabela({
-            compacta: true,
-            colunas: [{ rotulo: "Característica" }, { rotulo: a.nome }, { rotulo: b2.nome },
-                      { rotulo: "Diferença" }],
+            compacta: true, apertada: true,
+            colunas: [{ rotulo: "" }, { rotulo: a.nome }, { rotulo: b2.nome },
+                      { rotulo: "Dif." }],
             linhas: linhas,
             legenda: "Comparação de dois perfis, valores originais lado a lado",
           }),
@@ -127,7 +127,9 @@ Aula.slide({
             "Reiniciar exemplo"),
         ]),
       ]),
-      h("div", { estilo: "flex:0 0 470px" }, direita),
+      /* min-width 0: sem ele a coluna cresce até a largura mínima da tabela de comparação e
+         espreme a tabela dos clientes, que passa a ser cortada à direita. */
+      h("div", { estilo: "flex:0 0 500px;min-width:0" }, direita),
     ]));
   },
 });

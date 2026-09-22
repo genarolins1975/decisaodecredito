@@ -3,7 +3,7 @@
  * com banco local. Contas de teste isoladas (domínio example.test). Nenhum e-mail sai da plataforma.
  */
 import { test, expect } from "@playwright/test";
-import { apiAs, loginUi, sql, classId, uid, PROF, ALUNO_A, ALUNO_B, OUTRA, MONITOR, SEM } from "./helpers";
+import { apiAs, loginUi, sql, classId, uid, BASE, PROF, ALUNO_A, ALUNO_B, OUTRA, MONITOR, SEM } from "./helpers";
 
 test.describe.serial("edições, turmas e isolamento", () => {
   test("edição 2026 existe; professor cria 2027 e duplica sem copiar pessoas ou registros", async () => {
@@ -240,7 +240,11 @@ test.describe.serial("trabalhos, grupos e notas", () => {
     // B não lê arquivo de A (individual)
     const b = await apiAs(ALUNO_B);
     expect((await b.get(`/api/arquivos/${good.file.id}`)).status()).toBe(403);
-    expect((await b.get(`/api/trabalhos/${asg.id}?classId=${cid}`)).json().then((d) => d.submissions.length)).resolves.toBe(0);
+    // o que importa é o isolamento: B não enxerga a entrega de A. Contar zero presumia que B nunca tivesse
+    // mexido neste trabalho, o que deixava o teste refém do estado deixado por outra execução.
+    const vistasPorB = (await (await b.get(`/api/trabalhos/${asg.id}?classId=${cid}`)).json()).submissions as { id: string }[];
+    const deA = await sql<{ id: string }>("select s.id from submissions s join users u on u.id=s.submitter_user_id where s.assignment_id=$1 and u.email=$2", [asg.id, ALUNO_A.email]);
+    expect(vistasPorB.filter((s) => deA.some((x) => x.id === s.id)), "B não enxerga entrega nenhuma de A").toEqual([]);
     // nota: sem publicar, invisível; publicada, visível; ausência de nota não vira zero
     // (o teste é reexecutável: uma nota já publicada em rodada anterior é removida; regrade de nota publicada mantém a publicação, com histórico)
     await sql("delete from grade_history where grade_id in (select g.id from grades g join users u on u.id=g.user_id where g.assignment_id=$1 and u.email=$2)", [asg.id, ALUNO_A.email]);
@@ -568,7 +572,7 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(rp.getByRole("button", { name: /Comparar \+10 pp/ })).toBeDisabled(); // +10 pp sairia do domínio
   await expect(rp).toContainText("sai do domínio do exemplo");
   await rp.getByRole("button", { name: "Restaurar exemplo" }).click();
-  await rp.getByRole("button", { name: "Limitar a previsão a 0%–100%" }).click();
+  await rp.getByRole("button", { name: "Limitar a previsão de 0% a 100%" }).click();
   await expect(rp).toContainText("0,00%"); await expect(rp).toContainText("mín(1; máx(0; p))");
   await rp.getByRole("button", { name: /Comparar \+10 pp/ }).click();
   await expect(rp).toContainText("De 5% para 15% de utilização");
@@ -592,7 +596,7 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(page.locator("main")).not.toContainText("distância até o ótimo");
   await expect(gp.getByRole("button", { name: "Reiniciar" })).toBeDisabled();
   await gp.getByRole("button", { name: "Aplicar esta atualização" }).click();
-  await expect(gp).toContainText("Estado atual — iteração 1");
+  await expect(gp).toContainText("Estado atual · iteração 1");
   await expect(gp).toContainText("PD média estimada"); await expect(gp).toContainText("59,14%");
   await expect(gp).toContainText("0,67194"); await expect(gp).toContainText("antes 0,69315"); // a perda cai
   await expect(gp).toContainText("0,05938"); await expect(gp).toContainText("0,02344"); // os três coeficientes mudaram juntos
@@ -913,18 +917,22 @@ test("aula em slides: professor conduz o baralho, aluno acompanha e não recebe 
   expect(aula2, "a turma tem o encontro da Aula 2").toBeTruthy();
   const { sessionId } = await (await prof.post(`/api/professor/turmas/${cid}/encontros/${aula2.id}/iniciar`, { data: {} })).json();
 
-  // a Aula 2 não tem capítulos: o conteúdo dela é o baralho, e os capítulos 4, 5 e 6 são o apêndice
+  // a Aula 2 tem capítulos como as outras aulas: o baralho é a apresentação dela, não o conteúdo
   const uni = await sql<{ kind: string; caps: string }>(
     "select u.kind, coalesce(string_agg(c.slug, ',' order by c.number), '') as caps from units u left join chapters c on c.unit_id=u.id where u.id=$1 group by u.kind", [aula2.unitId]);
-  expect(uni[0].caps).toBe("");
-  const ap = await sql<{ caps: string }>(
-    "select string_agg(c.slug, ',' order by c.number) as caps from units u join chapters c on c.unit_id=u.id where u.kind='apendice' and u.edition_id=(select edition_id from units where id=$1)", [aula2.unitId]);
-  expect(ap[0].caps).toBe("c4,c5,c6");
-  // o apêndice vem logo depois da Aula 2: com ele no fim, os capítulos liam 1,2,3,7,8,9,10,11,4,5,6
+  expect(uni[0].caps).toBe("c4,c5,c6");
+  // e o curso não tem mais o apêndice que existia enquanto a Aula 2 não tinha capítulo
+  const ap = await sql<{ n: string }>(
+    "select count(*) as n from units where kind='apendice' and edition_id=(select edition_id from units where id=$1)", [aula2.unitId]);
+  expect(Number(ap[0].n)).toBe(0);
+  // com os capítulos no lugar, a numeração lida de cima para baixo é 1 a 11, sem salto
   const ordem = await sql<{ kind: string; number: number }>(
     "select kind, number from units where edition_id=(select edition_id from units where id=$1) order by position", [aula2.unitId]);
   expect(ordem.map((u) => `${u.kind}${u.number}`)).toEqual(
-    ["aula1", "aula2", "apendice1", "aula3", "aula4", "trabalho5"]);
+    ["aula1", "aula2", "aula3", "aula4", "trabalho5"]);
+  const caps = await sql<{ n: number }>(
+    "select c.number as n from chapters c join units u on u.id=c.unit_id where u.edition_id=(select edition_id from units where id=$1) order by u.position, c.number", [aula2.unitId]);
+  expect(caps.map((c) => Number(c.n))).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
 
   expect((await prof.post(`/api/aovivo/${sessionId}/slide`, { data: { slide: "24" } })).status()).toBe(200);
   expect((await prof.post(`/api/aovivo/${sessionId}/slide`, { data: { slide: "51" } })).status()).toBe(400); // fora do roteiro
@@ -942,6 +950,47 @@ test("aula em slides: professor conduz o baralho, aluno acompanha e não recebe 
   await expect(dentro.locator("#barra")).toBeHidden();          // o aluno não navega sozinho enquanto segue
   await expect(dentro.locator("#btn-professor")).toBeHidden();  // nem abre as notas do professor
   expect(await page.content()).not.toContain("Notas do professor");
+  expect(await page.content()).toContain("O que fica salvo");   // e lê o que é guardado onde
+
+  // "Navegar por conta própria" não recarrega o baralho: a exploração do aluno sobrevive à troca de modo.
+  // O slide 12 é a calculadora de PD: o número grande é a PD do perfil, e o segundo slider é o comprometimento.
+  await prof.post(`/api/aovivo/${sessionId}/slide`, { data: { slide: "12" } });
+  await expect(dentro.locator(".cabeca .passo")).toHaveText("slide 12 de 50");
+  const pdAntes = await dentro.locator(".grande").first().textContent();
+  await dentro.locator("input[type=range]").nth(1).focus();
+  for (let i = 0; i < 6; i++) await page.keyboard.press("ArrowRight");
+  const pdMexida = await dentro.locator(".grande").first().textContent();
+  expect(pdMexida).not.toBe(pdAntes);
+  await page.getByRole("button", { name: "Navegar por conta própria" }).click();
+  await expect(dentro.locator("#barra")).toBeVisible();
+  expect(await quadro.getAttribute("src")).toMatch(/modo=aluno/);   // o src não mudou: não houve recarga
+  expect(await dentro.locator(".grande").first().textContent()).toBe(pdMexida);
+  await page.getByRole("button", { name: /Voltar ao slide do professor/ }).click();
+  await expect(dentro.locator("#barra")).toBeHidden();
+  expect(await dentro.locator(".grande").first().textContent()).toBe(pdMexida);
+  // recarregar a página preserva a exploração (sessionStorage, por aba) e o slide do professor
+  await page.reload();
+  await expect(dentro.locator(".cabeca .passo")).toHaveText("slide 12 de 50");
+  expect(await dentro.locator(".grande").first().textContent()).toBe(pdMexida);
+  // o arquivo do aluno não oferece o botão Professor: não há nota para abrir
+  await expect(dentro.locator("#btn-professor")).toBeHidden();
+
+  // o arquivo do aluno é a variante sem notas; o do professor é a completa; o painel traz as notas do slide no ar
+  const fs2 = await import("node:fs");
+  const notas = JSON.parse(fs2.readFileSync("content/slides/aula-2-notas.json", "utf8")) as { slides: { n: string; notas: { conducao: string[] } }[] };
+  const fraseNota = notas.slides.find((x) => x.n === "12")!.notas.conducao[0];
+  const arqAluno = await (await aluno.get("/slides/aula-2")).text();
+  expect(arqAluno).toContain("Aula.slide(");
+  expect(arqAluno).not.toContain(fraseNota);
+  const arqProf = await (await prof.get("/slides/aula-2")).text();
+  expect(arqProf).toContain(fraseNota);
+  const desescapar = (t: string) => t.replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&amp;/g, "&");
+  const painelAoVivo = desescapar(await (await prof.get(`/professor/aovivo/${sessionId}`)).text());
+  expect(painelAoVivo).toContain("Roteiro do slide no ar");
+  expect(painelAoVivo).toContain(fraseNota);
+  // a janela projetada abre o baralho em modo projeção: sem notas, sem impressão
+  const projecao = await (await prof.get(`/apresentacao/slides?sessao=${sessionId}`)).text();
+  expect(projecao).toContain("/slides/aula-2?modo=projecao");
 
   // o arquivo da aula exige sessão e matrícula
   const anon = await apiAs(null);
@@ -960,6 +1009,242 @@ test("aula em slides: professor conduz o baralho, aluno acompanha e não recebe 
   expect(painelAluno.status()).toBe(307);   // e o aluno não alcança a área do professor
 
   await prof.post(`/api/aovivo/${sessionId}/status`, { data: { status: "closed" } });
+});
+
+test("Aula 2 com capítulos, como as outras aulas: os 50 slides são a apresentação, e os endereços antigos levam ao conteúdo", async ({ page }) => {
+  const aluno = await apiAs(ALUNO_A);
+  const prof = await apiAs(PROF);
+  const cid = await classId();
+
+  // o conteúdo da Aula 2 são os capítulos 4, 5 e 6, e eles aparecem em Aulas como os de qualquer aula
+  const aulas = await (await aluno.get("/aulas")).text();
+  for (const n of [4, 5, 6]) expect(aulas, `capítulo ${n} em Aulas`).toContain(`href="/aulas/capitulo/${n}"`);
+  expect(aulas).not.toContain("cartao-aula-2");          // sem os cartões por bloco de slide
+  expect(aulas).not.toContain('href="/aulas/aula-2#');   // e sem a abertura própria que existia
+  expect(aulas).not.toContain("apêndice");               // o apêndice deixou de existir como unidade
+  expect(aulas).toContain('href="/slides/aula-2"');      // o baralho aparece como material da unidade
+
+  // cada capítulo da aula oferece a apresentação em slides, no slide em que o assunto dele começa
+  for (const [cap, slide] of [[4, "07"], [5, "21"], [6, "31"]] as const) {
+    const html = await (await aluno.get(`/aulas/capitulo/${cap}`)).text();
+    expect(html, `capítulo ${cap} aponta o slide ${slide}`).toContain(`href="/slides/aula-2#/slide/${slide}"`);
+    expect(html).toContain("Apresentar pelos slides");
+  }
+  // e os capítulos de outra aula não oferecem: a regra sai do roteiro, não do número da aula
+  expect(await (await aluno.get("/aulas/capitulo/1")).text()).not.toContain("Apresentar pelos slides");
+
+  // a leitura do curso corre de 3 para 4 e de 6 para 7, sem apêndice no meio
+  const cap3 = await (await aluno.get("/aulas/capitulo/3")).text();
+  expect(cap3).toContain('href="/aulas/capitulo/4"');
+  expect(cap3).not.toContain('href="/aulas/aula-2"');
+  expect(await (await aluno.get("/aulas/capitulo/6")).text()).toContain('href="/aulas/capitulo/7"');
+
+  // endereços antigos continuam servindo: a aula leva ao primeiro capítulo dela, e o slide à página que ele cobre
+  const aberturaAntiga = await aluno.get("/aulas/aula-2", { maxRedirects: 0 });
+  expect(aberturaAntiga.status()).toBe(307);
+  expect(aberturaAntiga.headers().location).toContain("/aulas/capitulo/4");
+  const slideAntigo = await aluno.get("/aulas/aula-2/slide/12", { maxRedirects: 0 });
+  expect(slideAntigo.status()).toBe(307);
+  expect(slideAntigo.headers().location).toMatch(/\/aulas\/c4p\d+$/);
+  const slideSemPagina = await aluno.get("/aulas/aula-2/slide/01", { maxRedirects: 0 });   // slide de abertura, sem página mapeada
+  expect(slideSemPagina.headers().location).toContain("/aulas/capitulo/4");
+
+  // os guias em PDF continuam saindo por papel
+  expect((await aluno.get("/api/materiais/aula-2/guia-do-aluno.pdf")).status()).toBe(200);
+  expect((await aluno.get("/api/materiais/aula-2/guia-do-professor.pdf")).status()).toBe(403);
+  expect((await prof.get("/api/materiais/aula-2/guia-do-professor.pdf")).status()).toBe(200);
+  expect((await (await apiAs(null)).get("/api/materiais/aula-2/guia-do-aluno.pdf")).status()).toBe(401);
+  expect((await (await apiAs(SEM)).get("/api/materiais/aula-2/guia-do-aluno.pdf")).status()).toBe(403);
+
+  // Materiais traz o baralho como a apresentação da aula; o guia do professor não aparece ao aluno
+  const materiais = await (await aluno.get("/materiais")).text();
+  expect(materiais).toContain('href="/slides/aula-2"');
+  expect(materiais).not.toContain("guia-do-professor");
+
+  // no painel de conteúdo a Aula 2 tem as mesmas tabelas de página das outras aulas
+  const painel = await (await prof.get("/professor/conteudo")).text();
+  expect(painel).not.toContain("conteudo-aula-2");
+  for (const n of [4, 5, 6]) expect(painel, `tabela do capítulo ${n}`).toContain(`href="/aulas/capitulo/${n}"`);
+  expect(painel).toContain("/api/materiais/aula-2/guia-do-professor.pdf");
+
+  // o professor continua conduzindo a aula pelos slides: a aula ter capítulos não tirou isso
+  const meetings = await (await prof.get(`/api/professor/turmas/${cid}/encontros`)).json();
+  const aula2 = meetings.meetings.find((m: { number: number }) => m.number === 2);
+  const { sessionId } = await (await prof.post(`/api/professor/turmas/${cid}/encontros/${aula2.id}/iniciar`, { data: {} })).json();
+  const painelAoVivo = await (await prof.get(`/professor/aovivo/${sessionId}`)).text();
+  expect(painelAoVivo).toContain("Conduzir pelos slides");
+  await prof.post(`/api/aovivo/${sessionId}/status`, { data: { status: "closed" } });
+
+  // no navegador: a página de uma das 60 páginas da aula é uma página comum, com a moldura das outras
+  await loginUi(page, ALUNO_A);
+  await page.goto("/aulas/capitulo/4");
+  await expect(page.locator("h1")).toHaveCount(1);
+  await expect(page.locator('a.voltar[href="/aulas"]')).toHaveCount(1);
+  await page.locator('a.btn[href^="/aulas/c4p"]').first().click();
+  await expect(page).toHaveURL(/\/aulas\/c4p\d+$/);
+  await expect(page.locator('a.voltar[href="/aulas"]')).toHaveCount(1);
+  await expect(page.locator("main#conteudo")).toHaveCount(1);
+});
+
+test("uniformidade das molduras: retorno em toda rota de detalhe, um título por página, 404 dentro da moldura e saída para quem não tem turma", async ({ page }) => {
+  const aluno = await apiAs(ALUNO_A);
+  const prof = await apiAs(PROF);
+  const cid = await classId();
+  const semTurma = await apiAs(SEM);
+  const desesc = (t: string) => t.replace(/<!-- -->/g, "").replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&amp;/g, "&");
+  const titulo = (html: string) => (/<title>([^<]*)<\/title>/.exec(html)?.[1] ?? "").replace(/&#x27;/g, "'");
+  const umH1 = (html: string) => (html.match(/<h1[\s>]/g) ?? []).length;
+
+  // toda rota de detalhe do aluno abre com o link de volta ao nível acima
+  const trabalhos = await sql<{ id: string }>("select id from assignments where class_id=$1 order by position limit 1", [cid]);
+  const detalheTrabalho = await (await aluno.get(`/trabalhos/${trabalhos[0].id}`)).text();
+  expect(detalheTrabalho).toContain('href="/trabalhos"');
+  const pgAula = await (await aluno.get("/aulas/c1p2")).text();
+  for (const html of [pgAula, await (await aluno.get("/aulas/capitulo/1")).text(), await (await aluno.get("/aulas/aula-2")).text()]) {
+    expect(html).toMatch(/class="voltar[^"]*"[^>]*href="\/aulas"|href="\/aulas"[^>]*class="voltar/);
+  }
+
+  // um h1 por rota: o título da página, com as seções em h2
+  for (const rota of ["/inicio", "/aulas", "/materiais", "/trabalhos", "/acompanhamento", "/ao-vivo", "/perfil", "/ajuda"]) {
+    expect(umH1(await (await aluno.get(rota)).text()), `um h1 em ${rota}`).toBe(1);
+  }
+  const materiais = await (await aluno.get("/materiais")).text();
+  expect(materiais).toContain('id="leituras"');
+  expect(materiais).toContain('id="bases"');
+
+  // notFound dentro da área do aluno responde 404 e traz o cartão local, não o 404 global
+  for (const rota of ["/aulas/naoexiste", "/aulas/capitulo/99"]) {
+    expect((await aluno.get(rota)).status(), `${rota} responde 404`).toBe(404);
+  }
+  // e o 404 da página de aula não oferece ao aluno um botão para a área do professor
+  expect(desesc(await (await aluno.get("/aulas/naoexiste")).text())).not.toContain("Conteúdo (professor)");
+
+  // quem não tem turma recebe uma tela com saída própria, não um beco
+  const sem = await semTurma.get("/inicio", { maxRedirects: 0 });
+  expect(sem.status()).toBe(307);
+  expect(sem.headers().location).toContain("/sem-turma");
+  const telaSem = await (await semTurma.get("/sem-turma")).text();
+  expect(titulo(telaSem)).toContain("Sem turma ativa");
+  for (const saida of ['href="/ativar"', 'href="/ajuda"', 'href="/perfil"']) expect(telaSem).toContain(saida);
+  expect((await semTurma.get("/ajuda")).status()).toBe(200);   // a saída oferecida abre mesmo
+
+  // as telas da turma nomeiam a turma na aba do navegador
+  const turma = await sql<{ name: string }>("select name from classes where id=$1", [cid]);
+  for (const aba of ["", "/alunos", "/encontros", "/trabalhos", "/notas"]) {
+    expect(titulo(await (await prof.get(`/professor/turmas/${cid}${aba}`)).text()), `título da aba ${aba || "visão geral"}`).toContain(turma[0].name);
+  }
+
+  // Bases e gabaritos conta um trabalho final por turma, não toda entrega de aula
+  const turmas = await sql<{ n: string }>("select count(*) as n from classes c join editions e on e.id=c.edition_id where e.status='active'");
+  const entregas = await sql<{ n: string }>("select count(*) as n from assignments a join classes c on c.id=a.class_id join editions e on e.id=c.edition_id where e.status='active'");
+  const bases = await (await prof.get("/professor/bases")).text();
+  // o cartão renderizado é <b>código</b> · trabalho final; o pacote RSC repete o texto solto, por isso o </b>
+  const cartoes = (bases.match(/<\/b> · trabalho final/g) ?? []).length;
+  expect(cartoes, "um cartão por turma, não um por entrega").toBe(Number(turmas[0].n));
+  expect(cartoes).toBeLessThan(Number(entregas[0].n));
+  expect(bases).toContain("/api/materiais/aula-2/guia-do-professor.pdf");   // material com url é clicável
+
+  // quem redefine a senha sabe que deu certo ao chegar em Entrar
+  expect(await (await apiAs(null)).get("/entrar?m=redefinida").then((r) => r.text())).toContain("Senha redefinida");
+
+  // no navegador: o cartão de 404 que aparece é o da própria área, dentro da moldura e com um só main
+  await loginUi(page, ALUNO_A);
+  for (const [rota, eyebrow] of [["/aulas/naoexiste", "Página não disponível"], ["/aulas/capitulo/99", "Capítulo não disponível"]] as const) {
+    await page.goto(rota);
+    const visivel = (await page.locator("body").innerText()).toLowerCase();   // o eyebrow sai em maiúsculas por CSS
+    expect(visivel, `${rota} mostra o cartão local`).toContain(eyebrow.toLowerCase());
+    expect(visivel, `${rota} não cai no 404 global`).not.toContain("este endereço não existe na plataforma");
+    await expect(page.locator("main#conteudo"), `${rota} com um só main`).toHaveCount(1);
+    await expect(page.locator('a[href="/aulas"]').first()).toBeVisible();
+  }
+  // um landmark e um alvo de pulo em todo 404, tenha moldura ou não: dentro da área a casca dá o main,
+  // e no endereço que não casa com rota nenhuma quem dá é a própria página de 404 da raiz
+  for (const [rota, moldura] of [["/aulas/naoexiste", true], ["/trabalhos/naoexiste", true], ["/endereco-que-nao-existe", false]] as const) {
+    await page.goto(rota);
+    await expect(page.locator("main"), `${rota} com um só main`).toHaveCount(1);
+    await expect(page.locator("#conteudo"), `${rota} com um só alvo de pulo`).toHaveCount(1);
+    await expect(page.locator('nav[aria-label="Navegação principal"]'), `${rota} com moldura ${moldura}`).toHaveCount(moldura ? 1 : 0);
+  }
+
+  // a moldura declara a área, e as âncoras param abaixo do cabeçalho grudado, nas três molduras e nas três faixas
+  const medirAncora = async () => page.evaluate(() => {
+    const el = document.getElementById("mapa"); const h = document.querySelector("header");
+    return el && h ? { alvo: Math.round(el.getBoundingClientRect().top), cabecalho: Math.round(h.getBoundingClientRect().bottom) } : null;
+  });
+  await page.goto("/aulas/capitulo/4#mapa");
+  await expect(page.locator('[data-area="aluno"]')).toHaveCount(1);
+  await expect(page.locator('[data-faixa]')).toHaveCount(0);   // aluno não vê a faixa "vendo como aluno"
+  for (const largura of [390, 768, 1024, 1366]) {
+    await page.setViewportSize({ width: largura, height: 800 });
+    await page.goto("/aulas/capitulo/4#mapa");
+    const m = await medirAncora();
+    expect(m!.alvo, `âncora atrás do cabeçalho em ${largura}px`).toBeGreaterThanOrEqual(m!.cabecalho - 2);
+  }
+  // o professor, vendo como aluno, recebe a faixa extra no alto: o cabeçalho cresce e a margem acompanha
+  const comoAluno = await page.context().browser()!.newContext();
+  try {
+    await comoAluno.request.post("/api/auth/login", { data: PROF, headers: { "x-requested-with": "fetch" }, baseURL: BASE });
+    const pf = await comoAluno.newPage();
+    for (const largura of [390, 768, 1024, 1366]) {
+      await pf.setViewportSize({ width: largura, height: 800 });
+      await pf.goto(`${BASE}/aulas/capitulo/4#mapa`);
+      await expect(pf.locator('[data-area="aluno"][data-faixa]')).toHaveCount(1);
+      const m = await pf.evaluate(() => {
+        const el = document.getElementById("mapa"); const h = document.querySelector("header");
+        return el && h ? { alvo: Math.round(el.getBoundingClientRect().top), cabecalho: Math.round(h.getBoundingClientRect().bottom) } : null;
+      });
+      expect(m!.alvo, `âncora atrás da faixa "vendo como aluno" em ${largura}px`).toBeGreaterThanOrEqual(m!.cabecalho - 2);
+    }
+  } finally { await comoAluno.close(); }
+  await page.setViewportSize({ width: 1280, height: 800 });
+
+  // a confirmação divergente barra o envio: antes o aviso aparecia e a senha do primeiro campo ia assim mesmo
+  await page.goto("/perfil");
+  const chamadasSenha: string[] = [];
+  page.on("request", (r) => { if (r.url().includes("/api/auth/senha")) chamadasSenha.push(r.method()); });
+  await page.fill('input[name="current"]', "senha-que-nao-e-a-minha");   // errada de propósito: a API recusa e nada muda
+  const novas = page.locator('input[autocomplete="new-password"]');
+  await novas.nth(0).fill("abcdefghij1");
+  await novas.nth(1).fill("abcdefghij2");
+  await page.getByRole("button", { name: "Trocar senha" }).click();
+  await expect(page.locator(".callout-alert")).toContainText("As senhas não coincidem");
+  expect(chamadasSenha, "envio barrado antes de chegar à API").toEqual([]);
+  await novas.nth(1).fill("abcdefghij1");                                 // iguais: o envio acontece
+  await page.getByRole("button", { name: "Trocar senha" }).click();
+  await expect(page.locator(".callout-alert")).toContainText("Senha atual incorreta");
+  expect(chamadasSenha.length, "com as duas iguais o formulário envia").toBe(1);
+
+  // o monitor tem papel de equipe na turma, mas não é staff global: a moldura não pode prometer o que
+  // ele não alcança, e a sessão ao vivo precisa abrir para ele na vista do aluno, em vez de devolvê-lo
+  const mon = await apiAs(MONITOR);
+  const sessoes = await sql<{ id: string }>("select s.id from live_sessions s join classes c on c.id=s.class_id where c.id=$1 order by s.created_at desc limit 1", [cid]);
+  if (sessoes[0]) {
+    const abriu = await mon.get(`/ao-vivo/${sessoes[0].id}`, { maxRedirects: 0 });
+    expect(abriu.status(), "monitor abre a sessão em vez de ser devolvido").toBe(200);
+  }
+  const profAoVivo = sessoes[0] ? await prof.get(`/ao-vivo/${sessoes[0].id}`, { maxRedirects: 0 }) : null;
+  if (profAoVivo) {
+    expect(profAoVivo.status(), "professor continua indo para a condução").toBe(307);
+    expect(profAoVivo.headers().location).toContain("/professor/aovivo/");
+  }
+  for (const rota of ["/aulas/capitulo/1", "/aulas/aula-2"]) {
+    const html = await (await mon.get(rota)).text();
+    expect(html, `${rota} não oferece ao monitor a edição de conteúdo`).not.toContain('href="/professor/conteudo"');
+    expect(html, `${rota} não oferece ao monitor a condução`).not.toContain("Conduzir ao vivo");
+  }
+  expect(await (await prof.get("/aulas/capitulo/1")).text(), "o professor continua com o atalho").toContain('href="/professor/conteudo"');
+
+  // link de recuperação sem token não deixa a pessoa sem próximo passo
+  const semToken = await (await apiAs(null)).get("/senha/redefinir");
+  expect(await semToken.text()).toContain("/senha/recuperar");
+
+  // e nenhuma tabela do aluno empurra a página de lado no celular
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const rota of ["/acompanhamento", "/materiais", "/trabalhos"]) {
+    await page.goto(rota);
+    const larg = await page.evaluate(() => ({ s: document.documentElement.scrollWidth, c: document.documentElement.clientWidth }));
+    expect(larg.s, `${rota} sem rolagem lateral em 390px`).toBeLessThanOrEqual(larg.c + 1);
+  }
 });
 
 test("prontidão: /api/health diz quantas migrações o banco aplicou, e o número bate com drizzle/", async () => {

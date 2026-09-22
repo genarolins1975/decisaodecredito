@@ -12,13 +12,13 @@ export const metadata: Metadata = { title: "Aulas" };
 export default async function AulasPage() {
   const ctx = await requireContext();
   const outline = await courseOutline(ctx.current.edition.id);
-  // materiais presos a uma unidade: é assim que a Aula 2 aponta para os 50 slides
+  // materiais presos a uma unidade: é assim que a Aula 2 aponta para os 50 slides que a apresentam
   const daUnidade = (await db.select().from(schema.materials).where(eq(schema.materials.editionId, ctx.current.edition.id)).orderBy(asc(schema.materials.position)))
     .filter((m) => m.unitId && m.status === "published");
   return (
     <div>
       <PageHeader eyebrow={<>{ctx.current.cls.name} · edição {ctx.current.edition.label}</>} title="Aulas"
-        lead="Quatro aulas, o trabalho final e o apêndice. A Aula 2 é conduzida em 50 slides; as páginas de logit, árvore e boosting ficam no apêndice, para estudo. Nos demais capítulos, as páginas essenciais são vistas em aula e as complementares aprofundam no seu estudo." />
+        lead="Quatro aulas e o trabalho final, cada uma com seus capítulos e páginas. As páginas essenciais são vistas em aula e as complementares aprofundam no seu estudo. A Aula 2 é apresentada em 50 slides, que percorrem os capítulos 4, 5 e 6." />
       <div className="flex flex-col gap-6">
         {outline.map((u) => (
           <section key={u.id} className="card" aria-labelledby={`u-${u.id}`}>
@@ -29,14 +29,6 @@ export default async function AulasPage() {
               </div>
               <p className="hint max-w-[48ch]"><b>Entrega:</b> {u.deliverable}</p>
             </div>
-            {daUnidade.filter((m) => m.unitId === u.id).map((m) => (
-              <article key={m.id} className="panel-soft flex flex-col gap-2 mb-4">
-                <p className="eyebrow">{m.kind}</p>
-                <h3 className="text-[17px]">{m.title}</h3>
-                {m.description && <p className="text-[13.5px]">{m.description}</p>}
-                {m.url && <p className="pt-1"><a className="btn btn-sm" href={m.url} target="_blank" rel="noreferrer">Abrir</a></p>}
-              </article>
-            ))}
             {u.chapters.length > 0 && <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {u.chapters.map((c) => {
                 const ess = c.pages.filter((p) => p.level === "essencial");
@@ -60,6 +52,14 @@ export default async function AulasPage() {
                 );
               })}
             </div>}
+            {daUnidade.filter((m) => m.unitId === u.id).map((m) => (
+              <article key={m.id} className="panel-soft flex flex-col gap-2 mt-4">
+                <p className="eyebrow">{m.kind}</p>
+                <h3 className="text-[17px]">{m.title}</h3>
+                {m.description && <p className="text-[13.5px]">{m.description}</p>}
+                {m.url && <p className="pt-1"><a className="btn btn-sm" href={m.url} target="_blank" rel="noreferrer">Abrir</a></p>}
+              </article>
+            ))}
           </section>
         ))}
       </div>

@@ -19,6 +19,9 @@ var Aula = (function () {
     slide: slide,
     dados: {},
     resultados: null,
+    /* Versão da compilação, gravada por build.mjs a partir do conteúdo dos fontes. O estado
+       guardado no navegador carrega esta marca e é descartado quando ela muda. */
+    versao: typeof AULA_VERSAO === "string" ? AULA_VERSAO : "dev",
   };
 })();
 

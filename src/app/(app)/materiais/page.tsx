@@ -16,19 +16,24 @@ export default async function MateriaisPage() {
   const group = await myGroup(ctx.current.classId, ctx.user.id);
   const ootLivre = await ootLivreParaTurma(ctx.current.classId);
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
-      <div>
-        <PageHeader eyebrow="Leituras e pacote do trabalho" title="Materiais" lead="Leituras de apoio e o pacote do trabalho final (guia de dados e missões, modelo de manifesto, roteiro de testes e notebook guiado). Os números do material são reconstruções didáticas ou exemplos sintéticos, salvo indicação." />
+    <div>
+      <PageHeader eyebrow="Leituras, bases e pacote do trabalho" title="Materiais" lead="Leituras de apoio, o pacote do trabalho final e as bases dos casos. Os números do material são reconstruções didáticas ou exemplos sintéticos, salvo indicação." />
+      <div className="grid gap-6 lg:grid-cols-2">
+      <section aria-labelledby="leituras">
+        <h2 id="leituras" className="text-lg mb-1">Leituras e pacote do trabalho</h2>
+        <p className="hint mb-3">Guia de dados e missões, modelo de manifesto, roteiro de testes e notebook guiado.</p>
         <ul className="list-none p-0 m-0 grid gap-2">
           {materials.map((m) => <li key={m.id} className="card-flat"><p className="eyebrow">{m.kind}</p><p className="font-semibold text-ink text-[15px]">{m.url ? <a href={m.url} target="_blank" rel="noreferrer">{m.title}</a> : m.fileId ? <a href={`/api/arquivos/${m.fileId}`}>{m.title}</a> : m.title}</p>{m.description && <p className="hint mt-1">{m.description}</p>}</li>)}
           {materials.length === 0 && <li className="hint">Nenhum material cadastrado.</li>}
         </ul>
-      </div>
-      <div>
-        <PageHeader eyebrow="Trabalho final" title="Bases dos casos" lead={`Quinze bases sintéticas (nenhum dado real de cliente), uma por produto e população, com dicionário, README e versão. Todas podem ser baixadas por qualquer matriculado.${ootLivre ? " O arquivo OOT sem desfecho de cada base também está liberado: use-o uma única vez, depois de congelar o modelo, como o protocolo exige." : " O arquivo OOT sem desfecho é liberado na página do trabalho final, depois do congelamento do modelo."}${group ? ` Seu grupo (${group.name}) trabalha com a base ${datasets.find((d) => d.id === group.datasetId)?.code ?? "ainda não atribuída"}.` : ""}`} />
+      </section>
+      <section aria-labelledby="bases">
+        <h2 id="bases" className="text-lg mb-1">Bases dos casos</h2>
+        <p className="hint mb-3">{`Quinze bases sintéticas (nenhum dado real de cliente), uma por produto e população, com dicionário, README e versão. Todas podem ser baixadas por qualquer matriculado.${ootLivre ? " O arquivo OOT sem desfecho de cada base também está liberado: use-o uma única vez, depois de congelar o modelo, como o protocolo exige." : " O arquivo OOT sem desfecho é liberado na página do trabalho final, depois do congelamento do modelo."}${group ? ` Seu grupo (${group.name}) trabalha com a base ${datasets.find((d) => d.id === group.datasetId)?.code ?? "ainda não atribuída"}.` : ""}`}</p>
         <ul className="list-none p-0 m-0 grid gap-2">
           {datasets.map((d) => <li key={d.id} className={`card-flat ${group?.datasetId === d.id ? "border-gold" : ""}`}><div className="flex items-center gap-2 flex-wrap"><p className="font-mono text-[12px] text-muted">{d.code}</p><Badge tone={d.status === "disponivel" ? "ok" : "muted"}>{d.status === "disponivel" ? "disponível" : "pendente de cadastro"}</Badge><span className="hint">v{d.version}</span></div><p className="font-semibold text-ink">{d.name}</p><p className="hint">{d.population}</p><p className="text-[13.5px] mt-1">{d.emphasis}</p>{d.fileId && <a className="btn btn-sm btn-secondary mt-2" href={`/api/arquivos/${d.fileId}`}>Baixar base</a>}{d.dictionaryFileId && <a className="btn btn-sm btn-ghost mt-2" href={`/api/arquivos/${d.dictionaryFileId}`}>Dicionário</a>}{ootLivre && d.ootFileId && <a className="btn btn-sm btn-ghost mt-2" href={`/api/arquivos/${d.ootFileId}`}>OOT sem desfecho</a>}</li>)}
         </ul>
+      </section>
       </div>
     </div>
   );

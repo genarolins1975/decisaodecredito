@@ -49,10 +49,12 @@ export default async function InicioPage() {
             <>
               <h2 id="prox" className="mt-1">{next.title}</h2>
               <p className="mt-1 text-[15px]">{next.scheduledAt ? <><b>{fmtL(next.scheduledAt)}</b> <span className="hint">({relative(next.scheduledAt)})</span></> : <span className="hint">data a confirmar pelo professor</span>}{next.location ? ` · ${next.location}` : ""}{next.videoUrl && <> · <a href={next.videoUrl} target="_blank" rel="noreferrer">videoconferência</a></>}</p>
-              {nextUnit && <p className="mt-2 text-[14.5px]"><b>Capítulos:</b> {unitChapters.map((c) => `${c.number}. ${c.title}`).join(" · ")}</p>}
+              {unitChapters.length > 0 && <p className="mt-2 text-[14.5px]"><b>Capítulos:</b> {unitChapters.map((c) => `${c.number}. ${c.title}`).join(" · ")}</p>}
               <p className="mt-2 text-[14.5px]"><b>O que preparar:</b> {next.preparation ?? (unitChapters.length ? `ler as páginas essenciais dos capítulos ${unitChapters.map((c) => c.number).join(", ")} e responder às perguntas de checagem.` : "o professor ainda não indicou.")}</p>
               {nextUnit && <p className="mt-1 text-[14.5px]"><b>Entrega indicada:</b> {nextUnit.deliverable}</p>}
-              <div className="mt-3 flex gap-2 flex-wrap">{unitChapters[0] && <ButtonLink href="/aulas" variant="secondary">Ver o conteúdo da aula</ButtonLink>}</div>
+              <div className="mt-3 flex gap-2 flex-wrap">
+                {unitChapters[0] && <ButtonLink href={`/aulas/capitulo/${unitChapters[0].number}`} variant="secondary">Abrir o primeiro capítulo</ButtonLink>}
+              </div>
             </>
           ) : <p className="hint mt-1">Nenhuma aula marcada. Enquanto isso, estude em Aulas.</p>}
         </section>

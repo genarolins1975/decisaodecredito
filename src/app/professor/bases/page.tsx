@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { asc, eq, sql } from "drizzle-orm";
+import { and, asc, eq, sql } from "drizzle-orm";
 import { db, schema } from "@/lib/db/client";
 import { listEditionsWithClasses } from "@/lib/services/admin";
 import { PageHeader, Badge } from "@/components/ui";
@@ -17,7 +17,7 @@ export default async function ProfessorBasesPage({ searchParams }: { searchParam
   const datasets = await db.select().from(schema.datasets).where(eq(schema.datasets.editionId, edition.id)).orderBy(asc(schema.datasets.code));
   const materials = (await db.select().from(schema.materials).where(eq(schema.materials.editionId, edition.id)).orderBy(asc(schema.materials.position))).filter((m) => m.kind !== "referencia");
   const grupos = await db.select({ datasetId: schema.groups.datasetId, n: sql<number>`count(*)` }).from(schema.groups).innerJoin(schema.classes, eq(schema.classes.id, schema.groups.classId)).where(eq(schema.classes.editionId, edition.id)).groupBy(schema.groups.datasetId);
-  const politicas = await db.select({ cls: schema.classes.code, policy: schema.blindTests.releasePolicy, status: schema.assignments.status }).from(schema.assignments).innerJoin(schema.classes, eq(schema.classes.id, schema.assignments.classId)).leftJoin(schema.blindTests, eq(schema.blindTests.assignmentId, schema.assignments.id)).where(eq(schema.classes.editionId, edition.id));
+  const politicas = await db.select({ cls: schema.classes.code, policy: schema.blindTests.releasePolicy, status: schema.assignments.status }).from(schema.assignments).innerJoin(schema.classes, eq(schema.classes.id, schema.assignments.classId)).leftJoin(schema.blindTests, eq(schema.blindTests.assignmentId, schema.assignments.id)).where(and(eq(schema.classes.editionId, edition.id), eq(schema.assignments.slug, "trabalho-final")));
   const finais = politicas;
   const disponiveis = datasets.filter((d) => d.status === "disponivel").length;
   return (
@@ -25,12 +25,12 @@ export default async function ProfessorBasesPage({ searchParams }: { searchParam
       <PageHeader eyebrow={`Ano ${edition.label}`} title="Bases e gabaritos" lead={`${disponiveis} de ${datasets.length} bases disponíveis. Tudo nesta página é do professor: OOT sem desfecho, rótulos e gabaritos nunca aparecem ao aluno. O aluno vê, em Materiais, o pacote de cada base, o dicionário e, quando a política do trabalho final é "livre", o OOT.`} />
       {editions.length > 1 && <p className="hint mb-3">Anos: {editions.map((e) => <Link key={e.id} href={`/professor/bases?edicao=${e.id}`} className={e.id === edition.id ? "font-semibold mr-2" : "mr-2"}>{e.label}</Link>)}</p>}
       <div className="grid gap-3 md:grid-cols-3 mb-4">
-        {finais.map((f) => <div key={f.cls} className="panel-soft text-[14px]"><b>{f.cls}</b> · trabalho final {f.status === "published" ? "publicado" : f.status === "closed" ? "encerrado" : "rascunho"} · OOT {f.policy === "livre" ? "liberado a todos" : "após congelamento"}</div>)}
+        {finais.map((f) => <div key={`${f.cls}-${f.status}`} className="panel-soft text-[14px]"><b>{f.cls}</b> · trabalho final {f.status === "published" ? "publicado" : f.status === "closed" ? "encerrado" : "rascunho"} · OOT {f.policy === "livre" ? "liberado a todos" : "após congelamento"}</div>)}
       </div>
       <section className="card mb-4" aria-labelledby="mat">
         <h2 id="mat" className="text-lg mb-2">Pacote do trabalho e gabaritos consolidados</h2>
         <ul className="list-none p-0 m-0 grid gap-2 md:grid-cols-2">
-          {materials.map((m) => <li key={m.id} className={`panel-soft ${m.status === "professor" ? "border-gold" : ""}`}><p className="eyebrow">{m.kind}{m.status === "professor" ? " · só professor" : " · publicado aos alunos"}</p><p className="font-semibold">{m.fileId ? <a href={`/api/arquivos/${m.fileId}`}>{m.title}</a> : m.title}</p>{m.description && <p className="hint">{m.description}</p>}</li>)}
+          {materials.map((m) => <li key={m.id} className={`panel-soft ${m.status === "professor" ? "border-gold" : ""}`}><p className="eyebrow">{m.kind}{m.status === "professor" ? " · só professor" : " · publicado aos alunos"}</p><p className="font-semibold">{m.url ? <a href={m.url}>{m.title}</a> : m.fileId ? <a href={`/api/arquivos/${m.fileId}`}>{m.title}</a> : m.title}</p>{m.description && <p className="hint">{m.description}</p>}</li>)}
           {materials.length === 0 && <li className="hint">Nenhum pacote registrado ainda.</li>}
         </ul>
       </section>

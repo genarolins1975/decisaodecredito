@@ -52,7 +52,7 @@ Aula.slide({
     }
 
     function grafico(c) {
-      var g = Graf.novo({ w: 440, h: 246, m: { e: 54, d: 16, c: 14, b: 36 } });
+      var g = Graf.novo({ w: 440, h: 226, m: { e: 54, d: 16, c: 14, b: 36 } });
       g.x(0, 12).y(0, 240);
       var ate = Math.min(est.mes, c.observado);
       // máscara do que ainda não foi observado

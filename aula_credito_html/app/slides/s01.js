@@ -33,14 +33,31 @@ Aula.slide({
       { valor: "mais", rotulo: "Preciso de mais informação" },
     ];
 
-    var lista = h("div", { class: "coluna cresce", estilo: "gap:10px;justify-content:space-between" });
+    /* Espaçamento uniforme: com space-between as quatro fichas abriam espaços de tamanhos
+       diferentes entre si, e o que deveria ser uma lista lia como quatro blocos soltos. */
+    var lista = h("div", { class: "coluna", estilo: "gap:12px" });
+
+    /* Cada característica vira um valor rotulado, e não um trecho de frase em cinza: é a
+       primeira tela da aula e precisa ser lida do fundo da sala. Os três campos extras
+       entram na mesma grade quando o professor revela, sem mudar a altura da ficha. */
+    function valor(rot, val, forte) {
+      return h("div", { estilo: "min-width:0" }, [
+        h("div", { class: "rot", estilo: "font-size:15px;letter-spacing:.06em" }, rot),
+        h("div", { class: "medio", estilo: "font-size:27px;line-height:1.1;white-space:nowrap" +
+          (forte ? ";color:var(--cor)" : "") }, val),
+      ]);
+    }
 
     function linhaCliente(c) {
-      var aviso = h("span", { class: "nota", estilo: "margin-left:10px",
-        "aria-live": "polite" }, est.mudou[c.nome] ? "· você mudou sua avaliação" : "");
-      var extras = h("span", { class: "apoio", hidden: !est.revelado },
-        est.revelado ? (" · histórico " + (c.hist ? "sim" : "não") +
-          " · utilização " + F.dec(c.util, 0) + "% · relacionamento " + F.dec(c.rel, 0) + " meses") : "");
+      var aviso = h("span", { class: "nota", estilo: "display:block;margin-top:2px",
+        "aria-live": "polite" }, est.mudou[c.nome] ? "você mudou sua avaliação" : "");
+      var campos = [valor("Renda por mês", F.reais(c.renda)),
+                    valor("Comprometimento", F.dec(c.comp, 0) + "%", true)];
+      if (est.revelado) {
+        campos.push(valor("Histórico de atraso", c.hist ? "sim" : "não"));
+        campos.push(valor("Utilização", F.dec(c.util, 0) + "%"));
+        campos.push(valor("Relacionamento", F.dec(c.rel, 0) + " meses"));
+      }
       var grupo = UI.botoes({
         rotulo: "decisão para " + c.nome,
         compacto: true,
@@ -54,21 +71,16 @@ Aula.slide({
           est.escolhas[c.nome] = v;
         },
       });
-      /* Os botões ficam encostados à direita e o texto ocupa o resto da linha:
-         com base fixa, a ficha quebrava no meio da frase. */
-      grupo.setAttribute("style", "margin-left:auto");
-      return h("div", { class: "painel claro", estilo: "padding:12px 16px" },
-        h("div", { estilo: "display:flex;align-items:center;gap:18px;flex-wrap:wrap" }, [
-          h("div", { estilo: "flex:1 1 300px;min-width:280px" }, [
-            h("div", { class: "medio" }, c.nome),
-            h("div", { class: "apoio" }, [
-              F.reais(c.renda) + " por mês · comprometimento " + F.dec(c.comp, 0) + "%",
-              extras,
-              /* O aviso entra no fluxo do texto: como filho da linha, ele
-                 quebrava para baixo e acrescentava uma altura por ficha. */
-              aviso,
-            ]),
+      grupo.setAttribute("style", "margin-left:auto;flex:1 1 auto;justify-content:flex-end");
+      /* Altura natural, sem cresce: esticar uma ficha de uma linha só a deixa oca, que é pior
+         do que a faixa de margem que sobra no pé do palco. */
+      return h("div", { class: "painel claro", estilo: "padding:14px 20px" },
+        h("div", { estilo: "display:flex;align-items:center;gap:30px;flex-wrap:wrap;width:100%" }, [
+          h("div", { estilo: "flex:1 1 160px;min-width:150px" }, [
+            h("div", { class: "medio", estilo: "font-size:32px;line-height:1.05" }, c.nome),
+            aviso,
           ]),
+          h("div", { estilo: "display:flex;gap:32px;flex-wrap:wrap;flex:1 1 auto;min-width:0" }, campos),
           grupo,
         ]));
     }
@@ -98,8 +110,8 @@ Aula.slide({
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "coluna cresce" }, [
         lista,
-        h("div", { class: "painel cor", estilo: "padding:10px 18px" },
-          h("p", { estilo: "font-size:24px;color:var(--ink);margin:0" },
+        h("div", { class: "painel cor", estilo: "padding:14px 20px;flex:0 0 auto" },
+          h("p", { estilo: "font-size:27px;color:var(--ink);margin:0" },
             "Que informação faria você mudar de ideia?")),
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 400px" }, [

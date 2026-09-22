@@ -114,7 +114,28 @@ Aula.slide({
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "coluna cresce" }, [
         h("div", { class: "painel claro centro" }, gh.svg),
-        h("div", { class: "linha cresce" }, [
+        /* A tabela de mesmo volume entra no lugar das duas curvas, que são do modelo escolhido:
+           na coluna da direita ela não cabia e o excedente ficava fora do palco. */
+        mesmoVolume
+          ? h("div", { class: "painel claro cresce" }, [
+              h("h3", { class: "secao" }, "Mesmo volume de aprovação"),
+              UI.tabela({
+                compacta: true,
+                colunas: [{ rotulo: "Modelo" }, { rotulo: "Corte" }, { rotulo: "Aprovação" },
+                          { rotulo: "Inadimplência" }],
+                linhas: mesmoVolume.map(function (m) {
+                  return [Aula.dados.modelos[m.modelo].nome, F.pct(m.linha.corte, 1),
+                          F.pct(m.linha.aprovacao, 1),
+                          m.linha.inadimplencia === null ? "não definida"
+                                                         : F.pct(m.linha.inadimplencia, 2)];
+                }),
+                legenda: "Cada modelo no corte que produz aproximadamente o mesmo volume",
+              }),
+              h("p", { class: "nota", estilo: "margin-top:6px" },
+                "Mesmo corte e mesmo volume são perguntas diferentes: com cortes iguais os " +
+                "modelos aprovam quantidades distintas."),
+            ])
+          : h("div", { class: "linha cresce" }, [
           h("div", { class: "painel claro cresce centro", estilo: "padding:8px 14px" }, [
             h("h3", { class: "secao", estilo: "margin:0 0 2px;display:flex;gap:8px;align-items:baseline" },
               ["Taxa de aprovação", h("span", { estilo: "text-transform:none;letter-spacing:0;font-size:15px" },
@@ -135,14 +156,14 @@ Aula.slide({
         h("div", { class: "painel cor" }, [
           h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
             h("h3", { class: "secao", estilo: "margin:0 0 4px" }, "No corte de " + F.pct(atual.corte, 1)),
-            UI.selo(est.particao === "teste"
-              ? "análise retrospectiva, não seleciona política"
-              : "partição de política", est.particao === "teste" ? "sim" : "neutro"),
+            UI.selo(est.particao === "teste" ? "análise retrospectiva" : "partição de política",
+              est.particao === "teste" ? "sim" : "neutro"),
           ]),
-          h("div", { class: "kv", estilo: "font-size:18px;gap:1px 12px" }, [
+          h("dl", { class: "kv", estilo: "font-size:18px;gap:1px 12px" }, [
             h("dt", {}, "aprovados"),
-            h("dd", {}, F.inteiro(atual.aprovados) + " de " + F.inteiro(
-              Math.round(atual.aprovados / (atual.aprovacao || 1)))),
+            /* O total avaliado vem da partição, não da divisão aprovados/taxa: com ninguém
+               aprovado a divisão daria "0 de 0", e o denominador é conhecido. */
+            h("dd", {}, F.inteiro(atual.aprovados) + " de " + F.inteiro(aval[est.particao].n)),
             h("dt", {}, "taxa de aprovação"), h("dd", {}, F.pct(atual.aprovacao, 1)),
             h("dt", {}, "eventos entre aprovados"), h("dd", {}, F.inteiro(atual.eventos)),
             h("dt", {}, "inadimplência entre aprovados"),
@@ -190,27 +211,11 @@ Aula.slide({
               "Reiniciar exemplo"),
           ]),
         ]),
-        mesmoVolume
-          ? h("div", { class: "painel claro cresce" }, [
-              h("h3", { class: "secao" }, "Mesmo volume de aprovação"),
-              UI.tabela({
-                compacta: true,
-                colunas: [{ rotulo: "Modelo" }, { rotulo: "Corte" }, { rotulo: "Aprovação" },
-                          { rotulo: "Inadimplência" }],
-                linhas: mesmoVolume.map(function (m) {
-                  return [Aula.dados.modelos[m.modelo].nome, F.pct(m.linha.corte, 1),
-                          F.pct(m.linha.aprovacao, 1),
-                          m.linha.inadimplencia === null ? "não definida"
-                                                         : F.pct(m.linha.inadimplencia, 2)];
-                }),
-                legenda: "Cada modelo no corte que produz aproximadamente o mesmo volume",
-              }),
-              h("p", { class: "nota", estilo: "margin-top:6px" },
-                "Mesmo corte e mesmo volume são perguntas diferentes: com cortes iguais os " +
-                "modelos aprovam quantidades distintas."),
-            ])
-          : h("p", { class: "nota" },
-              est.particao === "teste"
+        h("p", { class: "nota" },
+              mesmoVolume
+                ? "A tabela ao lado compara os três modelos no corte que produz o mesmo volume " +
+                  "de aprovação do corte atual."
+                : est.particao === "teste"
                 ? "No modo final o corte congelado é aplicado ao teste. Mover o controle aqui é " +
                   "análise retrospectiva e não seleciona política."
                 : "A política é definida nesta partição, antes de qualquer olhar ao teste."),

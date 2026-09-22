@@ -1,9 +1,17 @@
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireClassAccess } from "@/lib/auth/guard";
 import { ClassSubnav } from "@/components/professor/class-subnav";
 import { StatusBadge } from "@/components/ui";
+
+/** Sem isto as nove telas da turma abriam com o título genérico da plataforma na aba do navegador. */
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  // sem acesso ou turma inexistente: não contribui título, e vale o padrão do layout raiz
+  try { const a = await requireClassAccess(id, ["professor"]); return { title: a.cls.name }; } catch { return {}; }
+}
 
 export default async function TurmaLayout({ children, params }: { children: ReactNode; params: Promise<{ id: string }> }) {
   const { id } = await params;

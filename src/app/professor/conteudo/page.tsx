@@ -29,17 +29,6 @@ export default async function ConteudoPage({ searchParams }: { searchParams: Pro
         <section key={u.id} className="card mb-4">
           <p className="eyebrow">{rotuloUnidade(u)} · {u.plannedMinutes} min com {u.breakMinutes} de intervalo</p>
           <h2 className="mb-3">{u.title}</h2>
-          {daUnidade.filter((m) => m.unitId === u.id).map((m) => (
-            <div key={m.id} className="panel-soft mb-3">
-              <p className="eyebrow">{m.kind}</p>
-              <p className="font-semibold text-ink">{m.title}</p>
-              {m.description && <p className="hint mt-1">{m.description}</p>}
-              {m.url && <p className="mt-2 flex gap-3 flex-wrap">
-                <a className="btn btn-sm" href={m.url} target="_blank" rel="noreferrer">Abrir a aula</a>
-                <Link className="btn btn-sm btn-secondary" href={`/professor/turmas`}>Conduzir ao vivo pelos encontros</Link>
-              </p>}
-            </div>
-          ))}
           {u.chapters.length === 0 && daUnidade.every((m) => m.unitId !== u.id) &&
             <p className="hint">Esta unidade ainda não tem capítulo nem material. O material aparece aqui depois de cadastrado em Materiais com a unidade escolhida.</p>}
           {u.chapters.map((c) => (
@@ -49,6 +38,17 @@ export default async function ConteudoPage({ searchParams }: { searchParams: Pro
               <div className="table-wrap mt-2"><table className="table text-[13px]"><thead><tr><th>Id</th><th>Título</th><th>Nível</th><th>Min</th><th>Ações</th></tr></thead>
                 <tbody>{c.pages.map((p) => <tr key={p.id}><td className="font-mono">{p.slug}</td><td>{p.title}</td><td><Badge tone={p.level === "essencial" ? "ink" : "muted"}>{p.level}</Badge></td><td>{p.minutes}</td><td className="whitespace-nowrap"><Link href={`/aulas/${p.slug}`}>ver</Link> · <Link href={`/apresentacao/${p.slug}`}>tela cheia</Link> · <Link href={`/professor/conteudo/${p.id}`}>editar</Link></td></tr>)}</tbody></table></div>
             </details>
+          ))}
+          {daUnidade.filter((m) => m.unitId === u.id).map((m) => (
+            <div key={m.id} className="panel-soft mb-3">
+              <p className="eyebrow">{m.kind}</p>
+              <p className="font-semibold text-ink">{m.title}</p>
+              {m.description && <p className="hint mt-1">{m.description}</p>}
+              {m.url && <p className="mt-2 flex gap-3 flex-wrap">
+                <a className="btn btn-sm" href={m.url} target="_blank" rel="noreferrer">Abrir</a>
+                {m.kind === "aula" && <Link className="btn btn-sm btn-secondary" href="/professor/turmas">Conduzir ao vivo pelos encontros</Link>}
+              </p>}
+            </div>
           ))}
         </section>
       ))}

@@ -18,6 +18,10 @@ Aula.slide({
       "Por comprometimento: impureza ponderada 0,166728 e ganho 0,013272.",
       "Impureza zero em grupo puro; máximo de 0,5 quando a taxa é 50%.",
     ],
+    aprofundar: [
+      "O capítulo 5 refaz esta mesma busca sobre outra base: dezesseis propostas com raiz em 0,500 de Gini, onde o corte vencedor é utilização ≤ 57,5% com redução de 0,28125. Aqui a raiz é de mil contratos a 10% de eventos, com Gini 0,180 e ganho de 0,020 no histórico. A regra é a mesma, a aritmética não: nenhum dos dois números se converte no outro.",
+      "Material original, capítulo 5, página 4: o Gini não é a taxa de erro do nó. O segundo nível daquela árvore derruba o Gini de 0,21875 para 0,12500 sem tirar um único erro, e é por isso que a taxa de erro não serve de critério.",
+    ],
     cuidados: [
       "Gini é critério de impureza no treino. Não é AUC, KS nem lucro.",
       "Outras perdas podem orientar árvores. Não misture entropia e Gini no mesmo cálculo.",
@@ -65,11 +69,13 @@ Aula.slide({
         linhas: [Mat.passos([
           "\\Delta G &= G(\\text{raiz}) - \\bar{G} = " + Mat.n(r.pai, 3) + " - " + Mat.n(r.ponderado, 6) +
             " = " + Mat.n(r.ganho, 6),
-          "&\\text{candidato " + outro.rotulo.toLowerCase() + ": } \\Delta G = " + Mat.n(rOutro.ganho, 6),
+          "&" + Mat.t("candidato " + outro.rotulo.toLowerCase() + ": ") + " \\Delta G = " + Mat.n(rOutro.ganho, 6),
         ])] },
     ];
 
-    var g = Graf.novo({ w: 520, h: 300, m: { e: 78, d: 24, c: 20, b: 56 } });
+    /* 230 de altura, e não 300: na etapa 4 o painel de barras entra embaixo deste, e com 300 a
+       coluna passava da altura do palco e o rótulo do eixo ficava coberto. */
+    var g = Graf.novo({ w: 520, h: 230, m: { e: 78, d: 24, c: 16, b: 52 } });
     g.x(0, 1).y(0, 0.55);
     g.grade({ y: [0, 0.18, 0.5] });
     g.eixoY({ ticks: [0, 0.1, 0.2, 0.3, 0.4, 0.5], formato: function (v) { return F.dec(v, 1); },
@@ -84,19 +90,19 @@ Aula.slide({
     marcas.forEach(function (m, i) {
       g.ponto(m.p, M.gini(m.p), { r: 7, cor: i === 0 ? "var(--ink)" : "var(--arvore)" });
       g.texto(m.p, M.gini(m.p), m.rot,
-        { dx: 10, dy: i === 2 ? 20 : -10, tamanho: 16, peso: 400, cor: "var(--muted)" });
+        { dx: 10, dy: i === 0 ? -12 : 20, tamanho: 16, peso: 400, cor: "var(--muted)" });
     });
 
     var gb = Graf.barras({
-      w: 520, h: 200, larguraRot: 210, m: { d: 110, c: 12, b: 48 },
+      w: 520, h: 140, larguraRot: 230, m: { d: 80, c: 10, b: 46 },
       itens: A.candidatos.map(function (cc) {
         var rr = A.ganho(cc);
         return { rotulo: cc.rotulo, valor: rr.ganho,
                  cor: cc.chave === est.cand ? "var(--arvore)" : "var(--rule)",
                  texto: F.dec(rr.ganho, 4) };
       }),
-      max: 0.025, ticks: [0, 0.005, 0.01, 0.015, 0.02, 0.025],
-      formato: function (v) { return F.dec(v, 3); },
+      max: 0.025, ticks: [0, 0.01, 0.02],
+      formato: function (v) { return F.dec(v, 2); },
       rotuloX: "ganho de impureza",
     });
 
@@ -106,7 +112,7 @@ Aula.slide({
           var visivel = i < est.etapa;
           return h("div", {
             class: "painel" + (i === est.etapa - 1 ? " cor" : " claro"),
-            estilo: "padding:12px 16px" + (visivel ? "" : ";opacity:.35"),
+            estilo: "padding:12px 16px",
           }, [
             h("h3", { class: "secao", estilo: "margin:0 0 6px" }, e.titulo),
             visivel

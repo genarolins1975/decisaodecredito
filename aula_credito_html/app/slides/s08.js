@@ -31,17 +31,21 @@ Aula.slide({
     var foraLimites = valor < 0 || valor > 1;
 
     /* Reta de escores com os quatro clientes. */
-    var ge = Graf.novo({ w: 660, h: 176, m: { e: 40, d: 40, c: 40, b: 54 } });
+    var ge = Graf.novo({ w: 660, h: 216, m: { e: 40, d: 40, c: 80, b: 54 } });
     ge.x(-8, 4).y(0, 1);
     ge.eixoX({ ticks: [-8, -6, -4, -2, 0, 2, 4], em: 0.5, rotulo: "escore z" });
-    D.clientes.forEach(function (c, i) {
-      var z = L.z(c);
-      ge.ponto(z, 0.5, { r: 9, cor: "var(--logit)" });
-      ge.texto(z, 0.5, c.nome, { dy: i % 2 ? -18 : -40, ancora: "middle", tamanho: 19,
-                                 cor: "var(--ink)" });
-      ge.texto(z, 0.5, F.dec(z, 3), { dy: i % 2 ? -1 : -23, ancora: "middle", tamanho: 16,
-                                      peso: 400, cor: "var(--muted)" });
-    });
+    /* Rótulos em dois níveis, alternados na ordem dos escores: Ana e Carla, vizinhas na reta,
+       ficavam no mesmo nível e se sobrepunham. */
+    D.clientes.map(function (c) { return { c: c, z: L.z(c) }; })
+      .sort(function (a, b) { return a.z - b.z; })
+      .forEach(function (o, i) {
+        var alto = i % 2 === 1;
+        ge.ponto(o.z, 0.5, { r: 9, cor: "var(--logit)" });
+        ge.texto(o.z, 0.5, o.c.nome, { dy: alto ? -66 : -30, ancora: "middle", tamanho: 19,
+                                       cor: "var(--ink)" });
+        ge.texto(o.z, 0.5, F.dec(o.z, 3), { dy: alto ? -48 : -12, ancora: "middle", tamanho: 16,
+                                            peso: 400, cor: "var(--muted)" });
+      });
 
     /* Régua de probabilidade, ainda sem correspondência estabelecida. */
     var gp = Graf.novo({ w: 660, h: 140, m: { e: 40, d: 40, c: 24, b: 54 } });

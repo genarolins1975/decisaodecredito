@@ -45,7 +45,9 @@ Aula.slide({
     g.eixoY({ ticks: [0, 0.2, 0.4, 0.6], formato: function (v) { return F.pct(v, 0); },
               rotulo: "probabilidade de inadimplência" });
     g.eixoX({ ticks: [-6, -4, -2, 0, 2], rotulo: "escore z" });
-    g.linha(M.linspace(-6, 3, 320).map(function (v) { return [v, M.sigmoid(v)]; }),
+    /* Só o trecho dentro do eixo: acima de 75% a curva saía do quadro e cruzava o título. */
+    g.linha(M.linspace(-6, 3, 320).map(function (v) { return [v, M.sigmoid(v)]; })
+      .filter(function (pt) { return pt[1] <= g.dy[1]; }),
       { cor: "var(--logit)", largura: 3 });
 
     cenarios.forEach(function (p) {
@@ -58,8 +60,12 @@ Aula.slide({
         stroke: cor, "stroke-width": sel ? 4 : 2 }));
       g.ponto(z0, p, { r: sel ? 8 : 5, cor: "var(--ink)", bordaL: 1.5 });
       g.ponto(z1, p1, { r: sel ? 8 : 5, cor: cor, bordaL: 1.5 });
-      g.texto(z1, p1, F.ppSinal(p1 - p, 2), { dx: 12, dy: -8, tamanho: sel ? 22 : 18,
-        cor: sel ? "var(--ink)" : "var(--muted)" });
+      /* No cenário de 2% o rótulo à direita do ponto caía sobre o "10%" do cenário vizinho;
+         ele fica à esquerda, empilhado sobre o rótulo da PD inicial. */
+      var baixo = p < 0.05;
+      g.texto(baixo ? z0 : z1, baixo ? p : p1, F.ppSinal(p1 - p, 2),
+        { dx: baixo ? -12 : 12, dy: baixo ? -16 : -8, ancora: baixo ? "end" : "start",
+          tamanho: sel ? 22 : 18, cor: sel ? "var(--ink)" : "var(--muted)" });
       g.texto(z0, p, F.pct(p, 0), { dx: -12, dy: 6, ancora: "end", tamanho: 18,
         peso: 400, cor: "var(--muted)" });
     });
@@ -67,7 +73,11 @@ Aula.slide({
     if (est.tangente) {
       var z0s = M.logito(est.p0);
       var incl = est.p0 * (1 - est.p0);
-      var x0 = z0s - 1.2, x1 = z0s + 1.6;
+      /* A reta tangente fica dentro do desenho: em PD inicial alta ela subiria além do topo do
+         eixo e o rótulo sairia do quadro. */
+      var yMax = g.dy[1] - 0.03, yMin = g.dy[0] + 0.02;
+      var x0 = Math.max(g.dx[0], z0s - 1.2, z0s + (yMin - est.p0) / incl);
+      var x1 = Math.min(g.dx[1], z0s + 1.6, z0s + (yMax - est.p0) / incl);
       g.linha([[x0, est.p0 + incl * (x0 - z0s)], [x1, est.p0 + incl * (x1 - z0s)]],
         { cor: "var(--amber)", largura: 2, tracejado: "6 5" });
       g.texto(x1, est.p0 + incl * (x1 - z0s), "aproximação local",

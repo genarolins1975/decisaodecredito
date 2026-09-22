@@ -1,14 +1,15 @@
 Aula.slide({
   id: "42",
   bloco: "boosting",
-  titulo: "O novo cliente caiu no grupo B. Qual é a previsão?",
+  titulo: "Carla caiu no grupo B. Qual é a previsão?",
   subtitulo: "Exercício: somar em escore e converter uma única vez",
   conclusao: "Com as árvores treinadas, os atributos determinam o percurso e a soma determina a PD.",
   fonte: Aula.dados.fontes.boosting,
-  resumo: "Escore inicial e duas folhas do grupo B, com três métodos possíveis de combinação.",
+  resumo: "Escore inicial e duas folhas do grupo B, com os atributos de Carla e três métodos possíveis de combinação.",
   notas: {
     conducao: [
       "Dê um minuto individual e outro em duplas.",
+      "Lembre que Carla é a mesma do slide 01. Ana e Bruno cairiam no grupo A e receberiam a mesma PD entre si, o que já mostra por que duas árvores não bastam.",
       "Peça que verbalizem onde o desfecho y foi usado e onde deixou de ser necessário.",
       "Conclua o bloco conectando logit e boosting pela saída probabilística, com funções de escore diferentes.",
     ],
@@ -35,6 +36,7 @@ Aula.slide({
     if (est.passos === undefined) est.passos = 0;
 
     var hist = B.rodar(2, 1);
+    var carla = Aula.dados.cliente("Carla");
     var F0 = hist[0].grupos.B.F;
     var h1 = hist[1].grupos.B.h, h2 = hist[2].grupos.B.h;
     var total = hist[2].grupos.B.F;
@@ -84,6 +86,7 @@ Aula.slide({
         h("div", { class: "painel cor" }, [
           h("h3", { class: "secao" }, "O que já sabemos"),
           UI.kv([
+            ["cliente", "Carla, comp " + F.dec(carla.comp, 0) + "% · grupo B"],
             ["escore inicial F0", F.dec(F0, 6)],
             ["folha da árvore 1", F.sinal(h1, 6)],
             ["folha da árvore 2", F.sinal(h2, 6)],
@@ -120,13 +123,15 @@ Aula.slide({
         ]),
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 620px" }, [
-        h("div", { class: "painel claro cresce centro" }, [
-          est.passos >= 1
-            ? g.svg
-            : h("p", { class: "apoio", estilo: "text-align:center" },
+        /* O eixo do waterfall fica na tela desde o início, com zero barras visíveis: assim o
+           aluno vê onde a resposta vai aparecer, em vez de uma faixa de texto larga e vazia. */
+        h("div", { class: "painel claro centro" }, [
+          g.svg,
+          est.passos >= 1 ? null
+            : h("p", { class: "apoio", estilo: "text-align:center;margin-top:6px" },
                 "A resolução aparece em duas etapas: primeiro a soma no escore, depois a conversão."),
           est.passos >= 2
-            ? h("div", { estilo: "display:flex;gap:20px;align-items:center;margin-top:10px" }, [
+            ? h("div", { estilo: "display:flex;gap:20px;align-items:center;margin-top:10px;flex-wrap:wrap;justify-content:center" }, [
                 Comum.miniSigmoide(total, { w: 320, h: 180, zmin: -2.4, zmax: 0.4 }),
                 h("div", {}, [
                   h("p", { class: "grande" }, F.pct(pd, 4)),

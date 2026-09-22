@@ -7,6 +7,7 @@ import { chapterAssumptions } from "@/lib/content/prerequisites";
 import { infograficoDoCapitulo } from "@/lib/content/infograficos";
 import { InfograficoCapitulo } from "@/components/content/infografico";
 import { materiaisDoCapitulo, numeroCapitulo, resumoCapitulo, rotuloUnidade, somaTempos } from "@/lib/content/capitulo";
+import { primeiroSlideDoCapitulo } from "@/lib/content/roteiro-aula-2";
 import { Badge } from "@/components/ui";
 
 export async function generateMetadata({ params }: { params: Promise<{ n: string }> }): Promise<Metadata> {
@@ -34,6 +35,9 @@ export default async function CapituloPage({ params }: { params: Promise<{ n: st
   const info = infograficoDoCapitulo(numero);
   const tempos = staff ? somaTempos(chapter.pages.map((p) => p.timeBudget)) : null;
   const materiais = materiaisDoCapitulo(d.materials, numero).filter((m) => staff || m.status === "published");
+  /* Aula apresentada por baralho: o capítulo oferece também o slide por onde ela entra neste assunto.
+     Sai do roteiro, então nenhum capítulo precisa ser tratado à parte. */
+  const slideDeAbertura = primeiroSlideDoCapitulo(numero);
   const unidade = rotuloUnidade(unit);
   const cor = chapter.themeColor ?? "#00205B";
   return (
@@ -45,6 +49,7 @@ export default async function CapituloPage({ params }: { params: Promise<{ n: st
           <p className="eyebrow">{unidade} · {unit.title} · <b>Capítulo {numero} de {total}</b></p>
           <h1 className="capx-tit">{chapter.title}</h1>
           {chapter.centralQuestion && <p className="capx-perg">{chapter.centralQuestion}</p>}
+          {slideDeAbertura && <p className="hint mt-2 max-w-[70ch]">Esta aula também é apresentada em 50 slides interativos, que percorrem os três capítulos dela. O slide {slideDeAbertura} é onde o assunto deste capítulo começa.</p>}
           <dl className="capx-stats">
             <div className="capx-stat"><dt>páginas</dt><dd>{r.total}</dd></div>
             <div className="capx-stat"><dt>essenciais, vistas em aula</dt><dd>{r.essenciais}</dd></div>
@@ -54,7 +59,8 @@ export default async function CapituloPage({ params }: { params: Promise<{ n: st
           <div className="capx-acoes">
             <Link href={`/aulas/${primeira.slug}`} className="btn">Começar pela página 1 →</Link>
             <Link href={`/apresentacao/${primeira.slug}`} className="btn btn-secondary">Apresentar em tela cheia</Link>
-            {staff && <Link href="/professor/conteudo" className="btn btn-ghost">Editar o conteúdo</Link>}
+            {slideDeAbertura && <a href={`/slides/aula-2#/slide/${slideDeAbertura}`} className="btn btn-secondary">Apresentar pelos slides</a>}
+            {ctx.user.isStaff && <Link href="/professor/conteudo" className="btn btn-ghost">Editar o conteúdo</Link>}
           </div>
         </div>
       </header>
@@ -129,8 +135,8 @@ export default async function CapituloPage({ params }: { params: Promise<{ n: st
       </section>
 
       <nav className="capx-viz" aria-label="Capítulos vizinhos">
-        {prev ? <Link href={`/aulas/capitulo/${prev.number}`} rel="prev"><span className="eyebrow">← Capítulo {prev.number} · {prev.unitLabel}</span><b>{prev.title}</b></Link> : <span />}
-        {next ? <Link href={`/aulas/capitulo/${next.number}`} rel="next" className="capx-viz--prox"><span className="eyebrow">Capítulo {next.number} · {next.unitLabel} →</span><b>{next.title}</b></Link> : <span />}
+        {prev ? <Link href={prev.href} rel="prev"><span className="eyebrow">← {prev.rotulo}</span><b>{prev.titulo}</b></Link> : <span />}
+        {next ? <Link href={next.href} rel="next" className="capx-viz--prox"><span className="eyebrow">{next.rotulo} →</span><b>{next.titulo}</b></Link> : <span />}
       </nav>
     </div>
   );

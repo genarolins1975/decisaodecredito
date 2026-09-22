@@ -40,7 +40,7 @@ Aula.slide({
     var equilibrio = E.equilibrio(hip);
     var foraDaFaixa = equilibrio >= 1;
 
-    var g = Graf.novo({ w: 900, h: 470, m: { e: 120, d: 40, c: 28, b: 62 },
+    var g = Graf.novo({ w: 900, h: 470, m: { e: 150, d: 40, c: 28, b: 62 },
       resumo: "Resultado esperado por operação em função da PD." });
     var minY = E.resultado(0.5, hip), maxY = hip.margem;
     g.x(0, 0.5).y(Math.min(minY, -100) * 1.05, maxY * 1.1);
@@ -67,7 +67,7 @@ Aula.slide({
     g.texto(est.pd, resultado, F.reais(resultado),
       { dx: 12, dy: resultado > 0 ? -14 : 24, tamanho: 22, cor: "var(--ink)" });
 
-    var gd = Graf.novo({ w: 420, h: 128, m: { e: 96, d: 24, c: 18, b: 30 } });
+    var gd = Graf.novo({ w: 452, h: 150, m: { e: 100, d: 20, c: 18, b: 50 } });
     gd.x(0, 3).y(Math.min(0, resultado) * 1.15, hip.margem * 1.15);
     gd.eixoY({ ticks: [0, hip.margem / 2, hip.margem],
                formato: function (v) { return F.reais(v); } });
@@ -80,8 +80,11 @@ Aula.slide({
       gd.retangulo(b[0] - 0.32, y0, b[0] + 0.32, y1, { cor: b[3] });
       gd.texto(b[0], b[1] > 0 ? b[1] : 0, F.reais(b[1]),
         { ancora: "middle", dy: -10, tamanho: 19, cor: "var(--ink)" });
-      gd.texto(b[0], gd.dy[0], b[2],
-        { ancora: "middle", dy: 26, tamanho: 17, peso: 400, cor: "var(--muted)" });
+      /* "perda esperada" não cabe numa coluna de 110 unidades: cada palavra numa linha. */
+      b[2].split(" ").forEach(function (palavra, k) {
+        gd.texto(b[0], gd.dy[0], palavra,
+          { ancora: "middle", dy: 24 + k * 18, tamanho: 16, peso: 400, cor: "var(--muted)" });
+      });
     });
 
     var alternativa = null;
@@ -111,7 +114,9 @@ Aula.slide({
         h("div", { class: "painel claro cresce centro" }, g.svg),
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 480px" }, [
-        h("div", { class: "painel cor", estilo: "padding:12px 16px" }, [
+        /* A versão alternativa ocupa o lugar do painel de hipóteses enquanto está aberta: os dois
+           juntos, com os controles, passavam da altura do palco. Fechá-la traz as hipóteses de volta. */
+        est.alternativa ? alternativa : h("div", { class: "painel cor", estilo: "padding:12px 16px" }, [
           h("div", { estilo: "display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px" }, [
             h("h3", { class: "secao", estilo: "margin:0 0 4px" }, "Hipóteses"),
             UI.selo("aproximação didática, 12 meses", "neutro"),
@@ -119,7 +124,7 @@ Aula.slide({
           h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:0 0 4px;font-size:16px" },
             Mat.b("\\mathbb{E}[\\text{resultado}] = m - p\\,\\text{LGD}\\,\\text{EAD}"
               + (foraDaFaixa ? "" : "\\quad p^{*} = \\tfrac{m}{\\text{LGD}\\,\\text{EAD}} = " + Mat.pct(equilibrio, 0)))),
-          h("div", { class: "kv", estilo: "font-size:18px;gap:1px 12px" }, [
+          h("dl", { class: "kv", estilo: "font-size:18px;gap:1px 12px" }, [
             h("dt", {}, "margem antes da perda"), h("dd", {}, F.reais(hip.margem)),
             h("dt", {}, "EAD"), h("dd", {}, F.reais(hip.ead)),
             h("dt", {}, "LGD"), h("dd", {}, F.pct(hip.lgd, 0)),
@@ -136,11 +141,13 @@ Aula.slide({
             aoMudar: function (v) { est.pd = v / 100; App.montar("47"); },
           }),
           h("div", { class: "grupo", estilo: "margin-top:10px" }, [
+            /* Um painel de cada vez: hipóteses e versão alternativa juntas não cabem na coluna, e a
+               própria tela diz que a alternativa não deve ser misturada ao gráfico principal. */
             h("button", { class: "btn min", type: "button", onclick: function () {
-              est.hipoteses = !est.hipoteses; App.montar("47");
+              est.hipoteses = !est.hipoteses; if (est.hipoteses) est.alternativa = false; App.montar("47");
             } }, est.hipoteses ? "Esconder hipóteses" : "Mudar hipóteses"),
             h("button", { class: "btn min", type: "button", onclick: function () {
-              est.alternativa = !est.alternativa; App.montar("47");
+              est.alternativa = !est.alternativa; if (est.alternativa) est.hipoteses = false; App.montar("47");
             } }, est.alternativa ? "Esconder a alternativa" : "Versão com margem condicional"),
             h("button", { class: "btn min fantasma", type: "button", onclick: ctx.reiniciar },
               "Reiniciar exemplo"),
@@ -166,11 +173,13 @@ Aula.slide({
               ])
             : null,
         ]),
-        alternativa || h("div", { class: "painel claro cresce centro",
+        /* Com as hipóteses abertas, os três controles ocupam o lugar da decomposição, cujos
+           números continuam no painel de hipóteses. */
+        (est.hipoteses || est.alternativa) ? null : (h("div", { class: "painel claro cresce centro",
             estilo: "padding:10px 16px" }, [
           h("h3", { class: "secao", estilo: "margin-bottom:2px" }, "Margem menos perda esperada"),
           gd.svg,
-        ]),
+        ])),
       ]),
     ]));
   },

@@ -9,18 +9,21 @@ Aula.slide({
   notas: {
     conducao: [
       "Apresente o solicitante novo e pergunte onde está o y dele.",
+      "Antes de trocar η, peça um palpite: se somarmos 40% de cada correção, a PD final é 40% do caminho? Depois troque para 0,40 e mostre que não.",
       "Mostre que y só foi usado no treinamento das duas árvores.",
       "Faça o percurso nas duas árvores, some e converta. Compare com o waterfall do logit: ambos somam em uma escala de escore, com funções diferentes.",
     ],
     respostas: [
-      "Grupo B: −1,386294 mais 0,200000 mais 0,166078 é igual a −1,020217, e a PD é 26,4985%.",
-      "Grupo A: −1,386294 menos 0,200000 menos 0,169906 é igual a −1,756200, e a PD é 14,7267%.",
+      "Com η = 1, grupo B: −1,386294 mais 0,200000 mais 0,166078 é igual a −1,020217, e a PD é 26,4985%.",
+      "Com η = 1, grupo A: −1,386294 menos 0,200000 menos 0,169906 é igual a −1,756200, e a PD é 14,7267%.",
+      "Com η = 0,40 e as mesmas duas árvores: grupo A chega a 17,6347% e grupo B a 22,5912%.",
     ],
     cuidados: [
       "Não some as PDs de cada árvore nem chame as contribuições de probabilidades.",
       "Um conjunto real tem muitas árvores e padrões mais ricos. A miniatura de duas árvores só torna o mecanismo visível.",
       "Esta não é uma explicação por variável: é a decomposição exata da soma das árvores.",
       "Com taxa de aprendizagem diferente de 1, o que se soma é a taxa multiplicada pela contribuição.",
+      "Multiplicar as duas contribuições de η = 1 por 0,40 não dá o resultado de η = 0,40: a segunda árvore é outra, porque partiu de outro escore.",
     ],
     transicao: "Se cada passo for menor, precisaremos de mais etapas. Como escolher o tamanho dos passos e o número de árvores?",
   },
@@ -31,8 +34,11 @@ Aula.slide({
     var est = ctx.estado;
     if (est.comp === undefined) est.comp = 50;
     if (est.converter === undefined) est.converter = false;
+    /* A taxa de aprendizagem deixa de ser fixa aqui: é o que o slide 37 vai cobrar, e o aluno
+       precisa ter visto os resíduos serem recalculados com outro η antes de responder. */
+    if (est.eta === undefined) est.eta = 1;
 
-    var hist = B.rodar(2, 1);
+    var hist = B.rodar(2, est.eta);
     var grupo = est.comp > B.corte ? "B" : "A";
     var h1 = hist[1].grupos[grupo].h;
     var h2 = hist[2].grupos[grupo].h;
@@ -41,7 +47,7 @@ Aula.slide({
     var pd = hist[2].grupos[grupo].p;
 
     var g = Graf.waterfall({
-      w: 760, h: 330, larguraRot: 282,
+      w: 760, h: 300, larguraRot: 282,
       base: F0, rotuloBase: "escore inicial " + F.dec(F0, 6), rotuloTotal: "escore final",
       rotuloX: "escore F",
       itens: [
@@ -58,7 +64,8 @@ Aula.slide({
     gs.eixoY({ ticks: [0, 0.25, 0.5], formato: function (v) { return F.pct(v, 0); },
                rotulo: "PD" });
     gs.eixoX({ ticks: [-2, -1, 0], rotulo: "escore F" });
-    gs.linha(M.linspace(-2.4, 0.4, 160).map(function (v) { return [v, M.sigmoid(v)]; }),
+    gs.linha(M.linspace(-2.4, 0.4, 160).map(function (v) { return [v, M.sigmoid(v)]; })
+      .filter(function (pt) { return pt[1] <= gs.dy[1]; }),
       { cor: "var(--boost)", largura: 3 });
     if (est.converter) {
       gs.guia(total, pd, { cor: "var(--boost)" });
@@ -104,11 +111,16 @@ Aula.slide({
           ]),
           UI.slider({
             rotulo: "Comprometimento do solicitante", min: 20, max: 60, passo: 1, valor: est.comp,
-            formato: function (v) { return "grupo " + (v > B.corte ? "B" : "A"); },
+            formato: function (v) { return "grupo " + (v > B.corte ? "B" : "A") + " · " +
+              (v <= 22 ? "Ana" : v <= 38 ? "Bruno" : v <= 48 ? "Carla" : "Diego"); },
             aoMudar: function (v) { est.comp = v; App.montar("36"); },
           }),
-          h("p", { class: "nota", estilo: "margin-top:8px" },
-            "Nenhum campo de desfecho aparece nesta ficha. O y foi usado apenas no treinamento."),
+          /* A nota da ficha e o resumo do treino dizem a mesma coisa por dois caminhos; com os
+             dois abertos o palco não cabe. Quando o resumo abre, esta sai. */
+          est.treino ? null : h("p", { class: "nota", estilo: "margin-top:8px" },
+            "Nenhum campo de desfecho aparece nesta ficha: o y foi usado apenas no treinamento. " +
+            "Trocar η não reescala o resultado, porque os resíduos da segunda árvore são " +
+            "recalculados sobre o escore já atualizado pela primeira."),
         ]),
         h("div", { class: "coluna", estilo: "gap:8px" }, percurso),
         h("div", { class: "painel claro cresce centro", estilo: "padding:8px 14px" }, [
@@ -116,6 +128,9 @@ Aula.slide({
           gs.svg,
         ]),
         h("div", { class: "grupo" }, [
+          UI.botoes({ compacto: true, rotulo: "Taxa de aprendizagem", valor: est.eta,
+            opcoes: [{ rotulo: "η = 1", valor: 1 }, { rotulo: "η = 0,40", valor: 0.4 }],
+            aoMudar: function (v) { est.eta = v; App.montar("36"); } }),
           h("button", { class: "btn", type: "button", onclick: function () {
             est.converter = false; App.montar("36");
           }, disabled: !est.converter }, "Ver somente o escore"),
@@ -130,10 +145,9 @@ Aula.slide({
         ]),
         est.treino
           ? h("p", { class: "nota" },
-              "As duas folhas vieram das médias dos resíduos dos dez registros de treinamento: " +
+              "As folhas vieram das médias dos resíduos dos dez registros: " +
               F.dec(hist[1].grupos.B.h, 6) + " e " + F.dec(hist[2].grupos.B.h, 6) +
-              " no grupo B. Para prever um solicitante novo não calculamos y menos p: " +
-              "apenas percorremos as árvores já aprendidas.")
+              " no grupo B. Para prever, só percorremos as árvores já aprendidas.")
           : null,
       ]),
     ]));

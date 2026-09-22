@@ -162,8 +162,28 @@ Aula.slide({
           ]),
           h("p", { class: "nota", estilo: "margin-top:8px" }, restricoes[est.restricao]),
         ]),
+        /* A escolha registrada fica sob os controles: na coluna da direita, com o formulário, não cabia. */
+        est.modelo
+          ? h("div", { class: "painel cor" }, [
+              h("h3", { class: "secao" }, "Escolha registrada"),
+              h("p", { class: "apoio", estilo: "margin:0;color:var(--ink)" },
+                Aula.dados.modelos[est.modelo].nome + " com " +
+                (est.politica === "congelado"
+                  ? "corte de equilíbrio em " + F.pct(congelado, 0)
+                  : "corte de " + F.pct(linhaPolitica(est.modelo).corte, 1) +
+                    ", escolhido na partição de política") +
+                ": aprovação de " + F.pct(linhaPolitica(est.modelo).aprovacao, 1) +
+                " e inadimplência de " + F.pct(linhaPolitica(est.modelo).inadimplencia, 2) +
+                " entre aprovados."),
+            ])
+          : null,
+
+      ]),
+      h("div", { class: "coluna", estilo: "flex:0 0 520px" }, [
+        /* Os argumentos ocupam o lugar dos requisitos enquanto estão abertos: sob a tabela, na
+           coluna da esquerda, eles passavam da altura do palco. */
         est.argumentos
-          ? h("div", { class: "painel cor cresce" }, [
+          ? h("div", { class: "painel cor" }, [
               h("h3", { class: "secao" }, "Argumentos que a evidência sustenta"),
               h("ul", { class: "apoio", estilo: "margin:0;padding-left:20px;font-size:18px" }, [
                 h("li", {}, "A maior AUC no teste é de " +
@@ -182,10 +202,7 @@ Aula.slide({
                   "e chamar a nova medida de avaliação independente."),
               ]),
             ])
-          : null,
-      ]),
-      h("div", { class: "coluna", estilo: "flex:0 0 520px" }, [
-        h("div", { class: "painel" }, [
+          : h("div", { class: "painel" }, [
           h("h3", { class: "secao", estilo: "margin-bottom:4px" }, "Requisitos da operação"),
           h("ul", { class: "apoio", estilo: "margin:0;padding-left:20px;font-size:17px" }, [
             h("li", {}, "equipe enxuta, sem time dedicado a manutenção de modelos"),
@@ -210,20 +227,7 @@ Aula.slide({
           h("p", { class: "nota", estilo: "margin-top:6px" },
             "O texto fica apenas neste dispositivo."),
         ]),
-        est.modelo
-          ? h("div", { class: "painel cor" }, [
-              h("h3", { class: "secao" }, "Escolha registrada"),
-              h("p", { class: "apoio", estilo: "margin:0;color:var(--ink)" },
-                Aula.dados.modelos[est.modelo].nome + " com " +
-                (est.politica === "congelado"
-                  ? "corte de equilíbrio em " + F.pct(congelado, 0)
-                  : "corte de " + F.pct(linhaPolitica(est.modelo).corte, 1) +
-                    ", escolhido na partição de política") +
-                ": aprovação de " + F.pct(linhaPolitica(est.modelo).aprovacao, 1) +
-                " e inadimplência de " + F.pct(linhaPolitica(est.modelo).inadimplencia, 2) +
-                " entre aprovados."),
-            ])
-          : null,
+
       ]),
     ]));
   },

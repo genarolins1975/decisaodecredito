@@ -72,11 +72,18 @@ Aula.slide({
     gc.eixoX({ ticks: [minX, (minX + maxX) / 2, maxX],
                formato: function (v) { return F.dec(Math.pow(10, v), v > 1 ? 0 : 2); },
                rotulo: "força da penalização (1 dividido por C)" });
+    var trajetorias = vars.map(function (v, k) {
+      return grade.map(function (g) { return [eixoForca(g), g.coeficientes[idx[k]]]; });
+    });
+    /* Na penalização forte as trajetórias convergem para zero e os nomes se empilhavam. */
+    var ysNomes = Graf.espalhar(trajetorias.map(function (pts) {
+      return gc.py(pts[pts.length - 1][1]);
+    }), 19);
     vars.forEach(function (v, k) {
-      var pts = grade.map(function (g) { return [eixoForca(g), g.coeficientes[idx[k]]]; });
+      var pts = trajetorias[k];
       gc.linha(pts, { cor: cores[k], largura: 2.5 });
-      var fim = pts[pts.length - 1];
-      gc.texto(maxX, fim[1], v, { dx: 8, dy: 5, tamanho: 17, peso: 400, cor: cores[k] });
+      gc.add(sv("text", { x: gc.px(maxX) + 8, y: ysNomes[k] + 5, "font-size": 17,
+        "font-weight": 400, fill: cores[k], texto: v }));
       gc.ponto(eixoForca(atual), atual.coeficientes[idx[k]], { r: 5, cor: cores[k], bordaL: 1.5 });
     });
     gc.add(sv("line", { x1: gc.px(eixoForca(atual)), x2: gc.px(eixoForca(atual)),
@@ -122,7 +129,7 @@ Aula.slide({
           h("h3", { class: "secao", estilo: "margin:0 0 6px" }, fonte.titulo),
           h("p", { class: "formula peq", estilo: "background:none;border:none;padding:0;margin:0 0 4px;font-size:17px" },
             Mat.b("\\mathcal{L}_{\\text{pen}} = \\mathcal{L} + \\tfrac{1}{2C}\\textstyle\\sum_j \\beta_j^{2}")),
-          h("div", { class: "kv", estilo: "font-size:18px;gap:2px 12px" }, [
+          h("dl", { class: "kv", estilo: "font-size:18px;gap:2px 12px" }, [
             h("dt", {}, "C e força"),
             h("dd", {}, F.dec(atual.C, atual.C < 1 ? 4 : 0) + "  ·  " +
               F.dec(atual.forca, atual.forca < 1 ? 3 : 0)),

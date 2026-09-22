@@ -7,7 +7,8 @@ comando que produz a evidência, e as limitações estão declaradas no final.
 
 | Item | Estado | Caminho/evidência | Limitação |
 |---|---|---|---|
-| HTML offline com 50 slides | Entregue | `dist/aula_credito.html`, 844 KB, arquivo único | Abre por `file://`; nenhuma requisição externa, confirmado pelo QA |
+| HTML offline com 50 slides | Entregue | `dist/aula_credito.html`, 1.325 KB com o KaTeX embutido, arquivo único | Abre por `file://`; nenhuma requisição externa, confirmado pelo QA |
+| Variante do aluno sem notas e notas em JSON (21/09/2026) | Entregue | `dist/aula_credito_aluno.html` (1.269 KB) e `dist/aula_credito_notas.json` (89 KB); conferência frase a frase na compilação e em `tests/aula-2-build.test.ts` | Os exercícios continuam revelando a própria resposta ao conferir, por desenho |
 | Código organizado por slide | Entregue | `app/slides/s01.js` a `s50.js` (7.321 linhas), `app/nucleo/` e `app/dados/` (1.906 linhas), `app/estilo/aula.css` | Um arquivo por slide, sem framework, `script` clássico para funcionar em `file://` |
 | Notas do professor e respostas | Entregue | Painel de notas por tecla `p` ou botão Professor; oculto por padrão | Notas de aprofundamento existem em 6 slides do bloco de logit |
 | Modo estudo | Entregue | Tecla `e` ou botão Estudo; automático abaixo de 1100px | Verificado em 1024x768 e 390x844 |
@@ -19,7 +20,7 @@ comando que produz a evidência, e as limitações estão declaradas no final.
 | Mapa de reaproveitamento | Entregue | `02_controle/MAPA_REAPROVEITAMENTO.md` | Capítulo 4 mapeado página a página; demais capítulos, por título |
 | Verificação numérica | Entregue | `experimento/experimento.ipynb`, seções 4 a 7 | Ver a seção "Conferências numéricas" abaixo |
 | Inspeção visual dos 50 slides | Entregue | `node qa.mjs --shots` gera `qa/slide-NN-1366.png` | Capturas não versionadas, 11 MB, refeitas em um comando; a medida por slide está nos relatórios JSON |
-| Navegação e controles | Entregue | `node qa.mjs --estados` percorre até 14 controles por slide | 50 de 50 em 1366x768, 1920x1080, 1024x768 e 390x844 |
+| Navegação e controles | Entregue | `node qa.mjs --estados` clica todos os botões de cada slide em três rodadas e mede fórmulas, estouro, corte, transbordo, rolagem e zoom após cada uma (21/09/2026) | 50 de 50 em 1366x768, 1920x1080, 1024x768 e 390x844, e na variante do aluno |
 | Abertura offline | Entregue | QA registra requisições externas; nenhuma encontrada | `qa/relatorio-1366.json`, campo `externas` vazio |
 
 ## O que a verificação automática cobre
@@ -103,3 +104,8 @@ controles visíveis na impressão e conteúdo além do palco.
    Firefox nem em Safari.
 7. **Impressão.** O PDF foi gerado pelo Chromium com A4 paisagem e margem zero.
    Impressoras com margem obrigatória podem reduzir a folha proporcionalmente.
+8. **Guias em PDF.** As capturas dos slides nos dois guias são imagens de 1600 por 900
+   pixels feitas no Chromium; os controles aparecem, mas não funcionam no papel, e o texto
+   miúdo de alguns painéis fica legível apenas com ampliação. O ritmo por bloco do guia do
+   professor é uma proposta calculada sobre os 165 minutos úteis do desenho do curso, não
+   uma medição em sala.

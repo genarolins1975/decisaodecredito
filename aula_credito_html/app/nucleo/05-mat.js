@@ -40,8 +40,13 @@ var Mat = (function () {
   function pct(p, casas) { return n(p * 100, casas === undefined ? 2 : casas) + "\\%"; }
   /** Inteiro com separador de milhar, protegido para não virar pontuação em modo matemático. */
   function int(x) { return F.inteiro(x).replace(/\./g, "{.}"); }
-  /** Texto corrido dentro de uma expressão, com espaços preservados. */
-  function t(s) { return "\\text{" + String(s).replace(/−/g, "$-$") + "}"; }
+  /** Texto corrido dentro de uma expressão, com espaços preservados. Em modo texto o KaTeX ainda lê
+      `%` como comentário e `#`, `&` e `_` como comandos: um rótulo como "comp ≤ 40%" derrubaria a
+      expressão inteira, então esses caracteres saem escapados. O sinal de menos vira matemática. */
+  function t(s) {
+    var txt = String(s).replace(/[%#&_]/g, function (c) { return "\\" + c; }).replace(/−/g, "$-$");
+    return "\\text{" + txt + "}";
+  }
 
   return {
     /** Expressão no meio de uma frase. */

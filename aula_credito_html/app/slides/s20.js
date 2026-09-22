@@ -87,12 +87,14 @@ Aula.slide({
     var solucao = h("div", { class: "coluna", estilo: "gap:8px" },
       etapas.map(function (e, i) {
         var visivel = i < est.passos;
+        /* A etapa ainda oculta fica com borda tracejada e texto apagado, em vez de opacidade:
+           opacidade derruba o contraste do rótulo abaixo do mínimo legível. */
         return h("div", {
-          class: "painel" + (visivel ? " cor" : ""),
-          estilo: "padding:10px 14px" + (visivel ? "" : ";opacity:.4"),
+          class: "painel" + (visivel ? " cor" : " pendente"),
+          estilo: "padding:10px 14px",
         }, [
           h("h3", { class: "secao", estilo: "margin:0 0 4px" }, (i + 1) + ". " + e.titulo),
-          h("p", { estilo: "font-size:21px;color:var(--ink);margin:0" },
+          h("p", { estilo: "font-size:21px;margin:0;color:" + (visivel ? "var(--ink)" : "var(--muted)") },
             visivel ? e.texto : "etapa ainda não revelada"),
         ]);
       }));

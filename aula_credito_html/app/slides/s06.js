@@ -167,15 +167,18 @@ Aula.slide({
           [h("strong", {}, "Apoiar a decisão: "), "a política resultante melhora o resultado?"]),
       ]));
 
-    corpo.appendChild(h("div", { class: "linha", estilo: "align-items:center" }, [
-      Comum.fichaLinha(cliente, { cor: true, estilo: "flex:1 1 auto",
-        campos: ["renda", "comp", "rel", "util", "hist"] }),
+    /* Os dois controles ficavam soltos ao lado da ficha, sem moldura e desalinhados dela.
+       Dentro da própria ficha eles ganham a mesma linha de base e o mesmo fundo. */
+    var ficha = Comum.fichaLinha(cliente, { cor: true, estilo: "flex:1 1 auto",
+      campos: ["renda", "comp", "rel", "util", "hist"] });
+    ficha.appendChild(h("div", { class: "grupo", estilo: "margin-left:auto;flex:1 1 auto;justify-content:flex-end" }, [
       h("button", { class: "btn", type: "button", onclick: function () {
         est.criterios = true; criterios.hidden = false;
       } }, "O que vamos verificar?"),
       h("button", { class: "btn fantasma", type: "button", onclick: ctx.reiniciar },
         "Reiniciar exemplo"),
     ]));
+    corpo.appendChild(ficha);
     corpo.appendChild(criterios);
     corpo.appendChild(paineis);
   },

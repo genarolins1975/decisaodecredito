@@ -58,7 +58,7 @@ Aula.slide({
       g.eixoX({ ticks: [10, 20, 30, 40, 50, 60, 70], rotulo: "comprometimento em %" });
       g.add(sv("line", { x1: g.px(no), x2: g.px(no), y1: g.py(g.dy[0]), y2: g.py(g.dy[1]),
         stroke: "var(--amber)", "stroke-width": 1.5, "stroke-dasharray": "5 4" }));
-      g.texto(no, g.dy[1], "nó em 40%", { dx: 6, dy: 18, tamanho: 16, peso: 400, cor: "var(--amber)" });
+      g.texto(no, g.dy[1], "nó em 40%", { dx: -6, dy: 18, ancora: "end", tamanho: 16, peso: 400, cor: "var(--amber)" });
 
       [[false, "var(--rule)", "linear"], [true, "var(--logit)", "com mudança de inclinação"]]
         .forEach(function (par) {
@@ -74,8 +74,10 @@ Aula.slide({
       var v = escalaPD ? M.sigmoid(z(est.comp, est.flex)) : contrib(est.comp, est.flex);
       g.guia(est.comp, v, { cor: "var(--muted)" });
       g.ponto(est.comp, v, { cor: "var(--logit)", r: 9 });
+      /* Perto do topo do domínio o rótulo desce para baixo do ponto, em vez de sair do desenho. */
+      var pertoDoTopo = v > g.dy[0] + (g.dy[1] - g.dy[0]) * 0.88;
       g.texto(est.comp, v, escalaPD ? F.pct(v, 2) : F.dec(v, 3),
-        { dx: 12, dy: -12, tamanho: 21, cor: "var(--ink)" });
+        { dx: 12, dy: pertoDoTopo ? 26 : -12, tamanho: 21, cor: "var(--ink)" });
       return g.svg;
     }
 

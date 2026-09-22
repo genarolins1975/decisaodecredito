@@ -173,16 +173,20 @@ Aula.slide({
           ]),
           est.protocolo
             ? h("div", { estilo: "margin-top:10px" }, [
-                UI.tabela({
-                  compacta: true,
-                  colunas: [{ rotulo: "Partição" }, { rotulo: "Contratações" }, { rotulo: "n" },
-                            { rotulo: "Eventos" }, { rotulo: "Alvo completo" }],
-                  linhas: P.particoes.map(function (p) {
-                    return [nomes[p.nome], F.mes(p.inicio) + " a " + F.mes(p.fim),
-                            F.inteiro(p.n), F.inteiro(p.eventos), F.mes(p.alvo_conhecido)];
-                  }),
-                  legenda: "Metadados das partições",
-                }),
+                /* Lista chave e valor em vez de tabela: cinco colunas não cabem na largura
+                   do painel e a tabela saía cortada à direita. */
+                h("h3", { class: "secao" }, "Metadados das partições"),
+                h("dl", { class: "kv", estilo: "font-size:17px;gap:4px 10px" },
+                  P.particoes.reduce(function (itens, p) {
+                    itens.push(h("dt", {}, nomes[p.nome]));
+                    /* O valor quebra linha: a lista padrão não quebra, e o período com as
+                       contagens não cabe numa linha da coluna. */
+                    itens.push(h("dd", { estilo: "white-space:normal;font-weight:400;color:var(--body)" },
+                      F.mes(p.inicio) + " a " + F.mes(p.fim) + " · n = " + F.inteiro(p.n) +
+                      " · " + F.inteiro(p.eventos) + " eventos · alvo completo em " +
+                      F.mes(p.alvo_conhecido)));
+                    return itens;
+                  }, [])),
                 h("p", { class: "nota", estilo: "margin-top:8px" },
                   "semente " + F.inteiro(P.semente) + " · " +
                   (Aula.metadados

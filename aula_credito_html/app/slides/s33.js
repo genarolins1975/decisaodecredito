@@ -17,6 +17,9 @@ Aula.slide({
       "Média de y igual a 0,2, que é o mínimo da curva de perda.",
       "F0 = ln(0,20 / 0,80) = −1,3863, com logaritmo natural.",
     ],
+    aprofundar: [
+      "Material original, capítulo 6, página 13: o mesmo procedimento em classificação, escrito em cinco linhas, com F₀ = ln(π ÷ (1 − π)), alvo y − p e atualização F ← F + η × h. Lá a base tem dezesseis propostas e η é 0,40; aqui a miniatura tem dez registros. O procedimento é idêntico, os números são de exemplos diferentes.",
+    ],
     cuidados: [
       "O ponto inicial depende da perda, dos pesos e da implementação. Este exemplo é sem pesos e binário.",
       "A taxa de 20% descreve esta miniatura. Não descreve o mercado de crédito nem a base principal.",

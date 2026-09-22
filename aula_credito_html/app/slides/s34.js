@@ -11,6 +11,7 @@ Aula.slide({
       "Peça o resíduo de um evento e o de um não evento.",
       "Calcule a média do grupo B em voz alta.",
       "Pergunte por que três adimplentes do grupo B receberam aumento. Resposta: o modelo captura o risco do grupo, não reproduz cada rótulo.",
+      "Localize os quatro clientes: com comprometimento 22 e 38, Ana e Bruno caem em A; com 48 e 55, Carla e Diego caem em B. Uma árvore só dá a mesma PD a Ana e a Bruno.",
     ],
     respostas: [
       "Em A, cinco resíduos de −0,2 e média −0,2.",
@@ -60,7 +61,7 @@ Aula.slide({
     }
 
     var stump = Graf.arvore({
-      w: 520, h: 240, caixaW: 214, caixaH: 70,
+      w: 520, h: 240, caixaW: 292, caixaH: 70,
       no: {
         rotulo: "comprometimento ≤ 40%",
         detalhe: "10 registros",
@@ -69,11 +70,11 @@ Aula.slide({
         destaque: est.passo >= 2,
         filhos: [
           { aresta: "sim (grupo A)", destaque: est.passo >= 2, no: {
-            rotulo: "folha A", detalhe: "5 registros",
+            rotulo: "folha A", detalhe: "5 registros · Ana e Bruno",
             detalhe2: est.passo >= 2 ? "h = " + F.dec(it.grupos.A.h, 6) : "h = ?",
             destaque: est.passo >= 2 } },
           { aresta: "não (grupo B)", destaque: est.passo >= 2, no: {
-            rotulo: "folha B", detalhe: "5 registros",
+            rotulo: "folha B", detalhe: "5 registros · Carla e Diego",
             detalhe2: est.passo >= 2 ? "h = " + F.dec(it.grupos.B.h, 6) : "h = ?",
             destaque: est.passo >= 2 } },
         ],
