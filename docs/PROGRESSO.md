@@ -79,6 +79,26 @@ Produção conferida em 22/09/2026: `decisaodecredito.com` responde 308 para `ww
 
 Verificado em 22/09/2026: typecheck, `lint:tracos` (0), `npm test` (276 em 31 arquivos).
 
+### Décima rodada (22/09/2026): a Aula 2 na plataforma, tela a tela
+
+O professor mandou a captura de uma página da Aula 2 com a faixa "Na característica → No escore z → Nas odds" cortada ao meio pelo painel de baixo, e perguntou se as telas haviam sido conferidas uma a uma. Não haviam. As nove rodadas anteriores conferiram o baralho de 50 slides, que tem instrumento próprio (`aula_credito_html/qa.mjs`), e nunca as 60 páginas da aula renderizadas pela plataforma, que é onde vivem os visuais nativos em React.
+
+**Três causas de origem, cada uma com sua evidência.**
+
+1. Dois componentes usavam `data-tela="2"`: `logit-slides` (segundo quadro de c4p1) e `reta-na-probabilidade` (c4p2). As regras de `grid-template-rows` não diziam de quem eram, então a última do arquivo vencia e o quadro de c4p1 recebia as linhas de c4p2: 78fr em vez de 152fr na linha 3. A diferença dá 35px naquela largura, exatamente o transbordo medido. Toda regra `.rl-slide[data-tela=...]` passou a ser escopada pelo `data-vz` do dono.
+2. Na apresentação, o que não declara tamanho próprio herdava de fora: no estudo, dos px da página; na projeção, do `clamp` em cqh que `.slide-inner .vz` escreve para os visuais antigos. Os mesmos botões mediam 10,8px no estudo e 13,3px na projeção, e por isso uma ficha que cabia na tela estourava ao projetar. O quadro ganhou base tipográfica própria em cqw, como o resto do sistema.
+3. A regra que troca o layout do próprio quadro consultava um elemento e as que trocam o layout dos filhos consultavam outro. Em 1024x768 projetado, resolução comum de projetor, as colunas empilhavam dentro de uma caixa de altura fixa e as três fichas de c4p1 perdiam de 170 a 260px cada. As consultas do sistema passaram a nomear um contêiner só, declarado na figura.
+
+**Defeitos corrigidos.** Onze quadros tiveram linhas redimensionadas a partir da altura real do conteúdo, não por tentativa: c4p1 (dois quadros), c4p2, c4p8, c4p10, c4p11, c4p12, c4p14, c4p15. Cinco deles só aparecem depois de clicar: a lista de alternativas de c4p10 passava 13px e o aviso de baixo ficava por baixo dela; a de c4p11, com o resultado revelado, 25px; o resultado de c4p12, 8px; a razão de odds de c4p14, 28px; a leitura do caso de c4p15, 15px. Em c4p14, o mais denso, o espaço veio do respiro entre faixas, da entrelinha da tabela, do corpo do número e da razão de odds em linha em vez de empilhada, porque a tela estava cheia. Em 390px, a tabela de seis colunas de c4p14 passou a rolar na horizontal, a ficha de c4p8 passou a quebrar em duas linhas e o palco da apresentação deixou de impor 16:9 em retrato, onde reduzia a aula a uma faixa de 219px.
+
+**Instrumento.** `qa-plataforma/varre.mjs` percorre as 60 páginas em duas rotas, quatro larguras e com os estados revelados, e mede três coisas: conteúdo cortado por uma caixa que não rola, conteúdo que vaza da própria caixa e cai sobre a caixa seguinte, e caixas irmãs que se cobrem. A segunda medida foi acrescentada depois de verificar que as duas primeiras versões do detector não pegavam o defeito relatado: as caixas não se encostam, então a sobreposição não vê; ninguém corta, então o corte também não. O que existe é conteúdo passando de uma borda que não corta, dentro de uma tela que não cresce. A verificação dessa medida foi feita rodando o detector contra o CSS ainda com o defeito, onde ele acusa os mesmos 35px. O detector ignora desenho (SVG), interior de tabela, conteúdo só para leitor de tela (o MathML do KaTeX) e o que está ao alcance de uma rolagem.
+
+Verificado em 22/09/2026: 60 de 60 páginas sem defeito nas duas rotas, em 1920x1080, 1366x768, 1024x768 e 390x844, com os estados revelados clicando cada botão e cada alternativa. `tests/quadros-rl.test.ts` prende as duas armadilhas de origem: regra de linhas sem dono declarado e consulta de largura sem contêiner nomeado. typecheck, `lint:tracos` (0), `npm test` (281 em 32 arquivos).
+
+Fora da Aula 2, a mesma varredura encontrou defeitos pré-existentes que este trabalho não introduziu, confirmado rodando o instrumento contra o CSS em produção: c9p4 e c11p6 (marca de 20px recortada por trilho de 14px com `overflow: hidden`, sem efeito visível), c8p8 e c8p11 (1px do botão de segmento em 390) e c2p2 (390). Ficam registrados, não corrigidos nesta rodada.
+
+Lição de método, a terceira sobre o mesmo ponto: instrumento que não foi testado contra o defeito conhecido não serve de garantia. As duas primeiras versões do detector davam 60 de 60 com o defeito na tela.
+
 ## Pendências técnicas ordenadas
 
 0. Aula 2: R1 a R4 e R7 de `docs/PLANO_MELHORIAS.md` (aviso de turma sem encontros, perguntas para slides sem página ligada, verificação em Firefox, Safari e projetor, validação com usuários, traços nas cascas, estados combinados que cabem reduzidos).
