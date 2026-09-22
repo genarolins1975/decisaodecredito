@@ -153,26 +153,20 @@ async function main() {
   if (!edition) throw new Error(`Edição ${editionLabel} não existe. Rode o seed ou crie pela interface.`);
   const inventory: any = { source: ex.sourceFile, sha256: ex.sourceSha256, extractedAt: ex.extractedAt, edition: edition.label, units: [], pages: [], questions: 0, rubrics: [], datasets: [], gaps: [] };
 
-  /* Arranjo da edição. `extract.json` é a extração fiel do original e não é editada; o rearranjo
-     fica declarado aqui. A Aula 2 é conduzida pelos 50 slides (rota /slides/aula-2) e por isso não
-     tem capítulos; os capítulos 4, 5 e 6, com as 60 páginas de logit, árvore e boosting, formam o
-     apêndice de estudo, que vem depois do trabalho final. */
-  const APENDICE = {
-    kind: "apendice", number: 1, caps: [4, 5, 6], depoisDaAula: 2,
-    titulo: "As três técnicas, página a página",
-    entrega: "Estudo das 60 páginas de regressão logística, árvores de decisão e gradient boosting, no seu ritmo",
-  };
+  /* Arranjo da edição. `extract.json` é a extração fiel do original e não é editada; o rearranjo,
+     quando existe, fica declarado aqui. Hoje não há nenhum: cada aula fica com os capítulos que o
+     material original lhe dá, e a Aula 2 com os capítulos 4, 5 e 6, as três técnicas.
+
+     Houve uma etapa em que esses três capítulos formavam um apêndice à parte, porque a Aula 2 era
+     conduzida pelos 50 slides e não tinha capítulo nenhum. O baralho continua sendo como a aula é
+     apresentada, mas o conteúdo dela são os capítulos, como nas outras aulas; o bloco mais abaixo
+     desfaz o apêndice em edições que já foram importadas com ele. */
   type Unidade = { kind: string; n: number; titulo: string; entrega: string | null; caps: number[]; position: number };
   const unidades: Unidade[] = ex.meta.aulas.map((a: any) => ({
     kind: a.tipo === "trabalho" ? "trabalho" : "aula", n: a.n, titulo: a.titulo, entrega: a.entrega,
-    caps: (a.caps as number[]).filter((c) => !APENDICE.caps.includes(c)), position: a.n,
+    caps: a.caps as number[], position: a.n,
   }));
-  unidades.push({ kind: APENDICE.kind, n: APENDICE.number, titulo: APENDICE.titulo, entrega: APENDICE.entrega, caps: APENDICE.caps, position: 0 });
-  /* O apêndice fica logo depois da aula de onde seus capítulos saíram, e não no fim do curso: com
-     ele após o trabalho final, a numeração dos capítulos lida de cima para baixo daria 1, 2, 3, 7,
-     8, 9, 10, 11, 4, 5, 6. */
-  const ondeFica = (u: Unidade) => (u.kind === APENDICE.kind ? APENDICE.depoisDaAula + 0.5 : u.n);
-  unidades.sort((x, y) => ondeFica(x) - ondeFica(y));
+  unidades.sort((x, y) => x.n - y.n);
   unidades.forEach((u, i) => { u.position = i + 1; });
 
   const unitIds = new Map<number, string>();
@@ -204,6 +198,23 @@ async function main() {
       console.log(`capítulo ${c.id} movido para a unidade ${unitId}`);
     }
     chapterIds.set(c.n, ch.id);
+  }
+  /* Desfaz o apêndice de edições importadas antes deste arranjo. Os capítulos já voltaram para a
+     aula no laço acima; aqui sobram a unidade vazia e o que ainda aponta para ela. Só remove
+     unidade de apêndice que ficou sem capítulo nenhum, e só depois de repontar o que a referencia. */
+  const apendices = await db.select().from(schema.units).where(and(eq(schema.units.editionId, edition.id), eq(schema.units.kind, "apendice")));
+  for (const ap of apendices) {
+    const sobraram = await db.select({ id: schema.chapters.id }).from(schema.chapters).where(eq(schema.chapters.unitId, ap.id));
+    const destino = unidadePorChave.get("aula:2");
+    if (sobraram.length || !destino) {
+      console.log(`apêndice ${ap.number} mantido: ${sobraram.length} capítulo(s) ainda nele${destino ? "" : ", e sem aula de destino"}`);
+      continue;
+    }
+    const t1 = await db.update(schema.assignments).set({ unitId: destino }).where(eq(schema.assignments.unitId, ap.id)).returning({ id: schema.assignments.id });
+    const t2 = await db.update(schema.materials).set({ unitId: destino }).where(eq(schema.materials.unitId, ap.id)).returning({ id: schema.materials.id });
+    const t3 = await db.update(schema.meetings).set({ unitId: destino }).where(eq(schema.meetings.unitId, ap.id)).returning({ id: schema.meetings.id });
+    await db.delete(schema.units).where(eq(schema.units.id, ap.id));
+    console.log(`apêndice removido: ${t1.length} trabalho(s), ${t2.length} material(is) e ${t3.length} encontro(s) voltaram para a Aula 2`);
   }
   // páginas + versões + questões
   let qCount = 0;
@@ -327,8 +338,8 @@ async function main() {
      O título nomeia os capítulos porque `materiaisDoCapitulo` casa o material ao capítulo pelo título. */
   const refs: { title: string; kind: string; description: string; url?: string; unitId?: string; status?: string }[] = [
     { title: "Aula 2 em 50 slides: logit, árvore e boosting", kind: "aula",
-      description: "A aula inteira em um percurso único de 50 slides interativos, com abertura no problema de crédito e fechamento em avaliação, decisão e monitoramento, apresentada na plataforma com a mesma moldura das outras aulas: abertura, um endereço por slide e navegação Anterior e Próxima. O aluno recebe a versão de estudo, sem as notas de condução do professor; o que você explora nos slides fica só no seu navegador. As páginas dos capítulos 4, 5 e 6 ficam no apêndice, para estudo.",
-      url: "/aulas/aula-2", unitId: unidadePorChave.get("aula:2") },
+      description: "A apresentação da Aula 2: os capítulos 4, 5 e 6 percorridos em 50 slides interativos, com abertura no problema de crédito e fechamento em avaliação e decisão. Abre no navegador, funciona sem rede e traz as notas de condução do professor e o modo de impressão. O conteúdo da aula continua sendo o dos capítulos, página a página; o aluno recebe a versão de estudo do baralho, sem as notas de condução.",
+      url: "/slides/aula-2", unitId: unidadePorChave.get("aula:2") },
     { title: "Aula 2: guia do aluno (PDF)", kind: "arquivo",
       description: "Uma página por slide, na ordem da aula: a captura do slide, como ler o que está nele, o que mexer na tela, as fórmulas na notação dos slides e os exercícios sem gabarito, para resolver no papel e conferir na tela. Fecha com a lista de verificação de saída e o glossário.",
       url: "/api/materiais/aula-2/guia-do-aluno.pdf", unitId: unidadePorChave.get("aula:2") },

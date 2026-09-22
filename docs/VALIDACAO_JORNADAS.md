@@ -63,6 +63,20 @@ Motivo: o pedido era uniformizar todos os layouts, não só o da Aula 2. Método
 
 Limitação declarada: as duas edições em rascunho criadas pelo teste de aceitação ainda carregam o título antigo de c6p18, porque a importação atua sobre uma edição por vez. A edição ativa e o fonte estão corrigidos.
 
+## 1d. Sexta rodada (22/09/2026): a Aula 2 com capítulos
+
+Motivo: mesmo com a moldura uniformizada, a Aula 2 continuava estruturalmente diferente das outras. A Aula 1 tem capítulos e páginas; a Aula 2 era um arquivo. O material original sempre lhe deu os capítulos 4, 5 e 6, e os essenciais deles somam 165 minutos, exatamente a duração útil da aula: o apêndice era um contorno de quando a aula não tinha capítulo nenhum.
+
+| # | Cenário | Como foi executado | Resultado | Evidência |
+|---|---|---|---|---|
+| 37 | A Aula 2 tem capítulos como as outras aulas | importação com o arranjo original; estrutura conferida no banco | Aula 1 com 3 capítulos e 46 páginas, Aula 2 com 3 e 60, Aula 3 com 2 e 33, Aula 4 com 2 e 23, trabalho final com 1 e 18; nenhuma unidade de apêndice | consulta ao banco; e2e |
+| 38 | A numeração lida de cima para baixo é 1 a 11 | ordem das unidades e dos capítulos | passou, sem salto | e2e |
+| 39 | A remoção do apêndice não perde referência | trabalhos, materiais e encontros que apontavam para a unidade | dois trabalhos repontados para a Aula 2 antes de a unidade ser removida; a remoção só acontece com a unidade já sem capítulos | saída da importação; e2e |
+| 40 | Os 50 slides continuam sendo a apresentação da aula | abertura dos capítulos 4, 5 e 6 | cada um oferece "Apresentar pelos slides" no slide em que o assunto começa, 07, 21 e 31, derivado do roteiro; capítulo de outra aula não oferece | e2e; `tests/aula-2-plataforma.test.ts` |
+| 41 | O professor continua conduzindo pelos slides | sessão ao vivo da Aula 2 aberta pela API | o painel mostra "Conduzir pelos slides" e as notas do slide no ar; a regra saiu da ausência de capítulos para o roteiro | e2e "aula em slides" e "Aula 2 com capítulos" |
+| 42 | Endereço antigo não quebra | `/aulas/aula-2` e `/aulas/aula-2/slide/NN` | redirecionam para o primeiro capítulo e para a página que o slide cobre | e2e |
+| 43 | As duas telas ficam iguais às das outras aulas | `/aulas` e `/professor/conteudo` nos dois papéis | a Aula 2 mostra os cartões e as tabelas dos capítulos, como a Aula 1; o baralho aparece como material da unidade | capturas `aula2-aulas-com-capitulos.png`, `aula2-conteudo-com-capitulos.png`, `aula2-capitulo-4.png` |
+
 ## 2. Verificações automatizadas executadas em 21/09/2026
 
 | Verificação | Comando | Resultado |

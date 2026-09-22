@@ -76,7 +76,7 @@ export function LiveTeacher({ sessionId, classId, meeting, initial, pages, quest
               {" "}Na janela de projeção você navega com as setas e o slide dos alunos acompanha sozinho. A projeção não mostra as notas: elas ficam no roteiro abaixo, só na sua tela.
             </p>
             {slideAtual && slideAtual.paginas.length > 0 && (
-              <p className="hint mt-1">Páginas do apêndice que este slide cobre:{" "}
+              <p className="hint mt-1">Páginas da aula que este slide cobre:{" "}
                 {slideAtual.paginas.map((sl) => (
                   <button key={sl} type="button" className="btn btn-ghost btn-sm" onClick={() => setPageSlug(sl)}>{sl}</button>
                 ))}

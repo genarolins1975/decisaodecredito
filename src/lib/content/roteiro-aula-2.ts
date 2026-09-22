@@ -1,5 +1,10 @@
 /**
- * Roteiro da Aula 2: os 50 slides de /slides/aula-2 e as páginas do apêndice que cada um cobre.
+ * Roteiro da Aula 2: os 50 slides de /slides/aula-2 e as páginas da aula que cada um cobre.
+ *
+ * O baralho é como a Aula 2 é apresentada; o conteúdo dela são os capítulos 4, 5 e 6, como o
+ * material original declara. É este roteiro que liga uma coisa à outra: por ele o painel do
+ * professor oferece as perguntas da página enquanto projeta o slide, e cada capítulo da aula sabe
+ * por qual slide a apresentação entra no assunto dele.
  *
  * Procedência das correspondências, que não é uniforme e não deve ser lida como se fosse:
  * - Slides 07 a 20, capítulo 4: correspondência conferida página a página em
@@ -13,7 +18,7 @@
  *   ficam com a lista vazia em vez de um palpite.
  *
  * `paginas` são slugs de página da edição. O modo ao vivo aceita qualquer página da edição,
- * então o professor pode publicar a questão de uma página do apêndice enquanto projeta o slide.
+ * então o professor pode publicar a questão de qualquer página enquanto projeta o slide.
  */
 export type SlideAula2 = { n: string; bloco: string; titulo: string; paginas: string[] };
 
@@ -82,11 +87,18 @@ export const ROTEIRO_AULA_2: SlideAula2[] = [
   { n: "50", bloco: "Avaliação e decisão", titulo: "O modelo produz uma PD; a boa decisão exige mais", paginas: [] },
 ];
 
-/** A única página do apêndice sem slide correspondente, registrada para não parecer esquecimento. */
+/** A única página dos três capítulos sem slide correspondente, registrada para não parecer esquecimento. */
 export const SEM_SLIDE = ["c5p17"];
 
 export function slideValido(n: string): boolean {
   return ROTEIRO_AULA_2.some((s) => s.n === n);
+}
+
+/** Primeiro slide que cobre alguma página do capítulo: é por onde o baralho abre quando a
+    apresentação parte de um capítulo da Aula 2. Derivado do próprio roteiro, sem número fixo. */
+export function primeiroSlideDoCapitulo(cap: number): string | null {
+  const re = new RegExp(`^c${cap}p\\d+$`);
+  return ROTEIRO_AULA_2.find((s) => s.paginas.some((p) => re.test(p)))?.n ?? null;
 }
 
 export function slideDaPagina(slug: string): SlideAula2 | undefined {

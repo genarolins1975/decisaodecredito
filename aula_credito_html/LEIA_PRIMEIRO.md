@@ -9,11 +9,12 @@ previsão à decisão de crédito.
 Abra `dist/aula_credito.html` com duplo clique. É um arquivo único, funciona sem
 internet e sem servidor, e não faz nenhuma requisição externa.
 
-Na plataforma, esta é a **Aula 2**. As unidades do curso ficam em `/aulas`, montadas
-pelo importador a partir de `content/original`. A Aula 2, "Entender as três
-técnicas", é conduzida por estes 50 slides e por isso não tem capítulos; as 60
-páginas dos capítulos 4, 5 e 6 formam o **apêndice** de estudo, que aparece depois
-do trabalho final.
+Na plataforma, esta é a apresentação da **Aula 2**. As unidades do curso ficam em
+`/aulas`, montadas pelo importador a partir de `content/original`. A Aula 2,
+"Entender as três técnicas", tem capítulos como as outras aulas: os capítulos 4, 5
+e 6, com 60 páginas de regressão logística, árvores de decisão e gradient boosting.
+Estes 50 slides são como essas três técnicas são apresentadas em sala; o conteúdo
+que o aluno estuda continua sendo o das páginas.
 
 A aula é servida em `/slides/aula-2`. O `build.mjs` produz três saídas e as copia para
 `content/slides/`: `aula-2.html` (o arquivo completo, com as notas, para professor e
@@ -26,16 +27,16 @@ saídas carregam a mesma marca de compilação (`Aula.versao`), gravada em
 servido antes de qualquer verificação, e o `src/proxy.ts` só confere se existe um
 cookie chamado `sessao`, o que é conveniência de navegação e não controle de acesso.
 
-Na plataforma a aula tem a mesma moldura das outras: a abertura `/aulas/aula-2`, no
-formato da abertura de um capítulo, e uma página por slide, `/aulas/aula-2/slide/NN`,
-que embute o baralho uma única vez em `?modo=livre` e o mantém em sincronia pelo hash:
-a casca chama `App.trocar(NN)` quando o leitor usa a lista lateral, Anterior e Próxima ou
-as setas com o foco fora do quadro, e escuta `hashchange` quando ele navega dentro do
-baralho. Em `/aulas` a Aula 2 aparece como cinco cartões, um por bloco; em `/materiais`
-o material da unidade aponta para `/aulas/aula-2`, cadastrado pelo
-`scripts/import-content.ts` junto com os dois guias em PDF. Aberto direto em
-`/slides/aula-2`, fora de iframe, o baralho mostra na barra o link "Aulas", que volta à
-página do slide atual; embutido, ou aberto do disco, o link fica oculto.
+Na plataforma a aula não tem moldura própria: ela aparece como as outras, pelos seus
+capítulos. Em `/aulas` e em `/professor/conteudo` a Aula 2 mostra os cartões dos
+capítulos 4, 5 e 6; a abertura de cada um oferece "Apresentar pelos slides", que abre
+este baralho no slide onde aquele assunto começa. Em `/materiais` o baralho aparece como
+material da unidade, apontando para `/slides/aula-2`, cadastrado pelo
+`scripts/import-content.ts` junto com os dois guias em PDF. Os endereços antigos
+`/aulas/aula-2` e `/aulas/aula-2/slide/NN`, de quando a aula não tinha capítulos,
+continuam servindo: levam ao primeiro capítulo e à página que o slide cobre. Aberto
+direto em `/slides/aula-2`, fora de iframe, o baralho mostra na barra o link "Aulas",
+que volta para a aula; embutido, ou aberto do disco, o link fica oculto.
 
 ## Aula ao vivo
 
@@ -48,10 +49,12 @@ baralho em `?modo=projecao`: sem notas, sem impressão e sem modo estudo, porque
 a turma vê. As notas do slide no ar ficam no painel, no bloco "Roteiro do slide no ar". O baralho continua um
 arquivo único e offline: quem fala com a API é a casca, não ele.
 
-O roteiro em `src/lib/content/roteiro-aula-2.ts` liga cada slide às páginas do
-apêndice que ele cobre. No painel, escolher uma dessas páginas carrega as perguntas
-dela, que você publica para a turma enquanto projeta o slide. As 59 páginas do
-apêndice estão cobertas; só `c5p17`, "Gini ou entropia", não tem slide.
+O roteiro em `src/lib/content/roteiro-aula-2.ts` liga cada slide às páginas da aula
+que ele cobre, e é o que costura as duas pontas: no painel, escolher uma dessas
+páginas carrega as perguntas dela, que você publica enquanto projeta o slide, e cada
+capítulo da aula sabe por qual slide a apresentação entra no assunto dele (capítulo 4
+no slide 07, capítulo 5 no 21, capítulo 6 no 31). Das 60 páginas, 59 estão cobertas;
+só `c5p17`, "Gini ou entropia", não tem slide.
 
 Para trabalhar no código, abra `app/index.html`, que carrega os mesmos arquivos soltos.
 

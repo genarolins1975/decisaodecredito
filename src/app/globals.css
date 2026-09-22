@@ -106,7 +106,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 [data-area="aluno"][data-faixa] { --topo-grudado: 176px; }
 @media (min-width: 768px) { :root { --topo-grudado: 101px; } [data-area="aluno"][data-faixa] { --topo-grudado: 133px; } }
 @media (min-width: 1024px) { :root { --topo-grudado: 60px; } [data-area="professor"] { --topo-grudado: 83px; } [data-area="aluno"][data-faixa] { --topo-grudado: 92px; } }
-[data-area] #conteudo, [id^="bloco-"] { scroll-margin-top: var(--topo-grudado); }
+/* `:target` cobre qualquer âncora da moldura, atual ou futura, e não só uma lista de ids. */
+[data-area] #conteudo, [data-area] :target { scroll-margin-top: var(--topo-grudado); }
 
 .voltar { display: inline-flex; align-items: center; gap: 4px; font-size: 13.5px; color: var(--color-ink-soft); text-decoration: none; min-height: 32px; }
 .voltar::before { content: "‹"; font-size: 18px; line-height: 1; }

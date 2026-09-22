@@ -917,18 +917,22 @@ test("aula em slides: professor conduz o baralho, aluno acompanha e não recebe 
   expect(aula2, "a turma tem o encontro da Aula 2").toBeTruthy();
   const { sessionId } = await (await prof.post(`/api/professor/turmas/${cid}/encontros/${aula2.id}/iniciar`, { data: {} })).json();
 
-  // a Aula 2 não tem capítulos: o conteúdo dela é o baralho, e os capítulos 4, 5 e 6 são o apêndice
+  // a Aula 2 tem capítulos como as outras aulas: o baralho é a apresentação dela, não o conteúdo
   const uni = await sql<{ kind: string; caps: string }>(
     "select u.kind, coalesce(string_agg(c.slug, ',' order by c.number), '') as caps from units u left join chapters c on c.unit_id=u.id where u.id=$1 group by u.kind", [aula2.unitId]);
-  expect(uni[0].caps).toBe("");
-  const ap = await sql<{ caps: string }>(
-    "select string_agg(c.slug, ',' order by c.number) as caps from units u join chapters c on c.unit_id=u.id where u.kind='apendice' and u.edition_id=(select edition_id from units where id=$1)", [aula2.unitId]);
-  expect(ap[0].caps).toBe("c4,c5,c6");
-  // o apêndice vem logo depois da Aula 2: com ele no fim, os capítulos liam 1,2,3,7,8,9,10,11,4,5,6
+  expect(uni[0].caps).toBe("c4,c5,c6");
+  // e o curso não tem mais o apêndice que existia enquanto a Aula 2 não tinha capítulo
+  const ap = await sql<{ n: string }>(
+    "select count(*) as n from units where kind='apendice' and edition_id=(select edition_id from units where id=$1)", [aula2.unitId]);
+  expect(Number(ap[0].n)).toBe(0);
+  // com os capítulos no lugar, a numeração lida de cima para baixo é 1 a 11, sem salto
   const ordem = await sql<{ kind: string; number: number }>(
     "select kind, number from units where edition_id=(select edition_id from units where id=$1) order by position", [aula2.unitId]);
   expect(ordem.map((u) => `${u.kind}${u.number}`)).toEqual(
-    ["aula1", "aula2", "apendice1", "aula3", "aula4", "trabalho5"]);
+    ["aula1", "aula2", "aula3", "aula4", "trabalho5"]);
+  const caps = await sql<{ n: number }>(
+    "select c.number as n from chapters c join units u on u.id=c.unit_id where u.edition_id=(select edition_id from units where id=$1) order by u.position, c.number", [aula2.unitId]);
+  expect(caps.map((c) => Number(c.n))).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
 
   expect((await prof.post(`/api/aovivo/${sessionId}/slide`, { data: { slide: "24" } })).status()).toBe(200);
   expect((await prof.post(`/api/aovivo/${sessionId}/slide`, { data: { slide: "51" } })).status()).toBe(400); // fora do roteiro
@@ -1007,109 +1011,79 @@ test("aula em slides: professor conduz o baralho, aluno acompanha e não recebe 
   await prof.post(`/api/aovivo/${sessionId}/status`, { data: { status: "closed" } });
 });
 
-test("Aula 2 na moldura da plataforma: abertura como capítulo, uma página por slide, guias por papel, vizinhos e retorno do baralho", async ({ page }) => {
+test("Aula 2 com capítulos, como as outras aulas: os 50 slides são a apresentação, e os endereços antigos levam ao conteúdo", async ({ page }) => {
   const aluno = await apiAs(ALUNO_A);
   const prof = await apiAs(PROF);
-  const fs3 = await import("node:fs");
-  // o HTML do servidor traz marcas de hidratação entre trechos de texto ("slide <!-- -->12<!-- --> de <!-- -->50")
-  const desescapar = (t: string) => t.replace(/<!-- -->/g, "").replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&amp;/g, "&");
+  const cid = await classId();
 
-  // Aulas: a Aula 2 aparece como cinco cartões, um por bloco, e não mais como um painel de arquivo em nova aba
+  // o conteúdo da Aula 2 são os capítulos 4, 5 e 6, e eles aparecem em Aulas como os de qualquer aula
   const aulas = await (await aluno.get("/aulas")).text();
-  expect(aulas.match(/data-testid="cartao-aula-2"/g)?.length).toBe(5);
-  expect(aulas).not.toContain('href="/slides/aula-2"');
-  expect(aulas).toContain('href="/aulas/aula-2#bloco-1"');
+  for (const n of [4, 5, 6]) expect(aulas, `capítulo ${n} em Aulas`).toContain(`href="/aulas/capitulo/${n}"`);
+  expect(aulas).not.toContain("cartao-aula-2");          // sem os cartões por bloco de slide
+  expect(aulas).not.toContain('href="/aulas/aula-2#');   // e sem a abertura própria que existia
+  expect(aulas).not.toContain("apêndice");               // o apêndice deixou de existir como unidade
+  expect(aulas).toContain('href="/slides/aula-2"');      // o baralho aparece como material da unidade
 
-  // abertura no formato do capítulo: volta a Aulas, mapa dos 50 slides, vizinhos e o guia do aluno; o do professor só para a equipe
-  const abertura = await (await aluno.get("/aulas/aula-2")).text();
-  expect(abertura).toContain('data-testid="aula-2"');
-  expect(abertura).toMatch(/<a[^>]*class="voltar[^"]*"[^>]*href="\/aulas"|<a[^>]*href="\/aulas"[^>]*class="voltar/);
-  expect(abertura.match(/class="capx-pag[ "]/g)?.length).toBe(50);
-  expect(abertura).toContain('href="/aulas/aula-2/slide/01"');
-  expect(abertura).toContain('href="/aulas/capitulo/3"');
-  expect(abertura).toContain('href="/aulas/capitulo/4"');
-  expect(abertura).toContain("/api/materiais/aula-2/guia-do-aluno.pdf");
-  expect(abertura).not.toContain("guia-do-professor.pdf");
-  expect(abertura).not.toContain("Conduzir ao vivo");
-  const aberturaProf = await (await prof.get("/aulas/aula-2")).text();
-  expect(aberturaProf).toContain("/api/materiais/aula-2/guia-do-professor.pdf");
-  expect(aberturaProf).toContain("Conduzir ao vivo");
+  // cada capítulo da aula oferece a apresentação em slides, no slide em que o assunto dele começa
+  for (const [cap, slide] of [[4, "07"], [5, "21"], [6, "31"]] as const) {
+    const html = await (await aluno.get(`/aulas/capitulo/${cap}`)).text();
+    expect(html, `capítulo ${cap} aponta o slide ${slide}`).toContain(`href="/slides/aula-2#/slide/${slide}"`);
+    expect(html).toContain("Apresentar pelos slides");
+  }
+  // e os capítulos de outra aula não oferecem: a regra sai do roteiro, não do número da aula
+  expect(await (await aluno.get("/aulas/capitulo/1")).text()).not.toContain("Apresentar pelos slides");
 
-  // a página do slide tem a moldura das outras aulas; o roteiro do professor só sai para a equipe
-  const notas = JSON.parse(fs3.readFileSync("content/slides/aula-2-notas.json", "utf8")) as { slides: { n: string; titulo: string; notas: { conducao: string[] } }[] };
-  const s12 = notas.slides.find((x) => x.n === "12")!;
-  const paginaAluno = desescapar(await (await aluno.get("/aulas/aula-2/slide/12")).text());
-  expect(paginaAluno).toContain('data-testid="quadro-aula-2"');
-  expect(paginaAluno).toContain("slide 12 de 50");
-  expect(paginaAluno).toContain(s12.titulo);
-  expect(paginaAluno).not.toContain("roteiro-professor");
-  expect(paginaAluno).not.toContain(s12.notas.conducao[0]);
-  const paginaProf = desescapar(await (await prof.get("/aulas/aula-2/slide/12")).text());
-  expect(paginaProf).toContain('data-testid="roteiro-professor"');
-  expect(paginaProf).toContain(s12.notas.conducao[0]);
-  // endereços: número sem o zero à esquerda redireciona; slide inexistente é 404
-  const curto = await aluno.get("/aulas/aula-2/slide/7", { maxRedirects: 0 });
-  expect(curto.status()).toBe(307);
-  expect(curto.headers().location).toContain("/aulas/aula-2/slide/07");
-  expect((await aluno.get("/aulas/aula-2/slide/51")).status()).toBe(404);
+  // a leitura do curso corre de 3 para 4 e de 6 para 7, sem apêndice no meio
+  const cap3 = await (await aluno.get("/aulas/capitulo/3")).text();
+  expect(cap3).toContain('href="/aulas/capitulo/4"');
+  expect(cap3).not.toContain('href="/aulas/aula-2"');
+  expect(await (await aluno.get("/aulas/capitulo/6")).text()).toContain('href="/aulas/capitulo/7"');
 
-  // os guias em PDF saem pela plataforma, por papel: o do aluno para a turma, o do professor para a equipe
-  const guiaAluno = await aluno.get("/api/materiais/aula-2/guia-do-aluno.pdf");
-  expect(guiaAluno.status()).toBe(200);
-  expect(guiaAluno.headers()["content-type"]).toContain("application/pdf");
+  // endereços antigos continuam servindo: a aula leva ao primeiro capítulo dela, e o slide à página que ele cobre
+  const aberturaAntiga = await aluno.get("/aulas/aula-2", { maxRedirects: 0 });
+  expect(aberturaAntiga.status()).toBe(307);
+  expect(aberturaAntiga.headers().location).toContain("/aulas/capitulo/4");
+  const slideAntigo = await aluno.get("/aulas/aula-2/slide/12", { maxRedirects: 0 });
+  expect(slideAntigo.status()).toBe(307);
+  expect(slideAntigo.headers().location).toMatch(/\/aulas\/c4p\d+$/);
+  const slideSemPagina = await aluno.get("/aulas/aula-2/slide/01", { maxRedirects: 0 });   // slide de abertura, sem página mapeada
+  expect(slideSemPagina.headers().location).toContain("/aulas/capitulo/4");
+
+  // os guias em PDF continuam saindo por papel
+  expect((await aluno.get("/api/materiais/aula-2/guia-do-aluno.pdf")).status()).toBe(200);
   expect((await aluno.get("/api/materiais/aula-2/guia-do-professor.pdf")).status()).toBe(403);
   expect((await prof.get("/api/materiais/aula-2/guia-do-professor.pdf")).status()).toBe(200);
   expect((await (await apiAs(null)).get("/api/materiais/aula-2/guia-do-aluno.pdf")).status()).toBe(401);
   expect((await (await apiAs(SEM)).get("/api/materiais/aula-2/guia-do-aluno.pdf")).status()).toBe(403);
-  expect((await aluno.get("/api/materiais/aula-2/outro.pdf")).status()).toBe(404);
 
-  // a Aula 2 entra na sequência do curso: o capítulo 3 aponta para ela, e ela para o capítulo 4
-  expect(await (await aluno.get("/aulas/capitulo/3")).text()).toContain('href="/aulas/aula-2"');
-  expect(await (await aluno.get("/aulas/capitulo/4")).text()).toContain('href="/aulas/aula-2"');
-  // Materiais aponta para a página da aula, não para o arquivo; o guia do professor não aparece ao aluno
+  // Materiais traz o baralho como a apresentação da aula; o guia do professor não aparece ao aluno
   const materiais = await (await aluno.get("/materiais")).text();
-  expect(materiais).toContain('href="/aulas/aula-2"');
+  expect(materiais).toContain('href="/slides/aula-2"');
   expect(materiais).not.toContain("guia-do-professor");
-  // o painel de conteúdo do professor traz o guia do professor e lista os 50 slides, cada um com "ver" e "tela cheia"
-  const painel = await (await prof.get("/professor/conteudo")).text();
-  expect(painel).toContain('data-testid="conteudo-aula-2"');
-  expect(painel).toContain("/api/materiais/aula-2/guia-do-professor.pdf");
-  expect(painel.match(/href="\/aulas\/aula-2\/slide\/\d\d"/g)?.length).toBe(50);
-  expect(painel.match(/href="\/slides\/aula-2#\/slide\/\d\d"/g)?.length).toBe(50);
 
-  // no navegador: Próxima e a lista trocam o slide sem recarregar o baralho, endereço e lateral acompanham e
-  // Voltar desfaz um passo; embutido, o baralho não mostra o link de retorno; em tela cheia mostra, e ele volta ao slide atual
-  type JanelaMarcada = Window & { __marca?: number };
-  const marca = () => page.evaluate(() => (document.querySelector("iframe")?.contentWindow as JanelaMarcada | null | undefined)?.__marca);
+  // no painel de conteúdo a Aula 2 tem as mesmas tabelas de página das outras aulas
+  const painel = await (await prof.get("/professor/conteudo")).text();
+  expect(painel).not.toContain("conteudo-aula-2");
+  for (const n of [4, 5, 6]) expect(painel, `tabela do capítulo ${n}`).toContain(`href="/aulas/capitulo/${n}"`);
+  expect(painel).toContain("/api/materiais/aula-2/guia-do-professor.pdf");
+
+  // o professor continua conduzindo a aula pelos slides: a aula ter capítulos não tirou isso
+  const meetings = await (await prof.get(`/api/professor/turmas/${cid}/encontros`)).json();
+  const aula2 = meetings.meetings.find((m: { number: number }) => m.number === 2);
+  const { sessionId } = await (await prof.post(`/api/professor/turmas/${cid}/encontros/${aula2.id}/iniciar`, { data: {} })).json();
+  const painelAoVivo = await (await prof.get(`/professor/aovivo/${sessionId}`)).text();
+  expect(painelAoVivo).toContain("Conduzir pelos slides");
+  await prof.post(`/api/aovivo/${sessionId}/status`, { data: { status: "closed" } });
+
+  // no navegador: a página de uma das 60 páginas da aula é uma página comum, com a moldura das outras
   await loginUi(page, ALUNO_A);
-  await page.goto("/aulas/aula-2/slide/12");
-  const dentro = page.frameLocator('iframe[src*="/slides/aula-2"]');
-  await expect(dentro.locator(".cabeca .passo")).toHaveText("slide 12 de 50", { timeout: 30000 });
-  await expect(dentro.locator("#barra")).toBeVisible();        // modo livre: o aluno navega
-  await expect(dentro.locator("#lnk-voltar")).toBeHidden();    // a casca já tem o caminho de volta
-  await page.evaluate(() => { const w = document.querySelector("iframe")?.contentWindow as JanelaMarcada | null | undefined; if (w) w.__marca = 1; });
-  await page.locator('a[rel="next"]').click();
-  await expect(page).toHaveURL(/\/aulas\/aula-2\/slide\/13$/);
-  await expect(dentro.locator(".cabeca .passo")).toHaveText("slide 13 de 50");
-  await expect(page.locator('[data-lista="slides"] a[aria-current="page"]')).toContainText("13");
-  await expect(page.locator("article h1")).toHaveText(notas.slides.find((x) => x.n === "13")!.titulo);
-  expect(await marca()).toBe(1);
-  await page.locator('[data-lista="slides"] a[href="/aulas/aula-2/slide/30"]').click();
-  await expect(page).toHaveURL(/\/aulas\/aula-2\/slide\/30$/);
-  await expect(dentro.locator(".cabeca .passo")).toHaveText("slide 30 de 50");
-  await page.goBack();
-  await expect(page).toHaveURL(/\/aulas\/aula-2\/slide\/13$/);
-  await expect(dentro.locator(".cabeca .passo")).toHaveText("slide 13 de 50");
-  expect(await marca()).toBe(1);
-  await expect(page.locator('aside a[href="/slides/aula-2#/slide/13"]').last()).toHaveText("Ver em tela cheia");
-  await page.goto("/slides/aula-2#/slide/13");
-  await expect(page.locator("#lnk-voltar")).toBeVisible({ timeout: 30000 });
-  await expect(page.locator("#lnk-voltar")).toHaveAttribute("href", "/aulas/aula-2/slide/13");
-  await page.keyboard.press("ArrowRight");
-  await expect(page.locator("#lnk-voltar")).toHaveAttribute("href", "/aulas/aula-2/slide/14");
-  await page.locator("#lnk-voltar").click();
-  await expect(page).toHaveURL(/\/aulas\/aula-2\/slide\/14$/, { timeout: 30000 });
-  await expect(dentro.locator(".cabeca .passo")).toHaveText("slide 14 de 50", { timeout: 30000 });
+  await page.goto("/aulas/capitulo/4");
+  await expect(page.locator("h1")).toHaveCount(1);
+  await expect(page.locator('a.voltar[href="/aulas"]')).toHaveCount(1);
+  await page.locator('a.btn[href^="/aulas/c4p"]').first().click();
+  await expect(page).toHaveURL(/\/aulas\/c4p\d+$/);
+  await expect(page.locator('a.voltar[href="/aulas"]')).toHaveCount(1);
+  await expect(page.locator("main#conteudo")).toHaveCount(1);
 });
 
 test("uniformidade das molduras: retorno em toda rota de detalhe, um título por página, 404 dentro da moldura e saída para quem não tem turma", async ({ page }) => {
@@ -1139,7 +1113,7 @@ test("uniformidade das molduras: retorno em toda rota de detalhe, um título por
   expect(materiais).toContain('id="bases"');
 
   // notFound dentro da área do aluno responde 404 e traz o cartão local, não o 404 global
-  for (const rota of ["/aulas/aula-2/slide/99", "/aulas/naoexiste", "/aulas/capitulo/99"]) {
+  for (const rota of ["/aulas/naoexiste", "/aulas/capitulo/99"]) {
     expect((await aluno.get(rota)).status(), `${rota} responde 404`).toBe(404);
   }
   // e o 404 da página de aula não oferece ao aluno um botão para a área do professor
@@ -1175,7 +1149,7 @@ test("uniformidade das molduras: retorno em toda rota de detalhe, um título por
 
   // no navegador: o cartão de 404 que aparece é o da própria área, dentro da moldura e com um só main
   await loginUi(page, ALUNO_A);
-  for (const [rota, eyebrow] of [["/aulas/aula-2/slide/99", "Aula não disponível"], ["/aulas/naoexiste", "Página não disponível"], ["/aulas/capitulo/99", "Capítulo não disponível"]] as const) {
+  for (const [rota, eyebrow] of [["/aulas/naoexiste", "Página não disponível"], ["/aulas/capitulo/99", "Capítulo não disponível"]] as const) {
     await page.goto(rota);
     const visivel = (await page.locator("body").innerText()).toLowerCase();   // o eyebrow sai em maiúsculas por CSS
     expect(visivel, `${rota} mostra o cartão local`).toContain(eyebrow.toLowerCase());
@@ -1191,21 +1165,18 @@ test("uniformidade das molduras: retorno em toda rota de detalhe, um título por
     await expect(page.locator("#conteudo"), `${rota} com um só alvo de pulo`).toHaveCount(1);
     await expect(page.locator('nav[aria-label="Navegação principal"]'), `${rota} com moldura ${moldura}`).toHaveCount(moldura ? 1 : 0);
   }
-  // e o 404 da Aula 2 fala com o aluno, sem recado de compilação dirigido ao professor
-  await page.goto("/aulas/aula-2/slide/99");
-  expect(await page.locator("body").innerText()).not.toContain("build.mjs");
 
   // a moldura declara a área, e as âncoras param abaixo do cabeçalho grudado, nas três molduras e nas três faixas
   const medirAncora = async () => page.evaluate(() => {
-    const el = document.getElementById("bloco-3"); const h = document.querySelector("header");
+    const el = document.getElementById("mapa"); const h = document.querySelector("header");
     return el && h ? { alvo: Math.round(el.getBoundingClientRect().top), cabecalho: Math.round(h.getBoundingClientRect().bottom) } : null;
   });
-  await page.goto("/aulas/aula-2#bloco-3");
+  await page.goto("/aulas/capitulo/4#mapa");
   await expect(page.locator('[data-area="aluno"]')).toHaveCount(1);
   await expect(page.locator('[data-faixa]')).toHaveCount(0);   // aluno não vê a faixa "vendo como aluno"
   for (const largura of [390, 768, 1024, 1366]) {
     await page.setViewportSize({ width: largura, height: 800 });
-    await page.goto("/aulas/aula-2#bloco-3");
+    await page.goto("/aulas/capitulo/4#mapa");
     const m = await medirAncora();
     expect(m!.alvo, `âncora atrás do cabeçalho em ${largura}px`).toBeGreaterThanOrEqual(m!.cabecalho - 2);
   }
@@ -1216,10 +1187,10 @@ test("uniformidade das molduras: retorno em toda rota de detalhe, um título por
     const pf = await comoAluno.newPage();
     for (const largura of [390, 768, 1024, 1366]) {
       await pf.setViewportSize({ width: largura, height: 800 });
-      await pf.goto(`${BASE}/aulas/aula-2#bloco-3`);
+      await pf.goto(`${BASE}/aulas/capitulo/4#mapa`);
       await expect(pf.locator('[data-area="aluno"][data-faixa]')).toHaveCount(1);
       const m = await pf.evaluate(() => {
-        const el = document.getElementById("bloco-3"); const h = document.querySelector("header");
+        const el = document.getElementById("mapa"); const h = document.querySelector("header");
         return el && h ? { alvo: Math.round(el.getBoundingClientRect().top), cabecalho: Math.round(h.getBoundingClientRect().bottom) } : null;
       });
       expect(m!.alvo, `âncora atrás da faixa "vendo como aluno" em ${largura}px`).toBeGreaterThanOrEqual(m!.cabecalho - 2);

@@ -5,7 +5,7 @@ import { ApiError, listAccessibleClasses, requireActiveUser } from "@/lib/auth/g
 
 /**
  * A Aula 2 em 50 slides: um HTML único, interativo, que roda sem rede e sem servidor.
- * É a forma como a aula é conduzida; as 60 páginas dos capítulos 4, 5 e 6 ficam no apêndice.
+ * É a forma como a aula é apresentada; o conteúdo dela são as 60 páginas dos capítulos 4, 5 e 6.
  *
  * Dois arquivos, escolhidos pelo papel de quem pede: professor e monitor recebem a versão completa,
  * com as notas de condução, respostas e transições; o aluno recebe a variante compilada sem essas

@@ -37,24 +37,16 @@ export function rotuloUnidade(u: { kind: string; number: number }) {
 /** Número do capítulo com dois dígitos para o cabeçalho. */
 export const numeroCapitulo = (n: number) => String(n).padStart(2, "0");
 
-/** A Aula 2 é conduzida em slides e não tem capítulos: na plataforma ela recebe a moldura de um capítulo. */
-export function ehAulaEmSlides(u: { kind: string; number: number }) {
-  return u.kind === "aula" && u.number === 2;
-}
-
-/** Item da sequência de leitura do curso: um capítulo, ou a aula em slides no lugar dos capítulos que ela não tem. */
+/** Item da sequência de leitura do curso: um capítulo, na ordem em que a unidade dele aparece. */
 export type ItemSequencia = { href: string; rotulo: string; titulo: string };
 type UnidadeDaSequencia = { kind: string; number: number; title: string; chapters: { number: number; title: string }[] };
 
-/** Ordem de leitura: capítulos na ordem das unidades, com a Aula 2 entre o capítulo 3 e o apêndice. */
+/** Ordem de leitura: os capítulos, na ordem das unidades. Toda aula tem capítulo, inclusive a Aula 2,
+    que é apresentada pelos 50 slides mas tem como conteúdo os capítulos 4, 5 e 6. */
 export function sequenciaDoCurso(outline: UnidadeDaSequencia[]): ItemSequencia[] {
   const seq: ItemSequencia[] = [];
   for (const u of outline) {
-    if (u.chapters.length > 0) {
-      for (const c of u.chapters) seq.push({ href: `/aulas/capitulo/${c.number}`, rotulo: `Capítulo ${c.number} · ${rotuloUnidade(u)}`, titulo: c.title });
-    } else if (ehAulaEmSlides(u)) {
-      seq.push({ href: "/aulas/aula-2", rotulo: `${rotuloUnidade(u)} · 50 slides`, titulo: u.title });
-    }
+    for (const c of u.chapters) seq.push({ href: `/aulas/capitulo/${c.number}`, rotulo: `Capítulo ${c.number} · ${rotuloUnidade(u)}`, titulo: c.title });
   }
   return seq;
 }
