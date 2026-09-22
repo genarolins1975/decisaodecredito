@@ -45,7 +45,7 @@ Aula.slide({
     var mediaPerda = M.media(perdas);
 
     function curva(y, destaque) {
-      var g = Graf.novo({ w: 430, h: 290, m: { e: 74, d: 22, c: 22, b: 58 } });
+      var g = Graf.novo({ w: 430, h: 380, m: { e: 74, d: 22, c: 22, b: 58 } });
       g.x(0, 1).y(0, 5);
       g.grade({ y: [1, 2, 3, 4, 5] });
       g.eixoY({ ticks: [0, 1, 2, 3, 4, 5], rotulo: "perda da observação" });

@@ -74,7 +74,7 @@ Aula.slide({
        as duas famílias aparecem juntas. Substitui o mapa de regiões enquanto está ligada. */
     var gc = null;
     if (est.curva) {
-      gc = Graf.novo({ w: 870, h: 420, m: { e: 92, d: 152, c: 24, b: 58 },
+      gc = Graf.novo({ w: 870, h: 330, m: { e: 92, d: 152, c: 24, b: 58 },
         resumo: "PD por comprometimento: a árvore em degraus e a curva do logit, por valor de histórico." });
       gc.x(0, 80).y(0, 0.45);
       gc.grade({ y: [0, 0.15, 0.30, 0.45] });
@@ -190,11 +190,9 @@ Aula.slide({
             "Em comprometimento exatamente igual a 40, o cliente segue pelo ramo até 40."),
           est.curva
             ? h("p", { class: "nota", estilo: "margin-top:6px" },
-                "Sobreposto: a mesma abscissa, as duas famílias. A árvore é constante dentro da " +
-                "região e salta no corte; o logit atravessa o mesmo ponto sem salto. Com histórico, " +
-                "a árvore vai de 15% a 40% de um lado para o outro dos 40%, enquanto o logit passa " +
-                "por 9,1% ali e chega a 33,2% só em 80%. Nenhuma das duas está certa por construção: " +
-                "elas erram de formas diferentes, e escolher entre elas exige o capítulo 7.")
+                "As duas famílias nos mesmos eixos. Com histórico, a árvore salta de 15% para 40% " +
+                "no corte; o logit passa por 9,1% ali e só chega a 33,2% em 80%. Nenhuma está certa " +
+                "por construção: elas erram de formas diferentes, e escolher exige o capítulo 7.")
             : null,
         ]),
       ]),

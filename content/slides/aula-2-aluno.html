@@ -159,8 +159,13 @@ p.subtitulo {
 
 /* --------------------------------------------------------------- estrutura */
 
-.linha { display: flex; gap: 20px; align-items: stretch; }
+/* Colunas alinhadas pelo topo, e nunca esticadas além do conteúdo: esticar uma caixa com
+   moldura para além do que ela contém produz um retângulo oco, que na projeção lê como
+   conteúdo faltando. O espaço que sobra vira uma faixa única embaixo, que lê como margem.
+   `.linha.esticada` devolve o comportamento antigo para quem precisar dele. */
+.linha { display: flex; gap: 20px; align-items: flex-start; }
 .linha.topo { align-items: flex-start; }
+.linha.esticada { align-items: stretch; }
 .coluna { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 .cresce { flex: 1 1 auto; min-width: 0; min-height: 0; }
 .igual { flex: 1 1 0; min-width: 0; min-height: 0; }
@@ -690,7 +695,7 @@ body[data-modo="aluno"] #progresso { bottom: 0; }
 <script>
 /* dados/00-versao.js */
 /* Gerado por build.mjs: resumo dos fontes desta compilação. Não editar à mão. */
-var AULA_VERSAO = "2b6298264377";
+var AULA_VERSAO = "35075a11a54e";
 
 
 /* vendor/katex.js */
@@ -2429,14 +2434,31 @@ Aula.slide({
       { valor: "mais", rotulo: "Preciso de mais informação" },
     ];
 
-    var lista = h("div", { class: "coluna cresce", estilo: "gap:10px;justify-content:space-between" });
+    /* Espaçamento uniforme: com space-between as quatro fichas abriam espaços de tamanhos
+       diferentes entre si, e o que deveria ser uma lista lia como quatro blocos soltos. */
+    var lista = h("div", { class: "coluna", estilo: "gap:12px" });
+
+    /* Cada característica vira um valor rotulado, e não um trecho de frase em cinza: é a
+       primeira tela da aula e precisa ser lida do fundo da sala. Os três campos extras
+       entram na mesma grade quando o professor revela, sem mudar a altura da ficha. */
+    function valor(rot, val, forte) {
+      return h("div", { estilo: "min-width:0" }, [
+        h("div", { class: "rot", estilo: "font-size:15px;letter-spacing:.06em" }, rot),
+        h("div", { class: "medio", estilo: "font-size:27px;line-height:1.1;white-space:nowrap" +
+          (forte ? ";color:var(--cor)" : "") }, val),
+      ]);
+    }
 
     function linhaCliente(c) {
-      var aviso = h("span", { class: "nota", estilo: "margin-left:10px",
-        "aria-live": "polite" }, est.mudou[c.nome] ? "· você mudou sua avaliação" : "");
-      var extras = h("span", { class: "apoio", hidden: !est.revelado },
-        est.revelado ? (" · histórico " + (c.hist ? "sim" : "não") +
-          " · utilização " + F.dec(c.util, 0) + "% · relacionamento " + F.dec(c.rel, 0) + " meses") : "");
+      var aviso = h("span", { class: "nota", estilo: "display:block;margin-top:2px",
+        "aria-live": "polite" }, est.mudou[c.nome] ? "você mudou sua avaliação" : "");
+      var campos = [valor("Renda por mês", F.reais(c.renda)),
+                    valor("Comprometimento", F.dec(c.comp, 0) + "%", true)];
+      if (est.revelado) {
+        campos.push(valor("Histórico de atraso", c.hist ? "sim" : "não"));
+        campos.push(valor("Utilização", F.dec(c.util, 0) + "%"));
+        campos.push(valor("Relacionamento", F.dec(c.rel, 0) + " meses"));
+      }
       var grupo = UI.botoes({
         rotulo: "decisão para " + c.nome,
         compacto: true,
@@ -2450,21 +2472,16 @@ Aula.slide({
           est.escolhas[c.nome] = v;
         },
       });
-      /* Os botões ficam encostados à direita e o texto ocupa o resto da linha:
-         com base fixa, a ficha quebrava no meio da frase. */
-      grupo.setAttribute("style", "margin-left:auto");
-      return h("div", { class: "painel claro", estilo: "padding:12px 16px" },
-        h("div", { estilo: "display:flex;align-items:center;gap:18px;flex-wrap:wrap" }, [
-          h("div", { estilo: "flex:1 1 300px;min-width:280px" }, [
-            h("div", { class: "medio" }, c.nome),
-            h("div", { class: "apoio" }, [
-              F.reais(c.renda) + " por mês · comprometimento " + F.dec(c.comp, 0) + "%",
-              extras,
-              /* O aviso entra no fluxo do texto: como filho da linha, ele
-                 quebrava para baixo e acrescentava uma altura por ficha. */
-              aviso,
-            ]),
+      grupo.setAttribute("style", "margin-left:auto;flex:1 1 auto;justify-content:flex-end");
+      /* Altura natural, sem cresce: esticar uma ficha de uma linha só a deixa oca, que é pior
+         do que a faixa de margem que sobra no pé do palco. */
+      return h("div", { class: "painel claro", estilo: "padding:14px 20px" },
+        h("div", { estilo: "display:flex;align-items:center;gap:30px;flex-wrap:wrap;width:100%" }, [
+          h("div", { estilo: "flex:1 1 160px;min-width:150px" }, [
+            h("div", { class: "medio", estilo: "font-size:32px;line-height:1.05" }, c.nome),
+            aviso,
           ]),
+          h("div", { estilo: "display:flex;gap:32px;flex-wrap:wrap;flex:1 1 auto;min-width:0" }, campos),
           grupo,
         ]));
     }
@@ -2494,8 +2511,8 @@ Aula.slide({
     corpo.appendChild(h("div", { class: "linha cresce" }, [
       h("div", { class: "coluna cresce" }, [
         lista,
-        h("div", { class: "painel cor", estilo: "padding:10px 18px" },
-          h("p", { estilo: "font-size:24px;color:var(--ink);margin:0" },
+        h("div", { class: "painel cor", estilo: "padding:14px 20px;flex:0 0 auto" },
+          h("p", { estilo: "font-size:27px;color:var(--ink);margin:0" },
             "Que informação faria você mudar de ideia?")),
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 400px" }, [
@@ -2797,7 +2814,9 @@ Aula.slide({
       { valor: "futuro", rotulo: "Informação do futuro" },
     ];
 
-    var linhas = h("div", { class: "coluna cresce", estilo: "gap:7px;justify-content:space-between" });
+    /* Espaçamento uniforme entre as sete fichas: space-between abria vãos de tamanhos
+       diferentes e quebrava o ritmo da lista. */
+    var linhas = h("div", { class: "coluna", estilo: "gap:10px" });
     fichas.forEach(function (f) {
       var escolha = est.escolhas[f.id] || null;
       var resultado = null;
@@ -3139,15 +3158,18 @@ Aula.slide({
           [h("strong", {}, "Apoiar a decisão: "), "a política resultante melhora o resultado?"]),
       ]));
 
-    corpo.appendChild(h("div", { class: "linha", estilo: "align-items:center" }, [
-      Comum.fichaLinha(cliente, { cor: true, estilo: "flex:1 1 auto",
-        campos: ["renda", "comp", "rel", "util", "hist"] }),
+    /* Os dois controles ficavam soltos ao lado da ficha, sem moldura e desalinhados dela.
+       Dentro da própria ficha eles ganham a mesma linha de base e o mesmo fundo. */
+    var ficha = Comum.fichaLinha(cliente, { cor: true, estilo: "flex:1 1 auto",
+      campos: ["renda", "comp", "rel", "util", "hist"] });
+    ficha.appendChild(h("div", { class: "grupo", estilo: "margin-left:auto;flex:1 1 auto;justify-content:flex-end" }, [
       h("button", { class: "btn", type: "button", onclick: function () {
         est.criterios = true; criterios.hidden = false;
       } }, "O que vamos verificar?"),
       h("button", { class: "btn fantasma", type: "button", onclick: ctx.reiniciar },
         "Reiniciar exemplo"),
     ]));
+    corpo.appendChild(ficha);
     corpo.appendChild(criterios);
     corpo.appendChild(paineis);
   },
@@ -3829,7 +3851,7 @@ Aula.slide({
     var mediaPerda = M.media(perdas);
 
     function curva(y, destaque) {
-      var g = Graf.novo({ w: 430, h: 290, m: { e: 74, d: 22, c: 22, b: 58 } });
+      var g = Graf.novo({ w: 430, h: 380, m: { e: 74, d: 22, c: 22, b: 58 } });
       g.x(0, 1).y(0, 5);
       g.grade({ y: [1, 2, 3, 4, 5] });
       g.eixoY({ ticks: [0, 1, 2, 3, 4, 5], rotulo: "perda da observação" });
@@ -5512,7 +5534,7 @@ Aula.slide({
        as duas famílias aparecem juntas. Substitui o mapa de regiões enquanto está ligada. */
     var gc = null;
     if (est.curva) {
-      gc = Graf.novo({ w: 870, h: 420, m: { e: 92, d: 152, c: 24, b: 58 },
+      gc = Graf.novo({ w: 870, h: 330, m: { e: 92, d: 152, c: 24, b: 58 },
         resumo: "PD por comprometimento: a árvore em degraus e a curva do logit, por valor de histórico." });
       gc.x(0, 80).y(0, 0.45);
       gc.grade({ y: [0, 0.15, 0.30, 0.45] });
@@ -5628,11 +5650,9 @@ Aula.slide({
             "Em comprometimento exatamente igual a 40, o cliente segue pelo ramo até 40."),
           est.curva
             ? h("p", { class: "nota", estilo: "margin-top:6px" },
-                "Sobreposto: a mesma abscissa, as duas famílias. A árvore é constante dentro da " +
-                "região e salta no corte; o logit atravessa o mesmo ponto sem salto. Com histórico, " +
-                "a árvore vai de 15% a 40% de um lado para o outro dos 40%, enquanto o logit passa " +
-                "por 9,1% ali e chega a 33,2% só em 80%. Nenhuma das duas está certa por construção: " +
-                "elas erram de formas diferentes, e escolher entre elas exige o capítulo 7.")
+                "As duas famílias nos mesmos eixos. Com histórico, a árvore salta de 15% para 40% " +
+                "no corte; o logit passa por 9,1% ali e só chega a 33,2% em 80%. Nenhuma está certa " +
+                "por construção: elas erram de formas diferentes, e escolher exige o capítulo 7.")
             : null,
         ]),
       ]),
@@ -6074,7 +6094,7 @@ Aula.slide({
   subtitulo: "Exercício: percorrer, calcular e questionar",
   conclusao: "Uma regra legível ajuda a explicar o cálculo, mas não dispensa evidência de qualidade.",
   fonte: Aula.dados.fontes.arvore,
-  resumo: "Árvore didática com a taxa da folha de Carla oculta, três tarefas de percurso e cálculo, e o painel de quando a árvore é uma boa escolha.",
+  resumo: "Árvore didática com a taxa da folha de Carla oculta e três tarefas: caminho, cálculo da PD e efeito de dobrar a renda.",
   impressao: function (e) { e.conferido = true; e.pdTexto = "11"; e.ramo = "certo"; e.renda = 0; },
 
   montar: function (corpo, ctx) {
@@ -6138,26 +6158,6 @@ Aula.slide({
             ])
           : null,
         Comum.fichaLinha(carla, { cor: true }),
-        h("div", { class: "painel claro", estilo: "padding:10px 16px" }, [
-          h("h3", { class: "secao", estilo: "margin-bottom:5px" }, "Quando a árvore é uma boa escolha"),
-          h("div", { class: "g2" }, [
-            h("ul", { class: "apoio", estilo: "margin:0;padding-left:20px" }, [
-              h("li", {}, "o efeito de uma variável depende do valor de outra, e a interação não " +
-                "precisa ser escrita à mão"),
-              h("li", {}, "a relação não é monótona, e transformar a variável seria um chute"),
-              h("li", {}, "a regra precisa virar política operacional, legível linha a linha"),
-            ]),
-            h("ul", { class: "apoio", estilo: "margin:0;padding-left:20px" }, [
-              h("li", {}, "não escolha pela leitura do diagrama: uma observação pode trocar a " +
-                "variável de um nó"),
-              h("li", {}, "não leia a taxa da folha sem o tamanho da folha"),
-              h("li", {}, "não compare com outra família pela perda de treino"),
-            ]),
-          ]),
-          h("p", { class: "nota", estilo: "margin-top:6px" },
-            "À esquerda, o que a árvore entrega e a soma não entrega. À direita, o preço, e é o " +
-            "mesmo preço em qualquer família: só evidência fora da amostra decide."),
-        ]),
       ]),
       /* 700 de largura: cada opção do caminho cabe numa linha, e as três partes conferidas
          cabem na altura do palco. */
@@ -6885,7 +6885,7 @@ Aula.slide({
     var pd = hist[2].grupos[grupo].p;
 
     var g = Graf.waterfall({
-      w: 760, h: 330, larguraRot: 282,
+      w: 760, h: 300, larguraRot: 282,
       base: F0, rotuloBase: "escore inicial " + F.dec(F0, 6), rotuloTotal: "escore final",
       rotuloX: "escore F",
       itens: [
@@ -6949,20 +6949,16 @@ Aula.slide({
           ]),
           UI.slider({
             rotulo: "Comprometimento do solicitante", min: 20, max: 60, passo: 1, valor: est.comp,
-            formato: function (v) { return "grupo " + (v > B.corte ? "B" : "A") +
-              (v <= 22 ? ", como Ana" : v <= 38 ? ", como Bruno" : v <= 48 ? ", como Carla" : ", como Diego"); },
+            formato: function (v) { return "grupo " + (v > B.corte ? "B" : "A") + " · " +
+              (v <= 22 ? "Ana" : v <= 38 ? "Bruno" : v <= 48 ? "Carla" : "Diego"); },
             aoMudar: function (v) { est.comp = v; App.montar("36"); },
           }),
-          h("div", { class: "ctrl", estilo: "margin-top:8px" }, [
-            h("label", {}, "Taxa de aprendizagem η"),
-            UI.botoes({ compacto: true, rotulo: "Taxa de aprendizagem", valor: est.eta,
-              opcoes: [{ rotulo: "η = 1", valor: 1 }, { rotulo: "η = 0,40", valor: 0.4 }],
-              aoMudar: function (v) { est.eta = v; App.montar("36"); } }),
-          ]),
-          h("p", { class: "nota", estilo: "margin-top:8px" },
-            "Nenhum campo de desfecho aparece nesta ficha. O y foi usado apenas no treinamento. " +
-            "Trocar η não reescala o resultado: as mesmas duas árvores mudam de valor porque os resíduos " +
-            "da segunda são recalculados sobre o escore já atualizado pela primeira."),
+          /* A nota da ficha e o resumo do treino dizem a mesma coisa por dois caminhos; com os
+             dois abertos o palco não cabe. Quando o resumo abre, esta sai. */
+          est.treino ? null : h("p", { class: "nota", estilo: "margin-top:8px" },
+            "Nenhum campo de desfecho aparece nesta ficha: o y foi usado apenas no treinamento. " +
+            "Trocar η não reescala o resultado, porque os resíduos da segunda árvore são " +
+            "recalculados sobre o escore já atualizado pela primeira."),
         ]),
         h("div", { class: "coluna", estilo: "gap:8px" }, percurso),
         h("div", { class: "painel claro cresce centro", estilo: "padding:8px 14px" }, [
@@ -6970,6 +6966,9 @@ Aula.slide({
           gs.svg,
         ]),
         h("div", { class: "grupo" }, [
+          UI.botoes({ compacto: true, rotulo: "Taxa de aprendizagem", valor: est.eta,
+            opcoes: [{ rotulo: "η = 1", valor: 1 }, { rotulo: "η = 0,40", valor: 0.4 }],
+            aoMudar: function (v) { est.eta = v; App.montar("36"); } }),
           h("button", { class: "btn", type: "button", onclick: function () {
             est.converter = false; App.montar("36");
           }, disabled: !est.converter }, "Ver somente o escore"),
@@ -6984,10 +6983,9 @@ Aula.slide({
         ]),
         est.treino
           ? h("p", { class: "nota" },
-              "As duas folhas vieram das médias dos resíduos dos dez registros de treinamento: " +
+              "As folhas vieram das médias dos resíduos dos dez registros: " +
               F.dec(hist[1].grupos.B.h, 6) + " e " + F.dec(hist[2].grupos.B.h, 6) +
-              " no grupo B. Para prever um solicitante novo não calculamos y menos p: " +
-              "apenas percorremos as árvores já aprendidas.")
+              " no grupo B. Para prever, só percorremos as árvores já aprendidas.")
           : null,
       ]),
     ]));
@@ -7752,10 +7750,12 @@ Aula.slide({
         ]),
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 620px" }, [
-        h("div", { class: "painel claro cresce centro" }, [
-          est.passos >= 1
-            ? g.svg
-            : h("p", { class: "apoio", estilo: "text-align:center" },
+        /* O eixo do waterfall fica na tela desde o início, com zero barras visíveis: assim o
+           aluno vê onde a resposta vai aparecer, em vez de uma faixa de texto larga e vazia. */
+        h("div", { class: "painel claro centro" }, [
+          g.svg,
+          est.passos >= 1 ? null
+            : h("p", { class: "apoio", estilo: "text-align:center;margin-top:6px" },
                 "A resolução aparece em duas etapas: primeiro a soma no escore, depois a conversão."),
           est.passos >= 2
             ? h("div", { estilo: "display:flex;gap:20px;align-items:center;margin-top:10px;flex-wrap:wrap;justify-content:center" }, [
@@ -9225,7 +9225,7 @@ Aula.slide({
       return MODELOS.map(function (m) { return R.clientes.pd_modelos_calibrada[m.chave][i]; });
     });
     var comparacao = UI.tabela({
-      compacta: true,
+      compacta: true, apertada: true,
       colunas: [{ rotulo: "Cliente" }].concat(MODELOS.map(function (m) {
         return { rotulo: m.nome, unidade: "PD calibrada" };
       })).concat([{ rotulo: "No corte de " + F.pct(corte, 0) }]),

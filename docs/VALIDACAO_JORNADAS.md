@@ -129,6 +129,22 @@ Conferências feitas no navegador depois das correções de conteúdo e de slide
 
 Limitação desta rodada: nenhuma das correções foi testada com alunos. As faixas observadas do slide 19 são ilustrativas e assim declaradas na tela; o ritmo por bloco continua sendo proposta aritmética, não medição em sala.
 
+## 3e. Layout, oitava rodada (22/09/2026)
+
+| Verificação | Resultado |
+|---|---|
+| Painéis ocos nos 50 slides (moldura esticada além do conteúdo, limite 90px) | de 46 para 0; o pior caso tinha 392px vazios dentro da moldura |
+| Colunas com vazio no pé (limite 90px) | de 31 para 0 |
+| `qa.mjs` no professor | 50 de 50 em 1920x1080, 1366x768, 1024x768 e 390x844 |
+| `qa.mjs --aluno --estados` | 50 de 50 nas mesmas quatro resoluções |
+| Estados combinados abaixo de 80% de escala | nenhum; antes desta rodada havia quatro (62%, 73%, 74% e 79%) |
+| Guias em PDF regerados | 71 páginas cada, 0 traços, 0 fórmulas com erro, 0 imagens ausentes |
+| Abertura de capítulo na plataforma | o bloco "Onde isto é usado depois" deixou de ser esticado até a altura do bloco de prerrequisitos |
+
+Sete estados que não cabiam foram descobertos por esta varredura e corrigidos. Todos vinham de conteúdo acrescentado na sétima rodada, e não apareceram lá porque aquela verificação rodou só o estado inicial: os slides 01 e 06 estouravam a largura em 390px e os slides 02, 26, 30 e 36 caíam abaixo de 80% de escala com todos os botões acionados. Fica o registro de método: alterar um slide exige `qa.mjs --estados` nas quatro resoluções, e não só a varredura padrão.
+
+Limitação desta rodada: nenhuma verificação com projetor real, e nenhuma avaliação de legibilidade com a turma. O que foi medido é geometria, não percepção.
+
 ## 4. Pendências
 
 | Pendência | Situação |

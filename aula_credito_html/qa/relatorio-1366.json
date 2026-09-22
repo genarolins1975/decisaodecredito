@@ -5,15 +5,15 @@
     {
       "id": "01",
       "estudo": false,
-      "zoom": 1,
+      "zoom": 0.97,
       "katexErros": 0,
       "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 665,
-      "corpoVisivel": 665,
+      "alturaCorpo": 686,
+      "corpoVisivel": 686,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -22,9 +22,63 @@
       "rolagemPagina": 0,
       "controles": 15,
       "svgs": 0,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [
+        "coube reduzido a 97%"
+      ],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.83,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 83%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.83,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 83%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.83,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 83%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "02",
@@ -46,9 +100,55 @@
       "rolagemPagina": 0,
       "controles": 12,
       "svgs": 0,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "03",
@@ -70,9 +170,55 @@
       "rolagemPagina": 0,
       "controles": 3,
       "svgs": 3,
+      "oco": 46,
+      "ocoRotulo": "46px | Contrato Aalvo incompletoainda não obser",
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "04",
@@ -94,9 +240,61 @@
       "rolagemPagina": 0,
       "controles": 16,
       "svgs": 0,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.85,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 85%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.85,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 85%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.85,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 85%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "05",
@@ -118,9 +316,55 @@
       "rolagemPagina": 0,
       "controles": 5,
       "svgs": 1,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "06",
@@ -142,22 +386,68 @@
       "rolagemPagina": 0,
       "controles": 8,
       "svgs": 3,
+      "oco": 39,
+      "ocoRotulo": "39px | Árvore de decisãoSepara clientes por per",
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "07",
       "estudo": false,
-      "zoom": 1,
+      "zoom": 0.98,
       "katexErros": 0,
       "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 4,
       "cortado": "4px | −2,025",
-      "alturaCorpo": 665,
-      "corpoVisivel": 665,
+      "alturaCorpo": 678,
+      "corpoVisivel": 678,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -166,9 +456,63 @@
       "rolagemPagina": 0,
       "controles": 7,
       "svgs": 1,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [
+        "coube reduzido a 98%"
+      ],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.98,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 98%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.98,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 98%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.98,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 98%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "08",
@@ -190,9 +534,55 @@
       "rolagemPagina": 0,
       "controles": 4,
       "svgs": 3,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "09",
@@ -214,9 +604,55 @@
       "rolagemPagina": 0,
       "controles": 8,
       "svgs": 1,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "10",
@@ -238,9 +674,55 @@
       "rolagemPagina": 0,
       "controles": 8,
       "svgs": 1,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "11",
@@ -262,9 +744,55 @@
       "rolagemPagina": 0,
       "controles": 6,
       "svgs": 1,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "12",
@@ -286,9 +814,55 @@
       "rolagemPagina": 0,
       "controles": 16,
       "svgs": 1,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "13",
@@ -310,22 +884,72 @@
       "rolagemPagina": 0,
       "controles": 6,
       "svgs": 2,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.82,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 82%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.82,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 82%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "14",
       "estudo": false,
-      "zoom": 1,
+      "zoom": 0.97,
       "katexErros": 0,
       "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 665,
-      "corpoVisivel": 665,
+      "alturaCorpo": 684,
+      "corpoVisivel": 684,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -334,9 +958,63 @@
       "rolagemPagina": 0,
       "controles": 9,
       "svgs": 1,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [
+        "coube reduzido a 97%"
+      ],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.97,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 97%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.97,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 97%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.97,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 97%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "15",
@@ -358,9 +1036,55 @@
       "rolagemPagina": 0,
       "controles": 7,
       "svgs": 1,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "16",
@@ -382,9 +1106,59 @@
       "rolagemPagina": 0,
       "controles": 5,
       "svgs": 2,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.84,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 84%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.84,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 84%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "17",
@@ -406,9 +1180,59 @@
       "rolagemPagina": 0,
       "controles": 6,
       "svgs": 2,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.89,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 89%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.89,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 89%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "18",
@@ -430,22 +1254,74 @@
       "rolagemPagina": 0,
       "controles": 4,
       "svgs": 2,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.93,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 93%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.93,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 93%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.93,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 93%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "19",
       "estudo": false,
-      "zoom": 0.91,
+      "zoom": 0.84,
       "katexErros": 0,
       "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 4,
       "cortado": "4px | histórico = 0",
-      "alturaCorpo": 731,
-      "corpoVisivel": 731,
+      "alturaCorpo": 793,
+      "corpoVisivel": 793,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -454,11 +1330,63 @@
       "rolagemPagina": 0,
       "controles": 6,
       "svgs": 1,
+      "oco": 41,
+      "ocoRotulo": "41px | Forçasfunção compacta e auditávelinterpr",
       "erros": 0,
       "falha": false,
       "problemas": [
-        "coube reduzido a 91%"
-      ]
+        "coube reduzido a 84%"
+      ],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.84,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 84%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.84,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 84%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.84,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 84%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "20",
@@ -480,9 +1408,55 @@
       "rolagemPagina": 0,
       "controles": 9,
       "svgs": 0,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "21",
@@ -504,22 +1478,68 @@
       "rolagemPagina": 0,
       "controles": 6,
       "svgs": 1,
+      "oco": 1,
+      "ocoRotulo": "1px | PercursoA raiz pergunta pelo histórico.R",
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "22",
       "estudo": false,
-      "zoom": 0.99,
+      "zoom": 0.95,
       "katexErros": 0,
       "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 671,
-      "corpoVisivel": 671,
+      "alturaCorpo": 705,
+      "corpoVisivel": 705,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -528,11 +1548,63 @@
       "rolagemPagina": 0,
       "controles": 6,
       "svgs": 2,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
       "problemas": [
-        "coube reduzido a 99%"
-      ]
+        "coube reduzido a 95%"
+      ],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.95,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 95%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.95,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 95%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.95,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 95%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "23",
@@ -554,9 +1626,55 @@
       "rolagemPagina": 0,
       "controles": 5,
       "svgs": 5,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "24",
@@ -578,22 +1696,68 @@
       "rolagemPagina": 0,
       "controles": 3,
       "svgs": 1,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "25",
       "estudo": false,
-      "zoom": 1,
+      "zoom": 0.99,
       "katexErros": 0,
       "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 665,
-      "corpoVisivel": 665,
+      "alturaCorpo": 675,
+      "corpoVisivel": 675,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -602,9 +1766,63 @@
       "rolagemPagina": 0,
       "controles": 3,
       "svgs": 2,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [
+        "coube reduzido a 99%"
+      ],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.99,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 99%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.99,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 99%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.99,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 99%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "26",
@@ -626,22 +1844,72 @@
       "rolagemPagina": 0,
       "controles": 11,
       "svgs": 2,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.86,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 86%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.86,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 86%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "27",
       "estudo": false,
-      "zoom": 1,
+      "zoom": 0.94,
       "katexErros": 0,
       "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 1,
       "cortado": "1px | comprometimento",
-      "alturaCorpo": 665,
-      "corpoVisivel": 665,
+      "alturaCorpo": 706,
+      "corpoVisivel": 706,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -650,12 +1918,222 @@
       "rolagemPagina": 0,
       "controles": 2,
       "svgs": 5,
+      "oco": 13,
+      "ocoRotulo": "13px | profundidade 220406080comprometimento050",
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [
+        "coube reduzido a 94%"
+      ],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.94,
+            "estouro": 0,
+            "corte": 1,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 94%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.94,
+            "estouro": 0,
+            "corte": 1,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 94%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.94,
+            "estouro": 0,
+            "corte": 1,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 94%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "28",
+      "estudo": false,
+      "zoom": 0.98,
+      "katexErros": 0,
+      "katexAmostra": null,
+      "estouro": 0,
+      "estourado": null,
+      "corte": 0,
+      "cortado": null,
+      "alturaCorpo": 677,
+      "corpoVisivel": 677,
+      "rolagemCorpo": 0,
+      "transbordo": 0,
+      "tracos": 0,
+      "amostra": null,
+      "culpado": null,
+      "rolagemPagina": 0,
+      "controles": 6,
+      "svgs": 2,
+      "oco": 0,
+      "ocoRotulo": null,
+      "erros": 0,
+      "falha": false,
+      "problemas": [
+        "coube reduzido a 98%"
+      ],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.8,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 80%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.98,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 98%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.8,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 80%"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "29",
+      "estudo": false,
+      "zoom": 0.96,
+      "katexErros": 0,
+      "katexAmostra": null,
+      "estouro": 0,
+      "estourado": null,
+      "corte": 0,
+      "cortado": null,
+      "alturaCorpo": 642,
+      "corpoVisivel": 642,
+      "rolagemCorpo": 0,
+      "transbordo": 0,
+      "tracos": 0,
+      "amostra": null,
+      "culpado": null,
+      "rolagemPagina": 0,
+      "controles": 21,
+      "svgs": 3,
+      "oco": 0,
+      "ocoRotulo": null,
+      "erros": 0,
+      "falha": false,
+      "problemas": [
+        "coube reduzido a 96%"
+      ],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.96,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 96%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.96,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 96%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.96,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 96%"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "30",
       "estudo": false,
       "zoom": 1,
       "katexErros": 0,
@@ -672,61 +2150,63 @@
       "amostra": null,
       "culpado": null,
       "rolagemPagina": 0,
-      "controles": 6,
-      "svgs": 2,
-      "erros": 0,
-      "falha": false,
-      "problemas": []
-    },
-    {
-      "id": "29",
-      "estudo": false,
-      "zoom": 1,
-      "katexErros": 0,
-      "katexAmostra": null,
-      "estouro": 1,
-      "estourado": "1px | PD nas 20 réplicas0%20%40%60%PD prevista",
-      "corte": 0,
-      "cortado": null,
-      "alturaCorpo": 615,
-      "corpoVisivel": 615,
-      "rolagemCorpo": 0,
-      "transbordo": 0,
-      "tracos": 0,
-      "amostra": null,
-      "culpado": null,
-      "rolagemPagina": 0,
-      "controles": 21,
-      "svgs": 3,
-      "erros": 0,
-      "falha": false,
-      "problemas": []
-    },
-    {
-      "id": "30",
-      "estudo": false,
-      "zoom": 0.88,
-      "katexErros": 0,
-      "katexAmostra": null,
-      "estouro": 0,
-      "estourado": null,
-      "corte": 0,
-      "cortado": null,
-      "alturaCorpo": 756,
-      "corpoVisivel": 756,
-      "rolagemCorpo": 0,
-      "transbordo": 0,
-      "tracos": 0,
-      "amostra": null,
-      "culpado": null,
-      "rolagemPagina": 0,
       "controles": 10,
       "svgs": 1,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": [
-        "coube reduzido a 88%"
-      ]
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.87,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 87%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.88,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 88%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.87,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 87%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "31",
@@ -748,9 +2228,59 @@
       "rolagemPagina": 0,
       "controles": 4,
       "svgs": 3,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.97,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 97%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.97,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 97%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "32",
@@ -772,22 +2302,72 @@
       "rolagemPagina": 0,
       "controles": 3,
       "svgs": 1,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.86,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 86%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.86,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 86%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "33",
       "estudo": false,
-      "zoom": 1,
+      "zoom": 0.95,
       "katexErros": 0,
       "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
-      "corte": 4,
-      "cortado": "4px | perda média dos 10 registros",
-      "alturaCorpo": 665,
-      "corpoVisivel": 665,
+      "corte": 3,
+      "cortado": "3px | perda média dos 10 registros",
+      "alturaCorpo": 702,
+      "corpoVisivel": 702,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -796,9 +2376,63 @@
       "rolagemPagina": 0,
       "controles": 5,
       "svgs": 1,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [
+        "coube reduzido a 95%"
+      ],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.95,
+            "estouro": 0,
+            "corte": 3,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 95%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.95,
+            "estouro": 0,
+            "corte": 3,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 95%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.95,
+            "estouro": 0,
+            "corte": 3,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 95%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "34",
@@ -820,9 +2454,57 @@
       "rolagemPagina": 0,
       "controles": 4,
       "svgs": 1,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.98,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 98%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "35",
@@ -844,22 +2526,72 @@
       "rolagemPagina": 0,
       "controles": 4,
       "svgs": 2,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.94,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 94%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.94,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 94%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "36",
       "estudo": false,
-      "zoom": 0.81,
+      "zoom": 0.83,
       "katexErros": 0,
       "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 5,
       "cortado": "5px | escore F",
-      "alturaCorpo": 820,
-      "corpoVisivel": 820,
+      "alturaCorpo": 803,
+      "corpoVisivel": 803,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -868,11 +2600,63 @@
       "rolagemPagina": 0,
       "controles": 8,
       "svgs": 2,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
       "problemas": [
-        "coube reduzido a 81%"
-      ]
+        "coube reduzido a 83%"
+      ],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.87,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 87%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.83,
+            "estouro": 0,
+            "corte": 5,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 83%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.87,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 87%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "37",
@@ -894,9 +2678,59 @@
       "rolagemPagina": 0,
       "controles": 6,
       "svgs": 1,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.93,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 93%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.93,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 93%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "38",
@@ -918,22 +2752,68 @@
       "rolagemPagina": 0,
       "controles": 12,
       "svgs": 4,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "39",
       "estudo": false,
-      "zoom": 1,
+      "zoom": 0.98,
       "katexErros": 0,
       "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 665,
-      "corpoVisivel": 665,
+      "alturaCorpo": 681,
+      "corpoVisivel": 681,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -942,9 +2822,63 @@
       "rolagemPagina": 0,
       "controles": 3,
       "svgs": 1,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [
+        "coube reduzido a 98%"
+      ],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.98,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 98%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.98,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 98%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.98,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 98%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "40",
@@ -966,9 +2900,61 @@
       "rolagemPagina": 0,
       "controles": 6,
       "svgs": 0,
+      "oco": 14,
+      "ocoRotulo": "14px | Ganhos possíveisrelações não lineares se",
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.9,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 90%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.9,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 90%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.9,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 90%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "41",
@@ -990,9 +2976,55 @@
       "rolagemPagina": 0,
       "controles": 11,
       "svgs": 2,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 5,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 5,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 5,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "42",
@@ -1013,23 +3045,75 @@
       "culpado": null,
       "rolagemPagina": 0,
       "controles": 7,
-      "svgs": 0,
+      "svgs": 1,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.85,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 85%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.85,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 85%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.83,
+            "estouro": 0,
+            "corte": 4,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 83%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "43",
       "estudo": false,
-      "zoom": 0.99,
+      "zoom": 0.98,
       "katexErros": 0,
       "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 2,
       "cortado": "2px | 2018",
-      "alturaCorpo": 671,
-      "corpoVisivel": 671,
+      "alturaCorpo": 681,
+      "corpoVisivel": 681,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -1038,11 +3122,63 @@
       "rolagemPagina": 0,
       "controles": 5,
       "svgs": 1,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
       "problemas": [
-        "coube reduzido a 99%"
-      ]
+        "coube reduzido a 98%"
+      ],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.98,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 98%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.98,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 98%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.98,
+            "estouro": 0,
+            "corte": 2,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 98%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "44",
@@ -1064,9 +3200,55 @@
       "rolagemPagina": 0,
       "controles": 7,
       "svgs": 1,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "45",
@@ -1088,9 +3270,55 @@
       "rolagemPagina": 0,
       "controles": 7,
       "svgs": 2,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "46",
@@ -1112,22 +3340,68 @@
       "rolagemPagina": 0,
       "controles": 10,
       "svgs": 3,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "47",
       "estudo": false,
-      "zoom": 0.98,
+      "zoom": 0.93,
       "katexErros": 0,
       "katexAmostra": null,
-      "estouro": 1,
-      "estourado": "1px | Margem menos perda esperadaR$ 0R$ 600R$ ",
+      "estouro": 0,
+      "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 652,
-      "corpoVisivel": 652,
+      "alturaCorpo": 686,
+      "corpoVisivel": 686,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -1136,11 +3410,57 @@
       "rolagemPagina": 0,
       "controles": 5,
       "svgs": 2,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
       "problemas": [
-        "coube reduzido a 98%"
-      ]
+        "coube reduzido a 93%"
+      ],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 1,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": []
+          }
+        ]
+      }
     },
     {
       "id": "48",
@@ -1162,9 +3482,61 @@
       "rolagemPagina": 0,
       "controles": 5,
       "svgs": 1,
+      "oco": 32,
+      "ocoRotulo": "32px | Indicadores com alvo maturadoinadimplênc",
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.92,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 92%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.92,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 92%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.92,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 92%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "49",
@@ -1186,22 +3558,74 @@
       "rolagemPagina": 0,
       "controles": 10,
       "svgs": 0,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
-      "problemas": []
+      "problemas": [],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.82,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 82%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.85,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 85%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.82,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 82%"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "50",
       "estudo": false,
-      "zoom": 0.8,
+      "zoom": 0.81,
       "katexErros": 0,
       "katexAmostra": null,
       "estouro": 0,
       "estourado": null,
       "corte": 0,
       "cortado": null,
-      "alturaCorpo": 834,
-      "corpoVisivel": 834,
+      "alturaCorpo": 829,
+      "corpoVisivel": 829,
       "rolagemCorpo": 0,
       "transbordo": 0,
       "tracos": 0,
@@ -1210,11 +3634,63 @@
       "rolagemPagina": 0,
       "controles": 5,
       "svgs": 0,
+      "oco": 0,
+      "ocoRotulo": null,
       "erros": 0,
       "falha": false,
       "problemas": [
-        "coube reduzido a 80%"
-      ]
+        "coube reduzido a 81%"
+      ],
+      "estados": {
+        "erros": 0,
+        "rodadas": [
+          {
+            "rodada": 1,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.81,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 81%"
+            ]
+          },
+          {
+            "rodada": 2,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.81,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 81%"
+            ]
+          },
+          {
+            "rodada": 3,
+            "erros": 0,
+            "tracos": 0,
+            "katexErros": 0,
+            "zoom": 0.81,
+            "estouro": 0,
+            "corte": 0,
+            "transbordo": 0,
+            "rolagem": 0,
+            "falha": false,
+            "problemas": [
+              "coube reduzido a 81%"
+            ]
+          }
+        ]
+      }
     }
   ],
   "erros": [],

@@ -100,7 +100,7 @@ Aula.slide({
       return MODELOS.map(function (m) { return R.clientes.pd_modelos_calibrada[m.chave][i]; });
     });
     var comparacao = UI.tabela({
-      compacta: true,
+      compacta: true, apertada: true,
       colunas: [{ rotulo: "Cliente" }].concat(MODELOS.map(function (m) {
         return { rotulo: m.nome, unidade: "PD calibrada" };
       })).concat([{ rotulo: "No corte de " + F.pct(corte, 0) }]),

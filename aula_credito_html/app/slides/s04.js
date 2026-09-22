@@ -65,7 +65,9 @@ Aula.slide({
       { valor: "futuro", rotulo: "Informação do futuro" },
     ];
 
-    var linhas = h("div", { class: "coluna cresce", estilo: "gap:7px;justify-content:space-between" });
+    /* Espaçamento uniforme entre as sete fichas: space-between abria vãos de tamanhos
+       diferentes e quebrava o ritmo da lista. */
+    var linhas = h("div", { class: "coluna", estilo: "gap:10px" });
     fichas.forEach(function (f) {
       var escolha = est.escolhas[f.id] || null;
       var resultado = null;

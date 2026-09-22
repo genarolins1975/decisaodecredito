@@ -138,8 +138,13 @@ p.subtitulo {
 
 /* --------------------------------------------------------------- estrutura */
 
-.linha { display: flex; gap: 20px; align-items: stretch; }
+/* Colunas alinhadas pelo topo, e nunca esticadas além do conteúdo: esticar uma caixa com
+   moldura para além do que ela contém produz um retângulo oco, que na projeção lê como
+   conteúdo faltando. O espaço que sobra vira uma faixa única embaixo, que lê como margem.
+   `.linha.esticada` devolve o comportamento antigo para quem precisar dele. */
+.linha { display: flex; gap: 20px; align-items: flex-start; }
 .linha.topo { align-items: flex-start; }
+.linha.esticada { align-items: stretch; }
 .coluna { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 .cresce { flex: 1 1 auto; min-width: 0; min-height: 0; }
 .igual { flex: 1 1 0; min-width: 0; min-height: 0; }

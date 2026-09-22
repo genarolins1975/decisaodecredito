@@ -47,7 +47,7 @@ Aula.slide({
     var pd = hist[2].grupos[grupo].p;
 
     var g = Graf.waterfall({
-      w: 760, h: 330, larguraRot: 282,
+      w: 760, h: 300, larguraRot: 282,
       base: F0, rotuloBase: "escore inicial " + F.dec(F0, 6), rotuloTotal: "escore final",
       rotuloX: "escore F",
       itens: [
@@ -111,20 +111,16 @@ Aula.slide({
           ]),
           UI.slider({
             rotulo: "Comprometimento do solicitante", min: 20, max: 60, passo: 1, valor: est.comp,
-            formato: function (v) { return "grupo " + (v > B.corte ? "B" : "A") +
-              (v <= 22 ? ", como Ana" : v <= 38 ? ", como Bruno" : v <= 48 ? ", como Carla" : ", como Diego"); },
+            formato: function (v) { return "grupo " + (v > B.corte ? "B" : "A") + " · " +
+              (v <= 22 ? "Ana" : v <= 38 ? "Bruno" : v <= 48 ? "Carla" : "Diego"); },
             aoMudar: function (v) { est.comp = v; App.montar("36"); },
           }),
-          h("div", { class: "ctrl", estilo: "margin-top:8px" }, [
-            h("label", {}, "Taxa de aprendizagem η"),
-            UI.botoes({ compacto: true, rotulo: "Taxa de aprendizagem", valor: est.eta,
-              opcoes: [{ rotulo: "η = 1", valor: 1 }, { rotulo: "η = 0,40", valor: 0.4 }],
-              aoMudar: function (v) { est.eta = v; App.montar("36"); } }),
-          ]),
-          h("p", { class: "nota", estilo: "margin-top:8px" },
-            "Nenhum campo de desfecho aparece nesta ficha. O y foi usado apenas no treinamento. " +
-            "Trocar η não reescala o resultado: as mesmas duas árvores mudam de valor porque os resíduos " +
-            "da segunda são recalculados sobre o escore já atualizado pela primeira."),
+          /* A nota da ficha e o resumo do treino dizem a mesma coisa por dois caminhos; com os
+             dois abertos o palco não cabe. Quando o resumo abre, esta sai. */
+          est.treino ? null : h("p", { class: "nota", estilo: "margin-top:8px" },
+            "Nenhum campo de desfecho aparece nesta ficha: o y foi usado apenas no treinamento. " +
+            "Trocar η não reescala o resultado, porque os resíduos da segunda árvore são " +
+            "recalculados sobre o escore já atualizado pela primeira."),
         ]),
         h("div", { class: "coluna", estilo: "gap:8px" }, percurso),
         h("div", { class: "painel claro cresce centro", estilo: "padding:8px 14px" }, [
@@ -132,6 +128,9 @@ Aula.slide({
           gs.svg,
         ]),
         h("div", { class: "grupo" }, [
+          UI.botoes({ compacto: true, rotulo: "Taxa de aprendizagem", valor: est.eta,
+            opcoes: [{ rotulo: "η = 1", valor: 1 }, { rotulo: "η = 0,40", valor: 0.4 }],
+            aoMudar: function (v) { est.eta = v; App.montar("36"); } }),
           h("button", { class: "btn", type: "button", onclick: function () {
             est.converter = false; App.montar("36");
           }, disabled: !est.converter }, "Ver somente o escore"),
@@ -146,10 +145,9 @@ Aula.slide({
         ]),
         est.treino
           ? h("p", { class: "nota" },
-              "As duas folhas vieram das médias dos resíduos dos dez registros de treinamento: " +
+              "As folhas vieram das médias dos resíduos dos dez registros: " +
               F.dec(hist[1].grupos.B.h, 6) + " e " + F.dec(hist[2].grupos.B.h, 6) +
-              " no grupo B. Para prever um solicitante novo não calculamos y menos p: " +
-              "apenas percorremos as árvores já aprendidas.")
+              " no grupo B. Para prever, só percorremos as árvores já aprendidas.")
           : null,
       ]),
     ]));

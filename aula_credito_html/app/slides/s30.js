@@ -5,12 +5,11 @@ Aula.slide({
   subtitulo: "Exercício: percorrer, calcular e questionar",
   conclusao: "Uma regra legível ajuda a explicar o cálculo, mas não dispensa evidência de qualidade.",
   fonte: Aula.dados.fontes.arvore,
-  resumo: "Árvore didática com a taxa da folha de Carla oculta, três tarefas de percurso e cálculo, e o painel de quando a árvore é uma boa escolha.",
+  resumo: "Árvore didática com a taxa da folha de Carla oculta e três tarefas: caminho, cálculo da PD e efeito de dobrar a renda.",
   notas: {
     conducao: [
       "Reserve dois minutos em duplas.",
       "Não revele a resposta ao primeiro clique em um ramo errado: explique a regra e permita corrigir.",
-      "Antes da pausa, leia o painel de quando a árvore é uma boa escolha, no mesmo formato do slide 19 para o logit. Peça um caso da carteira de cada aluno que caia na coluna da esquerda.",
       "Conclua com a importância de tamanho de folha, validação e estabilidade. Este é um bom ponto para a pausa da aula.",
     ],
     respostas: [
@@ -18,6 +17,9 @@ Aula.slide({
       "Dobrar a renda isoladamente, com o comprometimento mantido fixo, não altera esta árvore, porque a renda não é usada nas perguntas.",
       "Numa mudança econômica real o comprometimento poderia variar. A simulação é sobre a função do modelo.",
       "Desafio final: Bruno de 38% para 41% passa de 15% para 40%. Isso não prova um salto real de risco exatamente nesse limite: é uma descontinuidade da aproximação aprendida.",
+    ],
+    aprofundar: [
+      "Quando a árvore é uma boa escolha, para fechar o bloco como o slide 19 fecha o do logit e o 40 o do boosting: quando o efeito de uma variável depende do valor de outra e a interação não precisa ser escrita à mão; quando a relação não é monótona e transformar a variável seria um chute; e quando a regra precisa virar política operacional, legível linha a linha. O preço é o que os slides 27 a 29 mostraram: a estrutura muda com uma observação, a taxa da folha não se lê sem o tamanho da folha, e a perda de treino não compara famílias. Não cabe em tela com o exercício revelado; está nos dois guias em PDF.",
     ],
     cuidados: [
       "A taxa de uma folha é estimativa com incerteza, e folhas pequenas têm intervalo largo. Ler a taxa sem o tamanho da folha é o erro mais comum aqui.",
@@ -89,26 +91,6 @@ Aula.slide({
             ])
           : null,
         Comum.fichaLinha(carla, { cor: true }),
-        h("div", { class: "painel claro", estilo: "padding:10px 16px" }, [
-          h("h3", { class: "secao", estilo: "margin-bottom:5px" }, "Quando a árvore é uma boa escolha"),
-          h("div", { class: "g2" }, [
-            h("ul", { class: "apoio", estilo: "margin:0;padding-left:20px" }, [
-              h("li", {}, "o efeito de uma variável depende do valor de outra, e a interação não " +
-                "precisa ser escrita à mão"),
-              h("li", {}, "a relação não é monótona, e transformar a variável seria um chute"),
-              h("li", {}, "a regra precisa virar política operacional, legível linha a linha"),
-            ]),
-            h("ul", { class: "apoio", estilo: "margin:0;padding-left:20px" }, [
-              h("li", {}, "não escolha pela leitura do diagrama: uma observação pode trocar a " +
-                "variável de um nó"),
-              h("li", {}, "não leia a taxa da folha sem o tamanho da folha"),
-              h("li", {}, "não compare com outra família pela perda de treino"),
-            ]),
-          ]),
-          h("p", { class: "nota", estilo: "margin-top:6px" },
-            "À esquerda, o que a árvore entrega e a soma não entrega. À direita, o preço, e é o " +
-            "mesmo preço em qualquer família: só evidência fora da amostra decide."),
-        ]),
       ]),
       /* 700 de largura: cada opção do caminho cabe numa linha, e as três partes conferidas
          cabem na altura do palco. */

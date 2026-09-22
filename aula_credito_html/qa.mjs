@@ -60,6 +60,10 @@ let atual = "00";
 await pagina.goto("file://" + arquivo, { waitUntil: "load" });
 await pagina.waitForTimeout(250);
 
+/* Um painel com mais de 180px vazios abaixo do conteúdo é oco o bastante para a plateia
+   notar. Abaixo disso a folga lê como respiro. */
+const LIMITE_OCO = 180;
+
 const lista = await pagina.evaluate(() => Aula.slides.map((s) => ({ id: s.id, titulo: s.titulo, bloco: s.bloco })));
 const ids = alvos.length ? alvos : lista.map((s) => s.id);
 
@@ -188,6 +192,26 @@ function medirNaPagina() {
     }
   }
 
+  /* Painel com moldura esticado muito além do próprio conteúdo: na projeção um retângulo
+     vazio lê como conteúdo faltando. Mede a distância entre o fim do último filho visível e
+     o fundo interno do painel. */
+  let oco = 0;
+  let ocoRotulo = null;
+  for (const pn of palco.querySelectorAll("#corpo .painel")) {
+    if (pn.hidden || !pn.offsetParent) continue;
+    const r = pn.getBoundingClientRect();
+    if (r.height < 120) continue;
+    const filhos = [...pn.children].filter((c) => !c.hidden && c.getBoundingClientRect().height > 2);
+    if (!filhos.length) continue;
+    const fundo = Math.max(...filhos.map((c) => c.getBoundingClientRect().bottom));
+    const v = r.bottom - (parseFloat(getComputedStyle(pn).paddingBottom) || 0) - fundo;
+    if (v > oco) {
+      oco = v;
+      ocoRotulo = Math.round(v) + "px | " + (pn.textContent || "").trim().slice(0, 40);
+    }
+  }
+  oco = Math.round(oco);
+
   /* Fator que o motor aplicou ao corpo para o estado caber no palco: 1 quando coube de
      primeira. Abaixo de 0,8 o texto de 22 px já fica com menos de 18 px na referência de
      1600 por 900, e o estado precisa de um desenho melhor, não de redução. */
@@ -207,13 +231,14 @@ function medirNaPagina() {
     rolagemPagina: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     controles: palco.querySelectorAll("button,input").length,
     svgs: palco.querySelectorAll("svg").length,
+    oco, ocoRotulo,
   };
 }
 
 /* O que faz um estado falhar, no inicial e nos explorados. */
 function falhou(m, novosErros) {
   return novosErros > 0 || m.tracos > 0 || m.katexErros > 0 || m.transbordo > 0.5 ||
-    m.corte > 5 || m.estouro > 2 || m.zoom < 0.8 ||
+    m.corte > 5 || m.estouro > 2 || m.zoom < 0.8 || m.oco > LIMITE_OCO ||
     (m.estudo ? m.rolagemPagina > 2 : m.rolagemCorpo > 2);
 }
 
@@ -224,6 +249,7 @@ function motivos(m) {
   if (m.katexErros > 0) lista.push(`fórmula não montada: ${m.katexAmostra}`);
   if (m.corte > 5) lista.push(`rótulo cortado: ${m.cortado}`);
   if (m.estouro > 2) lista.push(`painel apertado: ${m.estourado}`);
+  if (m.oco > LIMITE_OCO) lista.push(`painel oco: ${m.oco}px vazios em ${m.ocoRotulo}`);
   if (m.transbordo > 0.5 && m.culpado) lista.push(`maior transbordo: ${m.culpado}`);
   if (m.estudo ? m.rolagemPagina > 2 : m.rolagemCorpo > 2) lista.push(`rolagem: ${m.estudo ? m.rolagemPagina + "px na horizontal" : m.rolagemCorpo + "px"}`);
   return lista;

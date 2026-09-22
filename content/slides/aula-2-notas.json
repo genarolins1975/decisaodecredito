@@ -1,5 +1,5 @@
 {
- "versao": "2b6298264377",
+ "versao": "35075a11a54e",
  "gerado": "build.mjs; edite as notas em app/slides/sNN.js e recompile",
  "slides": [
   {
@@ -966,12 +966,11 @@
    "subtitulo": "Exercício: percorrer, calcular e questionar",
    "conclusao": "Uma regra legível ajuda a explicar o cálculo, mas não dispensa evidência de qualidade.",
    "fonte": "Árvore didática de 1.000 contratos; cálculo próprio",
-   "resumo": "Árvore didática com a taxa da folha de Carla oculta, três tarefas de percurso e cálculo, e o painel de quando a árvore é uma boa escolha.",
+   "resumo": "Árvore didática com a taxa da folha de Carla oculta e três tarefas: caminho, cálculo da PD e efeito de dobrar a renda.",
    "notas": {
     "conducao": [
      "Reserve dois minutos em duplas.",
      "Não revele a resposta ao primeiro clique em um ramo errado: explique a regra e permita corrigir.",
-     "Antes da pausa, leia o painel de quando a árvore é uma boa escolha, no mesmo formato do slide 19 para o logit. Peça um caso da carteira de cada aluno que caia na coluna da esquerda.",
      "Conclua com a importância de tamanho de folha, validação e estabilidade. Este é um bom ponto para a pausa da aula."
     ],
     "respostas": [
@@ -985,7 +984,9 @@
      "A regra da árvore é associação aprendida na amostra, não relação causal: mudar a variável no cliente não move a PD dele pelo caminho da árvore.",
      "Esta árvore vem da miniatura de 1.000 contratos, separada da base do experimento. Não compare o desempenho dela com o dos modelos treinados."
     ],
-    "aprofundar": [],
+    "aprofundar": [
+     "Quando a árvore é uma boa escolha, para fechar o bloco como o slide 19 fecha o do logit e o 40 o do boosting: quando o efeito de uma variável depende do valor de outra e a interação não precisa ser escrita à mão; quando a relação não é monótona e transformar a variável seria um chute; e quando a regra precisa virar política operacional, legível linha a linha. O preço é o que os slides 27 a 29 mostraram: a estrutura muda com uma observação, a taxa da folha não se lê sem o tamanho da folha, e a perda de treino não compara famílias. Não cabe em tela com o exercício revelado; está nos dois guias em PDF."
+    ],
     "transicao": "Uma única árvore é clara, mas pode ser limitada ou instável. Podemos construir uma previsão melhor acrescentando várias árvores pequenas em sequência?"
    },
    "proximo": {

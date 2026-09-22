@@ -123,10 +123,12 @@ Aula.slide({
         ]),
       ]),
       h("div", { class: "coluna", estilo: "flex:0 0 620px" }, [
-        h("div", { class: "painel claro cresce centro" }, [
-          est.passos >= 1
-            ? g.svg
-            : h("p", { class: "apoio", estilo: "text-align:center" },
+        /* O eixo do waterfall fica na tela desde o início, com zero barras visíveis: assim o
+           aluno vê onde a resposta vai aparecer, em vez de uma faixa de texto larga e vazia. */
+        h("div", { class: "painel claro centro" }, [
+          g.svg,
+          est.passos >= 1 ? null
+            : h("p", { class: "apoio", estilo: "text-align:center;margin-top:6px" },
                 "A resolução aparece em duas etapas: primeiro a soma no escore, depois a conversão."),
           est.passos >= 2
             ? h("div", { estilo: "display:flex;gap:20px;align-items:center;margin-top:10px;flex-wrap:wrap;justify-content:center" }, [

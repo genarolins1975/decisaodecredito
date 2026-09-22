@@ -50,6 +50,18 @@ Dezoito das vinte e uma páginas essenciais da aula passaram a ter veredito. Ant
 
 Verificado em 22/09/2026: typecheck, lint (0 erros, 5 avisos preexistentes), `npm run lint:tracos` (0 ocorrências), `npm test` (260), `npx playwright test` (22 de 22), QA do baralho 50 de 50 em 1366x768 sem falha, os dois PDFs regerados (71 páginas cada, 0 traços, 0 fórmulas com erro) e conferência no navegador das dezesseis perguntas novas e dos oito slides alterados.
 
+Oitava rodada de 22/09/2026: análise de layout da Aula 2, nas duas superfícies. O defeito era sistêmico e mensurável: `.linha` usava `align-items: stretch`, então toda caixa com moldura era esticada até a altura da coluna, independentemente do que continha. Medidos nos 50 slides, isso produzia 46 painéis ocos (o pior com 392 px vazios dentro da moldura) e 31 colunas com mais de 90 px de vazio no pé. Na projeção um retângulo com borda e nada dentro lê como conteúdo faltando.
+
+O alinhamento passou a ser pelo topo, com `.linha.esticada` disponível para quem precisar do comportamento antigo. Com isso os 46 painéis ocos e as 31 colunas vazias foram a zero, e o espaço que sobra virou uma faixa única no pé do palco, que lê como margem. A mesma troca foi feita em `.capx-duas`, na abertura de capítulo da plataforma, onde o bloco "Onde isto é usado depois" era esticado até a altura do bloco de prerrequisitos.
+
+Uma tentativa de preencher a faixa restante esticando as fichas do slide 01 foi revertida: fichas de uma linha esticadas viram caixas ocas, que é pior do que a margem. Fica o princípio: altura natural sempre, e a folga se resolve aumentando o elemento que tem o que mostrar, não inflando o que não tem.
+
+Além do sistêmico: as listas verticais dos slides 01 e 04 usavam `justify-content: space-between` e abriam vãos de tamanhos diferentes entre itens iguais, agora com espaçamento uniforme; as fichas dos quatro clientes no slide de abertura passaram a trazer renda e comprometimento como valores rotulados, legíveis de longe, em vez de um trecho de frase em cinza; os dois controles do slide 06 ficavam soltos ao lado da ficha, sem moldura, e entraram nela; o slide 42 mostrava uma faixa de texto larga e vazia onde a resolução aparece, e passou a mostrar o eixo do waterfall desde o início, com zero barras; e o gráfico do slide 13 cresceu, porque era o conteúdo da tela.
+
+O defeito virou verificação permanente: `qa.mjs` passou a medir painel oco, com limite de 180 px, e falha o slide que passar disso. Rodando a varredura completa apareceram sete estados que não cabiam, todos de conteúdo acrescentado na sétima rodada e não detectados lá porque aquela rodada só varreu o estado inicial: slides 01 e 06 estouravam a largura em 390 px, e 02, 26, 30 e 36 ficavam abaixo de 80% de escala com tudo revelado. Todos corrigidos. O critério de quando a árvore é uma boa escolha não coube em nenhuma tela do bloco com o exercício revelado, e foi para as notas do professor do slide 30 e para os dois guias, que é onde os critérios dos outros dois blocos também são detalhados.
+
+Verificado em 22/09/2026: `qa.mjs` 50 de 50 em 1920x1080, 1366x768, 1024x768 e 390x844, e 50 de 50 nas mesmas quatro na variante do aluno com estados explorados; painéis ocos e colunas vazias em zero; typecheck, lint (0 erros), `lint:tracos` (0), `npm test` (265), `npx playwright test` (22 de 22); os dois PDFs regerados com 71 páginas, 0 traços e 0 fórmulas com erro.
+
 ## Pendências técnicas ordenadas
 
 0. Aula 2: R1 a R4 e R7 de `docs/PLANO_MELHORIAS.md` (aviso de turma sem encontros, perguntas para slides sem página ligada, verificação em Firefox, Safari e projetor, validação com usuários, traços nas cascas, estados combinados que cabem reduzidos).

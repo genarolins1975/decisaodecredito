@@ -1090,7 +1090,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .capx-tres { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
 .capx-bloco { background: var(--color-paper); border: 1px solid var(--color-rule); border-top: 3px solid var(--cap); border-radius: 6px; padding: 14px 16px; font-size: 15px; }
 .capx-bloco .eyebrow { margin-bottom: 6px; } .capx-bloco p + p { margin-top: 6px; }
-.capx-secao { margin-top: 26px; } .capx-duas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.capx-secao { margin-top: 26px; }
+/* Os dois blocos têm comprimentos muito diferentes: esticar o curto até a altura do longo
+   produz uma moldura oca. Alinhados pelo topo, cada um fica na sua altura. */
+.capx-duas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: start; }
 .capx-secao-t { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 10px; } .capx-secao-t h2 { font-size: clamp(19px, 1.8vw, 24px); }
 .capx-mapa { list-style: none; margin: 0; padding: 0; border: 1px solid var(--color-rule); border-radius: 8px; background: var(--color-surface); overflow: hidden; }
 .capx-pag { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 4px 14px; padding: 12px 16px; border-top: 1px solid var(--color-rule); align-items: baseline; }
