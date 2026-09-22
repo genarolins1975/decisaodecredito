@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 # Build na Vercel. Com BOOTSTRAP_ON_BUILD=1, antes de compilar: aplica migrações (aditivas, idempotentes),
-# garante curso/edição/turma e a conta do professor (sem contas de teste) e importa o conteúdo
-# (páginas já importadas não ganham nova versão). Sem a variável, apenas compila.
+# garante curso/edição/turma e a conta do professor (sem contas de teste) e importa o conteúdo.
+# Com CONTENT_SYNC_ON_BUILD=1 roda só a importação do conteúdo, sem migrar nem semear: é o caso de quem
+# desligou o bootstrap depois do primeiro deploy e ainda quer que as correções do material cheguem ao aluno.
+# Sem nenhuma das duas, apenas compila.
+#
+# A importação é idempotente e conservadora: cria a página que falta, republica a página cujo HTML de
+# origem mudou e nunca sobrescreve página editada pelo painel do professor, que fica listada no log.
 #
 # Trava de ambiente: o bootstrap escreve no banco de DATABASE_URL. Quando um Preview herda a
 # DATABASE_URL de produção, um build passa a migrar e semear a base real. Por isso, fora de
@@ -10,13 +15,15 @@
 set -euo pipefail
 
 bootstrap="${BOOTSTRAP_ON_BUILD:-0}"
+conteudo="${CONTENT_SYNC_ON_BUILD:-0}"
 
-if [ "$bootstrap" = "1" ] && [ -n "${VERCEL_ENV:-}" ] && [ "$VERCEL_ENV" != "production" ] &&
-   [ "${BOOTSTRAP_ALLOW_PREVIEW:-0}" != "1" ]; then
+if { [ "$bootstrap" = "1" ] || [ "$conteudo" = "1" ]; } && [ -n "${VERCEL_ENV:-}" ] &&
+   [ "$VERCEL_ENV" != "production" ] && [ "${BOOTSTRAP_ALLOW_PREVIEW:-0}" != "1" ]; then
   echo "bootstrap: ignorado em VERCEL_ENV=$VERCEL_ENV, para não escrever no banco de produção."
   echo "bootstrap: confirme que DATABASE_URL deste ambiente aponta para um banco próprio"
   echo "bootstrap: e então defina BOOTSTRAP_ALLOW_PREVIEW=1 nele."
   bootstrap="0"
+  conteudo="0"
 fi
 
 if [ "$bootstrap" = "1" ]; then
@@ -24,6 +31,8 @@ if [ "$bootstrap" = "1" ]; then
   npm run --silent db:migrate
   echo "bootstrap: semente (produção, sem contas de teste)"
   NODE_ENV=production SEED_TEST_ACCOUNTS=0 npm run --silent db:seed
+fi
+if [ "$bootstrap" = "1" ] || [ "$conteudo" = "1" ]; then
   echo "bootstrap: conteúdo"
   npm run --silent content:import
 fi

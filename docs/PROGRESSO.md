@@ -62,6 +62,23 @@ O defeito virou verificação permanente: `qa.mjs` passou a medir painel oco, co
 
 Verificado em 22/09/2026: `qa.mjs` 50 de 50 em 1920x1080, 1366x768, 1024x768 e 390x844, e 50 de 50 nas mesmas quatro na variante do aluno com estados explorados; painéis ocos e colunas vazias em zero; typecheck, lint (0 erros), `lint:tracos` (0), `npm test` (265), `npx playwright test` (22 de 22); os dois PDFs regerados com 71 páginas, 0 traços e 0 fórmulas com erro.
 
+### Nona rodada (22/09/2026): o caminho do conteúdo até produção
+
+O PR 7 foi mesclado na branch padrão. Ao verificar o que isso de fato coloca no ar, apareceu uma falha de caminho, não de código: o build da Vercel chama `npm run content:import` sem `--republish`, e o importador só publicava página que ainda não existia. Consequência: as 16 perguntas curadas, por terem slug novo, chegariam ao aluno; as correções de texto das páginas dos capítulos 4, 5 e 6, não. O material ficaria meio corrigido, com slide e página discordando um do outro.
+
+A correção não foi ligar `--republish` no build, que republica tudo e passa por cima do que o professor editar pelo painel. O importador passou a decidir página a página: republica quando o conteúdo de origem mudou **e** a versão publicada foi escrita pelo próprio importador (`page_versions.created_by` nulo, que é o que distingue máquina de pessoa, já que toda escrita do painel preenche esse campo). Página com edição do painel não é tocada e sai listada no log, para o professor resolver à mão. Sem diferença, nenhuma versão nova.
+
+Dois defeitos apareceram no teste e foram corrigidos antes de qualquer entrega:
+
+- as 11 aberturas de capítulo republicavam a cada execução, porque o bloco de episódio carrega `missions: undefined` quando não há missão, e a chave some ao virar jsonb; a comparação passou a descartar chave com valor `undefined`, como o `JSON.stringify` faz;
+- as seis páginas do capítulo 11 oscilavam para sempre: o importador publicava o texto cru e `patchCapitulo11` o corrigia logo depois, então a execução seguinte via diferença de novo. As substituições do capítulo 11 passaram a ser aplicadas já na construção dos blocos, de modo que a saída canônica do importador e a do patch sejam a mesma. `patchCapitulo11` ficou para bancos antigos e passou a respeitar a mesma regra de autoria.
+
+Verificado em 22/09/2026 contra o banco local, que tem as 180 páginas publicadas: primeira execução converge e não cria versão nenhuma; com uma página rebaixada ao texto antigo (c5p2) e outra rebaixada e marcada como editada pelo painel (c4p19), a execução republica apenas c5p2, com nota de mudança citando o sha256 da origem, e lista c4p19 como divergente sem tocá-la; a execução seguinte não cria nada. `scripts/vercel-build.sh` ganhou `CONTENT_SYNC_ON_BUILD=1`, que roda só a importação, sem migrar nem semear, para quem desligou o bootstrap depois do primeiro deploy; as cinco combinações de variáveis foram exercitadas com `npm` e `next` substituídos por stubs. `tests/conteudo-publicado.test.ts` prende as duas falhas possíveis da comparação: acusar diferença onde não há, que faria todo build versionar 180 páginas, e não acusar onde há, que manteria o erro no ar.
+
+Produção conferida em 22/09/2026: `decisaodecredito.com` responde 308 para `www.decisaodecredito.com`, que responde 307 para `/entrar`, e `/entrar` responde 200. Deste ambiente não há credencial de produção nem acesso ao banco real, então o conteúdo efetivamente publicado lá não foi inspecionado; `docs/09-ativacao-producao.md`, que afirmava que nada havia sido implantado, foi corrigido.
+
+Verificado em 22/09/2026: typecheck, `lint:tracos` (0), `npm test` (276 em 31 arquivos).
+
 ## Pendências técnicas ordenadas
 
 0. Aula 2: R1 a R4 e R7 de `docs/PLANO_MELHORIAS.md` (aviso de turma sem encontros, perguntas para slides sem página ligada, verificação em Firefox, Safari e projetor, validação com usuários, traços nas cascas, estados combinados que cabem reduzidos).

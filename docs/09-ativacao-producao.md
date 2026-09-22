@@ -1,6 +1,8 @@
 # Ativação de homologação e produção: o que falta exatamente
 
-Nada foi implantado fora do ambiente local nesta sessão: não há URL de homologação nem de produção. Nenhum serviço pago foi contratado e nenhum e-mail real foi enviado. A lista abaixo é o que precisa existir para ativar.
+Produção existe e responde. Em 22/09/2026, `decisaodecredito.com` redireciona (308) para `www.decisaodecredito.com`, que exige sessão (307 para `/entrar`), e `/entrar` responde 200; `decisaodecredito.vercel.app` se comporta igual. A hospedagem é a Vercel, com as funções em `gru1` (`vercel.json`).
+
+O que segue continua valendo como lista de ativação, porque parte dela pode não ter sido feita: deste ambiente não há credencial de produção nem acesso ao banco real, então o estado de cada item abaixo, e o conteúdo efetivamente importado, não foram inspecionados. O que está verificado é o que consta no parágrafo anterior.
 
 ## 1. Infraestrutura
 
@@ -9,6 +11,28 @@ Nada foi implantado fora do ambiente local nesta sessão: não há URL de homolo
 3. Armazenamento: `STORAGE_DRIVER=s3` com `S3_ENDPOINT`, `S3_REGION`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY` (bucket privado), ou `local` em VPS com disco persistente e backup. Para as bases do trabalho final (15 arquivos de 60 a 120 MB, 1,5 GB no total) o Supabase Storage gratuito não serve (1 GB no total, 50 MB por arquivo); o Cloudflare R2 serve (10 GB gratuitos, sem custo de saída, compatível com S3): `S3_ENDPOINT=https://<account_id>.r2.cloudflarestorage.com`, `S3_REGION=auto`, token de API com permissão Object Read & Write restrito ao bucket. Downloads saem por URL assinada de 5 minutos, sem passar pela função.
 4. Domínio e TLS.
 5. Banco inicial. Na Vercel, basta definir `BOOTSTRAP_ON_BUILD=1`, `SEED_PROFESSOR_EMAIL` e `SEED_PROFESSOR_PASSWORD` (temporária; a troca é exigida no primeiro acesso): o script `scripts/vercel-build.sh` aplica as migrações, cria curso, edição, turma e a conta do professor sem contas de teste, e importa o conteúdo antes de compilar. As três etapas são idempotentes, então a variável pode ficar ligada para que futuras migrações sejam aplicadas a cada deploy; remova `SEED_PROFESSOR_PASSWORD` após o primeiro acesso. Fora da Vercel, o equivalente manual é `npm run db:migrate`, `NODE_ENV=production SEED_TEST_ACCOUNTS=0 npm run db:seed` e `npm run content:import`. Não defina `NODE_ENV` manualmente na Vercel: isso impede a instalação das dependências de build. O bootstrap escreve no banco de `DATABASE_URL`, então `scripts/vercel-build.sh` o ignora quando `VERCEL_ENV` não é `production`: para rodá-lo em Preview, confirme que aquele ambiente tem banco próprio e defina `BOOTSTRAP_ALLOW_PREVIEW=1` nele. Sem `VERCEL_ENV`, isto é, fora da Vercel, a trava não se aplica.
+
+## 1b. Atualizar o conteúdo depois do primeiro deploy
+
+O material vem de `content/original/apresentacao-curso-pd.html`, que vira `content/generated/extract.json` e é levado ao banco por `npm run content:import`. Corrigir o material no repositório não basta: sem uma importação, o aluno continua vendo a versão publicada antiga.
+
+A importação decide página a página, sem `--republish`:
+
+- página que ainda não existe no banco: criada e publicada;
+- página cujo conteúdo de origem mudou e cuja versão publicada foi escrita pelo próprio importador: republicada, com a nota de mudança citando o sha256 da origem;
+- página cujo conteúdo de origem mudou e cuja versão publicada saiu do painel do professor (`page_versions.created_by` preenchido): **não é tocada**. Ela aparece no log com a lista de slugs, para ser resolvida à mão no painel;
+- página sem diferença: nada acontece, nenhuma versão nova. Rodar duas vezes seguidas não cria versão nenhuma.
+
+Questões seguem a regra antiga: slug novo é criado, slug existente só é reescrito com `--republish`.
+
+`--republish` republica tudo e faz a origem prevalecer, inclusive sobre o que foi editado no painel. Use apenas quando essa for a intenção.
+
+Para que o deploy faça isso sozinho, basta uma destas variáveis no ambiente de produção da Vercel:
+
+- `BOOTSTRAP_ON_BUILD=1`: migra, semeia e importa (é o que o item 5 acima descreve);
+- `CONTENT_SYNC_ON_BUILD=1`: importa apenas o conteúdo, sem migrar nem semear. Serve para quem desligou o bootstrap depois do primeiro deploy.
+
+Sem nenhuma das duas, o build apenas compila e o conteúdo do banco fica como está. Fora da Vercel, o equivalente é `DATABASE_URL=<produção> npm run content:import`.
 
 ## 2. Gmail do professor
 
