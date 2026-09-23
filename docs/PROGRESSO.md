@@ -204,7 +204,7 @@ Verificado em 23/09/2026: typecheck; lint (0 erros; 5 avisos anteriores); `lint:
 
 **c4p5 e c4p15.** Mesma correção do c4p2: frases mais curtas, sem mudar o sentido, e corpo mínimo nos rótulos. c4p5 de 8,7 para 9,4 em 1400x900 e de 9,1 para 9,4 em 1920x1080 (184 para 175 palavras); c4p15 de 8,7 para 9,4 nas duas (196 para 174 palavras; no painel, "Sem default · y = 0", a forma que a dica do gráfico já usava, para caber com a proposta #15 selecionada).
 
-Verificado em 23/09/2026: typecheck; lint (0 erros; 5 avisos anteriores); `lint:tracos` (0); `npm test` (303, três novos); `npx playwright test` (24 de 24, um novo); VARREDURA15; importação local com o jsdom 26 sem erro nas 181 páginas; guias do capítulo 4 regerados (34 e 43 páginas) e pacote do professor remontado.
+Verificado em 23/09/2026: typecheck; lint (0 erros; 5 avisos anteriores); `lint:tracos` (0); `npm test` (303, três novos); `npx playwright test` (24 de 24, um novo); varredura das 61 páginas nas duas rotas e quatro larguras, com os estados clicados, sem defeito (antes, a varredura pegou o painel do c4p15 vazando 16 px com a proposta #15 selecionada, corrigido nesta rodada); importação local com o jsdom 26 sem erro nas 181 páginas; guias do capítulo 4 regerados (34 e 43 páginas) e pacote do professor remontado.
 
 **Não verificado.** O editor salvando em produção depende de login de professor, que não uso; a verificação possível sem credencial é a sonda sem sessão, feita depois do deploy.
 
