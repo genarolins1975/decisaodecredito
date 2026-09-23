@@ -116,7 +116,7 @@ const REGISTRO: Record<string, VisualNativo> = {
   c4p2: { Componente: RetaNaProbabilidade, substitui: "pagina" },
   c4p3: { Componente: EscalaProbabilidade, substitui: "legacy" },
   c4p4: { Componente: EscalaOdds, substitui: "legacy" },
-  c4p5: { Componente: EscalaLogOdds, substitui: "legacy" },
+  c4p5: { Componente: EscalaLogOdds, substitui: "pagina" },
   c4p6: { Componente: () => <Escalas modo="regua" />, substitui: "legacy" },
   c4p8: { Componente: EscoreSoma, substitui: "pagina" },
   c4p7: { Componente: LabLogistica, substitui: "legacy" },

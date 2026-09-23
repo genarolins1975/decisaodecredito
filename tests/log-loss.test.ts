@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { ATALHOS, escore, fmt, fmtPct, formula, leitura, linhas, maiores, media, perdaDaProbabilidade, perdaDoLogit, proposta, PROPOSTAS, SELECAO_INICIAL, sigmoide } from "@/lib/visuais/log-loss";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { ATALHOS, cartoes, comIntercepto, curvaPerda, DELTA_INTERCEPTO, EIXO_Y_MAX, escore, fmt, fmtPct, formula, leitura, linhas, LN2, maiores, media, naZona, perdaDaProbabilidade, perdaDoLogit, proposta, PROPOSTAS, SELECAO_INICIAL, sigmoide, testeIntercepto } from "@/lib/visuais/log-loss";
+import { AREA, LogLoss, rotulosDoGrafico } from "@/components/visuais/log-loss";
 
 describe("c4p15: a log loss proposta a proposta", () => {
   it("usa as 16 propostas da base do capítulo, na ordem original", () => {
@@ -70,4 +73,70 @@ describe("c4p15: a log loss proposta a proposta", () => {
     expect(SELECAO_INICIAL).toBe(2);
     for (const a of ATALHOS) expect(PROPOSTAS.some((p) => p.id === a)).toBe(true);
   });
+
+  it("acima de ln 2 ficam as propostas em que o modelo deu mais de 50% ao outro desfecho", () => {
+    const zona = linhas().filter(naZona);
+    expect(zona.map((l) => l.id).sort((a, b) => a - b)).toEqual([2, 5, 10, 15]);
+    for (const l of linhas()) expect(naZona(l)).toBe(l.perda > LN2);
+    expect(perdaDaProbabilidade(0.5, 1)).toBeCloseTo(LN2, 12); // as duas curvas se cruzam em PD = 50%, na perda ln 2
+    expect(perdaDaProbabilidade(0.5, 0)).toBeCloseTo(LN2, 12);
+  });
+
+  it("as curvas vão da perda máxima desenhada a zero, cada uma num sentido", () => {
+    const c1 = curvaPerda(1), c0 = curvaPerda(0);
+    expect(c1[0].perda).toBeCloseTo(EIXO_Y_MAX, 9); expect(c1[c1.length - 1].perda).toBeCloseTo(0, 12);
+    expect(c0[0].perda).toBeCloseTo(0, 12); expect(c0[c0.length - 1].perda).toBeCloseTo(EIXO_Y_MAX, 9);
+    for (let i = 1; i < c1.length; i++) { expect(c1[i].perda).toBeLessThan(c1[i - 1].perda); expect(c0[i].perda).toBeGreaterThan(c0[i - 1].perda); }
+    for (const l of [...linhas(), ...comIntercepto(DELTA_INTERCEPTO)]) expect(l.perda).toBeLessThan(EIXO_Y_MAX);
+  });
+
+  it("subir o intercepto em 0,5 melhora quem teve default, piora quem não teve, e a média sobe", () => {
+    const t = testeIntercepto(2);
+    expect(fmt(t.antes.perda, 4)).toBe("1,3223"); expect(fmt(t.depois.perda, 4)).toBe("0,9818");
+    expect(fmtPct(t.depois.pd)).toBe("37,46%");
+    expect(fmt(t.mediaAntes, 5)).toBe("0,43282"); expect(fmt(t.mediaDepois, 5)).toBe("0,45089");
+    expect(t.valores).toBe("#2: 1,3223 → 0,9818 · média: 0,43282 → 0,45089");
+    expect(t.frase).toBe("A #2 melhora, mas a média sobe: os coeficientes da aula já dão a menor.");
+    const q = testeIntercepto(15);
+    expect(fmt(q.depois.perda, 4)).toBe("1,7352");
+    expect(q.frase).toBe("A #15 piora e a média sobe: os coeficientes da aula já dão a menor.");
+    for (const l of comIntercepto(0.5)) { const a = proposta(l.id); if (l.y === 1) expect(l.perda).toBeLessThan(a.perda); else expect(l.perda).toBeGreaterThan(a.perda); }
+    // os coeficientes da aula minimizam a média: deslocar o intercepto para qualquer lado a aumenta
+    for (const d of [-0.5, -0.1, 0.1, 0.5]) expect(media(comIntercepto(d))).toBeGreaterThan(media());
+  });
+
+  it("os cartões usam a participação derivada das três maiores perdas", () => {
+    expect(cartoes().map((c) => c.k)).toEqual(["Estimação", "Quem pesa", "Cuidado"]);
+    expect(cartoes()[1].t).toBe("Com pesos iguais, as três maiores perdas somam 56% do total; reduzir uma pode aumentar outras.");
+  });
 });
+
+describe("c4p15: o quadro desenhado", () => {
+  it("põe as 16 propostas sobre as curvas, com botão acessível para cada uma", () => {
+    const html = renderToStaticMarkup(createElement(LogLoss));
+    expect(html.match(/class="ll-ponto /g)).toHaveLength(16);
+    expect(html.match(/class="ll-alvo"/g)).toHaveLength(16);
+    expect(html).toContain("Perda acima de ln 2 ≈ 0,69:");
+    expect(html).toContain("Log loss média: 0,43282");
+    expect(html).toContain("#2 · 1,32"); expect(html).toContain("#10 · 1,19"); expect(html).toContain("#15 · 1,34");
+    expect(html).toContain("−ln(0,2665) ≈ 1,3223");
+    expect(html).not.toContain("ll-barra");
+  });
+
+  it("em qualquer escolha, os rótulos ficam dentro do gráfico e não cobrem textos fixos, outros rótulos nem outros pontos", () => {
+    const cruza = (a: { x0: number; x1: number; y0: number; y1: number }, b: typeof a) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
+    for (const p of PROPOSTAS) {
+      const rs = rotulosDoGrafico(p.id);
+      expect(rs.length).toBe(maiores().ids.includes(p.id) ? 3 : 4);
+      for (const r of rs) {
+        const c = r.caixa;
+        expect(c.x0).toBeGreaterThanOrEqual(AREA.x0); expect(c.x1).toBeLessThanOrEqual(AREA.x1);
+        expect(c.y0).toBeGreaterThanOrEqual(AREA.y0); expect(c.y1).toBeLessThanOrEqual(AREA.y1);
+        for (const f of AREA.fixas) expect(cruza(c, f)).toBe(false);
+        for (const o of rs) if (o !== r) expect(cruza(c, o.caixa)).toBe(false);
+        for (const q of AREA.pontos) if (q.id !== r.id) expect(cruza(c, { x0: q.x - 10, x1: q.x + 10, y0: q.y - 10, y1: q.y + 10 })).toBe(false);
+      }
+    }
+  });
+});
+

@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "932b1e174123c1a33b10471f9a63d194356cb974fe19e46c635190d674c51188",
- "extractedAt": "2026-09-23T14:42:56.192Z",
+ "sourceSha256": "5b9a717ca47af0bd22ce6ce817ca5a14bfc1a9d7df9355f8d71d84d3102e87aa",
+ "extractedAt": "2026-09-23T17:25:52.432Z",
  "meta": {
   "capitulos": [
    {
@@ -4107,8 +4107,8 @@
    "guia": {
     "funcao": "Justificar a escala de log odds pela simetria e pela conversão de multiplicação em soma, que é o que permite a linearidade.",
     "pre": "Odds, da página anterior deste capítulo.",
-    "conducao": "Digite 20% no campo de PD de partida e leia as três colunas em voz alta. Dobrar as odds leva a 33,3% e reduzi-las à metade leva a 11,1%: em pontos percentuais, 13,3 para cima e 8,9 para baixo; em log odds, 0,6931 nos dois sentidos.",
-    "leitura": "Três colunas com as PDs em destaque (odds ÷ 2, ponto de partida, odds × 2) e as réguas de PD e de log odds; a curva de log odds contra PD aparece na aba Ver a função, no lugar das réguas.",
+    "conducao": "Comece na partida de 33% e pergunte, antes de olhar as réguas, se dividir e multiplicar as odds por 2 dá passos do mesmo tamanho. Na régua de PD, não: −13,24 pp e +16,62 pp. Na de log odds, sim: −0,6931 e +0,6931. Ligue Comparar os dois passos: o passo ÷ 2 espelhado mostra em vinho a sobra de 3,38 pp em PD e coincide com o passo × 2 em log odds. Depois clique em 80% (a sobra vira falta, 4,44 pp) e em 50%, o único caso em que os passos também empatam em PD.",
+    "leitura": "Faixa com a identidade ln(2 × odds) = ln(odds) + ln(2); à esquerda, a régua de PD, fixa de 0% a 100%, e a de log odds, sem limites nas pontas, com os três cenários nas mesmas cores (verde para odds ÷ 2, azul para a partida, roxo para odds × 2); à direita, o painel com a tabela de odds, PD e log odds; na base, Passos, Cuidado e Próximo passo.",
     "pergunta": "Log odds igual a zero corresponde a qual PD?",
     "resposta": "50%. Odds de 1, logaritmo de 1 é zero. É o único ponto em que as três escalas coincidem em significado.",
     "erros": [
@@ -4123,7 +4123,7 @@
       "intervencao": "Mostre que ln(2) é 0,6931 e não 0,3010. Todo o curso usa base natural."
      }
     ],
-    "interacao": "Controle de PD com os dois movimentos recalculados nas três escalas.",
+    "interacao": "Controle deslizante de 1% a 99%, campo que aceita qualquer PD entre 0% e 100% (fora de 1% a 99%, com aviso) e atalhos 10%, 33%, 50% e 80%; botões Comparar os dois passos e Restaurar exemplo. Tudo é recalculado no navegador a partir das odds iniciais, nunca em sequência.",
     "verificacao": "O aluno prevê que a variação em log odds será igual nos dois sentidos antes de ver as réguas.",
     "transicao": "As três escalas na mesma régua.",
     "aula": "Próxima em sala: c4p7. Diga: o log odds resolve os dois limites; falta o caminho de volta, de um escore sem teto até uma PD entre 0 e 1. Fica para o estudo: c4p6, as três escalas na mesma régua."
@@ -4773,8 +4773,8 @@
    "guia": {
     "funcao": "Reconectar explicitamente a perda do capítulo 2 ao modelo do capítulo 4, e mostrar onde a perda se concentra.",
     "pre": "Função de perda, do capítulo 2; escore como soma.",
-    "conducao": "Peça que a turma encontre no gráfico as três barras rotuladas, #2 (1,32), #10 (1,19) e #15 (1,34), e pergunte o que elas têm em comum antes de abrir cada uma.",
-    "leitura": "As duas fórmulas no alto; o gráfico de barras das 16 perdas, com as três maiores rotuladas e a média tracejada, 0,43282; o painel Por que esta proposta gera perda?, com os atalhos #2, #10 e #15.",
+    "conducao": "Mostre as duas curvas e a faixa acima de ln 2 antes de escolher proposta: quem está na faixa recebeu do modelo menos de 50% para o que ocorreu. Leia a #2 (default com PD de 26,65%, perda 1,3223) e a #15 (sem default com PD de 73,91%, perda 1,3435): lados opostos, praticamente a mesma perda. Depois ligue Subir o intercepto em 0,5: a #2 cai para 0,9818, a #15 sobe para 1,7352 e a média vai de 0,43282 para 0,45089.",
+    "leitura": "As duas fórmulas no alto, nas cores das curvas; o gráfico com −ln(PD) para quem teve default e −ln(1 − PD) para quem não teve, as 16 propostas sobre elas, a faixa acima de ln 2 ≈ 0,69 e a média tracejada, 0,43282; o painel Escolha a proposta, com os atalhos #2, #10 e #15; na base, Estimação, Quem pesa e Cuidado.",
     "pergunta": "Existe trio de coeficientes que zere esta perda?",
     "resposta": "Não, com estas duas variáveis. As três perdas caras são #15, #2 e #10, juntas 56% da perda total. Zerar exigiria separar a #15 da #2 e da #10 com uma reta, e a #15 pontua acima das duas.",
     "erros": [
@@ -4784,7 +4784,7 @@
       "intervencao": "Pergunte com qual critério se removeria, e o que sobra da estimativa depois de remover tudo que não se encaixa."
      }
     ],
-    "interacao": "Qualquer barra pode ser selecionada por clique ou teclado, com atalhos #2, #10 e #15 e Restaurar seleção; o painel recalcula PD, probabilidade do desfecho e perda, sem alterar barras nem média.",
+    "interacao": "Qualquer ponto pode ser escolhido por clique ou teclado, pelo controle deslizante de #1 a #16 ou pelos atalhos #2, #10 e #15; o painel recalcula PD, probabilidade do que ocorreu e perda, sem alterar curvas nem média. Subir o intercepto em 0,5 simula outro intercepto: os 16 pontos andam sobre as curvas e a média sobe; Restaurar exemplo volta ao estado inicial.",
     "verificacao": "O aluno identifica que a perda se concentra em poucas observações.",
     "transicao": "O gradiente, agora com três componentes."
    },

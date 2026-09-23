@@ -208,6 +208,20 @@ Verificado em 23/09/2026: typecheck; lint (0 erros; 5 avisos anteriores); `lint:
 
 **Não verificado.** O editor salvando em produção depende de login de professor, que não uso; a verificação possível sem credencial é a sonda sem sessão, feita depois do deploy.
 
+### Décima sexta rodada (23/09/2026): c4p5 e c4p15 redesenhados na gramática do c4p2
+
+**Diagnóstico.** Depois da décima quinta rodada, o c4p5 continuava no visual anterior ao sistema `.rl` (título serifado, três colunas, abas Réguas e Ver a função, pergunta com revelação), e no palco a moldura da página aparecia em volta dele. O c4p15 já estava no quadro 16:9, mas com gráfico de barras, sem faixa marcada, sem controle contínuo e com a base num formato diferente do c4p2.
+
+**c4p5.** Quadro 16:9 no sistema `.rl`, com a página inteira substituída (`"pagina"`) e o quadro como tela do palco (`PALCO_PROPRIO`), como o c4p2. Faixa com a identidade ln(2 × odds) = ln(odds) + ln(2); à esquerda, a régua de PD (paredes em 0% e 100%) e a de log odds (setas nas pontas), cada uma com os dois passos e o veredito no alto; à direita, o painel com atalhos, controle, campo, tabela de odds, PD e log odds e a leitura; na base, Passos, Cuidado e Próximo passo. "Comparar os dois passos" espelha o passo ÷ 2 e pinta a diferença em vinho: 3,38 pp a mais em 33%, 4,44 pp a menos em 80%, nada em log odds. Saíram as três colunas, a aba da função e a revelação; a pergunta sobre a partida em 50% ficou no roteiro. As réguas mantêm uma geometria própria para o celular.
+
+**c4p15.** O gráfico de barras deu lugar às duas curvas de perda, −ln(PD) em vinho para quem teve default e −ln(1 − PD) em verde para quem não teve, com as 16 propostas sobre elas; a faixa acima de ln 2 ≈ 0,69 marca onde o modelo deu mais de 50% ao outro desfecho (#2, #5, #10 e #15). Painel com atalhos #2, #10 e #15, controle de #1 a #16 e a conta da perda. "Subir o intercepto em 0,5" desloca os 16 pontos sobre as curvas: a #2 cai de 1,3223 para 0,9818, a #15 sobe de 1,3435 para 1,7352 e a média vai de 0,43282 para 0,45089, porque os coeficientes da aula já dão a menor média (gradiente da ordem de 10⁻⁶). Base em três cartões, como no c4p2.
+
+**Defeitos achados e corrigidos na própria rodada.** Rótulo da proposta escolhida fora do gráfico (#12) ou sobre vizinhos (#3): o rótulo agora procura a posição livre mais próxima, com linha-guia quando fica afastado, e um teste percorre as 16 escolhas. Contorno de foco retangular nos pontos, vindo de regra sem camada do conteúdo legado: anel no próprio círculo. Painel do c4p5 cortado em até 31 px com mensagem do campo e comparação ligadas: a caixa da comparação ocupa o lugar da leitura e as mensagens do campo cabem numa linha. Aviso do campo que continuava depois de Restaurar. Painel do c4p15 cortado em 1 a 2 px com a #15 e a simulação ligadas: espaçamentos menores.
+
+Verificado em 23/09/2026: typecheck; lint (0 erros; os mesmos 5 avisos); `lint:tracos` (0); `npm test` (311, oito novos); `npx playwright test` (24 de 24, blocos c4p5 e c4p15 reescritos); auditoria de palco com c4p2, c4p5 e c4p15 em 9,4 nas resoluções 1920x1080, 1400x900, 1366x768 e 1024x768 (177 e 167 palavras); varredura das 61 páginas em Aulas e Apresentação nas quatro larguras, com estados clicados, 61 de 61 nas oito combinações; estados fora da varredura (campo do c4p5 com 0,3; 0,5; 12,5; 99,8; 99,99; 0,01; texto; 0 e 100, com e sem comparação; c4p15 com as 16 propostas e a simulação ligada) sem corte em seis combinações de rota e largura; importação local (origem atualizada em c4p5 e c4p15); guias do capítulo 4 regerados (aluno com 33 páginas, antes 34; professor com 43) e pacote do professor remontado.
+
+**Não verificado.** No celular, o gráfico do c4p15 encolhe com a tela, como o do c4p2, e os rótulos ficam pequenos; o painel ao lado tem os mesmos números.
+
 ## Pendências técnicas ordenadas
 
 0. Guia do professor dos capítulos 4, 5 e 6: enviar o pacote `guias-2026-09` a `bases/vguias-2026-09/` no bucket e registrar em Bases e gabaritos (instruções em `scripts/apostila/README.md`).
@@ -215,6 +229,7 @@ Verificado em 23/09/2026: typecheck; lint (0 erros; 5 avisos anteriores); `lint:
 0. Celular (390 px): 13 páginas dos capítulos 4 a 6 mostram tabela com rolagem lateral, padrão anterior a esta rodada; em 1.024 px ou mais, nenhuma.
 0. Tempo da Aula 2: essenciais somam 171 min para 165 úteis; decisão do professor, recomendação em `docs/NARRATIVA_AULA_2.md`, seção 6.
 0. Repositório público: gabaritos estão nos fontes do material e o guia do professor do baralho, de uma rodada anterior, continua no histórico do git. Recomendação: tornar o repositório privado.
+0. c4p3, c4p4 e c4p6 continuam no visual anterior ao sistema `.rl` (colunas, abas e réguas no estilo antigo), enquanto c4p2, c4p5 e c4p15 já seguem a mesma gramática: candidatos ao mesmo redesenho.
 0. Guias dos capítulos 1 a 3 e 7 a 11: as sínteses da revisão 13 provavelmente trazem o mesmo descompasso entre guia e tela corrigido aqui nos capítulos 4 a 6; não auditadas.
 0. Aula 2: R1 a R4 e R7 de `docs/PLANO_MELHORIAS.md` (aviso de turma sem encontros, perguntas para slides sem página ligada, verificação em Firefox, Safari e projetor, validação com usuários, traços nas cascas, estados combinados que cabem reduzidos).
 
