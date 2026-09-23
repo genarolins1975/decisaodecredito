@@ -178,7 +178,7 @@ Depois do capítulo 5, o professor pediu a mesma revisão no capítulo 6: layout
 
 **Defeito evitado antes da entrega.** O contêiner novo da c6p20 recebeu o nome `vz-tm-grade`, que já era a classe das linhas de grade do gráfico, com traço de 1 px; o traço vazou para todo o texto do SVG e deixou os rótulos claros. Achado pela inspeção do estilo computado e corrigido com outro nome, antes do commit.
 
-Verificado em 23/09/2026: typecheck; lint (0 erros; 5 avisos anteriores); `lint:tracos` (0); `npm test` (298, sete novos: cada peça nova, renderizada no servidor, exibe os números conferidos); varredura das 61 páginas em Aulas nas quatro larguras, com estados, sem defeito; capítulo 5 reauditado sem regressão (9,96, 22 telas); modo estudo das oito páginas redesenhadas em 1366 e 390 px sem rolagem lateral; guias do capítulo 6 regerados (aluno com 28 páginas, professor com 38). Varredura em Apresentação e e2e: em andamento no momento deste registro.
+Verificado em 23/09/2026: typecheck; lint (0 erros; 5 avisos anteriores); `lint:tracos` (0); `npm test` (298, sete novos: cada peça nova, renderizada no servidor, exibe os números conferidos); `npx playwright test` (23 de 23); varredura das 61 páginas em Aulas e em Apresentação nas quatro larguras (1920x1080, 1366x768, 1024x768, 390x844), com estados, sem defeito; capítulo 5 reauditado sem regressão (9,96, 22 telas); modo estudo das oito páginas redesenhadas em 1366 e 390 px sem rolagem lateral; guias do capítulo 6 regerados (aluno com 28 páginas, professor com 38).
 
 **Não verificado.** Pacote do professor não enviado ao armazenamento (sem credencial `S3_*` neste ambiente); produção não inspecionada depois desta rodada; nenhum teste com alunos ou em projetor real.
 
