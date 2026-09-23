@@ -201,7 +201,7 @@ Verificado em 23/09/2026: typecheck; lint (0 erros; 5 avisos anteriores); `lint:
 ## Pendências técnicas ordenadas
 
 0. Guia do professor dos capítulos 4, 5 e 6: enviar o pacote `guias-2026-09` a `bases/vguias-2026-09/` no bucket e registrar em Bases e gabaritos (instruções em `scripts/apostila/README.md`).
-0. Palco do capítulo 4: reauditado em 23/09/2026 a 1400x900, média 9,48, com duas páginas abaixo de 9 que esta rodada não tocou: c4p5 (8,7; 184 palavras, rótulo "PD de partida, campo em %" a 1,69% da altura) e c4p15 (8,7; 196 palavras, leitura a 1,56%). Mesma correção do c4p2: frases mais curtas e corpo mínimo nos rótulos.
+0. Palco do capítulo 4: reauditado em 23/09/2026, média 9,48 em 1400x900 e 9,44 em 1920x1080, com duas páginas abaixo de 9 que esta rodada não tocou: c4p5 (8,7 em 1400x900 e 9,1 em 1920x1080; 184 palavras, rótulo "PD de partida, campo em %" a 1,69% da altura) e c4p15 (8,7 nas duas; 196 palavras, leitura a 1,56%). Mesma correção do c4p2: frases mais curtas e corpo mínimo nos rótulos.
 0. Questão c5p13q, explicação da alternativa c: diz que intervalos que não se tocam não demonstram diferença. Com intervalos de 95%, a não sobreposição é critério conservador de diferença (aqui, Fisher dá p = 0,0022 para 0 em 6 contra 6 em 6). Revisar a redação com o professor.
 0. Celular (390 px): 13 páginas dos capítulos 4 a 6 mostram tabela com rolagem lateral, padrão anterior a esta rodada; em 1.024 px ou mais, nenhuma.
 0. Tempo da Aula 2: essenciais somam 171 min para 165 úteis; decisão do professor, recomendação em `docs/NARRATIVA_AULA_2.md`, seção 6.
