@@ -184,9 +184,24 @@ Verificado em 23/09/2026: typecheck; lint (0 erros; 5 avisos anteriores); `lint:
 
 **Não verificado.** Pacote do professor não enviado ao armazenamento (sem credencial `S3_*` neste ambiente); nenhum teste com alunos ou em projetor real.
 
+### Décima quarta rodada (23/09/2026): c4p2, a reta que sai pelas duas pontas
+
+Pedido do professor, com captura do palco: a cor não deixava evidente o trecho fora de 0% a 100%, e o exemplo não permitia passar de 100%.
+
+**Causa.** Dois defeitos. O trecho vinho era desenhado antes da reta azul, com 7 contra 5 unidades de traço, e ficava coberto por ela: sobrava uma borda de uma unidade de cada lado. E o domínio parava em 100% de utilização, onde a reta prevê 97,50%; ela só passa de 100% a partir de 102,24%. O material original ia a 115%, com faixas rosas nas duas zonas inválidas; a peça nativa tinha perdido as duas coisas.
+
+**O que mudou.** Domínio de 0% a 120%, com o trecho acima de 100% marcado no eixo como saldo acima do limite. As duas zonas fora de 0% a 100% são sombreadas e rotuladas, a faixa válida fica branca, os trechos vinho são desenhados por cima da reta azul e os cruzamentos ficam marcados em 12,8% e 102,2%. Atalhos 5%, 60% e 110%: 5% e 110% ficam os dois 8,68 pp fora do intervalo, um de cada lado, porque a reta é simétrica em torno de 57,5%, onde prevê 50%. O cartão Limites passa a dizer os dois cruzamentos; as frases do painel ficaram mais curtas e a fórmula do truncamento foi para a legenda. Roteiro do professor (leitura e interação) e explicações do guia do capítulo 4 reescritos: diziam que neste exemplo a reta não passava de 100%.
+
+**Palco.** A primeira versão desta rodada ficou em 8,7 na auditoria (185 palavras, rótulos do painel a 1,56% da altura do slide) e foi corrigida pela causa, com frases mais curtas e corpo mínimo de 1,3cqw nos rótulos: 9,4 em 1400x900 e em 1920x1080, com 168 palavras e menor fonte a 1,76%. A nota da página antes da rodada não foi medida.
+
+Verificado em 23/09/2026: typecheck; lint (0 erros; 5 avisos anteriores); `lint:tracos` (0); `npm test` (300, dois novos: as duas zonas rotuladas com os trechos vinho desenhados depois da reta azul, e os atalhos); `npx playwright test` (23 de 23, com o teste de aceitação atualizado para o texto novo e para a ponta de cima); varredura do c4p2 nas duas rotas e quatro larguras, com os estados clicados, sem defeito (a das 61 páginas no build final vem no commit seguinte); guias do capítulo 4 regerados (aluno com 34 páginas e professor com 43, as mesmas de antes), o do aluno copiado para `content/materiais`; pacote `guias-2026-09` remontado com o capítulo 4 novo.
+
+**Não verificado.** Produção (esta rodada não foi publicada); pacote do professor não enviado ao armazenamento (sem credencial `S3_*` neste ambiente); nenhum teste com alunos ou em projetor real.
+
 ## Pendências técnicas ordenadas
 
 0. Guia do professor dos capítulos 4, 5 e 6: enviar o pacote `guias-2026-09` a `bases/vguias-2026-09/` no bucket e registrar em Bases e gabaritos (instruções em `scripts/apostila/README.md`).
+0. Palco do capítulo 4: reauditado em 23/09/2026 a 1400x900, média 9,48, com duas páginas abaixo de 9 que esta rodada não tocou: c4p5 (8,7; 184 palavras, rótulo "PD de partida, campo em %" a 1,69% da altura) e c4p15 (8,7; 196 palavras, leitura a 1,56%). Mesma correção do c4p2: frases mais curtas e corpo mínimo nos rótulos.
 0. Questão c5p13q, explicação da alternativa c: diz que intervalos que não se tocam não demonstram diferença. Com intervalos de 95%, a não sobreposição é critério conservador de diferença (aqui, Fisher dá p = 0,0022 para 0 em 6 contra 6 em 6). Revisar a redação com o professor.
 0. Celular (390 px): 13 páginas dos capítulos 4 a 6 mostram tabela com rolagem lateral, padrão anterior a esta rodada; em 1.024 px ou mais, nenhuma.
 0. Tempo da Aula 2: essenciais somam 171 min para 165 úteis; decisão do professor, recomendação em `docs/NARRATIVA_AULA_2.md`, seção 6.

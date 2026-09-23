@@ -556,19 +556,23 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(ll).toContainText("Proposta #12"); await expect(ll).toContainText("≈ 0,0041");
   await ll.getByRole("button", { name: "Restaurar seleção" }).click();
   await expect(ll).toContainText("Proposta #2"); await expect(ll).toContainText("−ln(0,2665) ≈ 1,3223");
-  // c4p2: a reta ajustada na probabilidade sai do intervalo válido; o truncamento cria trecho plano
+  // c4p2: a reta ajustada na probabilidade sai do intervalo válido pelas duas pontas; o truncamento cria trechos planos
   await page.goto("/aulas/c4p2");
   const rp = page.locator('figure[data-vz="reta-na-probabilidade"]');
   await expect(rp).toContainText("Uma reta não garante probabilidades válidas");
   await expect(rp).toContainText("p(u) = −0,1426 + 0,011176 × u");
-  await expect(rp).toContainText("−8,68%"); await expect(rp).toContainText("não pode ser interpretado como probabilidade");
-  await expect(rp).toContainText("a reta cruza 0% em 12,8% de utilização");
+  await expect(rp).toContainText("−8,68%"); await expect(rp).toContainText("Abaixo de 0%: não é probabilidade.");
+  await expect(rp).toContainText("Acima de 100%: não é probabilidade"); // as duas zonas, rotuladas no gráfico
+  await expect(rp).toContainText("u = 12,8%"); await expect(rp).toContainText("u = 102,2%");
+  await expect(rp).toContainText("Abaixo de 12,8% de utilização a previsão é negativa; acima de 102,2%, passa de 100%.");
   await expect(rp).not.toContainText("0,00%"); // o truncamento começa desligado
   await expect(page.locator("main")).not.toContainText("DOIS DEFEITOS");
   await rp.getByLabel("Utilização, campo em %").fill("50");
-  await expect(rp).toContainText("41,62%"); await expect(rp).toContainText("a previsão está entre 0% e 100%");
-  await rp.getByLabel("Utilização, campo em %").fill("100");
-  await expect(rp).toContainText("97,50%"); // no domínio do exemplo a reta não ultrapassa 100%
+  await expect(rp).toContainText("41,62%"); await expect(rp).toContainText("Entre 0% e 100%: leitura válida.");
+  await rp.getByRole("button", { name: "110%", exact: true }).click(); // saldo acima do limite
+  await expect(rp).toContainText("108,68%"); await expect(rp).toContainText("Acima de 100%: não é probabilidade.");
+  await rp.getByLabel("Utilização, campo em %").fill("115");
+  await expect(rp).toContainText("114,26%");
   await expect(rp.getByRole("button", { name: /Comparar \+10 pp/ })).toBeDisabled(); // +10 pp sairia do domínio
   await expect(rp).toContainText("sai do domínio do exemplo");
   await rp.getByRole("button", { name: "Restaurar exemplo" }).click();

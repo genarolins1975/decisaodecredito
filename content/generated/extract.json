@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "512ede32f7c4c997e3b3b0fbb5ef08c554fd215d84e6476b8b3406e60c7e5c09",
- "extractedAt": "2026-09-23T05:51:38.102Z",
+ "sourceSha256": "932b1e174123c1a33b10471f9a63d194356cb974fe19e46c635190d674c51188",
+ "extractedAt": "2026-09-23T12:09:37.520Z",
  "meta": {
   "capitulos": [
    {
@@ -3952,7 +3952,7 @@
     "funcao": "Estabelecer a necessidade da logística por defeito da alternativa, e não por autoridade.",
     "pre": "Família de funções, do capítulo 2.",
     "conducao": "Projete só o gráfico e pergunte qual é o problema. A turma aponta o valor negativo. Insista: há um segundo defeito que o gráfico não mostra. Espere.",
-    "leitura": "Siga a reta até o trecho vermelho abaixo de 0%, entre 0% e 12,8% de utilização, e depois leia o cartão Forma do efeito, abaixo do gráfico.",
+    "leitura": "As duas faixas vermelhas são a região em que a previsão não é probabilidade. Siga a reta: ela está na faixa de baixo até 12,8% de utilização e na de cima a partir de 102,2%. Depois leia o cartão Limites, abaixo do gráfico.",
     "pergunta": "Qual dos dois defeitos você levaria ao comitê?",
     "resposta": "O segundo. O primeiro é visível e qualquer um corrige com um truncamento. O segundo muda a precificação de toda a carteira e ninguém percebe.",
     "erros": [
@@ -3962,7 +3962,7 @@
       "intervencao": "Pergunte o que acontece com o efeito da variável dentro da região truncada. Ele some."
      }
     ],
-    "interacao": "Controle deslizante e campo de utilização; botões Limitar a previsão de 0% a 100%, Comparar +10 pp de utilização e Restaurar exemplo. A reta é recalculada no navegador pelos mesmos mínimos quadrados do gerador.",
+    "interacao": "Controle deslizante e campo de utilização de 0% a 120% (acima de 100%, saldo maior que o limite), atalhos 5%, 60% e 110%; botões Limitar a previsão de 0% a 100%, Comparar +10 pp de utilização e Restaurar exemplo. A reta é recalculada no navegador pelos mesmos mínimos quadrados do gerador.",
     "verificacao": "O aluno enuncia o defeito da constância em pontos percentuais sem olhar a tela.",
     "transicao": "Primeira escala: a probabilidade."
    },
