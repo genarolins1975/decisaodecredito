@@ -3,6 +3,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { cartoes, celulas, chanceDeErro, contraexemplo, entropiaP, fmtNum, giniP, leitura, simetrico, taxaErroP } from "@/lib/visuais/impureza";
 import { GEOMETRIA, ImpurezaCurva, rotulosDoGrafico } from "@/components/visuais/impureza-curva";
+import { Impureza } from "@/components/visuais/impureza";
 
 describe("c5p4: Gini e entropia em função da proporção", () => {
   it("zeram nas pontas, chegam ao máximo em 50% e são simétricas em torno dele", () => {
@@ -95,5 +96,11 @@ describe("c5p4: Gini e entropia em função da proporção", () => {
     expect(html).not.toContain("vz-formula"); // a fórmula em fonte monoespaçada saiu
     expect(html).toContain("im-curva--e"); expect(html).toContain("taxa de erro do nó"); expect(html).toContain("Taxa de erro do nó");
     expect(html).toContain(">0,5000<"); expect(html).toContain(">1,0000<"); // em 50%, cada valor ao lado do nome da curva
+  });
+
+  it("c5p5 segue com o Gini da raiz, agora sem a curva, que passou ao c5p4", () => {
+    const html = renderToStaticMarkup(createElement(Impureza));
+    expect(html).toContain('data-vz="impureza-raiz"'); expect(html).toContain("0,50000");
+    expect(html).not.toContain('data-vz="impureza-curva"');
   });
 });
