@@ -12,11 +12,11 @@
 | 4. Trabalhos, grupos, versões, correção, devolutiva, teste cego | concluída | testes e2e "trabalhos"; fluxo completo verificado por API |
 | 5. Migração integral e revisão técnica, didática e visual | concluída com pendências declaradas | 180 páginas migradas e o fecho da Aula 2 (c6p20), 181 no total; 84 visuais em iframe legado isolado (a portar); docs/03 |
 | 6. Testes de aceitação, segurança, acessibilidade, carga, restauração | concluída no ambiente local | docs/07 |
-| 7. Homologação, publicação e manuais | manuais concluídos; **homologação e produção não implantadas** (sem credenciais) | docs/09 |
+| 7. Homologação, publicação e manuais | manuais concluídos; produção no ar, e cada merge publica código e conteúdo (confirmado em 23/09/2026); homologação separada sem registro | docs/09 |
 
 ## O que impede a conclusão total
 
-- Implantação em homologação e produção exige credenciais (banco, hospedagem, armazenamento, OAuth Google) e autorização do professor: lista exata em docs/09.
+- Produção está no ar e se atualiza a cada merge (docs/09). O que ainda exige credencial ausente deste ambiente é o armazenamento privado: guia do professor e bases do trabalho final sobem pelo bucket e são registrados em Bases e gabaritos.
 - Envio real de e-mail exige a conta Gmail conectada pelo professor.
 - Bases dos casos, pacote do trabalho final e rótulos OOT não foram fornecidos: cadastro pelo painel está pronto.
 
@@ -180,7 +180,9 @@ Depois do capítulo 5, o professor pediu a mesma revisão no capítulo 6: layout
 
 Verificado em 23/09/2026: typecheck; lint (0 erros; 5 avisos anteriores); `lint:tracos` (0); `npm test` (298, sete novos: cada peça nova, renderizada no servidor, exibe os números conferidos); `npx playwright test` (23 de 23); varredura das 61 páginas em Aulas e em Apresentação nas quatro larguras (1920x1080, 1366x768, 1024x768, 390x844), com estados, sem defeito; capítulo 5 reauditado sem regressão (9,96, 22 telas); modo estudo das oito páginas redesenhadas em 1366 e 390 px sem rolagem lateral; guias do capítulo 6 regerados (aluno com 28 páginas, professor com 38).
 
-**Não verificado.** Pacote do professor não enviado ao armazenamento (sem credencial `S3_*` neste ambiente); produção não inspecionada depois desta rodada; nenhum teste com alunos ou em projetor real.
+**Verificado em produção em 23/09/2026.** Merge de e1369b1 às 08:18 UTC; às 08:22 UTC o CSS publicado trazia as classes do capítulo 6 e `/api/health` respondia com 4 migrações, as 4 de `drizzle/`. Depois, a captura enviada pelo professor mostrou c6p4 com o título e o objetivo novos, o que confirma a importação do conteúdo no build.
+
+**Não verificado.** Pacote do professor não enviado ao armazenamento (sem credencial `S3_*` neste ambiente); nenhum teste com alunos ou em projetor real.
 
 ## Pendências técnicas ordenadas
 

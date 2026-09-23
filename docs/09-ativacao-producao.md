@@ -34,6 +34,8 @@ Para que o deploy faça isso sozinho, basta uma destas variáveis no ambiente de
 
 Sem nenhuma das duas, o build apenas compila e o conteúdo do banco fica como está. Fora da Vercel, o equivalente é `DATABASE_URL=<produção> npm run content:import`.
 
+Em 23/09/2026, depois do merge de e1369b1, a captura enviada pelo professor mostrou c6p4 em produção com o título e o objetivo que só existem a partir desse commit ("F₀: o melhor palpite constante"). A importação roda no build, portanto uma das duas variáveis está ligada: cada merge na branch principal publica código e conteúdo. Qual das duas está ligada não foi verificado. A diferença só pesa quando houver migração nova: ela roda sozinha apenas com `BOOTSTRAP_ON_BUILD=1`, e o campo `migracoes` de `/api/health` mostra se foi aplicada.
+
 ## 2. Gmail do professor
 
 O cliente OAuth pede três escopos: `gmail.send` (envio), `openid` e `email` (só para identificar a conta conectada; o perfil do Gmail exige escopos de leitura, que não são pedidos). Publicar o app na tela de permissão OAuth exige nome, e-mail de suporte, página inicial pública (`/entrar`) e política de privacidade pública (`/politica-de-privacidade`). A Gmail API precisa estar ativada no projeto (APIs e serviços → Biblioteca).
