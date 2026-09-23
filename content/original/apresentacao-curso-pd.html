@@ -13743,7 +13743,7 @@ function experienciaV13(){
   c3p1:{titulo:'Dados disponíveis na data da decisão',desafio:'O relógio decide quais campos podem entrar na base.',texto:'Uma variável útil hoje pode ser vazamento se só ficou disponível depois da proposta. O desenho temporal vem antes da modelagem.',etapas:[['Unidade','Cada linha representa uma decisão econômica.'],['Janelas','Observação, maturação e teste têm papéis distintos.'],['Bloqueio','Informação posterior à decisão fica fora do modelo.']]},
   c4p1:{titulo:'Regressão logística',desafio:'Como uma soma de evidências se transforma em probabilidade?',texto:'A logística trabalha em log odds, soma contribuições e volta para uma PD entre zero e um.',etapas:[['Escalas','Probabilidade, odds e log odds dizem a mesma coisa.'],['Coeficientes','Cada peso nasce da minimização da perda.'],['Fronteira','A decisão forma uma reta no plano das variáveis.']]},
   c5p1:{titulo:'Árvores de decisão',desafio:'Uma sequência de perguntas pode criar regiões de risco.',texto:'Cortes sucessivos formam grupos homogêneos; cada folha entrega a sua taxa.',etapas:[['Corte','Cada pergunta compete por redução de impureza.'],['Caminho','Uma proposta percorre regras até uma folha.'],['Freio','Profundidade, folha mínima e poda controlam variância.']]},
-  c6p1:{titulo:'Gradient boosting com árvores',desafio:'Um modelo fraco corrige o erro deixado pelo anterior.',texto:'O boosting começa com um palpite simples e acrescenta pequenas correções. A soma, e não uma árvore isolada, produz a previsão.',etapas:[['Palpite','O primeiro valor ignora todas as variáveis.'],['Resíduo','O erro vira o alvo da próxima árvore.'],['Soma','A taxa de aprendizagem controla cada correção.']]},
+  c6p1:{titulo:'Gradient boosting com árvores',desafio:'Um modelo fraco corrige o erro deixado pelo anterior.',texto:'O boosting começa com um palpite simples e soma pequenas correções: a previsão é a soma, não uma árvore isolada.',etapas:[['Palpite','O primeiro valor ignora todas as variáveis.'],['Resíduo','O erro vira o alvo da próxima árvore.'],['Soma','A taxa de aprendizagem controla cada correção.']]},
   c7p1:{titulo:'Validação, calibração e teste fora do tempo',desafio:'Como comparar modelos sem usar o teste para escolher?',texto:'Ordenação, nível probabilístico e incerteza respondem perguntas diferentes. A escolha precisa ser congelada antes do OOT.',etapas:[['Ordenar','AUC, KS e ganho examinam a fila de risco.'],['Calibrar','Brier, log loss e faixas examinam o nível.'],['Congelar','Modelo e critérios ficam fixos antes do OOT.']]},
   c8p1:{titulo:'Da previsão à decisão econômica',desafio:'Uma PD só vira decisão depois que receita, perda e capacidade entram na conta.',texto:'O capítulo liga risco a valor e mostra por que o melhor corte estatístico pode ser uma política ruim.',etapas:[['Exposição','EAD define quanto está em risco.'],['Severidade','LGD define quanto se perde no default.'],['Política','Custos e capacidade determinam o limiar.']]},
   c9p1:{titulo:'Monitoramento e governança',desafio:'O modelo entrou em produção. Qual sinal exige qual ação?',texto:'Entrada, nível do risco e relação entre variáveis podem mudar separadamente. O diagnóstico define a resposta.',etapas:[['Entrada','Mede-se agora, sem esperar rótulos maduros.'],['Desempenho','Nível e ordenação exigem desfecho observado.'],['Ação','Cada alerta precisa de limite, responsável e consequência.']]},
@@ -14140,6 +14140,53 @@ function capitulo5NoPalcoV16(){
   leitura:'À esquerda, o melhor corte e o ganho de cada variável pelos dois critérios, com a nota sob a tabela; à direita, o que muda a árvore, por ordem de impacto, e quando o critério importa.'});
 }
 
+/* Revisão 17: capítulo 6 no palco. Mesmo critério da revisão 16: título e objetivo numa linha a 1920 px, apoio só
+   quando instrui o uso da página; o roteiro do professor das páginas redesenhadas descreve as peças nativas novas
+   (src/components/visuais). */
+function capitulo6NoPalcoV17(){
+ const muda=(id,o)=>{const p=pagPorId(id);if(p)Object.assign(p,o);};
+ const guia=(id,o)=>{const p=pagPorId(id);if(p)p.guia=Object.assign({},p.guia||{},o);};
+ muda('c6p1',{aprendizado:'Cada árvore aprende o erro que as anteriores deixaram.',apoio:''});
+ muda('c6p2',{aprendizado:'Selecionar, combinar em paralelo ou corrigir em sequência.',apoio:'Avance as etapas: o erro de x = 8 encolhe a cada correção.'});
+ muda('c6p3',{aprendizado:'Prever um número e medir o erro na escala de y.',apoio:'Clique num ponto para ver o erro dele.'});
+ muda('c6p4',{titulo:'F₀: o melhor palpite constante',aprendizado:'Em erro quadrático, o melhor valor único é a média.',apoio:'',conexao:'O que sobra de cada ponto vira o alvo da próxima árvore.'});
+ muda('c6p5',{aprendizado:'O resíduo, observado menos previsto, é o que a próxima árvore aprende.',apoio:'',conexao:'A árvore que ajusta o resíduo é a do capítulo 5, com outro critério.'});
+ muda('c6p6',{aprendizado:'Um toco devolve a correção média de cada lado; somada inteira, passa do ponto.',apoio:'',conexao:'A saída é somar só um pedaço da correção.'});
+ muda('c6p7',{aprendizado:'Cada correção entra multiplicada por η: avanço mais lento e mais estável.',apoio:'Mova η e compare o erro depois das quatro árvores.'});
+ muda('c6p8',{aprendizado:'Cada árvore corrige uma região; a previsão é a soma das correções.',apoio:'Avance uma árvore por vez e leia a tabela antes do próximo passo.'});
+ muda('c6p9',{aprendizado:'A previsão final é o palpite mais quatro parcelas.',apoio:'Clique noutro ponto do gráfico para ver a soma dele.'});
+ muda('c6p10',{aprendizado:'Cada termo da equação é uma parte do mecanismo já visto.',apoio:'',conexao:'Agora, de volta ao crédito.'});
+ muda('c6p11',{aprendizado:'Em classificação, as árvores somam em log odds, a escala do escore da logística.',apoio:''});
+ muda('c6p12',{titulo:'O alvo da próxima árvore é y − p',aprendizado:'Quem já está bem previsto quase não pesa na correção seguinte.',apoio:'Avance as árvores e veja o alvo encolher nas propostas bem previstas.'});
+ muda('c6p13',{aprendizado:'O mesmo procedimento, em classificação: a perda cai a cada árvore.',apoio:'Avance uma árvore por vez e acompanhe a perda.',conexao:'Agora, o que cada árvore somou a cada proposta.'});
+ muda('c6p14',{aprendizado:'A PD final se decompõe em parcelas rastreáveis, árvore por árvore.',apoio:'Clique numa proposta e leia a decomposição do escore.'});
+ muda('c6p15',{titulo:'Os quatro hiperparâmetros',aprendizado:'η, árvores, profundidade e mínimo por folha controlam a complexidade juntos.',apoio:'Mova os quatro controles e acompanhe a perda e a menor folha.'});
+ muda('c6p16',{titulo:'η e M são acoplados',aprendizado:'Reduzir η pela metade pede o dobro de árvores para o mesmo ajuste.',apoio:''});
+ muda('c6p17',{titulo:'Fora da amostra: onde o boosting é decidido',aprendizado:'Mais complexidade sempre melhora o treino; fora do tempo, a partir de um ponto, piora.',apoio:'Escolha pelo treino e pela validação e compare a AUC fora do tempo.'});
+ muda('c6p18',{aprendizado:'Para cada fragilidade, um sinal e um controle verificável.',apoio:'Clique numa fragilidade e veja o sinal e a resposta.'});
+ muda('c6p19',{aprendizado:'Palpite, correções em log odds e complexidade escolhida fora do treino.',apoio:'Explique cada ideia com suas palavras antes de revelar.',conexao:'O fecho da aula: as três PDs das 16 propostas, lado a lado.'});
+ muda('c6p20',{aprendizado:'Os três concordam onde o caso é claro e divergem na fronteira; o treino não decide.',apoio:'Clique nas linhas em que os três mais se afastam antes de responder.'});
+ /* guia do professor das páginas redesenhadas: a leitura descreve a peça nova, na página de estudo */
+ guia('c6p1',{conducao:'Percorra as três etapas em ordem e leia a legenda de cada uma. Antes da segunda, pergunte quanto falta em x = 8 depois do palpite: 5,5. Feche com o desafio: um modelo fraco corrige o erro deixado pelo anterior.',
+  leitura:'À esquerda, o desafio e as três etapas, Palpite, Resíduo e Soma; à direita, os oito pontos de regressão, que acendem o que cada etapa diz: o palpite 6,5, os resíduos e a previsão depois de quatro árvores. A legenda sob o gráfico muda com a etapa. O infográfico e o mapa das páginas estão na página do capítulo.',
+  interacao:'Três botões de etapa, 1. Palpite, 2. Resíduo e 3. Soma: cada um acende uma parte do gráfico e troca a legenda. As quatro árvores são refeitas no navegador.'});
+ guia('c6p4',{funcao:'Construir F₀ pelo mesmo princípio dos capítulos 2 e 5: o melhor constante é o que minimiza o critério.',
+  conducao:'Cubra a tabela e a curva e peça um palpite constante para os oito pontos. Alguém dirá a média. Pergunte por quê, e ligue à PD constante do capítulo 2 e ao valor da folha do capítulo 5.',
+  leitura:'À esquerda, cinco valores constantes com o erro quadrático médio de cada um; à direita, a curva inteira, uma parábola com o mínimo em 6,50. Embaixo, três consequências, uma por linha.',
+  interacao:'Página expositiva: tabela e curva calculadas no navegador.'});
+ guia('c6p5',{conducao:'Aponte o ponto x = 8 e faça a conta em voz alta: 12,00 menos 6,50, +5,50. Depois leia as cores: os quatro primeiros resíduos são negativos e os quatro últimos positivos, e é esse padrão que a próxima árvore vai aprender.',
+  leitura:'À esquerda, os oito pontos, o palpite 6,5 e o resíduo de cada ponto, rotulado; à direita, a conta de x = 8 e o que o sinal quer dizer. Embaixo, a nota de que resíduo não é erro final.',
+  interacao:'Página expositiva: resíduos calculados no navegador.'});
+ guia('c6p6',{conducao:'Leia a regra do toco: x ≤ 4,5, com −2,875 à esquerda e +2,875 à direita. Pergunte o que acontece se a correção entrar inteira. O erro médio cai de 10,19 para 1,92, mas cinco dos oito resíduos trocam de sinal: aponte os anéis e o caso x = 5.',
+  leitura:'À esquerda, as duas regiões do corte com a correção de cada uma, o palpite antigo apagado, a previsão nova em degraus e os anéis nos cinco pontos cujo resíduo trocou de sinal; à direita, a regra, o erro antes e depois e a contagem das trocas.',
+  interacao:'Página expositiva: o toco é ajustado aos resíduos no navegador.'});
+ guia('c6p11',{conducao:'Cubra o painel verde e deixe a turma concluir, no vermelho, que a soma em probabilidade passa de 1. Só depois descubra o verde: a mesma ideia em log odds termina numa PD de 90,47%.',
+  leitura:'Dois painéis lado a lado: a soma em probabilidade, que chega a 1,05, e a soma em log odds, que dá escore 2,25 e PD de 90,47%. Embaixo, a fórmula numa linha e duas notas.'});
+ guia('c6p16',{leitura:'À esquerda, a tabela das nove taxas, com árvores até a perda 0,50, o produto η × árvores e a perda com 60 árvores; à direita, a curva das árvores necessárias, com a referência 1,5 ÷ η tracejada. Embaixo, três notas.'});
+ guia('c6p17',{erros:[{alt:'Reportar AUC de treino',confusao:'Confunde memorização com capacidade.',intervencao:'Clique em Escolher pelo treino: a melhor AUC de treino da grade é a pior fora do tempo.'},{alt:'Escolher pela AUC fora do tempo',confusao:'Queima a amostra de teste na escolha.',intervencao:'A escolha é na validação. Fora do tempo se usa uma vez, para reportar.'}]});
+ guia('c6p20',{leitura:'Uma linha por proposta, na ordem da utilização, de 20% na #1 a 95% na #16. Três marcas por linha, uma por modelo, a distância entre a menor e a maior desenhada, e o desfecho à direita. Linhas tingidas: um modelo abaixo de 50% e outro acima. Ao lado, a perda de treino das três famílias, a pergunta da Aula 3 e a entrega.'});
+}
+
 function inicia(){
   narrativaVisualV6();
   trabalhoFinalV10();
@@ -14147,6 +14194,7 @@ function inicia(){
   narrativaAula2V14();
   guiaDaTelaV15();
   capitulo5NoPalcoV16();
+  capitulo6NoPalcoV17();
   const q=new URLSearchParams(location.hash.split('?')[1]||'');
   if(q.get('m')==='aluno')MODO='aluno';
   if(q.get('m')==='projecao')MODO='apresentacao';

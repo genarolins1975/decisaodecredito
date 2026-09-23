@@ -1,7 +1,7 @@
 {
  "source": "content/original/apresentacao-curso-pd.html",
- "sha256": "70ae1ec856cf7994355aa82f72f438a2d791c7cb0c7ba852a95e429c5af9e8ea",
- "extractedAt": "2026-09-23T00:38:42.075Z",
+ "sha256": "512ede32f7c4c997e3b3b0fbb5ef08c554fd215d84e6476b8b3406e60c7e5c09",
+ "extractedAt": "2026-09-23T05:51:38.102Z",
  "edition": "2026",
  "units": [
   {
@@ -1825,7 +1825,7 @@
    "pageId": "a0kz2f96mojc46l65bw1d",
    "chapter": 6,
    "unit": 2,
-   "title": "F₀: o melhor palpite sem usar nenhuma variável",
+   "title": "F₀: o melhor palpite constante",
    "level": "complementar",
    "minutes": 8,
    "origin": "rec",
@@ -1979,7 +1979,7 @@
    "pageId": "rzkmu5o6e2z990wr8or8s",
    "chapter": 6,
    "unit": 2,
-   "title": "O resíduo y − p vira o alvo da próxima árvore",
+   "title": "O alvo da próxima árvore é y − p",
    "level": "complementar",
    "minutes": 10,
    "origin": "rec",
@@ -2038,7 +2038,7 @@
    "pageId": "6jy0dremofqerthpurqx7",
    "chapter": 6,
    "unit": 2,
-   "title": "Os quatro hiperparâmetros e o que cada um controla",
+   "title": "Os quatro hiperparâmetros",
    "level": "complementar",
    "minutes": 10,
    "origin": "rec",
@@ -2057,7 +2057,7 @@
    "pageId": "8dv20wwj3fiyv2nmo7pry",
    "chapter": 6,
    "unit": 2,
-   "title": "η e M são acoplados, e por isso não se escolhem separadamente",
+   "title": "η e M são acoplados",
    "level": "complementar",
    "minutes": 8,
    "origin": "rec",
@@ -2076,7 +2076,7 @@
    "pageId": "aaeyt9k8imoopv5rk6ebx",
    "chapter": 6,
    "unit": 2,
-   "title": "Fora da amostra: onde o boosting realmente é decidido",
+   "title": "Fora da amostra: onde o boosting é decidido",
    "level": "essencial",
    "minutes": 9,
    "origin": "obs",
@@ -3668,7 +3668,26 @@
  },
  "resync": {
   "synced": [
-   "c5p13"
+   "c6p1",
+   "c6p2",
+   "c6p3",
+   "c6p4",
+   "c6p5",
+   "c6p6",
+   "c6p7",
+   "c6p8",
+   "c6p9",
+   "c6p10",
+   "c6p11",
+   "c6p12",
+   "c6p13",
+   "c6p14",
+   "c6p15",
+   "c6p16",
+   "c6p17",
+   "c6p18",
+   "c6p19",
+   "c6p20"
   ],
   "diverged": []
  }

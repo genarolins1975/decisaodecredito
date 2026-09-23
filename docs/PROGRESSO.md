@@ -154,10 +154,37 @@ Verificado em 23/09/2026: typecheck; lint (0 erros; 5 avisos, todos anteriores a
 
 **Não verificado.** Pacote do professor não enviado ao bucket (sem credencial neste ambiente). Produção não inspecionada. Nenhum teste com alunos ou em projetor real.
 
+### Décima terceira rodada (23/09/2026): o capítulo 6 redesenhado para o palco
+
+Depois do capítulo 5, o professor pediu a mesma revisão no capítulo 6: layout de apresentação revisto, menos texto, didático e objetivo.
+
+**Diagnóstico** (capturas do palco a 1920x1080 e auditoria antes da mudança). A abertura c6p1 ocupava três telas: infográfico em duas e o desafio na terceira, como c5p1 antes da rodada anterior. c6p4 repetia o mesmo gráfico de resíduos em duas telas. c6p11, c6p16 e c6p20 empurravam texto para uma segunda tela, e c6p17 para duas. c6p5 e c6p6 eram faixas de texto; o gráfico de fecho da c6p20 ocupava um terço da tela, com rótulos de 12 px quase ilegíveis.
+
+**O que mudou.**
+
+- Seis peças nativas novas, cada uma numa tela: abertura com os oito pontos acendendo palpite, resíduo e soma (c6p1); palpite constante, com a tabela e a parábola do erro no desenho de c5p12 (c6p4); o erro como alvo, com os oito resíduos rotulados (c6p5); a primeira correção, com as duas regiões do toco e anéis nos cinco resíduos que trocam de sinal (c6p6); a soma em log odds, com as duas colunas lado a lado e a fórmula numa linha (c6p11); η e árvores, com a tabela recalculada ao lado da curva e da referência 1,5 ÷ η (c6p16). O plano dos oito pontos é compartilhado (`plano-8.tsx`).
+- c6p17 e c6p20 passam ao modo `conteudo`: a peça de c6p17 já trazia nos cartões o que o texto herdado repetia; a de c6p20 ganhou ao lado do gráfico a perda de treino das três famílias, a pergunta da Aula 3 e a entrega.
+- As demais páginas: o cabeçalho interno dos visuais sai do quadro (a regra do capítulo 5 passa a valer para o 6), gráficos de c6p2, c6p13 e c6p20 maiores, rótulos do fecho em 12,5 px e cor de texto.
+- Cabeçalhos das 20 páginas reescritos na camada `capitulo6NoPalcoV17`; roteiro do professor das oito páginas redesenhadas e explicações dos guias refeitos.
+
+**Resultado** (medido nesta rodada, mesmo instrumento antes e depois).
+
+| Medida | Antes | Depois | Como |
+|---|---|---|---|
+| Telas do capítulo no palco | 29 | 22 | capturas a 1920x1080 |
+| Palavras exibidas no palco, 20 páginas | 3.657 | 2.193 | `scripts/palco/auditoria.mjs`, 1400x900 |
+| Palavras dos cabeçalhos (título, objetivo, apoio e conexão) | 1.020 | 655 | `extract.json` antes e depois |
+| Auditoria do palco, média | 9,75 (1400x900) e 9,71 (1920x1080) | 9,89 nas duas | mesma auditoria; nenhuma página abaixo de 9 |
+
+**Defeito evitado antes da entrega.** O contêiner novo da c6p20 recebeu o nome `vz-tm-grade`, que já era a classe das linhas de grade do gráfico, com traço de 1 px; o traço vazou para todo o texto do SVG e deixou os rótulos claros. Achado pela inspeção do estilo computado e corrigido com outro nome, antes do commit.
+
+Verificado em 23/09/2026: typecheck; lint (0 erros; 5 avisos anteriores); `lint:tracos` (0); `npm test` (298, sete novos: cada peça nova, renderizada no servidor, exibe os números conferidos); `npx playwright test` (23 de 23); varredura das 61 páginas em Aulas e em Apresentação nas quatro larguras (1920x1080, 1366x768, 1024x768, 390x844), com estados, sem defeito; capítulo 5 reauditado sem regressão (9,96, 22 telas); modo estudo das oito páginas redesenhadas em 1366 e 390 px sem rolagem lateral; guias do capítulo 6 regerados (aluno com 28 páginas, professor com 38).
+
+**Não verificado.** Pacote do professor não enviado ao armazenamento (sem credencial `S3_*` neste ambiente); produção não inspecionada depois desta rodada; nenhum teste com alunos ou em projetor real.
+
 ## Pendências técnicas ordenadas
 
 0. Guia do professor dos capítulos 4, 5 e 6: enviar o pacote `guias-2026-09` a `bases/vguias-2026-09/` no bucket e registrar em Bases e gabaritos (instruções em `scripts/apostila/README.md`).
-0. Abertura do capítulo 6 (c6p1): o mesmo desenho de três telas que c5p1 tinha, infográfico, desafio em texto e etapas. O modo `episodio` do registro permite repetir a solução de c5p1.
 0. Questão c5p13q, explicação da alternativa c: diz que intervalos que não se tocam não demonstram diferença. Com intervalos de 95%, a não sobreposição é critério conservador de diferença (aqui, Fisher dá p = 0,0022 para 0 em 6 contra 6 em 6). Revisar a redação com o professor.
 0. Celular (390 px): 13 páginas dos capítulos 4 a 6 mostram tabela com rolagem lateral, padrão anterior a esta rodada; em 1.024 px ou mais, nenhuma.
 0. Tempo da Aula 2: essenciais somam 171 min para 165 úteis; decisão do professor, recomendação em `docs/NARRATIVA_AULA_2.md`, seção 6.
