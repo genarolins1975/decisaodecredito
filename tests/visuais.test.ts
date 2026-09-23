@@ -650,3 +650,49 @@ describe("capítulo 5 no palco: as peças redesenhadas exibem os números confer
     for (const v of ["0,28125", "0,45644", "15 ou 27,5", "0,07143", "0,13793"]) expect(t).toContain(v);
   });
 });
+
+describe("capítulo 6 no palco: as peças redesenhadas exibem os números conferidos (c6p1, c6p4, c6p5, c6p6, c6p11, c6p16, c6p20)", async () => {
+  const { createElement } = await import("react");
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  const texto = (html: string) => html.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&gt;/g, ">").replace(/&lt;/g, "<");
+  const { AberturaBoosting } = await import("@/components/visuais/abertura-boosting");
+  const { PalpiteConstante } = await import("@/components/visuais/palpite-constante");
+  const { ErroComoAlvo } = await import("@/components/visuais/erro-como-alvo");
+  const { PrimeiraCorrecao } = await import("@/components/visuais/primeira-correcao");
+  const { SomaEmLogOdds } = await import("@/components/visuais/soma-em-log-odds");
+  const { EtaEArvores } = await import("@/components/visuais/eta-e-arvores");
+  const { TresModelos } = await import("@/components/visuais/tres-modelos");
+  const render = (c: (props: any) => React.ReactNode, props: Record<string, unknown> = {}) => texto(renderToStaticMarkup(createElement(c, props)));
+  it("c6p1: o desafio vem do conteúdo; palpite 6,5; quatro árvores levam x = 8 a 10,86, resíduo de +5,50 para +1,14", () => {
+    const t = render(AberturaBoosting, { episodio: { type: "episode", number: 6, challenge: "Desafio X", text: "Texto Y", steps: [{ title: "Palpite", detail: "d1" }, { title: "Resíduo", detail: "d2" }, { title: "Soma", detail: "d3" }] } });
+    for (const v of ["Desafio X", "Texto Y", "média dos oito valores, 6,5", "chega a 10,86", "de +5,50 para +1,14"]) expect(t).toContain(v);
+  });
+  it("c6p4: erro quadrático médio 16,43750 · 11,18750 · 10,18750 e mínimo na média, 52,0 ÷ 8 = 6,50", () => {
+    const t = render(PalpiteConstante);
+    for (const v of ["16,43750", "11,18750", "10,18750", "52,0 ÷ 8 = 6,50"]) expect(t).toContain(v);
+  });
+  it("c6p5: resíduos de −4,5 a +5,5; em x = 8, 12,00 − 6,50 = +5,50 e, depois de quatro árvores, sobram 1,14", () => {
+    const t = render(ErroComoAlvo);
+    for (const v of ["−4,5", "−3,5", "−2,0", "−1,5", "+1,5", "+2,0", "+2,5", "+5,5", "12,00 − 6,50 = +5,50", "sobram 1,14"]) expect(t).toContain(v);
+  });
+  it("c6p6: toco em x ≤ 4,5 com −2,875 e +2,875; erro 10,19 → 1,92; 5 de 8 resíduos trocam de sinal, x = 5 de +1,50 para −1,375", () => {
+    const t = render(PrimeiraCorrecao);
+    for (const v of ["x ≤ 4,5?", "−2,875", "+2,875", "10,19 → 1,92", "5 de 8", "+1,50 vira −1,375"]) expect(t).toContain(v);
+  });
+  it("c6p11: probabilidade soma 1,05; log odds soma 2,250 e dá PD 90,47%; F₀ de 10% de prevalência é −2,1972", () => {
+    const t = render(SomaEmLogOdds);
+    for (const v of ["1,05", "2,250", "90,47%", "−2,1972"]) expect(t).toContain(v);
+  });
+  it("c6p16: tabela recalculada, η 0,10 com 14 árvores e 0,28394; η 0,40 com 4, produto 1,60 e 0,13711; η 1 com 0,06800", async () => {
+    const { tabelaEtaArvores } = await import("@/components/visuais/eta-e-arvores");
+    const l = tabelaEtaArvores();
+    expect(l.map((x) => x.arvores)).toEqual([14, 10, 7, 5, 4, 3, 3, 2, 2]);
+    expect(l.find((x) => x.eta === 0.4)!.perda60).toBeCloseTo(0.13711, 5);
+    const t = render(EtaEArvores);
+    for (const v of ["0,28394", "1,60", "0,13711", "0,06800"]) expect(t).toContain(v);
+  });
+  it("c6p20: perda de treino 0,43282 na logística, 0,18844 na árvore, 0,47481 no boosting de 4 árvores e 0,15503 com 50", () => {
+    const t = render(TresModelos, { palco: true });
+    for (const v of ["0,43282", "0,18844", "0,47481", "0,15503"]) expect(t).toContain(v);
+  });
+});

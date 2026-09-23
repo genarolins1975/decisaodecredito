@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "70ae1ec856cf7994355aa82f72f438a2d791c7cb0c7ba852a95e429c5af9e8ea",
- "extractedAt": "2026-09-23T00:38:42.075Z",
+ "sourceSha256": "512ede32f7c4c997e3b3b0fbb5ef08c554fd215d84e6476b8b3406e60c7e5c09",
+ "extractedAt": "2026-09-23T05:51:38.102Z",
  "meta": {
   "capitulos": [
    {
@@ -6564,23 +6564,23 @@
     "disc": 1
    },
    "origem": "esq",
-   "aprendizado": "Explicar boosting como uma cadeia em que cada árvore aprende o erro que sobrou.",
-   "apoio": "Em vez de buscar uma árvore perfeita, o método soma árvores pequenas. Cada nova etapa corrige parcialmente a previsão anterior.",
+   "aprendizado": "Cada árvore aprende o erro que as anteriores deixaram.",
+   "apoio": null,
    "conexao": "A ideia, antes de qualquer fórmula.",
    "guia": {
     "funcao": "Explicar boosting como uma cadeia em que cada árvore aprende o erro que sobrou.",
     "pre": "Capítulos 4 e 5.",
-    "conducao": "Em vez de buscar uma árvore perfeita, o método soma árvores pequenas. Cada nova etapa corrige parcialmente a previsão anterior.",
-    "leitura": "Leia a frase do desafio e percorra as três etapas, Palpite, Resíduo e Soma. O infográfico e o mapa das páginas estão na página do capítulo.",
+    "conducao": "Percorra as três etapas em ordem e leia a legenda de cada uma. Antes da segunda, pergunte quanto falta em x = 8 depois do palpite: 5,5. Feche com o desafio: um modelo fraco corrige o erro deixado pelo anterior.",
+    "leitura": "À esquerda, o desafio e as três etapas, Palpite, Resíduo e Soma; à direita, os oito pontos de regressão, que acendem o que cada etapa diz: o palpite 6,5, os resíduos e a previsão depois de quatro árvores. A legenda sob o gráfico muda com a etapa. O infográfico e o mapa das páginas estão na página do capítulo.",
     "pergunta": "Quem já usou boosting? Quem consegue explicar o que a segunda árvore faz?",
     "resposta": "O uso é comum, a explicação é rara. É exatamente essa lacuna que a aula fecha.",
     "erros": [],
-    "interacao": "Três botões de etapa, 1. Palpite, 2. Resíduo e 3. Soma, cada um com uma frase.",
+    "interacao": "Três botões de etapa, 1. Palpite, 2. Resíduo e 3. Soma: cada um acende uma parte do gráfico e troca a legenda. As quatro árvores são refeitas no navegador.",
     "verificacao": "A turma aceita o desvio por regressão.",
     "transicao": "A ideia em uma frase."
    },
-   "html": "<div class=\"nv nv-episodio\"><div class=\"nv-episodio-num\"><small>capítulo</small><strong>06</strong></div><div class=\"nv-episodio-main\"><div class=\"rot\">O desafio deste capítulo</div><h3>Um modelo fraco corrige o erro deixado pelo anterior.</h3><p>O boosting começa com um palpite simples e acrescenta pequenas correções. A soma, e não uma árvore isolada, produz a previsão.</p><div class=\"nv-episodio-rota\"><button type=\"button\" data-v13-episodio=\"0\" data-detalhe=\"O primeiro valor ignora todas as variáveis.\" class=\"ativo\"><b>1. Palpite</b>comece aqui</button><button type=\"button\" data-v13-episodio=\"1\" data-detalhe=\"O erro vira o alvo da próxima árvore.\" class=\"\"><b>2. Resíduo</b>ver etapa</button><button type=\"button\" data-v13-episodio=\"2\" data-detalhe=\"A taxa de aprendizagem controla cada correção.\" class=\"\"><b>3. Soma</b>ver etapa</button></div><div class=\"nv-episodio-detalhe\" id=\"v13-episodio-detalhe\">O primeiro valor ignora todas as variáveis.</div></div></div>",
-   "text": "CAPÍTULO\n06\nO DESAFIO DESTE CAPÍTULO\nUm modelo fraco corrige o erro deixado pelo anterior.\n\nO boosting começa com um palpite simples e acrescenta pequenas correções. A soma, e não uma árvore isolada, produz a previsão.\n\n1. Palpite\ncomece aqui\n2. Resíduo\nver etapa\n3. Soma\nver etapa\nO primeiro valor ignora todas as variáveis.",
+   "html": "<div class=\"nv nv-episodio\"><div class=\"nv-episodio-num\"><small>capítulo</small><strong>06</strong></div><div class=\"nv-episodio-main\"><div class=\"rot\">O desafio deste capítulo</div><h3>Um modelo fraco corrige o erro deixado pelo anterior.</h3><p>O boosting começa com um palpite simples e soma pequenas correções: a previsão é a soma, não uma árvore isolada.</p><div class=\"nv-episodio-rota\"><button type=\"button\" data-v13-episodio=\"0\" data-detalhe=\"O primeiro valor ignora todas as variáveis.\" class=\"ativo\"><b>1. Palpite</b>comece aqui</button><button type=\"button\" data-v13-episodio=\"1\" data-detalhe=\"O erro vira o alvo da próxima árvore.\" class=\"\"><b>2. Resíduo</b>ver etapa</button><button type=\"button\" data-v13-episodio=\"2\" data-detalhe=\"A taxa de aprendizagem controla cada correção.\" class=\"\"><b>3. Soma</b>ver etapa</button></div><div class=\"nv-episodio-detalhe\" id=\"v13-episodio-detalhe\">O primeiro valor ignora todas as variáveis.</div></div></div>",
+   "text": "CAPÍTULO\n06\nO DESAFIO DESTE CAPÍTULO\nUm modelo fraco corrige o erro deixado pelo anterior.\n\nO boosting começa com um palpite simples e soma pequenas correções: a previsão é a soma, não uma árvore isolada.\n\n1. Palpite\ncomece aqui\n2. Resíduo\nver etapa\n3. Soma\nver etapa\nO primeiro valor ignora todas as variáveis.",
    "controls": [
     {
      "tag": "button",
@@ -6622,8 +6622,8 @@
     "disc": 2
    },
    "origem": "esq",
-   "aprendizado": "Distinguir seleção, combinação paralela e correção sequencial.",
-   "apoio": "Bagging pergunta “como estabilizar vários modelos independentes?”. Boosting pergunta “o que o próximo modelo precisa corrigir?”.",
+   "aprendizado": "Selecionar, combinar em paralelo ou corrigir em sequência.",
+   "apoio": "Avance as etapas: o erro de x = 8 encolhe a cada correção.",
    "conexao": "Vamos ver isso acontecer com oito pontos.",
    "guia": {
     "funcao": "Distinguir seleção, combinação paralela e correção sequencial.",
@@ -6700,8 +6700,8 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Reconhecer regressão como a tarefa de prever um número e medir o erro na própria escala de y.",
-   "apoio": "Clique num ponto: o gráfico destaca a observação e mostra o erro em relação à previsão inicial 6,5.",
+   "aprendizado": "Prever um número e medir o erro na escala de y.",
+   "apoio": "Clique num ponto para ver o erro dele.",
    "conexao": "Antes de qualquer árvore, o palpite mais simples possível.",
    "guia": {
     "funcao": "Instalar o problema de regressão e antecipar exatamente o que mudará na volta para classificação.",
@@ -6735,7 +6735,7 @@
    "id": "c6p4",
    "cap": 6,
    "n": 4,
-   "titulo": "F₀: o melhor palpite sem usar nenhuma variável",
+   "titulo": "F₀: o melhor palpite constante",
    "nivel": "complementar",
    "nivel120": "assincrono",
    "min": 8,
@@ -6746,14 +6746,14 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "O ponto de partida do boosting é o valor constante que minimiza o critério, que em erro quadrático é a média.",
-   "apoio": "É o mesmo raciocínio da página 11 do capítulo 2 e da folha da árvore: o melhor constante é o que minimiza a perda.",
-   "conexao": "Esses segmentos verticais são o alvo da próxima árvore.",
+   "aprendizado": "Em erro quadrático, o melhor valor único é a média.",
+   "apoio": null,
+   "conexao": "O que sobra de cada ponto vira o alvo da próxima árvore.",
    "guia": {
-    "funcao": "Construir F₀ pelo mesmo princípio já visto três vezes, e tornar o resíduo visível como segmento.",
+    "funcao": "Construir F₀ pelo mesmo princípio dos capítulos 2 e 5: o melhor constante é o que minimiza o critério.",
     "pre": "Função de perda; valor da folha.",
-    "conducao": "Peça um palpite constante antes de mostrar a tabela. Alguém dirá a média. Pergunte por quê, e conecte com as três aparições anteriores.",
-    "leitura": "Tabela de candidatos e dispersão com os segmentos de resíduo, depois da caixa A quarta aparição.",
+    "conducao": "Cubra a tabela e a curva e peça um palpite constante para os oito pontos. Alguém dirá a média. Pergunte por quê, e ligue à PD constante do capítulo 2 e ao valor da folha do capítulo 5.",
+    "leitura": "À esquerda, cinco valores constantes com o erro quadrático médio de cada um; à direita, a curva inteira, uma parábola com o mínimo em 6,50. Embaixo, três consequências, uma por linha.",
     "pergunta": "Por que a média e não a mediana?",
     "resposta": "Porque o critério é erro quadrático. Com erro absoluto, o melhor constante seria a mediana. O critério escolhe o estimador, e não o contrário.",
     "erros": [
@@ -6763,7 +6763,7 @@
       "intervencao": "Mostre a tabela: a constante 7,5 parece razoável e tem erro maior."
      }
     ],
-    "interacao": "Página expositiva com a tabela e os resíduos calculados no navegador.",
+    "interacao": "Página expositiva: tabela e curva calculadas no navegador.",
     "verificacao": "O aluno relaciona critério e estimador constante.",
     "transicao": "O resíduo como novo alvo."
    },
@@ -6792,14 +6792,14 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Calcular o resíduo e entender por que ele orienta a próxima árvore.",
-   "apoio": "No exemplo de regressão, cada caso ganha um novo alvo: observado menos previsão atual. A árvore tenta explicar esse sinal.",
-   "conexao": "A árvore que vai ajustar esse resíduo é a mesma do capítulo 5, com outro critério.",
+   "aprendizado": "O resíduo, observado menos previsto, é o que a próxima árvore aprende.",
+   "apoio": null,
+   "conexao": "A árvore que ajusta o resíduo é a do capítulo 5, com outro critério.",
    "guia": {
     "funcao": "Calcular o resíduo e entender por que ele orienta a próxima árvore.",
     "pre": "F₀, o palpite constante da página anterior.",
-    "conducao": "No exemplo de regressão, cada caso ganha um novo alvo: observado menos previsão atual. A árvore tenta explicar esse sinal.",
-    "leitura": "Leia primeiro a figura central; use os detalhes como evidência somente depois que a turma formular uma hipótese.",
+    "conducao": "Aponte o ponto x = 8 e faça a conta em voz alta: 12,00 menos 6,50, +5,50. Depois leia as cores: os quatro primeiros resíduos são negativos e os quatro últimos positivos, e é esse padrão que a próxima árvore vai aprender.",
+    "leitura": "À esquerda, os oito pontos, o palpite 6,5 e o resíduo de cada ponto, rotulado; à direita, a conta de x = 8 e o que o sinal quer dizer. Embaixo, a nota de que resíduo não é erro final.",
     "pergunta": "Se a soma dos resíduos é zero, por que ainda há o que aprender?",
     "resposta": "Porque zero na soma não significa zero em cada ponto. O nível está certo e a forma está errada. É a mesma distinção entre calibração agregada e calibração por faixa do capítulo 7.",
     "erros": [
@@ -6809,7 +6809,7 @@
       "intervencao": "Aponte o gráfico: os primeiros quatro são negativos e os últimos quatro positivos. Isso é padrão, não ruído."
      }
     ],
-    "interacao": "Página expositiva com resíduos calculados no navegador.",
+    "interacao": "Página expositiva: resíduos calculados no navegador.",
     "verificacao": "O aluno percebe a estrutura remanescente no gráfico de resíduo.",
     "transicao": "Uma árvore sobre o resíduo."
    },
@@ -6838,14 +6838,14 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Interpretar uma árvore rasa como uma regra aplicada aos resíduos, e ver o que acontece ao somar a correção inteira.",
-   "apoio": "A árvore não prevê novamente o valor de y. Ela prevê quanto o modelo atual deveria subir ou descer em cada região.",
-   "conexao": "Somar o toco inteiro tem um problema.",
+   "aprendizado": "Um toco devolve a correção média de cada lado; somada inteira, passa do ponto.",
+   "apoio": null,
+   "conexao": "A saída é somar só um pedaço da correção.",
    "guia": {
     "funcao": "Interpretar uma árvore rasa como uma regra aplicada aos resíduos, e ver o que acontece ao somar a correção inteira.",
     "pre": "Árvore de classificação; resíduo.",
-    "conducao": "A árvore não prevê novamente o valor de y. Ela prevê quanto o modelo atual deveria subir ou descer em cada região.",
-    "leitura": "Leia primeiro a figura central; use os detalhes como evidência somente depois que a turma formular uma hipótese.",
+    "conducao": "Leia a regra do toco: x ≤ 4,5, com −2,875 à esquerda e +2,875 à direita. Pergunte o que acontece se a correção entrar inteira. O erro médio cai de 10,19 para 1,92, mas cinco dos oito resíduos trocam de sinal: aponte os anéis e o caso x = 5.",
+    "leitura": "À esquerda, as duas regiões do corte com a correção de cada uma, o palpite antigo apagado, a previsão nova em degraus e os anéis nos cinco pontos cujo resíduo trocou de sinal; à direita, a regra, o erro antes e depois e a contagem das trocas.",
     "pergunta": "Por que o valor da folha é a média e não a mediana dos resíduos?",
     "resposta": "Porque o critério é erro quadrático. É a mesma lógica de F₀ na página anterior.",
     "erros": [
@@ -6855,7 +6855,7 @@
       "intervencao": "Lembre que o modelo fraco é deliberado, e que outras árvores virão."
      }
     ],
-    "interacao": "Página expositiva com a busca calculada no navegador.",
+    "interacao": "Página expositiva: o toco é ajustado aos resíduos no navegador.",
     "verificacao": "O aluno identifica os dois únicos ajustes em relação ao capítulo 5.",
     "transicao": "A taxa de aprendizagem."
    },
@@ -6884,8 +6884,8 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Multiplicar cada correção por um fator menor que 1 torna o avanço mais lento e o resultado menos dependente de cada árvore individual.",
-   "apoio": "Quatro árvores, sempre. Mude apenas quanto de cada uma é somado e compare o erro final.",
+   "aprendizado": "Cada correção entra multiplicada por η: avanço mais lento e mais estável.",
+   "apoio": "Mova η e compare o erro depois das quatro árvores.",
    "conexao": "Agora, o que cada uma das quatro árvores acrescentou.",
    "guia": {
     "funcao": "Introduzir η como decisão de quanto confiar em cada correção, e não como parâmetro técnico.",
@@ -6943,8 +6943,8 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Cada árvore corrige uma região específica, e a previsão final é a soma visível dessas correções.",
-   "apoio": "Avance uma árvore por vez. O gráfico mostra o que sobrava e como ficou; a tabela, o que a árvore propôs para cada ponto.",
+   "aprendizado": "Cada árvore corrige uma região; a previsão é a soma das correções.",
+   "apoio": "Avance uma árvore por vez e leia a tabela antes do próximo passo.",
    "conexao": "As quatro correções, somadas.",
    "guia": {
     "funcao": "Esta é a página central do capítulo. Ela responde à pergunta que quase ninguém sabe responder: o que a segunda árvore faz.",
@@ -7062,8 +7062,8 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Ler a previsão final como soma acumulada de contribuições.",
-   "apoio": "Clique nas etapas. A altura mostra a previsão acumulada do mesmo caso, não a importância isolada de cada árvore.",
+   "aprendizado": "A previsão final é o palpite mais quatro parcelas.",
+   "apoio": "Clique noutro ponto do gráfico para ver a soma dele.",
    "conexao": "Está na hora de escrever a fórmula.",
    "guia": {
     "funcao": "Ler a previsão final como soma acumulada de contribuições.",
@@ -7138,9 +7138,9 @@
     "disc": 2
    },
    "origem": "esq",
-   "aprendizado": "Relacionar cada termo da equação ao mecanismo visual de correção.",
-   "apoio": "A notação apenas comprime a história: previsão anterior + fração da correção sugerida pela nova árvore.",
-   "conexao": "A troca de critério.",
+   "aprendizado": "Cada termo da equação é uma parte do mecanismo já visto.",
+   "apoio": null,
+   "conexao": "Agora, de volta ao crédito.",
    "guia": {
     "funcao": "Relacionar cada termo da equação ao mecanismo visual de correção.",
     "pre": "A soma das quatro correções.",
@@ -7185,14 +7185,14 @@
     "disc": 1
    },
    "origem": "esq",
-   "aprendizado": "Em classificação, as árvores somam na escala de log odds, exatamente onde o escore da regressão logística vive.",
-   "apoio": "Se as árvores somassem probabilidades, a soma poderia sair do intervalo de 0 a 1. Somando em log odds, a logística faz a tradução no final.",
+   "aprendizado": "Em classificação, as árvores somam em log odds, a escala do escore da logística.",
+   "apoio": null,
    "conexao": "Falta definir o que as árvores vão prever.",
    "guia": {
     "funcao": "Justificar a escala de soma antes de qualquer conta, reaproveitando a propriedade de domínio da logística.",
     "pre": "Curva logística, capítulo 4 página 7; a fórmula do boosting.",
-    "conducao": "Mostre primeiro o painel vermelho e deixe a turma concluir que a soma estoura. Só depois mostre o verde.",
-    "leitura": "Dois painéis contrastantes, depois as duas caixas e a fórmula.",
+    "conducao": "Cubra o painel verde e deixe a turma concluir, no vermelho, que a soma em probabilidade passa de 1. Só depois descubra o verde: a mesma ideia em log odds termina numa PD de 90,47%.",
+    "leitura": "Dois painéis lado a lado: a soma em probabilidade, que chega a 1,05, e a soma em log odds, que dá escore 2,25 e PD de 90,47%. Embaixo, a fórmula numa linha e duas notas.",
     "pergunta": "Por que F₀ é zero nesta base?",
     "resposta": "Porque a prevalência é 50%, e o log odds de 0,5 é zero. É coincidência da base didática, não regra.",
     "erros": [
@@ -7220,7 +7220,7 @@
    "id": "c6p12",
    "cap": 6,
    "n": 12,
-   "titulo": "O resíduo y − p vira o alvo da próxima árvore",
+   "titulo": "O alvo da próxima árvore é y − p",
    "nivel": "complementar",
    "nivel120": "assincrono",
    "min": 10,
@@ -7231,8 +7231,8 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Perceber que casos já bem previstos produzem resíduos pequenos e influenciam menos a correção seguinte.",
-   "apoio": "Avance as árvores e observe o alvo y − p encolher nas propostas que já estão bem previstas.",
+   "aprendizado": "Quem já está bem previsto quase não pesa na correção seguinte.",
+   "apoio": "Avance as árvores e veja o alvo encolher nas propostas bem previstas.",
    "conexao": "Com o alvo definido, o procedimento é o mesmo.",
    "guia": {
     "funcao": "Fazer a derivação de forma completa e curta, e mostrar que a quantidade resultante já é conhecida da turma.",
@@ -7356,9 +7356,9 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "O procedimento de cinco linhas roda sem alteração em classificação, e a perda cai a cada árvore acrescentada.",
-   "apoio": "A base de dezesseis propostas. Avance uma árvore por vez e acompanhe escore, PD e perda.",
-   "conexao": "Vale ver, em log odds, o que cada árvore acrescentou a cada proposta.",
+   "aprendizado": "O mesmo procedimento, em classificação: a perda cai a cada árvore.",
+   "apoio": "Avance uma árvore por vez e acompanhe a perda.",
+   "conexao": "Agora, o que cada árvore somou a cada proposta.",
    "guia": {
     "funcao": "Executar o procedimento em classificação na base de dezesseis propostas, fechando a promessa de que nada novo seria introduzido.",
     "pre": "A fórmula do boosting; a curva logística do capítulo 4.",
@@ -7416,8 +7416,8 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "A contribuição de cada árvore para cada proposta é rastreável, e a soma delas explica a PD final.",
-   "apoio": "Escolha uma proposta e veja a decomposição completa do seu escore, árvore por árvore.",
+   "aprendizado": "A PD final se decompõe em parcelas rastreáveis, árvore por árvore.",
+   "apoio": "Clique numa proposta e leia a decomposição do escore.",
    "conexao": "Falta escolher η, M, profundidade e mínimo por folha.",
    "guia": {
     "funcao": "Mostrar que a explicação individual existe e é rastreável, delimitando com precisão em que sentido o boosting é menos interpretável.",
@@ -7458,7 +7458,7 @@
    "id": "c6p15",
    "cap": 6,
    "n": 15,
-   "titulo": "Os quatro hiperparâmetros e o que cada um controla",
+   "titulo": "Os quatro hiperparâmetros",
    "nivel": "complementar",
    "nivel120": "assincrono",
    "min": 10,
@@ -7469,8 +7469,8 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Taxa de aprendizagem, número de árvores, profundidade e mínimo por folha controlam a complexidade por caminhos diferentes e precisam ser escolhidos em conjunto.",
-   "apoio": "Ajuste os quatro na base didática e acompanhe perda, número total de folhas e menor folha.",
+   "aprendizado": "η, árvores, profundidade e mínimo por folha controlam a complexidade juntos.",
+   "apoio": "Mova os quatro controles e acompanhe a perda e a menor folha.",
    "conexao": "Dois desses quatro não podem ser escolhidos separadamente.",
    "guia": {
     "funcao": "Reunir os quatro controles numa tela e mostrar que perda de treino desce sempre, o que impede escolher por ela.",
@@ -7534,7 +7534,7 @@
    "id": "c6p16",
    "cap": 6,
    "n": 16,
-   "titulo": "η e M são acoplados, e por isso não se escolhem separadamente",
+   "titulo": "η e M são acoplados",
    "nivel": "complementar",
    "nivel120": "assincrono",
    "min": 8,
@@ -7545,14 +7545,14 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Reduzir a taxa de aprendizagem exige aumentar o número de árvores aproximadamente na mesma proporção para atingir o mesmo ajuste.",
-   "apoio": "Para cada taxa, quantas árvores são necessárias para atingir a mesma perda alvo. A relação é quase uma hipérbole.",
+   "aprendizado": "Reduzir η pela metade pede o dobro de árvores para o mesmo ajuste.",
+   "apoio": null,
    "conexao": "Falta o comportamento fora da amostra.",
    "guia": {
     "funcao": "Demonstrar o acoplamento com números e justificar a preferência por η pequeno por granularidade, e não por qualidade intrínseca.",
     "pre": "Os quatro hiperparâmetros.",
     "conducao": "Cubra a segunda e a terceira colunas e peça um palpite sobre quantas árvores η de 0,1 precisa. Depois descubra, 14, e mostre que o produto é quase constante.",
-    "leitura": "Tabela com o produto quase constante e, depois das notas, a curva em forma de hipérbole.",
+    "leitura": "À esquerda, a tabela das nove taxas, com árvores até a perda 0,50, o produto η × árvores e a perda com 60 árvores; à direita, a curva das árvores necessárias, com a referência 1,5 ÷ η tracejada. Embaixo, três notas.",
     "pergunta": "Por que a terceira coluna não é exatamente constante?",
     "resposta": "Porque a perda não é linear no escore. A aproximação vale bem para η pequeno e piora conforme η cresce.",
     "erros": [
@@ -7580,7 +7580,7 @@
    "id": "c6p17",
    "cap": 6,
    "n": 17,
-   "titulo": "Fora da amostra: onde o boosting realmente é decidido",
+   "titulo": "Fora da amostra: onde o boosting é decidido",
    "nivel": "essencial",
    "nivel120": "assincrono",
    "min": 9,
@@ -7591,8 +7591,8 @@
     "disc": 1
    },
    "origem": "obs",
-   "aprendizado": "Aumentar complexidade sempre melhora o treino e, a partir de certo ponto, piora o desempenho fora do tempo.",
-   "apoio": "A grade completa da base de 5.000 propostas deste curso, separada por número de folhas por árvore.",
+   "aprendizado": "Mais complexidade sempre melhora o treino; fora do tempo, a partir de um ponto, piora.",
+   "apoio": "Escolha pelo treino e pela validação e compare a AUC fora do tempo.",
    "conexao": "Resta o custo de tudo isso.",
    "guia": {
     "funcao": "Fechar o argumento de sobreajuste com dados reais do curso, agora organizados por número de árvores, que é a dimensão específica do boosting.",
@@ -7605,7 +7605,7 @@
      {
       "alt": "Reportar AUC de treino",
       "confusao": "Confunde memorização com capacidade.",
-      "intervencao": "Aponte a caixa vermelha. A melhor AUC de treino é a pior fora do tempo."
+      "intervencao": "Clique em Escolher pelo treino: a melhor AUC de treino da grade é a pior fora do tempo."
      },
      {
       "alt": "Escolher pela AUC fora do tempo",
@@ -7697,8 +7697,8 @@
     "disc": 3
    },
    "origem": "esq",
-   "aprendizado": "Associar cada fragilidade do conjunto a um diagnóstico e a um controle verificável.",
-   "apoio": "Clique na fragilidade. A solução correta depende do modo de falha observado.",
+   "aprendizado": "Para cada fragilidade, um sinal e um controle verificável.",
+   "apoio": "Clique numa fragilidade e veja o sinal e a resposta.",
    "conexao": "Fechamento do capítulo.",
    "guia": {
     "funcao": "Tratar a interpretabilidade como requisito de governança com soluções concretas, e não como objeção genérica.",
@@ -7765,9 +7765,9 @@
     "disc": 3
    },
    "origem": "esq",
-   "aprendizado": "O boosting é uma soma de árvores rasas ajustadas ao gradiente negativo, na escala de log odds, com complexidade controlada por iteração.",
-   "apoio": "Escolha uma ideia e explique com suas próprias palavras antes de revelar a resposta.",
-   "conexao": "O fecho da aula: as três PDs das mesmas 16 propostas, lado a lado.",
+   "aprendizado": "Palpite, correções em log odds e complexidade escolhida fora do treino.",
+   "apoio": "Explique cada ideia com suas palavras antes de revelar.",
+   "conexao": "O fecho da aula: as três PDs das 16 propostas, lado a lado.",
    "guia": {
     "funcao": "Consolidar o capítulo em três ideias e deixar para o fecho da aula a pergunta que o treino não responde.",
     "pre": "Todo o capítulo 6.",
@@ -7828,14 +7828,14 @@
     "disc": 3
    },
    "origem": "rec",
-   "aprendizado": "Ler as três famílias nos mesmos casos: elas concordam onde o caso é claro, divergem na fronteira, e a perda no treino não decide entre elas.",
-   "apoio": "As 16 propostas que atravessaram a aula, com a PD de cada modelo. Percorra as linhas em que os três mais se afastam antes de responder à pergunta.",
+   "aprendizado": "Os três concordam onde o caso é claro e divergem na fronteira; o treino não decide.",
+   "apoio": "Clique nas linhas em que os três mais se afastam antes de responder.",
    "conexao": "Aula 3, capítulo 7: como escolher entre modelos fora da amostra.",
    "guia": {
     "funcao": "Fechar a aula onde ela começou: as mesmas 16 propostas, agora com a PD dos três modelos, e entregar à Aula 3 a pergunta que o treino não responde.",
     "pre": "Os capítulos 4, 5 e 6; a página c5p18, que já comparou logística e árvore.",
     "conducao": "Projete o gráfico com as três famílias ligadas e faça a pergunta antes de qualquer comentário. Depois desligue uma família de cada vez: a logística sobe em rampa com a utilização, a árvore salta de 0% para 100% na raiz em 57,5 e deixa as pontas em 50%, o boosting sai de 50% e, com quatro árvores, só chega a 33% e 67%.",
-    "leitura": "Uma linha por proposta, na ordem da utilização, de 20% na #1 a 95% na #16. Três marcas por linha, uma por modelo, a distância entre a menor e a maior desenhada, e o desfecho à direita. Linhas tingidas: um modelo abaixo de 50% e outro acima.",
+    "leitura": "Uma linha por proposta, na ordem da utilização, de 20% na #1 a 95% na #16. Três marcas por linha, uma por modelo, a distância entre a menor e a maior desenhada, e o desfecho à direita. Linhas tingidas: um modelo abaixo de 50% e outro acima. Ao lado, a perda de treino das três famílias, a pergunta da Aula 3 e a entrega.",
     "pergunta": "Onde os três modelos concordam, e onde discordam?",
     "resposta": "Da #3 à #14 os três ficam do mesmo lado de 50%, com duas exceções: a #5, que a logística põe em 52,6% e a árvore em 0%, e a #10, que vai de 30,5% na logística a 100% na árvore. Nas pontas, #1, #2, #15 e #16, a árvore dá 50% em folhas de duas propostas e o boosting quase não sai de 50%; só a logística toma posição.",
     "erros": [

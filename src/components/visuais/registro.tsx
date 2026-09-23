@@ -8,6 +8,12 @@ import { UmaProposta } from "./uma-proposta";
 import { ValorDaFolha } from "./valor-da-folha";
 import { ConfiancaDaFolha } from "./confianca-da-folha";
 import { GiniOuEntropia } from "./gini-ou-entropia";
+import { AberturaBoosting } from "./abertura-boosting";
+import { PalpiteConstante } from "./palpite-constante";
+import { ErroComoAlvo } from "./erro-como-alvo";
+import { PrimeiraCorrecao } from "./primeira-correcao";
+import { SomaEmLogOdds } from "./soma-em-log-odds";
+import { EtaEArvores } from "./eta-e-arvores";
 import { ResiduosQueEncolhem } from "./residuos-que-encolhem";
 import { OitoPontos } from "./oito-pontos";
 import { TresModelos } from "./tres-modelos";
@@ -143,19 +149,26 @@ const REGISTRO: Record<string, VisualNativo> = {
   c5p16: { Componente: () => <ArvoreQueCresce modo="instabilidade" />, substitui: "legacy" },
   c5p17: { Componente: GiniOuEntropia, substitui: "conteudo" },
   c5p18: { Componente: DuasFamilias, substitui: "legacy" },
+  c6p1: { Componente: AberturaBoosting, substitui: "episodio" },
   c6p2: { Componente: TresEstrategias, substitui: "legacy" },
   c6p3: { Componente: OitoPontos, substitui: "pagina" },
+  c6p4: { Componente: PalpiteConstante, substitui: "conteudo" },
+  c6p5: { Componente: ErroComoAlvo, substitui: "conteudo" },
+  c6p6: { Componente: PrimeiraCorrecao, substitui: "conteudo" },
   c6p7: { Componente: () => <ResiduosQueEncolhem modo="taxa" />, substitui: "legacy" },
   c6p8: { Componente: () => <ResiduosQueEncolhem modo="arvores" />, substitui: "legacy" },
   c6p9: { Componente: () => <ResiduosQueEncolhem modo="soma" />, substitui: "legacy" },
+  c6p11: { Componente: SomaEmLogOdds, substitui: "conteudo" },
   c6p12: { Componente: () => <PerdaQueCai modo="alvo" />, substitui: "legacy" },
   c6p13: { Componente: () => <PerdaQueCai modo="iteracoes" />, substitui: "legacy" },
   c6p14: { Componente: () => <PerdaQueCai modo="rastro" />, substitui: "legacy" },
   c6p15: { Componente: Hiperparametros, substitui: "legacy" },
-  c6p17: { Componente: DistanciaQueSeAbre, substitui: "figura" },
+  c6p16: { Componente: EtaEArvores, substitui: "conteudo" },
+  /* a peça já traz a leitura (cartões e caixa do critério) que o texto herdado repetia em duas telas; a questão continua */
+  c6p17: { Componente: DistanciaQueSeAbre, substitui: "conteudo" },
   c6p18: { Componente: TresLimites, substitui: "legacy" },
-  /* fecho da Aula 2: o gráfico substitui a tabela estática da página; a leitura e a entrega continuam do texto */
-  c6p20: { Componente: TresModelos, substitui: "figura" },
+  /* fecho da Aula 2: o gráfico das 16 propostas e, ao lado, a perda de treino, a pergunta da Aula 3 e a entrega */
+  c6p20: { Componente: TresModelos, substitui: "conteudo" },
   c7p2: { Componente: AcertoQueEngana, substitui: "legacy" },
   c7p5: { Componente: Pares, substitui: "legacy" },
   c7p6: { Componente: FilaDeRisco, substitui: "legacy" },

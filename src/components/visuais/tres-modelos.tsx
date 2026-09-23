@@ -1,13 +1,15 @@
 "use client";
 import { useMemo, useState } from "react";
 import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
-import { FAMILIAS, leituraDaProposta, tresModelos, type Familia } from "@/lib/visuais/tres-modelos";
+import { ARVORES_TM, BASE_TM, ETA_TM, FAMILIAS, leituraDaProposta, tresModelos, type Familia } from "@/lib/visuais/tres-modelos";
+import { boostingClassificacao } from "@/lib/visuais/boosting";
 
 /**
  * Fecho da Aula 2 (c6p20): as mesmas 16 propostas que atravessaram os capítulos 4, 5 e 6, cada uma com a PD das três
  * famílias. Uma linha por proposta, na ordem da utilização; a distância entre a menor e a maior PD fica desenhada, e
  * as linhas em que um modelo põe o caso abaixo de 50% e outro acima ficam marcadas. Contas em
- * src/lib/visuais/tres-modelos.ts; a leitura da perda de treino e a pergunta para a Aula 3 ficam no texto da página.
+ * src/lib/visuais/tres-modelos.ts. Ao lado, a perda de treino das três famílias, a pergunta para a Aula 3 e a entrega:
+ * a peça substitui o texto herdado da página, que no palco caía numa segunda tela.
  * A nota de fonte não diz qual proposta tem a maior distância: é isso que a questão da página pede para ler no gráfico.
  * No palco saem a tabela e a nota de fonte, e o gráfico fica com a tela.
  */
@@ -29,7 +31,8 @@ function Marca({ f, x, y, forte }: { f: Familia; x: number; y: number; forte: bo
 }
 
 export function TresModelos({ palco = false }: { palco?: boolean }) {
-  const { linhas } = useMemo(() => tresModelos(), []);
+  const { linhas, perda } = useMemo(() => tresModelos(), []);
+  const perda50 = useMemo(() => boostingClassificacao(BASE_TM, ETA_TM, 50)[50].perda, []);
   const [sel, setSel] = useState(12);
   const [ligadas, setLigadas] = useState<Record<Familia, boolean>>({ logistica: true, arvore: true, boosting: true });
   const visiveis = FAMILIAS.filter((f) => ligadas[f.id]);
@@ -64,6 +67,7 @@ export function TresModelos({ palco = false }: { palco?: boolean }) {
         {" "}{fmtNum(l.distancia * 100, 1)} pontos entre a menor e a maior. {leituraDaProposta(l)}
       </div>
 
+      <div className="vz-tm-corpo">
       <div className="vz-grafico">
         <p className="vz-grafico-t">Uma linha por proposta, na ordem da utilização <span className="hint">clique numa linha para ler as três PDs</span></p>
         <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="PD de cada proposta nos três modelos, com a distância entre a menor e a maior">
@@ -98,6 +102,24 @@ export function TresModelos({ palco = false }: { palco?: boolean }) {
           {FAMILIAS.map((f) => <span key={f.id}><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><Marca f={f.id} x={7} y={7} forte={false} /></svg>{f.nome}, capítulo {f.capitulo}, {f.config}</span>)}
           <span><span className="vz-tm-legenda-faixa" aria-hidden="true" />um modelo abaixo de 50% e outro acima</span>
         </p>
+      </div>
+      <div className="vz-tm-lado">
+        <div className="vz-rd-lista vz-rd-lista--neutra">
+          <p className="vz-rd-k">Perda no treino, log loss média</p>
+          <table className="table vz-tm-perdas"><tbody>
+            <tr><th scope="row">Logística</th><td>{fmtNum(perda.logistica, 5)}</td></tr>
+            <tr><th scope="row">Árvore</th><td>{fmtNum(perda.arvore, 5)}</td></tr>
+            <tr><th scope="row">Boosting, {ARVORES_TM} árvores</th><td>{fmtNum(perda.boosting, 5)}</td></tr>
+            <tr><th scope="row">Boosting, 50 árvores</th><td>{fmtNum(perda50, 5)}</td></tr>
+          </tbody></table>
+          <p className="vz-rd-nota">No treino vence quem ajusta mais, e ajustar mais não é prever melhor.</p>
+        </div>
+        <div className="vz-rd-lista vz-rd-lista--ganha">
+          <p className="vz-rd-k">A pergunta da Aula 3</p>
+          <p className="vz-rd-nota">Qual critério decide entre os três, fora da amostra, e quando a diferença justifica trocar o modelo? Capítulos 7 e 8.</p>
+        </div>
+        <p className="vz-tm-entrega"><b>Entrega da aula 2:</b> a comparação conceitual das três técnicas e os exercícios de interpretação.</p>
+      </div>
       </div>
 
       {!palco && <details className="vz-tm-tabela">

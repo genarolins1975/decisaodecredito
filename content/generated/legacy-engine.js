@@ -9966,7 +9966,7 @@ muda('c5p10',{titulo:'Uma proposta dentro da árvore',
   guia:undefined});
 
  muda('c6p1',{titulo:'O boosting como sequência de correções',
-  aprendizado:'Explicar boosting como uma cadeia em que cada árvore aprende o erro que sobrou.',
+  aprendizado:'',
   apoio:'Em vez de buscar uma árvore perfeita, o método soma árvores pequenas. Cada nova etapa corrige parcialmente a previsão anterior.',
   visual:()=>`<div class="nv"><div class="nv-flow" style="--cols:5" aria-label="Cinco movimentos do gradient boosting">
    <div class="nv-step" data-n="1"><h3>Palpite inicial</h3><p>Começar com uma previsão simples para todos.</p></div><div class="nv-step red" data-n="2"><h3>Erro que restou</h3><p>Comparar observado e previsto caso a caso.</p></div><div class="nv-step gold" data-n="3"><h3>Árvore pequena</h3><p>Encontrar um padrão nos erros atuais.</p></div><div class="nv-step green" data-n="4"><h3>Correção parcial</h3><p>Somar apenas uma fração do que a árvore propõe.</p></div><div class="nv-step" data-n="5"><h3>Repetir</h3><p>Recalcular os erros e construir a próxima árvore.</p></div></div>
@@ -9982,13 +9982,13 @@ muda('c5p10',{titulo:'Uma proposta dentro da árvore',
  function cenaBoost(i){const s=BOOST_PASSOS[i];return `<div><small>previsão para x = 8</small><div class="number">${s.valor}</div><h3>${s.titulo}</h3><p>${s.txt}</p></div><div><small>erro absoluto restante</small><div class="error"><i style="width:${(s.erro/5.5*100).toFixed(0)}%"></i></div><p style="margin-top:8px"><b>${s.erro.toFixed(2).replace('.',',')}</b> até o observado 12,00</p></div>`;}
  function ligaBoostDemo(){const cena=document.getElementById('nv-bscene');if(!cena)return;document.querySelectorAll('[data-bstep]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-bstep]').forEach(x=>x.classList.remove('ativo'));b.classList.add('ativo');cena.innerHTML=cenaBoost(+b.dataset.bstep);}));}
  muda('c6p2',{titulo:'A divisão de trabalho entre modelos',
-  aprendizado:'Distinguir seleção, combinação paralela e correção sequencial.',
-  apoio:'Bagging pergunta “como estabilizar vários modelos independentes?”. Boosting pergunta “o que o próximo modelo precisa corrigir?”.',
+  aprendizado:'',
+  apoio:'',
   visual:()=>`<div class="nv"><div class="nv-strategy"><div><div class="nv-mini-models"><i>M1</i><i class="active">M2</i><i>M3</i></div><h3>Selecionar um</h3><p>Treinar candidatos e ficar com o vencedor.</p></div><div><div class="nv-mini-models"><i>M1</i><i>M2</i><i>M3</i><i class="sum">média</i></div><h3>Combinar em paralelo</h3><p>Modelos independentes votam ou têm suas previsões médias.</p></div><div><div class="nv-mini-models"><i class="active">F₀</i><i>+h₁</i><i>+h₂</i><i class="sum">F</i></div><h3>Corrigir em sequência</h3><p>Cada modelo nasce depois de observar o erro do anterior.</p></div></div>
    <div class="nv-demo"><div class="nv-demo-nav">${BOOST_PASSOS.map((s,i)=>`<button data-bstep="${i}" class="${i===0?'ativo':''}">${i}. ${s.rot}</button>`).join('')}</div><div class="nv-demo-scene" id="nv-bscene">${cenaBoost(0)}</div></div></div>`,init:ligaBoostDemo});
 
  muda('c6p5',{titulo:'O erro como novo alvo',
-  aprendizado:'Calcular o resíduo e entender por que ele orienta a próxima árvore.',
+  aprendizado:'',
   apoio:'No exemplo de regressão, cada caso ganha um novo alvo: observado menos previsão atual. A árvore tenta explicar esse sinal.',
   visual:()=>`<div class="nv"><div class="nv-residual-case"><div class="nv-value"><small>observado em x = 8</small><span class="big">12,00</span></div><div class="nv-minus">−</div><div class="nv-value gold"><small>previsão atual</small><span class="big">6,50</span></div></div>
    <div class="nv-caption"><b>De onde vem 6,50</b><span>y = 2,0 · 3,0 · 4,5 · 5,0 · 8,0 · 8,5 · 9,0 · 12,0. Soma 52,0 ÷ 8 = <strong>6,50</strong>. F₀ é a média porque o critério é erro quadrático, o mesmo argumento que dá o valor da folha no capítulo 5.</span></div>
@@ -9997,7 +9997,7 @@ muda('c5p10',{titulo:'Uma proposta dentro da árvore',
    <div class="nv-residual-bars" aria-label="Resíduos positivos e negativos de oito casos"><i style="--h:58px;--c:#3D5A8A;--side:end;--label:-18px" data-v="−4,5" data-x="x=1"></i><i style="--h:46px;--c:#3D5A8A;--side:end;--label:-18px" data-v="−3,5" data-x="x=2"></i><i style="--h:30px;--c:#3D5A8A;--side:end;--label:-18px" data-v="−2,0" data-x="x=3"></i><i style="--h:24px;--c:#3D5A8A;--side:end;--label:-18px" data-v="−1,5" data-x="x=4"></i><i style="--h:24px;--c:#8C2332;--side:start;--label:calc(100% + 5px);--xlabel:calc(100% + 24px)" data-v="+1,5" data-x="x=5"></i><i style="--h:30px;--c:#8C2332;--side:start;--label:calc(100% + 5px);--xlabel:calc(100% + 24px)" data-v="+2,0" data-x="x=6"></i><i style="--h:38px;--c:#8C2332;--side:start;--label:calc(100% + 5px);--xlabel:calc(100% + 24px)" data-v="+2,5" data-x="x=7"></i><i style="--h:70px;--c:#8C2332;--side:start;--label:calc(100% + 5px);--xlabel:calc(100% + 24px)" data-v="+5,5" data-x="x=8"></i></div></div>`});
 
  muda('c6p6',{titulo:'A primeira árvore de correção',
-  aprendizado:'Interpretar uma árvore rasa como uma regra aplicada aos resíduos, e ver o que acontece ao somar a correção inteira.',
+  aprendizado:'',
   apoio:'A árvore não prevê novamente o valor de y. Ela prevê quanto o modelo atual deveria subir ou descer em cada região.',
   visual:()=>`<div class="nv"><div class="nv-split"><div class="nv-split-side"><small>casos com x ≤ 4,5</small><span class="big">−2,875</span><p>o palpite está alto<br><b>corrigir para baixo</b></p></div><div class="nv-stump"><b>x ≤ 4,5?</b><small>uma pergunta sobre os resíduos</small></div><div class="nv-split-side high"><small>casos com x &gt; 4,5</small><span class="big">+2,875</span><p>o palpite está baixo<br><b>corrigir para cima</b></p></div></div>
    <div class="nv-flow" style="--cols:3"><div class="nv-step" data-n="1"><h3>Agrupar</h3><p>O corte reúne resíduos com direção parecida.</p></div><div class="nv-step gold" data-n="2"><h3>Resumir</h3><p>Cada folha guarda a correção média do grupo.</p></div><div class="nv-step green" data-n="3"><h3>Somar</h3><p>O palpite de cada caso anda o tamanho da folha em que ele caiu.</p></div></div>
@@ -10011,13 +10011,13 @@ muda('c5p10',{titulo:'Uma proposta dentro da árvore',
  const WDET=['O ponto de partida é deliberadamente simples.','A primeira correção produz o maior salto.','A segunda aprende o erro já atualizado.','A terceira corrige um padrão menor.','A quarta deixa erro 1,14; mais árvores ainda podem ajudar.'];
  function ligaWaterfall(){const d=document.getElementById('nv-wdetail');if(!d)return;document.querySelectorAll('[data-wstep]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-wstep]').forEach(x=>x.classList.remove('ativo'));b.classList.add('ativo');d.innerHTML='<b>Etapa '+b.dataset.wstep+':</b> '+WDET[+b.dataset.wstep];}));}
  muda('c6p9',{titulo:'Quatro correções, uma previsão',
-  aprendizado:'Ler a previsão final como soma acumulada de contribuições.',
-  apoio:'Clique nas etapas. A altura mostra a previsão acumulada do mesmo caso, não a importância isolada de cada árvore.',
+  aprendizado:'',
+  apoio:'',
   visual:()=>`<div class="nv"><div class="nv-waterfall" aria-label="Evolução da previsão para x igual a 8">${['6,50','7,94','9,97','10,35','10,86'].map((v,i)=>`<button data-wstep="${i}" class="${i===0?'ativo':''}" style="--h:${[100,123,158,166,178][i]}px"><span>${v}</span><small>${i?'árvore '+i:'palpite'}</small></button>`).join('')}</div><div class="nv-caption" id="nv-wdetail"><b>Etapa 0:</b><span>${WDET[0]}</span></div><div class="nv-line"></div><small>observado do caso: 12,00 · erro cai de 5,50 para 1,14</small></div>`,init:ligaWaterfall});
 
  muda('c6p10',{titulo:'A fórmula depois da história',
-  aprendizado:'Relacionar cada termo da equação ao mecanismo visual de correção.',
-  apoio:'A notação apenas comprime a história: previsão anterior + fração da correção sugerida pela nova árvore.',
+  aprendizado:'',
+  apoio:'',
   visual:()=>`<div class="nv"><div class="nv-formula-anatomy"><div class="nv-term"><span class="math">F<sub>m−1</sub>(x)</span><b>previsão anterior</b><p>o que a sequência já aprendeu</p></div><div class="nv-op">+</div><div class="nv-term"><span class="math">η</span><b>taxa de aprendizagem</b><p>o mesmo fator em todas as etapas, escolhido antes do treino</p></div><div class="nv-op">×</div><div class="nv-term"><span class="math">h<sub>m</sub>(x)</span><b>nova correção</b><p>o padrão encontrado no erro atual</p></div></div>
    <div class="formula">F_m(x) = F_{m−1}(x) + η × h_m(x)</div><div class="nv-caption"><b>No caso x = 8</b><span>6,50 + 0,5 × 2,875 = 7,94. Só então calculamos o novo resíduo: 12,00 − 7,94 = 4,06. Resíduo, não erro final: ele vai mudar de novo na próxima árvore.</span></div>
    <div class="nv-caption"><b>η não é um peso por árvore</b><span>Não é nota que o algoritmo dá a cada árvore conforme ela é boa. É um único número, igual para as M árvores, escolhido antes de treinar. O que muda de árvore para árvore é h<sub>m</sub>, nunca η.</span></div></div>`});
@@ -10315,7 +10315,7 @@ function experienciaV13(){
   c3p1:{titulo:'Dados disponíveis na data da decisão',desafio:'O relógio decide quais campos podem entrar na base.',texto:'Uma variável útil hoje pode ser vazamento se só ficou disponível depois da proposta. O desenho temporal vem antes da modelagem.',etapas:[['Unidade','Cada linha representa uma decisão econômica.'],['Janelas','Observação, maturação e teste têm papéis distintos.'],['Bloqueio','Informação posterior à decisão fica fora do modelo.']]},
   c4p1:{titulo:'Regressão logística',desafio:'Como uma soma de evidências se transforma em probabilidade?',texto:'A logística trabalha em log odds, soma contribuições e volta para uma PD entre zero e um.',etapas:[['Escalas','Probabilidade, odds e log odds dizem a mesma coisa.'],['Coeficientes','Cada peso nasce da minimização da perda.'],['Fronteira','A decisão forma uma reta no plano das variáveis.']]},
   c5p1:{titulo:'Árvores de decisão',desafio:'Uma sequência de perguntas pode criar regiões de risco.',texto:'Cortes sucessivos formam grupos homogêneos; cada folha entrega a sua taxa.',etapas:[['Corte','Cada pergunta compete por redução de impureza.'],['Caminho','Uma proposta percorre regras até uma folha.'],['Freio','Profundidade, folha mínima e poda controlam variância.']]},
-  c6p1:{titulo:'Gradient boosting com árvores',desafio:'Um modelo fraco corrige o erro deixado pelo anterior.',texto:'O boosting começa com um palpite simples e acrescenta pequenas correções. A soma, e não uma árvore isolada, produz a previsão.',etapas:[['Palpite','O primeiro valor ignora todas as variáveis.'],['Resíduo','O erro vira o alvo da próxima árvore.'],['Soma','A taxa de aprendizagem controla cada correção.']]},
+  c6p1:{titulo:'Gradient boosting com árvores',desafio:'Um modelo fraco corrige o erro deixado pelo anterior.',texto:'O boosting começa com um palpite simples e soma pequenas correções: a previsão é a soma, não uma árvore isolada.',etapas:[['Palpite','O primeiro valor ignora todas as variáveis.'],['Resíduo','O erro vira o alvo da próxima árvore.'],['Soma','A taxa de aprendizagem controla cada correção.']]},
   c7p1:{titulo:'Validação, calibração e teste fora do tempo',desafio:'Como comparar modelos sem usar o teste para escolher?',texto:'Ordenação, nível probabilístico e incerteza respondem perguntas diferentes. A escolha precisa ser congelada antes do OOT.',etapas:[['Ordenar','AUC, KS e ganho examinam a fila de risco.'],['Calibrar','Brier, log loss e faixas examinam o nível.'],['Congelar','Modelo e critérios ficam fixos antes do OOT.']]},
   c8p1:{titulo:'Da previsão à decisão econômica',desafio:'Uma PD só vira decisão depois que receita, perda e capacidade entram na conta.',texto:'O capítulo liga risco a valor e mostra por que o melhor corte estatístico pode ser uma política ruim.',etapas:[['Exposição','EAD define quanto está em risco.'],['Severidade','LGD define quanto se perde no default.'],['Política','Custos e capacidade determinam o limiar.']]},
   c9p1:{titulo:'Monitoramento e governança',desafio:'O modelo entrou em produção. Qual sinal exige qual ação?',texto:'Entrada, nível do risco e relação entre variáveis podem mudar separadamente. O diagnóstico define a resposta.',etapas:[['Entrada','Mede-se agora, sem esperar rótulos maduros.'],['Desempenho','Nível e ordenação exigem desfecho observado.'],['Ação','Cada alerta precisa de limite, responsável e consequência.']]},
@@ -10608,7 +10608,7 @@ function guiaDaTelaV15(){
   erros:undefined});
  guia('c4p21',{interacao:''});
  /* capítulo 5 */
- guia('c5p1',{leitura:'',
+ guia('c5p1',{leitura:'Leia a frase do desafio e percorra as três etapas, Corte, Caminho e Freio. O infográfico e o mapa das páginas estão na página do capítulo.',
   resposta:'',
   interacao:''});
  guia('c5p3',{interacao:''});
@@ -10628,11 +10628,11 @@ function guiaDaTelaV15(){
  muda('c5p18',{apoio:'Use os três atalhos, #5, #10 e #15, ou clique em qualquer proposta do plano. O objetivo é entender o modo de errar de cada família, não proclamar um vencedor.'});
  guia('c5p18',{interacao:''});
  /* capítulo 6 */
- guia('c6p1',{leitura:'',
+ guia('c6p1',{leitura:'Leia a frase do desafio e percorra as três etapas, Palpite, Resíduo e Soma. O infográfico e o mapa das páginas estão na página do capítulo.',
   interacao:''});
  guia('c6p3',{leitura:'',
   interacao:''});
- guia('c6p4',{leitura:''});
+ guia('c6p4',{leitura:'Tabela de candidatos e dispersão com os segmentos de resíduo, depois da caixa A quarta aparição.'});
  guia('c6p7',{leitura:'',
   pergunta:'',
   resposta:'',
@@ -10656,7 +10656,7 @@ function guiaDaTelaV15(){
   resposta:''});
  guia('c6p15',{conducao:''});
  guia('c6p16',{conducao:'',
-  leitura:''});
+  leitura:'Tabela com o produto quase constante e, depois das notas, a curva em forma de hipérbole.'});
  guia('c6p17',{conducao:'',
   interacao:''});
  guia('c6p18',{leitura:'',
@@ -10712,6 +10712,53 @@ function capitulo5NoPalcoV16(){
   leitura:''});
 }
 
+/* Revisão 17: capítulo 6 no palco. Mesmo critério da revisão 16: título e objetivo numa linha a 1920 px, apoio só
+   quando instrui o uso da página; o roteiro do professor das páginas redesenhadas descreve as peças nativas novas
+   (src/components/visuais). */
+function capitulo6NoPalcoV17(){
+ const muda=(id,o)=>{const p=pagPorId(id);if(p)Object.assign(p,o);};
+ const guia=()=>undefined;
+ muda('c6p1',{aprendizado:'Cada árvore aprende o erro que as anteriores deixaram.',apoio:''});
+ muda('c6p2',{aprendizado:'Selecionar, combinar em paralelo ou corrigir em sequência.',apoio:'Avance as etapas: o erro de x = 8 encolhe a cada correção.'});
+ muda('c6p3',{aprendizado:'Prever um número e medir o erro na escala de y.',apoio:'Clique num ponto para ver o erro dele.'});
+ muda('c6p4',{titulo:'F₀: o melhor palpite constante',aprendizado:'Em erro quadrático, o melhor valor único é a média.',apoio:'',conexao:'O que sobra de cada ponto vira o alvo da próxima árvore.'});
+ muda('c6p5',{aprendizado:'O resíduo, observado menos previsto, é o que a próxima árvore aprende.',apoio:'',conexao:'A árvore que ajusta o resíduo é a do capítulo 5, com outro critério.'});
+ muda('c6p6',{aprendizado:'Um toco devolve a correção média de cada lado; somada inteira, passa do ponto.',apoio:'',conexao:'A saída é somar só um pedaço da correção.'});
+ muda('c6p7',{aprendizado:'Cada correção entra multiplicada por η: avanço mais lento e mais estável.',apoio:'Mova η e compare o erro depois das quatro árvores.'});
+ muda('c6p8',{aprendizado:'Cada árvore corrige uma região; a previsão é a soma das correções.',apoio:'Avance uma árvore por vez e leia a tabela antes do próximo passo.'});
+ muda('c6p9',{aprendizado:'A previsão final é o palpite mais quatro parcelas.',apoio:'Clique noutro ponto do gráfico para ver a soma dele.'});
+ muda('c6p10',{aprendizado:'Cada termo da equação é uma parte do mecanismo já visto.',apoio:'',conexao:'Agora, de volta ao crédito.'});
+ muda('c6p11',{aprendizado:'Em classificação, as árvores somam em log odds, a escala do escore da logística.',apoio:''});
+ muda('c6p12',{titulo:'O alvo da próxima árvore é y − p',aprendizado:'Quem já está bem previsto quase não pesa na correção seguinte.',apoio:'Avance as árvores e veja o alvo encolher nas propostas bem previstas.'});
+ muda('c6p13',{aprendizado:'O mesmo procedimento, em classificação: a perda cai a cada árvore.',apoio:'Avance uma árvore por vez e acompanhe a perda.',conexao:'Agora, o que cada árvore somou a cada proposta.'});
+ muda('c6p14',{aprendizado:'A PD final se decompõe em parcelas rastreáveis, árvore por árvore.',apoio:'Clique numa proposta e leia a decomposição do escore.'});
+ muda('c6p15',{titulo:'Os quatro hiperparâmetros',aprendizado:'η, árvores, profundidade e mínimo por folha controlam a complexidade juntos.',apoio:'Mova os quatro controles e acompanhe a perda e a menor folha.'});
+ muda('c6p16',{titulo:'η e M são acoplados',aprendizado:'Reduzir η pela metade pede o dobro de árvores para o mesmo ajuste.',apoio:''});
+ muda('c6p17',{titulo:'Fora da amostra: onde o boosting é decidido',aprendizado:'Mais complexidade sempre melhora o treino; fora do tempo, a partir de um ponto, piora.',apoio:'Escolha pelo treino e pela validação e compare a AUC fora do tempo.'});
+ muda('c6p18',{aprendizado:'Para cada fragilidade, um sinal e um controle verificável.',apoio:'Clique numa fragilidade e veja o sinal e a resposta.'});
+ muda('c6p19',{aprendizado:'Palpite, correções em log odds e complexidade escolhida fora do treino.',apoio:'Explique cada ideia com suas palavras antes de revelar.',conexao:'O fecho da aula: as três PDs das 16 propostas, lado a lado.'});
+ muda('c6p20',{aprendizado:'Os três concordam onde o caso é claro e divergem na fronteira; o treino não decide.',apoio:'Clique nas linhas em que os três mais se afastam antes de responder.'});
+ /* guia do professor das páginas redesenhadas: a leitura descreve a peça nova, na página de estudo */
+ guia('c6p1',{conducao:'',
+  leitura:'',
+  interacao:''});
+ guia('c6p4',{funcao:'',
+  conducao:'',
+  leitura:'',
+  interacao:''});
+ guia('c6p5',{conducao:'',
+  leitura:'',
+  interacao:''});
+ guia('c6p6',{conducao:'',
+  leitura:'',
+  interacao:''});
+ guia('c6p11',{conducao:'',
+  leitura:''});
+ guia('c6p16',{leitura:''});
+ guia('c6p17',{erros:undefined});
+ guia('c6p20',{leitura:''});
+}
+
 function inicia(){
   narrativaVisualV6();
   trabalhoFinalV10();
@@ -10719,6 +10766,7 @@ function inicia(){
   narrativaAula2V14();
   guiaDaTelaV15();
   capitulo5NoPalcoV16();
+  capitulo6NoPalcoV17();
   const q=new URLSearchParams(location.hash.split('?')[1]||'');
   if(q.get('m')==='aluno')MODO='aluno';
   if(q.get('m')==='projecao')MODO='apresentacao';
