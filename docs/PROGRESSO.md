@@ -222,6 +222,20 @@ Verificado em 23/09/2026: typecheck; lint (0 erros; os mesmos 5 avisos); `lint:t
 
 **Não verificado.** No celular, o gráfico do c4p15 encolhe com a tela, como o do c4p2, e os rótulos ficam pequenos; o painel ao lado tem os mesmos números.
 
+### Décima sétima rodada (23/09/2026): c5p4 no quadro `.rl`, com fórmulas em KaTeX e a taxa de erro do nó
+
+**Pedido.** Fórmulas em LaTeX e melhor exposição dos dois gráficos do c5p4, as curvas de impureza e o quadrado Como ler o Gini.
+
+**Diagnóstico.** O c5p4 estava no visual anterior ao sistema `.rl`: fórmulas numa caixa monoespaçada, curvas num desenho de 640 × 300 com a entropia tracejada e só o valor do Gini no ponto, e o quadrado da leitura com 220 px de lado, as células de erro sem valor. Achado da rodada: a distinção entre impureza e taxa de erro do nó que a revisão pedagógica pediu para esta página (M21, em 22/09/2026: a terceira curva, mín(p, 1 − p), e o contraexemplo de 0,21875 para 0,12500) foi escrita só no visual herdado, que o componente nativo substitui desde 18/09/2026. Na plataforma, nunca apareceu.
+
+**c5p4.** Quadro 16:9 no sistema `.rl`, página inteira e tela do palco, como c4p2, c4p5 e c4p15. Faixa com as duas fórmulas em KaTeX, pelo componente `tex.tsx`, com MathML para leitor de tela. À esquerda, Gini e entropia contra p, com a taxa de erro do nó pontilhada por baixo e o nome dela deitado no flanco livre; os três pontos na guia de p; os valores de Gini e entropia ao lado dos pontos, postos por um posicionador que evita curvas, pontos, textos e bordas, entre 7% e 93% (fora disso, os pontos se juntam no canto e os valores ficam só no painel); o simétrico 1 − p sob demanda; clique ou arrasto sobre o gráfico. Ao centro, o quadrado com as quatro células legíveis, as de erro em vinho, e Pr(erro) = 2p(1 − p) em KaTeX. À direita, o painel, com a leitura das duas chances de errar: em 10%, "Prevendo a maioria, o nó erra 10%; sorteando o rótulo, 18,0%, que é o Gini." Na base, Não é taxa de erro (o contraexemplo, calculado pela própria árvore do curso: do 1º para o 2º nível, o Gini ponderado cai de 0,21875 para 0,12500 e os erros seguem 2 em 16), Não é risco e No curso. Roteiro do professor, apoio da página e explicações do guia reescritos com a mesma distinção.
+
+**Defeitos achados e corrigidos na própria rodada.** Primeira versão do quadro com 186 palavras e nota 9,1 no palco: enxugada para 177 e, com a M21, 174. Células com uma casa que não somavam o Gini: duas casas. Células finas sem rótulo: rótulo deitado ou em pé. Valores sobre as curvas em 50% e, com a terceira curva, rótulos longe dos pontos e linhas-guia cruzando texto: posicionador com custos e restrições, conferido por um teste independente em 202 estados. Rótulos p e 1 − p do simétrico sobre os pontos perto da base (1% e 99%, defeito anterior à rodada): agora os dois somem juntos quando encostam num ponto. No celular, a fórmula da entropia quebrava: 15 px com rolagem lateral na faixa.
+
+Verificado em 23/09/2026: typecheck; lint (0 erros; os mesmos 5 avisos); `lint:tracos` (0); `npm test` (318, sete no c5p4, entre eles a conferência independente dos rótulos contra as curvas em 202 estados); `npx playwright test` (24 de 24, bloco do c5p4 novo); auditoria de palco com o c5p4 em 9,4 nas resoluções 1920x1080, 1400x900, 1366x768 e 1024x768 (174 palavras; menor fonte a 1,76% da altura); varredura das 61 páginas em Aulas e Apresentação nas quatro larguras em execução neste registro; estados extremos do c5p4 a conferir depois da varredura; importação local (origem atualizada em c5p4); guias do capítulo 5 a regerar.
+
+**Não verificado.** No celular, o gráfico encolhe com a tela e os rótulos ficam pequenos, como no c4p2 e no c4p15; o painel ao lado tem os mesmos números. As caixas de colisão têm folga para a fonte Inter, primeira da pilha, mas o desenho foi conferido só com a fonte que o ambiente tem (métrica de Arial).
+
 ## Pendências técnicas ordenadas
 
 0. Guia do professor dos capítulos 4, 5 e 6: enviar o pacote `guias-2026-09` a `bases/vguias-2026-09/` no bucket e registrar em Bases e gabaritos (instruções em `scripts/apostila/README.md`).
@@ -229,6 +243,7 @@ Verificado em 23/09/2026: typecheck; lint (0 erros; os mesmos 5 avisos); `lint:t
 0. Celular (390 px): 13 páginas dos capítulos 4 a 6 mostram tabela com rolagem lateral, padrão anterior a esta rodada; em 1.024 px ou mais, nenhuma.
 0. Tempo da Aula 2: essenciais somam 171 min para 165 úteis; decisão do professor, recomendação em `docs/NARRATIVA_AULA_2.md`, seção 6.
 0. Repositório público: gabaritos estão nos fontes do material e o guia do professor do baralho, de uma rodada anterior, continua no histórico do git. Recomendação: tornar o repositório privado.
+0. Fórmulas ainda em caixa monoespaçada em 11 componentes nativos (12 ocorrências de `vz-formula`), entre eles o c5p5 (`impureza.tsx`) e o c5p6 (`corte-candidato.tsx`): candidatas ao mesmo `tex.tsx` do c5p4.
 0. c4p3, c4p4 e c4p6 continuam no visual anterior ao sistema `.rl` (colunas, abas e réguas no estilo antigo), enquanto c4p2, c4p5 e c4p15 já seguem a mesma gramática: candidatos ao mesmo redesenho.
 0. Guias dos capítulos 1 a 3 e 7 a 11: as sínteses da revisão 13 provavelmente trazem o mesmo descompasso entre guia e tela corrigido aqui nos capítulos 4 a 6; não auditadas.
 0. Aula 2: R1 a R4 e R7 de `docs/PLANO_MELHORIAS.md` (aviso de turma sem encontros, perguntas para slides sem página ligada, verificação em Firefox, Safari e projetor, validação com usuários, traços nas cascas, estados combinados que cabem reduzidos).

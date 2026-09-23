@@ -729,6 +729,30 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(desc).toContainText("Iterações 20.000: perda 0,432824");
   await expect(desc).toContainText("Convergido.");
 
+  // c5p4: impureza no quadro .rl, com as fórmulas em KaTeX, as curvas de Gini e entropia, a taxa de erro do nó (M21) e o
+  // quadrado da chance de errar
+  await page.goto("/aulas/c5p4");
+  const im = page.locator('figure[data-vz="impureza-curva"]');
+  await expect(im).toContainText("Impureza: o quanto o grupo está misturado");
+  await expect(im.locator(".im-eq .katex")).toHaveCount(2); // Gini e entropia em KaTeX, sem a fórmula monoespaçada
+  await expect(im.locator(".im-res-g")).toHaveText("0,5000"); await expect(im.locator(".im-res-h")).toHaveText("1,0000");
+  await expect(im).toContainText("= 50,00%");
+  await expect(im.locator(".im-curva--e")).toHaveCount(1); await expect(im.locator(".im-legenda")).toContainText("Taxa de erro do nó");
+  await expect(im).toContainText("o Gini ponderado cai de 0,21875 para 0,12500, e os erros seguem 2 em 16");
+  await im.getByRole("button", { name: "10%", exact: true }).click();
+  await expect(im.locator(".im-res-g")).toHaveText("0,1800"); await expect(im.locator(".im-res-h")).toHaveText("0,4690");
+  await expect(im).toContainText("= 18,00%"); await expect(im).toContainText("81,00%");
+  await expect(im.locator(".im-lei")).toHaveText("Prevendo a maioria, o nó erra 10%; sorteando o rótulo, 18,0%, que é o Gini.");
+  await im.getByRole("button", { name: "Comparar com 1 − p" }).click();
+  await expect(im).toContainText("Em 10% e em 90%, o mesmo Gini, 0,1800, e a mesma entropia, 0,4690.");
+  await im.getByRole("button", { name: "90%", exact: true }).click();
+  await expect(im.locator(".im-res-g")).toHaveText("0,1800");
+  await im.getByRole("button", { name: "Restaurar exemplo" }).click();
+  await expect(im.locator(".im-res-g")).toHaveText("0,5000"); await expect(im.locator(".im-comp-box")).toHaveCount(0);
+  await page.goto("/apresentacao/c5p4"); // no palco o quadro é a página inteira
+  await expect(page.locator("main")).toContainText("04 / 19");
+  await expect(page.locator("main")).not.toContainText("tela 2 de");
+
   // capítulo 5: o corte candidato, o caminho e a poda reproduzem as páginas herdadas
   await page.goto("/aulas/c5p6");
   await expect(page.locator('figure[data-vz="corte-candidato"]')).toContainText("média ponderada 0,30159 e ganho 0,19841");
