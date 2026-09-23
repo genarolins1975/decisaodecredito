@@ -130,7 +130,7 @@ export function Slide(p: {
 
   return (
     <main id="conteudo" className="slide-stage min-h-screen flex flex-col">
-      <div className="slide" style={{ ["--cap" as string]: p.chapter.color, ["--cap-soft" as string]: p.chapter.soft }}>
+      <div className="slide" data-capitulo={p.chapter.number} style={{ ["--cap" as string]: p.chapter.color, ["--cap-soft" as string]: p.chapter.soft }}>
         <div className={`slide-inner ${capa ? "slide-inner--capa" : "slide-inner--tela"}`}>
           {!proprio && <header className="flex items-center justify-between gap-3 eyebrow">
             <span>{p.unitLabel} · Capítulo {p.chapter.number} · {p.chapter.title}</span>

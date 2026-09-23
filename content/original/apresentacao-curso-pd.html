@@ -13742,7 +13742,7 @@ function experienciaV13(){
   c2p1:{titulo:'Fundamentos de modelagem estatística',desafio:'O que um modelo consegue aprender e o que permanece incerto?',texto:'O capítulo constrói o vocabulário mínimo para separar dado, estimativa, erro e generalização.',etapas:[['Recorte','O modelo recebe uma janela limitada do mundo.'],['Estimativa','Uma amostra produz números que variam.'],['Teste','O desempenho precisa aparecer fora do ajuste.']]},
   c3p1:{titulo:'Dados disponíveis na data da decisão',desafio:'O relógio decide quais campos podem entrar na base.',texto:'Uma variável útil hoje pode ser vazamento se só ficou disponível depois da proposta. O desenho temporal vem antes da modelagem.',etapas:[['Unidade','Cada linha representa uma decisão econômica.'],['Janelas','Observação, maturação e teste têm papéis distintos.'],['Bloqueio','Informação posterior à decisão fica fora do modelo.']]},
   c4p1:{titulo:'Regressão logística',desafio:'Como uma soma de evidências se transforma em probabilidade?',texto:'A logística trabalha em log odds, soma contribuições e volta para uma PD entre zero e um.',etapas:[['Escalas','Probabilidade, odds e log odds dizem a mesma coisa.'],['Coeficientes','Cada peso nasce da minimização da perda.'],['Fronteira','A decisão forma uma reta no plano das variáveis.']]},
-  c5p1:{titulo:'Árvores de decisão',desafio:'Uma sequência de perguntas pode criar regiões de risco.',texto:'A árvore procura cortes que deixam os grupos mais homogêneos e entrega uma frequência em cada folha.',etapas:[['Corte','Cada pergunta compete por redução de impureza.'],['Caminho','Uma proposta percorre regras até uma folha.'],['Freio','Profundidade, folha mínima e poda controlam variância.']]},
+  c5p1:{titulo:'Árvores de decisão',desafio:'Uma sequência de perguntas pode criar regiões de risco.',texto:'Cortes sucessivos formam grupos homogêneos; cada folha entrega a sua taxa.',etapas:[['Corte','Cada pergunta compete por redução de impureza.'],['Caminho','Uma proposta percorre regras até uma folha.'],['Freio','Profundidade, folha mínima e poda controlam variância.']]},
   c6p1:{titulo:'Gradient boosting com árvores',desafio:'Um modelo fraco corrige o erro deixado pelo anterior.',texto:'O boosting começa com um palpite simples e acrescenta pequenas correções. A soma, e não uma árvore isolada, produz a previsão.',etapas:[['Palpite','O primeiro valor ignora todas as variáveis.'],['Resíduo','O erro vira o alvo da próxima árvore.'],['Soma','A taxa de aprendizagem controla cada correção.']]},
   c7p1:{titulo:'Validação, calibração e teste fora do tempo',desafio:'Como comparar modelos sem usar o teste para escolher?',texto:'Ordenação, nível probabilístico e incerteza respondem perguntas diferentes. A escolha precisa ser congelada antes do OOT.',etapas:[['Ordenar','AUC, KS e ganho examinam a fila de risco.'],['Calibrar','Brier, log loss e faixas examinam o nível.'],['Congelar','Modelo e critérios ficam fixos antes do OOT.']]},
   c8p1:{titulo:'Da previsão à decisão econômica',desafio:'Uma PD só vira decisão depois que receita, perda e capacidade entram na conta.',texto:'O capítulo liga risco a valor e mostra por que o melhor corte estatístico pode ser uma política ruim.',etapas:[['Exposição','EAD define quanto está em risco.'],['Severidade','LGD define quanto se perde no default.'],['Política','Custos e capacidade determinam o limiar.']]},
@@ -14091,12 +14091,62 @@ function guiaDaTelaV15(){
   interacao:'Três botões, Sobreajuste, Instabilidade e Explicação, cada um com sinal, resposta e evidência; na Explicação, botões de 4, 12 e 40 árvores.'});
 }
 
+/* Revisão 16: capítulo 5 no palco. Cabeçalhos curtos (título e objetivo numa linha a 1920 px, apoio só quando instrui
+   o uso da página), no mesmo espírito do redesenho dos visuais do capítulo (src/components/visuais). Apoio vazio some
+   do quadro. */
+function capitulo5NoPalcoV16(){
+ const muda=(id,o)=>{const p=pagPorId(id);if(p)Object.assign(p,o);};
+ muda('c5p1',{aprendizado:'Ler uma previsão como o caminho da raiz até uma folha.',apoio:''});
+ muda('c5p2',{titulo:'Perguntas em sequência fazem o que a soma não faz',aprendizado:'O efeito de uma variável passa a depender das outras, sem termo de interação.',apoio:'',conexao:'Para construir a árvore, primeiro os nomes das partes.'});
+ muda('c5p3',{titulo:'Anatomia da árvore',aprendizado:'Nó, regra, ramo, folha e profundidade, no diagrama que o capítulo inteiro usa.',apoio:'Clique em cada termo e veja a parte correspondente acesa.'});
+ muda('c5p4',{titulo:'Impureza: o quanto o grupo está misturado',aprendizado:'Máxima com metade de defaults, zero quando todos têm o mesmo desfecho.',apoio:'Mova a proporção de defaults e compare Gini e entropia.',conexao:'Com a medida definida, dá para pontuar um corte.'});
+ muda('c5p5',{aprendizado:'O Gini de um grupo, contado à mão.',apoio:'Compare a raiz, uma folha pura e uma folha mista.',conexao:'Agora, um corte candidato avaliado com essa referência.'});
+ muda('c5p6',{aprendizado:'O ganho é a impureza que o corte remove, ponderada pelo tamanho de cada lado.',apoio:'Escolha a variável e mova o corte: as contas aparecem na hora.',conexao:'Testar um por um é o que o algoritmo faz, e depressa.'});
+ muda('c5p7',{titulo:'A disputa pela raiz',aprendizado:'Vence o corte de maior ganho, não o que parece melhor no desenho.',apoio:'Mova o corte candidato e compare as barras.',conexao:'O vencedor vira a raiz.'});
+ muda('c5p8',{aprendizado:'Um corte já separa a base em 12,5% e 87,5% de default.',apoio:'Duas propostas ficam do lado errado: a #2 e a #15.'});
+ muda('c5p9',{aprendizado:'Cada nó resolve o seu problema só com os casos que chegaram até ele.',apoio:'Alterne os dois lados e veja a mesma varredura dar regras diferentes.',conexao:'Feita a recursão, a árvore está completa.'});
+ muda('c5p10',{aprendizado:'A folha dá uma taxa; o tamanho da folha diz quanto ela vale.',apoio:'',conexao:'A taxa da folha explica a árvore; falta testar se ela generaliza.'});
+ muda('c5p11',{titulo:'Percorrer a árvore',aprendizado:'O caminho da raiz à folha é a explicação completa da decisão.',apoio:'Mova os valores e siga o caminho aceso, regra por regra.'});
+ muda('c5p12',{titulo:'A previsão da folha é a frequência da folha',aprendizado:'É o valor que minimiza a log loss no grupo, como no capítulo 2.',apoio:''});
+ muda('c5p13',{titulo:'Quanto cada folha afirma',aprendizado:'Folhas pequenas produzem intervalos largos demais para decidir.',apoio:''});
+ muda('c5p14',{titulo:'Os dois freios da árvore',aprendizado:'Profundidade limita as perguntas; o mínimo por folha limita o tamanho do grupo.',apoio:'Mova os dois controles e olhe a menor folha, não o erro.',conexao:'Há uma terceira forma de controlar a complexidade, depois de construir.'});
+ muda('c5p15',{titulo:'Poda: crescer e depois cortar',aprendizado:'Cada folha tem um preço; a poda pesa impureza contra número de folhas.',apoio:'Mova o preço da folha e veja qual árvore vence.'});
+ muda('c5p16',{titulo:'Instabilidade: uma proposta pode trocar a estrutura',aprendizado:'Com ganhos empatados, tirar um caso muda a variável escolhida.',apoio:'Retire uma proposta: a raiz resiste, o nó direito não.'});
+ muda('c5p17',{titulo:'Gini ou entropia: a conclusão não muda',aprendizado:'Trocar a medida de impureza raramente muda a árvore.',apoio:'A varredura da página 7, refeita com entropia.',conexao:'A comparação que importa é entre famílias.'});
+ muda('c5p18',{aprendizado:'Uma fronteira suave contra regiões em degraus, proposta a proposta.',apoio:'Use #5, #10 e #15 ou clique numa proposta e compare o modo de errar.'});
+ muda('c5p19',{aprendizado:'Partição por busca gulosa, previsão por frequência e complexidade sob controle.',apoio:'Explique cada ideia com suas palavras antes de revelar.'});
+ /* guia do professor das páginas redesenhadas: a leitura descreve a peça nova, na página de estudo */
+ const guia=(id,o)=>{const p=pagPorId(id);if(p)p.guia=Object.assign({},p.guia||{},o);};
+ guia('c5p1',{conducao:'Percorra as três etapas em ordem e leia a legenda de cada uma. Antes da segunda, peça que a turma diga, lendo as regras da árvore, em que folha cai a #15, com 90% de utilização e sem atraso. Feche com o desafio: cada corte é uma pergunta; cada folha resume os casos que seguiram o mesmo caminho.',
+  leitura:'À esquerda, o desafio e as três etapas, Corte, Caminho e Freio; à direita, a árvore de profundidade 2 das 16 propostas, que acende a parte de que cada etapa fala: a regra da raiz, o caminho da #15 e os dois níveis. A legenda sob a árvore muda com a etapa. O infográfico e o mapa das páginas estão na página do capítulo.',
+  interacao:'Três botões de etapa, 1. Corte, 2. Caminho e 3. Freio: cada um acende uma parte da árvore e troca a legenda. A árvore é crescida no navegador sobre as 16 propostas.'});
+ guia('c5p2',{conducao:'Projete os dois planos e pergunte por que nenhuma posição da reta deixa a #2 e a #15 do lado certo ao mesmo tempo. A reta aplica o mesmo efeito em todo o plano; a árvore corta em faixas e dá a cada faixa a sua taxa. Mostre então que a árvore também não acerta as duas: deixa cada uma numa região de 50%, sem afirmar o contrário e sem decidir.',
+  leitura:'Dois planos na mesma escala. À esquerda, a reta de PD 50% da logística do capítulo 4, com as quatro propostas do lado errado em anel dourado; à direita, as quatro regiões da árvore de profundidade 2, com a taxa de cada uma e a #2 e a #15 em anel. Embaixo, o que a árvore ganha e o que perde.',
+  pergunta:'Quantos cortes a mais a árvore precisaria para isolar a #15?',
+  resposta:'Um: um corte entre a #15 e a #16, dentro da faixa acima de 87,5% de utilização, em utilização ou em atraso. A folha resultante teria uma única proposta, o que o capítulo 2 já mostrou ser inútil.',
+  interacao:'Página expositiva: a reta sai dos coeficientes da aula e as regiões, da árvore do capítulo, as duas calculadas no navegador.',
+  erros:[{alt:'Concluir que a árvore é superior',confusao:'Lê flexibilidade como qualidade sem contabilizar o custo.',intervencao:'Aponte a lista A árvore perde. Salto na fronteira e instabilidade são custos reais em política de crédito.'}]});
+ guia('c5p8',{conducao:'Antes de apontar os destaques, leia as duas listas em voz alta e peça que a turma diga quem está fora do padrão: a #2, que deu default no grupo de 12,5%, e a #15, que pagou no de 87,5%.',
+  leitura:'À esquerda, os dois grupos do corte em 57,5%, com taxa, contagem e lista de propostas, a #2 e a #15 em negrito, e a conferência independente; à direita, o plano dividido no corte, com as duas em anel dourado. Embaixo, a frase que as nomeia.',
+  interacao:'Página expositiva: grupos e taxas saem da árvore crescida no navegador; o corte confere com o gerador em Python e com o scikit-learn.'});
+ guia('c5p10',{conducao:'Leia o caminho aceso em voz alta: utilização até 57,5%? Não. Até 87,5%? Não. Cubra o cartão da folha e pergunte a PD da #15. A folha responde 50%, mas a #15 pagou: a taxa é do grupo, e o grupo tem duas propostas.',
+  leitura:'À esquerda, a árvore com o caminho da #15 aceso e as duas respostas embaixo; à direita, o cartão da folha: taxa, contagem, quem está nela e a barra do intervalo de 95%, de 9,5% a 90,5%.',
+  interacao:'Página expositiva: caminho, taxa e intervalo de Wilson calculados no navegador sobre a árvore do capítulo.'});
+ guia('c5p12',{conducao:'Cubra a tabela e a curva e pergunte: qual valor vocês atribuiriam a essa folha? A resposta espontânea é a frequência, e é a correta. Descubra e mostre que existe razão: é o mínimo da perda.',
+  leitura:'À esquerda, a folha, com 1 default em 2 propostas, e a perda média de cinco valores atribuídos; à direita, a curva inteira, com o mínimo em 50,0%. Embaixo, três consequências, uma por linha.'});
+ guia('c5p13',{conducao:'Projete as barras e pergunte quais folhas são comprovadamente diferentes entre si. As barras sugerem; quem decide é o teste da diferença, no capítulo 7. Aqui ele separa só a folha de 0% da de 100% (teste exato de Fisher, p ≈ 0,002); as de 50%, com duas propostas cada, não se distinguem de nenhuma outra (p = 0,25).',
+  leitura:'À esquerda, a tabela das quatro folhas, com n, defaults, PD e intervalo de 95%; à direita, as mesmas folhas em barras de intervalo. Embaixo, duas leituras: a folha de duas propostas e a mesma PD de 0% com 600 propostas. Compare larguras com distâncias.'});
+ guia('c5p17',{conducao:'Mostre a tabela e pergunte qual dos dois critérios é o certo. Os dois escolhem a mesma raiz, utilização até 57,5%. Encerre o assunto em dois minutos.',
+  leitura:'À esquerda, o melhor corte e o ganho de cada variável pelos dois critérios, com a nota sob a tabela; à direita, o que muda a árvore, por ordem de impacto, e quando o critério importa.'});
+}
+
 function inicia(){
   narrativaVisualV6();
   trabalhoFinalV10();
   experienciaV13();
   narrativaAula2V14();
   guiaDaTelaV15();
+  capitulo5NoPalcoV16();
   const q=new URLSearchParams(location.hash.split('?')[1]||'');
   if(q.get('m')==='aluno')MODO='aluno';
   if(q.get('m')==='projecao')MODO='apresentacao';

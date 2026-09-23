@@ -596,3 +596,57 @@ describe("letras gregas em cabeçalhos em caixa alta (c4p17, c4p19, c5p15, c6p8)
     expect(html("Parâmetro")).toBe("Parâmetro");
   });
 });
+
+describe("capítulo 5 no palco: as peças redesenhadas exibem os números conferidos (c5p1, c5p2, c5p8, c5p10, c5p12, c5p13, c5p17)", async () => {
+  const { createElement } = await import("react");
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  const BASE = did.base as Proposta[];
+  const texto = (html: string) => html.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&gt;/g, ">").replace(/&lt;/g, "<");
+  const { AberturaArvores } = await import("@/components/visuais/abertura-arvores");
+  const { RetaOuDegraus } = await import("@/components/visuais/reta-ou-degraus");
+  const { RaizEscolhida } = await import("@/components/visuais/raiz-escolhida");
+  const { UmaProposta } = await import("@/components/visuais/uma-proposta");
+  const { ValorDaFolha } = await import("@/components/visuais/valor-da-folha");
+  const { ConfiancaDaFolha } = await import("@/components/visuais/confianca-da-folha");
+  const { GiniOuEntropia } = await import("@/components/visuais/gini-ou-entropia");
+  const render = (c: (props: any) => React.ReactNode, props: Record<string, unknown> = {}) => texto(renderToStaticMarkup(createElement(c, props)));
+  it("a abertura nativa do registro é a mesma que o palco dispensa do infográfico", async () => {
+    const { PAGINAS_COM_EPISODIO_NATIVO } = await import("@/components/visuais/registro");
+    const { ABERTURA_NATIVA } = await import("@/lib/visuais/palco-proprio");
+    expect([...PAGINAS_COM_EPISODIO_NATIVO].sort()).toEqual([...ABERTURA_NATIVA].sort());
+  });
+  it("c5p1: o desafio vem do conteúdo e a primeira legenda é a regra da raiz", async () => {
+    const t = render(AberturaArvores, { episodio: { type: "episode", number: 5, challenge: "Desafio X", text: "Texto Y", steps: [{ title: "Corte", detail: "d1" }, { title: "Caminho", detail: "d2" }, { title: "Freio", detail: "d3" }] } });
+    expect(t).toContain("Desafio X"); expect(t).toContain("Texto Y"); expect(t).toContain("utilização até 57,5%");
+  });
+  it("c5p2: do lado errado da reta, #2, #5, #10 e #15; o mínimo deslocando a reta é 3; regiões 50%, 0%, 100% e 50%", async () => {
+    const t = render(RetaOuDegraus);
+    expect(t).toContain("#2, #5, #10 e #15"); expect(t).toContain("o mínimo é 3");
+    const z = BASE.map((p) => escore(BETA_AULA, p.util, p.atraso).z);
+    const erros = (c: number) => BASE.filter((p, i) => (z[i] >= c ? 1 : 0) !== p.y).length;
+    expect(Math.min(...[...z, Infinity].map(erros))).toBe(3);
+    expect(folhas(crescer(BASE, 2)).map((f) => f.d / f.n)).toEqual([0.5, 0, 1, 0.5]);
+  });
+  it("c5p8: utilização ≤ 57,5% com 1 default em 8 (12,5%) e > 57,5% com 7 em 8 (87,5%)", async () => {
+    const t = render(RaizEscolhida);
+    expect(t).toContain("12,5%"); expect(t).toContain("1 default em 8"); expect(t).toContain("87,5%"); expect(t).toContain("7 defaults em 8");
+  });
+  it("c5p10: a #15 responde não e não, cai com a #16 numa folha de 50% e o intervalo vai de 9,5% a 90,5%, 81 pontos", async () => {
+    const t = render(UmaProposta);
+    expect(t).toContain("utilização ≤ 57,5%? não"); expect(t).toContain("utilização ≤ 87,5%? não");
+    expect(t).toContain("a #16, que deu default"); expect(t).toContain("9,5% a 90,5%"); expect(t).toContain("81 pontos");
+  });
+  it("c5p12: perda média 1,20397 · 0,83699 · 0,69315 e mínimo na frequência, 50,0%", async () => {
+    const t = render(ValorDaFolha);
+    for (const v of ["1,20397", "0,83699", "0,69315"]) expect(t).toContain(v);
+    expect(t).toContain("1 ÷ 2 = 50,0%");
+  });
+  it("c5p13: intervalos 9,5% a 90,5% · 0,0% a 39,0% · 61,0% a 100,0%; 0 em 600 vai até 0,6%", async () => {
+    const t = render(ConfiancaDaFolha);
+    for (const v of ["9,5% a 90,5%", "0,0% a 39,0%", "61,0% a 100,0%", "0% a 0,6%"]) expect(t).toContain(v);
+  });
+  it("c5p17: Gini e entropia escolhem utilização 57,5 (0,28125 e 0,45644); no atraso o Gini empata 15 e 27,5 e a entropia fica com 27,5", async () => {
+    const t = render(GiniOuEntropia);
+    for (const v of ["0,28125", "0,45644", "15 ou 27,5", "0,07143", "0,13793"]) expect(t).toContain(v);
+  });
+});

@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "1ee0c6ed00be85a09b641670f1326792c2e2cbdb626c042aaee7641646457e28",
- "extractedAt": "2026-09-22T22:17:58.492Z",
+ "sourceSha256": "70ae1ec856cf7994355aa82f72f438a2d791c7cb0c7ba852a95e429c5af9e8ea",
+ "extractedAt": "2026-09-23T00:38:42.075Z",
  "meta": {
   "capitulos": [
    {
@@ -5302,24 +5302,24 @@
     "disc": 1
    },
    "origem": "esq",
-   "aprendizado": "Ler uma previsão como um caminho verificável da raiz até uma folha.",
-   "apoio": "Uma árvore divide propostas semelhantes. Cada corte é uma pergunta; cada folha resume os casos que seguiram o mesmo caminho.",
+   "aprendizado": "Ler uma previsão como o caminho da raiz até uma folha.",
+   "apoio": null,
    "conexao": "Começamos pela limitação que motivou a mudança de família.",
    "guia": {
     "funcao": "Ler uma previsão como um caminho verificável da raiz até uma folha.",
     "pre": "Capítulo 4 completo.",
-    "conducao": "Uma árvore divide propostas semelhantes. Cada corte é uma pergunta; cada folha resume os casos que seguiram o mesmo caminho.",
-    "leitura": "Leia a frase do desafio e percorra as três etapas, Corte, Caminho e Freio. O infográfico e o mapa das páginas estão na página do capítulo.",
+    "conducao": "Percorra as três etapas em ordem e leia a legenda de cada uma. Antes da segunda, peça que a turma diga, lendo as regras da árvore, em que folha cai a #15, com 90% de utilização e sem atraso. Feche com o desafio: cada corte é uma pergunta; cada folha resume os casos que seguiram o mesmo caminho.",
+    "leitura": "À esquerda, o desafio e as três etapas, Corte, Caminho e Freio; à direita, a árvore de profundidade 2 das 16 propostas, que acende a parte de que cada etapa fala: a regra da raiz, o caminho da #15 e os dois níveis. A legenda sob a árvore muda com a etapa. O infográfico e o mapa das páginas estão na página do capítulo.",
     "pergunta": "Quem já usou árvore em produção? Para quê?",
     "resposta": "Segmentação e regras de política, com mais frequência do que como modelo de PD. A razão aparece nas páginas 13 e 16, quando a incerteza da folha e a instabilidade forem medidas.",
     "erros": [],
-    "interacao": "Três botões de etapa, 1. Corte, 2. Caminho e 3. Freio, cada um com uma frase.",
+    "interacao": "Três botões de etapa, 1. Corte, 2. Caminho e 3. Freio: cada um acende uma parte da árvore e troca a legenda. A árvore é crescida no navegador sobre as 16 propostas.",
     "verificacao": "A turma sabe que o capítulo 6 depende deste.",
     "transicao": "A limitação, revisitada.",
     "aula": "Próxima em sala: c5p3. Diga: a árvore responde a esse par com perguntas em sequência; antes de construí-la, os nomes das partes. Fica para o estudo: c5p2, a pergunta condicionada."
    },
-   "html": "<div class=\"nv nv-episodio\"><div class=\"nv-episodio-num\"><small>capítulo</small><strong>05</strong></div><div class=\"nv-episodio-main\"><div class=\"rot\">O desafio deste capítulo</div><h3>Uma sequência de perguntas pode criar regiões de risco.</h3><p>A árvore procura cortes que deixam os grupos mais homogêneos e entrega uma frequência em cada folha.</p><div class=\"nv-episodio-rota\"><button type=\"button\" data-v13-episodio=\"0\" data-detalhe=\"Cada pergunta compete por redução de impureza.\" class=\"ativo\"><b>1. Corte</b>comece aqui</button><button type=\"button\" data-v13-episodio=\"1\" data-detalhe=\"Uma proposta percorre regras até uma folha.\" class=\"\"><b>2. Caminho</b>ver etapa</button><button type=\"button\" data-v13-episodio=\"2\" data-detalhe=\"Profundidade, folha mínima e poda controlam variância.\" class=\"\"><b>3. Freio</b>ver etapa</button></div><div class=\"nv-episodio-detalhe\" id=\"v13-episodio-detalhe\">Cada pergunta compete por redução de impureza.</div></div></div>",
-   "text": "CAPÍTULO\n05\nO DESAFIO DESTE CAPÍTULO\nUma sequência de perguntas pode criar regiões de risco.\n\nA árvore procura cortes que deixam os grupos mais homogêneos e entrega uma frequência em cada folha.\n\n1. Corte\ncomece aqui\n2. Caminho\nver etapa\n3. Freio\nver etapa\nCada pergunta compete por redução de impureza.",
+   "html": "<div class=\"nv nv-episodio\"><div class=\"nv-episodio-num\"><small>capítulo</small><strong>05</strong></div><div class=\"nv-episodio-main\"><div class=\"rot\">O desafio deste capítulo</div><h3>Uma sequência de perguntas pode criar regiões de risco.</h3><p>Cortes sucessivos formam grupos homogêneos; cada folha entrega a sua taxa.</p><div class=\"nv-episodio-rota\"><button type=\"button\" data-v13-episodio=\"0\" data-detalhe=\"Cada pergunta compete por redução de impureza.\" class=\"ativo\"><b>1. Corte</b>comece aqui</button><button type=\"button\" data-v13-episodio=\"1\" data-detalhe=\"Uma proposta percorre regras até uma folha.\" class=\"\"><b>2. Caminho</b>ver etapa</button><button type=\"button\" data-v13-episodio=\"2\" data-detalhe=\"Profundidade, folha mínima e poda controlam variância.\" class=\"\"><b>3. Freio</b>ver etapa</button></div><div class=\"nv-episodio-detalhe\" id=\"v13-episodio-detalhe\">Cada pergunta compete por redução de impureza.</div></div></div>",
+   "text": "CAPÍTULO\n05\nO DESAFIO DESTE CAPÍTULO\nUma sequência de perguntas pode criar regiões de risco.\n\nCortes sucessivos formam grupos homogêneos; cada folha entrega a sua taxa.\n\n1. Corte\ncomece aqui\n2. Caminho\nver etapa\n3. Freio\nver etapa\nCada pergunta compete por redução de impureza.",
    "controls": [
     {
      "tag": "button",
@@ -5351,7 +5351,7 @@
    "id": "c5p2",
    "cap": 5,
    "n": 2,
-   "titulo": "A pergunta condicionada resolve o que a soma não resolve",
+   "titulo": "Perguntas em sequência fazem o que a soma não faz",
    "nivel": "complementar",
    "nivel120": "assincrono",
    "min": 8,
@@ -5361,24 +5361,24 @@
     "disc": 2
    },
    "origem": "rec",
-   "aprendizado": "Perguntas sucessivas permitem que o efeito de uma variável dependa do valor das outras, sem que a interação precise ser escrita à mão.",
-   "apoio": "A mesma base, duas maneiras de dividir o plano. Uma soma parcelas, a outra corta em retângulos.",
-   "conexao": "Para construir a árvore é preciso primeiro nomear suas partes.",
+   "aprendizado": "O efeito de uma variável passa a depender das outras, sem termo de interação.",
+   "apoio": null,
+   "conexao": "Para construir a árvore, primeiro os nomes das partes.",
    "guia": {
     "funcao": "Contrastar as duas geometrias antes de qualquer definição, para que o vocabulário da próxima página tenha referente visual.",
     "pre": "Fronteira da logística, capítulo 4 página 19.",
-    "conducao": "Projete as duas dispersões lado a lado e pergunte qual delas consegue isolar a #15. Nenhuma das duas isoladamente: a árvore consegue com dois cortes, e isso é justamente o sobreajuste do capítulo 2.",
-    "leitura": "Duas dispersões, depois as duas caixas de ganho e perda.",
-    "pergunta": "Quantos cortes seriam necessários para isolar a #15?",
-    "resposta": "Dois, um de cada lado dela em utilização. E a folha resultante teria uma única proposta, o que o capítulo 2 já mostrou ser inútil.",
+    "conducao": "Projete os dois planos e pergunte por que nenhuma posição da reta deixa a #2 e a #15 do lado certo ao mesmo tempo. A reta aplica o mesmo efeito em todo o plano; a árvore corta em faixas e dá a cada faixa a sua taxa. Mostre então que a árvore também não acerta as duas: deixa cada uma numa região de 50%, sem afirmar o contrário e sem decidir.",
+    "leitura": "Dois planos na mesma escala. À esquerda, a reta de PD 50% da logística do capítulo 4, com as quatro propostas do lado errado em anel dourado; à direita, as quatro regiões da árvore de profundidade 2, com a taxa de cada uma e a #2 e a #15 em anel. Embaixo, o que a árvore ganha e o que perde.",
+    "pergunta": "Quantos cortes a mais a árvore precisaria para isolar a #15?",
+    "resposta": "Um: um corte entre a #15 e a #16, dentro da faixa acima de 87,5% de utilização, em utilização ou em atraso. A folha resultante teria uma única proposta, o que o capítulo 2 já mostrou ser inútil.",
     "erros": [
      {
       "alt": "Concluir que a árvore é superior",
       "confusao": "Lê flexibilidade como qualidade sem contabilizar o custo.",
-      "intervencao": "Aponte a caixa do que se perde. Instabilidade e salto na fronteira são custos reais em política de crédito."
+      "intervencao": "Aponte a lista A árvore perde. Salto na fronteira e instabilidade são custos reais em política de crédito."
      }
     ],
-    "interacao": "Página expositiva com as duas fronteiras calculadas no navegador.",
+    "interacao": "Página expositiva: a reta sai dos coeficientes da aula e as regiões, da árvore do capítulo, as duas calculadas no navegador.",
     "verificacao": "O aluno descreve a fronteira da árvore como escalonada e paralela aos eixos.",
     "transicao": "Vocabulário."
    },
@@ -5396,7 +5396,7 @@
    "id": "c5p3",
    "cap": 5,
    "n": 3,
-   "titulo": "Anatomia: nó, regra, ramo, folha, profundidade",
+   "titulo": "Anatomia da árvore",
    "nivel": "essencial",
    "nivel120": "essencial",
    "min": 8,
@@ -5406,8 +5406,8 @@
     "disc": 2
    },
    "origem": "esq",
-   "aprendizado": "Cada elemento da árvore tem nome e função, e a profundidade conta divisões, não nós.",
-   "apoio": "Uma árvore de duas divisões com todas as partes rotuladas. O diagrama é o mesmo que será usado em todo o capítulo.",
+   "aprendizado": "Nó, regra, ramo, folha e profundidade, no diagrama que o capítulo inteiro usa.",
+   "apoio": "Clique em cada termo e veja a parte correspondente acesa.",
    "conexao": "Falta o critério que escolhe a regra de cada nó.",
    "guia": {
     "funcao": "Fixar o vocabulário com o diagrama que será reusado em todas as páginas seguintes.",
@@ -5454,7 +5454,7 @@
    "id": "c5p4",
    "cap": 5,
    "n": 4,
-   "titulo": "Impureza: uma medida de quanto o grupo está misturado",
+   "titulo": "Impureza: o quanto o grupo está misturado",
    "nivel": "essencial",
    "nivel120": "essencial",
    "min": 8,
@@ -5464,9 +5464,9 @@
     "prat": 2
    },
    "origem": "rec",
-   "aprendizado": "Impureza é máxima quando o grupo está meio a meio e zero quando todos têm o mesmo desfecho, e é a quantidade que a divisão tenta reduzir.",
-   "apoio": "Mova a composição do grupo e acompanhe as duas medidas mais usadas. A escolha entre elas raramente muda a árvore.",
-   "conexao": "Com a medida definida, é possível pontuar um corte.",
+   "aprendizado": "Máxima com metade de defaults, zero quando todos têm o mesmo desfecho.",
+   "apoio": "Mova a proporção de defaults e compare Gini e entropia.",
+   "conexao": "Com a medida definida, dá para pontuar um corte.",
    "guia": {
     "funcao": "Construir o critério de divisão como medida de mistura, antes de aplicá-lo a qualquer corte.",
     "pre": "Prevalência e probabilidade condicional.",
@@ -5518,9 +5518,9 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Interpretar o Gini como mistura de desfechos dentro de um nó.",
-   "apoio": "Compare a raiz, uma folha pura e uma folha mista. A árvore procura cortes que reduzam essa mistura.",
-   "conexao": "Agora um corte candidato, avaliado com essa referência.",
+   "aprendizado": "O Gini de um grupo, contado à mão.",
+   "apoio": "Compare a raiz, uma folha pura e uma folha mista.",
+   "conexao": "Agora, um corte candidato avaliado com essa referência.",
    "guia": {
     "funcao": "Fixar a referência numérica do capítulo com uma conta que qualquer aluno refaz em dez segundos.",
     "pre": "Impureza.",
@@ -5583,9 +5583,9 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Um corte é avaliado pela redução da impureza que produz, ponderada pelo tamanho dos dois grupos resultantes.",
-   "apoio": "Escolha a variável e o ponto de corte. Todas as contas aparecem, inclusive quais propostas foram para cada lado.",
-   "conexao": "Testar um por um é exatamente o que o algoritmo faz, e ele faz depressa.",
+   "aprendizado": "O ganho é a impureza que o corte remove, ponderada pelo tamanho de cada lado.",
+   "apoio": "Escolha a variável e mova o corte: as contas aparecem na hora.",
+   "conexao": "Testar um por um é o que o algoritmo faz, e depressa.",
    "guia": {
     "funcao": "Tornar a conta do ganho completamente transparente, com as propostas de cada lado visíveis, antes de automatizar a busca.",
     "pre": "Gini da raiz.",
@@ -5691,7 +5691,7 @@
    "id": "c5p7",
    "cap": 5,
    "n": 7,
-   "titulo": "A disputa entre os cortes da raiz",
+   "titulo": "A disputa pela raiz",
    "nivel": "essencial",
    "nivel120": "essencial",
    "min": 10,
@@ -5702,9 +5702,9 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Comparar candidatos pela redução ponderada de impureza, não pela aparência do diagrama.",
-   "apoio": "Abra três candidatos. O vencedor é aquele que deixa os dois lados mais homogêneos.",
-   "conexao": "Escolhido o vencedor, ele vira a raiz.",
+   "aprendizado": "Vence o corte de maior ganho, não o que parece melhor no desenho.",
+   "apoio": "Mova o corte candidato e compare as barras.",
+   "conexao": "O vencedor vira a raiz.",
    "guia": {
     "funcao": "Mostrar que a escolha da divisão é busca exaustiva, e introduzir a margem como critério de estabilidade.",
     "pre": "Avaliação de um corte.",
@@ -5773,14 +5773,14 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Uma única divisão já separa a base em dois grupos com taxas de default muito diferentes, e o que sobra em cada lado é o problema seguinte.",
-   "apoio": "Utilização em 57,5%. Duas propostas ficam do lado errado, e elas serão o tema do resto do capítulo.",
+   "aprendizado": "Um corte já separa a base em 12,5% e 87,5% de default.",
+   "apoio": "Duas propostas ficam do lado errado: a #2 e a #15.",
    "conexao": "Dentro de cada lado, a mesma pergunta de novo.",
    "guia": {
     "funcao": "Consolidar a primeira divisão com conferência tripla e apresentar as duas exceções que estruturam o resto do capítulo.",
     "pre": "Varredura.",
-    "conducao": "Leia as duas listas de propostas em voz alta e peça que a turma identifique quem está fora do padrão. São a #2 e a #15.",
-    "leitura": "Dois blocos com as listas de cada lado, a conferência independente e a dispersão com as duas propostas destacadas, seguida da caixa As duas destacadas.",
+    "conducao": "Antes de apontar os destaques, leia as duas listas em voz alta e peça que a turma diga quem está fora do padrão: a #2, que deu default no grupo de 12,5%, e a #15, que pagou no de 87,5%.",
+    "leitura": "À esquerda, os dois grupos do corte em 57,5%, com taxa, contagem e lista de propostas, a #2 e a #15 em negrito, e a conferência independente; à direita, o plano dividido no corte, com as duas em anel dourado. Embaixo, a frase que as nomeia.",
     "pergunta": "Uma divisão que leva a taxa de 50% para 12,5% e 87,5% é boa?",
     "resposta": "Para ordenar, sim, e é muito boa. Para decidir, falta saber o quanto se pode confiar em cada uma dessas duas taxas, o que é a página 13.",
     "erros": [
@@ -5790,7 +5790,7 @@
       "intervencao": "Pergunte quantas propostas sustentam a taxa de 12,5%. Oito."
      }
     ],
-    "interacao": "Página expositiva com conferência calculada em três fontes.",
+    "interacao": "Página expositiva: grupos e taxas saem da árvore crescida no navegador; o corte confere com o gerador em Python e com o scikit-learn.",
     "verificacao": "O aluno cita a #2 e a #15 espontaneamente.",
     "transicao": "Recursão."
    },
@@ -5819,9 +5819,9 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Entender que cada nó filho resolve um problema local com apenas os casos que chegaram até ele.",
-   "apoio": "Alterne os dois lados da raiz e veja como a mesma varredura produz regras diferentes.",
-   "conexao": "Executada a recursão, a árvore está completa.",
+   "aprendizado": "Cada nó resolve o seu problema só com os casos que chegaram até ele.",
+   "apoio": "Alterne os dois lados e veja a mesma varredura dar regras diferentes.",
+   "conexao": "Feita a recursão, a árvore está completa.",
    "guia": {
     "funcao": "Mostrar que a recursão não introduz conceito novo e nomear explicitamente o caráter guloso do algoritmo.",
     "pre": "Varredura e raiz.",
@@ -5883,17 +5883,17 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Seguir um caso concreto e interpretar a taxa da folha junto com seu tamanho.",
-   "apoio": "Este é o caso #15 da base didática de 16 propostas. Ele não é o cliente VAL-0187 usado na comparação posterior.",
-   "conexao": "A taxa da folha explica a árvore; agora precisamos testar se ela generaliza.",
+   "aprendizado": "A folha dá uma taxa; o tamanho da folha diz quanto ela vale.",
+   "apoio": null,
+   "conexao": "A taxa da folha explica a árvore; falta testar se ela generaliza.",
    "guia": {
     "funcao": "Seguir um caso concreto e interpretar a taxa da folha junto com seu tamanho.",
     "pre": "Cortes da árvore e frequência na folha.",
-    "conducao": "Este é o caso #15 da base didática de 16 propostas. Ele não é o cliente VAL-0187 usado na comparação posterior.",
-    "leitura": "Leia primeiro a figura central; use os detalhes como evidência somente depois que a turma formular uma hipótese.",
+    "conducao": "Leia o caminho aceso em voz alta: utilização até 57,5%? Não. Até 87,5%? Não. Cubra o cartão da folha e pergunte a PD da #15. A folha responde 50%, mas a #15 pagou: a taxa é do grupo, e o grupo tem duas propostas.",
+    "leitura": "À esquerda, a árvore com o caminho da #15 aceso e as duas respostas embaixo; à direita, o cartão da folha: taxa, contagem, quem está nela e a barra do intervalo de 95%, de 9,5% a 90,5%.",
     "pergunta": "A proposta #15 deu default? E o que esta folha autoriza a afirmar sobre o risco do grupo?",
     "resposta": "Não: a folha tem outra proposta, #16, que deu default, e por isso a frequência é 50%. Sobre o grupo, praticamente nada: o intervalo de 95% vai de 9,5% a 90,5%. Com duas propostas, a folha não distingue um grupo excelente de um grupo péssimo.",
-    "interacao": "Página expositiva calculada a partir da base didática.",
+    "interacao": "Página expositiva: caminho, taxa e intervalo de Wilson calculados no navegador sobre a árvore do capítulo.",
     "verificacao": "O aluno não confunde desfecho individual com taxa da folha.",
     "transicao": "Discutir folha mínima e generalização.",
     "erros": [
@@ -5919,7 +5919,7 @@
    "id": "c5p11",
    "cap": 5,
    "n": 11,
-   "titulo": "Percorrer a árvore: a explicação completa de uma decisão",
+   "titulo": "Percorrer a árvore",
    "nivel": "complementar",
    "nivel120": "assincrono",
    "min": 9,
@@ -5930,8 +5930,8 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "O caminho da raiz até a folha é a justificativa integral da previsão de uma proposta, e pode ser lido por qualquer pessoa.",
-   "apoio": "Escolha os valores e veja o caminho aceso, regra por regra, com a decisão de cada bifurcação escrita.",
+   "aprendizado": "O caminho da raiz à folha é a explicação completa da decisão.",
+   "apoio": "Mova os valores e siga o caminho aceso, regra por regra.",
    "conexao": "A folha devolve uma taxa. De onde vem essa taxa?",
    "guia": {
     "funcao": "Demonstrar a auditabilidade individual da árvore, que é sua principal vantagem prática sobre o boosting.",
@@ -6002,7 +6002,7 @@
    "id": "c5p12",
    "cap": 5,
    "n": 12,
-   "titulo": "A previsão da folha é a frequência da folha, e isso não é convenção",
+   "titulo": "A previsão da folha é a frequência da folha",
    "nivel": "complementar",
    "nivel120": "assincrono",
    "min": 9,
@@ -6013,14 +6013,14 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "O valor que minimiza a log loss dentro de um grupo é a proporção observada nesse grupo, o mesmo resultado obtido no capítulo 2.",
-   "apoio": "A folha não escolhe um valor arbitrário: ela resolve, dentro do grupo, exatamente o problema de minimização da página 11 do capítulo 2.",
+   "aprendizado": "É o valor que minimiza a log loss no grupo, como no capítulo 2.",
+   "apoio": null,
    "conexao": "Quanto uma folha realmente afirma?",
    "guia": {
     "funcao": "Fechar a ligação entre árvore e o critério do capítulo 2, e mostrar que a previsão da folha é resultado e não convenção.",
     "pre": "Função de perda, capítulo 2 página 11.",
-    "conducao": "Pergunte antes de mostrar a tabela: qual valor vocês atribuiriam a essa folha? A resposta espontânea é a frequência, e é a correta. Mostre que existe razão.",
-    "leitura": "Tabela de cinco candidatos e curva de log loss dentro do grupo, com o mínimo em 50,0%.",
+    "conducao": "Cubra a tabela e a curva e pergunte: qual valor vocês atribuiriam a essa folha? A resposta espontânea é a frequência, e é a correta. Descubra e mostre que existe razão: é o mínimo da perda.",
+    "leitura": "À esquerda, a folha, com 1 default em 2 propostas, e a perda média de cinco valores atribuídos; à direita, a curva inteira, com o mínimo em 50,0%. Embaixo, três consequências, uma por linha.",
     "pergunta": "Por que a curva sobe tão rápido perto de zero?",
     "resposta": "Porque a folha tem um default. Atribuir probabilidade quase nula a um evento observado é o erro mais caro na log loss, como no capítulo 2.",
     "erros": [
@@ -6048,7 +6048,7 @@
    "id": "c5p13",
    "cap": 5,
    "n": 13,
-   "titulo": "A confiabilidade de cada folha, calculada",
+   "titulo": "Quanto cada folha afirma",
    "nivel": "complementar",
    "nivel120": "assincrono",
    "min": 10,
@@ -6059,14 +6059,14 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "A taxa de uma folha é uma estimativa com intervalo, e folhas pequenas produzem intervalos largos demais para sustentar decisão.",
-   "apoio": "As quatro folhas da árvore, com intervalo de Wilson a 95%. Compare a largura com a distância entre as folhas.",
+   "aprendizado": "Folhas pequenas produzem intervalos largos demais para decidir.",
+   "apoio": null,
    "conexao": "Se folhas pequenas não afirmam nada, é preciso impedir que elas apareçam.",
    "guia": {
     "funcao": "Aplicar a incerteza do capítulo 2 à estrutura da árvore, e justificar numericamente o mínimo de casos por folha.",
     "pre": "Intervalo de Wilson, capítulo 2 página 16.",
-    "conducao": "Projete o gráfico de barras e pergunte quais folhas são comprovadamente diferentes entre si. Nenhuma, com este volume.",
-    "leitura": "Tabela das quatro folhas, com n, defaults, PD, intervalo e largura, e as barras de intervalo. Compare larguras com distâncias.",
+    "conducao": "Projete as barras e pergunte quais folhas são comprovadamente diferentes entre si. As barras sugerem; quem decide é o teste da diferença, no capítulo 7. Aqui ele separa só a folha de 0% da de 100% (teste exato de Fisher, p ≈ 0,002); as de 50%, com duas propostas cada, não se distinguem de nenhuma outra (p = 0,25).",
+    "leitura": "À esquerda, a tabela das quatro folhas, com n, defaults, PD e intervalo de 95%; à direita, as mesmas folhas em barras de intervalo. Embaixo, duas leituras: a folha de duas propostas e a mesma PD de 0% com 600 propostas. Compare larguras com distâncias.",
     "pergunta": "A folha de 0% prova que aquele grupo não dá default?",
     "resposta": "Não. O intervalo vai até 39,0%. Com seis propostas, zero defaults observados é compatível com risco alto.",
     "erros": [
@@ -6154,7 +6154,7 @@
    "id": "c5p14",
    "cap": 5,
    "n": 14,
-   "titulo": "Os dois freios: profundidade e mínimo de casos por folha",
+   "titulo": "Os dois freios da árvore",
    "nivel": "complementar",
    "nivel120": "assincrono",
    "min": 10,
@@ -6165,9 +6165,9 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Profundidade limita quantas perguntas se pode fazer e o mínimo por folha limita quão pequeno um grupo pode ficar, e os dois são hiperparâmetros.",
-   "apoio": "Ajuste os dois e acompanhe a árvore, o número de folhas, a menor folha e o erro na amostra ao mesmo tempo.",
-   "conexao": "Existe uma terceira forma de controlar complexidade, aplicada depois de construir.",
+   "aprendizado": "Profundidade limita as perguntas; o mínimo por folha limita o tamanho do grupo.",
+   "apoio": "Mova os dois controles e olhe a menor folha, não o erro.",
+   "conexao": "Há uma terceira forma de controlar a complexidade, depois de construir.",
    "guia": {
     "funcao": "Tornar tangível o efeito dos dois hiperparâmetros na estrutura e na incerteza, e não apenas no erro.",
     "pre": "Confiabilidade da folha; hiperparâmetro, capítulo 2.",
@@ -6218,7 +6218,7 @@
    "id": "c5p15",
    "cap": 5,
    "n": 15,
-   "titulo": "Poda: crescer primeiro, cortar depois, com um preço por folha",
+   "titulo": "Poda: crescer e depois cortar",
    "nivel": "complementar",
    "nivel120": "assincrono",
    "min": 9,
@@ -6229,8 +6229,8 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "A poda por custo de complexidade compara impureza e número de folhas usando um parâmetro que define o preço de cada folha.",
-   "apoio": "Quatro árvores da mesma base, avaliadas pelo mesmo critério. Mova o preço da folha e veja qual vence.",
+   "aprendizado": "Cada folha tem um preço; a poda pesa impureza contra número de folhas.",
+   "apoio": "Mova o preço da folha e veja qual árvore vence.",
    "conexao": "Falta olhar a estabilidade da estrutura.",
    "guia": {
     "funcao": "Apresentar a poda como escolha explícita de preço por complexidade, e usar um resultado contraintuitivo desta base para explicar por que a poda é feita por elo mais fraco.",
@@ -6271,7 +6271,7 @@
    "id": "c5p16",
    "cap": 5,
    "n": 16,
-   "titulo": "Instabilidade: uma observação pode trocar a estrutura",
+   "titulo": "Instabilidade: uma proposta pode trocar a estrutura",
    "nivel": "complementar",
    "nivel120": "assincrono",
    "min": 8,
@@ -6282,8 +6282,8 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Quando dois cortes candidatos têm ganhos próximos, remover uma única observação pode mudar a variável escolhida, e a árvore resultante parece outro modelo.",
-   "apoio": "Retire uma proposta e observe a raiz e o nó direito. A raiz resiste, e o nó direito não.",
+   "aprendizado": "Com ganhos empatados, tirar um caso muda a variável escolhida.",
+   "apoio": "Retire uma proposta: a raiz resiste, o nó direito não.",
    "conexao": "Falta comparar as duas famílias com honestidade.",
    "guia": {
     "funcao": "Demonstrar experimentalmente a instabilidade da árvore, que é o argumento central a favor de ensembles no capítulo 6.",
@@ -6379,7 +6379,7 @@
    "id": "c5p17",
    "cap": 5,
    "n": 17,
-   "titulo": "Gini ou entropia: o critério não muda a conclusão aqui",
+   "titulo": "Gini ou entropia: a conclusão não muda",
    "nivel": "complementar",
    "nivel120": "assincrono",
    "min": 8,
@@ -6390,14 +6390,14 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Trocar a medida de impureza raramente muda a árvore, e afirmar que uma é superior exige evidência que geralmente não existe.",
-   "apoio": "A mesma varredura da página 7, refeita com entropia. Compare os vencedores.",
-   "conexao": "A comparação que de fato importa é entre famílias.",
+   "aprendizado": "Trocar a medida de impureza raramente muda a árvore.",
+   "apoio": "A varredura da página 7, refeita com entropia.",
+   "conexao": "A comparação que importa é entre famílias.",
    "guia": {
     "funcao": "Encerrar um debate frequente com evidência, e realocar a atenção para o que efetivamente move o resultado.",
     "pre": "Impureza e varredura.",
-    "conducao": "Mostre a tabela e pergunte qual das duas colunas é a certa. As duas escolhem o mesmo corte. Encerre o assunto em dois minutos.",
-    "leitura": "Tabela comparativa de Gini e entropia e, depois das notas, a tabela de quando a escolha do critério importa.",
+    "conducao": "Mostre a tabela e pergunte qual dos dois critérios é o certo. Os dois escolhem a mesma raiz, utilização até 57,5%. Encerre o assunto em dois minutos.",
+    "leitura": "À esquerda, o melhor corte e o ganho de cada variável pelos dois critérios, com a nota sob a tabela; à direita, o que muda a árvore, por ordem de impacto, e quando o critério importa.",
     "pergunta": "Por que não comparar os valores de ganho entre os dois critérios?",
     "resposta": "Porque estão em unidades diferentes. Entropia em bits, Gini em probabilidade de erro. Só a ordenação dos cortes dentro de cada critério é comparável.",
     "erros": [
@@ -6436,8 +6436,8 @@
     "disc": 2
    },
    "origem": "rec",
-   "aprendizado": "Comparar como uma fronteira suave e regiões em degraus tratam a mesma proposta.",
-   "apoio": "Use os três atalhos, #5, #10 e #15, ou clique em qualquer proposta do plano. O objetivo é entender o modo de errar de cada família, não proclamar um vencedor.",
+   "aprendizado": "Uma fronteira suave contra regiões em degraus, proposta a proposta.",
+   "apoio": "Use #5, #10 e #15 ou clique numa proposta e compare o modo de errar.",
    "conexao": "Se a árvore é instável e a logística é rígida, existe uma terceira via.",
    "guia": {
     "funcao": "Fazer a comparação de forma explicitamente insuficiente, para que a necessidade de um protocolo de comparação fique estabelecida antes do capítulo 7.",
@@ -6501,8 +6501,8 @@
     "prat": 2
    },
    "origem": "esq",
-   "aprendizado": "A árvore é uma partição escolhida por busca gulosa, com previsão por frequência na folha e complexidade controlada por hiperparâmetros.",
-   "apoio": "Escolha uma ideia e explique com suas próprias palavras antes de revelar a resposta.",
+   "aprendizado": "Partição por busca gulosa, previsão por frequência e complexidade sob controle.",
+   "apoio": "Explique cada ideia com suas palavras antes de revelar.",
    "conexao": "A árvore acerta a #10, que a reta subestimava, e deixa a #15 numa folha de duas propostas. O capítulo 6 soma árvores pequenas, cada uma corrigindo o que o conjunto ainda erra.",
    "guia": {
     "funcao": "Consolidar o capítulo em três ideias e emendar no capítulo 6 pela tensão entre estabilidade e precisão, que é a motivação real do boosting.",

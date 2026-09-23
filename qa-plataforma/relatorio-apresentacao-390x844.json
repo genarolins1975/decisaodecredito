@@ -182,7 +182,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 83,
+  "caixas": 86,
   "quando": null,
   "ok": true
  },
@@ -193,7 +193,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 57,
+  "caixas": 60,
   "quando": null,
   "ok": true
  },
@@ -248,7 +248,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 39,
+  "caixas": 49,
   "quando": null,
   "ok": true
  },
@@ -259,7 +259,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 36,
+  "caixas": 52,
   "quando": null,
   "ok": true
  },
@@ -270,7 +270,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 65,
+  "caixas": 62,
   "quando": null,
   "ok": true
  },
@@ -281,7 +281,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 62,
+  "caixas": 59,
   "quando": null,
   "ok": true
  },
@@ -292,7 +292,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 65,
+  "caixas": 62,
   "quando": null,
   "ok": true
  },
@@ -303,7 +303,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 96,
+  "caixas": 93,
   "quando": null,
   "ok": true
  },
@@ -314,7 +314,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 70,
+  "caixas": 62,
   "quando": null,
   "ok": true
  },
@@ -325,7 +325,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 56,
+  "caixas": 64,
   "quando": null,
   "ok": true
  },
@@ -336,7 +336,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 106,
+  "caixas": 103,
   "quando": null,
   "ok": true
  },
@@ -347,7 +347,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 53,
+  "caixas": 45,
   "quando": null,
   "ok": true
  },
@@ -358,7 +358,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 86,
+  "caixas": 83,
   "quando": null,
   "ok": true
  },
@@ -369,7 +369,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 57,
+  "caixas": 63,
   "quando": null,
   "ok": true
  },
@@ -380,7 +380,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 71,
+  "caixas": 67,
   "quando": null,
   "ok": true
  },
@@ -391,7 +391,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 84,
+  "caixas": 70,
   "quando": null,
   "ok": true
  },
@@ -402,7 +402,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 90,
+  "caixas": 88,
   "quando": null,
   "ok": true
  },
@@ -413,7 +413,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 82,
+  "caixas": 60,
   "quando": null,
   "ok": true
  },
@@ -424,7 +424,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 58,
+  "caixas": 75,
   "quando": null,
   "ok": true
  },
@@ -435,7 +435,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 60,
+  "caixas": 90,
   "quando": null,
   "ok": true
  },
@@ -479,7 +479,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 38,
+  "caixas": 44,
   "quando": null,
   "ok": true
  },
@@ -534,7 +534,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 130,
+  "caixas": 131,
   "quando": null,
   "ok": true
  },
@@ -622,7 +622,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 83,
+  "caixas": 85,
   "quando": null,
   "ok": true
  },
@@ -656,6 +656,17 @@
   "overflowX": 0,
   "quadros": 0,
   "caixas": 50,
+  "quando": null,
+  "ok": true
+ },
+ {
+  "slug": "c6p20",
+  "transbordos": [],
+  "vazamentos": [],
+  "coberturas": [],
+  "overflowX": 0,
+  "quadros": 0,
+  "caixas": 49,
   "quando": null,
   "ok": true
  }

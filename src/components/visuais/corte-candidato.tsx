@@ -72,7 +72,7 @@ export function CorteCandidato() {
           <div className="vz-cc-barras" role="img" aria-label="Antes e depois">
             {[{ n: "antes", v: a.giniAntes, c: "vz-tdc-fill--erro" }, { n: "esquerda", v: a.giniEsq, c: "vz-cc-fill--esq" }, { n: "direita", v: a.giniDir, c: "vz-cc-fill--dir" }, { n: "depois, ponderada", v: a.depois, c: "vz-tdc-fill--ouro" }].map((b) => <div key={b.n} className="vz-tdc-linha"><span className="vz-tdc-rot">{b.n}</span><span className="vz-tdc-trilho"><span className={`vz-tdc-fill ${b.c}`} style={{ width: `${b.v * 200}%` }} /></span><b>{fmtNum(b.v, 4)}</b></div>)}
           </div>
-          <p className="hint">Os cortes candidatos são os pontos médios entre valores consecutivos observados. Qualquer valor entre dois vizinhos produz a mesma divisão, então só o ponto médio é testado.</p>
+          <p className="hint">Os candidatos são os pontos médios entre valores vizinhos: qualquer valor entre dois vizinhos dá a mesma divisão.</p>
         </div>
       </div>
       <p className="vz-fonte">Utilização ≤ 62,5%: 9 propostas com 2 defaults (Gini 0,34568) e 7 com 6 (Gini 0,24490); média ponderada 0,30159 e ganho 0,19841. O melhor corte da raiz é utilização ≤ 57,5%, com ganho 0,28125.</p>

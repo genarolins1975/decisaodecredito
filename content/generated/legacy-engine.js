@@ -9946,7 +9946,7 @@ function narrativaVisualV6(){
    <div class="nv-caption"><b>Comparação justa</b><span>Os três recebem os mesmos casos e são avaliados nos mesmos 760 contratos da validação.</span></div></div>`});
 
  muda('c5p1',{titulo:'A árvore como sequência de perguntas',
-  aprendizado:'Ler uma previsão como um caminho verificável da raiz até uma folha.',
+  aprendizado:'',
   apoio:'Uma árvore divide propostas semelhantes. Cada corte é uma pergunta; cada folha resume os casos que seguiram o mesmo caminho.',
   visual:()=>`<div class="nv"><div class="nv-tree" aria-label="Árvore simples para utilização do limite">
    <div class="nv-tree-node root"><b>Utilização &gt; 57,5%?</b><span>primeira pergunta</span><em>500 propostas</em></div>
@@ -9956,7 +9956,7 @@ function narrativaVisualV6(){
    <div class="nv-caption"><b>Não basta a taxa.</b><span>Uma folha com 20% em 200 casos é evidência diferente de uma folha com 100% em dois casos.</span></div></div>`});
 
 muda('c5p10',{titulo:'Uma proposta dentro da árvore',
-  aprendizado:'Seguir um caso concreto e interpretar a taxa da folha junto com seu tamanho.',
+  aprendizado:'',
   apoio:'Este é o caso #15 da base didática de 16 propostas. Ele não é o cliente VAL-0187 usado na comparação posterior.',
   conexao:'A taxa da folha explica a árvore; agora precisamos testar se ela generaliza.',
   visual:()=>`<div class="nv"><div class="nv-flow" style="--cols:4" aria-label="Caminho de uma proposta de crédito">
@@ -10314,7 +10314,7 @@ function experienciaV13(){
   c2p1:{titulo:'Fundamentos de modelagem estatística',desafio:'O que um modelo consegue aprender e o que permanece incerto?',texto:'O capítulo constrói o vocabulário mínimo para separar dado, estimativa, erro e generalização.',etapas:[['Recorte','O modelo recebe uma janela limitada do mundo.'],['Estimativa','Uma amostra produz números que variam.'],['Teste','O desempenho precisa aparecer fora do ajuste.']]},
   c3p1:{titulo:'Dados disponíveis na data da decisão',desafio:'O relógio decide quais campos podem entrar na base.',texto:'Uma variável útil hoje pode ser vazamento se só ficou disponível depois da proposta. O desenho temporal vem antes da modelagem.',etapas:[['Unidade','Cada linha representa uma decisão econômica.'],['Janelas','Observação, maturação e teste têm papéis distintos.'],['Bloqueio','Informação posterior à decisão fica fora do modelo.']]},
   c4p1:{titulo:'Regressão logística',desafio:'Como uma soma de evidências se transforma em probabilidade?',texto:'A logística trabalha em log odds, soma contribuições e volta para uma PD entre zero e um.',etapas:[['Escalas','Probabilidade, odds e log odds dizem a mesma coisa.'],['Coeficientes','Cada peso nasce da minimização da perda.'],['Fronteira','A decisão forma uma reta no plano das variáveis.']]},
-  c5p1:{titulo:'Árvores de decisão',desafio:'Uma sequência de perguntas pode criar regiões de risco.',texto:'A árvore procura cortes que deixam os grupos mais homogêneos e entrega uma frequência em cada folha.',etapas:[['Corte','Cada pergunta compete por redução de impureza.'],['Caminho','Uma proposta percorre regras até uma folha.'],['Freio','Profundidade, folha mínima e poda controlam variância.']]},
+  c5p1:{titulo:'Árvores de decisão',desafio:'Uma sequência de perguntas pode criar regiões de risco.',texto:'Cortes sucessivos formam grupos homogêneos; cada folha entrega a sua taxa.',etapas:[['Corte','Cada pergunta compete por redução de impureza.'],['Caminho','Uma proposta percorre regras até uma folha.'],['Freio','Profundidade, folha mínima e poda controlam variância.']]},
   c6p1:{titulo:'Gradient boosting com árvores',desafio:'Um modelo fraco corrige o erro deixado pelo anterior.',texto:'O boosting começa com um palpite simples e acrescenta pequenas correções. A soma, e não uma árvore isolada, produz a previsão.',etapas:[['Palpite','O primeiro valor ignora todas as variáveis.'],['Resíduo','O erro vira o alvo da próxima árvore.'],['Soma','A taxa de aprendizagem controla cada correção.']]},
   c7p1:{titulo:'Validação, calibração e teste fora do tempo',desafio:'Como comparar modelos sem usar o teste para escolher?',texto:'Ordenação, nível probabilístico e incerteza respondem perguntas diferentes. A escolha precisa ser congelada antes do OOT.',etapas:[['Ordenar','AUC, KS e ganho examinam a fila de risco.'],['Calibrar','Brier, log loss e faixas examinam o nível.'],['Congelar','Modelo e critérios ficam fixos antes do OOT.']]},
   c8p1:{titulo:'Da previsão à decisão econômica',desafio:'Uma PD só vira decisão depois que receita, perda e capacidade entram na conta.',texto:'O capítulo liga risco a valor e mostra por que o melhor corte estatístico pode ser uma política ruim.',etapas:[['Exposição','EAD define quanto está em risco.'],['Severidade','LGD define quanto se perde no default.'],['Política','Custos e capacidade determinam o limiar.']]},
@@ -10618,13 +10618,13 @@ function guiaDaTelaV15(){
  guia('c5p7',{leitura:'',
   erros:undefined,
   interacao:''});
- guia('c5p8',{leitura:''});
+ guia('c5p8',{leitura:'Dois blocos com as listas de cada lado, a conferência independente e a dispersão com as duas propostas destacadas, seguida da caixa As duas destacadas.'});
  guia('c5p9',{interacao:''});
- guia('c5p12',{leitura:''});
- guia('c5p13',{leitura:''});
+ guia('c5p12',{leitura:'Tabela de cinco candidatos e curva de log loss dentro do grupo, com o mínimo em 50,0%.'});
+ guia('c5p13',{leitura:'Tabela das quatro folhas, com n, defaults, PD, intervalo e largura, e as barras de intervalo. Compare larguras com distâncias.'});
  guia('c5p14',{leitura:''});
  guia('c5p16',{leitura:''});
- guia('c5p17',{leitura:''});
+ guia('c5p17',{leitura:'Tabela comparativa de Gini e entropia e, depois das notas, a tabela de quando a escolha do critério importa.'});
  muda('c5p18',{apoio:'Use os três atalhos, #5, #10 e #15, ou clique em qualquer proposta do plano. O objetivo é entender o modo de errar de cada família, não proclamar um vencedor.'});
  guia('c5p18',{interacao:''});
  /* capítulo 6 */
@@ -10663,12 +10663,62 @@ function guiaDaTelaV15(){
   interacao:''});
 }
 
+/* Revisão 16: capítulo 5 no palco. Cabeçalhos curtos (título e objetivo numa linha a 1920 px, apoio só quando instrui
+   o uso da página), no mesmo espírito do redesenho dos visuais do capítulo (src/components/visuais). Apoio vazio some
+   do quadro. */
+function capitulo5NoPalcoV16(){
+ const muda=(id,o)=>{const p=pagPorId(id);if(p)Object.assign(p,o);};
+ muda('c5p1',{aprendizado:'Ler uma previsão como o caminho da raiz até uma folha.',apoio:''});
+ muda('c5p2',{titulo:'Perguntas em sequência fazem o que a soma não faz',aprendizado:'O efeito de uma variável passa a depender das outras, sem termo de interação.',apoio:'',conexao:'Para construir a árvore, primeiro os nomes das partes.'});
+ muda('c5p3',{titulo:'Anatomia da árvore',aprendizado:'Nó, regra, ramo, folha e profundidade, no diagrama que o capítulo inteiro usa.',apoio:'Clique em cada termo e veja a parte correspondente acesa.'});
+ muda('c5p4',{titulo:'Impureza: o quanto o grupo está misturado',aprendizado:'Máxima com metade de defaults, zero quando todos têm o mesmo desfecho.',apoio:'Mova a proporção de defaults e compare Gini e entropia.',conexao:'Com a medida definida, dá para pontuar um corte.'});
+ muda('c5p5',{aprendizado:'O Gini de um grupo, contado à mão.',apoio:'Compare a raiz, uma folha pura e uma folha mista.',conexao:'Agora, um corte candidato avaliado com essa referência.'});
+ muda('c5p6',{aprendizado:'O ganho é a impureza que o corte remove, ponderada pelo tamanho de cada lado.',apoio:'Escolha a variável e mova o corte: as contas aparecem na hora.',conexao:'Testar um por um é o que o algoritmo faz, e depressa.'});
+ muda('c5p7',{titulo:'A disputa pela raiz',aprendizado:'Vence o corte de maior ganho, não o que parece melhor no desenho.',apoio:'Mova o corte candidato e compare as barras.',conexao:'O vencedor vira a raiz.'});
+ muda('c5p8',{aprendizado:'Um corte já separa a base em 12,5% e 87,5% de default.',apoio:'Duas propostas ficam do lado errado: a #2 e a #15.'});
+ muda('c5p9',{aprendizado:'Cada nó resolve o seu problema só com os casos que chegaram até ele.',apoio:'Alterne os dois lados e veja a mesma varredura dar regras diferentes.',conexao:'Feita a recursão, a árvore está completa.'});
+ muda('c5p10',{aprendizado:'A folha dá uma taxa; o tamanho da folha diz quanto ela vale.',apoio:'',conexao:'A taxa da folha explica a árvore; falta testar se ela generaliza.'});
+ muda('c5p11',{titulo:'Percorrer a árvore',aprendizado:'O caminho da raiz à folha é a explicação completa da decisão.',apoio:'Mova os valores e siga o caminho aceso, regra por regra.'});
+ muda('c5p12',{titulo:'A previsão da folha é a frequência da folha',aprendizado:'É o valor que minimiza a log loss no grupo, como no capítulo 2.',apoio:''});
+ muda('c5p13',{titulo:'Quanto cada folha afirma',aprendizado:'Folhas pequenas produzem intervalos largos demais para decidir.',apoio:''});
+ muda('c5p14',{titulo:'Os dois freios da árvore',aprendizado:'Profundidade limita as perguntas; o mínimo por folha limita o tamanho do grupo.',apoio:'Mova os dois controles e olhe a menor folha, não o erro.',conexao:'Há uma terceira forma de controlar a complexidade, depois de construir.'});
+ muda('c5p15',{titulo:'Poda: crescer e depois cortar',aprendizado:'Cada folha tem um preço; a poda pesa impureza contra número de folhas.',apoio:'Mova o preço da folha e veja qual árvore vence.'});
+ muda('c5p16',{titulo:'Instabilidade: uma proposta pode trocar a estrutura',aprendizado:'Com ganhos empatados, tirar um caso muda a variável escolhida.',apoio:'Retire uma proposta: a raiz resiste, o nó direito não.'});
+ muda('c5p17',{titulo:'Gini ou entropia: a conclusão não muda',aprendizado:'Trocar a medida de impureza raramente muda a árvore.',apoio:'A varredura da página 7, refeita com entropia.',conexao:'A comparação que importa é entre famílias.'});
+ muda('c5p18',{aprendizado:'Uma fronteira suave contra regiões em degraus, proposta a proposta.',apoio:'Use #5, #10 e #15 ou clique numa proposta e compare o modo de errar.'});
+ muda('c5p19',{aprendizado:'Partição por busca gulosa, previsão por frequência e complexidade sob controle.',apoio:'Explique cada ideia com suas palavras antes de revelar.'});
+ /* guia do professor das páginas redesenhadas: a leitura descreve a peça nova, na página de estudo */
+ const guia=()=>undefined;
+ guia('c5p1',{conducao:'',
+  leitura:'',
+  interacao:''});
+ guia('c5p2',{conducao:'',
+  leitura:'',
+  pergunta:'',
+  resposta:'',
+  interacao:'',
+  erros:undefined});
+ guia('c5p8',{conducao:'',
+  leitura:'',
+  interacao:''});
+ guia('c5p10',{conducao:'',
+  leitura:'',
+  interacao:''});
+ guia('c5p12',{conducao:'',
+  leitura:''});
+ guia('c5p13',{conducao:'',
+  leitura:''});
+ guia('c5p17',{conducao:'',
+  leitura:''});
+}
+
 function inicia(){
   narrativaVisualV6();
   trabalhoFinalV10();
   experienciaV13();
   narrativaAula2V14();
   guiaDaTelaV15();
+  capitulo5NoPalcoV16();
   const q=new URLSearchParams(location.hash.split('?')[1]||'');
   if(q.get('m')==='aluno')MODO='aluno';
   if(q.get('m')==='projecao')MODO='apresentacao';

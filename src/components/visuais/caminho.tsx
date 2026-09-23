@@ -13,7 +13,9 @@ import { ArvoreDiagrama, caminhoNaArvore } from "./arvore-diagrama";
 const BASE = did.base as Proposta[];
 const PRESETS: { nome: string; util: number; atraso: number }[] = [{ nome: "#3", util: 30, atraso: 5 }, { nome: "#8", util: 55, atraso: 5 }, { nome: "proposta nova", util: 72, atraso: 8 }, { nome: "#16", util: 95, atraso: 20 }];
 const PW = 300, PH = 240, PML = 40, PMR = 10, PMT = 12, PMB = 34;
-const su = (u: number) => PML + (u / 100) * (PW - PML - PMR), sa = (a: number) => PMT + (1 - a / 40) * (PH - PMT - PMB);
+const su = (u: number) => PML + (u / 100) * (PW - PML - PMR), sa = (a: number) => PMT + (1 - (a + 4) / 48) * (PH - PMT - PMB);
+/** folga de 4 dias acima e abaixo: nenhum ponto encosta na borda do plano; bordas de região em 0 e 40 dias vão até a folga */
+const ea = (a: number) => (a <= 0 ? -4 : a >= 40 ? 44 : a);
 
 export function Caminho() {
   const [util, setUtil] = useState(72);
@@ -49,7 +51,7 @@ export function Caminho() {
           <div className="vz-grafico vz-cam-plano">
             <p className="vz-grafico-t">Onde a proposta cai <span className="hint">as quatro regiões da árvore e o ponto</span></p>
             <svg viewBox={`0 0 ${PW} ${PH}`} role="img" aria-label={`Proposta com utilização ${util}% e atraso ${atraso} dias na região da folha`}>
-              {fs.map((f) => { const on = f === folha; const p = f.d / f.n; return <rect key={`${f.caixa.u0}-${f.caixa.a0}`} x={su(f.caixa.u0)} y={sa(f.caixa.a1)} width={su(f.caixa.u1) - su(f.caixa.u0)} height={sa(f.caixa.a0) - sa(f.caixa.a1)} className={`vz-cam-regiao ${on ? "vz-cam-regiao--on" : ""}`} style={{ fill: p >= 0.5 ? "var(--color-alert)" : "#9db6de", fillOpacity: on ? 0.45 : 0.14 }} />; })}
+              {fs.map((f) => { const on = f === folha; const p = f.d / f.n; return <rect key={`${f.caixa.u0}-${f.caixa.a0}`} x={su(f.caixa.u0)} y={sa(ea(f.caixa.a1))} width={su(f.caixa.u1) - su(f.caixa.u0)} height={sa(ea(f.caixa.a0)) - sa(ea(f.caixa.a1))} className={`vz-cam-regiao ${on ? "vz-cam-regiao--on" : ""}`} style={{ fill: p >= 0.5 ? "var(--color-alert)" : "#9db6de", fillOpacity: on ? 0.45 : 0.14 }} />; })}
               {fs.map((f) => <text key={`t${f.caixa.u0}-${f.caixa.a0}`} x={(su(f.caixa.u0) + su(f.caixa.u1)) / 2} y={(sa(f.caixa.a0) + sa(f.caixa.a1)) / 2 + 4} textAnchor="middle" className="vz-tick vz-tick--forte">{fmtPct(f.d / f.n)}</text>)}
               {[0, 50, 100].map((u) => <text key={u} x={su(u)} y={PH - PMB + 14} textAnchor="middle" className="vz-tick">{u}%</text>)}
               {[0, 20, 40].map((a) => <text key={a} x={PML - 4} y={sa(a) + 4} textAnchor="end" className="vz-tick">{a} d</text>)}

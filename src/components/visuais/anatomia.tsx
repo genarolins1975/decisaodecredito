@@ -35,7 +35,7 @@ export function Anatomia() {
           {PALAVRAS.map((p) => <button key={p.k} type="button" className={`btn btn-sm ${el === p.k ? "" : "btn-secondary"}`} onClick={() => setEl(p.k)}>{p.nome}</button>)}
         </div>
       </header>
-      <div className="vz-estado"><b>{palavra.nome}:</b> {palavra.texto} Esta árvore tem 7 nós, 3 regras, 6 ramos, {fs.length} folhas e profundidade 2; as folhas somam {fs.reduce((s, f) => s + f.n, 0)} propostas e {fs.reduce((s, f) => s + f.d, 0)} defaults, sem sobreposição e sem buraco.</div>
+      <div className="vz-estado"><b>{palavra.nome}:</b> {palavra.texto}</div>
       <div className="vz-ana-grade">
         <div className="vz-grafico">
           <p className="vz-grafico-t">A árvore de profundidade 2 <span className="hint">cada caixa traz quantas propostas chegaram ali, quantas deram default e a taxa</span></p>
@@ -47,8 +47,8 @@ export function Anatomia() {
           <div className="vz-tile"><p className="eyebrow">Quantas folhas uma profundidade permite</p>
             <label className="vz-slider"><span className="vz-slider-rotulo"><span>profundidade máxima d</span><span className="vz-slider-valor">{d} → até {(2 ** d).toLocaleString("pt-BR")} folhas</span></span><input type="range" min={1} max={10} step={1} value={d} onChange={(e) => setD(Number(e.target.value))} aria-valuetext={`${d}`} /></label>
             <div className="vz-ana-potencias" aria-hidden="true">{Array.from({ length: 10 }, (_, i) => i + 1).map((k) => <span key={k} className={`vz-ana-pot ${k === d ? "vz-ana-pot--on" : ""} ${k <= d ? "vz-ana-pot--ate" : ""}`} style={{ height: `${8 + 80 * (Math.log2(2 ** k) / 10)}%` }} title={`${k}: ${2 ** k}`}><b>{k}</b></span>)}</div>
-            <p className="hint">Uma árvore com profundidade máxima d tem no máximo 2 elevado a d folhas. Profundidade 3 chega a 8, profundidade 10 chega a 1.024. O número cresce rápido e é por isso que a profundidade é o principal freio.</p></div>
-          <div className="vz-tile vz-tile--ok"><p className="eyebrow">Duas propriedades que decorrem da forma</p><p className="vz-num vz-num--texto">Toda proposta cai em exatamente uma folha, então as folhas particionam a população sem sobreposição e sem buraco. E o caminho até a folha é a explicação completa da previsão daquela proposta, o que torna a árvore auditável linha a linha.</p></div>
+            <p className="hint">Profundidade d permite até 2 elevado a d folhas: 3 dá 8; 10 dá 1.024. Por isso a profundidade é o principal freio.</p></div>
+          <div className="vz-tile vz-tile--ok"><p className="eyebrow">Duas propriedades que decorrem da forma</p><p className="vz-num vz-num--texto">Toda proposta cai em exatamente uma folha: sem sobreposição e sem buraco. E o caminho até a folha explica a previsão inteira, linha a linha.</p></div>
         </div>
       </div>
       <p className="vz-fonte">Árvore crescida aqui sobre as 16 propostas didáticas com profundidade máxima 2: raiz em utilização ≤ 57,5% (ganho 0,281), depois utilização ≤ 27,5% à esquerda e ≤ 87,5% à direita (ganho 0,094 em cada lado). Folhas: 1 de 2, 0 de 6, 6 de 6 e 1 de 2. Falta o critério que escolhe a regra de cada nó.</p>

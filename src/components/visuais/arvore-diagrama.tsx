@@ -1,6 +1,6 @@
 "use client";
 import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
-import { NOME_VAR, folhas, gini, type No } from "@/lib/visuais/arvore";
+import { folhas, gini, type No } from "@/lib/visuais/arvore";
 
 /**
  * Diagrama de árvore compartilhado pelo capítulo 5: caixas por nó (propostas, defaults, taxa, Gini opcional), ramos
@@ -23,7 +23,8 @@ export function posicoes(no: No, W: number): { raiz: Pos; todos: Pos[]; fs: No[]
 export function ArvoreDiagrama({ no, caminho, mostrarGini = false, anatomia = null, W = 640 }: { no: No; caminho?: No[]; mostrarGini?: boolean; anatomia?: Anatomia; W?: number }) {
   const { todos, fs, prof } = posicoes(no, W); const H = (prof + 1) * LH - 20;
   const aceso = (n: No) => !!caminho?.includes(n);
-  const rotulo = (n: No) => n.corte!.v === "util" ? `≤ ${fmtNum(n.corte!.valor, 1)}% ?` : `≤ ${fmtNum(n.corte!.valor, 1)} dias ?`;
+  // regra curta ("utilização ≤ 57,5%?"): o nome completo da variável transbordava a caixa do nó
+  const rotulo = (n: No) => n.corte!.v === "util" ? `utilização ≤ ${fmtNum(n.corte!.valor, 1)}%?` : `atraso ≤ ${fmtNum(n.corte!.valor, 1)} dias?`;
   return (
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Árvore com ${fs.length} folhas e profundidade ${prof}`} className={`vz-ad ${anatomia ? `vz-ad--${anatomia}` : ""}`}>
       {anatomia === "profundidade" && Array.from({ length: prof + 1 }, (_, k) => <g key={k}><rect x={0} y={k * LH + 4} width={W} height={LH - 16} rx={6} className="vz-ad-nivel" /><text x={6} y={k * LH + 18} className="vz-tick vz-tick--forte">{k === 0 ? "raiz, profundidade 0" : `profundidade ${k}`}</text></g>)}
@@ -39,7 +40,7 @@ export function ArvoreDiagrama({ no, caminho, mostrarGini = false, anatomia = nu
             <text y={32} textAnchor="middle" className="vz-ad-t vz-ad-t--pd">PD {fmtPct(pd)}</text>
             {mostrarGini && <text y={47} textAnchor="middle" className="vz-ad-t vz-ad-t--gini">Gini {fmtNum(gini(n.d, n.n), 3)}</text>}
           </> : <>
-            <text y={15} textAnchor="middle" className="vz-ad-t vz-ad-t--var">{NOME_VAR[n.corte!.v]} {rotulo(n)}</text>
+            <text y={15} textAnchor="middle" className="vz-ad-t vz-ad-t--var">{rotulo(n)}</text>
             <text y={30} textAnchor="middle" className="vz-ad-t">{n.n} prop. · {n.d} def. · PD {fmtPct(pd)}</text>
             <text y={43} textAnchor="middle" className="vz-ad-t vz-ad-t--gini">{mostrarGini ? `Gini ${fmtNum(gini(n.d, n.n), 3)} · ` : ""}ganho {fmtNum(n.corte!.ganho, 3)}</text>
           </>}

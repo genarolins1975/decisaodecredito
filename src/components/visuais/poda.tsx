@@ -50,7 +50,7 @@ export function Poda() {
             {custos.map((t, i) => <tr key={t.rot} className={t === venc ? "vz-t-on" : ""}><th scope="row"><span className={`vz-sw ${CORES[i]}`} />{t.rot}</th><td>{t.folhas}</td><td>{fmtNum(t.R, 5)}</td><td>{fmtNum(alfa * t.folhas, 5)}</td><td className={t === venc ? "vz-t-forte" : ""}>{fmtNum(t.c, 5)}</td></tr>)}
           </tbody></table></div>
           <div className="vz-formula">custo(T) = impureza ponderada de T + α × número de folhas de T</div>
-          <p className="hint">Com α igual a zero, a árvore mais complexa sempre vence. Com α muito alto, a raiz sozinha vence. Entre os dois extremos existe uma sequência de árvores, e a poda percorre essa sequência.</p>
+          <p className="hint">Com α zero, vence a árvore mais complexa; com α alto, só a raiz. Entre os extremos, a poda percorre uma sequência de árvores.</p>
         </div>
         <div className="vz-poda-lado">
           <div className="vz-grafico">
@@ -69,8 +69,8 @@ export function Poda() {
               <g className="vz-regua-ponto vz-lo-ponto--dobro" style={{ transform: `translate(${sx(alfa)}px, ${sy(min)}px)` }}><circle r={7} /><text x={alfa > 0.25 ? -12 : 12} y={-10} textAnchor={alfa > 0.25 ? "end" : "start"} className="vz-ponto-t">α atual · {venc.rot}</text></g>
             </svg>
           </div>
-          <div className="vz-tile vz-tile--alerta"><p className="eyebrow">Um resultado que surpreende</p><p className="vz-num vz-num--texto">Nesta base, a árvore de quatro folhas nunca vence, para nenhum valor de α. A sequência de podas salta de seis folhas direto para duas. Isso acontece porque a redução de impureza do último nível é desproporcional à do penúltimo, e é a razão pela qual a poda é feita por elo mais fraco e não testando profundidades.</p></div>
-          <p className="hint">Em prática, α é escolhido por validação cruzada, como qualquer hiperparâmetro. Escolhê-lo pelo desempenho na amostra de treino reproduz o problema do capítulo 2.</p>
+          <div className="vz-tile vz-tile--alerta"><p className="eyebrow">Um resultado que surpreende</p><p className="vz-num vz-num--texto">Aqui a árvore de quatro folhas nunca vence: a poda salta de seis folhas para duas, porque o último nível rende pouco perto do penúltimo. Por isso se poda pelo elo mais fraco, e não testando profundidades.</p></div>
+          <p className="hint">Na prática, α sai da validação cruzada; escolhido no treino, repete o problema do capítulo 2.</p>
         </div>
       </div>
       <p className="vz-fonte">Impureza ponderada recalculada aqui: raiz 0,50000 (1 folha), profundidade 1 0,21875 (2), profundidade 2 0,12500 (4), profundidade 3 com folhas de um 0,00000 (6). Com α = 0,030 vence a árvore de seis folhas com custo 0,18000; trocas em α = 0,0547 e 0,2813.</p>

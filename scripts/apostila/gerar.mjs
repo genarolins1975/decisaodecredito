@@ -30,10 +30,13 @@ const caixa = (cls, titulo, corpo) => corpo ? `<aside class="caixa ${cls}"><p cl
  * Abertura (desafio em três etapas) e síntese (três ideias) são abas na plataforma: a captura mostraria só a primeira.
  * No papel, as três etapas e as três ideias saem inteiras, lidas do próprio HTML da página.
  */
+/** Páginas cujo desafio já é desenhado pela peça nativa (a captura traz o texto e as etapas): lidas de
+    src/lib/visuais/palco-proprio.ts, para o papel não imprimir o desafio duas vezes. */
+const ABERTURA_NATIVA = new Set([...(fs.readFileSync(path.join(REPO, "src/lib/visuais/palco-proprio.ts"), "utf8").match(/ABERTURA_NATIVA = new Set\(\[([^\]]*)\]/)?.[1] ?? "").matchAll(/"([^"]+)"/g)].map((m) => m[1]));
 function blocosNativos(p) {
   const doc = new JSDOM(`<body>${p.html ?? ""}</body>`).window.document;
   let h = "";
-  const ep = doc.querySelector(".nv-episodio");
+  const ep = ABERTURA_NATIVA.has(p.id) && figMeta[p.id]?.tipo === "nativo" ? null : doc.querySelector(".nv-episodio");
   if (ep) {
     const etapas = [...ep.querySelectorAll("[data-v13-episodio]")].map((b) => ({ t: (b.querySelector("b")?.textContent ?? "").replace(/^\d+\.\s*/, "").trim(), d: b.getAttribute("data-detalhe") ?? "" }));
     h += `<div class="nativo desafio"><p class="caixa-t">O desafio deste capítulo</p><p class="nativo-t">${esc(ep.querySelector("h3")?.textContent?.trim())}</p><p>${esc(ep.querySelector(".nv-episodio-main > p")?.textContent?.trim())}</p><ol class="etapas">${etapas.map((e) => `<li><b>${esc(e.t)}.</b> ${esc(e.d)}</li>`).join("")}</ol></div>`;

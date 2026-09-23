@@ -1,6 +1,6 @@
 # Registro de progresso (para continuar em outra sessão)
 
-Última atualização: 22 de setembro de 2026. Branch: `claude/new-session-d2yt8t`.
+Última atualização: 23 de setembro de 2026. Branch: `claude/new-session-d2yt8t`.
 
 ## Estado por etapa do briefing
 
@@ -123,9 +123,43 @@ Verificado em 22/09/2026: typecheck; lint (0 erros); `lint:tracos` (0); `npm tes
 
 **Não verificado.** O pacote do professor não foi enviado ao bucket nem registrado em produção: deste ambiente não há credencial. O conteúdo publicado em produção não foi inspecionado.
 
+### Décima segunda rodada (23/09/2026): o capítulo 5 redesenhado para o palco
+
+O professor apontou os slides 69 e 70 da apresentação (c5p1 e c5p2) e pediu a revisão de layout do capítulo 5 inteiro, com menos texto, didático e objetivo.
+
+**Diagnóstico** (capturas do palco a 1920x1080, antes da mudança). c5p1 ocupava três telas: infográfico, desafio em caixas de texto e etapas. c5p2 ocupava duas, com a árvore de um corte só e pontos cortados pelo eixo. c5p13 repetia o mesmo gráfico em quatro telas. Cabeçalhos com objetivo e apoio de duas ou três linhas. O capítulo somava 28 telas.
+
+**O que mudou.**
+
+- Sete peças nativas novas, desenhadas para caber numa tela: abertura com a árvore que acende a parte de que cada etapa fala (c5p1); reta contra cortes nos mesmos eixos, com o balanço do que a árvore ganha e perde (c5p2); raiz escolhida (c5p8); uma proposta dentro da árvore, com o intervalo da folha (c5p10); valor da folha (c5p12); confiança da folha (c5p13); Gini ou entropia (c5p17). O plano das 16 propostas é compartilhado (`plano-16.tsx`).
+- Dois modos novos no registro de visuais: `episodio`, que troca o bloco do desafio e recebe o texto dele, e `conteudo`, que troca o conteúdo herdado e mantém as questões da página. No palco, c5p1 dispensa o infográfico (`ABERTURA_NATIVA`); um teste prende o registro e o palco na mesma lista.
+- As outras doze páginas recompostas para o palco: o cabeçalho interno dos visuais sai (o quadro já traz título e objetivo), plano e árvore crescem, controles e contadores secundários ficam só no estudo, a escala do plano ganhou margem para nenhum ponto ser cortado pelo eixo e os rótulos de regra cabem nas caixas.
+- Cabeçalhos das 19 páginas reescritos na camada `capitulo5NoPalcoV16`: título e objetivo numa linha a 1920 px, apoio só quando instrui o uso da página.
+- Roteiro do professor (leitura, condução, interação e checagem) e explicações dos guias refeitos para as sete peças. No guia impresso, a abertura de c5p1 não repete o desafio, que a captura já traz.
+
+**Resultado** (medido nesta rodada).
+
+| Medida | Antes | Depois | Como |
+|---|---|---|---|
+| Telas do capítulo no palco, 1920x1080 | 28 | 22 | capturas tela a tela |
+| Palavras dos cabeçalhos (título, objetivo, apoio e conexão das 19 páginas) | 1.071 | 676 | `extract.json` do commit 39fcb36 contra o atual |
+| Palavras do conteúdo de c5p2, c5p8, c5p10, c5p12, c5p13 e c5p17 | 835 | 344 | HTML herdado contra a peça renderizada, sem SVG e sem nota de fonte |
+| Auditoria do palco, 19 páginas | sem medida comparável guardada | 9,96 em 1400x900 e em 1920x1080; pior página 9,8 | `scripts/palco/auditoria.mjs` |
+
+**Erro de conteúdo corrigido.** A nota do professor de c5p13 dizia que, com este volume, nenhuma folha era comprovadamente diferente das outras. Falso para o par 0 default em 6 contra 6 em 6: teste exato de Fisher, p = 0,0022. As folhas de 50% (1 em 2) não se distinguem de nenhuma outra (p = 0,25). A nota passou a dizer que as barras sugerem e o teste da diferença decide, sem contradizer a questão c5p13q.
+
+**Checagem de c5p2.** A pergunta acompanha o desenho novo: quantos cortes a mais a árvore de profundidade 2 precisaria para isolar a #15. Resposta: um, entre a #15 e a #16. O importador criou versão nova da questão; as respostas antigas ficam na anterior.
+
+Verificado em 23/09/2026: typecheck; lint (0 erros; 5 avisos, todos anteriores a esta rodada); `lint:tracos` (0); `npm test` (291, oito novos: cada peça nova, renderizada no servidor, exibe os números conferidos, e registro e palco concordam na abertura nativa); `npx playwright test` (23 de 23); varredura 61 de 61 páginas nas duas rotas e nas quatro larguras, com estados revelados; notas do professor novas no ar no palco; guias do capítulo 5 regerados (aluno com 28 páginas, professor com 36); guias dos capítulos 4 e 6 idênticos, em texto e em imagem, aos publicados.
+
+**Não verificado.** Pacote do professor não enviado ao bucket (sem credencial neste ambiente). Produção não inspecionada. Nenhum teste com alunos ou em projetor real.
+
 ## Pendências técnicas ordenadas
 
 0. Guia do professor dos capítulos 4, 5 e 6: enviar o pacote `guias-2026-09` a `bases/vguias-2026-09/` no bucket e registrar em Bases e gabaritos (instruções em `scripts/apostila/README.md`).
+0. Abertura do capítulo 6 (c6p1): o mesmo desenho de três telas que c5p1 tinha, infográfico, desafio em texto e etapas. O modo `episodio` do registro permite repetir a solução de c5p1.
+0. Questão c5p13q, explicação da alternativa c: diz que intervalos que não se tocam não demonstram diferença. Com intervalos de 95%, a não sobreposição é critério conservador de diferença (aqui, Fisher dá p = 0,0022 para 0 em 6 contra 6 em 6). Revisar a redação com o professor.
+0. Celular (390 px): 13 páginas dos capítulos 4 a 6 mostram tabela com rolagem lateral, padrão anterior a esta rodada; em 1.024 px ou mais, nenhuma.
 0. Tempo da Aula 2: essenciais somam 171 min para 165 úteis; decisão do professor, recomendação em `docs/NARRATIVA_AULA_2.md`, seção 6.
 0. Repositório público: gabaritos estão nos fontes do material e o guia do professor do baralho, de uma rodada anterior, continua no histórico do git. Recomendação: tornar o repositório privado.
 0. Guias dos capítulos 1 a 3 e 7 a 11: as sínteses da revisão 13 provavelmente trazem o mesmo descompasso entre guia e tela corrigido aqui nos capítulos 4 a 6; não auditadas.
