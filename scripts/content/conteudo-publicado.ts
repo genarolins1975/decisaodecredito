@@ -24,6 +24,27 @@ export function mesmoConteudo(a: ConteudoPagina, b: ConteudoPagina) {
   return norm(a) === norm(b);
 }
 
+/** Conteúdo de uma versão de questão, nos campos que o importador escreve. */
+export type ConteudoQuestao = { label: string | null; prompt: string; options: any; answerKey: any; feedback: any };
+const CAMPOS_QUESTAO: (keyof ConteudoQuestao)[] = ["label", "prompt", "options", "answerKey", "feedback"];
+export function mesmaQuestao(a: ConteudoQuestao, b: ConteudoQuestao) {
+  const norm = (x: ConteudoQuestao) => JSON.stringify(estavel(Object.fromEntries(CAMPOS_QUESTAO.map((k) => [k, x[k] ?? null]))));
+  return norm(a) === norm(b);
+}
+/**
+ * Questões que o importador atualiza numa base já importada quando a origem muda: as que nascem só do
+ * repositório, a pergunta de checagem (tirada do guia do professor) e as curadas. As do material original
+ * ficam de fora porque algumas têm correção própria em applyContentPatches, e sincronizá-las desfaria a
+ * correção a cada importação.
+ */
+export function questaoSincronizavel(slug: string, curadas: ReadonlySet<string>) {
+  return slug.endsWith("-checagem") || curadas.has(slug);
+}
+/** Atividade do capítulo como a origem a escreve, com a correção do capítulo 11 já aplicada (a mesma de patchCapitulo11). */
+export function atividadeCanonica(slug: string, atividade: string | null | undefined): string | null {
+  if (atividade == null) return null;
+  return slug === "c11" ? atividade.replace("sobre uma base de 60.000 propostas, com teste", "sobre a base do grupo, com cerca de 1 milhão de propostas e teste") : atividade;
+}
 export const PATCH_C11: Record<string, [string, string][]> = {
  "c11p1": [
   [

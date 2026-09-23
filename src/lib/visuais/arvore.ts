@@ -59,6 +59,20 @@ export function crescer(grupo: Proposta[], profMax: number, minFolha = 1, prof =
 }
 
 export function folhas(no: No): No[] { return no.corte && no.esq && no.dir ? [...folhas(no.esq), ...folhas(no.dir)] : [no]; }
+
+export type Mudanca = "igual" | "mesma divisão" | "mudou o corte" | "trocou de variável" | "ficou sem corte" | "ganhou corte";
+/**
+ * Compara um nó com o mesmo nó na base completa pela divisão, não pelo rótulo: sem a #8, o ponto médio da raiz passa de
+ * 57,5% a 55%, mas as mesmas propostas ficam de cada lado. Sem a #15, o nó direito fica puro e perde o corte sem trocar
+ * de variável. Só a #10 troca a variável do nó direito (c5p16).
+ */
+export function comparaNo(no: No | undefined, ref: No | undefined): Mudanca {
+  const c = no?.corte, r = ref?.corte;
+  if (!c || !r) return !c && !r ? "igual" : c ? "ganhou corte" : "ficou sem corte";
+  if (c.v !== r.v) return "trocou de variável";
+  if (c.valor === r.valor) return "igual";
+  return no!.grupo.every((p) => (p[c.v] <= c.valor) === (p[r.v] <= r.valor)) ? "mesma divisão" : "mudou o corte";
+}
 /** Erros na amostra: cada folha prevê o desfecho majoritário (empate conta como default). */
 export function errosNaAmostra(no: No): number { return folhas(no).reduce((s, f) => s + (f.d * 2 >= f.n ? f.n - f.d : f.d), 0); }
 /** Intervalo de Wilson a 95% para a proporção de defaults de uma folha. */

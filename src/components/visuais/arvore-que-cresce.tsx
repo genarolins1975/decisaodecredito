@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import did from "@/lib/visuais/did.json";
 import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
 import type { Proposta } from "@/lib/visuais/logistica";
-import { NOME_VAR, VARIAVEIS, avaliarCorte, cortesCandidatos, crescer, errosNaAmostra, folhas, rotuloCorte, todosOsCandidatos, wilson, type No, type Variavel } from "@/lib/visuais/arvore";
+import { NOME_VAR, VARIAVEIS, avaliarCorte, comparaNo, cortesCandidatos, crescer, errosNaAmostra, folhas, rotuloCorte, todosOsCandidatos, wilson, type Mudanca, type No, type Variavel } from "@/lib/visuais/arvore";
 
 /**
  * A árvore que cresce (capítulo 5). As 16 propostas no plano; a árvore nasce corte a corte e cada corte desenha uma
@@ -13,7 +13,9 @@ import { NOME_VAR, VARIAVEIS, avaliarCorte, cortesCandidatos, crescer, errosNaAm
 const BASE = did.base as Proposta[];
 export type ModoArvore = "raiz" | "freios" | "instabilidade";
 const PW = 420, PH = 360, PML = 50, PMR = 14, PMT = 14, PMB = 42;
-const su = (u: number) => PML + (u / 100) * (PW - PML - PMR); const sa = (a: number) => PMT + (1 - a / 40) * (PH - PMT - PMB);
+const su = (u: number) => PML + (u / 100) * (PW - PML - PMR); const sa = (a: number) => PMT + (1 - (a + 4) / 48) * (PH - PMT - PMB);
+/** folga de 4 dias acima e abaixo: nenhum ponto encosta na borda do plano; bordas de região em 0 e 40 dias vão até a folga */
+const ea = (a: number) => (a <= 0 ? -4 : a >= 40 ? 44 : a);
 
 export function ArvoreQueCresce({ modo = "raiz" }: { modo?: ModoArvore }) {
   const [profMax, setProfMax] = useState(modo === "raiz" ? 1 : 2);
@@ -42,7 +44,8 @@ export function ArvoreQueCresce({ modo = "raiz" }: { modo?: ModoArvore }) {
     return () => clearTimeout(t);
   }, [crescendo, profMax, modo]);
 
-  const igual = (a?: No["corte"], b?: No["corte"]) => (!a && !b) || (!!a && !!b && a.v === b.v && a.valor === b.valor);
+  const LEITURA: Record<Mudanca, string> = { igual: "igual à base completa", "mesma divisão": "mesma divisão da base completa", "mudou o corte": "mudou o corte", "trocou de variável": "trocou de variável", "ficou sem corte": "a base completa corta aqui", "ganhou corte": "a base completa não corta aqui" };
+  const mudanca = (no?: No, ref?: No) => (modo === "instabilidade" && no ? ` · ${LEITURA[comparaNo(no, ref)]}` : "");
   const titulo = modo === "freios" ? "Ajuste os dois freios e veja a árvore obedecer." : modo === "instabilidade" ? "Retire uma proposta. A raiz resiste; o nó direito, não." : "Deixe a árvore crescer. Cada corte é o vencedor de uma disputa.";
 
   return (
@@ -62,10 +65,10 @@ export function ArvoreQueCresce({ modo = "raiz" }: { modo?: ModoArvore }) {
         <div className="vz-grafico">
           <p className="vz-grafico-t">Plano das variáveis <span className="hint">{profMax === 0 ? "raiz sem corte: 16 propostas, Gini 0,5000" : `${fs.length} folhas · clique numa proposta para retirá-la`}</span></p>
           <svg viewBox={`0 0 ${PW} ${PH}`} role="img" aria-label={`Dezesseis propostas no plano utilização por atraso, partição em ${fs.length} folhas`}>
-            {fs.map((f, i) => { const x = su(f.caixa.u0), y = sa(f.caixa.a1), w = su(f.caixa.u1) - x, h = sa(f.caixa.a0) - y; const pd = f.n ? f.d / f.n : 0; return (
+            {fs.map((f, i) => { const x = su(f.caixa.u0), y = sa(ea(f.caixa.a1)), w = su(f.caixa.u1) - x, h = sa(ea(f.caixa.a0)) - y; const pd = f.n ? f.d / f.n : 0; return (
               <g key={`${f.caixa.u0}-${f.caixa.u1}-${f.caixa.a0}-${f.caixa.a1}`} className="vz-arv-folha" style={{ animationDelay: `${i * 60}ms` }}>
                 <rect x={x} y={y} width={w} height={h} className="vz-arv-rect" style={{ fill: pd >= 0.5 ? "var(--color-alert)" : "#9db6de", fillOpacity: 0.12 + Math.abs(pd - 0.5) * 0.5 }} />
-                {w > 96 && h > 30 ? <text x={x + 6} y={y + 14} className="vz-arv-rot">{f.n} · {f.d} def · PD {fmtPct(pd)}</text> : w > 34 && h > 30 ? <text x={x + 4} y={y + 14} className="vz-arv-rot">{fmtPct(pd)}</text> : null}
+                {w > 150 && h > 30 ? <text x={x + 6} y={y + 14} className="vz-arv-rot">{f.n} · {f.d} def · PD {fmtPct(pd)}</text> : w > 34 && h > 30 ? <text x={x + 4} y={y + 14} className="vz-arv-rot">{fmtPct(pd)}</text> : null}
               </g>
             ); })}
             <Cortes no={arvore} />
@@ -73,7 +76,7 @@ export function ArvoreQueCresce({ modo = "raiz" }: { modo?: ModoArvore }) {
             {[0, 10, 20, 30, 40].map((a) => <text key={a} x={PML - 6} y={sa(a) + 4} textAnchor="end" className="vz-tick">{a}</text>)}
             <text x={su(50)} y={PH - 6} textAnchor="middle" className="vz-rotulo">utilização do limite</text>
             <text transform={`translate(12 ${sa(20)}) rotate(-90)`} textAnchor="middle" className="vz-rotulo">maior atraso em 6 meses, dias</text>
-            {modo === "raiz" && (varCand === "util" ? <line x1={su(cand.corte)} x2={su(cand.corte)} y1={sa(0)} y2={sa(40)} className="vz-arv-cand" /> : <line x1={su(0)} x2={su(100)} y1={sa(cand.corte)} y2={sa(cand.corte)} className="vz-arv-cand" />)}
+            {modo === "raiz" && (varCand === "util" ? <line x1={su(cand.corte)} x2={su(cand.corte)} y1={sa(-4)} y2={sa(44)} className="vz-arv-cand" /> : <line x1={su(0)} x2={su(100)} y1={sa(cand.corte)} y2={sa(cand.corte)} className="vz-arv-cand" />)}
             {BASE.map((b) => <g key={b.id} className={`vz-front-ponto ${b.y ? "vz-front-ponto--default" : "vz-front-ponto--pagou"} ${b.id === removida ? "vz-front-ponto--fora" : ""}`} style={{ transform: `translate(${su(b.util)}px, ${sa(b.atraso)}px)`, cursor: "pointer" }} onClick={() => { setCrescendo(false); setRemovida(removida === b.id ? null : b.id); }} role="button" tabIndex={0} aria-label={`${b.id === removida ? "Devolver" : "Retirar"} a proposta ${b.id}`} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setRemovida(removida === b.id ? null : b.id); } }}><circle r={9} /><text y={4} textAnchor="middle" className="vz-front-id">{b.id}</text></g>)}
           </svg>
           <div className="vz-legenda"><span><i className="vz-sw vz-sw--default" /> deu default</span><span><i className="vz-sw vz-sw--pagou" /> pagou</span><span><i className="vz-sw vz-sw--fora" /> retirada da base</span>{modo === "raiz" && <span><i className="vz-sw vz-sw--cand" /> corte candidato em avaliação</span>}</div>
@@ -92,8 +95,8 @@ export function ArvoreQueCresce({ modo = "raiz" }: { modo?: ModoArvore }) {
               </select></label>
           </div>
           <div className="vz-tiles" aria-live="polite">
-            <div className="vz-tile"><p className="eyebrow">Raiz escolhida</p><p className="vz-num vz-num--texto">{arvore.corte ? rotuloCorte(arvore.corte.v, arvore.corte.valor) : "sem corte"}</p><p className="hint">{arvore.corte ? `ganho ${fmtNum(arvore.corte.ganho, 5)}` : "profundidade zero"}{modo === "instabilidade" && arvore.corte ? (igual(arvore.corte, referencia.corte) ? " · igual à base completa" : " · mudou") : ""}</p></div>
-            <div className="vz-tile"><p className="eyebrow">Divisão do nó direito</p><p className="vz-num vz-num--texto">{arvore.dir?.corte ? rotuloCorte(arvore.dir.corte.v, arvore.dir.corte.valor) : "folha"}</p><p className="hint">{arvore.dir?.corte ? `ganho ${fmtNum(arvore.dir.corte.ganho, 5)}` : "sem corte neste nível"}{modo === "instabilidade" && arvore.dir ? (igual(arvore.dir.corte, referencia.dir!.corte) ? " · igual à base completa" : " · trocou de variável") : ""}</p></div>
+            <div className="vz-tile"><p className="eyebrow">Raiz escolhida</p><p className="vz-num vz-num--texto">{arvore.corte ? rotuloCorte(arvore.corte.v, arvore.corte.valor) : "sem corte"}</p><p className="hint">{arvore.corte ? `ganho ${fmtNum(arvore.corte.ganho, 5)}` : "profundidade zero"}{arvore.corte ? mudanca(arvore, referencia) : ""}</p></div>
+            <div className="vz-tile"><p className="eyebrow">Divisão do nó direito</p><p className="vz-num vz-num--texto">{arvore.dir?.corte ? rotuloCorte(arvore.dir.corte.v, arvore.dir.corte.valor) : "folha"}</p><p className="hint">{arvore.dir?.corte ? `ganho ${fmtNum(arvore.dir.corte.ganho, 5)}` : "sem corte neste nível"}{mudanca(arvore.dir, referencia.dir)}</p></div>
             <div className="vz-tile"><p className="eyebrow">Folhas · erros nas {base.length}</p><p className="vz-num">{fs.length} <span className="hint">·</span> {erros}</p><p className="hint">menor folha com {menor} proposta{menor > 1 ? "s" : ""}</p></div>
             <div className="vz-tile"><p className="eyebrow">Pior intervalo de folha</p><p className={`vz-num ${piorIntervalo > 0.6 ? "vz-num--default" : ""}`}>{fmtPct(piorIntervalo)}</p><p className="hint">largura do intervalo de Wilson a 95% na folha menos confiável</p></div>
           </div>
@@ -121,7 +124,7 @@ export function ArvoreQueCresce({ modo = "raiz" }: { modo?: ModoArvore }) {
           <Ganhos candidatos={candidatos} atual={cand} melhor={melhor} segundo={segundo} />
         </div>
       </div>
-      <figcaption className="vz-fonte">Ganho = Gini antes − média ponderada do Gini dos dois lados. Na base completa a raiz é utilização ≤ 57,5% com ganho 0,28125 e o segundo colocado fica em 0,07143; no nó direito, utilização ≤ 87,5% e atraso ≤ 2,5 dias empatam em 0,09375 e a ordem de avaliação decide, por isso retirar a proposta #10 troca a variável. Empates são decididos avaliando utilização antes de atraso. Erros na amostra contam a folha prevendo o desfecho majoritário. Recalculado aqui.</figcaption>
+      <figcaption className="vz-fonte">Ganho = Gini antes − média ponderada do Gini dos dois lados. Na base completa a raiz é utilização ≤ 57,5% com ganho 0,28125; o corte vizinho, utilização ≤ 52,5%, fica em 0,19841 e o melhor corte de atraso, em 0,07143; no nó direito, utilização ≤ 87,5% e atraso ≤ 2,5 dias empatam em 0,09375 e a ordem de avaliação decide, por isso retirar a proposta #10 troca a variável. Empates são decididos avaliando utilização antes de atraso. Erros na amostra contam a folha prevendo o desfecho majoritário. Recalculado aqui.</figcaption>
     </figure>
   );
 }
@@ -131,7 +134,7 @@ function Cortes({ no }: { no: No }) {
   const c = no.caixa; const v = no.corte;
   return (
     <>
-      {v.v === "util" ? <line x1={su(v.valor)} x2={su(v.valor)} y1={sa(c.a1)} y2={sa(c.a0)} className="vz-arv-corte" style={{ strokeWidth: 3 - no.prof * 0.6 }} /> : <line x1={su(c.u0)} x2={su(c.u1)} y1={sa(v.valor)} y2={sa(v.valor)} className="vz-arv-corte" style={{ strokeWidth: 3 - no.prof * 0.6 }} />}
+      {v.v === "util" ? <line x1={su(v.valor)} x2={su(v.valor)} y1={sa(ea(c.a1))} y2={sa(ea(c.a0))} className="vz-arv-corte" style={{ strokeWidth: 3 - no.prof * 0.6 }} /> : <line x1={su(c.u0)} x2={su(c.u1)} y1={sa(v.valor)} y2={sa(v.valor)} className="vz-arv-corte" style={{ strokeWidth: 3 - no.prof * 0.6 }} />}
       <Cortes no={no.esq} /><Cortes no={no.dir} />
     </>
   );
@@ -157,7 +160,7 @@ function Diagrama({ no }: { no: No }) {
           <g key={`${p.x}-${p.y}`} className="vz-arv-no" style={{ transform: `translate(${p.x}px, ${p.y}px)` }}>
             <rect x={-w / 2} y={0} width={w} height={folha ? 40 : 44} rx={5} className={folha ? (pd >= 0.5 ? "vz-arv-caixa vz-arv-caixa--default" : "vz-arv-caixa vz-arv-caixa--pagou") : "vz-arv-caixa vz-arv-caixa--no"} />
             {folha ? <><text y={16} textAnchor="middle" className="vz-arv-t">{n.n} prop. · {n.d} def.</text><text y={32} textAnchor="middle" className="vz-arv-t vz-arv-t--pd">PD {fmtPct(pd)}</text></>
-              : <><text y={17} textAnchor="middle" className="vz-arv-t vz-arv-t--var">{NOME_VAR[n.corte!.v]}</text><text y={34} textAnchor="middle" className="vz-arv-t">{n.corte!.v === "util" ? `≤ ${n.corte!.valor.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}% ?` : `≤ ${n.corte!.valor.toLocaleString("pt-BR", { maximumFractionDigits: 1 })} dias ?`} · ganho {fmtNum(n.corte!.ganho, 3)}</text></>}
+              : <><text y={17} textAnchor="middle" className="vz-arv-t vz-arv-t--var">{rotuloCorte(n.corte!.v, n.corte!.valor)}?</text><text y={34} textAnchor="middle" className="vz-arv-t">ganho {fmtNum(n.corte!.ganho, 3)}</text></>}
           </g>
         ); })}
       </svg>

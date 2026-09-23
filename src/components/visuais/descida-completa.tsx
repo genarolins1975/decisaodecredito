@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import did from "@/lib/visuais/did.json";
 import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
 import { BETA_AULA, distanciaAoOtimo, escore, passo, perdaIndividual, perdaLog, sigmoide, trajetoria, type Proposta } from "@/lib/visuais/logistica";
+import { SemCaixaAlta } from "./sem-caixa-alta";
 
 /**
  * De onde vêm os coeficientes (capítulo 4, páginas 15 a 17). A perda logarítmica por proposta com os coeficientes da
@@ -108,7 +109,7 @@ function Gradiente() {
             <div className="vz-tile"><p className="eyebrow">Distância até o ótimo</p><p className="vz-num vz-num--odds">{fmtNum(distanciaAoOtimo(beta), 3)}</p></div>
           </div>
           <div className="table-wrap"><table className="table text-[.85em]"><thead><tr><th>Parâmetro</th><th>Valor atual</th><th>Componente do gradiente</th><th>Passo × gradiente</th><th>Valor seguinte</th></tr></thead><tbody>
-            {NOMES.map((n, i) => <tr key={n}><th scope="row">{n}</th><td>{fmtNum(beta[i], 5)}</td><td className={st.g[i] > 0 ? "vz-t-default" : "vz-t-ok"}>{sinal(st.g[i])}</td><td>{sinal(-0.1 * st.g[i])}</td><td className="vz-t-forte">{fmtNum(st.novo[i], 5)}</td></tr>)}
+            {NOMES.map((n, i) => <tr key={n}><th scope="row"><SemCaixaAlta>{n}</SemCaixaAlta></th><td>{fmtNum(beta[i], 5)}</td><td className={st.g[i] > 0 ? "vz-t-default" : "vz-t-ok"}>{sinal(st.g[i])}</td><td>{sinal(-0.1 * st.g[i])}</td><td className="vz-t-forte">{fmtNum(st.novo[i], 5)}</td></tr>)}
           </tbody></table></div>
           <p className="hint">Os três se movem na mesma iteração, e é por isso que o efeito de cada um não pode ser avaliado isoladamente durante o ajuste.</p>
         </div>
@@ -165,7 +166,7 @@ function Descida() {
             <div className="vz-tile"><p className="eyebrow">Perda</p><p className="vz-num">{fmtNum(perda, 6)}</p><p className="hint">mínimo atingível: {fmtNum(minimo, 6)}</p></div>
           </div>
           <div className="table-wrap"><table className="table text-[.85em]"><thead><tr><th>Parâmetro</th><th>Valor agora</th><th>Valor de convergência</th><th>Falta</th></tr></thead><tbody>
-            {NOMES.map((n, i) => <tr key={n}><th scope="row">{n.split(" ")[0]}</th><td className="vz-t-forte">{fmtNum(beta[i], 5)}</td><td>{fmtNum(BETA_AULA[i], 5)}</td><td className={Math.abs(beta[i] - BETA_AULA[i]) < 0.001 ? "vz-t-ok" : ""}>{fmtNum(BETA_AULA[i] - beta[i], 5)}</td></tr>)}
+            {NOMES.map((n, i) => <tr key={n}><th scope="row"><SemCaixaAlta>{n.split(" ")[0]}</SemCaixaAlta></th><td className="vz-t-forte">{fmtNum(beta[i], 5)}</td><td>{fmtNum(BETA_AULA[i], 5)}</td><td className={Math.abs(beta[i] - BETA_AULA[i]) < 0.001 ? "vz-t-ok" : ""}>{fmtNum(BETA_AULA[i] - beta[i], 5)}</td></tr>)}
           </tbody></table></div>
           <p className="hint">{nota}</p>
         </div>

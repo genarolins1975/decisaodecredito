@@ -1,7 +1,7 @@
 {
  "source": "content/original/apresentacao-curso-pd.html",
- "sha256": "1fd8ab266e015d9cdccb87b548812ab647e7eeaa42c07f4c38e315a8f4ebd0db",
- "extractedAt": "2026-09-22T12:40:28.446Z",
+ "sha256": "70ae1ec856cf7994355aa82f72f438a2d791c7cb0c7ba852a95e429c5af9e8ea",
+ "extractedAt": "2026-09-23T00:38:42.075Z",
  "edition": "2026",
  "units": [
   {
@@ -1420,7 +1420,7 @@
    "pageId": "7fp8s0f7o7j8pslbkmsqp",
    "chapter": 5,
    "unit": 2,
-   "title": "A pergunta condicionada resolve o que a soma não resolve",
+   "title": "Perguntas em sequência fazem o que a soma não faz",
    "level": "complementar",
    "minutes": 8,
    "origin": "rec",
@@ -1439,7 +1439,7 @@
    "pageId": "gxxq8pd7o36zx7x68fbx5",
    "chapter": 5,
    "unit": 2,
-   "title": "Anatomia: nó, regra, ramo, folha, profundidade",
+   "title": "Anatomia da árvore",
    "level": "essencial",
    "minutes": 8,
    "origin": "esq",
@@ -1458,7 +1458,7 @@
    "pageId": "9equ9ul1gaf6vdrn007qu",
    "chapter": 5,
    "unit": 2,
-   "title": "Impureza: uma medida de quanto o grupo está misturado",
+   "title": "Impureza: o quanto o grupo está misturado",
    "level": "essencial",
    "minutes": 8,
    "origin": "rec",
@@ -1517,7 +1517,7 @@
    "pageId": "rm7cb698ozki2hny8tsm1",
    "chapter": 5,
    "unit": 2,
-   "title": "A disputa entre os cortes da raiz",
+   "title": "A disputa pela raiz",
    "level": "essencial",
    "minutes": 10,
    "origin": "rec",
@@ -1593,7 +1593,7 @@
    "pageId": "49v3tpsn3d91qudaw2njg",
    "chapter": 5,
    "unit": 2,
-   "title": "Percorrer a árvore: a explicação completa de uma decisão",
+   "title": "Percorrer a árvore",
    "level": "complementar",
    "minutes": 9,
    "origin": "rec",
@@ -1612,7 +1612,7 @@
    "pageId": "62fxmh5kx4r51ns0r9ln2",
    "chapter": 5,
    "unit": 2,
-   "title": "A previsão da folha é a frequência da folha, e isso não é convenção",
+   "title": "A previsão da folha é a frequência da folha",
    "level": "complementar",
    "minutes": 9,
    "origin": "rec",
@@ -1631,7 +1631,7 @@
    "pageId": "6tyf87op5bu0z0ocuqico",
    "chapter": 5,
    "unit": 2,
-   "title": "A confiabilidade de cada folha, calculada",
+   "title": "Quanto cada folha afirma",
    "level": "complementar",
    "minutes": 10,
    "origin": "rec",
@@ -1652,7 +1652,7 @@
    "pageId": "b9jjauqpsrar83ltzb92u",
    "chapter": 5,
    "unit": 2,
-   "title": "Os dois freios: profundidade e mínimo de casos por folha",
+   "title": "Os dois freios da árvore",
    "level": "complementar",
    "minutes": 10,
    "origin": "rec",
@@ -1671,7 +1671,7 @@
    "pageId": "g7lr3idhnp88rqcqiw4hh",
    "chapter": 5,
    "unit": 2,
-   "title": "Poda: crescer primeiro, cortar depois, com um preço por folha",
+   "title": "Poda: crescer e depois cortar",
    "level": "complementar",
    "minutes": 9,
    "origin": "rec",
@@ -1690,7 +1690,7 @@
    "pageId": "rt0xdxgdmteohkhue9l88",
    "chapter": 5,
    "unit": 2,
-   "title": "Instabilidade: uma observação pode trocar a estrutura",
+   "title": "Instabilidade: uma proposta pode trocar a estrutura",
    "level": "complementar",
    "minutes": 8,
    "origin": "rec",
@@ -1711,7 +1711,7 @@
    "pageId": "2eqv5ggb4k6hphlm4plbp",
    "chapter": 5,
    "unit": 2,
-   "title": "Gini ou entropia: o critério não muda a conclusão aqui",
+   "title": "Gini ou entropia: a conclusão não muda",
    "level": "complementar",
    "minutes": 8,
    "origin": "rec",
@@ -2124,6 +2124,25 @@
    "controls": 3,
    "svgs": 0,
    "tables": 0,
+   "questions": [],
+   "predictions": [],
+   "hasGuide": true,
+   "hasFormula": false
+  },
+  {
+   "source": "#/c6p20",
+   "slug": "c6p20",
+   "pageId": "45lihev774dacr1uk6ltd",
+   "chapter": 6,
+   "unit": 2,
+   "title": "Três modelos, as mesmas 16 propostas",
+   "level": "essencial",
+   "minutes": 6,
+   "origin": "rec",
+   "rendering": "static",
+   "controls": 0,
+   "svgs": 0,
+   "tables": 1,
    "questions": [],
    "predictions": [],
    "hasGuide": true,
@@ -3562,7 +3581,7 @@
    "hasFormula": false
   }
  ],
- "questions": 238,
+ "questions": 240,
  "rubrics": [
   {
    "slug": "comite",
@@ -3644,11 +3663,13 @@
  ],
  "rendering": {
   "legacy": 84,
-  "static": 75,
+  "static": 76,
   "native": 21
  },
  "resync": {
-  "synced": [],
+  "synced": [
+   "c5p13"
+  ],
   "diverged": []
  }
 }

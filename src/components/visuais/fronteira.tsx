@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import did from "@/lib/visuais/did.json";
 import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
 import { atrasoNaFronteira, descida, escore, logit, sigmoide, type Proposta } from "@/lib/visuais/logistica";
+import { SemCaixaAlta } from "./sem-caixa-alta";
 
 /**
  * A fronteira nasce (capítulo 4). Descida de gradiente sobre as 16 propostas: a cada bloco de iterações os três
@@ -82,7 +83,7 @@ export function Fronteira() {
             <div className="vz-tile"><p className="eyebrow">Recusadas</p><p className="vz-num">{rec.length} <span className="hint">de 16</span></p><p className="hint">{evitados} defaults evitados · {rec.length - evitados} boas recusadas · {8 - evitados} defaults aprovados</p></div>
           </div>
           <div className="table-wrap"><table className="table text-[.85em]"><thead><tr><th>Coeficiente</th><th>agora</th><th>convergência</th><th>falta</th></tr></thead>
-            <tbody>{(["β₀ intercepto", "β₁ utilização", "β₂ atraso"] as const).map((n, k) => <tr key={n}><th scope="row">{n}</th><td>{fmtNum(beta[k], 4)}</td><td>{fmtNum(fim.beta[k], 4)}</td><td>{fmtNum(fim.beta[k] - beta[k], 4)}</td></tr>)}</tbody></table></div>
+            <tbody>{(["β₀ intercepto", "β₁ utilização", "β₂ atraso"] as const).map((n, k) => <tr key={n}><th scope="row"><SemCaixaAlta>{n}</SemCaixaAlta></th><td>{fmtNum(beta[k], 4)}</td><td>{fmtNum(fim.beta[k], 4)}</td><td>{fmtNum(fim.beta[k] - beta[k], 4)}</td></tr>)}</tbody></table></div>
           <Trajetorias traj={traj} it={it} />
         </div>
       </div>
@@ -110,11 +111,14 @@ function Trajetorias({ traj, it }: { traj: { it: number; beta: [number, number, 
         <path d={cam((t) => t.beta[1], yB)} className="vz-curva vz-curva--b1" />
         <path d={cam((t) => t.beta[2], yB)} className="vz-curva vz-curva--b2" />
         <line x1={lx(it)} x2={lx(it)} y1={MT} y2={H - MB} className="vz-corte-linha" />
-        <text x={lx(1) + 4} y={yP(0.72) + 10} className="vz-tick vz-tick--forte">log loss</text>
-        <text x={W - MR} y={yB(1.4) - 4} textAnchor="end" className="vz-tick vz-tick--b2">β₂ atraso</text>
-        <text x={W - MR} y={yB(0.745) + 12} textAnchor="end" className="vz-tick vz-tick--b1">β₁ utilização</text>
-        <text x={W - MR} y={yB(-5.67) - 4} textAnchor="end" className="vz-tick vz-tick--b0">β₀ intercepto</text>
       </svg>
+      {/* legenda fora do desenho: no fim das curvas β₂ e β₁ ficam a 6 px uma da outra e os rótulos encostavam nas linhas */}
+      <div className="vz-legenda">
+        <span><i className="vz-sw vz-sw--traco vz-sw--perda" />log loss, eixo de cima</span>
+        <span><i className="vz-sw vz-sw--traco vz-sw--b0" />β₀ intercepto</span>
+        <span><i className="vz-sw vz-sw--traco vz-sw--b1" />β₁ utilização</span>
+        <span><i className="vz-sw vz-sw--traco vz-sw--b2" />β₂ atraso</span>
+      </div>
     </div>
   );
 }

@@ -117,7 +117,7 @@
       "pagina": "c4p8",
       "slug": "c4p8q",
       "rot": "Ler as parcelas do escore",
-      "pergunta": "Na proposta #11 a utilização contribui +5,2171 para o escore e o atraso contribui +0,6977. O que se pode concluir disso?",
+      "pergunta": "Na proposta #11 a utilização contribui +5,2171 para o escore e o atraso contribui +0,6978. O que se pode concluir disso?",
       "alt": [
         "Que a utilização é a variável mais importante do modelo, por contribuir sete vezes mais",
         "Que nesta proposta a utilização deslocou mais o escore, o que depende do coeficiente e também da unidade em que a variável foi medida",
@@ -368,8 +368,8 @@
     {
       "pagina": "c6p7",
       "slug": "c6p7q",
-      "rot": "Escolher η com M fixo",
-      "pergunta": "Com quatro árvores fixas, η = 1 produz o menor erro de treino e η = 0,05 quase não sai do erro inicial. Isso estabelece que η = 1 é a melhor escolha?",
+      "rot": "Escolher a taxa com M fixo",
+      "pergunta": "Com quatro árvores fixas, η = 0,7 produz o menor erro de treino da página, 0,14, e η = 0,1 ainda está em 5,48, mais da metade do erro inicial de 10,19. Isso estabelece que η = 0,7 é a melhor escolha?",
       "alt": [
         "Sim, porque foi o valor que produziu o menor erro",
         "Não: η e M são acoplados, e comparar η com M fixo em quatro árvores não responde à pergunta. E o erro medido é de treino",
@@ -380,14 +380,14 @@
       "erros": [
         {
           "confusao": "Um hiperparâmetro foi otimizado com o outro fixo, sendo os dois acoplados.",
-          "conceito": "Com M preso em quatro, η grande é obrigado a vencer: é a única forma de percorrer a distância em tão poucos passos. A comparação justa daria a cada η o número de árvores de que ele precisa, e aí os resultados se aproximam. A tabela da página 16 mostra o produto η vezes M quase constante",
+          "conceito": "Com M preso em quatro, vence o η que chega mais perto dos dados em tão poucos passos: aqui, 0,7. Dê a cada η o número de árvores de que ele precisa e os resultados se aproximam: a tabela da página 16 mostra o produto η vezes M quase constante",
           "seu": "η seria escolhido com M parado",
           "adequado": "η e M se escolhem juntos, porque o que importa é o produto dos dois"
         },
         null,
         {
           "confusao": "η pequeno foi tomado como seguro em qualquer circunstância.",
-          "conceito": "η pequeno com M pequeno não sobreajusta e também não ajusta: o modelo fica parado perto do palpite inicial, que é subajuste. Com η de 0,05 e quatro árvores, o erro quase não sai do inicial. A segurança vem da combinação, não de um dos dois isoladamente",
+          "conceito": "η pequeno com M pequeno não sobreajusta e também não ajusta: o modelo fica parado perto do palpite inicial, que é subajuste. Com η de 0,1 e quatro árvores, o erro para em 5,48, mais da metade do inicial. A segurança vem da combinação, não de um dos dois isoladamente",
           "seu": "η menor seria sempre mais seguro",
           "adequado": "η pequeno com M pequeno subajusta; a segurança vem da combinação dos dois"
         }
@@ -396,7 +396,7 @@
     {
       "pagina": "c6p10",
       "slug": "c6p10q",
-      "rot": "O que η multiplica",
+      "rot": "O que a taxa multiplica",
       "pergunta": "Na fórmula F_m(x) = F_{m−1}(x) + η × h_m(x), o que exatamente η multiplica?",
       "alt": [
         "Só a nova correção h_m. O palpite inicial e as correções já somadas entram inteiros em F_{m−1}",
@@ -404,7 +404,7 @@
         "A nova correção, com um valor diferente a cada árvore, conforme a qualidade dela"
       ],
       "certa": 0,
-      "porqueCerta": "Os colchetes da fórmula dizem tudo: η fica do lado de fora de h_m e do lado de dentro de nada mais. F₀ entra inteiro, e cada correção já somada entrou no seu momento também multiplicada por η, mas uma única vez. Para x = 8, 6,50 + 0,5 × 2,875 = 7,94: o 6,50 não encolheu.",
+      "porqueCerta": "A fórmula diz tudo: η multiplica h_m e nada mais. F₀ entra inteiro, e cada correção já somada entrou no seu momento também multiplicada por η, mas uma única vez. Para x = 8, 6,50 + 0,5 × 2,875 = 7,94: o 6,50 não encolheu.",
       "erros": [
         null,
         {
@@ -446,6 +446,34 @@
           "conceito": "Essa curva desce monotonicamente com M e nunca indica onde parar: leve M ao máximo e ela continua caindo. Perseguir um alvo nela leva direto ao sobreajuste, porque o que se está minimizando é a memorização da base. Quem diz onde parar é a amostra de validação, e é ela que escolhe M",
           "seu": "Acrescentar árvores até bater a logística resolveria",
           "adequado": "A perda de treino não tem informação sobre onde parar; quem diz é a validação"
+        }
+      ]
+    },
+    {
+      "pagina": "c6p20",
+      "slug": "c6p20q",
+      "rot": "Onde os três modelos discordam",
+      "pergunta": "Em qual destas propostas os três modelos mais discordam?",
+      "alt": [
+        "#10: utilização de 65%, sem atraso, deu default",
+        "#12: utilização de 75%, atraso de 40 dias, deu default",
+        "#3: utilização de 30%, atraso de 5 dias, pagou"
+      ],
+      "certa": 0,
+      "porqueCerta": "Na #10 a logística estima 30,5%, a árvore 100% e o boosting 58,3%: 69,5 pontos entre o menor e o maior, a maior distância das 16, e com modelos dos dois lados de 50%. A reta lê atraso zero e utilização média e fica baixa; a árvore põe a #10 na folha pura de seis defaults; o boosting, com quatro árvores, está no meio do caminho entre as duas leituras.",
+      "erros": [
+        null,
+        {
+          "confusao": "Confundiu risco alto com discordância.",
+          "conceito": "A #12 tem PD alta nos três modelos: 99,6% na logística, 100% na árvore e 66,8% no boosting. Os três dizem risco alto; os 33 pontos de distância vêm do boosting, que parou em quatro árvores ainda perto dos 50% de onde partiu",
+          "seu": "A proposta de maior risco seria a mais disputada",
+          "adequado": "Discordância é distância entre as PDs, sobretudo quando elas caem em lados opostos de 50%"
+        },
+        {
+          "confusao": "Leu a distância entre 0% e 33,4% como leitura oposta do caso.",
+          "conceito": "Na #3 a logística dá 6,1%, a árvore 0% e o boosting 33,4%. Os três dizem baixo risco; a distância vem do boosting ainda perto de 50%, não de uma leitura diferente da proposta",
+          "seu": "Qualquer distância grande entre as PDs seria discordância sobre o caso",
+          "adequado": "Os modelos discordam de fato quando um põe o caso abaixo de 50% e outro acima, como na #10 e na #5"
         }
       ]
     }

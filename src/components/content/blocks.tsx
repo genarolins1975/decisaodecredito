@@ -45,11 +45,13 @@ export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liv
 
   const bloco = (i: number, filho: React.ReactNode) => filho == null ? null : <div key={i} data-bloco={i}>{filho}</div>;
   // visual de abertura: entra antes de todos os blocos; no palco, quando desenha o próprio quadro, é a página inteira
-  const proprio = nativo?.substitui === "pagina" || nativo?.substitui === "abertura"
+  const proprio = nativo?.substitui === "pagina" || nativo?.substitui === "abertura" || nativo?.substitui === "conteudo"
     ? <AjusteAoPalco><nativo.Componente palco={palco} pagina={pagina} /></AjusteAoPalco> : null;
   // "pagina": o visual ocupa o lugar de todo o conteúdo herdado da página, inclusive a questão equivalente quando
   // ela é o próprio exercício do quadro. A checagem de fim de página é montada fora daqui e continua.
   if (proprio && nativo?.substitui === "pagina") return <div className="flex flex-col gap-4">{bloco(-1, proprio)}</div>;
+  // "conteudo": o visual troca o texto, as figuras e os visuais herdados, e as questões da página continuam, na ordem
+  if (proprio && nativo?.substitui === "conteudo") return <div className="flex flex-col gap-4">{bloco(-1, proprio)}{blocks.flatMap((b, i) => (b.type === "question" ? [bloco(i, renderBloco(b, i))] : []))}</div>;
   const abertura = nativo?.substitui === "abertura" ? proprio : null;
   if (abertura && palco && pageSlug && PALCO_PROPRIO.has(pageSlug)) return <div className="flex flex-col gap-4">{bloco(-1, abertura)}</div>;
   return (
@@ -65,7 +67,10 @@ export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liv
 
   function renderBloco(b: Block, i: number): React.ReactNode {
         if (b.type === "html") return <div key={i} className="conteudo" dangerouslySetInnerHTML={{ __html: b.html }} />;
-        if (b.type === "episode") return <Episode key={i} b={b} palco={palco} />;
+        if (b.type === "episode") {
+          if (nativo?.substitui === "episodio") return <AjusteAoPalco key={i}><nativo.Componente palco={palco} episodio={b} /></AjusteAoPalco>;
+          return <Episode key={i} b={b} palco={palco} />;
+        }
         if (b.type === "checkpoint") return <Checkpoint key={i} b={b} palco={palco} />;
         if (b.type === "legacy") {
           const n = visualNativo(b.slug);

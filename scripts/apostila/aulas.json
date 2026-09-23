@@ -1,0 +1,4 @@
+{
+  "_leia": "A frase que amarra cada aula, para o quadro 'O fio da aula' dos guias de capítulo. As linhas do quadro (capítulo, pergunta, como termina e tempo em sala) saem de content/generated/extract.json; aqui fica só o que nenhum campo do conteúdo diz sozinho. Aula sem entrada aqui não ganha o quadro.",
+  "2": "As mesmas 16 propostas atravessam os três capítulos, cada uma com utilização, atraso e desfecho observado. Cada capítulo parte do caso que o anterior deixou em aberto, e a aula termina com as três PDs lado a lado."
+}

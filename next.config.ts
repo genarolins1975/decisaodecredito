@@ -5,12 +5,9 @@ const nextConfig: NextConfig = {
   agentRules: false,
   poweredByHeader: false,
   serverExternalPackages: ["@node-rs/argon2", "pg"],
-  // a aula em slides é lida do disco pela rota /slides/aula-2; sem isto a Vercel não o empacota
+  // os guias de capítulo em PDF são lidos do disco pela rota /api/materiais; sem isto a Vercel não os empacota
   outputFileTracingIncludes: {
-    "/slides/aula-2": ["./content/slides/**"], "/professor/aovivo/[id]": ["./content/slides/**"],
-    "/aulas": ["./content/slides/**"], "/aulas/aula-2": ["./content/slides/**"], "/aulas/aula-2/slide/[n]": ["./content/slides/**"],
-    "/aulas/capitulo/[n]": ["./content/slides/**"], "/professor/conteudo": ["./content/slides/**"], "/inicio": ["./content/slides/**"],
-    "/api/materiais/aula-2/[arquivo]": ["./content/materiais/**"],
+    "/api/materiais/[arquivo]": ["./content/materiais/**"],
   },
   experimental: { serverActions: { bodySizeLimit: "2mb" } },
   async headers() {

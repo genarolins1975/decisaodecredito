@@ -1,6 +1,6 @@
 # Registro de progresso (para continuar em outra sessão)
 
-Última atualização: 21 de setembro de 2026. Branch: `claude/new-session-d2yt8t`.
+Última atualização: 23 de setembro de 2026. Branch: `claude/new-session-d2yt8t`.
 
 ## Estado por etapa do briefing
 
@@ -10,7 +10,7 @@
 | 2. Modelo de dados, migrações, autenticação, matrícula, isolamento | concluída | `drizzle/0000_*.sql`, testes e2e de matrícula e isolamento |
 | 3. Aula ponta a ponta (conteúdo, questão, resposta, presença, painel) | concluída | testes e2e "aula ao vivo"; capturas em `content/generated/shots` |
 | 4. Trabalhos, grupos, versões, correção, devolutiva, teste cego | concluída | testes e2e "trabalhos"; fluxo completo verificado por API |
-| 5. Migração integral e revisão técnica, didática e visual | concluída com pendências declaradas | 180 páginas migradas; 84 visuais em iframe legado isolado (a portar); docs/03 |
+| 5. Migração integral e revisão técnica, didática e visual | concluída com pendências declaradas | 180 páginas migradas e o fecho da Aula 2 (c6p20), 181 no total; 84 visuais em iframe legado isolado (a portar); docs/03 |
 | 6. Testes de aceitação, segurança, acessibilidade, carga, restauração | concluída no ambiente local | docs/07 |
 | 7. Homologação, publicação e manuais | manuais concluídos; **homologação e produção não implantadas** (sem credenciais) | docs/09 |
 
@@ -99,8 +99,70 @@ Fora da Aula 2, a mesma varredura encontrou defeitos pré-existentes que este tr
 
 Lição de método, a terceira sobre o mesmo ponto: instrumento que não foi testado contra o defeito conhecido não serve de garantia. As duas primeiras versões do detector davam 60 de 60 com o defeito na tela.
 
+### Décima primeira rodada (22/09/2026): uma Aula 2 só, com narrativa única e guias por capítulo
+
+O professor mostrou Materiais listando a Aula 2 duas vezes, o baralho de 50 slides e o guia do baralho, e pediu uma aula só, narrada de forma fluida, com o layout das outras aulas e guias do aluno e do professor por capítulo. Decisões dele: aposentar o baralho; guias dos capítulos 4, 5 e 6, publicados na página de cada capítulo, o do aluno aberto ao aluno e o do professor restrito à equipe.
+
+**A aula.** O baralho saiu de Materiais (o importador o arquiva), do botão "Apresentar pelos slides" e do ao vivo por slide; os endereços antigos redirecionam para o conteúdo equivalente. O ao vivo conduz pelas páginas, e "Próxima essencial" não atravessa mais de capítulo. O fio das mesmas 16 propostas amarra os três capítulos, com 14 pontes de sala e a página de fecho c6p20; o desenho, os números e o que do baralho ficou de fora estão em `docs/NARRATIVA_AULA_2.md`.
+
+**Os guias.** Gerados por `scripts/apostila` a partir das páginas publicadas, com a captura de cada página, a explicação ("Como ler" no aluno, "Como conduzir" no professor), as questões e, no professor, gabarito, ficha de aula e a folha "Em sala". O guia do aluno fica em `content/materiais` e sai pela rota `/api/materiais/[arquivo]` só para matriculados. O guia do professor traz gabaritos e o repositório é público: não entra no repositório (o `.gitignore` recusa) e sai pelo canal privado dos gabaritos, bucket e "Registrar pacote", com o pacote montado por `pacote-professor.mjs`. O registro de pacote tinha um defeito que este caminho expôs e foi corrigido: manifesto sem bases zerava a lista esperada do teste cego.
+
+**Guia contra tela.** Evidência: dois revisores independentes compararam guia e explicações com a plataforma renderizada e acharam 54 divergências no capítulo 4 e 60 nos capítulos 5 e 6. Causa principal: o registro de visuais nativos trocou 21 visuais e o guia seguia descrevendo o HTML antigo (tabelas que não existem mais, "à direita" onde a peça empilha, "página expositiva" em página com controles). Todas corrigidas, pela camada `guiaDaTelaV15` do material original e pelos textos de `scripts/apostila/explicacoes`.
+
+**Erros de conteúdo** (recalculados com `src/lib/visuais` e presos em teste):
+
+- c6p7 e a questão c6p7q afirmavam que, com quatro árvores fixas, η = 1 dá o menor erro de treino. Na faixa do controle (0,1 a 1, passo 0,1) o menor é η = 0,7, com 0,1422; η = 1 termina em 0,4078 e η = 0,1 em 5,48. O material original trazia a mesma premissa ("O maior", e a nota "η menor produz erro maior"). Guia, questão e explicações corrigidos.
+- c5p16: o contador do nó direito dizia "trocou de variável" sem a #14 (só o ponto médio muda, de 87,5% para 85%) e sem a #15 (o nó fica puro e perde o corte), e o da raiz dizia "mudou" sem a #8 ou a #9, com a mesma divisão. O contador passou a comparar a divisão; só a #10 troca a variável, como o guia afirma.
+- c6p9 dizia que as parcelas encolhem. Para x = 8, a maior é a da árvore 2 (+2,03), não a da 1 (+1,44).
+
+**Layout e formatação.** Tabelas com coluna atrás da rolagem: c5p18 em qualquer largura e c5p7, c5p14 e c5p16 a 1.000 px, zero depois. Rótulos atravessados por curvas em c4p19 (virou legenda), c6p15 e c5p12. Marca do observado desalinhada entre linhas em c6p9 e c6p14 (grade compartilhada). Clique restaurado em c6p3, com as cores de c6p7 a c6p9. Caixa alta transformando η e β em Η e Β, lidos como H e B, em seis cabeçalhos de tabela e dois rótulos de questão.
+
+**Importador.** Passa a sincronizar os textos do capítulo (título, pergunta, pré-requisitos, objetivos, motivação, atividade, usos) e as questões de checagem e curadas quando a origem muda e o professor não as editou pelo painel.
+
+Verificado em 22/09/2026: typecheck; lint (0 erros); `lint:tracos` (0); `npm test` (283 em 31 arquivos); `npx playwright test` (23 de 23); varredura 61 de 61 páginas em Aulas (1920x1080, 1366x768, 1024x768, 390x844) e em Apresentação (1920x1080, 1366x768), com estados revelados; palco das 11 páginas alteradas com média 9,79 e nenhuma abaixo de 9; seis PDFs regerados (aluno com 34, 31 e 30 páginas; professor com 43, 40 e 40), sem imagem ausente, sem traço de pontuação e sem conteúdo do professor no guia do aluno; importação idempotente na segunda execução.
+
+**Não verificado.** O pacote do professor não foi enviado ao bucket nem registrado em produção: deste ambiente não há credencial. O conteúdo publicado em produção não foi inspecionado.
+
+### Décima segunda rodada (23/09/2026): o capítulo 5 redesenhado para o palco
+
+O professor apontou os slides 69 e 70 da apresentação (c5p1 e c5p2) e pediu a revisão de layout do capítulo 5 inteiro, com menos texto, didático e objetivo.
+
+**Diagnóstico** (capturas do palco a 1920x1080, antes da mudança). c5p1 ocupava três telas: infográfico, desafio em caixas de texto e etapas. c5p2 ocupava duas, com a árvore de um corte só e pontos cortados pelo eixo. c5p13 repetia o mesmo gráfico em quatro telas. Cabeçalhos com objetivo e apoio de duas ou três linhas. O capítulo somava 28 telas.
+
+**O que mudou.**
+
+- Sete peças nativas novas, desenhadas para caber numa tela: abertura com a árvore que acende a parte de que cada etapa fala (c5p1); reta contra cortes nos mesmos eixos, com o balanço do que a árvore ganha e perde (c5p2); raiz escolhida (c5p8); uma proposta dentro da árvore, com o intervalo da folha (c5p10); valor da folha (c5p12); confiança da folha (c5p13); Gini ou entropia (c5p17). O plano das 16 propostas é compartilhado (`plano-16.tsx`).
+- Dois modos novos no registro de visuais: `episodio`, que troca o bloco do desafio e recebe o texto dele, e `conteudo`, que troca o conteúdo herdado e mantém as questões da página. No palco, c5p1 dispensa o infográfico (`ABERTURA_NATIVA`); um teste prende o registro e o palco na mesma lista.
+- As outras doze páginas recompostas para o palco: o cabeçalho interno dos visuais sai (o quadro já traz título e objetivo), plano e árvore crescem, controles e contadores secundários ficam só no estudo, a escala do plano ganhou margem para nenhum ponto ser cortado pelo eixo e os rótulos de regra cabem nas caixas.
+- Cabeçalhos das 19 páginas reescritos na camada `capitulo5NoPalcoV16`: título e objetivo numa linha a 1920 px, apoio só quando instrui o uso da página.
+- Roteiro do professor (leitura, condução, interação e checagem) e explicações dos guias refeitos para as sete peças. No guia impresso, a abertura de c5p1 não repete o desafio, que a captura já traz.
+
+**Resultado** (medido nesta rodada).
+
+| Medida | Antes | Depois | Como |
+|---|---|---|---|
+| Telas do capítulo no palco, 1920x1080 | 28 | 22 | capturas tela a tela |
+| Palavras dos cabeçalhos (título, objetivo, apoio e conexão das 19 páginas) | 1.071 | 676 | `extract.json` do commit 39fcb36 contra o atual |
+| Palavras do conteúdo de c5p2, c5p8, c5p10, c5p12, c5p13 e c5p17 | 835 | 344 | HTML herdado contra a peça renderizada, sem SVG e sem nota de fonte |
+| Auditoria do palco, 19 páginas | sem medida comparável guardada | 9,96 em 1400x900 e em 1920x1080; pior página 9,8 | `scripts/palco/auditoria.mjs` |
+
+**Erro de conteúdo corrigido.** A nota do professor de c5p13 dizia que, com este volume, nenhuma folha era comprovadamente diferente das outras. Falso para o par 0 default em 6 contra 6 em 6: teste exato de Fisher, p = 0,0022. As folhas de 50% (1 em 2) não se distinguem de nenhuma outra (p = 0,25). A nota passou a dizer que as barras sugerem e o teste da diferença decide, sem contradizer a questão c5p13q.
+
+**Checagem de c5p2.** A pergunta acompanha o desenho novo: quantos cortes a mais a árvore de profundidade 2 precisaria para isolar a #15. Resposta: um, entre a #15 e a #16. O importador criou versão nova da questão; as respostas antigas ficam na anterior.
+
+Verificado em 23/09/2026: typecheck; lint (0 erros; 5 avisos, todos anteriores a esta rodada); `lint:tracos` (0); `npm test` (291, oito novos: cada peça nova, renderizada no servidor, exibe os números conferidos, e registro e palco concordam na abertura nativa); `npx playwright test` (23 de 23); varredura 61 de 61 páginas nas duas rotas e nas quatro larguras, com estados revelados; notas do professor novas no ar no palco; guias do capítulo 5 regerados (aluno com 28 páginas, professor com 36); guias dos capítulos 4 e 6 idênticos, em texto e em imagem, aos publicados.
+
+**Não verificado.** Pacote do professor não enviado ao bucket (sem credencial neste ambiente). Produção não inspecionada. Nenhum teste com alunos ou em projetor real.
+
 ## Pendências técnicas ordenadas
 
+0. Guia do professor dos capítulos 4, 5 e 6: enviar o pacote `guias-2026-09` a `bases/vguias-2026-09/` no bucket e registrar em Bases e gabaritos (instruções em `scripts/apostila/README.md`).
+0. Abertura do capítulo 6 (c6p1): o mesmo desenho de três telas que c5p1 tinha, infográfico, desafio em texto e etapas. O modo `episodio` do registro permite repetir a solução de c5p1.
+0. Questão c5p13q, explicação da alternativa c: diz que intervalos que não se tocam não demonstram diferença. Com intervalos de 95%, a não sobreposição é critério conservador de diferença (aqui, Fisher dá p = 0,0022 para 0 em 6 contra 6 em 6). Revisar a redação com o professor.
+0. Celular (390 px): 13 páginas dos capítulos 4 a 6 mostram tabela com rolagem lateral, padrão anterior a esta rodada; em 1.024 px ou mais, nenhuma.
+0. Tempo da Aula 2: essenciais somam 171 min para 165 úteis; decisão do professor, recomendação em `docs/NARRATIVA_AULA_2.md`, seção 6.
+0. Repositório público: gabaritos estão nos fontes do material e o guia do professor do baralho, de uma rodada anterior, continua no histórico do git. Recomendação: tornar o repositório privado.
+0. Guias dos capítulos 1 a 3 e 7 a 11: as sínteses da revisão 13 provavelmente trazem o mesmo descompasso entre guia e tela corrigido aqui nos capítulos 4 a 6; não auditadas.
 0. Aula 2: R1 a R4 e R7 de `docs/PLANO_MELHORIAS.md` (aviso de turma sem encontros, perguntas para slides sem página ligada, verificação em Firefox, Safari e projetor, validação com usuários, traços nas cascas, estados combinados que cabem reduzidos).
 
 1. Portar visuais legados de maior valor para componentes nativos (lista em docs/03, seção 6).

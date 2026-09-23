@@ -13,7 +13,9 @@ import { caminhoNaArvore } from "./arvore-diagrama";
  */
 const BASE = did.base as Proposta[];
 const PW = 640, PH = 380, PML = 46, PMR = 14, PMT = 16, PMB = 40;
-const su = (u: number) => PML + (u / 100) * (PW - PML - PMR), sa = (a: number) => PMT + (1 - a / 40) * (PH - PMT - PMB);
+const su = (u: number) => PML + (u / 100) * (PW - PML - PMR), sa = (a: number) => PMT + (1 - (a + 4) / 48) * (PH - PMT - PMB);
+/** folga de 4 dias acima e abaixo: nenhum ponto encosta na borda do plano; bordas de região em 0 e 40 dias vão até a folga */
+const ea = (a: number) => (a <= 0 ? -4 : a >= 40 ? 44 : a);
 const ENTREGA = [["Fronteira", "reta", "escalonada"], ["Interação", "só se escrita", "automática"], ["PD", "contínua", "constante por região"], ["Explicação individual", "contribuições somadas", "caminho de regras"], ["Estabilidade", "alta", "baixa"], ["Extrapolação", "continua a reta", "repete a folha da borda"]];
 
 export function DuasFamilias() {
@@ -24,7 +26,7 @@ export function DuasFamilias() {
   const perdaL = linhas.reduce((s, l) => s + l.ll, 0) / 16, perdaA = linhas.reduce((s, l) => s + l.la, 0) / 16;
   const q = linhas[sel - 1]; const dif = 100 * (q.pa - q.pl);
   const porque = q.pa === 0 && q.pl > 0.3 ? "A reta logística vê risco moderado; a árvore caiu numa folha sem defaults." : q.pa === 1 && q.pl < 0.6 ? "A árvore caiu numa folha só de defaults; a logística, olhando a soma das duas variáveis, vê menos risco." : Math.abs(dif) < 10 ? "As duas famílias quase concordam nesta proposta." : "A árvore repete a taxa da região; a logística responde à posição exata.";
-  const fronteira = Array.from({ length: 101 }, (_, u) => [u, atrasoNaFronteira(BETA_AULA, 0.5, u)] as const).filter(([, a]) => a >= 0 && a <= 40).map(([u, a], i) => `${i ? "L" : "M"}${su(u).toFixed(1)} ${sa(a).toFixed(1)}`).join("");
+  const fronteira = Array.from({ length: 101 }, (_, u) => [u, atrasoNaFronteira(BETA_AULA, 0.5, u)] as const).filter(([, a]) => a >= -4 && a <= 44).map(([u, a], i) => `${i ? "L" : "M"}${su(u).toFixed(1)} ${sa(a).toFixed(1)}`).join("");
   return (
     <figure className="vz" data-vz="duas-familias">
       <header className="vz-cab">
@@ -36,13 +38,13 @@ export function DuasFamilias() {
           {[5, 10, 15].map((i) => <button key={i} type="button" className={`btn btn-sm ${sel === i ? "" : "btn-secondary"}`} onClick={() => setSel(i)}>#{i}</button>)}
         </div>
       </header>
-      <div className="vz-estado"><b>Proposta #{q.id}, utilização {q.util}% e atraso {q.atraso} d, y = {q.y}:</b> logística {fmtPct(q.pl, 1)}, árvore {fmtPct(q.pa)}, {fmtNum(Math.abs(dif), 1)} pontos de diferença. {porque} Treino: log loss {fmtNum(perdaL, 5)} contra {fmtNum(perdaA, 5)}, e essa comparação não escolhe o modelo.</div>
+      <div className="vz-estado"><b>Proposta #{q.id}, utilização {q.util}% e atraso {q.atraso} d, y = {q.y}:</b> logística {fmtPct(q.pl, 1)}, árvore {fmtPct(q.pa)}, {fmtNum(Math.abs(dif), 1)} pontos de diferença. {porque}</div>
       <div className="vz-df-grade">
         <div className="vz-grafico">
           <p className="vz-grafico-t">Reta contra escada <span className="hint">linha: PD 50% da logística · regiões: a folha da árvore e sua taxa · clique numa proposta</span></p>
           <svg viewBox={`0 0 ${PW} ${PH}`} role="img" aria-label="Fronteira da logística e partição da árvore sobre as 16 propostas">
-            {fs.map((f) => { const p = f.d / f.n; return <rect key={`${f.caixa.u0}-${f.caixa.a0}`} x={su(f.caixa.u0)} y={sa(f.caixa.a1)} width={su(f.caixa.u1) - su(f.caixa.u0)} height={sa(f.caixa.a0) - sa(f.caixa.a1)} className="vz-arv-rect" style={{ fill: p >= 0.5 ? "var(--color-alert)" : "#9db6de", fillOpacity: 0.1 + Math.abs(p - 0.5) * 0.4 }} />; })}
-            {fs.map((f) => <text key={`t${f.caixa.u0}-${f.caixa.a0}`} x={su(f.caixa.u0) + 5} y={sa(f.caixa.a1) + 14} className="vz-tick vz-tick--forte">árvore {fmtPct(f.d / f.n)}</text>)}
+            {fs.map((f) => { const p = f.d / f.n; return <rect key={`${f.caixa.u0}-${f.caixa.a0}`} x={su(f.caixa.u0)} y={sa(ea(f.caixa.a1))} width={su(f.caixa.u1) - su(f.caixa.u0)} height={sa(ea(f.caixa.a0)) - sa(ea(f.caixa.a1))} className="vz-arv-rect" style={{ fill: p >= 0.5 ? "var(--color-alert)" : "#9db6de", fillOpacity: 0.1 + Math.abs(p - 0.5) * 0.4 }} />; })}
+            {fs.map((f) => <text key={`t${f.caixa.u0}-${f.caixa.a0}`} x={su(f.caixa.u0) + 5} y={sa(ea(f.caixa.a1)) + 14} className="vz-tick vz-tick--forte">árvore {fmtPct(f.d / f.n)}</text>)}
             {[0, 25, 50, 75, 100].map((u) => <text key={u} x={su(u)} y={PH - PMB + 16} textAnchor="middle" className="vz-tick">{u}%</text>)}
             {[0, 10, 20, 30, 40].map((a) => <text key={a} x={PML - 6} y={sa(a) + 4} textAnchor="end" className="vz-tick">{a} d</text>)}
             <text x={su(50)} y={PH - 6} textAnchor="middle" className="vz-rotulo">utilização do limite</text>

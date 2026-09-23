@@ -15,6 +15,9 @@ const xp = (p: number) => ML + p * span;
 const xo = (o: number) => ML + ((Math.log10(o) + 2) / 4) * span;
 const xz = (z: number) => ML + ((z + 6) / 12) * span;
 
+/** "1 dezena", "1,5 dezena", "0 dezenas", "5,5 dezenas": singular entre 1 e 2, como em português se diz 1,5 milhão. */
+const dezenas = (v: number) => `${v.toLocaleString("pt-BR", { maximumFractionDigits: 1 })} ${v >= 1 && v < 2 ? "dezena" : "dezenas"}`;
+
 export function TresEscalas() {
   const [util, setUtil] = useState(55);
   const [atraso, setAtraso] = useState(10);
@@ -35,9 +38,9 @@ export function TresEscalas() {
       </header>
       <div className="vz-escalas-grade">
         <div className="vz-escalas-painel">
-          <label className="vz-slider"><span className="vz-slider-rotulo"><b>Utilização do limite</b> <span className="vz-slider-valor">{util}% · {(util / 10).toLocaleString("pt-BR", { maximumFractionDigits: 1 })} dezenas de pontos</span></span>
+          <label className="vz-slider"><span className="vz-slider-rotulo"><b>Utilização do limite</b> <span className="vz-slider-valor">{util}% · {dezenas(util / 10)} de pontos</span></span>
             <input type="range" min={0} max={100} step={1} value={util} onChange={(ev) => setUtil(Number(ev.target.value))} aria-valuetext={`${util}%`} /></label>
-          <label className="vz-slider"><span className="vz-slider-rotulo"><b>Maior atraso em 6 meses</b> <span className="vz-slider-valor">{atraso} dias · {(atraso / 10).toLocaleString("pt-BR", { maximumFractionDigits: 1 })} dezenas de dias</span></span>
+          <label className="vz-slider"><span className="vz-slider-rotulo"><b>Maior atraso em 6 meses</b> <span className="vz-slider-valor">{atraso} dias · {dezenas(atraso / 10)} de dias</span></span>
             <input type="range" min={0} max={40} step={1} value={atraso} onChange={(ev) => setAtraso(Number(ev.target.value))} aria-valuetext={`${atraso} dias`} /></label>
           <div className="vz-contrib">
             <p className="vz-grafico-t">Contribuições para o escore, em log odds <span className="hint">o escore é uma soma ponderada, e nada além disso</span></p>

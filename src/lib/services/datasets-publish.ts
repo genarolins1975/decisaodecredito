@@ -20,7 +20,7 @@ export type Manifesto = {
   comum: { arquivo: Arquivo; titulo: string; descricao: string; kind: string; status: "published" | "professor" }[];
   bases: { codigo: string; nome: string; produto: string; populacao: string; enfase: string; versao: string; notas?: string; oot_ids: number; aluno_zip: Arquivo; dicionario: Arquivo; oot: Arquivo; rotulos: Arquivo; professor_zip: Arquivo }[];
 };
-const MIME: Record<string, string> = { zip: "application/zip", csv: "text/csv", md: "text/plain", ipynb: "application/json", json: "application/json" };
+const MIME: Record<string, string> = { zip: "application/zip", csv: "text/csv", md: "text/plain", ipynb: "application/json", json: "application/json", pdf: "application/pdf" };
 export const prefixo = (versao: string) => `bases/v${versao.replace(/[^\w.-]/g, "")}/`;
 
 export async function lerManifesto(versao: string): Promise<Manifesto> {
@@ -61,7 +61,8 @@ export async function registrarPacote(editionId: string, versao: string, actorUs
   for (const c of m.comum) {
     const fileId = conta(await registrarArquivo(versao, c.arquivo, c.status === "professor" ? "labels" : "material", actorUserId));
     const ex = mats.find((x) => semVersao(x.title) === semVersao(c.titulo));
-    if (ex) await db.update(schema.materials).set({ title: c.titulo, fileId, description: c.descricao, kind: c.kind, status: c.status }).where(eq(schema.materials.id, ex.id));
+    // o arquivo do bucket passa a ser a fonte: um endereço antigo no mesmo cadastro teria precedência na tela
+    if (ex) await db.update(schema.materials).set({ title: c.titulo, fileId, url: null, description: c.descricao, kind: c.kind, status: c.status }).where(eq(schema.materials.id, ex.id));
     else await db.insert(schema.materials).values({ id: newId(), editionId, title: c.titulo, kind: c.kind, description: c.descricao, fileId, status: c.status, position: pos++ });
     resumo.materiais.push(c.titulo);
   }
@@ -79,8 +80,10 @@ export async function registrarPacote(editionId: string, versao: string, actorUs
     else await db.insert(schema.datasets).values({ id: newId(), editionId, code: b.codigo, ...valores });
     resumo.bases.push(b.codigo);
   }
+  /* Manifesto só com materiais comuns (bases: []) atualiza apenas os materiais: sem base não há OOT, e seguir
+     adiante zeraria o número de IDs esperado no teste cego de cada turma. */
   const expectedIds = m.bases[0]?.oot_ids ?? null;
-  for (const cls of await db.select().from(schema.classes).where(eq(schema.classes.editionId, editionId))) {
+  for (const cls of m.bases.length ? await db.select().from(schema.classes).where(eq(schema.classes.editionId, editionId)) : []) {
     const [a] = await db.select().from(schema.assignments).where(and(eq(schema.assignments.classId, cls.id), eq(schema.assignments.slug, "trabalho-final")));
     if (!a) continue;
     const [cfg] = await db.select().from(schema.blindTests).where(eq(schema.blindTests.assignmentId, a.id));

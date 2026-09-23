@@ -1,6 +1,16 @@
 "use client";
 import type { ComponentType } from "react";
+import type { Block } from "@/lib/services/content";
+import { AberturaArvores } from "./abertura-arvores";
+import { RetaOuDegraus } from "./reta-ou-degraus";
+import { RaizEscolhida } from "./raiz-escolhida";
+import { UmaProposta } from "./uma-proposta";
+import { ValorDaFolha } from "./valor-da-folha";
+import { ConfiancaDaFolha } from "./confianca-da-folha";
+import { GiniOuEntropia } from "./gini-ou-entropia";
 import { ResiduosQueEncolhem } from "./residuos-que-encolhem";
+import { OitoPontos } from "./oito-pontos";
+import { TresModelos } from "./tres-modelos";
 import { PerdaQueCai } from "./perda-que-cai";
 import { DistanciaQueSeAbre } from "./distancia-que-se-abre";
 import { IndiceQueSoma } from "./indice-que-soma";
@@ -78,8 +88,8 @@ import { Safras } from "./safras";
  * figura estática (o bloco svgfit do primeiro bloco HTML), mantendo o texto ao redor. Vale em aula, apresentação e
  * aula ao vivo, sem alterar o banco. Fonte dos números: src/lib/visuais.
  */
-/** substitui: "legacy" troca o bloco herdado; "figura" troca a figura estática do primeiro bloco HTML; "abertura" entra antes de todos os blocos; "pagina" ocupa o lugar de todo o conteúdo, preservando as questões. */
-export type VisualNativo = { Componente: ComponentType<{ palco?: boolean; pagina?: { index: number; total: number } }>; substitui: "legacy" | "figura" | "abertura" | "pagina" };
+/** substitui: "legacy" troca o bloco herdado; "figura" troca a figura estática do primeiro bloco HTML; "abertura" entra antes de todos os blocos; "pagina" ocupa o lugar de todo o conteúdo, preservando as questões; "episodio" troca o bloco do desafio do capítulo e recebe o texto dele (no palco, sem o infográfico: ver ABERTURA_NATIVA); "conteudo" troca todo o conteúdo herdado, mas mantém as questões da página. */
+export type VisualNativo = { Componente: ComponentType<{ palco?: boolean; pagina?: { index: number; total: number }; episodio?: Extract<Block, { type: "episode" }> }>; substitui: "legacy" | "figura" | "abertura" | "pagina" | "episodio" | "conteudo" };
 const REGISTRO: Record<string, VisualNativo> = {
   c1p5: { Componente: CemVidas, substitui: "legacy" },
   c1p7: { Componente: MesmaPd, substitui: "legacy" },
@@ -115,18 +125,26 @@ const REGISTRO: Record<string, VisualNativo> = {
   c4p17: { Componente: () => <DescidaCompleta modo="descida" />, substitui: "legacy" },
   c4p19: { Componente: Fronteira, substitui: "legacy" },
   c4p21: { Componente: Faixas, substitui: "legacy" },
+  c5p1: { Componente: AberturaArvores, substitui: "episodio" },
+  c5p2: { Componente: RetaOuDegraus, substitui: "conteudo" },
   c5p3: { Componente: Anatomia, substitui: "legacy" },
   c5p4: { Componente: () => <Impureza modo="curva" />, substitui: "legacy" },
   c5p5: { Componente: () => <Impureza modo="raiz" />, substitui: "legacy" },
   c5p6: { Componente: CorteCandidato, substitui: "legacy" },
   c5p7: { Componente: () => <ArvoreQueCresce modo="raiz" />, substitui: "legacy" },
+  c5p8: { Componente: RaizEscolhida, substitui: "conteudo" },
   c5p9: { Componente: Recursao, substitui: "legacy" },
+  c5p10: { Componente: UmaProposta, substitui: "conteudo" },
   c5p11: { Componente: Caminho, substitui: "legacy" },
+  c5p12: { Componente: ValorDaFolha, substitui: "conteudo" },
+  c5p13: { Componente: ConfiancaDaFolha, substitui: "conteudo" },
   c5p14: { Componente: () => <ArvoreQueCresce modo="freios" />, substitui: "legacy" },
   c5p15: { Componente: Poda, substitui: "legacy" },
   c5p16: { Componente: () => <ArvoreQueCresce modo="instabilidade" />, substitui: "legacy" },
+  c5p17: { Componente: GiniOuEntropia, substitui: "conteudo" },
   c5p18: { Componente: DuasFamilias, substitui: "legacy" },
   c6p2: { Componente: TresEstrategias, substitui: "legacy" },
+  c6p3: { Componente: OitoPontos, substitui: "pagina" },
   c6p7: { Componente: () => <ResiduosQueEncolhem modo="taxa" />, substitui: "legacy" },
   c6p8: { Componente: () => <ResiduosQueEncolhem modo="arvores" />, substitui: "legacy" },
   c6p9: { Componente: () => <ResiduosQueEncolhem modo="soma" />, substitui: "legacy" },
@@ -136,6 +154,8 @@ const REGISTRO: Record<string, VisualNativo> = {
   c6p15: { Componente: Hiperparametros, substitui: "legacy" },
   c6p17: { Componente: DistanciaQueSeAbre, substitui: "figura" },
   c6p18: { Componente: TresLimites, substitui: "legacy" },
+  /* fecho da Aula 2: o gráfico substitui a tabela estática da página; a leitura e a entrega continuam do texto */
+  c6p20: { Componente: TresModelos, substitui: "figura" },
   c7p2: { Componente: AcertoQueEngana, substitui: "legacy" },
   c7p5: { Componente: Pares, substitui: "legacy" },
   c7p6: { Componente: FilaDeRisco, substitui: "legacy" },
@@ -180,6 +200,9 @@ const REGISTRO: Record<string, VisualNativo> = {
 export function visualNativo(slug: string): VisualNativo | null {
   return REGISTRO[slug] ?? null;
 }
+
+/** Páginas cujo desafio de abertura é um visual nativo; precisa bater com ABERTURA_NATIVA (tests/visuais.test.ts). */
+export const PAGINAS_COM_EPISODIO_NATIVO = Object.keys(REGISTRO).filter((s) => REGISTRO[s].substitui === "episodio");
 
 /** Remove o primeiro bloco <div class="svgfit">…</div> (a figura estática), contando os divs aninhados. */
 export function removerFiguraEstatica(html: string): string {

@@ -1,4 +1,4 @@
-/* Varredura visual das páginas da Aula 2 na plataforma. As páginas com visual nativo montam um
+/* Varredura visual das 61 páginas da Aula 2 na plataforma. As páginas com visual nativo montam um
    quadro 16:9 (`.rl-slide`) cujas linhas do grid têm altura fixa em `fr`: quando o conteúdo de uma
    linha não cabe, ele transborda e o bloco seguinte, pintado depois, cobre o anterior. O olho vê
    texto cortado; o DOM continua dizendo que está tudo lá. Por isso a medição é de duas naturezas:
@@ -15,7 +15,7 @@ const PROF = { email: "genaro.lins@gmail.com", password: "professor-dev-2026" };
 const TODOS = [
   ...Array.from({ length: 22 }, (_, i) => `c4p${i + 1}`),
   ...Array.from({ length: 19 }, (_, i) => `c5p${i + 1}`),
-  ...Array.from({ length: 19 }, (_, i) => `c6p${i + 1}`),
+  ...Array.from({ length: 20 }, (_, i) => `c6p${i + 1}`),
 ];
 
 const args = process.argv.slice(2);

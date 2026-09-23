@@ -140,7 +140,7 @@ describe("visuais nativos: regressão logística do capítulo 4 reproduz o gerad
   });
 });
 
-import { avaliarCorte, crescer, errosNaAmostra, folhas, melhorCorte, todosOsCandidatos, wilson } from "../src/lib/visuais/arvore";
+import { avaliarCorte, comparaNo, crescer, errosNaAmostra, folhas, melhorCorte, todosOsCandidatos, wilson } from "../src/lib/visuais/arvore";
 
 describe("visuais nativos: a árvore que cresce reproduz o gerador (capítulo 5)", () => {
   const base = did.base as Proposta[];
@@ -170,6 +170,16 @@ describe("visuais nativos: a árvore que cresce reproduz o gerador (capítulo 5)
     expect(t.corte).toMatchObject({ v: "util", valor: 57.5 }); expect(t.dir!.corte!.v).toBe("atraso");
     const sem3 = crescer(base.filter((p) => p.id !== 3), 2); expect(sem3.dir!.corte!.v).toBe("util");
   });
+  it("instabilidade: o contador compara a divisão, não o rótulo; só a #10 troca a variável do nó direito (c5p16)", () => {
+    const ref = crescer(base, 2);
+    const sem = (id: number) => crescer(base.filter((p) => p.id !== id), 2);
+    const raiz = base.map((p) => comparaNo(sem(p.id), ref));
+    expect(raiz.every((m) => m === "igual" || m === "mesma divisão")).toBe(true);
+    expect(comparaNo(sem(8), ref)).toBe("mesma divisão"); expect(sem(8).corte!.valor).toBe(55);
+    const dir = Object.fromEntries(base.map((p) => [p.id, comparaNo(sem(p.id).dir, ref.dir)]));
+    expect(Object.entries(dir).filter(([, m]) => m === "trocou de variável").map(([id]) => Number(id))).toEqual([10]);
+    expect(dir[14]).toBe("mesma divisão"); expect(dir[15]).toBe("ficou sem corte");
+  });
 });
 
 describe("boosting didático contra o gerador (capítulo 6)", async () => {
@@ -185,6 +195,14 @@ describe("boosting didático contra o gerador (capítulo 6)", async () => {
       if (m) { expect(passos[m].arvore!.corte!.valor).toBe(ref[m].toco.corte); expect(passos[m].arvore!.esq!.valor).toBeCloseTo(ref[m].toco.esq, 6); }
     }
     expect(passos[1].arvore!.corte!.valor).toBe(4.5); expect(passos[4].mse).toBeCloseTo(0.44851, 4);
+  });
+  it("η com quatro árvores fixas, no passo do controle (0,1 a 1): o menor erro de treino é o de 0,7, não o de 1; 0,1 para em 5,48 (c6p7 e c6p7q)", () => {
+    const erro = (eta: number) => boostingRegressao(PONTOS.x, PONTOS.y, eta, 4)[4].mse;
+    const etas = Array.from({ length: 10 }, (_, k) => (k + 1) / 10);
+    const menor = etas.reduce((a, b) => (erro(b) < erro(a) ? b : a));
+    expect(menor).toBe(0.7); expect(erro(0.7)).toBeCloseTo(0.1422, 4);
+    expect(erro(1)).toBeCloseTo(0.4078, 4); expect(erro(0.1)).toBeCloseTo(5.48, 2);
+    expect(boostingRegressao(PONTOS.x, PONTOS.y, 1, 1)[1].mse).toBeCloseTo(1.9219, 4);
   });
   it("classificação: 16 propostas, η 0,4, profundidade 2, folha mínima 2: perda 0,6931 → 0,4748 e árvores do gerador", () => {
     const passos = boostingClassificacao(did.base, 0.4, 4);
@@ -564,5 +582,71 @@ describe("as quatro últimas páginas herdadas: mesma PD, balancear, WoE e valor
     expect(IV_TOTAL).toBeCloseTo(0.03174, 5); expect(leituraIV(IV_TOTAL)).toBe("fraca"); expect(leituraIV(0.15)).toBe("média");
     const f = woe.renda.faixas; expect(f[0]).toMatchObject({ n: 3, woe: -0.4556, iv: 0.00041 }); expect(f.reduce((m: { iv: number }, x: { iv: number }) => (x.iv > m.iv ? x : m), f[0])).toMatchObject({ faixa: 4, n: 841, iv: 0.00867 });
     for (const x of f.slice(1)) expect(Math.log(x.pb / x.pm)).toBeCloseTo(x.woe, 2);
+  });
+});
+
+describe("letras gregas em cabeçalhos em caixa alta (c4p17, c4p19, c5p15, c6p8)", async () => {
+  const { createElement } = await import("react");
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  const { SemCaixaAlta } = await import("@/components/visuais/sem-caixa-alta");
+  const html = (t: string) => renderToStaticMarkup(createElement(SemCaixaAlta, { children: t }));
+  it("a letra grega, com o índice, sai num span que não muda de caixa; o resto do texto fica como está", () => {
+    expect(html("η × árvore")).toBe('<span class="letra-grega">η</span> × árvore');
+    expect(html("β₀ intercepto")).toBe('<span class="letra-grega">β₀</span> intercepto');
+    expect(html("Parâmetro")).toBe("Parâmetro");
+  });
+});
+
+describe("capítulo 5 no palco: as peças redesenhadas exibem os números conferidos (c5p1, c5p2, c5p8, c5p10, c5p12, c5p13, c5p17)", async () => {
+  const { createElement } = await import("react");
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  const BASE = did.base as Proposta[];
+  const texto = (html: string) => html.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&gt;/g, ">").replace(/&lt;/g, "<");
+  const { AberturaArvores } = await import("@/components/visuais/abertura-arvores");
+  const { RetaOuDegraus } = await import("@/components/visuais/reta-ou-degraus");
+  const { RaizEscolhida } = await import("@/components/visuais/raiz-escolhida");
+  const { UmaProposta } = await import("@/components/visuais/uma-proposta");
+  const { ValorDaFolha } = await import("@/components/visuais/valor-da-folha");
+  const { ConfiancaDaFolha } = await import("@/components/visuais/confianca-da-folha");
+  const { GiniOuEntropia } = await import("@/components/visuais/gini-ou-entropia");
+  const render = (c: (props: any) => React.ReactNode, props: Record<string, unknown> = {}) => texto(renderToStaticMarkup(createElement(c, props)));
+  it("a abertura nativa do registro é a mesma que o palco dispensa do infográfico", async () => {
+    const { PAGINAS_COM_EPISODIO_NATIVO } = await import("@/components/visuais/registro");
+    const { ABERTURA_NATIVA } = await import("@/lib/visuais/palco-proprio");
+    expect([...PAGINAS_COM_EPISODIO_NATIVO].sort()).toEqual([...ABERTURA_NATIVA].sort());
+  });
+  it("c5p1: o desafio vem do conteúdo e a primeira legenda é a regra da raiz", async () => {
+    const t = render(AberturaArvores, { episodio: { type: "episode", number: 5, challenge: "Desafio X", text: "Texto Y", steps: [{ title: "Corte", detail: "d1" }, { title: "Caminho", detail: "d2" }, { title: "Freio", detail: "d3" }] } });
+    expect(t).toContain("Desafio X"); expect(t).toContain("Texto Y"); expect(t).toContain("utilização até 57,5%");
+  });
+  it("c5p2: do lado errado da reta, #2, #5, #10 e #15; o mínimo deslocando a reta é 3; regiões 50%, 0%, 100% e 50%", async () => {
+    const t = render(RetaOuDegraus);
+    expect(t).toContain("#2, #5, #10 e #15"); expect(t).toContain("o mínimo é 3");
+    const z = BASE.map((p) => escore(BETA_AULA, p.util, p.atraso).z);
+    const erros = (c: number) => BASE.filter((p, i) => (z[i] >= c ? 1 : 0) !== p.y).length;
+    expect(Math.min(...[...z, Infinity].map(erros))).toBe(3);
+    expect(folhas(crescer(BASE, 2)).map((f) => f.d / f.n)).toEqual([0.5, 0, 1, 0.5]);
+  });
+  it("c5p8: utilização ≤ 57,5% com 1 default em 8 (12,5%) e > 57,5% com 7 em 8 (87,5%)", async () => {
+    const t = render(RaizEscolhida);
+    expect(t).toContain("12,5%"); expect(t).toContain("1 default em 8"); expect(t).toContain("87,5%"); expect(t).toContain("7 defaults em 8");
+  });
+  it("c5p10: a #15 responde não e não, cai com a #16 numa folha de 50% e o intervalo vai de 9,5% a 90,5%, 81 pontos", async () => {
+    const t = render(UmaProposta);
+    expect(t).toContain("utilização ≤ 57,5%? não"); expect(t).toContain("utilização ≤ 87,5%? não");
+    expect(t).toContain("a #16, que deu default"); expect(t).toContain("9,5% a 90,5%"); expect(t).toContain("81 pontos");
+  });
+  it("c5p12: perda média 1,20397 · 0,83699 · 0,69315 e mínimo na frequência, 50,0%", async () => {
+    const t = render(ValorDaFolha);
+    for (const v of ["1,20397", "0,83699", "0,69315"]) expect(t).toContain(v);
+    expect(t).toContain("1 ÷ 2 = 50,0%");
+  });
+  it("c5p13: intervalos 9,5% a 90,5% · 0,0% a 39,0% · 61,0% a 100,0%; 0 em 600 vai até 0,6%", async () => {
+    const t = render(ConfiancaDaFolha);
+    for (const v of ["9,5% a 90,5%", "0,0% a 39,0%", "61,0% a 100,0%", "0% a 0,6%"]) expect(t).toContain(v);
+  });
+  it("c5p17: Gini e entropia escolhem utilização 57,5 (0,28125 e 0,45644); no atraso o Gini empata 15 e 27,5 e a entropia fica com 27,5", async () => {
+    const t = render(GiniOuEntropia);
+    for (const v of ["0,28125", "0,45644", "15 ou 27,5", "0,07143", "0,13793"]) expect(t).toContain(v);
   });
 });

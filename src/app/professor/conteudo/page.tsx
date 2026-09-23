@@ -16,10 +16,10 @@ export default async function ConteudoPage({ searchParams }: { searchParams: Pro
   const editions = await listEditionsWithClasses();
   const ed = editions.find((e) => e.id === edicao) ?? editions.find((e) => e.status === "active") ?? editions[0];
   const outline = ed ? await courseOutline(ed.id) : [];
-  // material preso a uma unidade: é assim que a Aula 2, conduzida por slides, aponta para o baralho
+  // material preso a uma unidade aparece no quadro dela; o que foi arquivado (como o baralho aposentado da Aula 2) fica de fora
   const daUnidade = ed
     ? (await db.select().from(schema.materials).where(eq(schema.materials.editionId, ed.id)).orderBy(asc(schema.materials.position)))
-        .filter((m) => m.unitId)
+        .filter((m) => m.unitId && m.status !== "arquivado")
     : [];
   return (
     <div>
@@ -44,10 +44,7 @@ export default async function ConteudoPage({ searchParams }: { searchParams: Pro
               <p className="eyebrow">{m.kind}</p>
               <p className="font-semibold text-ink">{m.title}</p>
               {m.description && <p className="hint mt-1">{m.description}</p>}
-              {m.url && <p className="mt-2 flex gap-3 flex-wrap">
-                <a className="btn btn-sm" href={m.url} target="_blank" rel="noreferrer">Abrir</a>
-                {m.kind === "aula" && <Link className="btn btn-sm btn-secondary" href="/professor/turmas">Conduzir ao vivo pelos encontros</Link>}
-              </p>}
+              {m.url && <p className="mt-2"><a className="btn btn-sm" href={m.url} target="_blank" rel="noreferrer">Abrir</a></p>}
             </div>
           ))}
         </section>

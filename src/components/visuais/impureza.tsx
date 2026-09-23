@@ -77,8 +77,8 @@ function Curva() {
               <g className="vz-regua-ponto" style={{ transform: `translate(${sx(p)}px, ${sy(g)}px)` }}><circle r={7} /><text x={p > 0.7 ? -12 : 12} y={22} textAnchor={p > 0.7 ? "end" : "start"} className="vz-ponto-t">Gini {fmtNum(g, 4)}</text></g>
             </svg>
           </div>
-          <div className="vz-tile"><p className="eyebrow">Como ler o Gini</p><p className="vz-num vz-num--texto">É a probabilidade de errar ao classificar uma proposta sorteada do grupo usando um rótulo sorteado com a mesma proporção. Grupo puro: nunca erra, Gini zero. Grupo meio a meio: erra metade das vezes, Gini 0,5.</p></div>
-          <p className="hint">Gini é a que este curso usa, por ser a que aparece na maioria das implementações e por dispensar logaritmo. A entropia produz árvores quase sempre idênticas nesta base.</p>
+          <div className="vz-tile"><p className="eyebrow">Como ler o Gini</p><p className="vz-num vz-num--texto">É a chance de errar ao rotular uma proposta sorteada com um rótulo sorteado na mesma proporção: zero num grupo puro, 0,5 no meio a meio.</p></div>
+          <p className="hint">O curso usa o Gini, padrão das bibliotecas e sem logaritmo. A entropia dá árvores quase sempre iguais.</p>
         </div>
       </div>
       <p className="vz-fonte">Gini = 2p(1 − p), máximo 0,5 em p = 50%; entropia em bits, máximo 1 no mesmo ponto. Com 10% de default, Gini 0,18 e entropia 0,469. As duas medidas ordenam os cortes candidatos quase sempre da mesma maneira.</p>
@@ -125,14 +125,14 @@ function Raiz() {
             <tr className="vz-t-on"><th scope="row">Gini = 2 × p × (1 − p)</th><td className="vz-t-forte">2 × {fmtNum(p, 3)} × {fmtNum(1 - p, 3)} = {fmtNum(gi, 5)}</td></tr>
           </tbody></table></div>
           <div className="vz-formula">Gini(t) = 2 × p(t) × (1 − p(t))</div>
-          <p className="hint">Na raiz, 0,5 é o valor máximo que o Gini pode assumir com alvo binário. Esta base foi construída assim de propósito, para que os ganhos apareçam com números redondos. Em carteira real com 10% de default, o Gini da raiz seria {fmtNum(2 * 0.1 * 0.9, 4)}.</p>
+          <p className="hint">0,5 é o máximo com alvo binário: a base foi montada meio a meio de propósito. Com 10% de default, o Gini da raiz seria {fmtNum(2 * 0.1 * 0.9, 4)}.</p>
         </div>
         <div className="vz-imp-lado">
           <div className="table-wrap vz-imp-base"><table className="table text-[.8em]"><thead><tr><th>#</th><th>Util.</th><th>Atraso</th><th>Default?</th></tr></thead><tbody>
             {BASE.map((r) => <tr key={r.id}><th scope="row">{r.id}</th><td>{r.util}%</td><td>{r.atraso} d</td><td className={r.y ? "vz-t-default" : "vz-t-ok"}>{r.y ? "sim" : "não"}</td></tr>)}
           </tbody></table></div>
           <p className="hint">Confira: conte os sim na última coluna.</p>
-          <div className="vz-tile vz-tile--ok"><p className="eyebrow">O que significa reduzir a impureza</p><p className="vz-num vz-num--texto">Uma divisão reduz a impureza quando produz dois grupos mais homogêneos que o grupo original. O ganho é a diferença entre a impureza antes e a média ponderada das impurezas depois. Ponderada pelo tamanho, porque um grupo de doze pesa mais que um de quatro.</p></div>
+          <div className="vz-tile vz-tile--ok"><p className="eyebrow">O que significa reduzir a impureza</p><p className="vz-num vz-num--texto">Um corte reduz a impureza quando os dois grupos ficam menos misturados que o original. O ganho mede essa redução, pesando cada grupo pelo tamanho.</p></div>
         </div>
       </div>
       <p className="vz-fonte">Raiz: 8 defaults em 16, p = 0,5, Gini 0,50000. A folha pura tem 0 em 6 e Gini 0; a folha mista tem 1 em 2 e Gini 0,5. Folhas da árvore de profundidade 2 crescida aqui sobre a base didática.</p>

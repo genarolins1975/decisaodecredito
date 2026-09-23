@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { boostingRegressao, PONTOS, type PassoReg } from "@/lib/visuais/boosting";
 import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
+import { SemCaixaAlta } from "./sem-caixa-alta";
 
 /**
  * Resíduos que encolhem (capítulo 6). Oito pontos, um palpite constante e quatro tocos ajustados ao resíduo: a turma
@@ -125,7 +126,7 @@ function PainelArvore({ passos, m, eta }: { passos: PassoReg[]; m: number; eta: 
   return (
     <div className="vz-res-tabela">
       <p className="vz-grafico-t">{m === 0 ? "Antes de qualquer árvore: só o palpite" : `O que a árvore ${m} propôs, já multiplicado por η = ${eta.toLocaleString("pt-BR")}`}</p>
-      <div className="table-wrap"><table className="table text-[.85em]"><thead><tr><th>x</th><th>y</th><th>antes</th><th>resíduo</th><th>η × árvore</th><th>depois</th></tr></thead>
+      <div className="table-wrap"><table className="table text-[.85em]"><thead><tr><th>x</th><th>y</th><th>antes</th><th>resíduo</th><th><SemCaixaAlta>η × árvore</SemCaixaAlta></th><th>depois</th></tr></thead>
         <tbody>{X.map((x, i) => <tr key={x}><td>{x}</td><td>{fmtNum(Y[i], 1)}</td><td>{fmtNum(m ? ant.F[i] : ps.F[i], 2)}</td><td className={ps.res[i] > 0 ? "vz-t-baixo" : "vz-t-alto"}>{fmtNum(m ? ps.res[i] : Y[i] - ps.F[i], 2)}</td><td>{m ? fmtNum(eta * ps.h[i], 2) : "—"}</td><td><b>{fmtNum(ps.F[i], 2)}</b></td></tr>)}</tbody></table></div>
       <div className="vz-tiles vz-tiles--coluna">
         <div className="vz-tile"><p className="eyebrow">Erro {m ? `antes → depois da árvore ${m}` : "com o palpite"}</p><p className="vz-num">{m ? <>{fmtNum(ant.mse, 4)} → {fmtNum(ps.mse, 4)}</> : fmtNum(ps.mse, 4)}</p><p className="hint">{m === 1 ? "A primeira árvore separa os quatro primeiros dos quatro últimos: a correção mais grosseira e a que mais reduz o erro." : m ? "As seguintes trabalham sobre um resíduo já menor: cada árvore corrige uma região." : "F₀ é a média de y: o melhor constante em erro quadrático."}</p></div>

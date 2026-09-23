@@ -86,6 +86,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .table td { padding: 9px 10px; border-bottom: 1px solid var(--color-rule); vertical-align: top; }
 .table tr:hover td { background: #FAFAF7; }
 .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+/* cabeçalhos em caixa alta transformam η em Η e β em Β, que se leem como H e B (componente SemCaixaAlta e páginas herdadas) */
+.letra-grega { text-transform: none; letter-spacing: 0; }
 .callout { border-left: 3px solid var(--color-gold); background: var(--color-paper); padding: 12px 14px; border-radius: 0 6px 6px 0; }
 .callout-alert { border-left-color: var(--color-alert); background: var(--color-alert-soft); }
 .callout-ok { border-left-color: var(--color-ok); background: var(--color-ok-soft); }
@@ -410,7 +412,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-front-id { font-size: 9px; font-weight: 700; fill: #fff; }
 .vz-curva--perda { stroke: var(--color-ink); stroke-width: 2; }
 .vz-curva--b0 { stroke: var(--color-muted); stroke-width: 1.8; } .vz-curva--b1 { stroke: var(--color-ink-soft); stroke-width: 1.8; } .vz-curva--b2 { stroke: var(--color-amber); stroke-width: 1.8; }
-.vz-tick--b0 { fill: var(--color-muted); font-weight: 700; } .vz-tick--b1 { fill: var(--color-ink-soft); font-weight: 700; } .vz-tick--b2 { fill: var(--color-amber); font-weight: 700; }
+.vz-sw--traco { width: 18px; height: 3px; border-radius: 2px; vertical-align: 3px; } .vz-sw--perda { background: var(--color-ink); } .vz-sw--b0 { background: var(--color-muted); } .vz-sw--b1 { background: var(--color-ink-soft); } .vz-sw--b2 { background: var(--color-amber); }
 .vz-fora { fill: var(--color-alert-soft); }
 .vz-curva--reta { stroke: var(--color-alert); }
 .vz-dot-plano { stroke: #fff; stroke-width: 1.5; } .vz-dot-plano--default { fill: var(--color-alert); } .vz-dot-plano--pagou { fill: #9db6de; }
@@ -630,8 +632,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-res-barra--on .vz-res-barra-fill { background: var(--color-gold); }
 .vz-res-barra-val { font-family: var(--font-mono); font-weight: 700; color: var(--color-ink); }
 .vz-t-baixo { color: var(--color-alert); font-weight: 600; } .vz-t-alto { color: #4d6fa8; font-weight: 600; }
-.vz-res-soma { display: grid; gap: 6px; }
-.vz-res-soma-linha { display: grid; grid-template-columns: minmax(64px, max-content) 1fr max-content max-content; align-items: center; gap: 8px; font-size: 14px; font-variant-numeric: tabular-nums; }
+/* uma grade para todas as linhas (subgrid): o trilho tem a mesma largura em cada linha e a marca do observado fica no mesmo x */
+.vz-res-soma { display: grid; grid-template-columns: minmax(64px, max-content) 1fr max-content max-content; gap: 6px 8px; }
+.vz-res-soma-linha { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; align-items: center; font-size: 14px; font-variant-numeric: tabular-nums; }
 .vz-res-soma-rot { text-align: right; color: var(--color-body); }
 .vz-res-soma-trilho { display: block; position: relative; height: 16px; background: #EDEBE3; border-radius: 3px; }
 .vz-res-soma-base { position: absolute; left: 0; top: 0; height: 100%; background: var(--color-ink); border-radius: 3px 0 0 3px; }
@@ -838,7 +841,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner .vz-tdc-rot { font-size: .95em; }
 /* palco: raiz mostra plano e disputa; freios e instabilidade mostram plano, árvore e tiles */
 .slide-inner .vz-arv-grade { grid-template-columns: 46cqh minmax(0, 1fr); gap: 1cqh 2cqh; }
-.slide-inner [data-vz^="arvore"] .vz-arv-grade > .vz-grafico svg { height: 46cqh; }
+.slide-inner [data-vz^="arvore"] .vz-arv-grade > .vz-grafico svg { height: 50cqh; width: auto; max-width: 100%; }
 .slide-inner [data-vz^="arvore"] .vz-arv-painel .vz-grafico svg { height: 22cqh; width: auto; }
 .slide-inner [data-vz="arvore-raiz"] .vz-arv-controles, .slide-inner [data-vz="arvore-raiz"] .vz-tiles { display: none; }
 .slide-inner [data-vz="arvore-raiz"] .vz-arv-cand-grade svg { height: 22cqh; }
@@ -908,6 +911,126 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-ad--regra .vz-ad-t--var { fill: #7a5f16; font-size: 12px; } .vz-ad--regra .vz-ad-no--interno .vz-ad-caixa { stroke: var(--color-gold); stroke-width: 3.5; }
 .vz-ad--ramo .vz-ad-ramo { stroke: var(--color-gold); stroke-width: 4; } .vz-ad--ramo .vz-ad-ramo-t { fill: #7a5f16; font-size: 12px; }
 .vz-ad--folha .vz-ad-no--interno, .vz-ad--regra .vz-ad-no--folha { opacity: .55; }
+/* abertura do capítulo 5 (c5p1): desafio e etapas à esquerda, a árvore à direita; a etapa escolhida acende a parte da árvore de que fala */
+.vz-ab-grade { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 18px 32px; align-items: center; }
+.vz-ab-num { font-family: var(--font-serif); font-weight: 700; font-size: 64px; line-height: .9; color: var(--cap, var(--color-ink)); margin: 0 0 8px; }
+.vz-ab-desafio { font-size: 1.6em; line-height: 1.2; margin: 4px 0 8px; }
+.vz-ab-lead { font-size: 1.05em; color: var(--color-body); margin: 0 0 16px; max-width: 46ch; }
+.vz-ab-etapas { display: grid; gap: 8px; }
+.vz-ab-etapa { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 12px; align-items: center; width: 100%; text-align: left; font: inherit; color: var(--color-body); background: var(--color-paper); border: 1px solid var(--color-rule); border-left: 4px solid transparent; border-radius: 6px; padding: 8px 12px; cursor: pointer; }
+.vz-ab-etapa b { font-family: var(--font-serif); color: var(--color-ink); font-size: 1.12em; }
+.vz-ab-det { grid-column: 2; }
+.vz-ab-n { grid-row: span 2; width: 2em; height: 2em; border-radius: 50%; display: grid; place-items: center; background: var(--color-rule); color: var(--color-ink); font-family: var(--font-mono); font-weight: 700; }
+.vz-ab-etapa[aria-pressed="true"] { border-left-color: var(--color-gold); background: var(--color-gold-soft); }
+.vz-ab-etapa[aria-pressed="true"] .vz-ab-n { background: var(--color-ink); color: #fff; }
+.vz-ab-etapa:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+.vz-ab-visual { display: grid; gap: 12px; }
+.vz-ab-legenda { margin: 0; min-height: 3em; border-left: 3px solid var(--color-gold); padding: 2px 0 2px 12px; font-size: 1.02em; color: var(--color-body); }
+@container (max-width: 760px) { .vz-ab-grade { grid-template-columns: minmax(0, 1fr); } }
+.slide-inner [data-vz="abertura-arvores"] { border: 0; background: transparent; padding: 0; }
+.slide-inner .vz-ab-grade { gap: 2cqh 5cqh; }
+.slide-inner .vz-ab-num { font-size: clamp(48px, 13cqh, 140px); }
+.slide-inner .vz-ab-desafio { font-size: clamp(20px, 4.4cqh, 48px); }
+.slide-inner .vz-ab-lead { font-size: clamp(14px, 2.5cqh, 26px); margin-bottom: 2.6cqh; }
+.slide-inner .vz-ab-etapas { gap: 1.2cqh; }
+.slide-inner .vz-ab-etapa { font-size: clamp(13px, 2.3cqh, 24px); padding: 1.1cqh 1.6cqh; }
+.slide-inner [data-vz="abertura-arvores"] .vz-ad { height: auto; width: 100%; max-height: 56cqh; }
+.slide-inner .vz-ab-legenda { font-size: clamp(13px, 2.3cqh, 24px); }
+/* uma reta contra cortes em sequência (c5p2): os dois planos na mesma escala e o balanço da árvore */
+.vz-rd-grade { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 26px; }
+.vz-rd-painel { display: grid; align-content: start; gap: 2px; min-width: 0; }
+.vz-rd-painel svg { width: 100%; height: auto; display: block; }
+.vz-rd-k { margin: 0; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; color: var(--color-muted); }
+.vz-rd-t { margin: 0 0 4px; font-family: var(--font-serif); font-weight: 700; color: var(--color-ink); font-size: 1.12em; }
+.vz-rd-nota { margin: 4px 0 0; color: var(--color-body); }
+.vz-rd-reta { fill: none; stroke: var(--color-ink); stroke-width: 2.4; stroke-dasharray: 8 6; }
+.vz-rd-reta-t { font-size: 12px; font-weight: 700; fill: var(--color-ink); }
+.vz-rd-corte { stroke: var(--color-ink); stroke-width: 1.6; } .vz-rd-corte--raiz { stroke-width: 3; }
+.vz-rd-regiao { font-size: 13px; font-weight: 700; fill: var(--color-ink); font-variant-numeric: tabular-nums; }
+.vz-rd-id--pagou { fill: var(--color-ink); }
+.vz-rd-balanco { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 26px; margin-top: 14px; }
+.vz-rd-lista { border-top: 3px solid var(--color-ok); background: var(--color-paper); border-radius: 6px; padding: 8px 14px 10px; }
+.vz-rd-lista--perde { border-top-color: var(--color-alert); }
+.vz-rd-lista ul { margin: 4px 0 0; padding-left: 1.2em; display: grid; gap: 2px; list-style: disc; } .vz-rd-lista li::marker { color: var(--color-muted); }
+@container (max-width: 640px) { .vz-rd-grade, .vz-rd-balanco { grid-template-columns: minmax(0, 1fr); } }
+.slide-inner [data-vz="reta-ou-degraus"] .vz-rd-painel svg { height: 50cqh; width: auto; max-width: 100%; margin: 0 auto; }
+.slide-inner .vz-rd-t { font-size: clamp(15px, 2.8cqh, 30px); }
+.slide-inner .vz-rd-k { font-size: clamp(12px, 1.9cqh, 20px); }
+.slide-inner .vz-rd-nota, .slide-inner .vz-rd-lista li { font-size: clamp(13px, 2.2cqh, 23px); }
+.slide-inner .vz-rd-balanco { margin-top: 1.6cqh; gap: 1.2cqh 3cqh; }
+/* páginas nativas do capítulo 5 que substituem o conteúdo herdado: raiz (c5p8), proposta (c5p10), valor (c5p12), confiança (c5p13), critério (c5p17) */
+.vz-re-grade { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 16px 28px; align-items: center; }
+.vz-re-grupos { display: grid; gap: 10px; }
+.vz-re-grupo { background: var(--color-paper); border: 1px solid var(--color-rule); border-left: 4px solid #9db6de; border-radius: 6px; padding: 10px 14px; }
+.vz-re-grupo--alto { border-left-color: var(--color-alert); }
+.vz-re-pd { margin: 2px 0 0; font-family: var(--font-serif); font-weight: 700; font-size: 2.2em; line-height: 1.05; color: var(--color-ink); }
+.vz-re-grupo--alto .vz-re-pd { color: var(--color-alert); }
+.vz-re-conta { margin: 0; color: var(--color-body); }
+.vz-re-ids { margin: 4px 0 0; color: var(--color-muted); font-size: .92em; } .vz-re-ids b { color: var(--color-ink); }
+.vz-re-nota { margin: 12px 0 0; border-left: 3px solid var(--color-gold); padding: 2px 0 2px 12px; color: var(--color-body); }
+.vz-up-grade { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr); gap: 16px 28px; align-items: center; }
+.vz-up-arvore { display: grid; gap: 6px; min-width: 0; }
+.vz-up-passos { margin: 0; display: flex; flex-wrap: wrap; gap: 4px 14px; color: var(--color-body); }
+.vz-up-passos span + span::before { content: "→"; margin-right: 12px; color: #7a5f16; font-weight: 700; }
+.vz-up-folha { background: var(--color-paper); border: 1px solid var(--color-rule); border-top: 3px solid var(--color-gold); border-radius: 6px; padding: 12px 16px; display: grid; gap: 4px; }
+.vz-up-folha svg { width: 100%; height: auto; display: block; }
+.vz-up-porque, .vz-up-largura { margin: 0; color: var(--color-body); }
+.vz-up-trilho { stroke: var(--color-rule); stroke-width: 6; stroke-linecap: round; }
+.vz-up-ic { fill: var(--color-gold-soft); stroke: var(--color-gold); stroke-width: 1.5; }
+.vz-up-ponto { fill: var(--color-ink); stroke: #fff; stroke-width: 2; }
+.vz-vf-grade { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 16px 28px; align-items: center; }
+.vz-vf-tabela { max-width: 380px; } .vz-vf-tabela td, .vz-ge-tabela td, .vz-cf-tabela td { font-variant-numeric: tabular-nums; }
+.vz-vf-min { margin: 8px 0 0; color: var(--color-body); }
+.vz-vf-curva { fill: none; stroke: var(--color-ink); stroke-width: 2.6; }
+.vz-vf-cand { fill: var(--color-ink-soft); }
+.vz-vf-otimo { fill: var(--color-ok); stroke: #fff; stroke-width: 2; }
+.vz-vf-otimo-t { font-size: 13px; font-weight: 700; fill: var(--color-ok); }
+.vz-vf-notas { margin: 14px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.vz-vf-notas li { background: var(--color-paper); border-left: 3px solid var(--color-gold); border-radius: 4px; padding: 8px 12px; color: var(--color-body); }
+.vz-cf-grade { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px 28px; align-items: center; }
+.vz-cf-tabela th, .vz-cf-tabela td { white-space: nowrap; }
+.vz-cf-p { fill: var(--color-ink-soft); stroke: #fff; stroke-width: 2; } .vz-cf-p--alto { fill: var(--color-alert); }
+.vz-ge-grade { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr); gap: 16px 28px; align-items: start; }
+.vz-ge-nota { margin: 8px 0 0; color: var(--color-body); }
+.vz-ge-lado { display: grid; gap: 12px; }
+.vz-rd-lista ol { margin: 4px 0 0; padding-left: 1.4em; display: grid; gap: 2px; list-style: decimal; }
+.vz-rd-lista--neutra { border-top-color: var(--color-gold); }
+.vz-ge-quando { margin: 4px 0 0; display: grid; gap: 4px; }
+.vz-ge-quando > div { display: grid; grid-template-columns: 7.5em minmax(0, 1fr); gap: 8px; }
+.vz-ge-quando dt { font-weight: 700; color: var(--color-ink); } .vz-ge-quando dd { margin: 0; color: var(--color-body); }
+@container (max-width: 700px) { .vz-re-grade, .vz-up-grade, .vz-vf-grade, .vz-cf-grade, .vz-ge-grade { grid-template-columns: minmax(0, 1fr); } }
+.slide-inner [data-vz="raiz-escolhida"] .vz-rd-painel svg { height: 56cqh; width: auto; max-width: 100%; margin: 0 auto; }
+.slide-inner .vz-re-pd { font-size: clamp(28px, 7cqh, 72px); }
+.slide-inner .vz-re-conta, .slide-inner .vz-re-ids, .slide-inner .vz-re-nota, .slide-inner .vz-up-passos, .slide-inner .vz-up-porque, .slide-inner .vz-up-largura,
+.slide-inner .vz-vf-min, .slide-inner .vz-vf-notas li, .slide-inner .vz-ge-nota, .slide-inner [data-vz="gini-ou-entropia"] .vz-rd-lista li, .slide-inner .vz-ge-quando { font-size: clamp(13px, 2.1cqh, 22px); }
+.slide-inner .vz-vf-tabela, .slide-inner .vz-cf-tabela, .slide-inner .vz-ge-tabela { font-size: clamp(13px, 2.1cqh, 22px); }
+.slide-inner .vz-ge-grade { align-items: center; }
+.slide-inner .vz-re-confere { display: none; }
+.slide-inner [data-vz="uma-proposta"] .vz-ad { height: auto; width: 100%; max-height: 50cqh; }
+.slide-inner [data-vz="valor-da-folha"] .vz-grafico svg { height: 44cqh; width: auto; max-width: 100%; }
+.slide-inner [data-vz="confianca-da-folha"] .vz-grafico svg { height: 36cqh; width: auto; max-width: 100%; }
+/* capítulo 5 no palco: o quadro já traz título e objetivo, e o cabeçalho interno de cada visual fica só com os botões */
+.slide[data-capitulo="5"] .slide-inner .vz-cab > div:first-child:not(.vz-acoes) { display: none; }
+.slide[data-capitulo="5"] .slide-inner .vz-cab { justify-content: flex-start; }
+/* árvore que cresce no palco: em c5p7, o plano e a disputa lado a lado; em c5p14 e c5p16, plano e árvore grandes, só os controles e contadores da página */
+.slide-inner [data-vz="arvore-raiz"] { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); column-gap: 3cqh; row-gap: 1cqh; align-items: start; }
+.slide-inner [data-vz="arvore-raiz"] > .vz-cab { grid-column: 1 / -1; }
+.slide-inner [data-vz="arvore-raiz"] .vz-arv-grade { display: contents; }
+.slide-inner [data-vz="arvore-raiz"] .vz-arv-painel { display: none; }
+.slide-inner [data-vz="arvore-raiz"] .vz-arv-cand-bloco { margin: 0; border: 0; padding: 0; }
+.slide-inner [data-vz="arvore-raiz"] .vz-arv-cand-grade { grid-template-columns: minmax(0, 1fr); gap: 1cqh; }
+.slide-inner [data-vz="arvore-raiz"] .vz-arv-cand-grade svg { height: 38cqh; }
+.slide-inner [data-vz="arvore-freios"] .vz-arv-grade, .slide-inner [data-vz="arvore-instabilidade"] .vz-arv-grade { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 1.2cqh 3cqh; }
+.slide-inner [data-vz="arvore-freios"] .vz-arv-painel .vz-grafico svg, .slide-inner [data-vz="arvore-instabilidade"] .vz-arv-painel .vz-grafico svg { height: 30cqh; width: 100%; }
+.slide-inner [data-vz="arvore-freios"] .vz-arv-controles label:not(.vz-slider), .slide-inner [data-vz="arvore-instabilidade"] .vz-arv-controles .vz-slider { display: none; }
+.slide-inner [data-vz="arvore-freios"] .vz-tiles > .vz-tile:nth-child(-n+2), .slide-inner [data-vz="arvore-instabilidade"] .vz-tiles > .vz-tile:nth-child(n+3) { display: none; }
+.slide-inner [data-vz="arvore-freios"] .vz-tiles, .slide-inner [data-vz="arvore-instabilidade"] .vz-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/* recursão, caminho, anatomia e duas famílias: o desenho maior, o texto de apoio fora do palco */
+.slide-inner [data-vz="recursao"] .vz-rec-plano { height: 34cqh; }
+.slide-inner [data-vz="caminho"] .vz-cam-grade { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); }
+.slide-inner [data-vz="caminho"] .vz-ad, .slide-inner [data-vz="anatomia"] .vz-ad { height: auto; width: 100%; max-height: 50cqh; }
+.slide-inner [data-vz="anatomia"] .vz-ana-grade { grid-template-columns: minmax(0, 1.4fr) minmax(0, .6fr); }
+.slide-inner [data-vz="duas-familias"] .vz-df-grade .vz-df-lado > .vz-tile:last-child { display: block; }
 .vz-ana-potencias { display: flex; align-items: flex-end; gap: 4px; height: 70px; margin: 8px 0 22px; } .vz-ana-pot { flex: 1; background: #E6E4DD; border-radius: 3px 3px 0 0; position: relative; transition: background .2s; } .vz-ana-pot--ate { background: #c9d8f2; } .vz-ana-pot--on { background: var(--color-ink); } .vz-ana-pot b { position: absolute; bottom: -16px; left: 0; right: 0; text-align: center; font-size: 10px; color: var(--color-muted); }
 .vz-imp-quadrado { max-width: 360px; } .vz-imp-q-fundo { fill: #DDE6F3; } .vz-imp-q-erro { fill: var(--color-alert-soft); stroke: var(--color-alert); stroke-width: 1; transition: width .25s, height .25s, x .25s, y .25s; }
 .vz-imp-caixa-t { font-size: 15px; font-weight: 700; fill: #fff; } .vz-imp-base table th, .vz-imp-base table td { padding-top: 3px; padding-bottom: 3px; }
@@ -924,6 +1047,54 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-poda-t--0 { fill: var(--color-muted); } .vz-poda-t--1 { fill: var(--color-ink); } .vz-poda-t--2 { fill: #6B4E8C; } .vz-poda-t--3 { fill: var(--color-alert); }
 .vz-df-ponto circle { stroke: #fff; stroke-width: 2; transition: r .2s; } .vz-df-ponto--on circle { stroke: var(--color-gold); stroke-width: 3.5; }
 .vz-df-cartao { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 10px; align-items: center; margin-top: 10px; } .vz-df-x { font-size: 26px; font-weight: 700; color: var(--color-muted); }
+/* tabelas de conferência em coluna estreita: sem isto a coluna Gini (c5p7, c5p14, c5p16, a 1.000 px) e a Diferença (c5p18, em qualquer largura) ficavam atrás da rolagem horizontal */
+.vz-arv-cand-grade .table th, .vz-arv-cand-grade .table td, .vz-df-tabela .table th, .vz-df-tabela .table td { padding-left: 6px; padding-right: 6px; }
+.vz-df-grade { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+/* Fecho da Aula 2 (c6p20): as três famílias nas mesmas 16 propostas. Cada família com a cor do próprio capítulo
+   e uma forma própria (círculo, quadrado, losango), para que a leitura não dependa só da cor. */
+[data-vz="tres-modelos"] { --tm-logistica: #9A4E36; --tm-arvore: #28725B; --tm-boosting: #7B3E73; }
+.vz-tm-chip { display: inline-flex; align-items: center; gap: 6px; }
+.vz-tm-grade { stroke: var(--color-rule); stroke-width: 1; }
+.vz-tm-meio { stroke: var(--color-muted); stroke-width: 1.2; stroke-dasharray: 4 4; }
+.vz-tm-linha { cursor: pointer; outline: none; }
+.vz-tm-faixa { fill: transparent; }
+.vz-tm-faixa--opostos { fill: #FBF2F3; }
+.vz-tm-linha:hover .vz-tm-faixa { fill: var(--color-paper); }
+.vz-tm-linha:hover .vz-tm-faixa--opostos { fill: #F7E6E9; }
+.vz-tm-linha--on .vz-tm-faixa, .vz-tm-linha--on:hover .vz-tm-faixa { fill: #EAF0F8; stroke: #9FB3D3; stroke-width: 1; }
+.vz-tm-linha:focus-visible .vz-tm-faixa { stroke: var(--color-ink); stroke-width: 2; }
+.vz-tm-dist { stroke: #B9BCC4; stroke-width: 3; stroke-linecap: round; }
+.vz-tm-rot { fill: var(--color-body); }
+.vz-tm-id { font-weight: 700; fill: var(--color-ink); }
+.vz-tm-default { fill: var(--color-alert); font-weight: 700; }
+.vz-tm-legenda { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12.5px; color: var(--color-muted); margin-top: 6px; }
+.vz-tm-legenda > span { display: inline-flex; align-items: center; gap: 6px; }
+/* a regra geral estica todo SVG do gráfico até a largura da coluna; os marcadores da legenda têm tamanho fixo */
+.vz-grafico .vz-tm-legenda svg, .vz-tm-chip svg { width: 14px; height: 14px; flex: none; }
+.vz-tm-legenda-faixa { display: inline-block; width: 22px; height: 12px; border-radius: 3px; background: #FBF2F3; border: 1px solid #E8C9CF; }
+.vz-tm-tabela { margin-top: 12px; font-size: 13px; }
+/* no palco o gráfico das 16 linhas ocupa a altura útil do slide; a tabela sai (o componente não a monta no palco) */
+.slide-inner [data-vz="tres-modelos"] .vz-grafico > svg { height: 52cqh; }
+.slide-inner [data-vz="tres-modelos"] .vz-tm-legenda { font-size: .9em; margin-top: .3cqh; gap: .3cqh 1.4cqh; }
+/* oito pontos (c6p3): o palpite constante e o erro do ponto escolhido */
+.vz-op-grade { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 16px; align-items: start; }
+.vz-op-lado { background: var(--color-paper); border-radius: 8px; padding: 12px 14px; }
+.vz-op-k { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--color-muted); font-weight: 700; margin: 0; }
+.vz-op-num { font-family: var(--font-serif); font-size: 40px; font-weight: 700; color: var(--color-ink); line-height: 1.1; margin: 2px 0 4px; }
+.vz-op-f0 { stroke: var(--color-amber); stroke-width: 1.5; stroke-dasharray: 7 5; }
+.vz-op-f0-t { fill: var(--color-ink); font-weight: 700; }
+.vz-op-erro { stroke: var(--color-ink); stroke-width: 2.5; }
+.vz-op-erro-t { fill: var(--color-ink); font-weight: 700; }
+.vz-op-ponto { cursor: pointer; outline: none; }
+/* mesmos pontos e mesmas cores de c6p7 a c6p9: marinho, e o ponto escolhido em ouro */
+.vz-op-ponto circle { fill: var(--color-ink); stroke: #fff; stroke-width: 2; }
+.vz-op-ponto--on circle { fill: var(--color-gold); stroke: var(--color-ink); stroke-width: 2.5; }
+.vz-op-ponto:focus-visible circle { stroke: var(--color-ink); stroke-width: 3; }
+@container (max-width: 560px) { .vz-op-grade { grid-template-columns: minmax(0, 1fr); } }
+.slide-inner [data-vz="oito-pontos"] .vz-grafico > svg { height: 46cqh; }
+.slide-inner .vz-op-num { font-size: clamp(20px, 4cqh, 44px); }
+.vz-tm-tabela > summary { cursor: pointer; font-weight: 700; color: var(--color-ink); }
+.vz-tm-tabela .table-wrap { margin-top: 8px; }
 @container (max-width: 760px) { .vz-ana-grade, .vz-imp-grade, .vz-cc-grade, .vz-cam-grade, .vz-poda-grade, .vz-df-grade, .vz-rec-grade, .vz-cc-lados { grid-template-columns: minmax(0, 1fr); } }
 /* palco */
 .slide-inner .vz-ana-grade, .slide-inner .vz-imp-grade, .slide-inner .vz-cc-grade, .slide-inner .vz-cam-grade, .slide-inner .vz-poda-grade, .slide-inner .vz-df-grade { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1cqh 2cqh; }

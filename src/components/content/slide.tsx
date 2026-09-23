@@ -5,6 +5,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Block, PublicQuestion } from "@/lib/services/content";
 import { ContentBlocks } from "./blocks";
 import { InfograficoCapitulo } from "./infografico";
+import { ROTULOS_GUIA } from "./teacher-guide";
 import type { Infografico } from "@/lib/content/infograficos";
 import { PALCO_PROPRIO } from "@/lib/visuais/palco-proprio";
 import { api } from "@/lib/client/api";
@@ -18,6 +19,8 @@ import { aplicarTela, compor, mostrarTudo, type Composicao } from "@/lib/palco/u
  * recebe zoom; a que sobra espaço cresce até 1,5. Nenhuma tela fica vazia. Recompõe ao redimensionar (tela cheia).
  * Setas e espaço avançam tela a tela e depois de página. Página sem blocos mostra a capa.
  */
+const NOTAS_NO_PALCO = new Set(["funcao", "conducao", "leitura", "pergunta", "resposta", "interacao", "verificacao", "transicao", "aula"]);
+
 export function Slide(p: {
   slug: string; title: string; objective: string | null; support: string | null; connection: string | null;
   chapter: { number: number; title: string; color: string; soft: string }; unitLabel: string; pageIndex: number; pageCount: number;
@@ -127,7 +130,7 @@ export function Slide(p: {
 
   return (
     <main id="conteudo" className="slide-stage min-h-screen flex flex-col">
-      <div className="slide" style={{ ["--cap" as string]: p.chapter.color, ["--cap-soft" as string]: p.chapter.soft }}>
+      <div className="slide" data-capitulo={p.chapter.number} style={{ ["--cap" as string]: p.chapter.color, ["--cap-soft" as string]: p.chapter.soft }}>
         <div className={`slide-inner ${capa ? "slide-inner--capa" : "slide-inner--tela"}`}>
           {!proprio && <header className="flex items-center justify-between gap-3 eyebrow">
             <span>{p.unitLabel} · Capítulo {p.chapter.number} · {p.chapter.title}</span>
@@ -171,7 +174,8 @@ export function Slide(p: {
         <aside className="mx-4 mb-4 rounded-md bg-white text-body p-4 max-w-[900px] text-[14px]" aria-label="Notas do professor (privadas)">
           <p className="eyebrow mb-2">Notas do professor · privado</p>
           <dl className="kv">
-            {["funcao", "conducao", "leitura", "pergunta", "resposta", "interacao", "verificacao", "transicao"].map((k) => typeof p.teacherGuide![k] === "string" ? <div key={k} className="contents"><dt>{k}</dt><dd>{String(p.teacherGuide![k])}</dd></div> : null)}
+            {/* no palco, só o que se usa com a turma diante da tela, com os mesmos rótulos da página de estudo */}
+            {ROTULOS_GUIA.filter(([, k]) => NOTAS_NO_PALCO.has(k)).map(([rotulo, k]) => typeof p.teacherGuide![k] === "string" && p.teacherGuide![k] ? <div key={k} className="contents"><dt>{rotulo}</dt><dd>{String(p.teacherGuide![k])}</dd></div> : null)}
           </dl>
         </aside>
       )}

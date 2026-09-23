@@ -9,10 +9,9 @@
       `notas` são removidos dos fontes por análise sintática (acorn), não por expressão regular.
    6. Escreve dist/aula_credito_notas.json, as notas por slide, para o painel do professor na
       plataforma mostrar condução, respostas e transição fora da tela projetada.
-   7. Copia os três para content/slides/, na raiz do projeto Next: aula-2.html (professor e
-      monitor), aula-2-aluno.html (aluno) e aula-2-notas.json (painel). A rota autenticada
-      /slides/aula-2 escolhe o arquivo pelo papel. Fora de public/ de propósito: arquivo em
-      public/ é servido antes de qualquer verificação de sessão.
+   Até 22/09/2026 havia um passo 7, que copiava os três para content/slides/ para a plataforma servir
+   em /slides/aula-2. O baralho foi aposentado da plataforma nessa data: a Aula 2 é apresentada pelas
+   páginas dos capítulos 4, 5 e 6. Este compilador continua gerando a versão offline em dist/.
    Uso: node build.mjs */
 
 import fs from "node:fs";
@@ -25,8 +24,6 @@ import * as acorn from "acorn";
 const raiz = path.dirname(fileURLToPath(import.meta.url));
 const app = path.join(raiz, "app");
 const dist = path.join(raiz, "dist");
-/* A pasta content pertence à aplicação Next, um nível acima desta. */
-const servidos = path.join(raiz, "..", "content", "slides");
 
 const vendor = [path.join(app, "vendor", "katex.js")];
 const nucleo = ["01-nucleo.js", "02-svg.js", "03-ui.js", "04-comum.js", "05-mat.js"].map((f) => path.join(app, "nucleo", f));
@@ -213,16 +210,9 @@ for (const d of defs) {
   }
 }
 
-/* 7. cópias servidas pela plataforma ---------------------------------------- */
-fs.mkdirSync(servidos, { recursive: true });
-fs.copyFileSync(saida, path.join(servidos, "aula-2.html"));
-fs.copyFileSync(saidaAluno, path.join(servidos, "aula-2-aluno.html"));
-fs.copyFileSync(saidaNotas, path.join(servidos, "aula-2-notas.json"));
-
 const kb = (f) => (fs.statSync(f).size / 1024).toFixed(0);
 console.log(`versão da compilação: ${versao}`);
 console.log(`slides compilados: ${slides.length}`);
 console.log(`dist/aula_credito.html: ${kb(saida)} KB (professor, com notas)`);
 console.log(`dist/aula_credito_aluno.html: ${kb(saidaAluno)} KB (aluno, sem notas)`);
 console.log(`dist/aula_credito_notas.json: ${kb(saidaNotas)} KB (painel do professor)`);
-console.log(`content/slides/aula-2.html, aula-2-aluno.html e aula-2-notas.json: cópias dos mesmos arquivos`);

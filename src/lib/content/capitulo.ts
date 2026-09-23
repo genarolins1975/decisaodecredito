@@ -41,8 +41,7 @@ export const numeroCapitulo = (n: number) => String(n).padStart(2, "0");
 export type ItemSequencia = { href: string; rotulo: string; titulo: string };
 type UnidadeDaSequencia = { kind: string; number: number; title: string; chapters: { number: number; title: string }[] };
 
-/** Ordem de leitura: os capítulos, na ordem das unidades. Toda aula tem capítulo, inclusive a Aula 2,
-    que é apresentada pelos 50 slides mas tem como conteúdo os capítulos 4, 5 e 6. */
+/** Ordem de leitura: os capítulos, na ordem das unidades. Toda aula tem capítulo; a Aula 2 tem os capítulos 4, 5 e 6. */
 export function sequenciaDoCurso(outline: UnidadeDaSequencia[]): ItemSequencia[] {
   const seq: ItemSequencia[] = [];
   for (const u of outline) {
