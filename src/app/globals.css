@@ -1070,7 +1070,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner [data-vz="anatomia"] .vz-ana-grade { grid-template-columns: minmax(0, 1.4fr) minmax(0, .6fr); }
 .slide-inner [data-vz="duas-familias"] .vz-df-grade .vz-df-lado > .vz-tile:last-child { display: block; }
 .vz-ana-potencias { display: flex; align-items: flex-end; gap: 4px; height: 70px; margin: 8px 0 22px; } .vz-ana-pot { flex: 1; background: #E6E4DD; border-radius: 3px 3px 0 0; position: relative; transition: background .2s; } .vz-ana-pot--ate { background: #c9d8f2; } .vz-ana-pot--on { background: var(--color-ink); } .vz-ana-pot b { position: absolute; bottom: -16px; left: 0; right: 0; text-align: center; font-size: 10px; color: var(--color-muted); }
-.vz-imp-quadrado { max-width: 360px; } .vz-imp-q-fundo { fill: #DDE6F3; } .vz-imp-q-erro { fill: var(--color-alert-soft); stroke: var(--color-alert); stroke-width: 1; transition: width .25s, height .25s, x .25s, y .25s; }
 .vz-imp-caixa-t { font-size: 15px; font-weight: 700; fill: #fff; } .vz-imp-base table th, .vz-imp-base table td { padding-top: 3px; padding-bottom: 3px; }
 .vz-cc-lado--esq { fill: var(--color-ok-soft); } .vz-cc-lado--dir { fill: var(--color-alert-soft); }
 .vz-cc-id { font-size: 8.5px; font-weight: 700; fill: #fff; }
@@ -1138,10 +1137,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner .vz-ana-grade, .slide-inner .vz-imp-grade, .slide-inner .vz-cc-grade, .slide-inner .vz-cam-grade, .slide-inner .vz-poda-grade, .slide-inner .vz-df-grade { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1cqh 2cqh; }
 .slide-inner .vz-ana-lado, .slide-inner .vz-imp-painel, .slide-inner .vz-imp-lado, .slide-inner .vz-cc-painel, .slide-inner .vz-cc-lado, .slide-inner .vz-cam-painel, .slide-inner .vz-poda-painel, .slide-inner .vz-poda-lado, .slide-inner .vz-df-lado, .slide-inner .vz-rec-corpo { gap: .8cqh; }
 .slide-inner .vz-ad { height: 40cqh; width: auto; max-width: 100%; margin: 0; }
-.slide-inner [data-vz="anatomia"] .vz-ana-lado .vz-tile:not(:first-child), .slide-inner [data-vz="impureza-curva"] .vz-imp-lado .vz-tile, .slide-inner [data-vz="impureza-curva"] .vz-imp-lado > .hint, .slide-inner [data-vz="impureza-raiz"] .vz-imp-lado > .hint, .slide-inner [data-vz="impureza-raiz"] .vz-imp-painel > .hint, .slide-inner [data-vz="impureza-raiz"] .vz-imp-lado .vz-tile,
+.slide-inner [data-vz="anatomia"] .vz-ana-lado .vz-tile:not(:first-child), .slide-inner [data-vz="impureza-raiz"] .vz-imp-lado > .hint, .slide-inner [data-vz="impureza-raiz"] .vz-imp-painel > .hint, .slide-inner [data-vz="impureza-raiz"] .vz-imp-lado .vz-tile,
 .slide-inner [data-vz="corte-candidato"] .vz-cc-lado > .hint, .slide-inner [data-vz="corte-candidato"] .vz-cc-lados .hint, .slide-inner [data-vz="recursao"] .vz-rec-tiles, .slide-inner [data-vz="caminho"] .vz-cam-plano, .slide-inner [data-vz="caminho"] .vz-grafico > .hint,
 .slide-inner [data-vz="poda"] .vz-poda-painel > .hint, .slide-inner [data-vz="poda"] .vz-poda-lado > .hint, .slide-inner [data-vz="duas-familias"] .vz-df-tabela, .slide-inner [data-vz="duas-familias"] .vz-df-lado > .hint, .slide-inner [data-vz="duas-familias"] .vz-df-lado > .vz-tile:last-child { display: none; }
-.slide-inner [data-vz="impureza-curva"] .vz-imp-lado .vz-grafico svg { height: 40cqh; } .slide-inner [data-vz="impureza-curva"] .vz-imp-quadrado { height: 22cqh; }
 .slide-inner [data-vz="impureza-raiz"] .vz-imp-painel .vz-grafico svg { height: 12cqh; } .slide-inner [data-vz="impureza-raiz"] .vz-imp-base { display: none; } .slide-inner [data-vz="impureza-raiz"] .vz-imp-lado .vz-tile { display: block; }
 .slide-inner [data-vz="corte-candidato"] .vz-grafico svg { height: 18cqh; }
 .slide-inner [data-vz="recursao"] .vz-rec-plano { height: 26cqh; width: auto; }
@@ -1939,6 +1937,75 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .uc-corpo { overflow-x: auto; }
 }
 .slide-inner [data-vz="unidade-coeficiente"] { padding: 0; border: 0; background: transparent; gap: 0; }
+
+/* Slide 4 do capítulo 5 (c5p4): impureza. Quadro 16:9 no sistema .rl, na gramática do c4p2: fórmulas em KaTeX na
+   faixa, curvas de Gini e entropia com a taxa de erro do nó pontilhada, o quadrado da chance de errar, o painel e três
+   cartões na base. */
+.im { --im-vinho: #8C2332; --im-acerto: #E6EBF4; }
+[data-vz="impureza-curva"] .rl-slide[data-tela="4"] { grid-template-rows: minmax(0, 144fr) minmax(0, 18fr) minmax(0, 88fr) minmax(0, 18fr) minmax(0, 596fr) minmax(0, 16fr) minmax(0, 114fr) minmax(0, 10fr) minmax(0, 24fr); }
+[data-vz="impureza-curva"] .rl-slide[data-tela="4"] > .rl-cab { grid-row: 1; } [data-vz="impureza-curva"] .rl-slide[data-tela="4"] > .im-eq { grid-row: 3; } [data-vz="impureza-curva"] .rl-slide[data-tela="4"] > .rl-corpo { grid-row: 5; } [data-vz="impureza-curva"] .rl-slide[data-tela="4"] > .im-base { grid-row: 7; } [data-vz="impureza-curva"] .rl-slide[data-tela="4"] > .rl-rod { grid-row: 9; }
+.im .rl-k { font-size: 1.3cqw; }
+.im-eq { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); align-items: center; gap: .2cqw 2.4cqw; border-top: 1px solid var(--rl-borda); border-bottom: 1px solid var(--rl-borda); padding: .4cqw 0; min-height: 0; }
+.im-eq-k { font-size: 1.3cqw; letter-spacing: .06em; text-transform: uppercase; color: var(--rl-muted); font-weight: 600; }
+.im-eq-f { display: block; font-size: 1.75cqw; color: var(--rl-navy); line-height: 1.2; white-space: nowrap; }
+.im-corpo { display: grid; grid-template-columns: 45fr 1.5fr 26fr 1.5fr 25fr; align-items: stretch; min-height: 0; }
+.im-corpo > .im-graf { grid-column: 1; } .im-corpo > .im-quad { grid-column: 3; } .im-corpo > .im-painel { grid-column: 5; }
+.im-graf { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: .3cqw; min-width: 0; min-height: 0; }
+.im-svg-wrap, .im-q-wrap { position: relative; min-height: 0; min-width: 0; overflow: hidden; }
+.im-svg, .im-q-svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+.im-fundo { fill: var(--rl-branco); } .im-grade { stroke: var(--rl-borda); stroke-width: 1.5; } .im-base { stroke: var(--rl-muted); stroke-width: 2; }
+.im-tick { font-size: 19px; fill: var(--rl-muted); font-family: inherit; font-variant-numeric: tabular-nums; }
+.im-eixo { font-size: 20px; fill: var(--rl-muted); font-family: inherit; }
+.im-curva { fill: none; stroke-linecap: round; stroke-linejoin: round; } .im-curva--g { stroke: var(--rl-navy); stroke-width: 5; } .im-curva--h { stroke: var(--rl-roxo); stroke-width: 3.5; }
+.im-curva--e { stroke: var(--rl-muted); stroke-width: 3.5; stroke-dasharray: .5 8; }
+.im-curva-t { font-size: 21px; font-weight: 600; font-family: inherit; paint-order: stroke; stroke: var(--rl-branco); stroke-width: 7px; stroke-linejoin: round; } .im-curva-t--g { fill: var(--rl-navy); } .im-curva-t--h { fill: var(--rl-roxo); } .im-curva-t--e { fill: var(--rl-muted); }
+.im-guia { stroke: var(--rl-muted); stroke-width: 1.5; stroke-dasharray: 6 6; } .im-guia--sim { stroke-opacity: .6; }
+.im-guia-t { font-size: 19px; font-weight: 600; fill: var(--rl-muted); font-family: inherit; font-style: italic; paint-order: stroke; stroke: var(--rl-branco); stroke-width: 6px; }
+.im-ligacao { stroke: var(--rl-ambar); stroke-width: 2.5; stroke-dasharray: 3 5; }
+.im-ponto { stroke: #fff; stroke-width: 3.5; } .im-ponto--g { fill: var(--rl-navy); } .im-ponto--h { fill: var(--rl-roxo); } .im-ponto--e { fill: var(--rl-muted); stroke-width: 3; }
+.im-ponto-sim { fill: var(--rl-branco); stroke-width: 3.5; } .im-ponto-sim--g { stroke: var(--rl-navy); } .im-ponto-sim--h { stroke: var(--rl-roxo); }
+.im-valor { font-size: 23px; font-weight: 600; fill: var(--rl-text); font-family: inherit; font-variant-numeric: tabular-nums; paint-order: stroke; stroke: var(--rl-branco); stroke-width: 7px; stroke-linejoin: round; }
+.im-valor--g { fill: var(--rl-navy); } .im-valor--h { fill: var(--rl-roxo); }
+.im-rot-fundo { fill: var(--rl-branco); } .im-rot-guia { stroke: var(--rl-muted); stroke-width: 1.5; }
+.im-alvo { fill: transparent; cursor: col-resize; }
+.im-legenda { display: flex; gap: 1.4cqw; flex-wrap: wrap; }
+.im-leg { font-size: 1.3cqw; display: inline-flex; align-items: center; gap: .4cqw; } .im-leg::before { content: ""; width: 1.6cqw; height: .32cqw; border-radius: 2px; background: currentColor; }
+.im-leg--g { color: var(--rl-navy); } .im-leg--h { color: var(--rl-roxo); } .im-leg--e { color: var(--rl-muted); }
+.im-leg--e::before { height: 0; background: none; border-top: .32cqw dotted currentColor; border-radius: 0; }
+.im-quad { background: var(--rl-branco); border: 1px solid var(--rl-borda); border-radius: 16px; padding: .8cqw 1cqw; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; gap: .25cqw; min-width: 0; min-height: 0; overflow: hidden; }
+.im-quad-sub { font-size: 1.3cqw; color: var(--rl-muted); line-height: 1.25; }
+.im-q-cab { font-size: 19px; font-weight: 600; fill: var(--rl-text); font-family: inherit; font-variant-numeric: tabular-nums; } .im-q-cab--n { font-weight: 400; fill: var(--rl-muted); }
+.im-q-marca { stroke: var(--rl-text); stroke-width: 2; }
+.im-cel--acerto rect { fill: var(--im-acerto); } .im-cel--erro rect { fill: var(--im-vinho); }
+.im-cel-k { font-size: 19px; font-family: inherit; } .im-cel-v { font-size: 22px; font-weight: 600; font-family: inherit; font-variant-numeric: tabular-nums; } .im-cel-v--fino { font-size: 19px; }
+.im-cel--acerto text { fill: var(--rl-navy); } .im-cel--erro text { fill: #fff; }
+.im-erro { font-size: 1.3cqw; color: var(--rl-text); display: flex; align-items: baseline; flex-wrap: wrap; gap: .2cqw .5cqw; font-variant-numeric: tabular-nums; }
+.im-erro b { color: var(--im-vinho); font-size: 1.55cqw; }
+.im-painel { background: var(--rl-branco); border: 1px solid var(--rl-borda); border-radius: 16px; padding: .8cqw 1cqw; display: grid; grid-template-rows: auto auto auto auto auto minmax(0, 1fr); gap: .3cqw; overflow: hidden; align-content: start; min-width: 0; min-height: 0; }
+.im-ctl { display: grid; gap: .3cqw; } .rl .im-ctl label { font-size: 1.3cqw; color: var(--rl-text); font-variant-numeric: tabular-nums; } .rl .im-ctl label b { color: var(--rl-navy); }
+.rl .im-ctl input[type="range"] { width: 100%; min-height: 1.3cqw; accent-color: var(--rl-navy); height: auto; }
+.im-atalhos { display: flex; align-items: center; flex-wrap: wrap; gap: .3cqw; } .im-atalhos > span { font-size: 1.3cqw; color: var(--rl-muted); margin-right: .2cqw; }
+.im-res { margin: 0; display: grid; gap: .1cqw; } .im-res > div { display: flex; justify-content: space-between; align-items: baseline; gap: .6cqw; border-bottom: 1px solid var(--rl-borda); padding: .1cqw 0; }
+.im-res dt { font-size: 1.3cqw; color: var(--rl-muted); } .im-res dd { margin: 0; font-size: 2.1cqw; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.im-res-g { color: var(--rl-navy); } .im-res-h { color: var(--rl-roxo); }
+.im-lei { font-size: 1.3cqw; color: var(--rl-text); line-height: 1.3; }
+.im-acoes { display: flex; flex-wrap: wrap; gap: .3cqw; } .im-painel .rl-btn--mini { min-height: 1.7cqw; padding: .25cqw .5cqw; font-size: 1.1cqw; }
+.im-comp-box { background: #FBF4EA; border-radius: .6cqw; padding: .3cqw .6cqw; align-self: start; }
+.im-comp-v { font-size: 1.3cqw; color: var(--rl-text); line-height: 1.25; font-variant-numeric: tabular-nums; }
+.im-base { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .2cqw 2.4cqw; align-content: center; border-top: 1px solid var(--rl-borda); padding-top: .5cqw; }
+.im-base-k { font-size: 1.45cqw; font-weight: 600; color: var(--rl-navy); } .im-base-t { font-size: 1.3cqw; color: var(--rl-text); line-height: 1.3; font-variant-numeric: tabular-nums; }
+@container quadro (max-width: 820px) {
+  .im-eq, .im-corpo, .im-graf, .im-base { display: flex; flex-direction: column; gap: 10px; }
+  .im-eq { padding: 12px 0; } .im-eq > div { overflow-x: auto; } .im-eq-k { font-size: 12px; } .im-eq-f { font-size: 15px; }
+  .im-svg-wrap { min-height: 250px; } .im-q-wrap { min-height: 290px; } .im-leg { font-size: 13px; } .im-leg::before { width: 18px; height: 4px; } .im-leg--e::before { height: 0; border-top-width: 4px; }
+  .im-quad, .im-painel { padding: 14px; border-radius: 12px; gap: 6px; } .im-quad-sub, .im-erro, .im-lei, .im-comp-v, .im-atalhos > span, .rl .im-ctl label, .im-res dt { font-size: 14px; }
+  .im-erro b { font-size: 16px; } .im-res dd { font-size: 22px; } .rl .im-ctl input[type="range"] { min-height: 32px; }
+  .im-painel .rl-btn--mini { min-height: 40px; padding: 8px 12px; font-size: 14px; } .im-comp-box { padding: 8px 10px; border-radius: 8px; }
+  .im-base-k { font-size: 16px; } .im-base-t { font-size: 14px; } .im .rl-k { font-size: 14px; }
+}
+.slide-inner [data-vz="impureza-curva"] { padding: 0; border: 0; background: transparent; gap: 0; }
+/* a regra genérica .conteudo figure svg do palco devolveria a altura intrínseca do viewBox */
+.slide-inner [data-vz="impureza-curva"] .im-svg, .slide-inner [data-vz="impureza-curva"] .im-q-svg { position: absolute; inset: 0; width: 100%; height: 100%; max-height: none; margin: 0; }
 
 /* Slide 15 do capítulo 4 (c4p15): a log loss proposta a proposta. Quadro 16:9 no sistema .rl, na gramática do c4p2:
    as duas fórmulas na faixa, as duas curvas de perda com as 16 propostas, o painel de escolha e três cartões. */

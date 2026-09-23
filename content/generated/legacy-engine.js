@@ -10613,6 +10613,10 @@ function guiaDaTelaV15(){
   resposta:'',
   interacao:''});
  guia('c5p3',{interacao:''});
+ guia('c5p4',{leitura:'',
+  conducao:'',
+  erros:undefined,
+  interacao:''});
  guia('c5p5',{interacao:''});
  guia('c5p6',{conducao:'',
   leitura:''});
@@ -10672,7 +10676,7 @@ function capitulo5NoPalcoV16(){
  muda('c5p1',{aprendizado:'Ler uma previsão como o caminho da raiz até uma folha.',apoio:''});
  muda('c5p2',{titulo:'Perguntas em sequência fazem o que a soma não faz',aprendizado:'O efeito de uma variável passa a depender das outras, sem termo de interação.',apoio:'',conexao:'Para construir a árvore, primeiro os nomes das partes.'});
  muda('c5p3',{titulo:'Anatomia da árvore',aprendizado:'Nó, regra, ramo, folha e profundidade, no diagrama que o capítulo inteiro usa.',apoio:'Clique em cada termo e veja a parte correspondente acesa.'});
- muda('c5p4',{titulo:'Impureza: o quanto o grupo está misturado',aprendizado:'Máxima com metade de defaults, zero quando todos têm o mesmo desfecho.',apoio:'Mova a proporção de defaults e compare Gini e entropia.',conexao:'Com a medida definida, dá para pontuar um corte.'});
+ muda('c5p4',{titulo:'Impureza: o quanto o grupo está misturado',aprendizado:'Máxima com metade de defaults, zero quando todos têm o mesmo desfecho.',apoio:'Mova a proporção de defaults e compare Gini, entropia e taxa de erro do nó.',conexao:'Com a medida definida, dá para pontuar um corte.'});
  muda('c5p5',{aprendizado:'O Gini de um grupo, contado à mão.',apoio:'Compare a raiz, uma folha pura e uma folha mista.',conexao:'Agora, um corte candidato avaliado com essa referência.'});
  muda('c5p6',{aprendizado:'O ganho é a impureza que o corte remove, ponderada pelo tamanho de cada lado.',apoio:'Escolha a variável e mova o corte: as contas aparecem na hora.',conexao:'Testar um por um é o que o algoritmo faz, e depressa.'});
  muda('c5p7',{titulo:'A disputa pela raiz',aprendizado:'Vence o corte de maior ganho, não o que parece melhor no desenho.',apoio:'Mova o corte candidato e compare as barras.',conexao:'O vencedor vira a raiz.'});

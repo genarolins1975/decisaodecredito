@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "5b9a717ca47af0bd22ce6ce817ca5a14bfc1a9d7df9355f8d71d84d3102e87aa",
- "extractedAt": "2026-09-23T17:25:52.432Z",
+ "sourceSha256": "c0c51599d04327f8fa257fa69f515713d4bc99f26d05e47f0224a0b50a58a296",
+ "extractedAt": "2026-09-23T21:52:15.176Z",
  "meta": {
   "capitulos": [
    {
@@ -5465,13 +5465,13 @@
    },
    "origem": "rec",
    "aprendizado": "Máxima com metade de defaults, zero quando todos têm o mesmo desfecho.",
-   "apoio": "Mova a proporção de defaults e compare Gini e entropia.",
+   "apoio": "Mova a proporção de defaults e compare Gini, entropia e taxa de erro do nó.",
    "conexao": "Com a medida definida, dá para pontuar um corte.",
    "guia": {
     "funcao": "Construir o critério de divisão como medida de mistura, antes de aplicá-lo a qualquer corte.",
     "pre": "Prevalência e probabilidade condicional.",
-    "conducao": "Leve o controle a zero e a cem e mostre que as duas medidas zeram. Depois pare em 50% e diga que é onde a raiz começa nesta base.",
-    "leitura": "Dois números à esquerda, as duas curvas em forma de morro à direita.",
+    "conducao": "Leve o controle a zero e a cem e mostre que as três curvas zeram. Pare em 50%, onde a raiz começa nesta base. Em 10%, leia as duas chances de errar: prevendo a maioria, 10%; sorteando o rótulo, 18%, que é o Gini. A taxa de erro é reta por partes e pode não acusar uma divisão que purifica: no 2º nível desta base, o Gini ponderado cai de 0,21875 para 0,12500 e os erros seguem 2 em 16. Por isso a árvore usa o Gini.",
+    "leitura": "Fórmulas do Gini e da entropia no alto; à esquerda, as curvas de Gini e entropia contra a proporção de defaults, com a taxa de erro do nó pontilhada por baixo; ao centro, o quadrado da chance de errar, com as células de erro em vinho; à direita, o painel com Gini, entropia e as duas chances de errar; na base, Não é taxa de erro, Não é risco e No curso.",
     "pergunta": "Um grupo com 90% de defaults é puro?",
     "resposta": "Não, mas está perto. Gini de 0,18 contra 0,5 do grupo meio a meio. Baixa impureza não significa ausência de risco: significa homogeneidade.",
     "erros": [
@@ -5479,9 +5479,14 @@
       "alt": "Confundir impureza baixa com PD baixa",
       "confusao": "Lê a medida como nível de risco.",
       "intervencao": "Mostre que 10% e 90% de defaults têm exatamente o mesmo Gini. A medida é simétrica."
+     },
+     {
+      "alt": "Ler o Gini como a taxa de erro do nó",
+      "confusao": "Toma a chance de errar com rótulo sorteado pelo erro de prever a maioria.",
+      "intervencao": "Em 10%, compare 18%, o Gini, com 10%, a curva pontilhada, e leia o cartão Não é taxa de erro."
      }
     ],
-    "interacao": "Controle de composição com as duas medidas recalculadas e marcadas na curva.",
+    "interacao": "Controle deslizante de 0% a 100%, atalhos 0%, 10%, 50% e 90% e clique ou arrasto sobre o gráfico; botões Comparar com 1 − p e Restaurar exemplo. Tudo é recalculado no navegador.",
     "verificacao": "O aluno reconhece a simetria da medida em torno de 50%.",
     "transicao": "O Gini da raiz desta base.",
     "aula": "Próxima em sala: c5p7. Diga: com o Gini definido, todo corte candidato vira um número, a impureza que ele deixa; vamos direto à disputa entre os cortes da raiz. Ficam para o estudo: c5p5 e c5p6, a impureza na raiz e um corte avaliado passo a passo."

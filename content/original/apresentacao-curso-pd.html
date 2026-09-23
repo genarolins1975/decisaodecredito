@@ -14041,6 +14041,13 @@ function guiaDaTelaV15(){
   resposta:'Segmentação e regras de política, com mais frequência do que como modelo de PD. A razão aparece nas páginas 13 e 16, quando a incerteza da folha e a instabilidade forem medidas.',
   interacao:'Três botões de etapa, 1. Corte, 2. Caminho e 3. Freio, cada um com uma frase.'});
  guia('c5p3',{interacao:'Cinco botões acendem nó, regra, ramo, folha e profundidade, e o controle de profundidade máxima, de 1 a 10, mostra até quantas folhas ela permite.'});
+ guia('c5p4',{leitura:'Fórmulas do Gini e da entropia no alto; à esquerda, as curvas de Gini e entropia contra a proporção de defaults, com a taxa de erro do nó pontilhada por baixo; ao centro, o quadrado da chance de errar, com as células de erro em vinho; à direita, o painel com Gini, entropia e as duas chances de errar; na base, Não é taxa de erro, Não é risco e No curso.',
+  conducao:'Leve o controle a zero e a cem e mostre que as três curvas zeram. Pare em 50%, onde a raiz começa nesta base. Em 10%, leia as duas chances de errar: prevendo a maioria, 10%; sorteando o rótulo, 18%, que é o Gini. A taxa de erro é reta por partes e pode não acusar uma divisão que purifica: no 2º nível desta base, o Gini ponderado cai de 0,21875 para 0,12500 e os erros seguem 2 em 16. Por isso a árvore usa o Gini.',
+  erros:[{alt:'Confundir impureza baixa com PD baixa',confusao:'Lê a medida como nível de risco.',
+    intervencao:'Mostre que 10% e 90% de defaults têm exatamente o mesmo Gini. A medida é simétrica.'},
+   {alt:'Ler o Gini como a taxa de erro do nó',confusao:'Toma a chance de errar com rótulo sorteado pelo erro de prever a maioria.',
+    intervencao:'Em 10%, compare 18%, o Gini, com 10%, a curva pontilhada, e leia o cartão Não é taxa de erro.'}],
+  interacao:'Controle deslizante de 0% a 100%, atalhos 0%, 10%, 50% e 90% e clique ou arrasto sobre o gráfico; botões Comparar com 1 − p e Restaurar exemplo. Tudo é recalculado no navegador.'});
  guia('c5p5',{interacao:'Três botões, raiz, folha pura e folha mista, refazem a conta do Gini para cada grupo.'});
  guia('c5p6',{conducao:'Escolha utilização e leve o corte até 27,5: ganho zero, porque os dois lados continuam meio a meio (1 default em 2 e 7 em 14). Depois até 57,5: ganho 0,28125. Peça que a turma explique a diferença olhando as listas de propostas.',
   leitura:'À esquerda, o controle de corte, a régua das 16 propostas e os dois blocos de composição; à direita, a conta do ganho e as barras de Gini antes, de cada lado e depois, ponderado.'});
@@ -14100,7 +14107,7 @@ function capitulo5NoPalcoV16(){
  muda('c5p1',{aprendizado:'Ler uma previsão como o caminho da raiz até uma folha.',apoio:''});
  muda('c5p2',{titulo:'Perguntas em sequência fazem o que a soma não faz',aprendizado:'O efeito de uma variável passa a depender das outras, sem termo de interação.',apoio:'',conexao:'Para construir a árvore, primeiro os nomes das partes.'});
  muda('c5p3',{titulo:'Anatomia da árvore',aprendizado:'Nó, regra, ramo, folha e profundidade, no diagrama que o capítulo inteiro usa.',apoio:'Clique em cada termo e veja a parte correspondente acesa.'});
- muda('c5p4',{titulo:'Impureza: o quanto o grupo está misturado',aprendizado:'Máxima com metade de defaults, zero quando todos têm o mesmo desfecho.',apoio:'Mova a proporção de defaults e compare Gini e entropia.',conexao:'Com a medida definida, dá para pontuar um corte.'});
+ muda('c5p4',{titulo:'Impureza: o quanto o grupo está misturado',aprendizado:'Máxima com metade de defaults, zero quando todos têm o mesmo desfecho.',apoio:'Mova a proporção de defaults e compare Gini, entropia e taxa de erro do nó.',conexao:'Com a medida definida, dá para pontuar um corte.'});
  muda('c5p5',{aprendizado:'O Gini de um grupo, contado à mão.',apoio:'Compare a raiz, uma folha pura e uma folha mista.',conexao:'Agora, um corte candidato avaliado com essa referência.'});
  muda('c5p6',{aprendizado:'O ganho é a impureza que o corte remove, ponderada pelo tamanho de cada lado.',apoio:'Escolha a variável e mova o corte: as contas aparecem na hora.',conexao:'Testar um por um é o que o algoritmo faz, e depressa.'});
  muda('c5p7',{titulo:'A disputa pela raiz',aprendizado:'Vence o corte de maior ganho, não o que parece melhor no desenho.',apoio:'Mova o corte candidato e compare as barras.',conexao:'O vencedor vira a raiz.'});
