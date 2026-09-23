@@ -4,10 +4,16 @@ import { db, schema } from "@/lib/db/client";
 import { newId } from "@/lib/ids";
 import { ApiError } from "@/lib/auth/guard";
 import { audit } from "@/lib/audit";
-import { sanitizeHtml } from "@/lib/sanitize";
 import type { Block } from "@/lib/services/content";
 
 import { renderTex } from "@/lib/tex";
+
+/**
+ * O sanitizador depende do jsdom, pesado e sensível à versão do Node de quem executa. Ele só carrega na hora de salvar:
+ * abrir o editor e as rotas de leitura não dependem dele. Em 23/09/2026 o jsdom 30 (que exige Node 22.12 ou mais novo)
+ * quebrava o carregamento desta rota inteira nas funções da Vercel, e o editor respondia 500 antes de qualquer consulta.
+ */
+const carregarSanitizador = async () => (await import("@/lib/sanitize")).sanitizeHtml;
 
 export async function pageForEditor(pageId: string) {
   const [row] = await db.select({ page: schema.pages, chapter: schema.chapters, unit: schema.units }).from(schema.pages)
@@ -25,6 +31,7 @@ export type VersionInput = { title: string; objective?: string | null; support?:
 /** Cria nova versão (sanitizada) a partir do rascunho editado; publica se solicitado. Versões publicadas nunca são alteradas. */
 export async function createPageVersion(pageId: string, input: VersionInput, actorId: string) {
   const { page, latest } = await pageForEditor(pageId);
+  const sanitizeHtml = await carregarSanitizador();
   const blocks: Block[] = input.blocks.map((b) => {
     if (b.type === "html") return { type: "html", html: sanitizeHtml(b.html) }; // TeX é renderizado ao servir, mantendo a fonte editável
     if (b.type === "legacy") return { ...b, fallbackHtml: sanitizeHtml(b.fallbackHtml) };
@@ -94,7 +101,8 @@ export async function createQuestionVersion(questionId: string, input: { label?:
   const [last] = await db.select({ n: schema.questionVersions.versionNo }).from(schema.questionVersions).where(eq(schema.questionVersions.questionId, questionId)).orderBy(desc(schema.questionVersions.versionNo)).limit(1);
   const id = newId();
   const fb = input.feedback as { revealHtml?: string; modelAnswer?: string } | undefined;
-  await db.insert(schema.questionVersions).values({ id, questionId, versionNo: (last?.n ?? 0) + 1, label: input.label ?? null, prompt: input.prompt.trim(), options: input.options, answerKey: input.answerKey ?? null, feedback: fb ? { ...fb, revealHtml: fb.revealHtml ? sanitizeHtml(renderTex(fb.revealHtml)) : undefined } : null });
+  const revealHtml = fb?.revealHtml ? (await carregarSanitizador())(renderTex(fb.revealHtml)) : undefined;
+  await db.insert(schema.questionVersions).values({ id, questionId, versionNo: (last?.n ?? 0) + 1, label: input.label ?? null, prompt: input.prompt.trim(), options: input.options, answerKey: input.answerKey ?? null, feedback: fb ? { ...fb, revealHtml } : null });
   await db.update(schema.questions).set({ currentVersionId: id }).where(eq(schema.questions.id, questionId));
   await audit({ actorUserId: actorId, action: "question.version", entity: "question", entityId: questionId, details: { versionNo: (last?.n ?? 0) + 1 } });
   return id;

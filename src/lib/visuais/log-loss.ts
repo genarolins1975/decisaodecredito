@@ -46,29 +46,31 @@ export function maiores(n = 3, ls: Linha[] = linhas()) {
 export function formula(l: Linha) {
   return l.y === 1
     ? { regra: "Perda = −ln(PD)", conta: `−ln(${fmt(l.pd, 4)}) ≈ ${fmt(l.perda, 4)}`, desfecho: "Default · y = 1", rotulo: "PD estimada" }
-    : { regra: "Perda = −ln(1 − PD)", conta: `−ln(1 − ${fmt(l.pd, 4)}) ≈ ${fmt(l.perda, 4)}`, desfecho: "Não houve default · y = 0", rotulo: "PD estimada" };
+    : { regra: "Perda = −ln(1 − PD)", conta: `−ln(1 − ${fmt(l.pd, 4)}) ≈ ${fmt(l.perda, 4)}`, desfecho: "Sem default · y = 0", rotulo: "PD estimada" };
 }
 
 /** Frase curta de leitura da proposta selecionada. */
 export function leitura(l: Linha) {
+  // "mas" só quando o modelo deu menos da metade ao que ocorreu; a probabilidade do desfecho observado está logo acima no painel
+  const liga = l.pObservado < 0.5 ? "mas" : "e";
   return l.y === 1
-    ? `Houve default, mas o modelo atribuiu ${fmtPct(l.pd)} de probabilidade a esse desfecho.`
-    : `Não houve default, mas o modelo atribuiu ${fmtPct(l.pd)} ao default: sobram ${fmtPct(l.pObservado)} para o que ocorreu.`;
+    ? `Houve default, ${liga} o modelo atribuiu ${fmtPct(l.pd)} a esse desfecho.`
+    : `Não houve default, ${liga} o modelo atribuiu ${fmtPct(l.pd)} ao default.`;
 }
 
 export const CASOS = [
   { k: "Se houve default · y = 1", f: "Perda = −ln(PD)" },
   { k: "Se não houve default · y = 0", f: "Perda = −ln(1 − PD)" },
 ];
-export const FRASE_PERDA = "A perda é menor quando o modelo atribui maior probabilidade ao desfecho que ocorreu.";
-export const NOTA_LN = "ln = logaritmo natural · erro probabilístico, não perda financeira";
+export const FRASE_PERDA = "A perda cai quando o modelo dá mais probabilidade ao desfecho que ocorreu.";
+export const NOTA_LN = "ln = logaritmo natural; perda estatística, não financeira";
 export const TITULO_GRAF = "A contribuição de cada proposta";
 export const EIXO_Y = "Log loss individual";
 export const ROTULO_MEDIA = "Log loss média do modelo";
 export const TITULO_PAINEL = "Por que esta proposta gera perda?";
-export const SINTESE = "Os coeficientes procuram reduzir a perda conjunta das 16 propostas.";
-export const SINTESE_2 = "Reduzir a perda de uma pode aumentar a de outras.";
+export const SINTESE = "Os coeficientes minimizam a log loss média das 16 propostas.";
+export const SINTESE_2 = "Reduzir a perda de uma pode aumentar a de outras;";
 export const NOTA_FORA = "Bom ajuste no treinamento não comprova desempenho fora da amostra.";
-export const NOTA_ESTIMACAO = "Os coeficientes são estimados minimizando a log loss média na amostra de treinamento, sem penalização e com pesos iguais.";
+export const NOTA_ESTIMACAO = "Na amostra de treino, sem penalização e com pesos iguais.";
 export const TITULO_GRAF_CURTO = "A contribuição de cada proposta";
-export const RODAPE = "Exemplo didático · perda estatística, não monetária";
+export const RODAPE = "Exemplo didático";

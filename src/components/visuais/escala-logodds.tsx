@@ -150,13 +150,13 @@ export function EscalaLogOdds({ palco = false }: { palco?: boolean }) {
           <p className="vz-lo-passos">
             <span className="vz-lo-chip vz-lo-chip--menor">Odds ÷ 2: <b>{fmtPp(menor.deltaPd)}</b></span>
             <span className="vz-lo-chip vz-lo-chip--maior">Odds × 2: <b>{fmtPp(maior.deltaPd)}</b></span>
-            <span className="vz-lo-passos-l">{iguais ? "os dois passos têm o mesmo tamanho" : "os dois passos têm tamanhos diferentes"}</span>
+            <span className="vz-lo-passos-l">{iguais ? "passos iguais" : "passos desiguais"}</span>
           </p>
           <Regua id="lo-r-z" titulo="Log odds" nota={`janela de leitura de −${Math.abs(JANELA_Z[0])} a +${JANELA_Z[1]}`} cor="z" ticks={TICKS_Z.map((v) => ({ t: (v - JANELA_Z[0]) / (JANELA_Z[1] - JANELA_Z[0]), texto: v > 0 ? `+${v}` : v < 0 ? `−${Math.abs(v)}` : "0" }))} marcas={marcasZ} />
           <p className="vz-lo-passos">
             <span className="vz-lo-chip vz-lo-chip--menor">Odds ÷ 2: <b>{fmtDesloc(menor.deltaZ)}</b></span>
             <span className="vz-lo-chip vz-lo-chip--maior">Odds × 2: <b>{fmtDesloc(maior.deltaZ)}</b></span>
-            <span className="vz-lo-passos-l">o mesmo ln(2) nos dois sentidos, para qualquer PD de partida</span>
+            <span className="vz-lo-passos-l">o mesmo ln(2) nos dois sentidos</span>
           </p>
           <p className="hint vz-lo-janela">{NOTA_JANELA}</p>
         </div>

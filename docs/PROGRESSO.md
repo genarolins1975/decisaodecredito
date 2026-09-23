@@ -12,11 +12,11 @@
 | 4. Trabalhos, grupos, versões, correção, devolutiva, teste cego | concluída | testes e2e "trabalhos"; fluxo completo verificado por API |
 | 5. Migração integral e revisão técnica, didática e visual | concluída com pendências declaradas | 180 páginas migradas e o fecho da Aula 2 (c6p20), 181 no total; 84 visuais em iframe legado isolado (a portar); docs/03 |
 | 6. Testes de aceitação, segurança, acessibilidade, carga, restauração | concluída no ambiente local | docs/07 |
-| 7. Homologação, publicação e manuais | manuais concluídos; **homologação e produção não implantadas** (sem credenciais) | docs/09 |
+| 7. Homologação, publicação e manuais | manuais concluídos; produção no ar, e cada merge publica código e conteúdo (confirmado em 23/09/2026); homologação separada sem registro | docs/09 |
 
 ## O que impede a conclusão total
 
-- Implantação em homologação e produção exige credenciais (banco, hospedagem, armazenamento, OAuth Google) e autorização do professor: lista exata em docs/09.
+- Produção está no ar e se atualiza a cada merge (docs/09). O que ainda exige credencial ausente deste ambiente é o armazenamento privado: guia do professor e bases do trabalho final sobem pelo bucket e são registrados em Bases e gabaritos.
 - Envio real de e-mail exige a conta Gmail conectada pelo professor.
 - Bases dos casos, pacote do trabalho final e rótulos OOT não foram fornecidos: cadastro pelo painel está pronto.
 
@@ -180,7 +180,33 @@ Depois do capítulo 5, o professor pediu a mesma revisão no capítulo 6: layout
 
 Verificado em 23/09/2026: typecheck; lint (0 erros; 5 avisos anteriores); `lint:tracos` (0); `npm test` (298, sete novos: cada peça nova, renderizada no servidor, exibe os números conferidos); `npx playwright test` (23 de 23); varredura das 61 páginas em Aulas e em Apresentação nas quatro larguras (1920x1080, 1366x768, 1024x768, 390x844), com estados, sem defeito; capítulo 5 reauditado sem regressão (9,96, 22 telas); modo estudo das oito páginas redesenhadas em 1366 e 390 px sem rolagem lateral; guias do capítulo 6 regerados (aluno com 28 páginas, professor com 38).
 
-**Não verificado.** Pacote do professor não enviado ao armazenamento (sem credencial `S3_*` neste ambiente); produção não inspecionada depois desta rodada; nenhum teste com alunos ou em projetor real.
+**Verificado em produção em 23/09/2026.** Merge de e1369b1 às 08:18 UTC; às 08:22 UTC o CSS publicado trazia as classes do capítulo 6 e `/api/health` respondia com 4 migrações, as 4 de `drizzle/`. Depois, a captura enviada pelo professor mostrou c6p4 com o título e o objetivo novos, o que confirma a importação do conteúdo no build.
+
+**Não verificado.** Pacote do professor não enviado ao armazenamento (sem credencial `S3_*` neste ambiente); nenhum teste com alunos ou em projetor real.
+
+### Décima quarta rodada (23/09/2026): c4p2, a reta que sai pelas duas pontas
+
+Pedido do professor, com captura do palco: a cor não deixava evidente o trecho fora de 0% a 100%, e o exemplo não permitia passar de 100%.
+
+**Causa.** Dois defeitos. O trecho vinho era desenhado antes da reta azul, com 7 contra 5 unidades de traço, e ficava coberto por ela: sobrava uma borda de uma unidade de cada lado. E o domínio parava em 100% de utilização, onde a reta prevê 97,50%; ela só passa de 100% a partir de 102,24%. O material original ia a 115%, com faixas rosas nas duas zonas inválidas; a peça nativa tinha perdido as duas coisas.
+
+**O que mudou.** Domínio de 0% a 120%, com o trecho acima de 100% marcado no eixo como saldo acima do limite. As duas zonas fora de 0% a 100% são sombreadas e rotuladas, a faixa válida fica branca, os trechos vinho são desenhados por cima da reta azul e os cruzamentos ficam marcados em 12,8% e 102,2%. Atalhos 5%, 60% e 110%: 5% e 110% ficam os dois 8,68 pp fora do intervalo, um de cada lado, porque a reta é simétrica em torno de 57,5%, onde prevê 50%. O cartão Limites passa a dizer os dois cruzamentos; as frases do painel ficaram mais curtas e a fórmula do truncamento foi para a legenda. Roteiro do professor (leitura e interação) e explicações do guia do capítulo 4 reescritos: diziam que neste exemplo a reta não passava de 100%.
+
+**Palco.** A primeira versão desta rodada ficou em 8,7 na auditoria (185 palavras, rótulos do painel a 1,56% da altura do slide) e foi corrigida pela causa, com frases mais curtas e corpo mínimo de 1,3cqw nos rótulos: 9,4 em 1400x900 e em 1920x1080, com 168 palavras e menor fonte a 1,76%. A nota da página antes da rodada não foi medida.
+
+Verificado em 23/09/2026: typecheck; lint (0 erros; 5 avisos anteriores); `lint:tracos` (0); `npm test` (300, dois novos: as duas zonas rotuladas com os trechos vinho desenhados depois da reta azul, e os atalhos); `npx playwright test` (23 de 23, com o teste de aceitação atualizado para o texto novo e para a ponta de cima); varredura das 61 páginas nas duas rotas e quatro larguras (1920x1080, 1366x768, 1024x768, 390x844), com os estados clicados, sem defeito no build final; guias do capítulo 4 regerados (aluno com 34 páginas e professor com 43, as mesmas de antes), o do aluno copiado para `content/materiais`; pacote `guias-2026-09` remontado com o capítulo 4 novo.
+
+**Não verificado.** Produção (esta rodada não foi publicada); pacote do professor não enviado ao armazenamento (sem credencial `S3_*` neste ambiente); nenhum teste com alunos ou em projetor real.
+
+### Décima quinta rodada (23/09/2026): o editor de página em produção, c4p5 e c4p15
+
+**Editor de página.** Em produção, o link "editar" de Conteúdo abria a página estática de erro 500 do Next. Localmente os 181 editores abriam. Evidência de que o defeito era de carregamento, e não de dado: sem sessão, `GET /api/professor/conteudo/paginas/<id>` respondia 500 em produção e 401 localmente, enquanto uma rota de controle respondia 405 nos dois lugares. O módulo do editor (`content-admin.ts`) importava no topo o sanitizador, que carrega o jsdom. O jsdom 30.0.1 declara Node 22.22.2 ou mais novo e, reproduzido aqui com os binários de Node do registro do npm, não carrega em Node 22.11 (dependência só em ES module) nem em 20.19; carrega em 22.14 e 24.0. O build da Vercel, num Node mais novo, rodava a importação com ele; as funções, não. Correção: jsdom fixado em 26.1.0 (Node 18 ou mais novo; conferido com DOMPurify em 20.19, 22.11, 22.14, 22.22 e 24.0, com a mesma saída), jsdom e dompurify movidos para as dependências de produção (estavam como de desenvolvimento, embora rodem no servidor), e o sanitizador passa a carregar só na hora de salvar, de modo que abrir o editor não depende dele. Testes: `tests/sanitize.test.ts` (o que o sanitizador remove e mantém, a versão do jsdom e a ausência de import no topo) e o teste de aceitação "editor de página", que abre o editor pela listagem, salva um rascunho com script e evento e confere a versão gravada limpa.
+
+**c4p5 e c4p15.** Mesma correção do c4p2: frases mais curtas, sem mudar o sentido, e corpo mínimo nos rótulos. c4p5 de 8,7 para 9,4 em 1400x900 e de 9,1 para 9,4 em 1920x1080 (184 para 175 palavras); c4p15 de 8,7 para 9,4 nas duas (196 para 174 palavras; no painel, "Sem default · y = 0", a forma que a dica do gráfico já usava, para caber com a proposta #15 selecionada).
+
+Verificado em 23/09/2026: typecheck; lint (0 erros; 5 avisos anteriores); `lint:tracos` (0); `npm test` (303, três novos); `npx playwright test` (24 de 24, um novo); varredura das 61 páginas nas duas rotas e quatro larguras, com os estados clicados, sem defeito (antes, a varredura pegou o painel do c4p15 vazando 16 px com a proposta #15 selecionada, corrigido nesta rodada); importação local com o jsdom 26 sem erro nas 181 páginas; guias do capítulo 4 regerados (34 e 43 páginas) e pacote do professor remontado.
+
+**Não verificado.** O editor salvando em produção depende de login de professor, que não uso; a verificação possível sem credencial é a sonda sem sessão, feita depois do deploy.
 
 ## Pendências técnicas ordenadas
 
