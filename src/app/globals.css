@@ -1616,9 +1616,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
 /* palco: o essencial em tamanho de projeção; o que é apoio de leitura sai de cena */
 .slide-inner [data-vz="escala-logodds"] .vz-estado, .slide-inner [data-vz="escala-logodds"] .vz-cab .eyebrow, .slide-inner [data-vz="escala-logodds"] .vz-lo-id-l, .slide-inner [data-vz="escala-logodds"] .vz-lo-k--modelo, .slide-inner [data-vz="escala-logodds"] .vz-lo-sub, .slide-inner [data-vz="escala-logodds"] .vz-lo-janela, .slide-inner [data-vz="escala-logodds"] .vz-lo-msg, .slide-inner [data-vz="escala-logodds"] .vz-lo-notas-b, .slide-inner [data-vz="escala-logodds"] .vz-lo-notas { display: none; }
 .slide-inner [data-vz="escala-logodds"] .vz-lo-col-pd { font-size: 6.4cqh; }
-.slide-inner [data-vz="escala-logodds"] .vz-lo-id-curta { display: block; font-size: 1em; color: var(--color-body); }
+.slide-inner [data-vz="escala-logodds"] .vz-lo-id-curta { display: block; font-size: 1.04em; color: var(--color-body); }
 .slide-inner [data-vz="escala-logodds"] .vz-lo-perg { font-size: 1.1em; }
-.slide-inner [data-vz="escala-logodds"] .vz-lo-col-k, .slide-inner [data-vz="escala-logodds"] .vz-lo-col-f, .slide-inner [data-vz="escala-logodds"] .vz-lo-col-sec, .slide-inner [data-vz="escala-logodds"] .vz-lo-col-sec span, .slide-inner [data-vz="escala-logodds"] .vz-lo-col-d, .slide-inner [data-vz="escala-logodds"] .vz-lo-campo label, .slide-inner [data-vz="escala-logodds"] .vz-lo-chip, .slide-inner [data-vz="escala-logodds"] .vz-lo-passos-l, .slide-inner [data-vz="escala-logodds"] .vz-lo-regua-t, .slide-inner [data-vz="escala-logodds"] .vz-estado, .slide-inner [data-vz="escala-logodds"] .vz-cab .eyebrow, .slide-inner [data-vz="escala-logodds"] .vz-lo-id-l, .slide-inner [data-vz="escala-logodds"] .vz-lo-k, .slide-inner [data-vz="escala-logodds"] .vz-lo-resp { font-size: 1em; }
+.slide-inner [data-vz="escala-logodds"] .vz-lo-col-k, .slide-inner [data-vz="escala-logodds"] .vz-lo-col-f, .slide-inner [data-vz="escala-logodds"] .vz-lo-col-sec, .slide-inner [data-vz="escala-logodds"] .vz-lo-col-sec span, .slide-inner [data-vz="escala-logodds"] .vz-lo-col-d, .slide-inner [data-vz="escala-logodds"] .vz-lo-campo label, .slide-inner [data-vz="escala-logodds"] .vz-lo-chip, .slide-inner [data-vz="escala-logodds"] .vz-lo-passos-l, .slide-inner [data-vz="escala-logodds"] .vz-lo-regua-t, .slide-inner [data-vz="escala-logodds"] .vz-estado, .slide-inner [data-vz="escala-logodds"] .vz-cab .eyebrow, .slide-inner [data-vz="escala-logodds"] .vz-lo-id-l, .slide-inner [data-vz="escala-logodds"] .vz-lo-k, .slide-inner [data-vz="escala-logodds"] .vz-lo-resp { font-size: 1.04em; }
 .slide-inner [data-vz="escala-logodds"] .vz-lo-painel--graf svg { height: 38cqh; width: auto; max-width: 100%; margin: 0 auto; }
 .vz-lo-leg circle { stroke: #fff; stroke-width: 2; }
 /* no palco a regra genérica .conteudo figure svg tentaria mostrar as duas versões da régua: a compacta é só do celular */
@@ -1949,7 +1949,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 [data-vz="log-loss"] .rl-slide[data-tela="15"] { grid-template-rows: minmax(0, 136fr) minmax(0, 18fr) minmax(0, 126fr) minmax(0, 18fr) minmax(0, 544fr) minmax(0, 16fr) minmax(0, 124fr) minmax(0, 10fr) minmax(0, 24fr); }
 [data-vz="log-loss"] .rl-slide[data-tela="15"] > .rl-cab { grid-row: 1; } [data-vz="log-loss"] .rl-slide[data-tela="15"] > .ll-formula { grid-row: 3; } [data-vz="log-loss"] .rl-slide[data-tela="15"] > .rl-corpo { grid-row: 5; } [data-vz="log-loss"] .rl-slide[data-tela="15"] > .ll-sintese { grid-row: 7; } [data-vz="log-loss"] .rl-slide[data-tela="15"] > .rl-rod { grid-row: 9; }
 .ll-formula { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: center; gap: .2cqw 2.4cqw; border-top: 1px solid var(--rl-borda); border-bottom: 1px solid var(--rl-borda); padding: .5cqw 0; min-height: 0; }
-.ll-caso-k { font-size: 1.25cqw; letter-spacing: .06em; text-transform: uppercase; color: var(--rl-muted); font-weight: 600; }
+.ll-caso-k { font-size: 1.3cqw; letter-spacing: .06em; text-transform: uppercase; color: var(--rl-muted); font-weight: 600; }
 .ll-caso-f { font-size: 2.2cqw; font-weight: 600; color: var(--rl-navy); line-height: 1.1; }
 .ll-frase { grid-column: 1 / -1; font-size: 1.3cqw; color: var(--rl-text); } .ll-ln { font-size: 1.25cqw; color: var(--rl-muted); }
 .ll-corpo { display: grid; grid-template-columns: 62fr 2fr 36fr; align-items: stretch; min-height: 0; }
@@ -1971,18 +1971,18 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .ll-tip-t { font-size: 19px; fill: var(--rl-text); font-family: inherit; font-variant-numeric: tabular-nums; }
 .ll-painel { background: var(--rl-branco); border: 1px solid var(--rl-borda); border-radius: 16px; padding: .9cqw 1.1cqw; display: grid; grid-template-rows: auto auto auto auto minmax(0, 1fr); gap: .5cqw; align-content: start; min-width: 0; min-height: 0; }
 .ll-painel-cab { display: grid; gap: .4cqw; } .ll-painel .rl-btn--mini { min-height: 1.9cqw; padding: .25cqw .6cqw; font-size: 1.25cqw; }
-.ll-prop { font-size: 1.9cqw; font-weight: 600; color: var(--rl-navy); } .ll-carac { display: block; font-size: 1.25cqw; font-weight: 400; color: var(--rl-muted); }
+.ll-prop { font-size: 1.9cqw; font-weight: 600; color: var(--rl-navy); } .ll-carac { display: block; font-size: 1.3cqw; font-weight: 400; color: var(--rl-muted); }
 .ll-duo { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8cqw; }
-.ll-k { font-size: 1.25cqw; color: var(--rl-muted); }
+.ll-k { font-size: 1.3cqw; color: var(--rl-muted); }
 .ll-v { font-size: 1.7cqw; font-weight: 600; color: var(--rl-navy); line-height: 1.15; font-variant-numeric: tabular-nums; }
 .ll-v--default { color: var(--ll-vinho); } .ll-v--adimplente { color: var(--rl-verde); }
 .ll-conta { background: var(--rl-bg); border-radius: .6cqw; padding: .5cqw .7cqw; display: grid; gap: .05cqw; }
 .ll-pobs { font-size: 2.2cqw; font-weight: 600; color: var(--rl-navy); font-variant-numeric: tabular-nums; line-height: 1.1; }
 .ll-perda { font-size: 1.7cqw; font-weight: 600; color: var(--ll-vinho); font-variant-numeric: tabular-nums; }
-.ll-leitura { font-size: 1.15cqw; color: var(--rl-text); line-height: 1.25; align-self: start; }
+.ll-leitura { font-size: 1.3cqw; color: var(--rl-text); line-height: 1.25; align-self: start; }
 .ll-sintese { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .15cqw 2cqw; border-top: 1px solid var(--rl-borda); padding-top: .5cqw; }
-.ll-sin-t { font-size: 1.6cqw; font-weight: 600; color: var(--rl-navy); } .ll-sin-s { font-size: 1.25cqw; color: var(--rl-text); }
-.ll-sin-n { font-size: 1.25cqw; color: var(--rl-muted); max-width: 34ch; text-align: right; align-self: center; }
+.ll-sin-t { font-size: 1.6cqw; font-weight: 600; color: var(--rl-navy); } .ll-sin-s { font-size: 1.3cqw; color: var(--rl-text); }
+.ll-sin-n { font-size: 1.3cqw; color: var(--rl-muted); max-width: 34ch; text-align: right; align-self: center; }
 @container quadro (max-width: 820px) {
   .ll-formula, .ll-corpo, .ll-graf, .ll-duo, .ll-sintese { display: flex; flex-direction: column; gap: 10px; }
   .ll-formula { padding: 12px 0; } .ll-caso-k { font-size: 12px; } .ll-caso-f { font-size: 22px; } .ll-frase, .ll-leitura, .ll-sin-s { font-size: 14px; } .ll-ln, .ll-k, .ll-carac { font-size: 13px; }

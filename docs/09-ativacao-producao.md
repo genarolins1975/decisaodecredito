@@ -34,6 +34,8 @@ Para que o deploy faça isso sozinho, basta uma destas variáveis no ambiente de
 
 Sem nenhuma das duas, o build apenas compila e o conteúdo do banco fica como está. Fora da Vercel, o equivalente é `DATABASE_URL=<produção> npm run content:import`.
 
+**Node das funções.** O build da Vercel e as funções não rodam necessariamente o mesmo Node. Em 23/09/2026 o jsdom 30 funcionava no build (a importação do conteúdo usa jsdom) e quebrava as rotas do editor de página nas funções, com 500 antes de qualquer consulta. O jsdom ficou fixado em 26.1.0, que carrega em Node 20 e 22 anterior a 22.12, e `tests/sanitize.test.ts` impede a volta silenciosa a uma versão que exija Node mais novo. A sonda sem credencial é `GET /api/professor/conteudo/paginas/x`: 401 significa que a rota carregou; 500, que não.
+
 Em 23/09/2026, depois do merge de e1369b1, a captura enviada pelo professor mostrou c6p4 em produção com o título e o objetivo que só existem a partir desse commit ("F₀: o melhor palpite constante"). A importação roda no build, portanto uma das duas variáveis está ligada: cada merge na branch principal publica código e conteúdo. Qual das duas está ligada não foi verificado. A diferença só pesa quando houver migração nova: ela roda sozinha apenas com `BOOTSTRAP_ON_BUILD=1`, e o campo `migracoes` de `/api/health` mostra se foi aplicada.
 
 ## 2. Gmail do professor

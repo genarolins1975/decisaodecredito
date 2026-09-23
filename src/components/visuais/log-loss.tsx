@@ -30,7 +30,7 @@ export function LogLoss({ pagina }: { pagina?: { index: number; total: number } 
         <header className="rl-cab">
           <p className="rl-meta eyebrow"><span>Aula 2 · Capítulo 4 · Regressão logística</span><span>{pagina ? `${String(pagina.index).padStart(2, "0")} / ${pagina.total}` : "Log loss"}</span></p>
           <h3 className="rl-tit">Como a log loss orienta a estimação</h3>
-          <p className="rl-sub">O modelo calcula uma perda por proposta e busca reduzir a média na amostra.</p>
+          <p className="rl-sub">Cada proposta gera uma perda; a estimação busca a menor média na amostra.</p>
         </header>
 
         <div className="ll-formula">
@@ -99,7 +99,7 @@ export function LogLoss({ pagina }: { pagina?: { index: number; total: number } 
           <div>
             <p className="ll-sin-t">{SINTESE}</p>
             <p className="ll-sin-s">{NOTA_ESTIMACAO}</p>
-            <p className="ll-sin-s">{SINTESE_2} As três maiores perdas representam {fmt(TOPO.participacao, 0)}% da perda total.</p>
+            <p className="ll-sin-s">{SINTESE_2} as três maiores somam {fmt(TOPO.participacao, 0)}% do total.</p>
           </div>
           <p className="ll-sin-n">{NOTA_FORA}</p>
         </div>

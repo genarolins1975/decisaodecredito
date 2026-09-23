@@ -29,6 +29,10 @@ Ambiente: sessão de desenvolvimento local em 16/09/2026, Node 22.22, PostgreSQL
 | c4p2 no palco, décima quarta rodada | `node scripts/palco/auditoria.mjs <saida> c4p2 1400x900` e `1920x1080` | 23/09/2026: 9,4 nas duas resoluções (168 palavras, menor fonte a 1,76% da altura); a primeira versão da rodada ficou em 8,7 e foi corrigida pela causa |
 | c4p2, contas e desenho | `npm test` (`tests/reta-na-probabilidade.test.ts`) | 23/09/2026: 10 testes, dois novos (zonas rotuladas com os trechos vinho desenhados depois da reta azul; atalhos 5%, 60% e 110%); suíte com 300 |
 | Guia do capítulo 4 em PDF, décima quarta rodada | `node scripts/apostila/validar-explicacoes.mjs 4` e `node scripts/apostila/gerar.mjs aluno\|professor 4 --pdf` | 23/09/2026: explicações dentro dos limites; aluno com 34 páginas e professor com 43, as mesmas de antes |
+| Editor de página, décima quinta rodada | `npm test` (`tests/sanitize.test.ts`) e `npx playwright test` ("editor de página") | 23/09/2026: sanitizador remove script, iframe, formulário e eventos e mantém classe, estilo, SVG e `data-latex`; jsdom na versão 26; editor aberto pela listagem, rascunho gravado limpo; sem sessão, 401 |
+| Sonda de carregamento das rotas do editor | `GET /api/professor/conteudo/paginas/<id>` sem sessão, local e produção | 23/09/2026, antes da correção: produção 500, local 401; rota de controle 405 nos dois |
+| jsdom por versão de Node | `new JSDOM` e DOMPurify com os binários de Node do registro do npm | 23/09/2026: jsdom 30 falha em 20.19 e 22.11 e carrega em 22.14 e 24.0; jsdom 26.1.0 carrega em 20.19, 22.11, 22.14, 22.22 e 24.0, com a mesma saída |
+| c4p5 e c4p15 no palco | `node scripts/palco/auditoria.mjs <saida> c4p5,c4p15 1400x900` e `1920x1080` | 23/09/2026: 9,4 nas duas resoluções (antes, c4p5 8,7 e 9,1; c4p15 8,7 e 8,7) |
 | Backup e restauração | `scripts/backup.sh` e `scripts/restore.sh` em banco isolado | restaurado com 360 páginas (180 originais + 180 da edição duplicada no teste), usuários, matrículas, tentativas, arquivos e auditoria; manifesto sha256 conferido |
 
 ### 1.1. Cobertura dos cenários obrigatórios

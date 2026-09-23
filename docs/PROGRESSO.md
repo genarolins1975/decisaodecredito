@@ -198,10 +198,19 @@ Verificado em 23/09/2026: typecheck; lint (0 erros; 5 avisos anteriores); `lint:
 
 **Não verificado.** Produção (esta rodada não foi publicada); pacote do professor não enviado ao armazenamento (sem credencial `S3_*` neste ambiente); nenhum teste com alunos ou em projetor real.
 
+### Décima quinta rodada (23/09/2026): o editor de página em produção, c4p5 e c4p15
+
+**Editor de página.** Em produção, o link "editar" de Conteúdo abria a página estática de erro 500 do Next. Localmente os 181 editores abriam. Evidência de que o defeito era de carregamento, e não de dado: sem sessão, `GET /api/professor/conteudo/paginas/<id>` respondia 500 em produção e 401 localmente, enquanto uma rota de controle respondia 405 nos dois lugares. O módulo do editor (`content-admin.ts`) importava no topo o sanitizador, que carrega o jsdom. O jsdom 30.0.1 declara Node 22.22.2 ou mais novo e, reproduzido aqui com os binários de Node do registro do npm, não carrega em Node 22.11 (dependência só em ES module) nem em 20.19; carrega em 22.14 e 24.0. O build da Vercel, num Node mais novo, rodava a importação com ele; as funções, não. Correção: jsdom fixado em 26.1.0 (Node 18 ou mais novo; conferido com DOMPurify em 20.19, 22.11, 22.14, 22.22 e 24.0, com a mesma saída), jsdom e dompurify movidos para as dependências de produção (estavam como de desenvolvimento, embora rodem no servidor), e o sanitizador passa a carregar só na hora de salvar, de modo que abrir o editor não depende dele. Testes: `tests/sanitize.test.ts` (o que o sanitizador remove e mantém, a versão do jsdom e a ausência de import no topo) e o teste de aceitação "editor de página", que abre o editor pela listagem, salva um rascunho com script e evento e confere a versão gravada limpa.
+
+**c4p5 e c4p15.** Mesma correção do c4p2: frases mais curtas, sem mudar o sentido, e corpo mínimo nos rótulos. c4p5 de 8,7 para 9,4 em 1400x900 e de 9,1 para 9,4 em 1920x1080 (184 para 175 palavras); c4p15 de 8,7 para 9,4 nas duas (196 para 174 palavras; no painel, "Sem default · y = 0", a forma que a dica do gráfico já usava, para caber com a proposta #15 selecionada).
+
+Verificado em 23/09/2026: typecheck; lint (0 erros; 5 avisos anteriores); `lint:tracos` (0); `npm test` (303, três novos); `npx playwright test` (24 de 24, um novo); VARREDURA15; importação local com o jsdom 26 sem erro nas 181 páginas; guias do capítulo 4 regerados (34 e 43 páginas) e pacote do professor remontado.
+
+**Não verificado.** O editor salvando em produção depende de login de professor, que não uso; a verificação possível sem credencial é a sonda sem sessão, feita depois do deploy.
+
 ## Pendências técnicas ordenadas
 
 0. Guia do professor dos capítulos 4, 5 e 6: enviar o pacote `guias-2026-09` a `bases/vguias-2026-09/` no bucket e registrar em Bases e gabaritos (instruções em `scripts/apostila/README.md`).
-0. Palco do capítulo 4: reauditado em 23/09/2026, média 9,48 em 1400x900 e 9,44 em 1920x1080, com duas páginas abaixo de 9 que esta rodada não tocou: c4p5 (8,7 em 1400x900 e 9,1 em 1920x1080; 184 palavras, rótulo "PD de partida, campo em %" a 1,69% da altura) e c4p15 (8,7 nas duas; 196 palavras, leitura a 1,56%). Mesma correção do c4p2: frases mais curtas e corpo mínimo nos rótulos.
 0. Questão c5p13q, explicação da alternativa c: diz que intervalos que não se tocam não demonstram diferença. Com intervalos de 95%, a não sobreposição é critério conservador de diferença (aqui, Fisher dá p = 0,0022 para 0 em 6 contra 6 em 6). Revisar a redação com o professor.
 0. Celular (390 px): 13 páginas dos capítulos 4 a 6 mostram tabela com rolagem lateral, padrão anterior a esta rodada; em 1.024 px ou mais, nenhuma.
 0. Tempo da Aula 2: essenciais somam 171 min para 165 úteis; decisão do professor, recomendação em `docs/NARRATIVA_AULA_2.md`, seção 6.

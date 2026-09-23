@@ -546,10 +546,10 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(ll).toContainText("Log loss média do modelo: 0,43282");
   await expect(ll).toContainText("Proposta #2"); await expect(ll).toContainText("Default · y = 1");
   await expect(ll).toContainText("26,65%"); await expect(ll).toContainText("−ln(0,2665) ≈ 1,3223");
-  await expect(ll).toContainText("Os coeficientes são estimados minimizando a log loss média");
+  await expect(ll).toContainText("Os coeficientes minimizam a log loss média das 16 propostas.");
   await expect(ll).not.toContainText("zera a perda sem decorar"); // o quadro não repete a afirmação; o apoio da página vem do banco
   await ll.getByRole("button", { name: "#15" }).click();
-  await expect(ll).toContainText("Não houve default · y = 0"); await expect(ll).toContainText("73,91%");
+  await expect(ll).toContainText("Sem default · y = 0"); await expect(ll).toContainText("73,91%");
   await expect(ll).toContainText("26,09%"); await expect(ll).toContainText("−ln(1 − 0,7391) ≈ 1,3435");
   await expect(ll).toContainText("Log loss média do modelo: 0,43282"); // a média não muda com a seleção
   await ll.getByRole("button", { name: /Proposta 12/ }).click();
@@ -1257,6 +1257,29 @@ test("uniformidade das molduras: retorno em toda rota de detalhe, um título por
     const larg = await page.evaluate(() => ({ s: document.documentElement.scrollWidth, c: document.documentElement.clientWidth }));
     expect(larg.s, `${rota} sem rolagem lateral em 390px`).toBeLessThanOrEqual(larg.c + 1);
   }
+});
+
+test("editor de página: abre pela listagem, salva rascunho sanitizado, e a rota sem sessão responde 401, não 500", async ({ page }) => {
+  // em produção a rota do editor quebrava ao carregar o sanitizador (jsdom) e respondia 500 até sem sessão
+  const anon = await apiAs(null);
+  expect((await anon.get("/api/professor/conteudo/paginas/inexistente")).status()).toBe(401);
+  await loginUi(page, PROF);
+  await page.goto("/professor/conteudo");
+  await page.locator("summary", { hasText: "Capítulo 4 · Regressão logística" }).click(); // os capítulos começam recolhidos
+  await page.locator("tr", { has: page.locator("td", { hasText: /^c4p2$/ }) }).getByRole("link", { name: "editar" }).click(); // o caso da captura do professor
+  await expect(page).toHaveURL(/\/professor\/conteudo\/[a-z0-9]+$/);
+  await expect(page.getByRole("heading", { name: /^Blocos/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Salvar rascunho" })).toBeVisible();
+  const pid = page.url().split("/").pop()!;
+  const prof = await apiAs(PROF);
+  const r = await prof.post(`/api/professor/conteudo/paginas/${pid}/versoes`, { data: { title: "Rascunho do teste do editor", blocks: [{ type: "html", html: '<p onclick="x()">ok</p><script>alert(1)</script>' }], changeNote: "teste e2e do editor", publish: false } });
+  expect(r.status()).toBe(201);
+  const { versionNo } = await r.json();
+  const [v] = await sql<{ id: string; blocks: unknown; published_at: string | null }>("select id, blocks, published_at from page_versions where page_id = $1 and version_no = $2", [pid, versionNo]);
+  expect(JSON.stringify(v.blocks)).toContain("<p>ok</p>");
+  expect(JSON.stringify(v.blocks)).not.toMatch(/script|onclick/);
+  expect(v.published_at).toBeNull(); // rascunho: o aluno continua vendo a versão publicada
+  await sql("delete from page_versions where id = $1", [v.id]);
 });
 
 test("prontidão: /api/health diz quantas migrações o banco aplicou, e o número bate com drizzle/", async () => {
