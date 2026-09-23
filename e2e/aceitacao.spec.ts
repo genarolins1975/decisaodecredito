@@ -417,28 +417,37 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(page.locator("main")).toContainText("08 / 22");
   await expect(page.locator("main .es-tab tbody tr")).toHaveCount(3);
   await expect(page.locator("main")).not.toContainText("tela 2 de");
-  // c4p5: escala 3, log odds: ÷ 2 e × 2 sempre a partir das odds iniciais; ∓ln(2) em log odds, passos desiguais em PD
+  // c4p5: escala 3, log odds, no quadro .rl: ÷ 2 e × 2 sempre a partir das odds iniciais; ∓ln(2) em log odds, passos desiguais em PD
   await page.goto("/aulas/c4p5");
   const lo = page.locator('figure[data-vz="escala-logodds"]');
-  await expect(lo).toContainText("Nas odds, multiplicar. Nos log odds, somar.");
-  await expect(lo).toContainText("Partida em PD 33,00%."); await expect(lo).toContainText("os passos são −13,24 pp e +16,62 pp");
-  await expect(lo).toContainText("19,76%"); await expect(lo).toContainText("49,62%"); await expect(lo).toContainText("−0,708");
-  await expect(lo).toContainText("odds 0,493 ÷ 2 = 0,246"); await expect(lo).toContainText("odds 0,493 × 2 = 0,985");
-  await expect(lo).toContainText("−0,6931"); await expect(lo).toContainText("+0,6931");
-  await expect(lo).not.toContainText("±16,67 pp"); // a revelação só aparece quando o professor a aciona
+  await expect(lo).toContainText("Nas odds, multiplicar; nos log odds, somar");
+  await expect(lo).toContainText("ln(2 × odds) = ln(odds) + ln(2)");
+  await expect(lo).toContainText("Em PD: −13,24 pp e +16,62 pp, passos desiguais.");
+  await expect(lo).toContainText("Em log odds: −0,6931 e +0,6931, sempre ln(2).");
+  await expect(lo.locator(".lo-tab tbody tr")).toHaveCount(3);
+  for (const v of ["0,246", "0,493", "0,985", "19,76%", "33,00%", "49,62%", "−1,401", "−0,708", "−0,015"]) await expect(lo.locator(".lo-tab")).toContainText(v);
+  await expect(page.locator("main")).not.toContainText("Revelar explicação"); // o quadro antigo, com colunas e abas, saiu
+  await expect(lo).not.toContainText("fica 3,38 pp maior"); // a comparação começa desligada
+  await lo.getByRole("button", { name: "Comparar os dois passos" }).click();
+  await expect(lo).toContainText("Em PD, o passo × 2 fica 3,38 pp maior; em log odds, os dois coincidem.");
+  await expect(lo.locator(".lo-svg--larga rect.lo-dif")).toHaveCount(2); // a diferença só aparece na régua de PD (a outra é a legenda)
+  await expect(lo.locator(".lo-lei")).toHaveCount(0); // com a comparação ligada, a caixa ocupa o lugar da leitura
   await lo.getByRole("button", { name: "50%" }).click();
-  await expect(lo).toContainText("Em PD = 50%, os passos também são iguais: −16,67 pp e +16,67 pp.");
+  await expect(lo).toContainText("Em 50%, os dois passos coincidem também em PD.");
+  await expect(lo).toContainText("iguais só em 50%"); // o veredito no alto da régua de PD
+  await lo.getByRole("button", { name: "Comparar os dois passos" }).click();
+  await expect(lo).toContainText("Em PD: −16,67 pp e +16,67 pp, iguais só em 50%.");
   await expect(lo).toContainText("33,33%"); await expect(lo).toContainText("66,67%");
-  await lo.getByRole("button", { name: "Revelar explicação" }).click();
-  await expect(lo).toContainText("Nos log odds, os passos são ±ln(2) para qualquer PD inicial.");
-  await lo.getByRole("tab", { name: "Ver a função" }).click();
-  await expect(lo).toContainText("log odds em função da PD");
   await lo.getByLabel("PD de partida, campo em %").fill("100");
-  await expect(lo).toContainText("Em PD = 100% as odds não têm valor finito");
+  await expect(lo).toContainText("Em PD = 100%, as odds não são finitas.");
   await lo.getByLabel("PD de partida, campo em %").fill("1");
-  await expect(lo).toContainText("Partida em PD 1,00%."); await expect(lo).toContainText("−5,288");
-  await lo.getByRole("button", { name: "Restaurar" }).click();
-  await expect(lo).toContainText("Partida em PD 33,00%."); await expect(lo).not.toContainText("±16,67 pp");
+  await expect(lo.locator(".lo-tab")).toContainText("−5,288"); // log odds do cenário ÷ 2 em PD 1%
+  await lo.getByRole("button", { name: "Restaurar exemplo" }).click();
+  await expect(lo).toContainText("Em PD: −13,24 pp e +16,62 pp, passos desiguais."); await expect(lo).not.toContainText("fica 3,38 pp maior");
+  await expect(lo.getByLabel("PD de partida, campo em %")).toHaveValue("33");
+  await page.goto("/apresentacao/c4p5"); // no palco o quadro é a página inteira, como no c4p2
+  await expect(page.locator("main")).toContainText("05 / 22");
+  await expect(page.locator("main")).not.toContainText("tela 2 de");
   // c4p10: o exercício de leitura do coeficiente; a resposta só aparece depois de conferir
   await page.goto("/aulas/c4p10");
   const cf = page.locator('figure[data-vz="coeficiente-pd"]');
@@ -537,25 +546,35 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   expect(await uc.locator(".uc-c").allInnerTexts()).toEqual(["5,2171", "5,2171", "5,2171"]); // selecionar não altera a proposta
   await uc.getByRole("button", { name: "E a razão de odds?" }).click();
   await expect(uc).toContainText("β × Δx = 0,7453 nas três"); await expect(uc).toContainText("≈ 2,11");
-  // c4p15: a log loss proposta a proposta; a seleção muda só o painel, nunca as barras nem a média
+  // c4p15: a log loss proposta a proposta, na gramática do c4p2: as 16 propostas sobre as duas curvas de perda; a escolha muda só o painel
   await page.goto("/aulas/c4p15");
   const ll = page.locator('figure[data-vz="log-loss"]');
   await expect(ll).toContainText("Como a log loss orienta a estimação");
   await expect(ll).toContainText("Perda = −ln(PD)"); await expect(ll).toContainText("Perda = −ln(1 − PD)");
-  expect(await ll.locator(".ll-barra").count()).toBe(16);
-  await expect(ll).toContainText("Log loss média do modelo: 0,43282");
+  expect(await ll.locator(".ll-ponto").count()).toBe(16);
+  await expect(ll).toContainText("Log loss média: 0,43282");
+  await expect(ll).toContainText("Perda acima de ln 2 ≈ 0,69:");
   await expect(ll).toContainText("Proposta #2"); await expect(ll).toContainText("Default · y = 1");
   await expect(ll).toContainText("26,65%"); await expect(ll).toContainText("−ln(0,2665) ≈ 1,3223");
-  await expect(ll).toContainText("Os coeficientes minimizam a log loss média das 16 propostas.");
+  await expect(ll).toContainText("Os coeficientes minimizam a log loss média das 16 propostas de treino.");
   await expect(ll).not.toContainText("zera a perda sem decorar"); // o quadro não repete a afirmação; o apoio da página vem do banco
   await ll.getByRole("button", { name: "#15" }).click();
   await expect(ll).toContainText("Sem default · y = 0"); await expect(ll).toContainText("73,91%");
   await expect(ll).toContainText("26,09%"); await expect(ll).toContainText("−ln(1 − 0,7391) ≈ 1,3435");
-  await expect(ll).toContainText("Log loss média do modelo: 0,43282"); // a média não muda com a seleção
-  await ll.getByRole("button", { name: /Proposta 12/ }).click();
+  await expect(ll).toContainText("Log loss média: 0,43282"); // a média não muda com a escolha
+  await ll.getByRole("button", { name: /Proposta 12/ }).press("Enter"); // pelo teclado: o ponto da #12 fica sob os vizinhos #14 e #16
   await expect(ll).toContainText("Proposta #12"); await expect(ll).toContainText("≈ 0,0041");
-  await ll.getByRole("button", { name: "Restaurar seleção" }).click();
+  await ll.locator("#ll-range").fill("7");
+  await expect(ll).toContainText("Proposta #7");
+  await ll.getByRole("button", { name: "Restaurar exemplo" }).click();
   await expect(ll).toContainText("Proposta #2"); await expect(ll).toContainText("−ln(0,2665) ≈ 1,3223");
+  await expect(ll.locator(".ll-sim")).toHaveCount(0); // a simulação começa desligada
+  await ll.getByRole("button", { name: "Subir o intercepto em 0,5" }).click();
+  await expect(ll).toContainText("#2: 1,3223 → 0,9818 · média: 0,43282 → 0,45089");
+  await expect(ll).toContainText("A #2 melhora, mas a média sobe: os coeficientes da aula já dão a menor.");
+  await expect(ll.locator(".ll-sim")).toHaveCount(16);
+  await ll.getByRole("button", { name: "Restaurar exemplo" }).click();
+  await expect(ll.locator(".ll-sim")).toHaveCount(0);
   // c4p2: a reta ajustada na probabilidade sai do intervalo válido pelas duas pontas; o truncamento cria trechos planos
   await page.goto("/aulas/c4p2");
   const rp = page.locator('figure[data-vz="reta-na-probabilidade"]');

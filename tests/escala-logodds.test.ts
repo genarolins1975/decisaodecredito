@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { ATALHOS, cenarios, curvaLogit, fmtDesloc, fmtOdds, fmtPd, fmtPp, fmtZ, JANELA_Z, leitura, LN2, passosIguaisEmPd, PD_INICIAL, posicaoPd, posicaoZ, validarPd } from "@/lib/visuais/escala-logodds";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { EscalaLogOdds } from "@/components/visuais/escala-logodds";
+import { ATALHOS, base, cenarios, comparacaoPassos, fmtDesloc, fmtOdds, fmtPd, fmtPp, fmtZ, JANELA_Z, leitura, LN2, passosIguaisEmPd, PD_INICIAL, posicaoPd, posicaoZ, validarPd } from "@/lib/visuais/escala-logodds";
 
 const PONTOS = [0.01, 0.1, 0.33, 0.5, 0.8, 0.99];
 const por = (p: number) => Object.fromEntries(cenarios(p).map((c) => [c.chave, c])) as Record<"menor" | "partida" | "maior", ReturnType<typeof cenarios>[number]>;
@@ -59,13 +62,28 @@ describe("escala 3, log odds: cenários", () => {
   });
 
   it("a leitura de 50% declara os passos iguais e a dos demais mostra os valores calculados", () => {
-    expect(leitura(0.5).frasePd).toBe("Em PD = 50%, os passos também são iguais: −16,67 pp e +16,67 pp.");
+    expect(leitura(0.5).frasePd).toBe("Em PD: −16,67 pp e +16,67 pp, iguais só em 50%.");
     expect(leitura(0.5).iguais).toBe(true);
     const l = leitura(0.33);
-    expect(l.frasePd).toBe("Em PD, os passos são −13,24 pp e +16,62 pp, de tamanhos diferentes.");
-    expect(l.fraseZ).toContain("−0,6931");
-    expect(l.fraseZ).toContain("+0,6931");
+    expect(l.frasePd).toBe("Em PD: −13,24 pp e +16,62 pp, passos desiguais.");
+    expect(l.fraseZ).toBe("Em log odds: −0,6931 e +0,6931, sempre ln(2).");
     expect(l.frasePd).not.toContain("sempre");
+  });
+
+  it("a comparação espelha o passo ÷ 2: em PD sobra ou falta a diferença, em log odds nada", () => {
+    const c = comparacaoPassos(0.33);
+    expect(c.difPd).toBeCloseTo(16.6241 - 13.2395, 3);
+    expect(Math.abs(c.difZ)).toBeLessThan(1e-12);
+    expect(c.frase).toBe("Em PD, o passo × 2 fica 3,38 pp maior; em log odds, os dois coincidem.");
+    expect(comparacaoPassos(0.8).frase).toContain("4,44 pp menor");
+    expect(comparacaoPassos(0.5).frase).toBe("Em 50%, os dois passos coincidem também em PD.");
+    expect(Math.abs(comparacaoPassos(0.5).difPd)).toBeLessThan(1e-9);
+  });
+
+  it("o cartão do cuidado usa a partida escolhida: dobrar as odds não dobra a PD", () => {
+    expect(base(0.33)[1].t).toBe("Dobrar as odds não dobra a PD: de 33,00%, ela vai a 49,62%.");
+    expect(base(0.8)[1].t).toContain("88,89%");
+    expect(base(0.33).map((c) => c.k)).toEqual(["Passos", "Cuidado", "Próximo passo"]);
   });
 });
 
@@ -103,12 +121,6 @@ describe("escala 3: apresentação e réguas", () => {
     expect(dp[0]).not.toBeCloseTo(dp[1], 6);
   });
 
-  it("a curva logit cobre a janela e é crescente", () => {
-    const pts = curvaLogit(60);
-    expect(pts[0].z).toBeCloseTo(JANELA_Z[0], 9);
-    expect(pts[pts.length - 1].z).toBeCloseTo(JANELA_Z[1], 9);
-    for (let i = 1; i < pts.length; i++) expect(pts[i].z).toBeGreaterThan(pts[i - 1].z);
-  });
 });
 
 describe("escala 3: entrada da PD", () => {
@@ -127,10 +139,28 @@ describe("escala 3: entrada da PD", () => {
   it("mantém o valor digitado fora da faixa do controle deslizante, com aviso", () => {
     const r = validarPd("0,5");
     expect(r.ok && r.valor).toBe(0.005);
-    expect(r.ok && r.aviso).toContain("fora da faixa");
+    expect(r.ok && r.aviso).toBe("Fora de 1% a 99%: valor mantido.");
   });
   it("os atalhos e o padrão estão na faixa do controle", () => {
     expect(PD_INICIAL).toBe(0.33);
     for (const a of ATALHOS) expect(a).toBeGreaterThanOrEqual(0.01), expect(a).toBeLessThanOrEqual(0.99);
   });
 });
+
+describe("c4p5: o quadro desenhado", () => {
+  it("é um quadro .rl com a identidade, as duas réguas nas duas geometrias, o painel e os três cartões", () => {
+    const html = renderToStaticMarkup(createElement(EscalaLogOdds, { pagina: { index: 5, total: 22 } }));
+    expect(html).toContain('class="vz rl lo"'); expect(html).toContain('data-tela="5"'); expect(html).toContain("05 / 22");
+    expect(html).toContain("Nas odds, multiplicar; nos log odds, somar");
+    expect(html).toContain("ln(2 × odds) = ln(odds) + ln(2)");
+    expect(html).toContain("lo-svg--larga"); expect(html).toContain("lo-svg--compacta");
+    expect(html.match(/class="lo-regua lo-regua--pd"/g)).toHaveLength(2);
+    expect(html).toContain("desiguais"); expect(html).toContain("iguais");
+    for (const v of ["0,246", "0,493", "0,985", "19,76%", "33,00%", "49,62%", "−1,401", "−0,708", "−0,015"]) expect(html).toContain(v);
+    expect(html).toContain("Comparar os dois passos");
+    expect(html).not.toContain("lo-espelho\""); // o espelho só aparece com a comparação ligada
+    expect(html).not.toContain("Revelar explicação");
+    expect(html).toContain("Dobrar as odds não dobra a PD: de 33,00%, ela vai a 49,62%.");
+  });
+});
+

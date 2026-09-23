@@ -14,13 +14,6 @@ export const JANELA_Z: readonly [number, number] = [-6, 6];
 export const TICKS_PD = [0, 0.25, 0.5, 0.75, 1] as const;
 export const TICKS_Z = [-6, -4, -2, 0, 2, 4, 6] as const;
 
-export const PERGUNTA = "Se a PD de partida for 50%, os passos em PD também serão iguais?";
-export const REVELACAO = "Sim. De 50%, as PDs vão a 33,33% e 66,67%: ±16,67 pp. Nos log odds, os passos são ±ln(2) para qualquer PD inicial.";
-export const IDENTIDADE = "ln(2 × odds) = ln(odds) + ln(2)";
-export const NOTA_JANELA = "Janela de leitura de −6 a +6, suficiente para PD de 1% a 99%. A escala em si não tem limite.";
-export const NOTA_CENTRO = "O centro da régua é zero, não o ponto de partida. Os dois passos são simétricos em torno da PD inicial; só quando ela é 50% essa simetria coincide com o zero.";
-export const NOTA_MODELO = "Somar uma quantidade fixa em log odds é o que uma função linear sabe fazer: é por isso que o modelo logístico soma contribuições nesta escala. A soma descreve o efeito estimado, não estabelece causa.";
-
 /** Arredondamento decimal meio para cima, imune ao ruído binário. */
 export function arredondar(v: number, casas: number): number {
   const f = 10 ** casas; const bruto = Number((v * f).toFixed(3)); return Math.round(bruto) / f;
@@ -36,6 +29,8 @@ export const fmtOdds = (o: number) => num(o, 3);
 export const fmtZ = (z: number) => num(z, 3);
 export const fmtDesloc = (v: number) => num(v, 4, true);
 export const fmtPp = (pp: number) => `${num(pp, 2, true)} pp`;
+/** Rótulo de atalho e de controle: PD inteira sem casas ("33%"), fracionária com as casas necessárias. */
+export const fmtPdCurta = (p: number) => `${(p * 100).toLocaleString("pt-BR", { maximumFractionDigits: 2 })}%`;
 
 export const oddsDeP = (p: number) => p / (1 - p);
 export const pDeOdds = (o: number) => o / (1 + o);
@@ -50,7 +45,7 @@ export function cenarios(p: number): Cenario[] {
     const odds = o * fator, pf = pDeOdds(odds);
     return { chave, rotulo, p: pf, odds, z: z + Math.log(fator), fator, deltaPd: (pf - p) * 100, deltaZ: Math.log(fator) };
   };
-  return [monta("menor", "Odds ÷ 2", 0.5), monta("partida", "Ponto de partida", 1), monta("maior", "Odds × 2", 2)];
+  return [monta("menor", "Odds ÷ 2", 0.5), monta("partida", "Partida", 1), monta("maior", "Odds × 2", 2)];
 }
 
 export const passosIguaisEmPd = (p: number) => Math.abs(p - 0.5) < 1e-12;
@@ -59,11 +54,48 @@ export const passosIguaisEmPd = (p: number) => Math.abs(p - 0.5) < 1e-12;
 export function leitura(p: number) {
   const [menor, partida, maior] = cenarios(p);
   const iguais = passosIguaisEmPd(p);
-  const frasePd = iguais
-    ? `Em PD = 50%, os passos também são iguais: ${fmtPp(menor.deltaPd)} e ${fmtPp(maior.deltaPd)}.`
-    : `Em PD, os passos são ${fmtPp(menor.deltaPd)} e ${fmtPp(maior.deltaPd)}, de tamanhos diferentes.`;
-  const fraseZ = `Em log odds, ${fmtDesloc(menor.deltaZ)} e ${fmtDesloc(maior.deltaZ)}: o mesmo ln(2) nos dois sentidos.`;
+  const frasePd = `Em PD: ${fmtPp(menor.deltaPd)} e ${fmtPp(maior.deltaPd)}, ${iguais ? "iguais só em 50%" : "passos desiguais"}.`;
+  const fraseZ = `Em log odds: ${fmtDesloc(menor.deltaZ)} e ${fmtDesloc(maior.deltaZ)}, sempre ln(2).`;
   return { menor, partida, maior, iguais, frasePd, fraseZ };
+}
+
+/**
+ * Comparação dos dois passos: o passo ÷ 2 espelhado para o lado do × 2. Em PD sobra ou falta a diferença entre os
+ * tamanhos; em log odds os dois coincidem. A diferença é a dos valores exatos, arredondada só no texto.
+ */
+export function comparacaoPassos(p: number) {
+  const { menor, maior, iguais } = leitura(p);
+  const difPd = Math.abs(maior.deltaPd) - Math.abs(menor.deltaPd);
+  const difZ = Math.abs(maior.deltaZ) - Math.abs(menor.deltaZ);
+  const frase = iguais
+    ? "Em 50%, os dois passos coincidem também em PD."
+    : `Em PD, o passo × 2 fica ${num(Math.abs(difPd), 2)} pp ${difPd > 0 ? "maior" : "menor"}; em log odds, os dois coincidem.`;
+  return { difPd, difZ, frase };
+}
+
+export const TITULO = "Nas odds, multiplicar; nos log odds, somar";
+export const SUBTITULO = "Dividir as odds por 2 subtrai ln(2) dos log odds; multiplicar soma ln(2), em qualquer PD de partida.";
+export const IDENTIDADE = "ln(2 × odds) = ln(odds) + ln(2)";
+export const DEFINICAO = "log odds = ln(PD ÷ (1 − PD))";
+export const TITULO_GRAF = "Os passos têm o mesmo tamanho?";
+export const REGUA_PD = "Probabilidade de default";
+export const NOTA_PD = "";
+export const REGUA_Z = "Log odds";
+export const NOTA_Z = "sem limites nas pontas";
+export const NOTA_LEGENDA = "os dois movimentos partem das odds iniciais";
+export const TITULO_CTL = "Altere a PD de partida";
+export const ROTULO_ATALHOS = "Ir para";
+export const ROTULO_COMPARAR = "Comparar os dois passos";
+export const RODAPE = "A seguir: probabilidade, odds, log odds e escore";
+
+/** Os três cartões da base; o do cuidado usa a partida escolhida. */
+export function base(p: number) {
+  const { partida, maior } = leitura(p);
+  return [
+    { k: "Passos", t: "Em log odds, os passos valem sempre ln(2); em PD, só empatam na partida de 50%." },
+    { k: "Cuidado", t: `Dobrar as odds não dobra a PD: de ${fmtPd(partida.p)}, ela vai a ${fmtPd(maior.p)}.` },
+    { k: "Próximo passo", t: "O modelo soma contribuições nesta escala; a curva logística devolve a PD." },
+  ];
 }
 
 export type Validacao = { ok: true; valor: number; aviso?: string } | { ok: false; erro: string };
@@ -72,11 +104,11 @@ const parse = (t: string) => { const s = t.trim().replace(/\s|%/g, "").replace("
 /** PD digitada, em porcentagem: estritamente entre 0 e 100; fora de 1% a 99% vale, mas o controle deslizante não alcança. */
 export function validarPd(texto: string): Validacao {
   const v = parse(texto);
-  if (!Number.isFinite(v)) return { ok: false, erro: "Digite um número, por exemplo 33 ou 12,5." };
-  if (v <= 0) return { ok: false, erro: "Em PD = 0% as odds são zero e o logaritmo não é finito." };
-  if (v >= 100) return { ok: false, erro: "Em PD = 100% as odds não têm valor finito, nem logaritmo." };
+  if (!Number.isFinite(v)) return { ok: false, erro: "Digite um número, como 33 ou 12,5." };
+  if (v <= 0) return { ok: false, erro: "Em PD = 0%, o logaritmo não é finito." };
+  if (v >= 100) return { ok: false, erro: "Em PD = 100%, as odds não são finitas." };
   const p = v / 100;
-  if (p < FAIXA_SLIDER[0] || p > FAIXA_SLIDER[1]) return { ok: true, valor: p, aviso: `PD de ${fmtPd(p)}: fora da faixa do controle deslizante (1% a 99%); o valor digitado é mantido.` };
+  if (p < FAIXA_SLIDER[0] || p > FAIXA_SLIDER[1]) return { ok: true, valor: p, aviso: "Fora de 1% a 99%: valor mantido." };
   return { ok: true, valor: p };
 }
 
@@ -85,12 +117,4 @@ export const posicaoPd = (p: number) => ({ t: Math.min(1, Math.max(0, p)), fora:
 export function posicaoZ(z: number) {
   const [lo, hi] = JANELA_Z;
   return { t: Math.min(1, Math.max(0, (z - lo) / (hi - lo))), fora: z < lo || z > hi };
-}
-
-/** Curva logit(p) da aba opcional, amostrada dentro da janela. */
-export function curvaLogit(n = 240): { p: number; z: number }[] {
-  const pts: { p: number; z: number }[] = [];
-  const pMin = 1 / (1 + Math.exp(-JANELA_Z[0])), pMax = 1 / (1 + Math.exp(-JANELA_Z[1]));
-  for (let i = 0; i <= n; i++) { const p = pMin + ((pMax - pMin) * i) / n; pts.push({ p, z: Math.log(p / (1 - p)) }); }
-  return pts;
 }
