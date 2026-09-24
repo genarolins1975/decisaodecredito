@@ -10560,7 +10560,8 @@ function guiaDaTelaV15(){
   verificacao:''});
  guia('c4p2',{leitura:'',
   interacao:''});
- guia('c4p3',{leitura:'',
+ guia('c4p3',{conducao:'',
+  leitura:'',
   interacao:''});
  guia('c4p4',{funcao:'',
   leitura:'',

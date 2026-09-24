@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { complementar, contaOdds, curvaOdds, escalaVertical, fmtOdds, leituraIntuitiva, logOdds, oddsDeP, pDeOdds, ponteLog, validarOdds, validarPd } from "../src/lib/visuais/escala-odds";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { cartoes, comparacao, complementar, contaOdds, curvaOdds, escalaVertical, fmtOdds, leituraIntuitiva, logOdds, oddsDeP, pDeOdds, ponteLog, TITULO, validarOdds, validarPd } from "../src/lib/visuais/escala-odds";
+import { EscalaOdds } from "../src/components/visuais/escala-odds";
 
 describe("escala 2, odds (c4p4)", () => {
   it("valores de aceite: 5% → 1/19, 20% → 0,25, 50% → 1, 80% → 4, 95% → 19, 99% → 99", () => {
@@ -36,14 +39,35 @@ describe("escala 2, odds (c4p4)", () => {
   it("validação das entradas: decimais, negativos, acima de 100%, não numéricos, e aviso fora da faixa do controle", () => {
     expect(validarPd("12,5")).toEqual({ ok: true, valor: 0.125 }); expect(validarPd("12.5")).toEqual({ ok: true, valor: 0.125 });
     expect(validarPd("-5").ok).toBe(false); expect(validarPd("101").ok).toBe(false); expect(validarPd("abc").ok).toBe(false); expect(validarPd("").ok).toBe(false);
-    const fora = validarPd("0,5"); expect(fora.ok && fora.valor).toBe(0.005); expect(fora.ok && fora.aviso).toContain("fora da faixa");
+    const fora = validarPd("0,5"); expect(fora.ok && fora.valor).toBe(0.005); expect(fora.ok && fora.aviso).toBe("Fora de 1% a 99%: valor mantido.");
     expect(validarPd("100").ok && (validarPd("100") as { valor: number }).valor).toBe(1);
-    expect(validarOdds("4")).toEqual({ ok: true, valor: 0.8 }); expect(validarOdds("0").ok && (validarOdds("0") as { valor: number; aviso?: string }).aviso).toContain("fora da faixa");
+    expect(validarOdds("4")).toEqual({ ok: true, valor: 0.8 }); expect(validarOdds("0").ok && (validarOdds("0") as { valor: number; aviso?: string }).aviso).toBe("PD de 0%, fora de 1% a 99%: valor mantido.");
     expect(validarOdds("-1").ok).toBe(false); expect(validarOdds("x").ok).toBe(false); expect(validarOdds("Infinity").ok).toBe(false);
   });
   it("escala vertical fixa em 20, fora da janela acima disso e ajuste com folga; curva amostrada dentro da janela", () => {
     expect(escalaVertical(19, false)).toEqual({ yMax: 20, fora: false, ajustada: false }); expect(escalaVertical(99, false)).toEqual({ yMax: 20, fora: true, ajustada: false });
     const a = escalaVertical(99, true); expect(a.ajustada).toBe(true); expect(a.yMax).toBeGreaterThanOrEqual(99); expect(a.fora).toBe(false); expect(escalaVertical(null, true).yMax).toBe(20);
     const c = curvaOdds(20); expect(c[0]).toEqual({ p: 0, o: 0 }); expect(c[c.length - 1].o).toBeCloseTo(20, 9); for (const q of c) expect(q.o).toBeCloseTo(q.p / (1 - q.p), 9);
+  });
+});
+
+describe("c4p4 no quadro .rl", () => {
+  it("cartões e comparação usam as contas: 0,25 não é 25%, 19 e 99 sem teto, 0,25 e 4 recíprocas, ±1,386 no logaritmo", () => {
+    expect(cartoes().map((c) => c.k)).toEqual(["Leitura", "Sem teto", "Assimetria"]);
+    expect(cartoes()[0].t).toBe("Odds 0,25 não é PD de 25%: é 1 default para cada 4 adimplentes.");
+    expect(cartoes()[1].t).toBe("Em 95%, odds 19; em 99%, 99. Perto de 100%, a razão cresce sem limite.");
+    expect(cartoes()[2].t).toBe("20% e 80% dão odds 0,25 e 4; no logaritmo, −1,386 e +1,386.");
+    expect(comparacao(0.2)).toEqual(["20% e 80%: odds 0,25 e 4, recíprocas: o produto é 1.", "No logaritmo, simétricas: −1,386 e +1,386."]);
+    expect(comparacao(0.5)[0]).toBe("Em 50%, p e 1 − p coincidem: odds 1 dos dois lados.");
+    expect(comparacao(1)[1]).toBe("Nos extremos, uma das odds não é finita e o produto não se define.");
+    for (const p of [0, 0.01, 0.37, 0.5, 0.99, 1]) expect(comparacao(p).join(" ")).not.toMatch(/NaN|Infinity|undefined/);
+  });
+  it("o quadro: fórmulas em KaTeX, a curva, as três leituras de 20% e nenhum resto do visual antigo", () => {
+    const html = renderToStaticMarkup(createElement(EscalaOdds, { pagina: { index: 4, total: 22 } }));
+    expect(html).toContain('data-vz="escala-odds"'); expect(html).toContain("04 / 22"); expect(html).toContain(TITULO);
+    expect(html.match(/class="katex"/g)?.length).toBeGreaterThanOrEqual(2);
+    expect(html).toContain('class="eo-curva"'); expect(html.match(/class="eo-elo /g)).toHaveLength(3);
+    expect(html).toContain("20 defaults para 80 adimplentes"); expect(html).toContain("1 : 4"); expect(html).toContain("1 default esperado para cada 4 adimplentes esperados.");
+    expect(html).not.toContain("eo-comp\""); expect(html).not.toContain("vz-eo"); expect(html).not.toContain("Por que usar o logaritmo?");
   });
 });
