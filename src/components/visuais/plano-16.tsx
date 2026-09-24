@@ -11,7 +11,8 @@ export const BASE16 = did.base as Proposta[];
 export const U0 = 10, U1 = 100, A0 = -4, A1 = 44;
 export type Escala = { W: number; H: number; ML: number; MR: number; MT: number; MB: number; su: (u: number) => number; sa: (a: number) => number };
 
-export function escalaPlano(W = 560, H = 372, ML = 46, MR = 14, MT = 26, MB = 44): Escala {
+// MR 17: o rótulo "100%", centrado na ponta do eixo, tem cerca de 30 de largura na letra de 10,5; com 14 perdia a borda do %.
+export function escalaPlano(W = 560, H = 372, ML = 46, MR = 17, MT = 26, MB = 44): Escala {
   return { W, H, ML, MR, MT, MB, su: (u) => ML + ((u - U0) / (U1 - U0)) * (W - ML - MR), sa: (a) => MT + (1 - (a - A0) / (A1 - A0)) * (H - MT - MB) };
 }
 

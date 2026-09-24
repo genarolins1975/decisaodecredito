@@ -639,7 +639,7 @@ describe("capítulo 5 no palco: as peças redesenhadas exibem os números confer
   it("c5p12: perda média 1,20397 · 0,83699 · 0,69315 e mínimo na frequência, 50,0%", async () => {
     const t = render(ValorDaFolha);
     for (const v of ["1,20397", "0,83699", "0,69315"]) expect(t).toContain(v);
-    expect(t).toContain("1 ÷ 2 = 50,0%");
+    expect(renderToStaticMarkup(createElement(ValorDaFolha))).toContain('aria-label="1 ÷ 2 = 50,0%"'); // a conta sai em KaTeX; o texto fica como rótulo acessível
   });
   it("c5p13: intervalos 9,5% a 90,5% · 0,0% a 39,0% · 61,0% a 100,0%; 0 em 600 vai até 0,6%", async () => {
     const t = render(ConfiancaDaFolha);

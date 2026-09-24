@@ -12,7 +12,8 @@ import { ArvoreDiagrama, caminhoNaArvore } from "./arvore-diagrama";
  */
 const BASE = did.base as Proposta[];
 const PRESETS: { nome: string; util: number; atraso: number }[] = [{ nome: "#3", util: 30, atraso: 5 }, { nome: "#8", util: 55, atraso: 5 }, { nome: "proposta nova", util: 72, atraso: 8 }, { nome: "#16", util: 95, atraso: 20 }];
-const PW = 300, PH = 240, PML = 40, PMR = 10, PMT = 12, PMB = 34;
+// PMR 17: o rótulo "100%", centrado na ponta do eixo, tem cerca de 30 de largura na letra de 10,5; com 10 perdia o %.
+const PW = 300, PH = 240, PML = 40, PMR = 17, PMT = 12, PMB = 34;
 const su = (u: number) => PML + (u / 100) * (PW - PML - PMR), sa = (a: number) => PMT + (1 - (a + 4) / 48) * (PH - PMT - PMB);
 /** folga de 4 dias acima e abaixo: nenhum ponto encosta na borda do plano; bordas de região em 0 e 40 dias vão até a folga */
 const ea = (a: number) => (a <= 0 ? -4 : a >= 40 ? 44 : a);

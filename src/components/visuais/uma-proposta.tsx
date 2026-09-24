@@ -42,7 +42,7 @@ export function UmaProposta() {
         </div>
       </div>
       <p className="vz-re-nota">Taxa sem o tamanho da folha não é informação: com 2 propostas, a folha não separa um grupo excelente de um péssimo.</p>
-      <p className="vz-fonte">Árvore de profundidade 2 sobre as 16 propostas didáticas. Intervalo de Wilson a 95% para a proporção de defaults da folha (src/lib/visuais/arvore.ts). Profundidade, folha mínima e validação continuam necessárias.</p>
+      <p className="vz-fonte">Árvore de profundidade 2 sobre as 16 propostas didáticas. Intervalo de Wilson a 95% para a proporção de defaults da folha. Profundidade, folha mínima e validação continuam necessárias.</p>
     </figure>
   );
 }

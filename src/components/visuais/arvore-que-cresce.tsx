@@ -4,18 +4,29 @@ import did from "@/lib/visuais/did.json";
 import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
 import type { Proposta } from "@/lib/visuais/logistica";
 import { NOME_VAR, VARIAVEIS, avaliarCorte, comparaNo, cortesCandidatos, crescer, errosNaAmostra, folhas, rotuloCorte, todosOsCandidatos, wilson, type Mudanca, type No, type Variavel } from "@/lib/visuais/arvore";
+import { paraTex } from "@/lib/visuais/tex";
+import { ComTex, Tex } from "./tex";
 
 /**
  * A árvore que cresce (capítulo 5). As 16 propostas no plano; a árvore nasce corte a corte e cada corte desenha uma
  * partição. Um corte candidato pode ser avaliado com toda a conta na tela; os dois freios (profundidade e mínimo por
  * folha) e a retirada de uma proposta mostram a instabilidade da estrutura. Três páginas usam a mesma peça.
+ * A conta do ganho do candidato em KaTeX desde 24/09/2026, com o texto como rótulo acessível.
  */
 const BASE = did.base as Proposta[];
 export type ModoArvore = "raiz" | "freios" | "instabilidade";
-const PW = 420, PH = 360, PML = 50, PMR = 14, PMT = 14, PMB = 42;
+// PMR 17: o rótulo "100%", centrado na ponta do eixo, tem cerca de 30 de largura na letra de 10,5; com 14 perdia a borda do %.
+const PW = 420, PH = 360, PML = 50, PMR = 17, PMT = 14, PMB = 42;
 const su = (u: number) => PML + (u / 100) * (PW - PML - PMR); const sa = (a: number) => PMT + (1 - (a + 4) / 48) * (PH - PMT - PMB);
 /** folga de 4 dias acima e abaixo: nenhum ponto encosta na borda do plano; bordas de região em 0 e 40 dias vão até a folga */
 const ea = (a: number) => (a <= 0 ? -4 : a >= 40 ? 44 : a);
+
+/** A conta do ganho de um candidato, em texto (rótulo acessível) e em TeX: Gini antes menos a média ponderada dos dois lados. */
+export function contaGanho(c: ReturnType<typeof avaliarCorte>, n: number) {
+  const texto = `${fmtNum(c.giniAntes, 5)} − (${c.esq.length} ÷ ${n} × ${fmtNum(c.giniEsq, 4)} + ${c.dir.length} ÷ ${n} × ${fmtNum(c.giniDir, 4)}) = ${fmtNum(c.ganho, 5)}`;
+  const tex = String.raw`${paraTex(fmtNum(c.giniAntes, 5))} - (${c.esq.length} \div ${n} \times ${paraTex(fmtNum(c.giniEsq, 4))} + ${c.dir.length} \div ${n} \times ${paraTex(fmtNum(c.giniDir, 4))}) = \mathbf{${paraTex(fmtNum(c.ganho, 5))}}`;
+  return { texto, tex };
+}
 
 export function ArvoreQueCresce({ modo = "raiz" }: { modo?: ModoArvore }) {
   const [profMax, setProfMax] = useState(modo === "raiz" ? 1 : 2);
@@ -33,6 +44,7 @@ export function ArvoreQueCresce({ modo = "raiz" }: { modo?: ModoArvore }) {
   const cortesVar = useMemo(() => cortesCandidatos(base, varCand), [base, varCand]);
   const idx = Math.min(idxCand, cortesVar.length - 1);
   const cand = useMemo(() => avaliarCorte(base, varCand, cortesVar[idx]), [base, varCand, cortesVar, idx]);
+  const conta = contaGanho(cand, base.length);
   const melhor = candidatos.reduce((m, a) => (a.ganho > m.ganho + 1e-12 ? a : m), candidatos[0]);
   const segundo = candidatos.filter((a) => a !== melhor).reduce((m, a) => (a.ganho > m.ganho ? a : m), candidatos.find((a) => a !== melhor)!);
 
@@ -68,7 +80,6 @@ export function ArvoreQueCresce({ modo = "raiz" }: { modo?: ModoArvore }) {
             {fs.map((f, i) => { const x = su(f.caixa.u0), y = sa(ea(f.caixa.a1)), w = su(f.caixa.u1) - x, h = sa(ea(f.caixa.a0)) - y; const pd = f.n ? f.d / f.n : 0; return (
               <g key={`${f.caixa.u0}-${f.caixa.u1}-${f.caixa.a0}-${f.caixa.a1}`} className="vz-arv-folha" style={{ animationDelay: `${i * 60}ms` }}>
                 <rect x={x} y={y} width={w} height={h} className="vz-arv-rect" style={{ fill: pd >= 0.5 ? "var(--color-alert)" : "#9db6de", fillOpacity: 0.12 + Math.abs(pd - 0.5) * 0.5 }} />
-                {w > 150 && h > 30 ? <text x={x + 6} y={y + 14} className="vz-arv-rot">{f.n} · {f.d} def · PD {fmtPct(pd)}</text> : w > 34 && h > 30 ? <text x={x + 4} y={y + 14} className="vz-arv-rot">{fmtPct(pd)}</text> : null}
               </g>
             ); })}
             <Cortes no={arvore} />
@@ -77,6 +88,9 @@ export function ArvoreQueCresce({ modo = "raiz" }: { modo?: ModoArvore }) {
             <text x={su(50)} y={PH - 6} textAnchor="middle" className="vz-rotulo">utilização do limite</text>
             <text transform={`translate(12 ${sa(20)}) rotate(-90)`} textAnchor="middle" className="vz-rotulo">maior atraso em 6 meses, dias</text>
             {modo === "raiz" && (varCand === "util" ? <line x1={su(cand.corte)} x2={su(cand.corte)} y1={sa(-4)} y2={sa(44)} className="vz-arv-cand" /> : <line x1={su(0)} x2={su(100)} y1={sa(cand.corte)} y2={sa(cand.corte)} className="vz-arv-cand" />)}
+            {/* rótulos das regiões depois do corte candidato, com halo: a linha tracejada passa por trás do texto */}
+            {fs.map((f) => { const x = su(f.caixa.u0), y = sa(ea(f.caixa.a1)), w = su(f.caixa.u1) - x, h = sa(ea(f.caixa.a0)) - y; const pd = f.n ? f.d / f.n : 0; const k = `r${f.caixa.u0}-${f.caixa.u1}-${f.caixa.a0}-${f.caixa.a1}`;
+              return w > 150 && h > 30 ? <text key={k} x={x + 6} y={y + 14} className="vz-arv-rot">{f.n} · {f.d} def · PD {fmtPct(pd)}</text> : w > 34 && h > 30 ? <text key={k} x={x + 4} y={y + 14} className="vz-arv-rot">{fmtPct(pd)}</text> : null; })}
             {BASE.map((b) => <g key={b.id} className={`vz-front-ponto ${b.y ? "vz-front-ponto--default" : "vz-front-ponto--pagou"} ${b.id === removida ? "vz-front-ponto--fora" : ""}`} style={{ transform: `translate(${su(b.util)}px, ${sa(b.atraso)}px)`, cursor: "pointer" }} onClick={() => { setCrescendo(false); setRemovida(removida === b.id ? null : b.id); }} role="button" tabIndex={0} aria-label={`${b.id === removida ? "Devolver" : "Retirar"} a proposta ${b.id}`} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setRemovida(removida === b.id ? null : b.id); } }}><circle r={9} /><text y={4} textAnchor="middle" className="vz-front-id">{b.id}</text></g>)}
           </svg>
           <div className="vz-legenda"><span><i className="vz-sw vz-sw--default" /> deu default</span><span><i className="vz-sw vz-sw--pagou" /> pagou</span><span><i className="vz-sw vz-sw--fora" /> retirada da base</span>{modo === "raiz" && <span><i className="vz-sw vz-sw--cand" /> corte candidato em avaliação</span>}</div>
@@ -118,13 +132,13 @@ export function ArvoreQueCresce({ modo = "raiz" }: { modo?: ModoArvore }) {
               <tbody>
                 <tr><th scope="row">≤ corte</th><td>{cand.esq.length}</td><td>{cand.esq.reduce((s, p) => s + p.y, 0)}</td><td>{fmtPct(cand.esq.length ? cand.esq.reduce((s, p) => s + p.y, 0) / cand.esq.length : 0, 1)}</td><td>{fmtNum(cand.giniEsq, 5)}</td></tr>
                 <tr><th scope="row">&gt; corte</th><td>{cand.dir.length}</td><td>{cand.dir.reduce((s, p) => s + p.y, 0)}</td><td>{fmtPct(cand.dir.length ? cand.dir.reduce((s, p) => s + p.y, 0) / cand.dir.length : 0, 1)}</td><td>{fmtNum(cand.giniDir, 5)}</td></tr>
-                <tr><th scope="row">ganho</th><td colSpan={4}>{fmtNum(cand.giniAntes, 5)} − ({cand.esq.length} ÷ {base.length} × {fmtNum(cand.giniEsq, 4)} + {cand.dir.length} ÷ {base.length} × {fmtNum(cand.giniDir, 4)}) = <b>{fmtNum(cand.ganho, 5)}</b>{cand.v === melhor.v && cand.corte === melhor.corte ? " · é o melhor corte da raiz" : ` · o melhor é ${rotuloCorte(melhor.v, melhor.corte)} com ${fmtNum(melhor.ganho, 5)}`}</td></tr>
+                <tr><th scope="row">ganho</th><td colSpan={4}><span role="img" aria-label={conta.texto}><Tex f={conta.tex} className="tx-linha" /></span>{cand.v === melhor.v && cand.corte === melhor.corte ? " · é o melhor corte da raiz" : ` · o melhor é ${rotuloCorte(melhor.v, melhor.corte)} com ${fmtNum(melhor.ganho, 5)}`}</td></tr>
               </tbody></table></div>
           </div>
           <Ganhos candidatos={candidatos} atual={cand} melhor={melhor} segundo={segundo} />
         </div>
       </div>
-      <figcaption className="vz-fonte">Ganho = Gini antes − média ponderada do Gini dos dois lados. Na base completa a raiz é utilização ≤ 57,5% com ganho 0,28125; o corte vizinho, utilização ≤ 52,5%, fica em 0,19841 e o melhor corte de atraso, em 0,07143; no nó direito, utilização ≤ 87,5% e atraso ≤ 2,5 dias empatam em 0,09375 e a ordem de avaliação decide, por isso retirar a proposta #10 troca a variável. Empates são decididos avaliando utilização antes de atraso. Erros na amostra contam a folha prevendo o desfecho majoritário. Recalculado aqui.</figcaption>
+      <figcaption className="vz-fonte"><ComTex t={String.raw`$\text{ganho} = \text{Gini antes} - \text{média ponderada do Gini dos dois lados}$.`} /> Na base completa a raiz é utilização ≤ 57,5% com ganho 0,28125; o corte vizinho, utilização ≤ 52,5%, fica em 0,19841 e o melhor corte de atraso, em 0,07143; no nó direito, utilização ≤ 87,5% e atraso ≤ 2,5 dias empatam em 0,09375 e a ordem de avaliação decide, por isso retirar a proposta #10 troca a variável. Empates são decididos avaliando utilização antes de atraso. Erros na amostra contam a folha prevendo o desfecho majoritário. Recalculado aqui.</figcaption>
     </figure>
   );
 }
