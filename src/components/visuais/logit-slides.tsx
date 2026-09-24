@@ -1,17 +1,19 @@
 "use client";
 import { useState } from "react";
-import { ATALHOS_DELTA, BETA1, cenarios, efeitoCoeficiente, EXEMPLO, fmt, fmtPct, fmtPp, interpretarPd, JANELA_Z, LIMITES, proposta, sigmoide } from "@/lib/visuais/logit-slides";
+import { ATALHOS_DELTA, cenarios, contaUnidade, efeitoCoeficiente, escoreTex, escoreTexto, EXEMPLO, fmt, fmtPct, fmtPp, FORMULA_M, FORMULA_M_TEX, FORMULA_PD, FORMULA_PD_TEX, FORMULA_PNOVO, FORMULA_PNOVO_TEX, FORMULA_Z, FORMULA_Z_TEX, FRASE_COEFICIENTE, fraseDeltaX, interpretarPd, JANELA_Z, LIMITES, potenciaTex, potenciaTexto, proposta, sigmoide } from "@/lib/visuais/logit-slides";
+import { ComTex, Tex } from "./tex";
 
 /**
  * Dois primeiros slides do capítulo 4 (c4p1), em quadros 16:9 com sistema visual próprio: (1) como o logit transforma
  * uma proposta em PD, com as características como controles e coeficientes fixos; (2) o que um coeficiente significa,
  * com a transformação +10 pp → +0,7453 em z → × 2,11 nas odds e as quatro réguas de partida. Um só estado alimenta
  * tudo; contas em src/lib/visuais/logit-slides.ts. No palco cada quadro é uma tela; no estudo, os dois em sequência.
+ * Fórmulas e contas em KaTeX desde 24/09/2026, com o texto como rótulo acessível; nas frases, trechos em linha (ComTex).
  */
 const pad = (n: number) => String(n).padStart(2, "0");
 const clamp = (v: number, [lo, hi]: readonly [number, number]) => Math.min(hi, Math.max(lo, v));
 
-function Controle({ id, rotulo, valor, unidade, min, max, onChange, cor, destaque, explicacao }: { id: string; rotulo: string; valor: number; unidade: string; min: number; max: number; onChange: (v: number) => void; cor: "ambar" | "roxo"; destaque: string; explicacao: string }) {
+function Controle({ id, rotulo, valor, unidade, min, max, onChange, cor, destaque, explicacao }: { id: string; rotulo: string; valor: number; unidade: string; min: number; max: number; onChange: (v: number) => void; cor: "ambar" | "roxo"; destaque: string; explicacao: { texto: string; tex: string } }) {
   return (
     <div className="rl-ctl">
       <p className="rl-ctl-rot" id={`${id}-rot`}>{rotulo}</p>
@@ -20,7 +22,7 @@ function Controle({ id, rotulo, valor, unidade, min, max, onChange, cor, destaqu
         <input type="range" min={min} max={max} step={1} value={valor} onChange={(e) => onChange(Number(e.target.value))} aria-labelledby={`${id}-rot`} aria-valuetext={destaque} />
         <span className="rl-ctl-num"><input type="number" inputMode="numeric" min={min} max={max} step={1} value={valor} onChange={(e) => { const n = Number(e.target.value); if (e.target.value !== "" && Number.isFinite(n)) onChange(clamp(Math.round(n), [min, max])); }} aria-label={`${rotulo}, campo`} /><span>{unidade}</span></span>
       </div>
-      <p className="rl-exp">{explicacao}</p>
+      <p className="rl-exp" role="img" aria-label={explicacao.texto}><Tex f={explicacao.tex} className="tx-linha" /></p>
     </div>
   );
 }
@@ -100,18 +102,18 @@ export function LogitSlides({ pagina }: { palco?: boolean; pagina?: { index: num
         <div className="rl-corpo rl-corpo--3">
           <div className="rl-col">
             <p className="rl-k">01 · Características da proposta</p>
-            <Controle id="rl-util" rotulo="Utilização do limite" valor={util} unidade="%" min={LIMITES.util[0]} max={LIMITES.util[1]} onChange={setUtil} cor="ambar" destaque={`${util}%`} explicacao={`${util}% ÷ 10 pp = ${fmt(p.x1, 1)} ${p.x1 === 1 ? "unidade" : "unidades"}`} />
-            <Controle id="rl-atraso" rotulo="Atraso observado" valor={atraso} unidade="dias" min={LIMITES.atraso[0]} max={LIMITES.atraso[1]} onChange={setAtraso} cor="roxo" destaque={`${atraso} ${atraso === 1 ? "dia" : "dias"}`} explicacao={`${atraso} ${atraso === 1 ? "dia" : "dias"} ÷ 10 dias = ${fmt(p.x2, 1)} ${p.x2 === 1 ? "unidade" : "unidades"}`} />
+            <Controle id="rl-util" rotulo="Utilização do limite" valor={util} unidade="%" min={LIMITES.util[0]} max={LIMITES.util[1]} onChange={setUtil} cor="ambar" destaque={`${util}%`} explicacao={contaUnidade(util, "util")} />
+            <Controle id="rl-atraso" rotulo="Atraso observado" valor={atraso} unidade="dias" min={LIMITES.atraso[0]} max={LIMITES.atraso[1]} onChange={setAtraso} cor="roxo" destaque={`${atraso} ${atraso === 1 ? "dia" : "dias"}`} explicacao={contaUnidade(atraso, "atraso")} />
             <button type="button" className="rl-btn" onClick={() => { setUtil(EXEMPLO.util); setAtraso(EXEMPLO.atraso); }}>Restaurar exemplo</button>
           </div>
           <span className="rl-conector" aria-hidden="true">→</span>
           <div className="rl-col">
             <p className="rl-k">02 · Soma das contribuições</p>
-            <p className="rl-formula">z = β<sub>0</sub> + β<sub>1</sub>x<sub>1</sub> + β<sub>2</sub>x<sub>2</sub></p>
+            <p className="rl-formula" role="img" aria-label={FORMULA_Z}><Tex f={FORMULA_Z_TEX} /></p>
             <dl className="rl-parcelas">
-              {p.parcelas.map((q) => <div key={q.id} className={`rl-parcela rl-parcela--${q.cor}`}><dt>{q.rotulo}{q.conta && <span className="rl-parcela-c"> · {q.conta}</span>}</dt><dd>{fmt(q.valor, 4, true)}</dd></div>)}
+              {p.parcelas.map((q) => <div key={q.id} className={`rl-parcela rl-parcela--${q.cor}`}><dt>{q.rotulo}{q.conta && <span className="rl-parcela-c"> · <span role="img" aria-label={q.conta}><Tex f={q.contaTex} className="tx-linha" /></span></span>}</dt><dd>{fmt(q.valor, 4, true)}</dd></div>)}
             </dl>
-            <div className="rl-escore"><p className="rl-escore-rot">Escore do modelo</p><p className="rl-escore-v">z ≈ {fmt(p.z, 4)}</p></div>
+            <div className="rl-escore"><p className="rl-escore-rot">Escore do modelo</p><p className="rl-escore-v" role="img" aria-label={escoreTexto(p.z)}><Tex f={escoreTex(p.z)} /></p></div>
             <p className="rl-exp">Essa soma está na escala de log odds.</p>
           </div>
           <span className="rl-conector" aria-hidden="true">→</span>
@@ -120,7 +122,7 @@ export function LogitSlides({ pagina }: { palco?: boolean; pagina?: { index: num
             <p className="rl-pd" aria-live="polite">{fmtPct(p.pd)}</p>
             <p className="rl-pd-rot">probabilidade estimada de default</p>
             <Curva z={p.z} pd={p.pd} fora={p.foraDaJanela} />
-            <p className="rl-formula rl-formula--pd">PD = <span className="rl-frac"><span>1</span><span>1 + e<sup>−z</sup></span></span></p>
+            <p className="rl-formula rl-formula--pd" role="img" aria-label={FORMULA_PD}><Tex f={FORMULA_PD_TEX} /></p>
           </div>
         </div>
         <div className="rl-faixa"><p className="rl-faixa-t">{interpretarPd(p.pd)}</p><p className="rl-faixa-s">É uma frequência esperada pelo modelo, não uma certeza sobre esta proposta.</p></div>
@@ -138,7 +140,7 @@ export function LogitSlides({ pagina }: { palco?: boolean; pagina?: { index: num
           <span className="rl-conector" aria-hidden="true">→</span>
           <div className="rl-etapa"><p className="rl-etapa-k">No escore z</p><p className="rl-etapa-v">{fmt(e.dz, 4, true)}</p></div>
           <span className="rl-conector" aria-hidden="true">→</span>
-          <div className="rl-etapa"><p className="rl-etapa-k">Nas odds</p><p className="rl-etapa-v rl-num--verde">× {fmt(e.m, 2)}</p><p className="rl-etapa-n">e<sup>{fmt(e.dz, 4)}</sup> ≈ {fmt(e.m, 2)}</p></div>
+          <div className="rl-etapa"><p className="rl-etapa-k">Nas odds</p><p className="rl-etapa-v rl-num--verde">× {fmt(e.m, 2)}</p><p className="rl-etapa-n" role="img" aria-label={potenciaTexto(e.dz, e.m)}><Tex f={potenciaTex(e.dz, e.m)} /></p></div>
         </div>
         <div className="rl-corpo rl-corpo--2">
           <div className="rl-painel">
@@ -146,13 +148,13 @@ export function LogitSlides({ pagina }: { palco?: boolean; pagina?: { index: num
             <p className="rl-ctl-rot" id="rl-delta-rot">Variação da utilização: <b>{fmt(delta, 0, true)} pp</b></p>
             <input type="range" min={LIMITES.delta[0]} max={LIMITES.delta[1]} step={1} value={delta} onChange={(ev) => setDelta(Number(ev.target.value))} aria-labelledby="rl-delta-rot" aria-valuetext={`${fmt(delta, 0, true)} pp`} className="rl-range" />
             <div className="rl-atalhos" role="group" aria-label="Atalhos">{ATALHOS_DELTA.map((a) => <button key={a} type="button" className={`rl-btn rl-btn--mini ${a === delta ? "rl-btn--on" : ""}`} aria-pressed={a === delta} onClick={() => setDelta(a)}>{a === 0 ? "0" : fmt(a, 0, true) + " pp"}</button>)}</div>
-            <p className="rl-exp">Coeficiente fixo: β = {fmt(BETA1, 4)} por 10 pp.</p>
+            <p className="rl-exp"><ComTex t={FRASE_COEFICIENTE} /></p>
             <dl className="rl-res"><div><dt>Variação do escore</dt><dd>{fmt(e.dz, 4, true)}</dd></div><div><dt>Multiplicador das odds</dt><dd className="rl-num--verde">{fmt(e.m, 2)}×</dd></div></dl>
             <p className="rl-obs">Dobrar as odds não significa dobrar a PD.</p>
             <button type="button" className="rl-btn" aria-pressed={conta} onClick={() => setConta((v) => !v)}>{conta ? "Ocultar a conta" : "Ver a conta"}</button>
             <div className={`rl-conta ${conta ? "" : "rl-conta--oculta"}`} aria-hidden={!conta}>
-              <p className="rl-formula rl-formula--conta"><span>p<sub>novo</sub> = <span className="rl-frac"><span>m · p<sub>inicial</sub></span><span>1 − p<sub>inicial</sub> + m · p<sub>inicial</sub></span></span></span><span>m = e<sup>β · Δx</sup></span></p>
-              <p className="rl-exp">Δx em unidades de 10 pp: {fmt(delta, 0, true)} pp = {fmt(e.dx, 1, true)} unidade{Math.abs(e.dx) === 1 ? "" : "s"}.</p>
+              <p className="rl-formula rl-formula--conta"><span role="img" aria-label={FORMULA_PNOVO}><Tex f={FORMULA_PNOVO_TEX} /></span><span role="img" aria-label={FORMULA_M}><Tex f={FORMULA_M_TEX} /></span></p>
+              <p className="rl-exp"><ComTex t={fraseDeltaX(delta)} /></p>
             </div>
           </div>
           <div className="rl-graf">

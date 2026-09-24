@@ -1,11 +1,13 @@
 "use client";
 import { useState } from "react";
-import { aplicar, BETA_ZERO, DESTAQUE_GRAF, estado, ETA, ETAPAS, EXPLICACAO, exemploUtilizacao, fmt, fmt5, fmtAtualizacao, fmtPct, FORMULAS, LEGENDA_GRAF, mediaContrib, NOTA_TABELA, NOTA_UNIDADES, passo, PROPOSTAS, REGRA, RODAPE, ROTULO_EXPANSAO, ROTULO_VOLTAR, TITULO_EXEMPLO, TITULO_GRAF } from "@/lib/visuais/gradiente-passo";
+import { aplicar, BETA_ZERO, coeficientesTex, coeficientesTexto, DESTAQUE_GRAF, estado, ETA_TEX, ETA_TEXTO, ETAPAS, EXPLICACAO, exemploUtilizacao, fmt, fmt5, fmt5Tex, fmtAtualizacao, fmtPct, FORMULAS, LEGENDA_GRAF, mediaContrib, NOTA_TABELA, NOTA_UNIDADES, passo, PROPOSTAS, REGRA, REGRA_TEX, RODAPE, ROTULO_EXPANSAO, ROTULO_VOLTAR, TITULO_EXEMPLO, TITULO_GRAF } from "@/lib/visuais/gradiente-passo";
+import { ComTex, Tex } from "./tex";
 
 /**
  * Slide 16 do capítulo 4 (c4p16): uma iteração, do gradiente aos novos coeficientes. Quadro 16:9 no sistema .rl.
  * Três etapas numeradas: o estado atual, o gradiente (com as 16 contribuições que produzem g₁) e a atualização
- * −ηg aplicada aos três parâmetros juntos. Contas em src/lib/visuais/gradiente-passo.ts.
+ * −ηg aplicada aos três parâmetros juntos. Contas em src/lib/visuais/gradiente-passo.ts. Fórmulas e contas em KaTeX
+ * desde 24/09/2026, com o texto como rótulo acessível; nas frases, trechos em linha (ComTex); a tabela fica em texto.
  */
 const W = 760, H = 300, ML = 54, MR = 18, MT = 22, MB = 46;
 const bw = (W - ML - MR) / PROPOSTAS.length;
@@ -35,7 +37,7 @@ export function GradientePasso({ pagina }: { pagina?: { index: number; total: nu
         <div className="gp-estado" aria-live="polite">
           <p className="gp-etapa"><span className="gp-n">1</span>{iteracao === 0 ? ETAPAS[0] : `Estado atual · iteração ${iteracao}`}</p>
           <div className="gp-estado-itens">
-            <div><p className="gp-v">{e.beta.every((v) => v === 0) ? "β₀ = β₁ = β₂ = 0" : `β₀ ${fmt5(e.beta[0])} · β₁ ${fmt5(e.beta[1])} · β₂ ${fmt5(e.beta[2])}`}</p><p className="gp-k">coeficientes atuais</p></div>
+            <div><p className="gp-v gp-v--tex" role="img" aria-label={coeficientesTexto(e.beta)}><Tex f={coeficientesTex(e.beta)} /></p><p className="gp-k">coeficientes atuais</p></div>
             <div><p className="gp-v">{fmtPct(e.mesmaPd ?? e.pdMedia)}</p><p className="gp-k">{e.mesmaPd !== null ? "PD de cada proposta" : "PD média estimada"}</p></div>
             <div><p className="gp-v">{fmt5(e.perda)}</p><p className="gp-k">log loss média{perdaAnterior !== null && <span className="gp-antes"> · antes {fmt5(perdaAnterior)}</span>}</p></div>
           </div>
@@ -46,17 +48,17 @@ export function GradientePasso({ pagina }: { pagina?: { index: number; total: nu
             <p className="gp-etapa"><span className="gp-n">2</span>{ETAPAS[1]}</p>
             <p className="gp-sub">Cada componente é uma média sobre as 16 propostas.</p>
             <div className="gp-formulas">
-              {FORMULAS.map((f, i) => <p key={f.id} className="gp-f">{f.t} <b>= {fmt5(e.g[i])}</b></p>)}
+              {FORMULAS.map((f, i) => <p key={f.id} className="gp-f" role="img" aria-label={`${f.t} = ${fmt5(e.g[i])}`}><Tex f={f.tex} /> <span className="gp-f-v"><Tex f={`= ${fmt5Tex(e.g[i])}`} /></span></p>)}
             </div>
-            <p className="gp-unid nota">{NOTA_UNIDADES}</p>
+            <p className="gp-unid nota"><ComTex t={NOTA_UNIDADES} /></p>
           </div>
 
           <div className="gp-lado">
             {!contribuicoes && (
               <div className="gp-exemplo">
                 <p className="gp-ex-k">{TITULO_EXEMPLO}</p>
-                <p className="gp-ex-g">g₁ = {fmt5(ex.g)}</p>
-                <p className="gp-ex-c">{ex.conta}</p>
+                <p className="gp-ex-g" role="img" aria-label={ex.gTexto}><Tex f={ex.gTex} /></p>
+                <p className="gp-ex-c" role="img" aria-label={ex.conta}><Tex f={ex.contaTex} /></p>
                 <p className="gp-ex-r">{ex.regra}</p>
                 <p className="gp-ex-e">{ex.efeito}</p>
                 <button type="button" className="rl-btn rl-btn--mini gp-ex-b" aria-expanded={false} onClick={() => setContribuicoes(true)}>{ROTULO_EXPANSAO}</button>
@@ -81,7 +83,7 @@ export function GradientePasso({ pagina }: { pagina?: { index: number; total: nu
                     <text x={ML} y={H - 8} className="gp-eixo">proposta</text>
                   </svg>
                 </div>
-                <p className="gp-destaque">{DESTAQUE_GRAF} <span className="gp-leg nota">{LEGENDA_GRAF}</span></p>
+                <p className="gp-destaque"><ComTex t={DESTAQUE_GRAF} /> <span className="gp-leg nota"><ComTex t={LEGENDA_GRAF} /></span></p>
               </div>
             )}
           </div>
@@ -90,7 +92,7 @@ export function GradientePasso({ pagina }: { pagina?: { index: number; total: nu
         <div className="gp-passo">
           <div className="gp-passo-cab">
             <p className="gp-etapa"><span className="gp-n">3</span>{ETAPAS[2]}</p>
-            <p className="gp-regra">{REGRA} <span className="gp-eta">η = {fmt(ETA, 2)}</span></p>
+            <p className="gp-regra"><span role="img" aria-label={REGRA}><Tex f={REGRA_TEX} /></span> <span className="gp-eta" role="img" aria-label={ETA_TEXTO}><Tex f={ETA_TEX} /></span></p>
           </div>
           <table className="gp-tab">
             <colgroup><col className="gp-c1" /><col /><col /><col /><col /></colgroup>

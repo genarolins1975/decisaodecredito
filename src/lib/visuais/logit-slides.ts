@@ -25,6 +25,27 @@ export const fmt = (v: number, casas: number, sinal = false) => {
 };
 export const fmtPct = (p: number, casas = 2) => `${fmt(p * 100, casas)}%`;
 export const fmtPp = (pp: number, casas = 2) => `${fmt(pp, casas, true)} pp`;
+/** Número para dentro de uma fórmula TeX: sinal de menos do TeX e vírgula decimal protegida, que o KaTeX trataria como pontuação. */
+export const paraTex = (s: string) => s.replace(/−/g, "-").replace(/,/g, "{,}");
+export const fmtTex = (v: number, casas: number, sinal = false) => paraTex(fmt(v, casas, sinal));
+
+/** Fórmulas fixas dos dois quadros, em texto (rótulo acessível) e em TeX (KaTeX). */
+export const FORMULA_Z = "z = β₀ + β₁x₁ + β₂x₂";
+export const FORMULA_Z_TEX = String.raw`z = \beta_0 + \beta_1 x_1 + \beta_2 x_2`;
+export const FORMULA_PD = "PD = 1 ÷ (1 + e^(−z))";
+export const FORMULA_PD_TEX = String.raw`\mathrm{PD} = \dfrac{1}{1 + e^{-z}}`;
+export const FORMULA_PNOVO = "p novo = m · p inicial ÷ (1 − p inicial + m · p inicial)";
+export const FORMULA_PNOVO_TEX = String.raw`p_{\text{novo}} = \dfrac{m \cdot p_{\text{inicial}}}{1 - p_{\text{inicial}} + m \cdot p_{\text{inicial}}}`;
+export const FORMULA_M = "m = e^(β · Δx)";
+export const FORMULA_M_TEX = String.raw`m = e^{\beta \cdot \Delta x}`;
+
+/** A conta da unidade de cada característica, em texto e em TeX: 70% ÷ 10 pp = 7,0 unidades; 5 dias ÷ 10 dias = 0,5 unidades. */
+export function contaUnidade(valor: number, tipo: "util" | "atraso") {
+  const x = valor / 10; const un = x === 1 ? "unidade" : "unidades";
+  if (tipo === "util") return { texto: `${valor}% ÷ 10 pp = ${fmt(x, 1)} ${un}`, tex: String.raw`${valor}\% \div 10\ \text{pp} = ${fmtTex(x, 1)}\ \text{${un}}` };
+  const d = valor === 1 ? "dia" : "dias";
+  return { texto: `${valor} ${d} ÷ 10 dias = ${fmt(x, 1)} ${un}`, tex: String.raw`${valor}\ \text{${d}} \div 10\ \text{dias} = ${fmtTex(x, 1)}\ \text{${un}}` };
+}
 
 /** Slide 1: unidades transformadas, parcelas do escore, escore e PD, com a soma em precisão integral. */
 export function proposta(util: number, atraso: number) {
@@ -33,9 +54,9 @@ export function proposta(util: number, atraso: number) {
   return {
     x1, x2, intercepto: BETA0, c1, c2, z, pd,
     parcelas: [
-      { id: "b0", rotulo: "Intercepto", conta: "", valor: BETA0, cor: "cinza" as const },
-      { id: "util", rotulo: "Utilização", conta: `${fmt(BETA1, 4)} × ${fmt(x1, 1)}`, valor: c1, cor: "ambar" as const },
-      { id: "atraso", rotulo: "Atraso", conta: `${fmt(BETA2, 4)} × ${fmt(x2, 1)}`, valor: c2, cor: "roxo" as const },
+      { id: "b0", rotulo: "Intercepto", conta: "", contaTex: "", valor: BETA0, cor: "cinza" as const },
+      { id: "util", rotulo: "Utilização", conta: `${fmt(BETA1, 4)} × ${fmt(x1, 1)}`, contaTex: String.raw`${fmtTex(BETA1, 4)} \times ${fmtTex(x1, 1)}`, valor: c1, cor: "ambar" as const },
+      { id: "atraso", rotulo: "Atraso", conta: `${fmt(BETA2, 4)} × ${fmt(x2, 1)}`, contaTex: String.raw`${fmtTex(BETA2, 4)} \times ${fmtTex(x2, 1)}`, valor: c2, cor: "roxo" as const },
     ],
     foraDaJanela: z < JANELA_Z.min ? ("esquerda" as const) : z > JANELA_Z.max ? ("direita" as const) : null,
     esperadosEm100: Math.round(pd * 100),
@@ -46,6 +67,21 @@ export function proposta(util: number, atraso: number) {
 export function efeitoCoeficiente(deltaPp: number) {
   const dz = BETA1 * (deltaPp / 10); const m = Math.exp(dz);
   return { deltaPp, dx: deltaPp / 10, dz, m };
+}
+
+/** O escore z, em texto e em TeX. */
+export const escoreTexto = (z: number) => `z ≈ ${fmt(z, 4)}`;
+export const escoreTex = (z: number) => String.raw`z \approx ${fmtTex(z, 4)}`;
+
+/** Slide 2: o multiplicador escrito como potência, e^Δz ≈ m, em texto e em TeX. */
+export const potenciaTexto = (dz: number, m: number) => `e^${fmt(dz, 4)} ≈ ${fmt(m, 2)}`;
+export const potenciaTex = (dz: number, m: number) => String.raw`e^{${fmtTex(dz, 4)}} \approx ${fmtTex(m, 2)}`;
+
+/** Frases do slide 2 com trechos em TeX entre cifrões (ComTex): o coeficiente fixo e o Δx da conta. */
+export const FRASE_COEFICIENTE = String.raw`Coeficiente fixo: $\beta = ${fmtTex(BETA1, 4)}$ por 10 pp.`;
+export function fraseDeltaX(deltaPp: number) {
+  const dx = deltaPp / 10;
+  return String.raw`$\Delta x$ em unidades de 10 pp: $${fmtTex(deltaPp, 0, true)}\ \text{pp} = ${fmtTex(dx, 1, true)}\ \text{${Math.abs(dx) === 1 ? "unidade" : "unidades"}}$.`;
 }
 
 /** PD depois de multiplicar as odds por m: p' = m p ÷ (1 − p + m p). */

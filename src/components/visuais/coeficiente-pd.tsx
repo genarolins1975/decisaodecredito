@@ -1,12 +1,14 @@
 "use client";
 import { useRef, useState } from "react";
 import { ALTERNATIVAS, alternativa, contas, demonstracao, DETALHE_K, DETALHE_T, fmt, fmtPct, fmtPp, NOTA_CAUSAL, NOTA_MODELO, ORIENTACAO, ORIENTACAO_FECHO, RODAPE, SINTESE_ANTES, SINTESE_DEPOIS, SITUACAO } from "@/lib/visuais/coeficiente-pd";
+import { ComTex, Tex } from "./tex";
 
 /**
  * Slide 10 do capítulo 4 (c4p10): o aluno escolhe a leitura do coeficiente e confere. Quadro 16:9 no sistema .rl,
  * com enunciado fixo, exercício de três alternativas e painel que troca de conteúdo entre orientação, resposta e
  * o detalhe sobre manter constante. A altura do quadro não muda entre os estados. Contas em
  * src/lib/visuais/coeficiente-pd.ts. Substitui o conteúdo herdado da página, inclusive a questão equivalente.
+ * Fórmulas e contas em KaTeX desde 24/09/2026, com o texto como rótulo acessível; nas frases, trechos em linha (ComTex).
  */
 type Painel = "orientacao" | "resposta" | "detalhe";
 
@@ -32,7 +34,9 @@ export function CoeficientePd({ pagina }: { pagina?: { index: number; total: num
           {SITUACAO.map((s) => (
             <div key={s.k} className="cf-sit">
               <p className="cf-sit-k">{s.k}</p>
-              <p className={`cf-sit-v cf-sit-v--${s.cor}`}>{s.v}</p>
+              {s.tex
+                ? <p className={`cf-sit-v cf-sit-v--tex cf-sit-v--${s.cor}`} role="img" aria-label={s.v}><Tex f={s.tex} /></p>
+                : <p className={`cf-sit-v cf-sit-v--${s.cor}`}>{s.v}</p>}
               <p className="cf-sit-n">{s.n}</p>
             </div>
           ))}
@@ -75,9 +79,9 @@ export function CoeficientePd({ pagina }: { pagina?: { index: number; total: num
               <div className={`cf-p cf-p--${alt.correta ? "ok" : "erro"}`}>
                 <p className="cf-p-k"><span className="cf-icone" aria-hidden="true">{alt.correta ? "✓" : "!"}</span>{alt.correta ? "Resposta correta" : "Resposta incorreta"}</p>
                 <p className="cf-p-t">{alt.tituloFeedback}</p>
-                <p className="cf-p-s">{alt.feedback}</p>
+                <p className="cf-p-s"><ComTex t={alt.feedback} /></p>
                 <div className="cf-dem">
-                  {contas().map((c) => <p key={c} className="cf-conta">{c}</p>)}
+                  {contas().map((c) => <p key={c.texto} className="cf-conta" role="img" aria-label={c.texto}><Tex f={c.tex} /></p>)}
                   <p className="cf-linha"><span>Escore</span><b>{fmt(d.z0, 4)}</b><span aria-hidden="true">→</span><b>{fmt(d.z1, 4)}</b></p>
                   <p className="cf-linha"><span>PD</span><b>{fmtPct(d.pd0)}</b><span aria-hidden="true">→</span><b className="cf-pd">{fmtPct(d.pd1)}</b></p>
                   <p className="cf-destaque">A variação da PD neste exemplo é {fmtPp(d.deltaPd)}.</p>
@@ -97,7 +101,7 @@ export function CoeficientePd({ pagina }: { pagina?: { index: number; total: num
         </div>
 
         <div className={`cf-sintese ${conferido ? "cf-sintese--depois" : ""}`}>
-          <p className="cf-sintese-t">{conferido ? SINTESE_DEPOIS : SINTESE_ANTES}</p>
+          <p className="cf-sintese-t">{conferido ? <ComTex t={SINTESE_DEPOIS} /> : SINTESE_ANTES}</p>
           {conferido && <p className="cf-sintese-n">{NOTA_CAUSAL}</p>}
         </div>
         <p className="rl-rod nota">{RODAPE}</p>

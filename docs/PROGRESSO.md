@@ -284,6 +284,43 @@ Verificado em 24/09/2026: typecheck; lint (0 erros; os mesmos 5 avisos); `lint:t
 
 **Não verificado.** A leitura das fórmulas por leitor de tela real; o rótulo acessível foi conferido pelo papel e pelo nome no e2e.
 
+### Vigésima primeira rodada (24/09/2026): fórmulas e contas de c4p1, c4p10, c4p11, c4p12, c4p14 e c4p16 em KaTeX
+
+**Pedido.** Seguir com a conversão para KaTeX nos seis quadros `.rl` do capítulo 4 que ainda mostravam fórmulas e contas em texto.
+
+**Regra aplicada.** Vai para KaTeX toda expressão com operador ou relação: equações e definições (=, ≈), contas (×, ÷, +, −), frações, potências e funções (exp, média). Vale também para o trecho de fórmula dentro de uma frase, que sai em linha pelo novo `ComTex` (`src/components/visuais/tex.tsx`: texto com trechos TeX entre cifrões); na mesma frase, os símbolos soltos acompanham. Continuam em texto: títulos, subtítulos, cabeçalhos e células de tabela, rótulos dentro dos gráficos, valores isolados com unidade (+10 pp, × 2,11, 56,18%) e o glossário de siglas do rodapé. A fórmula que é bloco próprio leva o texto como rótulo acessível (`role="img"`); nas frases, a leitura vem do MathML do KaTeX.
+
+**O que mudou.**
+- c4p1: a soma z = β₀ + β₁x₁ + β₂x₂, as contas das unidades (70% ÷ 10 pp = 7,0 unidades), as contas das parcelas (0,7453 × 7,0), o escore z ≈ 0,2483, a PD em fração, a potência e^0,7453 ≈ 2,11, o coeficiente fixo e a conta de p novo com m = e^(β·Δx).
+- c4p10: o β = 0,7453 do enunciado, as contas Δx = (80 − 70) ÷ 10 = 1 e Δz = β × 1 = 0,7453, os trechos de fórmula dos retornos B e C e a síntese depois de conferir.
+- c4p11: as três fórmulas do caminho e as três contas da conversão (odds₀ = 0,10 ÷ 0,90; odds₁ = odds₀ × 2,1071; PD₁ = odds₁ ÷ (1 + odds₁)).
+- c4p12: o Δz = +0,7453 do experimento, a conta da PD final, a legenda de p e m e o m = exp(Δz) do rodapé.
+- c4p14: a definição de x de cada unidade, a soma −5,6666 + 5,2171 + 0,6978, o escore e o detalhe da razão de odds (o Δx de cada unidade, β × Δx = 0,7453 e OR = exp(β × Δx) ≈ 2,11). A tabela das três unidades continua em texto.
+- c4p16: os coeficientes (β₀ = β₁ = β₂ = 0 no começo; depois da primeira iteração, o vetor β = (β₀; β₁; β₂), no lugar de "β₀ 0,00000 · β₁ 0,05938 · β₂ 0,02344"), as três componentes do gradiente com o valor, o exemplo g₁ e a sua conta, a regra β novo = β atual − ηg com η = 0,10 e os símbolos da legenda e das contribuições.
+- Tamanhos: o KaTeX desenha a 1,21 em; as caixas das fórmulas ficaram cerca de 7% menores que a letra do texto que substituíram, e os trechos em linha a 1,1 em, para a altura dos algarismos bater com a do texto. Onde um valor em KaTeX divide a linha com valores em texto (c4p10, c4p12, c4p14 e c4p16), a altura de linha do KaTeX foi igualada à dos vizinhos, para os rótulos continuarem alinhados.
+
+**Achados e correções da verificação.**
+1. c4p16 no celular: o quadro "Exemplo: coeficiente da utilização" não tinha tamanho próprio na tela estreita e caía a 4 a 9 px (medido a 390 px antes da mudança). Agora vai de 12 a 22 px, e o título das contribuições fica a 14 px.
+2. c4p16 no palco: depois da primeira iteração, o vetor na forma (β₀; β₁; β₂) = (…) invadia a coluna vizinha. Ficou β = (…; …; …), e a primeira coluna ganhou largura.
+3. c4p1 no estudo, em 1366 e 1920 px: o painel da tela 2 passava 5 px da caixa (a frase com β em KaTeX tem descendente). Os intervalos do painel diminuíram.
+4. c4p12 no estudo a 1920 px: com a conta aberta, a conta da PD final escrita em fração ocupava duas linhas e espremia os resultados do painel; a varredura acusou 10 px de vazamento, que a checagem de estados extremos não pegava (ela olha caixas que cortam, e esta vazava por cima da vizinha). A conta voltou à forma em linha, a mesma do texto original.
+5. Auditoria de palco: a contagem de palavras incluía o MathML do KaTeX, que só existe para leitor de tela; com isso o c4p14 caía de 9,0 para 8,7 sem nenhuma mudança visível. A contagem passou a ignorá-lo, como a checagem de corte já fazia; a mudança só mantém ou sobe a nota de páginas com KaTeX. As nove páginas convertidas nas rodadas anteriores (c4p2 a c4p6, c4p15 e c5p4 a c5p6) foram remedidas nas quatro resoluções: continuam em 9,4, agora com 160 a 173 palavras; c4p2, c4p5 e c4p15 tinham 165, 170 e 164 pela contagem antiga e ficaram com 163, 166 e 160.
+
+**Notas de palco** (auditoria em 1920x1080, 1400x900, 1366x768 e 1024x768; antes e depois, em 24/09/2026):
+
+| Quadro | Antes | Depois | Palavras antes e depois (1920x1080) |
+|---|---|---|---|
+| c4p1 | 9,0 nas duas telas | 9,2 na tela 1 e 9,0 na tela 2 | 160 e 152; 132 e 149 |
+| c4p10 | 9,4 (9,0 em 1024x768) | 9,4 (9,0 em 1024x768) | 164; 162 |
+| c4p11 | 9,0 | 9,0 | 170; 157 |
+| c4p12 | 9,3 | 9,3 | 127; 123 |
+| c4p14 | 9,0 | 9,0 | 180; 178 |
+| c4p16 | 9,1 (8,7 em 1024x768) | 9,4 (9,0 em 1024x768) | 209; 175 |
+
+Verificado em 24/09/2026: typecheck; lint (0 erros; os mesmos 5 avisos); `lint:tracos` (0); `npm test` (337, com `tests/tex-capitulo-4.test.ts` renderizando pelo KaTeX mais de 400 expressões dos seis quadros em todos os estados dos controles, sem % solto, vírgula decimal sem proteção nem sinal de menos tipográfico, e conferindo o KaTeX e o rótulo acessível de cada quadro); `npx playwright test` (24 de 24, blocos dos seis quadros conferindo as fórmulas pelo rótulo); auditoria de palco na tabela acima; 287 estados extremos sem corte em sete combinações de rota e largura, com uma checagem nova de fórmula que passa da caixa que a contém (40 iterações no c4p16, os extremos dos campos, todas as alternativas conferidas); varredura das 61 páginas em Aulas e Apresentação nas quatro larguras, com estados clicados: 61 de 61 nas oito combinações (a primeira passada acusou o c4p12, corrigido); guia do capítulo 4 regerado com as figuras novas (aluno com 32 páginas e professor com 43, as mesmas) e pacote do professor remontado.
+
+**Não verificado.** A leitura por leitor de tela real, inclusive a das frases com trechos em KaTeX, lidas pelo MathML; os rótulos acessíveis foram conferidos pelo papel e pelo nome no e2e. No celular, o c4p14 continua com a tabela das três unidades em rolagem lateral, como antes desta rodada.
+
 ## Pendências técnicas ordenadas
 
 0. Guia do professor dos capítulos 4, 5 e 6: enviar o pacote `guias-2026-09` a `bases/vguias-2026-09/` no bucket e registrar em Bases e gabaritos (instruções em `scripts/apostila/README.md`).
@@ -291,7 +328,8 @@ Verificado em 24/09/2026: typecheck; lint (0 erros; os mesmos 5 avisos); `lint:t
 0. Celular (390 px): 13 páginas dos capítulos 4 a 6 mostram tabela com rolagem lateral, padrão anterior a esta rodada; em 1.024 px ou mais, nenhuma.
 0. Tempo da Aula 2: essenciais somam 171 min para 165 úteis; decisão do professor, recomendação em `docs/NARRATIVA_AULA_2.md`, seção 6.
 0. Repositório público: gabaritos estão nos fontes do material e o guia do professor do baralho, de uma rodada anterior, continua no histórico do git. Recomendação: tornar o repositório privado.
-0. Fórmulas e contas ainda em texto em outros quadros `.rl` do capítulo 4: c4p1, c4p10, c4p11, c4p12, c4p14 e c4p16 (classes de fórmula e de conta achadas no código em 24/09/2026, sem revisão de cada tela); candidatas à mesma conversão para KaTeX.
+0. Fórmulas em texto fora do capítulo 4: uma busca grosseira no código em 24/09/2026 (×, ÷, ≈, exp e ln em texto) acusa 85 dos 94 arquivos de visual nativo das outras aulas e capítulos. A busca não separa fórmula de valor com unidade nem de rótulo de gráfico, que a regra da vigésima primeira rodada mantém em texto; o número é teto, não inventário. Recomendação: inventariar aula a aula antes de converter.
+0. Legibilidade no palco dos quadros do capítulo 4: c4p1, c4p11, c4p12 e c4p14 têm a menor letra a 1,56% a 1,63% da altura do slide (rótulos, campos e alternativas), abaixo do 1,7% que dá 9 no critério; c4p10 e c4p16 ficam em 1,69% em 1024x768. É o que segura esses quadros entre 9,0 e 9,3; anterior à vigésima primeira rodada.
 0. Guias dos capítulos 1 a 3 e 7 a 11: as sínteses da revisão 13 provavelmente trazem o mesmo descompasso entre guia e tela corrigido aqui nos capítulos 4 a 6; não auditadas.
 0. Aula 2: R1 a R4 e R7 de `docs/PLANO_MELHORIAS.md` (aviso de turma sem encontros, perguntas para slides sem página ligada, verificação em Firefox, Safari e projetor, validação com usuários, traços nas cascas, estados combinados que cabem reduzidos).
 
