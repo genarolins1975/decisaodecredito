@@ -68,7 +68,7 @@ export function validarPd(texto: string): Validacao {
   if (v < 0) return { ok: false, erro: "Uma probabilidade não pode ser negativa." };
   if (v > 100) return { ok: false, erro: "Uma probabilidade não pode passar de 100%." };
   const p = v / 100;
-  if (p < FAIXA_SLIDER[0] || p > FAIXA_SLIDER[1]) return { ok: true, valor: p, aviso: `PD de ${fmtP(p, 2)}: fora da faixa do controle deslizante (1% a 99%); o valor real é mantido.` };
+  if (p < FAIXA_SLIDER[0] || p > FAIXA_SLIDER[1]) return { ok: true, valor: p, aviso: "Fora de 1% a 99%: valor mantido." };
   return { ok: true, valor: p };
 }
 
@@ -78,7 +78,7 @@ export function validarOdds(texto: string): Validacao {
   if (!Number.isFinite(v)) return { ok: false, erro: "Digite odds finitas, por exemplo 0,25 ou 4." };
   if (v < 0) return { ok: false, erro: "Odds não podem ser negativas." };
   const p = pDeOdds(v);
-  if (p < FAIXA_SLIDER[0] || p > FAIXA_SLIDER[1]) return { ok: true, valor: p, aviso: `Odds ${fmtOdds(v)} correspondem a PD ${fmtP(p, 2)}, fora da faixa do controle deslizante (1% a 99%); o valor real é mantido.` };
+  if (p < FAIXA_SLIDER[0] || p > FAIXA_SLIDER[1]) return { ok: true, valor: p, aviso: `PD de ${fmtP(p, 2)}, fora de 1% a 99%: valor mantido.` };
   return { ok: true, valor: p };
 }
 
@@ -98,3 +98,37 @@ export function curvaOdds(yMax: number, n = 200): { p: number; o: number }[] {
 }
 
 export const NOTA_ODDS = "Odds = 0,25 não significa PD = 25%.";
+
+export const TITULO = "Odds contam defaults por adimplente e não têm teto";
+export const SUBTITULO = "A mesma PD, escrita como razão entre defaults e adimplentes esperados; a conversão volta sem perda.";
+export const FORMULAS = [
+  { k: "Da PD para as odds", tex: String.raw`\text{odds} = p \,/\, (1 - p)` },
+  { k: "E de volta", tex: String.raw`p = \text{odds} \,/\, (1 + \text{odds})` },
+] as const;
+export const TITULO_GRAF = "As odds em função da PD";
+export const TITULO_LEITURAS = "A mesma PD, três leituras";
+export const TITULO_CTL = "Altere a PD";
+export const ROTULO_ATALHOS = "Ir para";
+export const ROTULO_COMPARAR = "Comparar p e 1 − p";
+export const RODAPE = "A seguir: log odds, onde somar faz sentido";
+
+/** Linhas da comparação entre p e 1 − p: odds recíprocas e, no logaritmo, simétricas. */
+export function comparacao(p: number): string[] {
+  const c = complementar(p), l = ponteLog(p);
+  if (c.coincidem) return ["Em 50%, p e 1 − p coincidem: odds 1 dos dois lados.", "No logaritmo, ln(1) = 0: o centro da escala."];
+  if (c.produto === null) return [`${fmtP(p, 2)} e ${fmtP(c.pc, 2)}: odds ${fmtOdds(c.odds)} e ${fmtOdds(c.oddsC)}.`, "Nos extremos, uma das odds não é finita e o produto não se define."];
+  return [
+    `${fmtP(p, 2)} e ${fmtP(c.pc, 2)}: odds ${fmtOdds(c.odds)} e ${fmtOdds(c.oddsC)}, recíprocas: o produto é 1.`,
+    `No logaritmo, simétricas: ${fmtLn(l.lnP)} e ${fmtLn(l.lnC)}.`,
+  ];
+}
+
+/** Os três cartões da base; os números vêm das contas, não do texto. */
+export function cartoes() {
+  const c = complementar(0.2), l = ponteLog(0.2), o = oddsDeP(0.2)!, k = leituraIntuitiva(0.2).razao.split(" : ")[1];
+  return [
+    { k: "Leitura", t: `Odds ${fmtOdds(o)} não é PD de ${fmtP(o)}: é 1 default para cada ${k} adimplentes.` },
+    { k: "Sem teto", t: `Em 95%, odds ${fmtOdds(oddsDeP(0.95))}; em 99%, ${fmtOdds(oddsDeP(0.99))}. Perto de 100%, a razão cresce sem limite.` },
+    { k: "Assimetria", t: `20% e 80% dão odds ${fmtOdds(c.odds)} e ${fmtOdds(c.oddsC)}; no logaritmo, ${fmtLn(l.lnP)} e ${fmtLn(l.lnC)}.` },
+  ];
+}

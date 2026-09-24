@@ -50,8 +50,12 @@ export function ContentBlocks({ blocks, questions, classId, mode = "estudo", liv
   // "pagina": o visual ocupa o lugar de todo o conteúdo herdado da página, inclusive a questão equivalente quando
   // ela é o próprio exercício do quadro. A checagem de fim de página é montada fora daqui e continua.
   if (proprio && nativo?.substitui === "pagina") return <div className="flex flex-col gap-4">{bloco(-1, proprio)}</div>;
-  // "conteudo": o visual troca o texto, as figuras e os visuais herdados, e as questões da página continuam, na ordem
-  if (proprio && nativo?.substitui === "conteudo") return <div className="flex flex-col gap-4">{bloco(-1, proprio)}{blocks.flatMap((b, i) => (b.type === "question" ? [bloco(i, renderBloco(b, i))] : []))}</div>;
+  // "conteudo": o visual troca o texto, as figuras e os visuais herdados, e as questões da página continuam, na ordem.
+  // No palco de quadro próprio, o quadro é a tela inteira: a questão fica no estudo, como a curada e a checagem.
+  if (proprio && nativo?.substitui === "conteudo") {
+    const soQuadro = palco && pageSlug !== undefined && PALCO_PROPRIO.has(pageSlug);
+    return <div className="flex flex-col gap-4">{bloco(-1, proprio)}{soQuadro ? null : blocks.flatMap((b, i) => (b.type === "question" ? [bloco(i, renderBloco(b, i))] : []))}</div>;
+  }
   const abertura = nativo?.substitui === "abertura" ? proprio : null;
   if (abertura && palco && pageSlug && PALCO_PROPRIO.has(pageSlug)) return <div className="flex flex-col gap-4">{bloco(-1, abertura)}</div>;
   return (

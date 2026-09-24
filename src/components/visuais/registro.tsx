@@ -59,7 +59,7 @@ import { GradientePasso } from "./gradiente-passo";
 import { RetaNaProbabilidade } from "./reta-na-probabilidade";
 import { LogitSlides } from "./logit-slides";
 import { TresEscalas } from "./tres-escalas";
-import { Escalas } from "./escalas";
+import { QuatroEscalas } from "./quatro-escalas";
 // CurvaLogistica continua no repositório (src/components/visuais/curva-logistica.tsx), sem página registrada desde que o laboratório assumiu o c4p7
 import { Intercepto } from "./intercepto";
 import { DescidaCompleta } from "./descida-completa";
@@ -95,7 +95,7 @@ import { Safras } from "./safras";
  * figura estática (o bloco svgfit do primeiro bloco HTML), mantendo o texto ao redor. Vale em aula, apresentação e
  * aula ao vivo, sem alterar o banco. Fonte dos números: src/lib/visuais.
  */
-/** substitui: "legacy" troca o bloco herdado; "figura" troca a figura estática do primeiro bloco HTML; "abertura" entra antes de todos os blocos; "pagina" ocupa o lugar de todo o conteúdo, preservando as questões; "episodio" troca o bloco do desafio do capítulo e recebe o texto dele (no palco, sem o infográfico: ver ABERTURA_NATIVA); "conteudo" troca todo o conteúdo herdado, mas mantém as questões da página. */
+/** substitui: "legacy" troca o bloco herdado; "figura" troca a figura estática do primeiro bloco HTML; "abertura" entra antes de todos os blocos; "pagina" ocupa o lugar de todo o conteúdo, inclusive a questão ancorada no texto, que o próprio quadro faz como exercício (c4p10, c4p11); a curada e a checagem continuam; "episodio" troca o bloco do desafio do capítulo e recebe o texto dele (no palco, sem o infográfico: ver ABERTURA_NATIVA); "conteudo" troca todo o conteúdo herdado, mas mantém as questões da página, que no palco de quadro próprio (PALCO_PROPRIO) ficam só no estudo. */
 export type VisualNativo = { Componente: ComponentType<{ palco?: boolean; pagina?: { index: number; total: number }; episodio?: Extract<Block, { type: "episode" }> }>; substitui: "legacy" | "figura" | "abertura" | "pagina" | "episodio" | "conteudo" };
 const REGISTRO: Record<string, VisualNativo> = {
   c1p5: { Componente: CemVidas, substitui: "legacy" },
@@ -115,10 +115,10 @@ const REGISTRO: Record<string, VisualNativo> = {
   c3p17: { Componente: ValorDaInformacao, substitui: "legacy" },
   c4p1: { Componente: LogitSlides, substitui: "abertura" },
   c4p2: { Componente: RetaNaProbabilidade, substitui: "pagina" },
-  c4p3: { Componente: EscalaProbabilidade, substitui: "legacy" },
-  c4p4: { Componente: EscalaOdds, substitui: "legacy" },
+  c4p3: { Componente: EscalaProbabilidade, substitui: "pagina" },
+  c4p4: { Componente: EscalaOdds, substitui: "pagina" },
   c4p5: { Componente: EscalaLogOdds, substitui: "pagina" },
-  c4p6: { Componente: () => <Escalas modo="regua" />, substitui: "legacy" },
+  c4p6: { Componente: QuatroEscalas, substitui: "pagina" },
   c4p8: { Componente: EscoreSoma, substitui: "pagina" },
   c4p7: { Componente: LabLogistica, substitui: "legacy" },
   c4p9: { Componente: TresEscalas, substitui: "legacy" },
@@ -137,7 +137,7 @@ const REGISTRO: Record<string, VisualNativo> = {
   c5p3: { Componente: Anatomia, substitui: "legacy" },
   c5p4: { Componente: ImpurezaCurva, substitui: "pagina" },
   c5p5: { Componente: ImpurezaRaiz, substitui: "pagina" },
-  c5p6: { Componente: CorteCandidato, substitui: "pagina" },
+  c5p6: { Componente: CorteCandidato, substitui: "conteudo" }, // a questão c5p6q, ancorada no texto, não é o exercício do quadro
   c5p7: { Componente: () => <ArvoreQueCresce modo="raiz" />, substitui: "legacy" },
   c5p8: { Componente: RaizEscolhida, substitui: "conteudo" },
   c5p9: { Componente: Recursao, substitui: "legacy" },

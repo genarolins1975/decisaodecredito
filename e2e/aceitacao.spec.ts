@@ -373,31 +373,44 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(lab).toContainText("Ajuste da aula");
   await lab.getByRole("button", { name: "Comparar com a reta" }).click();
   await expect(lab).toContainText("p̂ = −0,143 + 1,118 · x");
-  // c4p3: escala 1, probabilidade: PD por operação, cem quadrados, limites e odds, tudo a partir do mesmo estado
+  // c4p3: escala 1, probabilidade, no quadro .rl: cem operações, o mesmo incremento em três pontos da escala e o painel
   await page.goto("/aulas/c4p3");
   const ep = page.locator('figure[data-vz="escala-probabilidade"]');
-  await expect(ep).toContainText("PD 95% por operação: 95 defaults e 5 adimplentes esperados em 100.");
-  await expect(ep).toContainText("105% não é uma probabilidade.");
-  await expect(ep).toContainText("odds = 0,95 ÷ 0,05 = 19");
-  expect(await ep.locator(".vz-ep-q").count()).toBe(100); expect(await ep.locator(".vz-ep-q--default").count()).toBe(95);
-  await ep.getByLabel("PD por operação, em porcentagem").fill("50");
-  await expect(ep).toContainText("50 defaults e 50 adimplentes esperados"); await expect(ep).toContainText("Neste ponto, o resultado permanece entre 0% e 100%."); await expect(ep).toContainText("odds = 0,50 ÷ 0,50 = 1");
-  await expect(ep).toContainText("5% → 15%"); await expect(ep).toContainText("50% → 60%"); // as réguas fixas não seguem a PD selecionada
+  await expect(ep).toContainText("A PD conta quantos, não quais, e não passa de 100%");
+  expect(await ep.locator(".ep-q").count()).toBe(100); expect(await ep.locator(".ep-q--d").count()).toBe(95);
+  await expect(ep.locator(".ep-res-v")).toHaveText("105%"); await expect(ep.getByTestId("mensagem-limite")).toHaveText("Acima de 100%: não é probabilidade.");
+  await expect(ep.locator(".ep-odds dd")).toHaveText("19");
+  await ep.getByRole("button", { name: "12%", exact: true }).click();
+  expect(await ep.locator(".ep-q--d").count()).toBe(12); await expect(ep.locator(".ep-res-v")).toHaveText("22%"); await expect(ep.getByTestId("mensagem-limite")).toHaveText("Entre 0% e 100%: ainda é probabilidade.");
+  await expect(ep).toContainText("5% → 15%"); await expect(ep).toContainText("50% → 60%"); await expect(ep).toContainText("12% → 22%"); // as réguas fixas não seguem a PD escolhida
   await ep.getByLabel("PD por operação, em porcentagem").fill("100");
-  await expect(ep).toContainText("odds → ∞ quando p → 1"); await expect(ep).toContainText("100% → 110%");
-  await ep.getByRole("button", { name: "Restaurar" }).click();
-  await expect(ep).toContainText("PD 95% por operação");
-  // c4p4: escala 2, odds: três resultados, conversão nos dois sentidos, complementares e ponte para log odds
+  await expect(ep.locator(".ep-odds dd")).toHaveText("→ ∞"); await expect(ep).toContainText("100% → 110%");
+  await ep.locator("#ep-inc").focus(); for (let i = 0; i < 10; i++) await page.keyboard.press("ArrowLeft");
+  await expect(ep.locator(".ep-res-v")).toHaveText("100%"); await expect(ep.getByTestId("mensagem-limite")).toHaveText("Entre 0% e 100%: ainda é probabilidade.");
+  await ep.getByRole("button", { name: "Restaurar exemplo" }).click();
+  await expect(ep.locator(".ep-res-v")).toHaveText("105%"); expect(await ep.locator(".ep-q--d").count()).toBe(95);
+  await expect(page.locator("main")).toContainText("O que exatamente esse número afirma?"); // a questão curada continua no estudo
+  await page.goto("/apresentacao/c4p3");
+  await expect(page.locator("main")).toContainText("03 / 22"); await expect(page.locator("main")).not.toContainText("tela 2 de");
+  // c4p4: escala 2, odds, no quadro .rl: a curva odds(p), as três leituras, a conversão nos dois sentidos e p contra 1 − p
   await page.goto("/aulas/c4p4");
   const eo = page.locator('figure[data-vz="escala-odds"]');
-  await expect(eo).toContainText("PD 20%: odds = 0,2 ÷ 0,8 = 0,25."); await expect(eo).toContainText("1 default esperado para cada 4 adimplentes esperados."); await expect(eo).toContainText("20 defaults e 80 adimplentes esperados em 100 operações");
-  await expect(eo).toContainText("0,25 × 4 = 1"); await expect(eo).toContainText("ln(0,25) ≈ −1,386"); await expect(eo).toContainText("ln(4) ≈ +1,386");
-  await eo.getByRole("button", { name: "95%" }).click(); await expect(eo).toContainText("odds = 0,95 ÷ 0,05 = 19"); await expect(eo).toContainText("19 defaults esperados para cada adimplente esperado");
-  await eo.getByLabel("Odds", { exact: true }).fill("4"); await expect(eo).toContainText("PD 80%: odds = 0,8 ÷ 0,2 = 4.");
-  await eo.getByLabel("PD, em %").fill("99"); await expect(eo).toContainText("= 99."); await expect(eo).toContainText("fora da janela: odds 99");
-  await eo.getByLabel("PD, em %").fill("100"); await expect(eo).toContainText("odds → ∞ quando p → 1"); await expect(eo).toContainText("p = 100%: nenhum ponto finito");
+  await expect(eo).toContainText("Odds contam defaults por adimplente e não têm teto");
+  await expect(eo.locator(".eo-elo--o .eo-elo-v")).toHaveText("0,25"); await expect(eo.locator(".eo-elo--l .eo-elo-v")).toHaveText("1 : 4");
+  await expect(eo).toContainText("20 defaults para 80 adimplentes"); await expect(eo).toContainText("1 default esperado para cada 4 adimplentes esperados.");
+  await eo.getByRole("button", { name: "Comparar p e 1 − p" }).click();
+  await expect(eo.locator(".eo-comp")).toContainText("20% e 80%: odds 0,25 e 4, recíprocas: o produto é 1."); await expect(eo.locator(".eo-comp")).toContainText("−1,386 e +1,386");
+  await eo.getByRole("button", { name: "95%", exact: true }).click();
+  await expect(eo.locator(".eo-elo--o .eo-elo-v")).toHaveText("19"); await expect(eo).toContainText("19 defaults esperados para cada adimplente esperado.");
+  await eo.getByLabel("Odds", { exact: true }).fill("4"); await expect(eo.locator(".eo-elo--p .eo-elo-v")).toHaveText("80%");
+  await eo.getByLabel("PD, em %").fill("99"); await expect(eo).toContainText("acima da janela: odds 99");
+  await eo.getByLabel("PD, em %").fill("100"); await expect(eo).toContainText("PD 100%: sem odds finitas"); await expect(eo.locator(".eo-elo--o .eo-elo-v")).toHaveText("∞");
   await eo.getByLabel("PD, em %").fill("-5"); await expect(eo).toContainText("Uma probabilidade não pode ser negativa.");
-  await eo.getByRole("button", { name: "Restaurar" }).click(); await expect(eo).toContainText("PD 20%: odds = 0,2 ÷ 0,8 = 0,25.");
+  await eo.getByRole("button", { name: "Restaurar exemplo" }).click();
+  await expect(eo.locator(".eo-elo--o .eo-elo-v")).toHaveText("0,25"); await expect(eo.locator(".eo-comp")).toHaveCount(0);
+  await expect(page.locator("main")).toContainText("Qual é a PD correspondente?"); // a questão curada continua no estudo
+  await page.goto("/apresentacao/c4p4");
+  await expect(page.locator("main")).toContainText("04 / 22"); await expect(page.locator("main")).not.toContainText("tela 2 de");
   // c4p8: a decomposição do escore, um só estado para tabela, soma e as três representações
   await page.goto("/aulas/c4p8");
   const es = page.locator('figure[data-vz="escore-soma"]');
@@ -716,12 +729,17 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await page.goto("/aulas/c8p7");
   await expect(page.locator('figure[data-vz="troca-do-corte"]')).toContainText("saldo R$ 276 mil");
 
-  // capítulo 4: as escalas, o intercepto e a descida completa reproduzem as páginas herdadas
+  // c4p6: as quatro escalas no quadro .rl, com a linha da tabela de tradução acesa pela PD escolhida
   await page.goto("/aulas/c4p6");
-  const regua = page.locator('figure[data-vz="escala-regua"]');
-  await expect(regua).toContainText("escore didático 865");
-  await regua.getByRole("button", { name: "PD 50%" }).click();
-  await expect(regua).toContainText("escore didático 600");
+  const qe = page.locator('figure[data-vz="quatro-escalas"]');
+  await expect(qe).toContainText("Quatro escalas, o mesmo risco, a mesma ordem");
+  await expect(qe.locator(".qe-res-e")).toHaveText("865"); await expect(qe.locator(".qe-tab .qe-on th")).toHaveText("5,0%");
+  await qe.getByRole("button", { name: "50%", exact: true }).click();
+  await expect(qe.locator(".qe-res-e")).toHaveText("600"); await expect(qe.locator(".qe-tab .qe-on th")).toHaveText("50%");
+  await expect(qe).toContainText("De 1% para 2%, o escore cai 64 pontos; de 5% para 10%, 67");
+  await page.goto("/apresentacao/c4p6");
+  await expect(page.locator("main")).toContainText("06 / 22"); await expect(page.locator("main")).not.toContainText("tela 2 de");
+  // capítulo 4: a descida completa reproduz a página herdada
   await page.goto("/aulas/c4p17");
   const desc = page.locator('figure[data-vz="descida-completa"]');
   await desc.getByRole("button", { name: "+10.000" }).click();
@@ -778,8 +796,12 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(ct.locator(".ct-cand")).toHaveCount(6); // empates não têm fronteira
   await ct.getByRole("button", { name: "Restaurar exemplo" }).click();
   await expect(ct.locator(".ct-res-g")).toHaveText("0,19841"); await expect(ct.locator(".ct-comp")).toHaveCount(0);
+  // a questão ancorada no texto (c5p6q) não é o exercício do quadro: continua no estudo, depois dele; no palco, só o quadro
+  await expect(page.locator("main")).toContainText("Um corte deixa uma única proposta de um lado, com Gini zero, e quinze do outro, com oito defaults.");
+  await expect(page.locator("main")).toContainText("Sim, porque um dos lados ficou completamente puro");
   await page.goto("/apresentacao/c5p6");
   await expect(page.locator("main")).toContainText("06 / 19"); await expect(page.locator("main")).not.toContainText("tela 2 de");
+  await expect(page.locator("main")).not.toContainText("Um corte deixa uma única proposta");
 
   // capítulo 5: o caminho e a poda reproduzem as páginas herdadas
   await page.goto("/aulas/c5p11");

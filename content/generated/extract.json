@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "83c4f1ddd6c769c37f17fc495b1e47a4cb2651bb4d4e4aac82e25d781f88db81",
- "extractedAt": "2026-09-24T12:42:31.315Z",
+ "sourceSha256": "04198c18ed82d19b283aef901a99f371616063d0d86048fb6d733850f3551bb2",
+ "extractedAt": "2026-09-24T13:40:42.923Z",
  "meta": {
   "capitulos": [
    {
@@ -3996,8 +3996,8 @@
    "guia": {
     "funcao": "Fixar o significado frequentista da PD antes de qualquer transformação, e nomear a limitação que motiva a próxima escala.",
     "pre": "Probabilidade condicional, do capítulo 2.",
-    "conducao": "Mova o controle até 5% e depois até 95%. Pergunte o que aconteceria se somássemos 10 pontos de PD em cada caso. No segundo, passa de 100.",
-    "leitura": "Grade de cem quadrados à esquerda; à direita, o controle de incremento e as três réguas de +10 pp (5% para 15%, 50% para 60% e 95% para 105%); a faixa das odds no rodapé.",
+    "conducao": "Abra em 95%: a grade mostra 95 defaults esperados em 100, e o painel marca 105% fora da escala. Clique em 5% e em 12% e pergunte o que aconteceria se somássemos 10 pontos de PD em cada caso. Volte a 95%: passa de 100.",
+    "leitura": "Faixa com as duas fórmulas; à esquerda, cem operações com a mesma PD, em vinho os defaults esperados; ao centro, o mesmo incremento em três pontos da escala (5%, 50% e a PD escolhida), com a faixa acima de 100% em vinho; à direita, o painel com a PD escolhida somada ao incremento e as odds; na base, O que ela afirma, Onde ela aperta e Próxima escala.",
     "pergunta": "PD de 12% diz alguma coisa sobre este cliente específico?",
     "resposta": "Diz sobre o grupo ao qual ele pertence segundo o que se observa. Sobre o indivíduo, a única afirmação legítima é a de pertencimento ao grupo.",
     "erros": [
@@ -4007,7 +4007,7 @@
       "intervencao": "Severidade é a perda dado o default, tema do capítulo 8. São dois números diferentes e multiplicam um ao outro."
      }
     ],
-    "interacao": "Controle de PD de 0% a 100% e controle de incremento de 0 a 20 pp, com as etapas Interpretar a PD, Testar +10 pp, Revelar odds e Mostrar tudo; grade, réguas e faixa das odds são recalculadas.",
+    "interacao": "Atalhos 5%, 12%, 50% e 95%, controle deslizante e campo de PD de 0% a 100% e controle de incremento de 0 a 20 pp; grade, réguas, resultado e odds são recalculados no navegador. Restaurar exemplo volta a 95% e +10 pp.",
     "verificacao": "O aluno enuncia PD como frequência de grupo, não como característica individual.",
     "transicao": "Aquela divisão no rodapé da grade tem nome."
    },
@@ -4050,7 +4050,7 @@
     "funcao": "Ensinar odds como leitura, não como fórmula. A leitura por extenso, como 1 : 4 para PD de 20%, é o que fica.",
     "pre": "Probabilidade.",
     "conducao": "Comece em PD 50% e mostre odds igual a 1. Depois vá para 20% e pergunte a leitura em voz alta. É 1 default para 4 adimplentes.",
-    "leitura": "Três resultados no alto (PD 20%, odds 0,25 e leitura 1 : 4), os controles de PD e de odds, a curva odds(p) à esquerda e, à direita, a conversão reversível e os pares complementares 20%, 50% e 80%.",
+    "leitura": "Faixa com as duas conversões, da PD para as odds e de volta; à esquerda, a curva odds(p) com 20%, 50%, 80% e 95% marcados e a assíntota em 100%; ao centro, a mesma PD em três leituras (probabilidade, odds e por extenso); à direita, o painel; na base, Leitura, Sem teto e Assimetria.",
     "pergunta": "Odds de 3 corresponde a qual PD?",
     "resposta": "75%. Três defaults para um adimplente, então três de cada quatro.",
     "erros": [
@@ -4065,7 +4065,7 @@
       "intervencao": "Mova o controle até 95% e mostre odds de 19. Em 99% seriam 99."
      }
     ],
-    "interacao": "Controle deslizante de PD, campos de PD e de odds e atalhos 5%, 20%, 50%, 80% e 95%, com os três resultados e a curva sincronizados; botões Comparar p e 1 − p, Por que usar o logaritmo? e Restaurar.",
+    "interacao": "Atalhos 5%, 20%, 50%, 80% e 95%, controle deslizante de 1% a 99% e campos de PD e de odds, com validação; Comparar p e 1 − p põe o complemento no gráfico e mostra no painel as odds recíprocas e, no logaritmo, simétricas; Restaurar exemplo.",
     "verificacao": "O aluno traduz odds para PD de cabeça em pelo menos dois casos.",
     "transicao": "Dobrar a PD e reduzir a PD à metade produzem efeitos assimétricos em odds."
    },
@@ -4166,7 +4166,7 @@
     "funcao": "Consolidar as três escalas numa referência única e antecipar o erro de comunicação que mais aparece em comitê.",
     "pre": "As três páginas anteriores.",
     "conducao": "Peça que cada aluno escolha uma linha da tabela e leia as quatro colunas em voz alta. Repita três vezes com linhas diferentes.",
-    "leitura": "Controle de PD e quatro réguas, com a tabela de usos abaixo, à esquerda; tabela de tradução de 13 PDs à direita.",
+    "leitura": "Faixa com as conversões; à esquerda, a mesma PD em quatro réguas ligadas por uma linha tracejada; ao centro, a tabela de tradução de nove PDs, com a linha mais próxima acesa; à direita, o painel com os três valores e o quadro Cuidado; na base, os quatro usos.",
     "pergunta": "Por que o escore é decrescente em z?",
     "resposta": "Convenção de mercado: escore alto significa cliente bom. O sinal negativo faz exatamente isso e não muda nada no modelo.",
     "erros": [
@@ -4176,8 +4176,8 @@
       "intervencao": "Use a tabela de tradução: de 1% para 2% o escore cai 64 pontos (1014 para 950) e de 5% para 10% cai 67 (865 para 798), deslocamentos parecidos que valem 1 e 5 pontos de PD."
      }
     ],
-    "interacao": "Controle deslizante de PD e botões PD 5%, 10%, 50% e 90% movem o ponto nas quatro réguas e destacam a linha da tabela de tradução; tudo é calculado no navegador.",
-    "verificacao": "O aluno nomeia a escala correta para cada uma das quatro situações da tabela de usos, abaixo das réguas.",
+    "interacao": "Atalhos 1%, 5%, 10%, 50% e 90% e controle deslizante de 1% a 99% movem o ponto nas quatro réguas e acendem a linha da tabela de tradução; tudo é calculado no navegador. Restaurar exemplo volta a 5%.",
+    "verificacao": "O aluno nomeia a escala certa para cada um dos quatro usos da base do quadro.",
     "transicao": "O modelo, finalmente."
    },
    "html": "<div class=\"v13-interativo\"><div class=\"v13-tabs\"><button type=\"button\" data-v13-pd=\"\" data-i=\"0\" class=\"ativo\">PD 5%</button><button type=\"button\" data-v13-pd=\"\" data-i=\"1\" class=\"\">PD 10%</button><button type=\"button\" data-v13-pd=\"\" data-i=\"2\" class=\"\">PD 50%</button><button type=\"button\" data-v13-pd=\"\" data-i=\"3\" class=\"\">PD 90%</button></div><div class=\"v13-cena\" id=\"v13-pd-out\"><div class=\"v13-cena-lado\"><small>probabilidade</small><span class=\"big\">5%</span><p>em 100 propostas semelhantes, cerca de 5 defaults</p></div><div class=\"v13-cena-main\"><div class=\"v13-metricas\"><div><small>odds</small><strong>0,053</strong></div><div><small>log odds</small><strong>-2,944</strong></div><div><small>escore didático</small><strong>865</strong></div></div><p>As quatro escalas preservam a mesma ordem. Só muda a régua usada para comunicar e calcular.</p></div></div><div class=\"formula\" data-latex=\"\\operatorname{odds}=\\frac{p}{1-p},\\qquad z=\\ln(\\operatorname{odds}),\\qquad p=\\frac{1}{1+e^{-z}}\" data-original=\"odds = p/(1−p); log odds = ln(odds); p = 1/(1+e^(−z))\" role=\"math\" aria-label=\"odds = p/(1−p); log odds = ln(odds); p = 1/(1+e^(−z))\"></div></div>",
