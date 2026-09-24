@@ -63,9 +63,10 @@ export function maiores(n = 3, ls: Linha[] = linhas()) {
 
 /** Texto da fórmula aplicável ao desfecho da proposta. */
 export function formula(l: Linha) {
+  const t = (v: number) => fmt(v, 4).replace(",", "{,}");
   return l.y === 1
-    ? { regra: "Perda = −ln(PD)", conta: `−ln(${fmt(l.pd, 4)}) ≈ ${fmt(l.perda, 4)}`, desfecho: "Default · y = 1", rotulo: "PD estimada" }
-    : { regra: "Perda = −ln(1 − PD)", conta: `−ln(1 − ${fmt(l.pd, 4)}) ≈ ${fmt(l.perda, 4)}`, desfecho: "Sem default · y = 0", rotulo: "PD estimada" };
+    ? { regra: "Perda = −ln(PD)", conta: `−ln(${fmt(l.pd, 4)}) ≈ ${fmt(l.perda, 4)}`, contaTex: String.raw`-\ln(${t(l.pd)}) \approx ${t(l.perda)}`, desfecho: "Default · y = 1", rotulo: "PD estimada" }
+    : { regra: "Perda = −ln(1 − PD)", conta: `−ln(1 − ${fmt(l.pd, 4)}) ≈ ${fmt(l.perda, 4)}`, contaTex: String.raw`-\ln(1 - ${t(l.pd)}) \approx ${t(l.perda)}`, desfecho: "Sem default · y = 0", rotulo: "PD estimada" };
 }
 
 /** Frase curta de leitura da proposta selecionada. */
@@ -100,8 +101,8 @@ export function curvaPerda(y: 0 | 1, n = 160): { pd: number; perda: number }[] {
 }
 
 export const CASOS = [
-  { k: "Se houve default · y = 1", f: "Perda = −ln(PD)", y: 1 },
-  { k: "Se não houve default · y = 0", f: "Perda = −ln(1 − PD)", y: 0 },
+  { k: "Se houve default · y = 1", f: "Perda = −ln(PD)", tex: String.raw`\text{perda} = -\ln(\mathrm{PD})`, y: 1 },
+  { k: "Se não houve default · y = 0", f: "Perda = −ln(1 − PD)", tex: String.raw`\text{perda} = -\ln(1 - \mathrm{PD})`, y: 0 },
 ] as const;
 export const TITULO = "Como a log loss orienta a estimação";
 export const SUBTITULO = "Cada proposta gera uma perda; a estimação busca a menor média na amostra.";

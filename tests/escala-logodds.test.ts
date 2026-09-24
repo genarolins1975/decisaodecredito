@@ -152,7 +152,9 @@ describe("c4p5: o quadro desenhado", () => {
     const html = renderToStaticMarkup(createElement(EscalaLogOdds, { pagina: { index: 5, total: 22 } }));
     expect(html).toContain('class="vz rl lo"'); expect(html).toContain('data-tela="5"'); expect(html).toContain("05 / 22");
     expect(html).toContain("Nas odds, multiplicar; nos log odds, somar");
-    expect(html).toContain("ln(2 × odds) = ln(odds) + ln(2)");
+    // a faixa em KaTeX, com a fórmula em texto como rótulo acessível
+    expect(html).toContain('aria-label="ln(2 × odds) = ln(odds) + ln(2)"'); expect(html).toContain('aria-label="log odds = ln(PD ÷ (1 − PD))"');
+    expect(html.match(/class="katex"/g)).toHaveLength(2); expect(html).not.toContain('<p class="lo-eq-f">');
     expect(html).toContain("lo-svg--larga"); expect(html).toContain("lo-svg--compacta");
     expect(html.match(/class="lo-regua lo-regua--pd"/g)).toHaveLength(2);
     expect(html).toContain("desiguais"); expect(html).toContain("iguais");

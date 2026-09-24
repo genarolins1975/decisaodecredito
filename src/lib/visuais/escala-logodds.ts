@@ -77,6 +77,9 @@ export const TITULO = "Nas odds, multiplicar; nos log odds, somar";
 export const SUBTITULO = "Dividir as odds por 2 subtrai ln(2) dos log odds; multiplicar soma ln(2), em qualquer PD de partida.";
 export const IDENTIDADE = "ln(2 × odds) = ln(odds) + ln(2)";
 export const DEFINICAO = "log odds = ln(PD ÷ (1 − PD))";
+/** A identidade e a definição em TeX, para a faixa do quadro; as versões em texto ficam para os rótulos acessíveis. */
+export const IDENTIDADE_TEX = String.raw`\ln(2 \times \text{odds}) = \ln(\text{odds}) + \ln(2)`;
+export const DEFINICAO_TEX = String.raw`\text{log odds} = \ln\big(\mathrm{PD} \,/\, (1 - \mathrm{PD})\big)`;
 export const TITULO_GRAF = "Os passos têm o mesmo tamanho?";
 export const REGUA_PD = "Probabilidade de default";
 export const NOTA_PD = "";

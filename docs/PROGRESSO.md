@@ -274,6 +274,16 @@ Verificado em 24/09/2026: typecheck; lint (0 erros; os mesmos 5 avisos); `lint:t
 
 **Não verificado.** A questão c5p6q em produção, que depende deste deploy e só aparece com sessão de aluno. No celular, as réguas e o gráfico encolhem com a tela, como os gráficos dos outros quadros; o texto das réguas do c4p3 e do c4p6 ganhou tamanho próprio na largura estreita.
 
+### Vigésima rodada (24/09/2026): fórmulas de c4p2, c4p5 e c4p15 em KaTeX
+
+**Pedido.** Converter para KaTeX as fórmulas das faixas de c4p2, c4p5 e c4p15, que apareciam em texto simples a 2,1 cqw, fora do padrão de c4p3, c4p4, c4p6 e c5p4 a c5p6.
+
+**O que mudou.** Faixas em KaTeX, no tamanho das faixas dos quadros novos (1,6 cqw): no c4p2, a reta p(u) = −0,1426 + 0,011176 × u; no c4p5, a identidade ln(2 × odds) = ln(odds) + ln(2) e a definição dos log odds; no c4p15, perda = −ln(PD) e perda = −ln(1 − PD), nas cores de cada desfecho. Na mesma leva, as outras duas fórmulas de texto desses quadros: a do truncamento na legenda do c4p2, mín(1; máx(0; p)), e a conta da perda no painel do c4p15 (−ln(0,2665) ≈ 1,3223 na proposta #2), que agora pode quebrar depois do ≈ quando o painel estreita. Cada fórmula leva o texto como rótulo acessível (`role="img"`), e os testes passaram a conferir a fórmula exata por esse rótulo. As versões em texto continuam nas bibliotecas; as versões TeX saem das mesmas contas, com a vírgula decimal protegida. No celular, as faixas alinham à esquerda e quebram linha, como nos quadros novos.
+
+Verificado em 24/09/2026: typecheck; lint (0 erros; os mesmos 5 avisos); `lint:tracos` (0); as 22 fórmulas TeX novas renderizadas pelo KaTeX sem erro (incluindo a conta das 16 propostas do c4p15); `npm test` (334, com os testes de renderização dos três quadros conferindo o KaTeX e o rótulo acessível); `npx playwright test` (24 de 24, blocos de c4p2, c4p5 e c4p15 conferindo as fórmulas pelo rótulo); auditoria de palco com c4p2, c4p5 e c4p15 em 9,4 em 1920x1080, 1400x900, 1366x768 e 1024x768 (165, 170 e 164 palavras; antes, 168, 177 e 167); 245 estados extremos sem corte em sete combinações de rota e largura (atalhos, campos nos extremos, truncamento, comparações e as 16 propostas do c4p15 com e sem a simulação); varredura das 61 páginas em Aulas e Apresentação nas quatro larguras, com estados clicados: 61 de 61 nas oito combinações; guia do capítulo 4 regerado com as figuras novas (aluno com 32 páginas e professor com 43, as mesmas) e pacote do professor remontado.
+
+**Não verificado.** A leitura das fórmulas por leitor de tela real; o rótulo acessível foi conferido pelo papel e pelo nome no e2e.
+
 ## Pendências técnicas ordenadas
 
 0. Guia do professor dos capítulos 4, 5 e 6: enviar o pacote `guias-2026-09` a `bases/vguias-2026-09/` no bucket e registrar em Bases e gabaritos (instruções em `scripts/apostila/README.md`).
@@ -281,7 +291,7 @@ Verificado em 24/09/2026: typecheck; lint (0 erros; os mesmos 5 avisos); `lint:t
 0. Celular (390 px): 13 páginas dos capítulos 4 a 6 mostram tabela com rolagem lateral, padrão anterior a esta rodada; em 1.024 px ou mais, nenhuma.
 0. Tempo da Aula 2: essenciais somam 171 min para 165 úteis; decisão do professor, recomendação em `docs/NARRATIVA_AULA_2.md`, seção 6.
 0. Repositório público: gabaritos estão nos fontes do material e o guia do professor do baralho, de uma rodada anterior, continua no histórico do git. Recomendação: tornar o repositório privado.
-0. Faixas de fórmula de c4p2, c4p5 e c4p15 ainda em texto simples, enquanto c4p3, c4p4, c4p6 e c5p4 a c5p6 usam KaTeX: candidatas à mesma conversão.
+0. Fórmulas e contas ainda em texto em outros quadros `.rl` do capítulo 4: c4p1, c4p10, c4p11, c4p12, c4p14 e c4p16 (classes de fórmula e de conta achadas no código em 24/09/2026, sem revisão de cada tela); candidatas à mesma conversão para KaTeX.
 0. Guias dos capítulos 1 a 3 e 7 a 11: as sínteses da revisão 13 provavelmente trazem o mesmo descompasso entre guia e tela corrigido aqui nos capítulos 4 a 6; não auditadas.
 0. Aula 2: R1 a R4 e R7 de `docs/PLANO_MELHORIAS.md` (aviso de turma sem encontros, perguntas para slides sem página ligada, verificação em Firefox, Safari e projetor, validação com usuários, traços nas cascas, estados combinados que cabem reduzidos).
 
