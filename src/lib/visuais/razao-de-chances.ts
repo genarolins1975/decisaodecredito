@@ -3,9 +3,9 @@
  * coeficiente do projeto, OR = exp(β) com a precisão integral de β; "2,11×" é exibição. Uma única fonte de estado:
  * todas as contas partem de p inicial e de OR, sem arredondamento intermediário.
  */
-import { BETA1, arredondar, fmt, fmtPct, fmtPp, sigmoide } from "./logit-slides";
+import { BETA1, arredondar, fmt, fmtPct, fmtPp, fmtTex, sigmoide } from "./logit-slides";
 
-export { BETA1, arredondar, fmt, fmtPct, fmtPp, sigmoide };
+export { BETA1, arredondar, fmt, fmtPct, fmtPp, fmtTex, sigmoide };
 
 export const PD_INICIAL = 0.1;
 export const DELTA_UTIL = 10; // pp
@@ -49,23 +49,24 @@ export const ENUNCIADO = [
 ];
 export const NOTA_ENUNCIADO = "Mantidas as demais variáveis constantes, no modelo sem interação.";
 export const NOTA_OR = "Multiplicador exibido arredondado; cálculo com precisão integral.";
+/** O caminho da conversão, com cada fórmula em texto (rótulo acessível) e em TeX. */
 export const CAMINHO = [
-  { t: "Converter a PD em odds", f: "odds = p ÷ (1 − p)" },
-  { t: "Aplicar o multiplicador", f: "novas odds = odds × OR" },
-  { t: "Voltar à probabilidade", f: "nova PD = novas odds ÷ (1 + novas odds)" },
+  { t: "Converter a PD em odds", f: "odds = p ÷ (1 − p)", tex: String.raw`\text{odds} = p \div (1 - p)` },
+  { t: "Aplicar o multiplicador", f: "novas odds = odds × OR", tex: String.raw`\text{novas odds} = \text{odds} \times \mathrm{OR}` },
+  { t: "Voltar à probabilidade", f: "nova PD = novas odds ÷ (1 + novas odds)", tex: String.raw`\text{nova PD} = \text{novas odds} \div (1 + \text{novas odds})` },
 ];
 export const CAMINHO_FECHO = "Identifique a grandeza que recebe o multiplicador.";
 export const SINTESE_ANTES = "Escolha sua resposta e acompanhe a conversão.";
 export const TRANSICAO = "O mesmo multiplicador pode produzir mudanças diferentes na PD.";
 export const RODAPE = "PD = probabilidade de default · pp = pontos percentuais · OR = razão de odds";
 
-/** As três etapas da demonstração, com a conta escrita e o resultado. */
+/** As três etapas da demonstração, com a conta escrita (em texto e em TeX) e o resultado. */
 export function etapas(p0 = PD_INICIAL, or = OR) {
   const c = conversao(p0, or);
   return [
-    { k: "Da PD às odds", conta: `odds₀ = ${fmt(p0, 2)} ÷ ${fmt(1 - p0, 2)}`, valor: fmt(c.odds0, 4), destaque: false },
-    { k: "Multiplicar as odds", conta: `odds₁ = odds₀ × ${fmt(or, 4)}`, valor: fmt(c.odds1, 4), destaque: false },
-    { k: "Voltar à probabilidade", conta: `PD₁ = odds₁ ÷ (1 + odds₁)`, valor: fmtPct(c.p1), destaque: true },
+    { k: "Da PD às odds", conta: `odds₀ = ${fmt(p0, 2)} ÷ ${fmt(1 - p0, 2)}`, contaTex: String.raw`\text{odds}_0 = ${fmtTex(p0, 2)} \div ${fmtTex(1 - p0, 2)}`, valor: fmt(c.odds0, 4), destaque: false },
+    { k: "Multiplicar as odds", conta: `odds₁ = odds₀ × ${fmt(or, 4)}`, contaTex: String.raw`\text{odds}_1 = \text{odds}_0 \times ${fmtTex(or, 4)}`, valor: fmt(c.odds1, 4), destaque: false },
+    { k: "Voltar à probabilidade", conta: `PD₁ = odds₁ ÷ (1 + odds₁)`, contaTex: String.raw`\mathrm{PD}_1 = \text{odds}_1 \div (1 + \text{odds}_1)`, valor: fmtPct(c.p1), destaque: true },
   ];
 }
 

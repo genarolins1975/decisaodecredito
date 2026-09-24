@@ -1,11 +1,13 @@
 "use client";
 import { useState } from "react";
-import { ATALHOS, aumentoPp, cenarios, CONCLUSAO, CONTA, CONTA_L, curva, EXPERIMENTO, FAIXA_PD, fmt, fmtPct, fmtPd1, fmtPp, fraseMaximo, maximo, NOTA_CENARIOS, NOTA_EXPERIMENTO, NOTA_SENSIBILIDADE, PD_INICIAL, pdFinal, PERGUNTA_MAX, RODAPE, TICKS_X, TICKS_Y, validarPd, Y_MAX_PP } from "@/lib/visuais/impacto-pd";
+import { ATALHOS, aumentoPp, cenarios, CONCLUSAO, CONTA, CONTA_L, CONTA_TEX, curva, EXPERIMENTO, FAIXA_PD, fmt, fmtPct, fmtPd1, fmtPp, fraseMaximo, maximo, NOTA_CENARIOS, NOTA_EXPERIMENTO, NOTA_SENSIBILIDADE, PD_INICIAL, pdFinal, PERGUNTA_MAX, RODAPE, TICKS_X, TICKS_Y, validarPd, Y_MAX_PP } from "@/lib/visuais/impacto-pd";
+import { ComTex, Tex } from "./tex";
 
 /**
  * Slide 12 do capítulo 4 (c4p12): a curva do aumento da PD em função da PD inicial. Quadro 16:9 no sistema .rl.
  * O experimento é fixo e só a PD de partida muda; controle, gráfico, tabela e resultados saem do mesmo estado.
- * Contas em src/lib/visuais/impacto-pd.ts. Substitui o conteúdo herdado da página.
+ * Contas em src/lib/visuais/impacto-pd.ts. Substitui o conteúdo herdado da página. O Δz do experimento, a conta da PD
+ * final e a fórmula do rodapé em KaTeX desde 24/09/2026, com o texto como rótulo acessível.
  */
 const W = 1180, H = 470, ML = 74, MR = 28, MT = 26, MB = 58;
 const sx = (p: number) => ML + p * (W - ML - MR);
@@ -58,7 +60,7 @@ export function ImpactoPd({ pagina }: { pagina?: { index: number; total: number 
 
         <div className="ip-exp">
           {EXPERIMENTO.map((e) => (
-            <div key={e.k} className="ip-exp-item"><p className="ip-exp-k">{e.k}</p><p className={`ip-exp-v ip-exp-v--${e.cor}`}>{e.v}</p></div>
+            <div key={e.k} className="ip-exp-item"><p className="ip-exp-k">{e.k}</p>{e.tex ? <p className={`ip-exp-v ip-exp-v--tex ip-exp-v--${e.cor}`} role="img" aria-label={e.v}><Tex f={e.tex} /></p> : <p className={`ip-exp-v ip-exp-v--${e.cor}`}>{e.v}</p>}</div>
           ))}
           <p className="ip-exp-n nota">{NOTA_EXPERIMENTO}</p>
         </div>
@@ -86,8 +88,8 @@ export function ImpactoPd({ pagina }: { pagina?: { index: number; total: number 
             <div className="ip-conta-area">
               <button type="button" className="rl-btn rl-btn--mini" aria-expanded={conta} onClick={() => setConta((v) => !v)}>{conta ? "Ocultar a conta" : "Ver a conta"}</button>
               {conta && <div className="ip-conta">
-                <p className="ip-conta-f">{CONTA}</p>
-                <p className="ip-conta-l">{CONTA_L}</p>
+                <p className="ip-conta-f" role="img" aria-label={CONTA}><Tex f={CONTA_TEX} /></p>
+                <p className="ip-conta-l"><ComTex t={CONTA_L} /></p>
               </div>}
             </div>
           </div>
@@ -153,7 +155,7 @@ export function ImpactoPd({ pagina }: { pagina?: { index: number; total: number 
         </div>
 
         <p className="ip-conclusao">{CONCLUSAO}</p>
-        <p className="rl-rod nota">{RODAPE}</p>
+        <p className="rl-rod nota"><ComTex t={RODAPE} /></p>
       </section>
     </figure>
   );

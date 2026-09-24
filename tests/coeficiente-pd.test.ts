@@ -19,7 +19,7 @@ describe("c4p10: a leitura do coeficiente", () => {
     expect(fmt(d.z0, 4)).toBe("0,2483");
     expect(fmt(d.z1, 4)).toBe("0,9936");
     expect(d.z1 - d.z0).toBeCloseTo(0.7453, 12);
-    expect(contas()).toEqual(["Δx = (80 − 70) ÷ 10 = 1", "Δz = β × 1 = 0,7453"]);
+    expect(contas().map((c) => c.texto)).toEqual(["Δx = (80 − 70) ÷ 10 = 1", "Δz = β × 1 = 0,7453"]);
   });
 
   it("as PDs vêm da logística, sem arredondamento intermediário", () => {

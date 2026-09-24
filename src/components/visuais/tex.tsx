@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import katex from "katex";
 
 /**
@@ -7,6 +8,15 @@ import katex from "katex";
 export function Tex({ f, className, bloco = false }: { f: string; className?: string; bloco?: boolean }) {
   const html = katex.renderToString(f, { throwOnError: false, output: "htmlAndMathml", strict: "ignore", displayMode: bloco });
   return <span className={className} dangerouslySetInnerHTML={{ __html: html }} />;
+}
+
+/**
+ * Frase com trechos de fórmula entre cifrões ("Coeficiente fixo: $\beta = 0{,}7453$ por 10 pp."): o texto corre normal e
+ * cada trecho vira KaTeX em linha, um pouco menor que o padrão do KaTeX para acompanhar a letra da frase (`.tx-linha`).
+ * O MathML de cada trecho dá a leitura por leitor de tela.
+ */
+export function ComTex({ t }: { t: string }) {
+  return <>{t.split("$").map((p, i) => (i % 2 ? <Tex key={i} f={p} className="tx-linha" /> : <Fragment key={i}>{p}</Fragment>))}</>;
 }
 
 /** Fórmula em caixa, no lugar da antiga `.vz-formula` monoespaçada; a classe fica para as regras de palco continuarem valendo. */

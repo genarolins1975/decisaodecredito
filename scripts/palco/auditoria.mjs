@@ -44,6 +44,7 @@ const MEDIR = () => {
   while (walker.nextNode()) {
     const n = walker.currentNode; const t = n.textContent.replace(/\s+/g, " ").trim(); if (t.length < 3) continue;
     const el = n.parentElement; if (!el || !vis(el)) continue;
+    if (el.closest(".katex-mathml")) continue; // o MathML do KaTeX é só para leitor de tela, recortado em 1 px: não é texto na tela (desde 24/09/2026)
     const cs = getComputedStyle(el); if (cs.visibility === "hidden" || cs.display === "none") continue;
     const px = parseFloat(cs.fontSize) * zoom; const pct = (px / rs.height) * 100;
     if (el.closest("svg")) { fonteSvgMin = Math.min(fonteSvgMin, pct); continue; }

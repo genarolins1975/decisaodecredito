@@ -1,12 +1,14 @@
 "use client";
-import { useState } from "react";
-import { ATALHOS, ATRASO_FIXO, comparacaoOdds, CONCLUSAO_K, CONCLUSAO_T, fmt, fmtNum, fmtPct, FRASE_RESULTADO, linhas, LIMITES_UTIL, NOTA_OR, NOTA_OR_2, NOTA_PARCELAS, NOTA_PROPOSTA, PERGUNTA_OR, resultado, RODAPE, ROTULO_CONTRIB, UNIDADES, UTIL_INICIAL, validarUtil } from "@/lib/visuais/unidade-coeficiente";
+import { Fragment, useState } from "react";
+import { ATALHOS, ATRASO_FIXO, comparacaoOdds, CONCLUSAO_K, CONCLUSAO_T, deltaXTex, deltaXTexto, efeitoTex, efeitoTexto, escoreTex, escoreTexto, fmt, fmtNum, fmtPct, FRASE_RESULTADO, linhas, LIMITES_UTIL, NOTA_OR, NOTA_OR_2, NOTA_PARCELAS, NOTA_PROPOSTA, orTex, orTexto, PERGUNTA_OR, resultado, RODAPE, ROTULO_CONTRIB, somaTex, somaTexto, UNIDADES, UTIL_INICIAL, validarUtil } from "@/lib/visuais/unidade-coeficiente";
+import { Tex } from "./tex";
 
 /**
  * Slide 14 do capítulo 4 (c4p14): a mesma contribuição escrita em três unidades. Quadro 16:9 no sistema .rl.
  * A proposta é o único dado que o aluno muda; selecionar uma linha apenas destaca a representação e mostra a
  * definição de x, sem alterar a proposta nem esconder as demais. Contas em
- * src/lib/visuais/unidade-coeficiente.ts. Substitui o conteúdo herdado da página.
+ * src/lib/visuais/unidade-coeficiente.ts. Substitui o conteúdo herdado da página. A definição de x, a soma das parcelas,
+ * o escore e o detalhe da razão de odds em KaTeX desde 24/09/2026, com o texto como rótulo acessível; a tabela fica em texto.
  */
 function Campo({ mostrado, onValor }: { mostrado: string; onValor: (v: number) => void }) {
   const [texto, setTexto] = useState(mostrado); const [editando, setEditando] = useState(false); const [ultimo, setUltimo] = useState(mostrado); const [erro, setErro] = useState<string | null>(null);
@@ -76,18 +78,18 @@ export function UnidadeCoeficiente({ pagina }: { pagina?: { index: number; total
               ))}
             </tbody>
           </table>
-          <p className="uc-rot"><span className="uc-rot-c">{ROTULO_CONTRIB}</span>{escolhida && <span className="uc-def" aria-live="polite"><b>{escolhida.rotulo}:</b> {escolhida.definicao}. A proposta não muda, só a forma de escrevê-la.</span>}</p>
+          <p className="uc-rot"><span className="uc-rot-c">{ROTULO_CONTRIB}</span>{escolhida && <span className="uc-def" aria-live="polite"><b>{escolhida.rotulo}:</b> <span role="img" aria-label={escolhida.definicao}><Tex f={escolhida.definicaoTex} className="tx-linha" /></span>. A proposta não muda, só a forma de escrevê-la.</span>}</p>
         </div>
 
         <div className="uc-resultado" aria-live="polite">
           <div>
             <p className="uc-res-k">Intercepto + utilização + atraso</p>
-            <p className="uc-soma">{fmt(r.intercepto, 4)} + {fmt(r.cUtil, 4)} + {fmt(r.cAtraso, 4)}</p>
+            <p className="uc-soma" role="img" aria-label={somaTexto(r)}><Tex f={somaTex(r)} /></p>
             <p className="uc-res-n nota">{NOTA_PARCELAS}</p>
           </div>
           <div>
             <p className="uc-res-k">Escore</p>
-            <p className="uc-res-v">z ≈ {fmt(r.z, 4)}</p>
+            <p className="uc-res-v uc-res-v--tex" role="img" aria-label={escoreTexto(r.z)}><Tex f={escoreTex(r.z)} /></p>
           </div>
           <div>
             <p className="uc-res-k">PD estimada</p>
@@ -101,8 +103,8 @@ export function UnidadeCoeficiente({ pagina }: { pagina?: { index: number; total
           {odds && (
             <div className="uc-odds">
               <p className="uc-odds-k">{NOTA_OR} <span className="uc-odds-n nota">{NOTA_OR_2}</span></p>
-              <p className="uc-odds-l">{c.itens.map((i) => `${i.unidade.rotulo}: Δx = ${fmtNum(i.dx, 2)}`).join(" · ")}</p>
-              <p className="uc-odds-v">β × Δx = {fmt(c.efeito, 4)} nas três · OR = exp(β × Δx) ≈ {fmt(c.or, 2)}</p>
+              <p className="uc-odds-l">{c.itens.map((i, k) => <Fragment key={i.unidade.id}>{k ? " · " : ""}{i.unidade.rotulo}: <span role="img" aria-label={deltaXTexto(i.dx)}><Tex f={deltaXTex(i.dx)} className="tx-linha" /></span></Fragment>)}</p>
+              <p className="uc-odds-v"><span role="img" aria-label={efeitoTexto(c.efeito)}><Tex f={efeitoTex(c.efeito)} className="tx-linha" /></span> nas três · <span role="img" aria-label={orTexto(c.or)}><Tex f={orTex(c.or)} className="tx-linha" /></span></p>
             </div>
           )}
         </div>

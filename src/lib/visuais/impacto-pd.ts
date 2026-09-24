@@ -4,9 +4,9 @@
  * só muda a PD de partida. A forma p' = m p ÷ (1 − p + m p) vale em p = 0 e p = 1 sem passar por odds infinitas.
  * Precisão integral; arredondamento só na exibição.
  */
-import { BETA1, arredondar, fmt, fmtPct, fmtPp, sigmoide } from "./logit-slides";
+import { BETA1, arredondar, fmt, fmtPct, fmtPp, fmtTex, sigmoide } from "./logit-slides";
 
-export { BETA1, arredondar, fmt, fmtPct, fmtPp, sigmoide };
+export { BETA1, arredondar, fmt, fmtPct, fmtPp, fmtTex, sigmoide };
 
 export const DELTA_UTIL = 10; // pp de utilização, fixos neste slide
 export const DELTA_Z = BETA1 * (DELTA_UTIL / 10);
@@ -66,17 +66,20 @@ export const fmtPd1 = (p: number) => `${fmt(p * 100, 1)}%`;
 
 export const EXPERIMENTO = [
   { k: "Mudança na utilização", v: `${fmt(DELTA_UTIL, 0, true)} pp`, cor: "ambar" as const },
-  { k: "Incremento no escore", v: `Δz = ${fmt(DELTA_Z, 4, true)}`, cor: "navy" as const },
+  { k: "Incremento no escore", v: `Δz = ${fmt(DELTA_Z, 4, true)}`, tex: String.raw`\Delta z = ${fmtTex(DELTA_Z, 4, true)}`, cor: "navy" as const },
   { k: "Multiplicador das odds", v: `× ${fmt(M, 2)}`, cor: "vinho" as const },
-];
+] as { k: string; v: string; tex?: string; cor: "ambar" | "navy" | "vinho" }[];
 export const NOTA_EXPERIMENTO = "Mantidas as demais variáveis constantes, no modelo sem interação.";
+/** A conta da PD final em texto (rótulo acessível) e em TeX; a legenda e o rodapé têm trechos em TeX entre cifrões (ComTex). */
 export const CONTA = "PD final = m × p ÷ (1 − p + m × p)";
-export const CONTA_L = "p = PD inicial; m = multiplicador das odds.";
+/* em linha, como o texto: em fração, a conta ocupava duas linhas e espremia os resultados do painel no estudo a 1920 px */
+export const CONTA_TEX = String.raw`\text{PD final} = m \times p \div (1 - p + m \times p)`;
+export const CONTA_L = "$p$ = PD inicial; $m$ = multiplicador das odds.";
 export const PERGUNTA_MAX = "O maior impacto ocorre em 50%?";
 export const NOTA_SENSIBILIDADE = "50% é o ponto de maior sensibilidade local. Para uma mudança finita, o ponto de partida que maximiza o aumento pode ser diferente.";
 export const NOTA_CENARIOS = "Cenários didáticos; não representam uma amostra de clientes.";
 export const CONCLUSAO = "Para traduzir uma razão de odds em pontos percentuais, precisamos conhecer a PD inicial.";
-export const RODAPE = "pp = pontos percentuais · m = exp(Δz) · valores arredondados apenas na exibição";
+export const RODAPE = String.raw`pp = pontos percentuais · $m = \exp(\Delta z)$ · valores arredondados apenas na exibição`;
 
 /** Frase da revelação, com os dois números derivados do máximo analítico. */
 export const fraseMaximo = (m = M) => {

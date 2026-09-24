@@ -5,9 +5,9 @@
  * estável; precisão integral e arredondamento só na exibição.
  */
 import base from "./did.json";
-import { arredondar, fmt, fmtPct, sigmoide } from "./logit-slides";
+import { arredondar, fmt, fmtPct, fmtTex, paraTex, sigmoide } from "./logit-slides";
 
-export { arredondar, fmt, fmtPct, sigmoide };
+export { arredondar, fmt, fmtPct, fmtTex, paraTex, sigmoide };
 
 export type Proposta = { id: number; util: number; atraso: number; y: number };
 export const PROPOSTAS: Proposta[] = base.base;
@@ -71,6 +71,13 @@ export const fmt5 = (v: number, sinal = false) => {
 };
 /** Zero exibido sem sinal, mesmo quando o valor é negativo por ruído. */
 export const fmtAtualizacao = (v: number) => (Math.abs(arredondar(Math.abs(v), 5)) < 1e-12 ? fmt5(0) : fmt5(v, true));
+export const fmt5Tex = (v: number, sinal = false) => paraTex(fmt5(v, sinal));
+
+/** Os coeficientes atuais, em texto (rótulo acessível) e em TeX: β₀ = β₁ = β₂ = 0 no começo; depois, o vetor β = (β₀; β₁; β₂), na ordem da tabela. */
+export const coeficientesTexto = (b: readonly number[]) =>
+  b.every((v) => v === 0) ? "β₀ = β₁ = β₂ = 0" : `β = (${fmt5(b[0])}; ${fmt5(b[1])}; ${fmt5(b[2])})`;
+export const coeficientesTex = (b: readonly number[]) =>
+  b.every((v) => v === 0) ? String.raw`\beta_0 = \beta_1 = \beta_2 = 0` : String.raw`\beta = (${fmt5Tex(b[0])};\ ${fmt5Tex(b[1])};\ ${fmt5Tex(b[2])})`;
 
 /** Painel de exemplo do coeficiente da utilização, acompanhando o estado atual e os sinais. */
 export function exemploUtilizacao(e: Estado, iteracao: number, eta = ETA) {
@@ -78,27 +85,33 @@ export function exemploUtilizacao(e: Estado, iteracao: number, eta = ETA) {
   const zero = Math.abs(arredondar(Math.abs(g), 5)) < 1e-12;
   return {
     g, upd,
+    gTexto: `g₁ = ${fmt5(g)}`, gTex: String.raw`g_1 = ${fmt5Tex(g)}`,
     conta: `−${fmt(eta, 2)} × (${fmt5(g)}) ≈ ${fmtAtualizacao(upd)}`,
+    contaTex: String.raw`-${fmtTex(eta, 2)} \times (${fmt5Tex(g)}) \approx ${paraTex(fmtAtualizacao(upd))}`,
     regra: zero ? "Gradiente nulo: o coeficiente não se move." : g < 0 ? "Gradiente negativo dá atualização positiva." : "Gradiente positivo dá atualização negativa.",
     efeito: zero ? "O coeficiente fica onde está." : `O coeficiente ${g < 0 ? "sobe" : "desce"} ${iteracao === 0 ? "nesta primeira atualização" : "nesta atualização"}.`,
   };
 }
 
+/** As três componentes do gradiente, em texto (rótulo acessível) e em TeX; a legenda dos símbolos tem trechos em TeX entre cifrões (ComTex). */
 export const FORMULAS = [
-  { id: "g0", t: "g₀ = média(p − y)" },
-  { id: "g1", t: "g₁ = média[(p − y) × (u/10)]" },
-  { id: "g2", t: "g₂ = média[(p − y) × (a/10)]" },
+  { id: "g0", t: "g₀ = média(p − y)", tex: String.raw`g_0 = \text{média}(p - y)` },
+  { id: "g1", t: "g₁ = média[(p − y) × (u/10)]", tex: String.raw`g_1 = \text{média}\big[(p - y) \times (u/10)\big]` },
+  { id: "g2", t: "g₂ = média[(p − y) × (a/10)]", tex: String.raw`g_2 = \text{média}\big[(p - y) \times (a/10)\big]` },
 ];
-export const NOTA_UNIDADES = "p: PD estimada; y: indicador de default; u: utilização em %; a: atraso em dias";
+export const NOTA_UNIDADES = "$p$: PD estimada; $y$: indicador de default; $u$: utilização em %; $a$: atraso em dias";
 export const ETAPAS = ["Começamos com os coeficientes em zero", "Calculamos o gradiente", "Aplicamos a atualização aos três parâmetros"];
 export const REGRA = "β novo = β atual − ηg";
+export const REGRA_TEX = String.raw`\beta_{\text{novo}} = \beta_{\text{atual}} - \eta\, g`;
+export const ETA_TEXTO = `η = ${fmt(ETA, 2)}`;
+export const ETA_TEX = String.raw`\eta = ${fmtTex(ETA, 2)}`;
 export const TITULO_GRAF = "De onde vem o gradiente da utilização?";
 export const ROTULO_EXPANSAO = "Ver contribuições por proposta";
 export const ROTULO_VOLTAR = "Voltar ao exemplo";
 export const TITULO_EXEMPLO = "Exemplo: coeficiente da utilização";
-export const LEGENDA_GRAF = "Cada barra é (pᵢ − yᵢ) × (uᵢ/10).";
+export const LEGENDA_GRAF = String.raw`Cada barra é $(p_i - y_i) \times (u_i/10)$.`;
 export const NOTA_ESTADO = "";
-export const DESTAQUE_GRAF = "Somar as 16 contribuições e dividir por 16 produz g₁.";
+export const DESTAQUE_GRAF = "Somar as 16 contribuições e dividir por 16 produz $g_1$.";
 export const EXPLICACAO = "Os três parâmetros usam o gradiente calculado no mesmo estado.";
 export const NOTA_TABELA = "Valores exibidos com arredondamento; contas com precisão integral.";
 export const RODAPE = "A seguir: repetir as atualizações e acompanhar a convergência.";

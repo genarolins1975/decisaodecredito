@@ -1,12 +1,14 @@
 "use client";
 import { useState } from "react";
 import { alternativa, alternativas, CAMINHO, CAMINHO_FECHO, conclusao, conversao, ENUNCIADO, etapas, fmtPd1, NOTA_ENUNCIADO, NOTA_OR, RODAPE, SINTESE_ANTES, TRANSICAO } from "@/lib/visuais/razao-de-chances";
+import { Tex } from "./tex";
 
 /**
  * Slide 11 do capítulo 4 (c4p11): a razão de odds multiplica odds, não probabilidade. Quadro 16:9 no sistema .rl.
  * O aluno escolhe a nova PD e confere; a demonstração à direita mostra os três passos com os números calculados,
  * qualquer que seja a alternativa escolhida. Contas em src/lib/visuais/razao-de-chances.ts, com OR = exp(β) em
- * precisão integral. Substitui o conteúdo herdado da página, inclusive a questão equivalente.
+ * precisão integral. Substitui o conteúdo herdado da página, inclusive a questão equivalente. As fórmulas do caminho e as
+ * contas das etapas em KaTeX desde 24/09/2026, com o texto como rótulo acessível.
  */
 export function RazaoDeChances({ pagina }: { pagina?: { index: number; total: number } }) {
   const [escolha, setEscolha] = useState<string | null>(null);
@@ -76,7 +78,7 @@ export function RazaoDeChances({ pagina }: { pagina?: { index: number; total: nu
                 <p className="ro-p-k">Qual caminho você usaria?</p>
                 <ol className="ro-passos">
                   {CAMINHO.map((p, i) => (
-                    <li key={p.t}><span className="ro-passo-n" aria-hidden="true">{i + 1}</span><span><b>{p.t}</b><span className="ro-passo-f">{p.f}</span></span></li>
+                    <li key={p.t}><span className="ro-passo-n" aria-hidden="true">{i + 1}</span><span><b>{p.t}</b><span className="ro-passo-f" role="img" aria-label={p.f}><Tex f={p.tex} /></span></span></li>
                   ))}
                 </ol>
                 <p className="ro-p-fecho">{CAMINHO_FECHO}</p>
@@ -89,7 +91,7 @@ export function RazaoDeChances({ pagina }: { pagina?: { index: number; total: nu
                   {es.map((e, i) => (
                     <li key={e.k} className={e.destaque ? "ro-etapa--fim" : ""}>
                       <span className="ro-passo-n" aria-hidden="true">{i + 1}</span>
-                      <span><b>{e.k}</b><span className="ro-passo-f">{e.conta}</span></span>
+                      <span><b>{e.k}</b><span className="ro-passo-f" role="img" aria-label={e.conta}><Tex f={e.contaTex} /></span></span>
                       <span className={`ro-etapa-v ${e.destaque ? "ro-etapa-v--fim" : ""}`}>{e.valor}</span>
                     </li>
                   ))}

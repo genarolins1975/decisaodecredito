@@ -465,7 +465,7 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await page.goto("/aulas/c4p10");
   const cf = page.locator('figure[data-vz="coeficiente-pd"]');
   await expect(cf).toContainText("Você interpretaria este coeficiente corretamente?");
-  await expect(cf).toContainText("70% → 80%"); await expect(cf).toContainText("5 dias → 5 dias"); await expect(cf).toContainText("β = 0,7453");
+  await expect(cf).toContainText("70% → 80%"); await expect(cf).toContainText("5 dias → 5 dias"); await expect(cf.getByRole("img", { name: "β = 0,7453", exact: true })).toBeVisible(); // fórmulas e contas em KaTeX, com o texto como rótulo acessível
   await expect(cf).toContainText("Antes de responder");
   await expect(cf).not.toContainText("Correto: o acréscimo ocorre no escore");
   await expect(page.locator("main")).not.toContainText("mistura duas escalas"); // o parágrafo herdado saiu
@@ -475,10 +475,10 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(cf).not.toContainText("Você confundiu as escalas"); // selecionar não revela
   await cf.getByRole("button", { name: "Conferir resposta" }).click();
   await expect(cf).toContainText("Resposta incorreta"); await expect(cf).toContainText("Você confundiu as escalas");
-  await expect(cf).toContainText("Δx = (80 − 70) ÷ 10 = 1"); await expect(cf).toContainText("Δz = β × 1 = 0,7453");
+  await expect(cf.getByRole("img", { name: "Δx = (80 − 70) ÷ 10 = 1", exact: true })).toBeVisible(); await expect(cf.getByRole("img", { name: "Δz = β × 1 = 0,7453", exact: true })).toBeVisible();
   await expect(cf).toContainText("0,2483"); await expect(cf).toContainText("0,9936"); await expect(cf).toContainText("56,18%"); await expect(cf).toContainText("72,98%");
   await expect(cf).toContainText("A variação da PD neste exemplo é +16,80 pp.");
-  await expect(cf).toContainText("β soma no log odds.");
+  await expect(cf.locator(".cf-sintese-t")).toContainText("soma no log odds."); await expect(cf.locator(".cf-sintese-t .katex")).toHaveCount(2); // β e exp(β) em KaTeX dentro da frase
   await cf.getByRole("button", { name: "Tentar novamente" }).click();
   await expect(cf).toContainText("Antes de responder"); await expect(cf).not.toContainText("Você confundiu as escalas");
   await cf.getByRole("radio", { name: /O escore em log odds/ }).check();
@@ -514,7 +514,7 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await page.goto("/aulas/c4p12");
   const ip = page.locator('figure[data-vz="impacto-pd"]');
   await expect(ip).toContainText("O mesmo multiplicador, diferentes mudanças na PD");
-  await expect(ip).toContainText("Δz = +0,7453"); await expect(ip).toContainText("× 2,11");
+  await expect(ip.getByRole("img", { name: "Δz = +0,7453", exact: true })).toBeVisible(); await expect(ip).toContainText("× 2,11");
   await expect(ip).toContainText("18,97%"); await expect(ip).toContainText("+8,97 pp");
   await expect(ip).not.toContainText("40,8%"); // a revelação começa fechada
   await expect(page.locator("main")).not.toContainText("RECALCULADO AQUI");
@@ -538,14 +538,14 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await ip.getByRole("button", { name: "Voltar ao gráfico" }).click();
   await expect(ip.locator(".ip-svg")).toBeVisible();
   await ip.getByRole("button", { name: "Ver a conta" }).click();
-  await expect(ip).toContainText("PD final = m × p ÷ (1 − p + m × p)");
+  await expect(ip.getByRole("img", { name: "PD final = m × p ÷ (1 − p + m × p)", exact: true })).toBeVisible();
   // c4p14: a mesma contribuição em três unidades; trocar a unidade não muda escore nem PD
   await page.goto("/aulas/c4p14");
   const uc = page.locator('figure[data-vz="unidade-coeficiente"]');
   await expect(uc).toContainText("A unidade muda. A previsão permanece.");
   await expect(uc).toContainText("0,7453"); await expect(uc).toContainText("0,07453"); await expect(uc).toContainText("7,453");
   expect(await uc.locator(".uc-c").allInnerTexts()).toEqual(["5,2171", "5,2171", "5,2171"]);
-  await expect(uc).toContainText("z ≈ 0,2483"); await expect(uc).toContainText("56,18%");
+  await expect(uc.getByRole("img", { name: "z ≈ 0,2483", exact: true })).toBeVisible(); await expect(uc.getByRole("img", { name: "−5,6666 + 5,2171 + 0,6978", exact: true })).toBeVisible(); await expect(uc).toContainText("56,18%");
   await expect(page.locator("main")).not.toContainText("RECALCULADO AQUI");
   await uc.getByRole("button", { name: "95%" }).click();
   expect(new Set(await uc.locator(".uc-c").allInnerTexts()).size).toBe(1); // as três continuam iguais
@@ -555,10 +555,10 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await uc.getByRole("button", { name: "Restaurar exemplo" }).click();
   await expect(uc).toContainText("56,18%");
   await uc.getByRole("button", { name: "Ver definição" }).nth(2).click();
-  await expect(uc).toContainText("x = utilização em % ÷ 100");
+  await expect(uc.getByRole("img", { name: "x = utilização em % ÷ 100", exact: true })).toBeVisible();
   expect(await uc.locator(".uc-c").allInnerTexts()).toEqual(["5,2171", "5,2171", "5,2171"]); // selecionar não altera a proposta
   await uc.getByRole("button", { name: "E a razão de odds?" }).click();
-  await expect(uc).toContainText("β × Δx = 0,7453 nas três"); await expect(uc).toContainText("≈ 2,11");
+  await expect(uc.getByRole("img", { name: "β × Δx = 0,7453", exact: true })).toBeVisible(); await expect(uc.locator(".uc-odds-v")).toContainText("nas três"); await expect(uc.getByRole("img", { name: "OR = exp(β × Δx) ≈ 2,11", exact: true })).toBeVisible(); await expect(uc.getByRole("img", { name: "Δx = 0,1", exact: true })).toBeVisible();
   // c4p15: a log loss proposta a proposta, na gramática do c4p2: as 16 propostas sobre as duas curvas de perda; a escolha muda só o painel
   await page.goto("/aulas/c4p15");
   const ll = page.locator('figure[data-vz="log-loss"]');
@@ -617,16 +617,16 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await page.goto("/aulas/c4p16");
   const gp = page.locator('figure[data-vz="gradiente-passo"]');
   await expect(gp).toContainText("Uma iteração: do gradiente aos novos coeficientes");
-  await expect(gp).toContainText("β₀ = β₁ = β₂ = 0"); await expect(gp).toContainText("50,00%"); await expect(gp).toContainText("0,69315");
+  await expect(gp.getByRole("img", { name: "β₀ = β₁ = β₂ = 0", exact: true })).toBeVisible(); await expect(gp).toContainText("50,00%"); await expect(gp).toContainText("0,69315");
   await expect(gp).toContainText("−0,59375"); await expect(gp).toContainText("−0,23438");
   await expect(gp).toContainText("+0,05938"); await expect(gp).toContainText("+0,02344");
   await expect(gp).toContainText("Exemplo: coeficiente da utilização");
-  await expect(gp).toContainText("−0,10 × (−0,59375) ≈ +0,05938");
+  await expect(gp.getByRole("img", { name: "g₁ = −0,59375", exact: true })).toBeVisible(); await expect(gp.getByRole("img", { name: "−0,10 × (−0,59375) ≈ +0,05938", exact: true })).toBeVisible(); await expect(gp.getByRole("img", { name: "g₁ = média[(p − y) × (u/10)] = −0,59375", exact: true })).toBeVisible(); await expect(gp.getByRole("img", { name: "β novo = β atual − ηg", exact: true })).toBeVisible();
   await expect(gp).toContainText("Gradiente negativo dá atualização positiva.");
   expect(await gp.locator(".gp-barra").count()).toBe(0); // o gráfico fica na expansão
   await gp.getByRole("button", { name: "Ver contribuições por proposta" }).click();
   await expect(gp).toContainText("Média das contribuições: −0,59375");
-  await expect(gp).toContainText("Somar as 16 contribuições e dividir por 16 produz g₁.");
+  await expect(gp).toContainText("Somar as 16 contribuições e dividir por 16 produz");
   expect(await gp.locator(".gp-barra").count()).toBe(16);
   await gp.getByRole("button", { name: "Voltar ao exemplo" }).click();
   await expect(page.locator("main")).not.toContainText("distância até o ótimo");
@@ -636,18 +636,20 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(gp).toContainText("PD média estimada"); await expect(gp).toContainText("59,14%");
   await expect(gp).toContainText("0,67194"); await expect(gp).toContainText("antes 0,69315"); // a perda cai
   await expect(gp).toContainText("0,05938"); await expect(gp).toContainText("0,02344"); // os três coeficientes mudaram juntos
+  await expect(gp.getByRole("img", { name: "β = (0,00000; 0,05938; 0,02344)", exact: true })).toBeVisible();
   await gp.getByRole("button", { name: "Reiniciar" }).click();
-  await expect(gp).toContainText("β₀ = β₁ = β₂ = 0"); await expect(gp).toContainText("0,69315");
+  await expect(gp.getByRole("img", { name: "β₀ = β₁ = β₂ = 0", exact: true })).toBeVisible(); await expect(gp).toContainText("0,69315");
   // c4p1: os dois quadros de abertura, um só estado: características → escore → PD; +10 pp → +0,7453 em z → × 2,11 nas odds
   await page.goto("/aulas/c4p1");
   const rl = page.locator('figure[data-vz="logit-slides"]');
-  await expect(rl).toContainText("Como o logit transforma uma proposta em PD"); await expect(rl).toContainText("−5,6666"); await expect(rl).toContainText("+5,2171"); await expect(rl).toContainText("+0,6978"); await expect(rl).toContainText("z ≈ 0,2483"); await expect(rl).toContainText("56,18%");
+  await expect(rl).toContainText("Como o logit transforma uma proposta em PD"); await expect(rl).toContainText("−5,6666"); await expect(rl).toContainText("+5,2171"); await expect(rl).toContainText("+0,6978"); await expect(rl.getByRole("img", { name: "z ≈ 0,2483", exact: true })).toBeVisible(); await expect(rl).toContainText("56,18%");
+  await expect(rl.getByRole("img", { name: "z = β₀ + β₁x₁ + β₂x₂", exact: true })).toBeVisible(); await expect(rl.getByRole("img", { name: "PD = 1 ÷ (1 + e^(−z))", exact: true })).toBeVisible(); await expect(rl.getByRole("img", { name: "70% ÷ 10 pp = 7,0 unidades", exact: true })).toBeVisible(); await expect(rl.getByRole("img", { name: "0,7453 × 7,0", exact: true })).toBeVisible(); await expect(rl.getByRole("img", { name: "e^0,7453 ≈ 2,11", exact: true })).toBeVisible();
   await expect(rl).toContainText("cerca de 56 defaults a cada 100");
   await rl.getByLabel("Utilização do limite, campo").fill("0"); await rl.getByLabel("Atraso observado, campo").fill("0");
-  await expect(rl).toContainText("z ≈ −5,6666"); await expect(rl).toContainText("0,34%");
+  await expect(rl.getByRole("img", { name: "z ≈ −5,6666", exact: true })).toBeVisible(); await expect(rl.getByRole("img", { name: "0% ÷ 10 pp = 0,0 unidades", exact: true })).toBeVisible(); await expect(rl).toContainText("0,34%");
   await rl.getByRole("button", { name: "Restaurar exemplo" }).click(); await expect(rl).toContainText("56,18%");
   await expect(rl).toContainText("× 2,11"); await expect(rl).toContainText("≈ +2,12 pp"); await expect(rl).toContainText("≈ +8,97 pp"); await expect(rl).toContainText("≈ +17,82 pp"); await expect(rl).toContainText("≈ +4,99 pp");
-  await rl.getByRole("button", { name: "−10 pp" }).click(); await expect(rl).toContainText("× 0,47"); await expect(rl).toContainText("−0,7453");
+  await rl.getByRole("button", { name: "−10 pp" }).click(); await expect(rl).toContainText("× 0,47"); await expect(rl).toContainText("−0,7453"); await expect(rl.getByRole("img", { name: "e^−0,7453 ≈ 0,47", exact: true })).toBeVisible();
   await rl.getByRole("button", { name: "0", exact: true }).click(); await expect(rl).toContainText("sem mudança"); await expect(rl).toContainText("1,00×");
   await page.goto("/apresentacao/c4p1");
   await expect(page.locator("main")).toContainText("01 / 22"); await expect(page.locator("main")).not.toContainText("Infográfico de abertura");

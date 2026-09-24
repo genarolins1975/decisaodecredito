@@ -4,9 +4,9 @@
  * coincidem. O intercepto não muda porque a troca de unidade não desloca a origem da variável; centralizar, que
  * desloca, exigiria ajustar o intercepto. Precisão integral; arredondamento só na exibição.
  */
-import { BETA0, BETA1, BETA2, arredondar, fmt, fmtPct, sigmoide } from "./logit-slides";
+import { BETA0, BETA1, BETA2, arredondar, escoreTex, escoreTexto, fmt, fmtPct, fmtTex, paraTex, sigmoide } from "./logit-slides";
 
-export { BETA0, BETA1, BETA2, arredondar, fmt, fmtPct, sigmoide };
+export { BETA0, BETA1, BETA2, arredondar, escoreTex, escoreTexto, fmt, fmtPct, fmtTex, paraTex, sigmoide };
 
 export const ATRASO_FIXO = 5; // dias, fixo neste slide
 export const UTIL_INICIAL = 70; // %
@@ -16,16 +16,16 @@ export const DELTA_COMPARACAO = 10; // pp, o incremento comparado no detalhe da 
 
 export type Unidade = {
   id: "dez" | "um" | "fracao";
-  rotulo: string; equivale: string; definicao: string;
+  rotulo: string; equivale: string; definicao: string; definicaoTex: string;
   fator: number; // divisor aplicado à utilização em %
   casasBeta: number; casasX: number; fixarX: boolean;
 };
 
 /** As três unidades: o fator divide a utilização em % e multiplica o coeficiente na mesma proporção. */
 export const UNIDADES: Unidade[] = [
-  { id: "dez", rotulo: "Por 10 pp", equivale: "1 unidade = 10 pp", definicao: "x = utilização em % ÷ 10", fator: 10, casasBeta: 4, casasX: 1, fixarX: false },
-  { id: "um", rotulo: "Por 1 pp", equivale: "1 unidade = 1 pp", definicao: "x = utilização em %", fator: 1, casasBeta: 5, casasX: 0, fixarX: true },
-  { id: "fracao", rotulo: "Como fração de 0 a 1", equivale: "1 unidade = 100 pp", definicao: "x = utilização em % ÷ 100", fator: 100, casasBeta: 3, casasX: 2, fixarX: true },
+  { id: "dez", rotulo: "Por 10 pp", equivale: "1 unidade = 10 pp", definicao: "x = utilização em % ÷ 10", definicaoTex: String.raw`x = \text{utilização em \%} \div 10`, fator: 10, casasBeta: 4, casasX: 1, fixarX: false },
+  { id: "um", rotulo: "Por 1 pp", equivale: "1 unidade = 1 pp", definicao: "x = utilização em %", definicaoTex: String.raw`x = \text{utilização em \%}`, fator: 1, casasBeta: 5, casasX: 0, fixarX: true },
+  { id: "fracao", rotulo: "Como fração de 0 a 1", equivale: "1 unidade = 100 pp", definicao: "x = utilização em % ÷ 100", definicaoTex: String.raw`x = \text{utilização em \%} \div 100`, fator: 100, casasBeta: 3, casasX: 2, fixarX: true },
 ];
 
 /** Coeficiente na unidade: β por 10 pp × (fator ÷ 10). */
@@ -45,6 +45,10 @@ export function resultado(util: number, u: Unidade = UNIDADES[0]) {
   const z = BETA0 + cUtil + cAtraso;
   return { cUtil, cAtraso, intercepto: BETA0, z, pd: sigmoide(z) };
 }
+
+/** A soma das três parcelas do escore, em texto (rótulo acessível) e em TeX, com as parcelas arredondadas só na exibição. */
+export const somaTexto = (r: ReturnType<typeof resultado>) => `${fmt(r.intercepto, 4)} + ${fmt(r.cUtil, 4)} + ${fmt(r.cAtraso, 4)}`;
+export const somaTex = (r: ReturnType<typeof resultado>) => `${fmtTex(r.intercepto, 4)} + ${fmtTex(r.cUtil, 4)} + ${fmtTex(r.cAtraso, 4)}`;
 
 /** As três contribuições coincidem a menos do ruído binário; a igualdade é algébrica. */
 export function coincidem(util: number, tol = 1e-9) {
@@ -72,6 +76,14 @@ export function validarUtil(texto: string): Validacao {
 /** Número enxuto: até N casas, sem zeros à direita, ou N casas fixas quando a coluna pede alinhamento. */
 export const fmtNum = (v: number, casas: number, fixar = false) =>
   fixar ? fmt(v, casas) : arredondar(v, casas).toLocaleString("pt-BR", { maximumFractionDigits: casas }).replace("-", "−");
+
+/** O detalhe da razão de odds, em texto (rótulo acessível) e em TeX: o Δx de cada unidade, o efeito comum e a razão de odds. */
+export const deltaXTexto = (dx: number) => `Δx = ${fmtNum(dx, 2)}`;
+export const deltaXTex = (dx: number) => String.raw`\Delta x = ${paraTex(fmtNum(dx, 2))}`;
+export const efeitoTexto = (efeito: number) => `β × Δx = ${fmt(efeito, 4)}`;
+export const efeitoTex = (efeito: number) => String.raw`\beta \times \Delta x = ${fmtTex(efeito, 4)}`;
+export const orTexto = (or: number) => `OR = exp(β × Δx) ≈ ${fmt(or, 2)}`;
+export const orTex = (or: number) => String.raw`\mathrm{OR} = \exp(\beta \times \Delta x) \approx ${fmtTex(or, 2)}`;
 
 export const NOTA_PROPOSTA = "Mesma proposta em todas as linhas";
 export const ROTULO_CONTRIB = "Mesma contribuição ao escore";
