@@ -4,10 +4,11 @@ import did from "@/lib/visuais/did.json";
 import type { Proposta } from "@/lib/visuais/logistica";
 import { crescer, folhas } from "@/lib/visuais/arvore";
 import { ArvoreDiagrama, type Anatomia as Elemento } from "./arvore-diagrama";
+import { ComTex, Tex } from "./tex";
 
 /**
  * Anatomia: nó, regra, ramo, folha, profundidade (capítulo 5, c5p3). A árvore de duas divisões das 16 propostas com
- * cada elemento aceso ao toque, e a conta de quantas folhas uma profundidade permite.
+ * cada elemento aceso ao toque, e a conta de quantas folhas uma profundidade permite (2^d, em KaTeX desde 24/09/2026).
  */
 const BASE = did.base as Proposta[];
 const PALAVRAS: { k: Elemento; nome: string; texto: string }[] = [
@@ -45,9 +46,9 @@ export function Anatomia() {
           <div className="vz-tile"><p className="eyebrow">As cinco palavras</p>
             <table className="table text-[.85em] vz-esc-usos"><tbody>{PALAVRAS.map((p) => <tr key={p.k} className={p.k === el ? "vz-t-on" : ""} onClick={() => setEl(p.k)} style={{ cursor: "pointer" }}><th scope="row">{p.nome}</th><td>{p.texto}</td></tr>)}</tbody></table></div>
           <div className="vz-tile"><p className="eyebrow">Quantas folhas uma profundidade permite</p>
-            <label className="vz-slider"><span className="vz-slider-rotulo"><span>profundidade máxima d</span><span className="vz-slider-valor">{d} → até {(2 ** d).toLocaleString("pt-BR")} folhas</span></span><input type="range" min={1} max={10} step={1} value={d} onChange={(e) => setD(Number(e.target.value))} aria-valuetext={`${d}`} /></label>
+            <label className="vz-slider"><span className="vz-slider-rotulo"><span>profundidade máxima <Tex f="d" className="tx-linha" /></span><span className="vz-slider-valor">{d} → até {(2 ** d).toLocaleString("pt-BR")} folhas</span></span><input type="range" min={1} max={10} step={1} value={d} onChange={(e) => setD(Number(e.target.value))} aria-valuetext={`${d}`} /></label>
             <div className="vz-ana-potencias" aria-hidden="true">{Array.from({ length: 10 }, (_, i) => i + 1).map((k) => <span key={k} className={`vz-ana-pot ${k === d ? "vz-ana-pot--on" : ""} ${k <= d ? "vz-ana-pot--ate" : ""}`} style={{ height: `${8 + 80 * (Math.log2(2 ** k) / 10)}%` }} title={`${k}: ${2 ** k}`}><b>{k}</b></span>)}</div>
-            <p className="hint">Profundidade d permite até 2 elevado a d folhas: 3 dá 8; 10 dá 1.024. Por isso a profundidade é o principal freio.</p></div>
+            <p className="hint"><ComTex t="Profundidade $d$ permite até $2^d$ folhas: 3 dá 8; 10 dá 1.024. Por isso a profundidade é o principal freio." /></p></div>
           <div className="vz-tile vz-tile--ok"><p className="eyebrow">Duas propriedades que decorrem da forma</p><p className="vz-num vz-num--texto">Toda proposta cai em exatamente uma folha: sem sobreposição e sem buraco. E o caminho até a folha explica a previsão inteira, linha a linha.</p></div>
         </div>
       </div>

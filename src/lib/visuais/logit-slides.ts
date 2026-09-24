@@ -4,6 +4,7 @@
  * arredondamento só na exibição. Coeficientes fixos da aula: BETA_AULA = [β₀, β₁ por 10 pp de utilização, β₂ por 10 dias].
  */
 import { BETA_AULA } from "./logistica";
+import { paraTex } from "./tex";
 
 export const [BETA0, BETA1, BETA2] = BETA_AULA;
 export const EXEMPLO = { util: 70, atraso: 5 }; // utilização em %, atraso em dias
@@ -25,8 +26,8 @@ export const fmt = (v: number, casas: number, sinal = false) => {
 };
 export const fmtPct = (p: number, casas = 2) => `${fmt(p * 100, casas)}%`;
 export const fmtPp = (pp: number, casas = 2) => `${fmt(pp, casas, true)} pp`;
-/** Número para dentro de uma fórmula TeX: sinal de menos do TeX e vírgula decimal protegida, que o KaTeX trataria como pontuação. */
-export const paraTex = (s: string) => s.replace(/−/g, "-").replace(/,/g, "{,}");
+/** Número para dentro de uma fórmula TeX: sinal de menos do TeX e vírgula decimal protegida (src/lib/visuais/tex.ts). */
+export { paraTex };
 export const fmtTex = (v: number, casas: number, sinal = false) => paraTex(fmt(v, casas, sinal));
 
 /** Fórmulas fixas dos dois quadros, em texto (rótulo acessível) e em TeX (KaTeX). */

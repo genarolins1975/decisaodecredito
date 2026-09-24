@@ -47,7 +47,7 @@ export function RaizEscolhida() {
         </div>
       </div>
       <p className="vz-re-nota">A <b>#2</b> deu default no grupo bom; a <b>#15</b> pagou no grupo ruim. Um corte só não dá conta delas.</p>
-      <p className="vz-fonte">Raiz da árvore crescida aqui sobre as 16 propostas: utilização ≤ 57,5%, 8 propostas de cada lado, Gini 0,21875 nos dois. A conferência independente usa o gerador da aula e o scikit-learn (content/generated/dados.json).</p>
+      <p className="vz-fonte">Raiz da árvore crescida aqui sobre as 16 propostas: utilização ≤ 57,5%, 8 propostas de cada lado, Gini 0,21875 nos dois. A conferência independente usa o gerador da aula e o scikit-learn.</p>
     </figure>
   );
 }

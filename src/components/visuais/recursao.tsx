@@ -11,7 +11,8 @@ import { gini, melhorCorte, rotuloCorte, todosOsCandidatos } from "@/lib/visuais
  * cada nó e o corte escolhido.
  */
 const BASE = did.base as Proposta[];
-const PW = 300, PH = 250, PML = 40, PMR = 10, PMT = 12, PMB = 34;
+/* margem de cima para o rótulo do melhor corte, que antes caía sobre a #12; margem da direita para o 100% do eixo, que saía cortado */
+const PW = 300, PH = 250, PML = 40, PMR = 18, PMT = 26, PMB = 34;
 const su = (u: number) => PML + (u / 100) * (PW - PML - PMR), sa = (a: number) => PMT + (1 - (a + 4) / 48) * (PH - PMT - PMB);
 
 export function Recursao() {
@@ -48,7 +49,7 @@ export function Recursao() {
               <text x={su(50)} y={PH - 4} textAnchor="middle" className="vz-rotulo">utilização</text>
               {n.melhor.v === "util" ? <line x1={su(n.melhor.corte)} x2={su(n.melhor.corte)} y1={sa(44)} y2={sa(-4)} className="vz-arv-cand" /> : <line x1={su(n.u0)} x2={su(n.u1)} y1={sa(n.melhor.corte)} y2={sa(n.melhor.corte)} className="vz-arv-cand" />}
               {BASE.map((p) => { const dentro = n.grupo.includes(p); return <g key={p.id} style={{ transform: `translate(${su(p.util)}px, ${sa(p.atraso)}px)`, opacity: dentro ? 1 : 0.18 }}><circle r={dentro ? 8 : 5} className={p.y ? "vz-int-c--default" : "vz-int-c--pagou"} />{dentro && <text y={3.5} textAnchor="middle" className="vz-cc-id">{p.id}</text>}</g>; })}
-              <text x={n.k === "esq" ? su(n.u0) + 4 : su(n.u1) - 4} y={sa(44) + 12} textAnchor={n.k === "esq" ? "start" : "end"} className="vz-ks-t">{rotuloCorte(n.melhor.v, n.melhor.corte)} · ganho {fmtNum(n.melhor.ganho, 3)}</text>
+              <text x={n.k === "esq" ? su(n.u0) + 4 : su(n.u1) - 4} y={PMT - 8} textAnchor={n.k === "esq" ? "start" : "end"} className="vz-ks-t">{rotuloCorte(n.melhor.v, n.melhor.corte)} · ganho {fmtNum(n.melhor.ganho, 3)}</text>
             </svg>
             <div className="table-wrap"><table className="table text-[.8em]"><thead><tr><th>Variável</th><th>Corte</th><th>esq / dir</th><th>Ganho</th></tr></thead><tbody>
               {n.cands.slice(0, 4).map((c, i) => <tr key={`${c.v}-${c.corte}`} className={i === 0 ? "vz-t-on" : ""}><th scope="row">{c.v === "util" ? "utilização" : "atraso"}</th><td>{fmtNum(c.corte, 1)}</td><td>{c.esq.length} / {c.dir.length}</td><td className={i === 0 ? "vz-t-forte" : ""}>{fmtNum(c.ganho, 5)}</td></tr>)}

@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
 import { ATALHOS, cartoes, celulas, EIXO_X, EIXO_Y, entropiaP, fmtNum, fmtPct, FORMULAS, giniP, leitura, P_INICIAL, RODAPE, ROTULO_ATALHOS, ROTULO_SIMETRICO, ROTULO_TAXA, simetrico, SUB_QUADRADO, SUBTITULO, taxaErroP, TEX_ERRO, TITULO, TITULO_CTL, TITULO_GRAF, TITULO_QUADRADO, type Celula } from "@/lib/visuais/impureza";
+import { pctTex } from "@/lib/visuais/tex";
 import { Tex } from "./tex";
 
 /**
@@ -10,7 +11,8 @@ import { Tex } from "./tex";
  * as quatro células legíveis; à direita, o painel. Clicar ou arrastar sobre o gráfico também move p. Contas em
  * src/lib/visuais/impureza.ts.
  */
-const W = 640, H = 430, ML = 62, MR = 22, MT = 36, MB = 74, Y_MAX = 1.1;
+// MR 30: o rótulo "100%", centrado na ponta do eixo, tem cerca de 54 de largura na letra de 19; com 22 perdia o % no celular, onde o desenho ocupa a caixa inteira.
+const W = 640, H = 430, ML = 62, MR = 30, MT = 36, MB = 74, Y_MAX = 1.1;
 const X0 = ML, X1 = W - MR, Y0 = H - MB;
 const sx = (p: number) => X0 + p * (X1 - X0);
 const sy = (v: number) => MT + (1 - v / Y_MAX) * (Y0 - MT);
@@ -264,7 +266,7 @@ export function ImpurezaCurva({ pagina }: { pagina?: { index: number; total: num
             <p className="rl-k">{TITULO_QUADRADO}</p>
             <p className="im-quad-sub">{SUB_QUADRADO}</p>
             <div className="im-q-wrap"><Quadrado p={p} /></div>
-            <p className="im-erro"><Tex f={TEX_ERRO} /> <b>= {fmtPct(g, 2)}</b></p>
+            <p className="im-erro" role="img" aria-label={`Pr(erro) = 2p(1 − p) = ${fmtPct(g, 2)}`}><Tex f={String.raw`${TEX_ERRO} = \mathbf{${pctTex(fmtPct(g, 2))}}`} /></p>
           </div>
 
           <aside className="im-painel">

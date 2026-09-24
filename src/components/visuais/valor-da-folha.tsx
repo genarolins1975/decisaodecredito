@@ -3,6 +3,8 @@ import { useMemo } from "react";
 import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
 import { crescer, folhas } from "@/lib/visuais/arvore";
 import { BASE16 } from "./plano-16";
+import { pctTex } from "@/lib/visuais/tex";
+import { ComTex, Tex } from "./tex";
 
 /**
  * A previsão da folha é a frequência da folha (c5p12). Numa folha com 1 default em 2 propostas, a log loss média de
@@ -10,7 +12,8 @@ import { BASE16 } from "./plano-16";
  * consequências em uma linha cada. Substitui a página herdada, que ocupava duas telas de texto.
  */
 const CANDIDATOS = [0.1, 0.25, 0.5, 0.75, 0.9];
-const W = 520, H = 300, ML = 48, MR = 14, MT = 16, MB = 44, YMAX = 2.5;
+// MR 17: o rótulo "100%", centrado na ponta do eixo, tem cerca de 30 de largura na letra de 10,5; com 14 perdia a borda do %.
+const W = 520, H = 300, ML = 48, MR = 17, MT = 16, MB = 44, YMAX = 2.5;
 const sx = (v: number) => ML + v * (W - ML - MR);
 const sy = (l: number) => MT + (1 - Math.min(l, YMAX) / YMAX) * (H - MT - MB);
 const NOTAS = [
@@ -32,7 +35,7 @@ export function ValorDaFolha() {
           <div className="table-wrap"><table className="table vz-vf-tabela"><thead><tr><th>Valor atribuído</th><th>Perda média</th></tr></thead><tbody>
             {CANDIDATOS.map((v) => <tr key={v} className={v === otimo ? "vz-t-on" : ""}><th scope="row">{fmtPct(v, 1)}</th><td className={v === otimo ? "vz-t-forte" : ""}>{fmtNum(perda(v), 5)}</td></tr>)}
           </tbody></table></div>
-          <p className="vz-vf-min">O mínimo está na frequência observada: <span className="whitespace-nowrap">{folha.d} ÷ {folha.n} = <b>{fmtPct(otimo, 1)}</b></span>. Não foi escolhido: foi calculado.</p>
+          <p className="vz-vf-min">O mínimo está na frequência observada: <span className="tx-inteira" role="img" aria-label={`${folha.d} ÷ ${folha.n} = ${fmtPct(otimo, 1)}`}><Tex f={String.raw`${folha.d} \div ${folha.n} = \mathbf{${pctTex(fmtPct(otimo, 1))}}`} className="tx-linha" /></span>. Não foi escolhido: foi calculado.</p>
         </div>
         <div className="vz-grafico">
           <p className="vz-grafico-t">Log loss média na folha, por valor atribuído</p>
@@ -47,7 +50,7 @@ export function ValorDaFolha() {
         </div>
       </div>
       <ul className="vz-vf-notas">{NOTAS.map((n) => <li key={n}>{n}</li>)}</ul>
-      <p className="vz-fonte">Perda média na folha = −[d × ln(v) + (n − d) × ln(1 − v)] ÷ n, com d = {folha.d} e n = {folha.n}. Implementações reais aplicam um piso às folhas puras, porque previsão de 0% sobre um default tem perda infinita.</p>
+      <p className="vz-fonte"><ComTex t={String.raw`$\text{perda média na folha} = -\big[d \times \ln(v) + (n - d) \times \ln(1 - v)\big] \div n$, com $d = ${folha.d}$ e $n = ${folha.n}$.`} /> Implementações reais aplicam um piso às folhas puras, porque previsão de 0% sobre um default tem perda infinita.</p>
     </figure>
   );
 }

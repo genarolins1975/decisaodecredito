@@ -42,7 +42,7 @@ export function ConfiancaDaFolha() {
         <li>Com 2 propostas, o intervalo vai de {fmtPct(fs[0].ic.lo, 1)} a {fmtPct(fs[0].ic.hi, 1)}: a folha quase não afirma nada.</li>
         <li>A mesma PD de 0% com 600 propostas teria intervalo de 0% a {fmtPct(volume.hi, 1)}.</li>
       </ul>
-      <p className="vz-fonte">Intervalo de Wilson a 95% (src/lib/visuais/arvore.ts). Barras que se sobrepõem não demonstram risco diferente, mas sobreposição não é teste de diferença: o teste para comparar duas proporções está no capítulo 7.</p>
+      <p className="vz-fonte">Intervalo de Wilson a 95%. Barras que se sobrepõem não demonstram risco diferente, mas sobreposição não é teste de diferença: o teste para comparar duas proporções está no capítulo 7.</p>
     </figure>
   );
 }

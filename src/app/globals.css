@@ -588,7 +588,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-arv-folha { animation: vz-surge .5s ease-out both; }
 @keyframes vz-surge { from { opacity: 0; } to { opacity: 1; } }
 .vz-arv-rect { stroke: none; }
-.vz-arv-rot { font-size: 9.5px; fill: var(--color-ink); font-weight: 700; }
+.vz-arv-rot { font-size: 9.5px; fill: var(--color-ink); font-weight: 700; paint-order: stroke; stroke: rgba(255, 255, 255, .85); stroke-width: 3px; stroke-linejoin: round; }
 .vz-arv-corte { stroke: var(--color-ink); stroke-linecap: round; }
 .vz-arv-cand { stroke: var(--color-gold); stroke-width: 2.5; stroke-dasharray: 6 4; }
 .vz-front-ponto--fora circle { fill: #fff; stroke: var(--color-muted); stroke-dasharray: 3 2; } .vz-front-ponto--fora .vz-front-id { fill: var(--color-muted); }
@@ -859,6 +859,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-formula--tex { font-family: inherit; font-size: 14px; overflow-x: auto; overflow-y: hidden; } .vz-formula--tex .katex { font-size: 1.15em; }
 /* trecho de fórmula dentro de uma frase ou de uma linha de texto (ComTex, contas em rótulo): o KaTeX a 1,1 em acompanha a altura da letra do texto */
 .tx-linha .katex { font-size: 1.1em; }
+/* fórmulas curtas nas frases de estado (α = 0,2813; y = 0) e contas curtas marcadas com .tx-inteira (1 ÷ 2 = 50,0%) não quebram entre o sinal e o valor */
+.vz-estado .tx-linha, .tx-inteira { white-space: nowrap; }
 /* valor em KaTeX na mesma linha de valores em texto: a caixa de linha do KaTeX (1,2) fica da altura da vizinha, e os rótulos continuam alinhados */
 .ip-exp-v--tex .katex, .uc-soma .katex, .uc-res-v--tex .katex, .gp-v--tex .katex { line-height: 1; }
 .vz-esc-usos th { width: 34%; font-weight: 700; color: var(--color-ink); vertical-align: top; }
@@ -875,6 +877,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-int-rastro { stroke: var(--color-muted); stroke-width: 1.2; stroke-dasharray: 2 3; } .vz-int-haste { stroke: var(--color-rule); stroke-width: 1; }
 .vz-int-orig { fill: #fff; stroke-width: 1.5; } .vz-int-orig--default { stroke: var(--color-alert); } .vz-int-orig--pagou { stroke: #6f8fc4; }
 .vz-int-ponto { transition: transform .35s cubic-bezier(.2,.7,.2,1); } .vz-int-ponto circle { stroke: #fff; stroke-width: 2; } .vz-int-c--default { fill: var(--color-alert); } .vz-int-c--pagou { fill: #9db6de; }
+/* número da proposta dentro do ponto e borda de cada lado: usados por condicional (c2p7), recursao (c5p9) e duas-familias (c5p18).
+   Apagados por engano na limpeza de 24/09/2026 (rodada 18) junto com o CSS do c5p6 antigo, que usava o mesmo prefixo; restaurados na rodada 22. */
+.vz-cc-id { font-size: 8.5px; font-weight: 700; fill: #fff; }
+.vz-cc-tile--esq { border-left: 3px solid var(--color-ok); } .vz-cc-tile--dir { border-left: 3px solid var(--color-alert); }
 .vz-int-tracejada { stroke-dasharray: 5 4; opacity: .6; }
 .vz-dc-barra { transition: height .3s, y .3s; } .vz-dc-barra--default { fill: var(--color-alert); } .vz-dc-barra--pagou { fill: #9db6de; } .vz-dc-barra--sel { stroke: var(--color-gold); stroke-width: 3; }
 .vz-dc-barra-g { cursor: pointer; }
@@ -956,7 +962,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 @container (max-width: 640px) { .vz-rd-grade, .vz-rd-balanco { grid-template-columns: minmax(0, 1fr); } }
 .slide-inner [data-vz="reta-ou-degraus"] .vz-rd-painel svg { height: 50cqh; width: auto; max-width: 100%; margin: 0 auto; }
 .slide-inner .vz-rd-t { font-size: clamp(15px, 2.8cqh, 30px); }
-.slide-inner .vz-rd-k { font-size: clamp(12px, 1.9cqh, 20px); }
+/* piso de 13,5 px: em 1366x768 o 1,9cqh dava 12,9 px, abaixo do mínimo legível do palco (1,7% da altura) */
+.slide-inner .vz-rd-k { font-size: clamp(13.5px, 1.9cqh, 20px); }
 .slide-inner .vz-rd-nota, .slide-inner .vz-rd-lista li { font-size: clamp(13px, 2.2cqh, 23px); }
 .slide-inner .vz-rd-balanco { margin-top: 1.6cqh; gap: 1.2cqh 3cqh; }
 /* páginas nativas do capítulo 5 que substituem o conteúdo herdado: raiz (c5p8), proposta (c5p10), valor (c5p12), confiança (c5p13), critério (c5p17) */
@@ -1076,6 +1083,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-poda-linha { stroke-width: 2.4; opacity: .55; transition: opacity .2s, stroke-width .2s; } .vz-poda-linha--venc { opacity: 1; stroke-width: 4; }
 .vz-poda-c--0 { stroke: var(--color-muted); background: var(--color-muted); } .vz-poda-c--1 { stroke: var(--color-ink); background: var(--color-ink); } .vz-poda-c--2 { stroke: #6B4E8C; background: #6B4E8C; } .vz-poda-c--3 { stroke: var(--color-alert); background: var(--color-alert); }
 .vz-poda-t--0 { fill: var(--color-muted); } .vz-poda-t--1 { fill: var(--color-ink); } .vz-poda-t--2 { fill: #6B4E8C; } .vz-poda-t--3 { fill: var(--color-alert); }
+/* c5p15: o rótulo do α atual na cor do ponto; os nomes das trocas com halo, desenhados depois da régua do α atual, que passa por trás deles (24/09/2026) */
+.vz-poda-alfa { fill: #7a5f16; } .vz-poda-rot { paint-order: stroke; stroke: #fff; stroke-width: 3.5px; stroke-linejoin: round; }
 .vz-df-ponto circle { stroke: #fff; stroke-width: 2; transition: r .2s; } .vz-df-ponto--on circle { stroke: var(--color-gold); stroke-width: 3.5; }
 .vz-df-cartao { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 10px; align-items: center; margin-top: 10px; } .vz-df-x { font-size: 26px; font-weight: 700; color: var(--color-muted); }
 /* tabelas de conferência em coluna estreita: sem isto a coluna Gini (c5p7, c5p14, c5p16, a 1.000 px) e a Diferença (c5p18, em qualquer largura) ficavam atrás da rolagem horizontal */

@@ -5,6 +5,7 @@ import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
 import { BETA_AULA, atrasoNaFronteira, escore, perdaIndividual, sigmoide, type Proposta } from "@/lib/visuais/logistica";
 import { crescer, folhas } from "@/lib/visuais/arvore";
 import { caminhoNaArvore } from "./arvore-diagrama";
+import { ComTex, Tex } from "./tex";
 
 /**
  * Árvore contra logística, com os mesmos dados (capítulo 5, c5p18). As 16 propostas no plano: a fronteira reta da
@@ -38,7 +39,7 @@ export function DuasFamilias() {
           {[5, 10, 15].map((i) => <button key={i} type="button" className={`btn btn-sm ${sel === i ? "" : "btn-secondary"}`} onClick={() => setSel(i)}>#{i}</button>)}
         </div>
       </header>
-      <div className="vz-estado"><b>Proposta #{q.id}, utilização {q.util}% e atraso {q.atraso} d, y = {q.y}:</b> logística {fmtPct(q.pl, 1)}, árvore {fmtPct(q.pa)}, {fmtNum(Math.abs(dif), 1)} pontos de diferença. {porque}</div>
+      <div className="vz-estado"><b>Proposta #{q.id}, utilização {q.util}% e atraso {q.atraso} d, <Tex f={String.raw`\boldsymbol{y = ${q.y}}`} className="tx-linha" />:</b> logística {fmtPct(q.pl, 1)}, árvore {fmtPct(q.pa)}, {fmtNum(Math.abs(dif), 1)} pontos de diferença. {porque}</div>
       <div className="vz-df-grade">
         <div className="vz-grafico">
           <p className="vz-grafico-t">Reta contra escada <span className="hint">linha: PD 50% da logística · regiões: a folha da árvore e sua taxa · clique numa proposta</span></p>
@@ -72,7 +73,7 @@ export function DuasFamilias() {
             <table className="table text-[.85em]"><thead><tr><th></th><th>Logística</th><th>Árvore</th></tr></thead><tbody>{ENTREGA.map((r) => <tr key={r[0]}><th scope="row">{r[0]}</th><td>{r[1]}</td><td>{r[2]}</td></tr>)}</tbody></table></div>
         </div>
       </div>
-      <p className="vz-fonte">Logística com os coeficientes da aula; árvore de profundidade 2 crescida aqui. #5 (40%, 20 d, y = 0): 52,6% contra 0%; #10 (65%, 0 d, y = 1): 30,5% contra 100%; #15 (90%, 0 d, y = 0): 73,9% contra 50%. Log loss de treino 0,43282 contra 0,18844, a árvore avaliada na amostra que usou para criar as folhas. Se a árvore é instável e a logística é rígida, existe uma terceira via.</p>
+      <p className="vz-fonte">Logística com os coeficientes da aula; árvore de profundidade 2 crescida aqui. <ComTex t="#5 (40%, 20 d, $y = 0$): 52,6% contra 0%; #10 (65%, 0 d, $y = 1$): 30,5% contra 100%; #15 (90%, 0 d, $y = 0$): 73,9% contra 50%." /> Log loss de treino 0,43282 contra 0,18844, a árvore avaliada na amostra que usou para criar as folhas. Se a árvore é instável e a logística é rígida, existe uma terceira via.</p>
     </figure>
   );
 }
