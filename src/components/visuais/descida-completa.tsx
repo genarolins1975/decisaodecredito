@@ -4,6 +4,7 @@ import did from "@/lib/visuais/did.json";
 import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
 import { BETA_AULA, distanciaAoOtimo, escore, passo, perdaIndividual, perdaLog, sigmoide, trajetoria, type Proposta } from "@/lib/visuais/logistica";
 import { SemCaixaAlta } from "./sem-caixa-alta";
+import { Formula } from "./tex";
 
 /**
  * De onde vêm os coeficientes (capítulo 4, páginas 15 a 17). A perda logarítmica por proposta com os coeficientes da
@@ -46,7 +47,7 @@ function Perda() {
       <div className="vz-estado"><b>Proposta #{q.id}, utilização {q.util}% e atraso {q.atraso} d:</b> y = {q.y}, PD estimada {fmtPct(q.p, 2)}, perda {fmtNum(q.perda, 4)}. Por que custa: {porque} Média das 16: {fmtNum(media, 5)}, o mínimo nesta amostra.</div>
       <div className="vz-dc-grade">
         <div className="vz-dc-painel">
-          <div className="vz-formula">perda(β₀, β₁, β₂) = − média de [ y × ln(p) + (1 − y) × ln(1 − p) ], com p = σ(β₀ + β₁ u/10 + β₂ a/10)</div>
+          <Formula f={String.raw`\text{perda}(\beta_0,\beta_1,\beta_2) = -\,\text{média}\big[\,y\ln p + (1-y)\ln(1-p)\,\big] \quad \text{com} \quad p = \sigma\big(\beta_0 + \beta_1\,\tfrac{u}{10} + \beta_2\,\tfrac{a}{10}\big)`} />
           <div className="vz-grafico">
             <p className="vz-grafico-t">Perda individual por proposta <span className="hint">linha: a média 0,43282 · clique numa barra</span></p>
             <svg viewBox={`0 0 ${W} ${BH}`} role="img" aria-label={`Perda por proposta; a maior é a #15 com ${fmtNum(linhas[14].perda, 4)}`}>
@@ -102,7 +103,7 @@ function Gradiente() {
       <div className="vz-estado"><b>Iteração {it}, perda {fmtNum(st.perda, 5)}, distância até o ótimo {fmtNum(distanciaAoOtimo(beta), 3)}:</b> gradiente ({sinal(st.g[0])}; {sinal(st.g[1])}; {sinal(st.g[2])}). Componente negativa significa que aumentar aquele parâmetro reduziria a perda, então o parâmetro sobe.</div>
       <div className="vz-dc-grade">
         <div className="vz-dc-painel">
-          <div className="vz-formula">g₀ = média(p − y) · g₁ = média[(p − y) × u/10] · g₂ = média[(p − y) × a/10] · β ← β − 0,10 × g</div>
+          <Formula f={String.raw`g_0 = \text{média}(p-y) \qquad g_1 = \text{média}\big[(p-y)\,\tfrac{u}{10}\big] \qquad g_2 = \text{média}\big[(p-y)\,\tfrac{a}{10}\big] \qquad \beta \leftarrow \beta - 0{,}10\,g`} />
           <div className="vz-tiles vz-tiles--3">
             <div className="vz-tile"><p className="eyebrow">Iteração</p><p className="vz-num">{it.toLocaleString("pt-BR")}</p></div>
             <div className="vz-tile"><p className="eyebrow">Perda atual</p><p className="vz-num">{fmtNum(st.perda, 5)}</p></div>

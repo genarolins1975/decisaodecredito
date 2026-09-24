@@ -5,6 +5,7 @@ import { fmtNum } from "@/lib/visuais/metricas";
 import type { Proposta } from "@/lib/visuais/logistica";
 import { crescer, folhas, gini } from "@/lib/visuais/arvore";
 import { SemCaixaAlta } from "./sem-caixa-alta";
+import { Formula } from "./tex";
 
 /**
  * Poda por custo de complexidade (capítulo 5, c5p15). Quatro árvores da mesma base, com a impureza ponderada
@@ -49,7 +50,7 @@ export function Poda() {
           <div className="table-wrap"><table className="table text-[.85em]"><thead><tr><th>Árvore</th><th>Folhas</th><th>Impureza</th><th><SemCaixaAlta>α × folhas</SemCaixaAlta></th><th>Custo</th></tr></thead><tbody>
             {custos.map((t, i) => <tr key={t.rot} className={t === venc ? "vz-t-on" : ""}><th scope="row"><span className={`vz-sw ${CORES[i]}`} />{t.rot}</th><td>{t.folhas}</td><td>{fmtNum(t.R, 5)}</td><td>{fmtNum(alfa * t.folhas, 5)}</td><td className={t === venc ? "vz-t-forte" : ""}>{fmtNum(t.c, 5)}</td></tr>)}
           </tbody></table></div>
-          <div className="vz-formula">custo(T) = impureza ponderada de T + α × número de folhas de T</div>
+          <Formula f={String.raw`\text{custo}(T) = \text{impureza ponderada de } T + \alpha \times \text{número de folhas de } T`} />
           <p className="hint">Com α zero, vence a árvore mais complexa; com α alto, só a raiz. Entre os extremos, a poda percorre uma sequência de árvores.</p>
         </div>
         <div className="vz-poda-lado">

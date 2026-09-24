@@ -2,6 +2,7 @@
 import { useState } from "react";
 import woe from "@/lib/visuais/woe.json";
 import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
+import { Formula } from "./tex";
 
 /**
  * Valor da informação por faixa (capítulo 3, c3p17). O IV é a soma, em cada faixa, da diferença de proporções
@@ -39,7 +40,7 @@ export function ValorDaInformacao() {
             {F.map((x, j) => <g key={x.faixa} onClick={() => setI(j)} style={{ cursor: "pointer" }}><rect x={ML + j * bw + 10} y={sy(x.iv)} width={bw - 20} height={sy(0) - sy(x.iv)} rx={3} className={`vz-vi-b ${j === i ? "vz-vi-b--on" : ""} ${x.woe >= 0 ? "vz-vi-b--bom" : "vz-vi-b--mau"}`} /><text x={ML + (j + 0.5) * bw} y={sy(x.iv) - 6} textAnchor="middle" className="vz-tick vz-tick--forte">{fmtNum(x.iv, 5)}</text><text x={ML + (j + 0.5) * bw} y={H - MB + 16} textAnchor="middle" className="vz-tick">F{j + 1} · {x.n}</text><text x={ML + (j + 0.5) * bw} y={H - MB + 30} textAnchor="middle" className="vz-tick">WoE {fmtNum(x.woe, 2)}</text></g>)}
             <text x={ML + 4} y={MT - 7} className="vz-rotulo">contribuição para o IV</text>
           </svg>
-          <div className="vz-formula">IV = soma, em cada faixa, de (% bons − % maus) × WoE</div>
+          <Formula f={String.raw`\mathrm{IV} = \sum_{\text{faixas}} \big(\%\,\text{bons} - \%\,\text{maus}\big) \times \mathrm{WoE}`} />
         </div>
         <div className="vz-vi-lado">
           <div className="vz-tiles vz-tiles--2">

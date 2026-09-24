@@ -10617,9 +10617,11 @@ function guiaDaTelaV15(){
   conducao:'',
   erros:undefined,
   interacao:''});
- guia('c5p5',{interacao:''});
+ guia('c5p5',{leitura:'',
+  interacao:''});
  guia('c5p6',{conducao:'',
-  leitura:''});
+  leitura:'',
+  interacao:''});
  guia('c5p7',{leitura:'',
   erros:undefined,
   interacao:''});

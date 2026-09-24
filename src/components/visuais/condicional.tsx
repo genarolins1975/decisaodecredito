@@ -3,6 +3,7 @@ import { useState } from "react";
 import did from "@/lib/visuais/did.json";
 import { fmtPct } from "@/lib/visuais/metricas";
 import type { Proposta } from "@/lib/visuais/logistica";
+import { Formula } from "./tex";
 
 /**
  * Probabilidade condicional (capítulo 2, c2p7). Condicionar é restringir a contagem a um grupo definido por uma
@@ -53,7 +54,7 @@ export function Condicional() {
         <div className="vz-cond-lado">
           <div className="vz-tile vz-cc-tile--dir"><p className="eyebrow">Dentro do grupo: {c.nome}</p><p className="vz-num vz-num--default">{fmtPct(kd / dentro.length, 1)}</p><p className="hint">{kd} default{kd === 1 ? "" : "s"} em {dentro.length} propostas: {dentro.map((p) => `#${p.id}`).join(", ")}</p></div>
           <div className="vz-tile vz-cc-tile--esq"><p className="eyebrow">Fora do grupo</p><p className="vz-num vz-num--ok">{fmtPct(kf / fora.length, 1)}</p><p className="hint">{kf} default{kf === 1 ? "" : "s"} em {fora.length} propostas: {fora.map((p) => `#${p.id}`).join(", ")}</p></div>
-          <div className="vz-formula">P(default = 1 | condição) = defaults no grupo ÷ propostas no grupo</div>
+          <Formula f={String.raw`P(\text{default} = 1 \mid \text{condição}) = \dfrac{\text{defaults no grupo}}{\text{propostas no grupo}}`} />
           <p className="hint">A barra vertical significa dado que. Tudo à direita dela restringe quem entra na contagem. Sem condição alguma a estimativa seria {fmtPct(total, 1)} para todas as dezesseis.</p>
         </div>
       </div>

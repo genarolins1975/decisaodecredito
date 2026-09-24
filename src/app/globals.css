@@ -856,6 +856,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-num--odds { color: #6B4E8C; } .vz-num--ouro { color: #7a5f16; } .vz-num--mono { font-family: var(--font-mono); font-size: 15px; font-weight: 700; margin-top: 6px; }
 .vz-tile--alerta { border-left: 3px solid var(--color-alert); } .vz-tile--ok { border-left: 3px solid var(--color-ok); }
 .vz-formula { font-family: var(--font-mono); font-size: 13px; color: var(--color-ink); background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 6px; padding: 8px 12px; line-height: 1.5; }
+.vz-formula--tex { font-family: inherit; font-size: 14px; overflow-x: auto; overflow-y: hidden; } .vz-formula--tex .katex { font-size: 1.15em; }
 .vz-esc-usos th { width: 34%; font-weight: 700; color: var(--color-ink); vertical-align: top; }
 .vz-t-forte { font-weight: 700; color: var(--color-ink); } .vz-t-cara { background: #FBF2F3; }
 .vz-cem { transition: fill .25s; } .vz-cem--default { fill: var(--color-alert); } .vz-cem--pagou { fill: #c9d8f2; }
@@ -898,9 +899,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner [data-vz="descida-gradiente"] .vz-dc-painel > .hint, .slide-inner [data-vz="descida-gradiente"] .vz-dc-lado > .hint, .slide-inner [data-vz="descida-gradiente"] .vz-grafico-t .hint,
 .slide-inner [data-vz="faixas"] .vz-fx-lado .vz-tile, .slide-inner [data-vz="faixas"] .vz-legenda, .slide-inner [data-vz="faixas"] .vz-grafico-t .hint, .slide-inner [data-vz="faixas"] .table-wrap tr:nth-child(3), .slide-inner [data-vz="faixas"] .table-wrap tr:nth-child(4) { display: none; }
 /* Capítulo 5 completo: anatomia, impureza, corte candidato, recursão, caminho, poda e duas famílias */
-.vz-ana-grade, .vz-imp-grade, .vz-cc-grade, .vz-cam-grade, .vz-poda-grade, .vz-df-grade { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 14px 22px; align-items: start; }
-.vz-ana-lado, .vz-imp-painel, .vz-imp-lado, .vz-cc-painel, .vz-cc-lado, .vz-cam-painel, .vz-poda-painel, .vz-poda-lado, .vz-df-lado { display: grid; gap: 10px; min-width: 0; align-content: start; }
-.vz-imp-painel .vz-slider, .vz-cc-painel .vz-slider, .vz-cam-painel .vz-slider, .vz-poda-painel .vz-slider { margin-top: 0; }
+.vz-ana-grade, .vz-cam-grade, .vz-poda-grade, .vz-df-grade { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 14px 22px; align-items: start; }
+.vz-ana-lado, .vz-cam-painel, .vz-poda-painel, .vz-poda-lado, .vz-df-lado { display: grid; gap: 10px; min-width: 0; align-content: start; }
+.vz-cam-painel .vz-slider, .vz-poda-painel .vz-slider { margin-top: 0; }
 .vz-ad { width: 100%; height: auto; display: block; }
 .vz-ad-ramo { stroke: var(--color-muted); stroke-width: 1.6; transition: stroke .25s, stroke-width .25s; } .vz-ad-ramo-t { font-size: 10.5px; fill: var(--color-muted); font-weight: 700; }
 .vz-ad-ramo-g--aceso .vz-ad-ramo { stroke: var(--color-gold); stroke-width: 4; } .vz-ad-ramo-g--aceso .vz-ad-ramo-t { fill: #7a5f16; }
@@ -1070,11 +1071,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner [data-vz="anatomia"] .vz-ana-grade { grid-template-columns: minmax(0, 1.4fr) minmax(0, .6fr); }
 .slide-inner [data-vz="duas-familias"] .vz-df-grade .vz-df-lado > .vz-tile:last-child { display: block; }
 .vz-ana-potencias { display: flex; align-items: flex-end; gap: 4px; height: 70px; margin: 8px 0 22px; } .vz-ana-pot { flex: 1; background: #E6E4DD; border-radius: 3px 3px 0 0; position: relative; transition: background .2s; } .vz-ana-pot--ate { background: #c9d8f2; } .vz-ana-pot--on { background: var(--color-ink); } .vz-ana-pot b { position: absolute; bottom: -16px; left: 0; right: 0; text-align: center; font-size: 10px; color: var(--color-muted); }
-.vz-imp-caixa-t { font-size: 15px; font-weight: 700; fill: #fff; } .vz-imp-base table th, .vz-imp-base table td { padding-top: 3px; padding-bottom: 3px; }
-.vz-cc-lado--esq { fill: var(--color-ok-soft); } .vz-cc-lado--dir { fill: var(--color-alert-soft); }
-.vz-cc-id { font-size: 8.5px; font-weight: 700; fill: #fff; }
-.vz-cc-lados { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .vz-cc-tile--esq { border-left: 3px solid var(--color-ok); } .vz-cc-tile--dir { border-left: 3px solid var(--color-alert); }
-.vz-cc-barras { display: grid; gap: 8px; } .vz-cc-fill--esq { background: var(--color-ok); } .vz-cc-fill--dir { background: var(--color-alert); }
 .vz-rec-grade { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 22px; } .vz-rec-no { background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 6px; padding: 8px 10px; cursor: pointer; transition: box-shadow .2s; } .vz-rec-no--on { box-shadow: 0 0 0 2px var(--color-gold); }
 .vz-rec-corpo { display: grid; gap: 8px; } .vz-rec-plano { width: 100%; height: auto; display: block; } .vz-rec-fora { fill: #F5F4F0; } .vz-rec-dentro { fill: #fff; stroke: var(--color-rule); }
 .vz-rec-tiles { margin-top: 12px; }
@@ -1132,20 +1128,18 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner .vz-op-num { font-size: clamp(20px, 4cqh, 44px); }
 .vz-tm-tabela > summary { cursor: pointer; font-weight: 700; color: var(--color-ink); }
 .vz-tm-tabela .table-wrap { margin-top: 8px; }
-@container (max-width: 760px) { .vz-ana-grade, .vz-imp-grade, .vz-cc-grade, .vz-cam-grade, .vz-poda-grade, .vz-df-grade, .vz-rec-grade, .vz-cc-lados { grid-template-columns: minmax(0, 1fr); } }
+@container (max-width: 760px) { .vz-ana-grade, .vz-cam-grade, .vz-poda-grade, .vz-df-grade, .vz-rec-grade { grid-template-columns: minmax(0, 1fr); } }
 /* palco */
-.slide-inner .vz-ana-grade, .slide-inner .vz-imp-grade, .slide-inner .vz-cc-grade, .slide-inner .vz-cam-grade, .slide-inner .vz-poda-grade, .slide-inner .vz-df-grade { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1cqh 2cqh; }
-.slide-inner .vz-ana-lado, .slide-inner .vz-imp-painel, .slide-inner .vz-imp-lado, .slide-inner .vz-cc-painel, .slide-inner .vz-cc-lado, .slide-inner .vz-cam-painel, .slide-inner .vz-poda-painel, .slide-inner .vz-poda-lado, .slide-inner .vz-df-lado, .slide-inner .vz-rec-corpo { gap: .8cqh; }
+.slide-inner .vz-ana-grade, .slide-inner .vz-cam-grade, .slide-inner .vz-poda-grade, .slide-inner .vz-df-grade { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1cqh 2cqh; }
+.slide-inner .vz-ana-lado, .slide-inner .vz-cam-painel, .slide-inner .vz-poda-painel, .slide-inner .vz-poda-lado, .slide-inner .vz-df-lado, .slide-inner .vz-rec-corpo { gap: .8cqh; }
 .slide-inner .vz-ad { height: 40cqh; width: auto; max-width: 100%; margin: 0; }
-.slide-inner [data-vz="anatomia"] .vz-ana-lado .vz-tile:not(:first-child), .slide-inner [data-vz="impureza-raiz"] .vz-imp-lado > .hint, .slide-inner [data-vz="impureza-raiz"] .vz-imp-painel > .hint, .slide-inner [data-vz="impureza-raiz"] .vz-imp-lado .vz-tile,
-.slide-inner [data-vz="corte-candidato"] .vz-cc-lado > .hint, .slide-inner [data-vz="corte-candidato"] .vz-cc-lados .hint, .slide-inner [data-vz="recursao"] .vz-rec-tiles, .slide-inner [data-vz="caminho"] .vz-cam-plano, .slide-inner [data-vz="caminho"] .vz-grafico > .hint,
+.slide-inner [data-vz="anatomia"] .vz-ana-lado .vz-tile:not(:first-child), 
+.slide-inner [data-vz="recursao"] .vz-rec-tiles, .slide-inner [data-vz="caminho"] .vz-cam-plano, .slide-inner [data-vz="caminho"] .vz-grafico > .hint,
 .slide-inner [data-vz="poda"] .vz-poda-painel > .hint, .slide-inner [data-vz="poda"] .vz-poda-lado > .hint, .slide-inner [data-vz="duas-familias"] .vz-df-tabela, .slide-inner [data-vz="duas-familias"] .vz-df-lado > .hint, .slide-inner [data-vz="duas-familias"] .vz-df-lado > .vz-tile:last-child { display: none; }
-.slide-inner [data-vz="impureza-raiz"] .vz-imp-painel .vz-grafico svg { height: 12cqh; } .slide-inner [data-vz="impureza-raiz"] .vz-imp-base { display: none; } .slide-inner [data-vz="impureza-raiz"] .vz-imp-lado .vz-tile { display: block; }
-.slide-inner [data-vz="corte-candidato"] .vz-grafico svg { height: 18cqh; }
 .slide-inner [data-vz="recursao"] .vz-rec-plano { height: 26cqh; width: auto; }
 .slide-inner [data-vz="poda"] .vz-grafico svg, .slide-inner [data-vz="duas-familias"] .vz-grafico > svg { height: 44cqh; width: auto; max-width: 100%; }
 /* palco, densidade do capítulo 5 */
-.slide-inner [data-vz="anatomia"] .vz-ana-lado .vz-tile:first-child, .slide-inner [data-vz="corte-candidato"] .vz-cc-lado .vz-formula, .slide-inner [data-vz="corte-candidato"] .vz-cc-lados .hint,
+.slide-inner [data-vz="anatomia"] .vz-ana-lado .vz-tile:first-child, 
 .slide-inner [data-vz="poda"] .vz-poda-lado .vz-tile, .slide-inner [data-vz="poda"] .vz-poda-painel .vz-formula, .slide-inner [data-vz="duas-familias"] .vz-df-lado .vz-tile--alerta, .slide-inner [data-vz="duas-familias"] .vz-df-cartao .hint { display: none; }
 .slide-inner [data-vz="anatomia"] .vz-ana-lado .vz-tile:nth-child(2) { display: block; }
 /* Capítulo 10, memorando de cinco campos */
@@ -1215,7 +1209,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner .vz-tf-leitura-t, .slide-inner .vz-tf-nota { font-size: 1em; } .slide-inner .vz-gat-campos i { font-size: .9em; letter-spacing: 0; } .slide-inner .vz-gat-sinal, .slide-inner .vz-gat-campos, .slide-inner .vz-gat-medida { font-size: 1em; }
 .slide-inner [data-vz="tres-fenomenos"] .vz-tf-tres svg { height: 16cqh; width: auto; max-width: 100%; }
 /* colunas laterais em grade: nunca mais largas que a coluna, mesmo com tabela dentro */
-.vz-pn-lado, .vz-pn-lista, .vz-tf-lado, .vz-tf-leituras, .vz-memo-lado, .vz-memo-escrita, .vz-esc-lado, .vz-esc-painel, .vz-dc-lado, .vz-dc-painel, .vz-int-lado, .vz-int-painel, .vz-cc-lado, .vz-cc-painel, .vz-fx-lado, .vz-ana-lado, .vz-imp-lado, .vz-imp-painel, .vz-poda-painel, .vz-poda-lado, .vz-df-lado, .vz-cam-painel, .vz-cl-painel { grid-template-columns: minmax(0, 1fr); }
+.vz-pn-lado, .vz-pn-lista, .vz-tf-lado, .vz-tf-leituras, .vz-memo-lado, .vz-memo-escrita, .vz-esc-lado, .vz-esc-painel, .vz-dc-lado, .vz-dc-painel, .vz-int-lado, .vz-int-painel, .vz-fx-lado, .vz-ana-lado, .vz-poda-painel, .vz-poda-lado, .vz-df-lado, .vz-cam-painel, .vz-cl-painel { grid-template-columns: minmax(0, 1fr); }
 /* Capítulo 6 completo: três estratégias, hiperparâmetros e três limites */
 .vz-te-grade, .vz-hp-grade, .vz-tl-grade { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 14px 22px; align-items: start; }
 .vz-te-lado, .vz-hp-painel, .vz-hp-lado, .vz-tl-lado { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; min-width: 0; align-content: start; }
@@ -2006,6 +2000,127 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner [data-vz="impureza-curva"] { padding: 0; border: 0; background: transparent; gap: 0; }
 /* a regra genérica .conteudo figure svg do palco devolveria a altura intrínseca do viewBox */
 .slide-inner [data-vz="impureza-curva"] .im-svg, .slide-inner [data-vz="impureza-curva"] .im-q-svg { position: absolute; inset: 0; width: 100%; height: 100%; max-height: none; margin: 0; }
+
+/* Slide 5 do capítulo 5 (c5p5): o Gini de um grupo contado à mão. Quadro 16:9 no sistema .rl: fórmulas em KaTeX na
+   faixa, a base das 16 propostas com as linhas do grupo acesas, as propostas do grupo e a conta, o painel e três cartões. */
+.ir { --ir-vinho: #8C2332; --ir-pagou: #E6EBF4; --ir-recorte: #EEF2F8; }
+[data-vz="impureza-raiz"] .rl-slide[data-tela="5"] { grid-template-rows: minmax(0, 144fr) minmax(0, 18fr) minmax(0, 88fr) minmax(0, 18fr) minmax(0, 596fr) minmax(0, 16fr) minmax(0, 114fr) minmax(0, 10fr) minmax(0, 24fr); }
+[data-vz="impureza-raiz"] .rl-slide[data-tela="5"] > .rl-cab { grid-row: 1; } [data-vz="impureza-raiz"] .rl-slide[data-tela="5"] > .ir-eq { grid-row: 3; } [data-vz="impureza-raiz"] .rl-slide[data-tela="5"] > .rl-corpo { grid-row: 5; } [data-vz="impureza-raiz"] .rl-slide[data-tela="5"] > .ir-cartoes { grid-row: 7; } [data-vz="impureza-raiz"] .rl-slide[data-tela="5"] > .rl-rod { grid-row: 9; }
+.ir .rl-k { font-size: 1.3cqw; }
+.ir-eq { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); align-items: center; gap: .2cqw 2.4cqw; border-top: 1px solid var(--rl-borda); border-bottom: 1px solid var(--rl-borda); padding: .4cqw 0; min-height: 0; }
+.ir-eq-k { font-size: 1.3cqw; letter-spacing: .06em; text-transform: uppercase; color: var(--rl-muted); font-weight: 600; }
+.ir-eq-f { display: block; font-size: 1.6cqw; color: var(--rl-navy); line-height: 1.2; white-space: nowrap; }
+.ir-corpo { display: grid; grid-template-columns: 36fr 1.5fr 35fr 1.5fr 26fr; align-items: stretch; min-height: 0; }
+.ir-corpo > .ir-base { grid-column: 1; } .ir-corpo > .ir-conta { grid-column: 3; } .ir-corpo > .ir-painel { grid-column: 5; }
+.ir-conta { grid-template-columns: minmax(0, 1fr); }
+.ir-base, .ir-conta, .ir-painel { background: var(--rl-branco); border: 1px solid var(--rl-borda); border-radius: 16px; padding: .8cqw 1cqw; display: grid; gap: .3cqw; align-content: start; min-width: 0; min-height: 0; overflow: hidden; }
+.ir-base { grid-template-rows: auto minmax(0, 1fr); }
+.ir-tab { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+/* especificidade acima da regra sem camada do conteúdo herdado (.conteudo th, .conteudo thead th), que no palco
+   pintava o cabeçalho de azul-marinho e dava 5 px de respiro às células */
+.ir .ir-tab th, .ir .ir-tab td { font-size: 1.05cqw; padding: .08cqw .7cqw; text-align: right; line-height: 1.2; border-bottom: 1px solid var(--rl-borda); background: transparent; color: var(--rl-text); vertical-align: middle; }
+.ir .ir-tab thead th { font-size: 1cqw; color: var(--rl-muted); font-weight: 600; background: transparent; border-bottom: 2px solid var(--rl-borda); text-transform: none; letter-spacing: 0; vertical-align: bottom; padding-bottom: .3cqw; }
+.ir .ir-tab tbody th { text-align: left; color: var(--rl-muted); font-weight: 600; }
+.ir .ir-tab td.ir-sim { color: var(--ir-vinho); font-weight: 700; }
+.ir .ir-tab--recorte .ir-on th, .ir .ir-tab--recorte .ir-on td { background: var(--ir-recorte); }
+.ir .ir-tab--recorte .ir-on th:first-child { box-shadow: inset .25cqw 0 0 var(--rl-navy); }
+.ir-tab--recorte .ir-off th, .ir-tab--recorte .ir-off td { opacity: .38; }
+.ir-conta-sub { font-size: 1.3cqw; color: var(--rl-muted); line-height: 1.25; }
+.ir-fileiras { display: grid; gap: .6cqw; margin: .4cqw 0 .2cqw; }
+.ir-fileira { display: grid; grid-template-columns: 7.2cqw minmax(0, 1fr); align-items: center; gap: .6cqw; min-height: 3.1cqw; }
+.ir-fileira-k { font-size: 1.3cqw; color: var(--rl-text); } .ir-fileira-k b { color: var(--rl-navy); font-variant-numeric: tabular-nums; }
+.ir-caixas { display: flex; flex-wrap: wrap; gap: .35cqw; }
+.ir-caixa { width: 2.75cqw; height: 2.75cqw; border-radius: .5cqw; display: inline-grid; place-items: center; font-size: 1.2cqw; font-weight: 700; font-variant-numeric: tabular-nums; }
+.ir-caixa--d { background: var(--ir-vinho); color: #fff; } .ir-caixa--p { background: var(--ir-pagou); color: var(--rl-navy); }
+.ir-linhas { display: grid; gap: .5cqw; border-top: 1px solid var(--rl-borda); padding-top: .7cqw; margin-top: .2cqw; }
+.ir-linha { display: block; font-size: 1.55cqw; color: var(--rl-navy); } .ir-linha--gini { color: var(--rl-text); }
+.ir-confira { font-size: 1.3cqw; color: var(--rl-muted); line-height: 1.3; margin-top: .4cqw; }
+.ir-painel { grid-template-rows: auto auto auto minmax(0, 1fr); gap: .5cqw; }
+.ir-grupos { display: flex; flex-wrap: wrap; gap: .3cqw; } .ir-painel .rl-btn--mini { min-height: 1.7cqw; padding: .25cqw .5cqw; font-size: 1.1cqw; }
+.ir-res { margin: 0; display: grid; gap: .1cqw; } .ir-res > div { display: flex; justify-content: space-between; align-items: baseline; gap: .6cqw; border-bottom: 1px solid var(--rl-borda); padding: .1cqw 0; }
+.ir-res dt { font-size: 1.3cqw; color: var(--rl-muted); } .ir-res dd { margin: 0; font-size: 1.7cqw; font-weight: 600; line-height: 1.15; color: var(--rl-text); font-variant-numeric: tabular-nums; }
+.ir-res .ir-res-g { font-size: 2.3cqw; color: var(--rl-navy); }
+.ir-lei { font-size: 1.3cqw; color: var(--rl-text); line-height: 1.3; }
+.ir-cartoes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .2cqw 2.4cqw; align-content: center; border-top: 1px solid var(--rl-borda); padding-top: .5cqw; }
+.ir-cartao-k { font-size: 1.45cqw; font-weight: 600; color: var(--rl-navy); } .ir-cartao-t { font-size: 1.3cqw; color: var(--rl-text); line-height: 1.3; font-variant-numeric: tabular-nums; }
+@container quadro (max-width: 820px) {
+  .ir-eq, .ir-corpo, .ir-cartoes { display: flex; flex-direction: column; gap: 10px; }
+  .ir-eq { padding: 12px 0; } .ir-eq > div { overflow-x: auto; } .ir-eq-k { font-size: 12px; } .ir-eq-f { font-size: 15px; }
+  .ir-base, .ir-conta, .ir-painel { padding: 14px; border-radius: 12px; gap: 6px; }
+  .ir .ir-tab th, .ir .ir-tab td { font-size: 14px; padding: 3px 8px; } .ir .ir-tab thead th { font-size: 12px; }
+  .ir-conta-sub, .ir-fileira-k, .ir-res dt, .ir-lei, .ir-cartao-t, .ir-confira { font-size: 14px; } .ir .rl-k, .ir-cartao-k { font-size: 16px; }
+  .ir-fileira { grid-template-columns: 76px minmax(0, 1fr); min-height: 32px; } .ir-caixa { width: 28px; height: 28px; border-radius: 6px; font-size: 12px; } .ir-caixas { gap: 4px; }
+  .ir-linhas { overflow-x: auto; } .ir-linha { font-size: 16px; } .ir-res dd { font-size: 18px; } .ir-res .ir-res-g { font-size: 22px; }
+  .ir-painel .rl-btn--mini { min-height: 40px; padding: 8px 12px; font-size: 14px; }
+}
+.slide-inner [data-vz="impureza-raiz"] { padding: 0; border: 0; background: transparent; gap: 0; }
+
+/* Slide 6 do capítulo 5 (c5p6): avaliar um corte candidato. Quadro 16:9 no sistema .rl: a fórmula do ganho em KaTeX,
+   onde cortar (as 16 propostas sobre a régua e os candidatos), a conta em árvore com os pesos, o painel e três cartões. */
+.ct { --ct-vinho: #8C2332; --ct-pagou: #E6EBF4; --ct-e: #EEF2F8; --ct-d: #FBF4EA; }
+[data-vz="corte-candidato"] .rl-slide[data-tela="6"] { grid-template-rows: minmax(0, 144fr) minmax(0, 18fr) minmax(0, 88fr) minmax(0, 18fr) minmax(0, 596fr) minmax(0, 16fr) minmax(0, 114fr) minmax(0, 10fr) minmax(0, 24fr); }
+[data-vz="corte-candidato"] .rl-slide[data-tela="6"] > .rl-cab { grid-row: 1; } [data-vz="corte-candidato"] .rl-slide[data-tela="6"] > .ct-eq { grid-row: 3; } [data-vz="corte-candidato"] .rl-slide[data-tela="6"] > .rl-corpo { grid-row: 5; } [data-vz="corte-candidato"] .rl-slide[data-tela="6"] > .ct-cartoes { grid-row: 7; } [data-vz="corte-candidato"] .rl-slide[data-tela="6"] > .rl-rod { grid-row: 9; }
+.ct .rl-k { font-size: 1.3cqw; }
+.ct-eq { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); align-items: center; gap: .2cqw 2.4cqw; border-top: 1px solid var(--rl-borda); border-bottom: 1px solid var(--rl-borda); padding: .4cqw 0; min-height: 0; }
+.ct-eq-k { font-size: 1.3cqw; letter-spacing: .06em; text-transform: uppercase; color: var(--rl-muted); font-weight: 600; }
+.ct-eq-f { display: block; font-size: 1.6cqw; color: var(--rl-navy); line-height: 1.2; white-space: nowrap; }
+.ct-corpo { display: grid; grid-template-columns: 37fr 1.5fr 35fr 1.5fr 25fr; align-items: stretch; min-height: 0; }
+.ct-corpo > .ct-regua { grid-column: 1; } .ct-corpo > .ct-conta { grid-column: 3; } .ct-corpo > .ct-painel { grid-column: 5; }
+.ct-regua, .ct-conta, .ct-painel { background: var(--rl-branco); border: 1px solid var(--rl-borda); border-radius: 16px; padding: .8cqw 1cqw; display: grid; gap: .3cqw; align-content: start; min-width: 0; min-height: 0; overflow: hidden; }
+.ct-regua { grid-template-rows: auto auto minmax(0, 1fr); align-content: stretch; }
+.ct-regua-sub { font-size: 1.3cqw; color: var(--rl-muted); line-height: 1.2; }
+.ct-arv-wrap { position: relative; min-height: 0; min-width: 0; overflow: hidden; }
+.ct-arv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+/* a lista ordenada: cada proposta numa faixa com a cor do seu lado; o candidato é uma faixa clicável sobre a fronteira de
+   baixo do item, sem ocupar altura, e o corte atual é a linha tracejada com o rótulo à direita */
+.ct-lista { list-style: none; margin: .3cqw 0 0; padding: 0; display: grid; grid-auto-rows: minmax(0, 1fr); height: 100%; min-height: 0; }
+.ct-item { position: relative; display: grid; grid-template-columns: 3.4cqw 3.2cqw 2cqw minmax(0, 1fr); align-items: center; gap: .5cqw; padding: 0 .6cqw; font-size: 1.15cqw; font-variant-numeric: tabular-nums; border-bottom: 1px solid rgba(16, 36, 92, .07); min-height: 0; }
+.ct-item--e { background: var(--ct-e); } .ct-item--d { background: var(--ct-d); }
+.ct-item-id { color: var(--rl-muted); font-weight: 600; } .ct-item-v { text-align: right; color: var(--rl-text); font-weight: 600; }
+.ct-item-y { display: inline-grid; place-items: center; width: 1.7cqw; height: 1.2cqw; border-radius: .25cqw; font-size: 1cqw; font-weight: 700; line-height: 1; }
+.ct-item-y--d { background: var(--ct-vinho); color: #fff; } .ct-item-y--p { background: var(--ct-pagou); color: var(--rl-navy); }
+/* o botão do candidato fica dentro do item, na metade de baixo; o losango e a linha são pseudoelementos sobre a
+   fronteira com o item seguinte, e o rótulo do corte atual ocupa a quarta coluna do item, logo acima da linha */
+.rl .ct-cand { position: absolute; left: 0; right: 0; bottom: 0; height: 50%; z-index: 2; border: 0; padding: 0; margin: 0; background: transparent; cursor: pointer; min-height: 0; }
+.rl .ct-cand::before { content: ""; position: absolute; left: .1cqw; top: 100%; width: .55cqw; height: .55cqw; transform: translateY(-50%) rotate(45deg); background: #B9C0CB; border-radius: .08cqw; }
+.rl .ct-cand:hover::after, .rl .ct-cand:focus-visible::after { content: ""; position: absolute; left: .8cqw; right: 0; top: 100%; border-top: .12cqw solid #B9C0CB; }
+.rl .ct-cand--on::before { background: var(--rl-ambar); }
+.rl .ct-cand--on::after, .rl .ct-cand--on:hover::after { content: ""; position: absolute; left: .8cqw; right: 0; top: 100%; transform: translateY(-50%); border-top: .2cqw dashed var(--rl-ambar); }
+.ct-cand-t { grid-column: 4; justify-self: end; align-self: end; position: relative; z-index: 3; margin-bottom: .1cqw; background: var(--rl-branco); color: var(--rl-ambar); font-size: 1.15cqw; font-weight: 700; line-height: 1.1; padding: 0 .35cqw; border-radius: .3cqw; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ct-conta { grid-template-rows: auto minmax(0, 1fr) auto; grid-template-columns: minmax(0, 1fr); align-content: stretch; }
+.ct-no-caixa { fill: #fff; stroke: var(--rl-borda); stroke-width: 1.5; } .ct-no--raiz .ct-no-caixa { stroke: var(--rl-navy); stroke-width: 2; } .ct-no--e .ct-no-caixa { fill: var(--ct-e); } .ct-no--d .ct-no-caixa { fill: var(--ct-d); }
+.ct-no-t { font-size: 22px; font-weight: 700; fill: var(--rl-navy); font-family: inherit; font-variant-numeric: tabular-nums; }
+.ct-no-n { font-size: 19px; fill: var(--rl-text); font-family: inherit; font-variant-numeric: tabular-nums; } .ct-no-g { font-size: 22px; font-weight: 700; fill: var(--rl-navy); font-family: inherit; font-variant-numeric: tabular-nums; }
+.ct-barra-p { fill: var(--ct-pagou); } .ct-barra-d { fill: var(--ct-vinho); }
+.ct-aresta { stroke: var(--rl-muted); stroke-width: 2; fill: none; } .ct-peso { font-size: 21px; font-weight: 700; fill: var(--rl-ambar); font-family: inherit; font-variant-numeric: tabular-nums; }
+.ct-passo { font-size: 18px; font-weight: 600; fill: var(--rl-muted); font-family: inherit; }
+.ct-linhas { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; gap: .35cqw .8cqw; border-top: 1px solid var(--rl-borda); padding-top: .6cqw; }
+.ct-linhas dt { font-size: 1.3cqw; font-weight: 600; color: var(--rl-muted); white-space: nowrap; } .ct-linhas dd { margin: 0; min-width: 0; } .ct-linhas .ct-linhas-simples { color: var(--ct-vinho); }
+.ct-linha { display: block; font-size: 1.15cqw; color: var(--rl-text); } .ct-linha--ganho { color: var(--rl-navy); } .ct-linha--simples { color: var(--ct-vinho); }
+.ct-painel { gap: .45cqw; }
+.ct-vars, .ct-atalhos, .ct-acoes { display: flex; flex-wrap: wrap; align-items: center; gap: .3cqw; } .ct-atalhos > span { font-size: 1.3cqw; color: var(--rl-muted); margin-right: .2cqw; }
+.ct-painel .rl-btn--mini { min-height: 1.7cqw; padding: .25cqw .5cqw; font-size: 1.1cqw; }
+.rl .ct-ctl { font-size: 1.3cqw; color: var(--rl-text); font-variant-numeric: tabular-nums; } .rl .ct-ctl b { color: var(--rl-navy); }
+.rl .ct-painel input[type="range"] { width: 100%; min-height: 1.3cqw; accent-color: var(--rl-navy); height: auto; }
+.ct-res { margin: 0; } .ct-res > div { display: flex; justify-content: space-between; align-items: baseline; gap: .6cqw; border-bottom: 1px solid var(--rl-borda); padding: .1cqw 0; }
+.ct-res dt { font-size: 1.3cqw; color: var(--rl-muted); } .ct-res dd { margin: 0; font-size: 2.3cqw; font-weight: 600; line-height: 1.1; color: var(--rl-navy); font-variant-numeric: tabular-nums; }
+.ct-lei { font-size: 1.3cqw; color: var(--rl-text); line-height: 1.3; }
+.ct-comp { background: var(--ct-d); border-radius: .6cqw; padding: .3cqw .6cqw; } .ct-comp p { font-size: 1.3cqw; color: var(--rl-text); line-height: 1.25; font-variant-numeric: tabular-nums; }
+.ct-cartoes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .2cqw 2.4cqw; align-content: center; border-top: 1px solid var(--rl-borda); padding-top: .5cqw; }
+.ct-cartao-k { font-size: 1.45cqw; font-weight: 600; color: var(--rl-navy); } .ct-cartao-t { font-size: 1.3cqw; color: var(--rl-text); line-height: 1.3; font-variant-numeric: tabular-nums; }
+@container quadro (max-width: 820px) {
+  .ct-eq, .ct-corpo, .ct-cartoes { display: flex; flex-direction: column; gap: 10px; }
+  .ct-eq { padding: 12px 0; } .ct-eq > div { overflow-x: auto; } .ct-eq-k { font-size: 12px; } .ct-eq-f { font-size: 15px; }
+  .ct-regua, .ct-conta, .ct-painel { padding: 14px; border-radius: 12px; gap: 6px; }
+  .ct-lista { height: auto; grid-auto-rows: 30px; } .ct-item { font-size: 14px; grid-template-columns: 44px 40px 26px minmax(0, 1fr); } .ct-item-y { width: 22px; height: 18px; font-size: 12px; } .ct-cand-t { font-size: 13px; } .ct-regua-sub { font-size: 14px; }
+  .ct-arv-wrap { min-height: 230px; } .ct-linhas { overflow-x: auto; } .ct-linha { font-size: 15px; }
+  .ct-linhas dt, .ct-atalhos > span, .rl .ct-ctl, .ct-res dt, .ct-lei, .ct-comp p, .ct-cartao-t { font-size: 14px; } .ct .rl-k, .ct-cartao-k { font-size: 16px; }
+  .ct-res dd { font-size: 22px; } .rl .ct-painel input[type="range"] { min-height: 32px; }
+  .ct-painel .rl-btn--mini { min-height: 40px; padding: 8px 12px; font-size: 14px; } .ct-comp { padding: 8px 10px; border-radius: 8px; }
+}
+.slide-inner [data-vz="corte-candidato"] { padding: 0; border: 0; background: transparent; gap: 0; }
+/* a regra genérica .conteudo figure svg do palco devolveria a altura intrínseca do viewBox */
+.slide-inner [data-vz="corte-candidato"] .ct-arv { position: absolute; inset: 0; width: 100%; height: 100%; max-height: none; margin: 0; }
 
 /* Slide 15 do capítulo 4 (c4p15): a log loss proposta a proposta. Quadro 16:9 no sistema .rl, na gramática do c4p2:
    as duas fórmulas na faixa, as duas curvas de perda com as 16 propostas, o painel de escolha e três cartões. */

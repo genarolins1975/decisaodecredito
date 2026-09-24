@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import oot from "@/lib/visuais/oot-logistica.json";
 import woe from "@/lib/visuais/woe.json";
 import { aucPorPares, fmtNum, fmtPct } from "@/lib/visuais/metricas";
+import { Formula } from "./tex";
 
 /**
  * Balancear a amostra não muda o mundo (capítulo 3, c3p15). Reamostrar por classe desloca o nível da PD prevista e
@@ -47,7 +48,7 @@ export function Balancear() {
             <tr><th scope="row">PD média prevista</th><td>{fmtPct(r.mp, 2)}</td><td className="vz-t-default">{fmtPct(r.mq, 2)}</td>{corrigido && <td className="vz-t-ok">{fmtPct(r.mv, 2)}</td>}</tr>
             <tr><th scope="row">Default observado</th><td colSpan={corrigido ? 3 : 2}>{fmtPct(r.obs, 2)} na janela, 81 em 737</td></tr>
           </tbody></table></div>
-          <div className="vz-formula">odds corrigida = odds da amostra × [π ÷ (1 − π)] ÷ [πa ÷ (1 − πa)]</div>
+          <Formula f={String.raw`\text{odds corrigida} = \text{odds da amostra} \times \dfrac{\pi/(1-\pi)}{\pi_a/(1-\pi_a)}`} />
           <p className="hint">π é a prevalência real da população e πa a prevalência da amostra reamostrada. A correção supõe que o balanceamento alterou apenas a proporção entre as classes. Subamostragem seletiva quebra essa hipótese e não é consertada por esta fórmula.</p>
         </div>
         <div className="vz-bal-lado">

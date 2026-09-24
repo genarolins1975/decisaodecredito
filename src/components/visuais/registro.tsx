@@ -65,7 +65,7 @@ import { Intercepto } from "./intercepto";
 import { DescidaCompleta } from "./descida-completa";
 import { Faixas } from "./faixas";
 import { Anatomia } from "./anatomia";
-import { Impureza } from "./impureza";
+import { ImpurezaRaiz } from "./impureza-raiz";
 import { ImpurezaCurva } from "./impureza-curva";
 import { CorteCandidato } from "./corte-candidato";
 import { Recursao } from "./recursao";
@@ -136,8 +136,8 @@ const REGISTRO: Record<string, VisualNativo> = {
   c5p2: { Componente: RetaOuDegraus, substitui: "conteudo" },
   c5p3: { Componente: Anatomia, substitui: "legacy" },
   c5p4: { Componente: ImpurezaCurva, substitui: "pagina" },
-  c5p5: { Componente: Impureza, substitui: "legacy" },
-  c5p6: { Componente: CorteCandidato, substitui: "legacy" },
+  c5p5: { Componente: ImpurezaRaiz, substitui: "pagina" },
+  c5p6: { Componente: CorteCandidato, substitui: "pagina" },
   c5p7: { Componente: () => <ArvoreQueCresce modo="raiz" />, substitui: "legacy" },
   c5p8: { Componente: RaizEscolhida, substitui: "conteudo" },
   c5p9: { Componente: Recursao, substitui: "legacy" },

@@ -753,9 +753,35 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(page.locator("main")).toContainText("04 / 19");
   await expect(page.locator("main")).not.toContainText("tela 2 de");
 
-  // capítulo 5: o corte candidato, o caminho e a poda reproduzem as páginas herdadas
+  // c5p5: a base das 16 propostas na tela, com as linhas do grupo acesas, também no palco
+  await page.goto("/aulas/c5p5");
+  const ir = page.locator('figure[data-vz="impureza-raiz"]');
+  await expect(ir.locator(".ir-tab tbody tr")).toHaveCount(16); await expect(ir.locator(".ir-res-g")).toHaveText("0,50000");
+  await ir.getByRole("button", { name: "Folha pura", exact: true }).click();
+  await expect(ir.locator(".ir-tab tbody tr.ir-on")).toHaveCount(6); await expect(ir.locator(".ir-res-g")).toHaveText("0,00000");
+  await ir.getByRole("button", { name: "Folha mista", exact: true }).click();
+  await expect(ir.locator(".ir-tab tbody tr.ir-on")).toHaveCount(2); await expect(ir.locator(".ir-res-g")).toHaveText("0,50000");
+  await page.goto("/apresentacao/c5p5");
+  await expect(page.locator(".ir-tab tbody tr")).toHaveCount(16); await expect(page.locator("main")).toContainText("05 / 19");
+
+  // c5p6: onde cortar, a conta passo a passo e a comparação com a média simples
   await page.goto("/aulas/c5p6");
-  await expect(page.locator('figure[data-vz="corte-candidato"]')).toContainText("média ponderada 0,30159 e ganho 0,19841");
+  const ct = page.locator('figure[data-vz="corte-candidato"]');
+  await expect(ct.locator(".ct-res-g")).toHaveText("0,19841"); await expect(ct.locator(".ct-cand")).toHaveCount(15);
+  await ct.getByRole("button", { name: "22,5%", exact: true }).click();
+  await expect(ct.locator(".ct-res-g")).toHaveText("0,03333");
+  await ct.getByRole("button", { name: "Comparar com a média simples" }).click();
+  await expect(ct.locator(".ct-comp")).toContainText("0,25111, 7,5 vezes o correto");
+  await ct.getByRole("button", { name: "Cortar em 57,5%" }).click();
+  await expect(ct.locator(".ct-res-g")).toHaveText("0,28125"); await expect(ct.locator(".ct-lei")).toContainText("O maior ganho de toda a raiz");
+  await ct.getByRole("button", { name: "Atraso", exact: true }).click();
+  await expect(ct.locator(".ct-cand")).toHaveCount(6); // empates não têm fronteira
+  await ct.getByRole("button", { name: "Restaurar exemplo" }).click();
+  await expect(ct.locator(".ct-res-g")).toHaveText("0,19841"); await expect(ct.locator(".ct-comp")).toHaveCount(0);
+  await page.goto("/apresentacao/c5p6");
+  await expect(page.locator("main")).toContainText("06 / 19"); await expect(page.locator("main")).not.toContainText("tela 2 de");
+
+  // capítulo 5: o caminho e a poda reproduzem as páginas herdadas
   await page.goto("/aulas/c5p11");
   const cam = page.locator('figure[data-vz="caminho"]');
   await expect(cam).toContainText("Folha com 6 de 6: PD 100,0%");

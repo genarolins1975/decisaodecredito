@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
 import { inclinacaoLocal, sigmoide } from "@/lib/visuais/logistica";
+import { Formula } from "./tex";
 
 /**
  * A curva logística faz o caminho de volta (capítulo 4, c4p7). Um escore z em log odds vira PD; somar 1 a z desloca a
@@ -41,7 +42,7 @@ export function CurvaLogistica() {
             <div className="vz-tile"><p className="eyebrow">odds = e^z</p><p className="vz-num vz-num--odds">{fmtNum(Math.exp(z), 3)}</p></div>
             <div className="vz-tile"><p className="eyebrow">PD</p><p className="vz-num vz-num--ouro">{fmtPct(p, 1)}</p></div>
           </div>
-          <div className="vz-formula">PD = 1 ÷ (1 + e^(−z)) · z = ln( PD ÷ (1 − PD) )</div>
+          <Formula f={String.raw`\mathrm{PD} = \dfrac{1}{1 + e^{-z}} \qquad z = \ln\dfrac{\mathrm{PD}}{1 - \mathrm{PD}}`} />
           <div className="vz-tile"><p className="eyebrow">Três propriedades que importam</p>
             <table className="table text-[.85em] vz-esc-usos"><tbody>{PROPRIEDADES.map((q) => <tr key={q.n}><th scope="row">{q.n}</th><td>{q.t}</td></tr>)}</tbody></table></div>
         </div>
