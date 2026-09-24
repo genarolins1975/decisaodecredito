@@ -5,6 +5,8 @@ import { boostingClassificacao, folhasReg, rastro, rotuloCorteReg, type NoReg, t
 import { BETA_AULA, escore, sigmoide, type Proposta } from "@/lib/visuais/logistica";
 import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
 import { crescer, folhas as folhasClf } from "@/lib/visuais/arvore";
+import { paraTex } from "@/lib/visuais/tex";
+import { ComTex, Tex } from "./tex";
 
 /**
  * A perda que cai (capítulo 6). Boosting de classificação nas 16 propostas didáticas, na escala de log odds: a cada
@@ -14,10 +16,37 @@ import { crescer, folhas as folhasClf } from "@/lib/visuais/arvore";
  */
 export type ModoPerda = "alvo" | "iteracoes" | "rastro";
 const BASE = did.base as Proposta[];
-const PW = 420, PH = 340, PML = 46, PMR = 12, PMT = 12, PMB = 40;
+// PMR 17: o rótulo "100%", centrado na ponta do eixo, tem cerca de 30 de largura na letra de 10,5; com 12 perdia o %.
+const PW = 420, PH = 340, PML = 46, PMR = 17, PMT = 12, PMB = 40;
 const px = (u: number) => PML + (u / 100) * (PW - PML - PMR);
 const py = (a: number) => PMT + (1 - a / 60) * (PH - PMT - PMB);
 const REF = [0.6931, 0.6219, 0.563, 0.515, 0.4748]; const LOGISTICA = 0.43282;
+
+/**
+ * Onde pôr a PD de cada ponto: acima, à direita, abaixo ou à esquerda, a primeira posição que não encosta num rótulo já
+ * posto nem num ponto do plano e não sai da área do gráfico. As propostas vizinhas da faixa de baixo (#6 a #8 e #10 e
+ * #11, de 0 a 5 dias) ficam a 18 px umas das outras; a regra antiga, fixa, punha a #8 e a #10 uma sobre a outra.
+ */
+export function posicoesDasPds(pontos: { x: number; y: number; texto: string }[], raio = 9) {
+  const larg = (t: string) => 6.2 * t.length + 2, alt = 9; // letra de 10,5 px em negrito
+  const postos: { x0: number; x1: number; y0: number; y1: number }[] = [];
+  const bate = (r: { x0: number; x1: number; y0: number; y1: number }) =>
+    postos.some((q) => r.x0 < q.x1 && q.x0 < r.x1 && r.y0 < q.y1 && q.y0 < r.y1) ||
+    pontos.some((c) => { const dx = Math.max(r.x0 - c.x, 0, c.x - r.x1), dy = Math.max(r.y0 - c.y, 0, c.y - r.y1); return dx * dx + dy * dy < (raio + 1) ** 2; }) ||
+    r.x0 < PML || r.x1 > PW - 2 || r.y0 < PMT || r.y1 > PH - PMB + 6; // até 6 px abaixo do eixo: os números do eixo começam em 8
+  return pontos.map((c) => {
+    const w = larg(c.texto);
+    const opcoes = [
+      { x: c.x, y: c.y - 12, ancora: "middle" as const, r: { x0: c.x - w / 2, x1: c.x + w / 2, y0: c.y - 12 - alt, y1: c.y - 12 } },
+      { x: c.x + 13, y: c.y + 4, ancora: "start" as const, r: { x0: c.x + 13, x1: c.x + 13 + w, y0: c.y + 4 - alt, y1: c.y + 4 } },
+      { x: c.x, y: c.y + 22, ancora: "middle" as const, r: { x0: c.x - w / 2, x1: c.x + w / 2, y0: c.y + 22 - alt, y1: c.y + 22 } },
+      { x: c.x - 13, y: c.y + 4, ancora: "end" as const, r: { x0: c.x - 13 - w, x1: c.x - 13, y0: c.y + 4 - alt, y1: c.y + 4 } },
+    ];
+    const escolha = opcoes.find((o) => !bate(o.r)) ?? opcoes[0];
+    postos.push(escolha.r);
+    return { x: escolha.x, y: escolha.y, ancora: escolha.ancora };
+  });
+}
 
 export function PerdaQueCai({ modo = "iteracoes" }: { modo?: ModoPerda }) {
   const [eta, setEta] = useState(0.4);
@@ -31,6 +60,7 @@ export function PerdaQueCai({ modo = "iteracoes" }: { modo?: ModoPerda }) {
     return () => clearTimeout(id);
   }, [tocando, m]);
   const ps = passos[m]; const ant = passos[Math.max(0, m - 1)];
+  const rotulos = posicoesDasPds(BASE.map((b, i) => ({ x: px(b.util), y: py(b.atraso), texto: `${Math.round(ps.p[i] * 100)}%` })), modo === "rastro" ? 11 : 9);
   const folhas = ps.arvore ? folhasReg(ps.arvore) : [];
   const caixas = ps.arvore ? caixasDaArvore(ps.arvore) : [];
   const bate = Math.abs(eta - 0.4) < 1e-9;
@@ -47,7 +77,7 @@ export function PerdaQueCai({ modo = "iteracoes" }: { modo?: ModoPerda }) {
           <button type="button" className="btn btn-sm" onClick={() => { setM(0); setTocando(true); }} disabled={tocando}>{tocando ? "Somando árvores…" : "Reproduzir do início"}</button>
         </div>
       </header>
-      <div className="vz-estado"><b>{m === 0 ? "Só F₀ = log odds da prevalência (50%, logo zero): toda PD em 50%." : `Árvore ${m} de 4.`}</b> Perda {m ? <>{fmtNum(ant.perda, 4)} → {fmtNum(ps.perda, 4)}, queda de {fmtNum(ant.perda - ps.perda, 4)}</> : fmtNum(ps.perda, 4)}. η = {eta.toLocaleString("pt-BR", { minimumFractionDigits: 1 })}. {m > 0 && ps.arvore?.corte && <>Raiz em {rotuloCorteReg(ps.arvore.corte.v, ps.arvore.corte.valor)}; {folhas.length} folhas, cada uma com a correção média do grupo.</>}</div>
+      <div className="vz-estado"><b>{m === 0 ? <>Só <Tex f={String.raw`\boldsymbol{F_0} = \textbf{log odds da prevalência}`} className="tx-linha" /> (50%, logo zero): toda PD em 50%.</> : `Árvore ${m} de 4.`}</b> Perda {m ? <>{fmtNum(ant.perda, 4)} → {fmtNum(ps.perda, 4)}, queda de {fmtNum(ant.perda - ps.perda, 4)}</> : fmtNum(ps.perda, 4)}. <Tex f={String.raw`\eta = ${paraTex(eta.toLocaleString("pt-BR", { minimumFractionDigits: 1 }))}`} className="tx-linha" />. {m > 0 && ps.arvore?.corte && <>Raiz em {rotuloCorteReg(ps.arvore.corte.v, ps.arvore.corte.valor)}; {folhas.length} folhas, cada uma com a correção média do grupo.</>}</div>
       <div className="vz-perda-grade">
         <div className="vz-grafico">
           <p className="vz-grafico-t">Plano das variáveis <span className="hint">cor do ponto: desfecho · número: PD atual · regiões: correção da árvore {m || ""}</span></p>
@@ -57,9 +87,9 @@ export function PerdaQueCai({ modo = "iteracoes" }: { modo?: ModoPerda }) {
             {[0, 15, 30, 45, 60].map((a) => <g key={a}><line x1={px(0)} x2={px(100)} y1={py(a)} y2={py(a)} className="vz-grade" /><text x={PML - 6} y={py(a) + 4} textAnchor="end" className="vz-tick">{a} d</text></g>)}
             <text x={px(50)} y={PH - 6} textAnchor="middle" className="vz-rotulo">utilização do limite</text>
             {caixas.map((c, i) => <text key={`t${i}`} x={px((c.u0 + c.u1) / 2)} y={py(c.a1) + 14} textAnchor="middle" className="vz-perda-caixa-t">{c.valor >= 0 ? "+" : ""}{fmtNum(eta * c.valor, 2)}</text>)}
-            {BASE.map((b, i) => { const abaixo = BASE.some((o, j) => j < i && Math.abs(px(o.util) - px(b.util)) < 30 && Math.abs(py(o.atraso) - py(b.atraso)) < 26); return <g key={b.id} className={modo === "rastro" ? "vz-res-clic" : undefined} onClick={modo === "rastro" ? () => setFoco(i) : undefined}>
+            {BASE.map((b, i) => { const pos = rotulos[i]; return <g key={b.id} className={modo === "rastro" ? "vz-res-clic" : undefined} onClick={modo === "rastro" ? () => setFoco(i) : undefined}>
               <circle cx={px(b.util)} cy={py(b.atraso)} r={modo === "rastro" && i === foco ? 11 : 9} className={`vz-dot-plano ${b.y ? "vz-dot-plano--default" : "vz-dot-plano--pagou"} ${modo === "rastro" && i === foco ? "vz-perda-dot--foco" : ""}`} />
-              <text x={px(b.util) + (abaixo && b.atraso <= 5 ? 13 : 0)} y={py(b.atraso) + (abaixo ? (b.atraso <= 5 ? 4 : 22) : -12)} textAnchor={abaixo && b.atraso <= 5 ? "start" : "middle"} className="vz-perda-pd">{Math.round(ps.p[i] * 100)}%</text>
+              <text x={pos.x} y={pos.y} textAnchor={pos.ancora} className="vz-perda-pd">{Math.round(ps.p[i] * 100)}%</text>
             </g>; })}
           </svg>
           <div className="vz-res-controles">
@@ -76,7 +106,7 @@ export function PerdaQueCai({ modo = "iteracoes" }: { modo?: ModoPerda }) {
           {modo === "rastro" && <PainelRastro passos={passos} m={m} eta={eta} i={foco} />}
         </div>
       </div>
-      <p className="vz-fonte">Base didática de 16 propostas do capítulo 4. F₀ = ln(π ÷ (1 − π)); alvo y − p; árvore de regressão sobre o alvo com profundidade 2 e folha mínima 2; F = F + η h; PD = σ(F). Com η = 0,4 a perda é 0,6931 · 0,6219 · 0,5630 · 0,5150 · 0,4748, os números do gerador em Python; a logística do capítulo 4 chega a 0,4328 nesta base.</p>
+      <p className="vz-fonte"><ComTex t={String.raw`Base didática de 16 propostas do capítulo 4. $F_0 = \ln\big(\pi \div (1 - \pi)\big)$; alvo $y - p$; árvore de regressão sobre o alvo com profundidade 2 e folha mínima 2; $F = F + \eta\, h$; $\mathrm{PD} = \sigma(F)$. Com $\eta = 0{,}4$ a perda é 0,6931 · 0,6219 · 0,5630 · 0,5150 · 0,4748, os números do gerador em Python; a logística do capítulo 4 chega a 0,4328 nesta base.`} /></p>
     </figure>
   );
 }
@@ -126,7 +156,7 @@ function PainelIteracoes({ passos, m, bate }: { passos: PassoClf[]; m: number; b
         {passos.map((p, k) => <circle key={k} cx={sx(k)} cy={sy(p.perda)} r={k === m ? 6 : 4} className={k <= m ? "vz-perda-pt" : "vz-perda-pt vz-perda-pt--futuro"} />)}
       </svg>
       <div className="vz-tiles">
-        <div className="vz-tile"><p className="eyebrow">Perda após {m} {m === 1 ? "árvore" : "árvores"}</p><p className="vz-num">{fmtNum(passos[m].perda, 4)}</p><p className="hint">{bate ? `gerador: ${fmtNum(REF[m], 4)}` : `com η = 0,4 seria ${fmtNum(REF[m], 4)}`}</p></div>
+        <div className="vz-tile"><p className="eyebrow">Perda após {m} {m === 1 ? "árvore" : "árvores"}</p><p className="vz-num">{fmtNum(passos[m].perda, 4)}</p><p className="hint">{bate ? `gerador: ${fmtNum(REF[m], 4)}` : <ComTex t={String.raw`com $\eta = 0{,}4$ seria ${fmtNum(REF[m], 4)}`} />}</p></div>
         <div className="vz-tile"><p className="eyebrow">Distância até a logística</p><p className="vz-num">{fmtNum(passos[m].perda - LOGISTICA, 4)}</p><p className="hint">quatro árvores ainda não chegam lá; mais árvores chegam, a página 16 mostra quantas</p></div>
       </div>
     </div>

@@ -669,11 +669,13 @@ describe("capítulo 6 no palco: as peças redesenhadas exibem os números confer
   });
   it("c6p4: erro quadrático médio 16,43750 · 11,18750 · 10,18750 e mínimo na média, 52,0 ÷ 8 = 6,50", () => {
     const t = render(PalpiteConstante);
-    for (const v of ["16,43750", "11,18750", "10,18750", "52,0 ÷ 8 = 6,50"]) expect(t).toContain(v);
+    for (const v of ["16,43750", "11,18750", "10,18750"]) expect(t).toContain(v);
+    expect(renderToStaticMarkup(createElement(PalpiteConstante))).toContain('aria-label="52,0 ÷ 8 = 6,50"'); // a conta sai em KaTeX; o texto fica como rótulo acessível
   });
   it("c6p5: resíduos de −4,5 a +5,5; em x = 8, 12,00 − 6,50 = +5,50 e, depois de quatro árvores, sobram 1,14", () => {
     const t = render(ErroComoAlvo);
-    for (const v of ["−4,5", "−3,5", "−2,0", "−1,5", "+1,5", "+2,0", "+2,5", "+5,5", "12,00 − 6,50 = +5,50", "sobram 1,14"]) expect(t).toContain(v);
+    for (const v of ["−4,5", "−3,5", "−2,0", "−1,5", "+1,5", "+2,0", "+2,5", "+5,5", "sobram 1,14"]) expect(t).toContain(v);
+    expect(renderToStaticMarkup(createElement(ErroComoAlvo))).toContain('aria-label="12,00 − 6,50 = +5,50"'); // a conta sai em KaTeX; o texto fica como rótulo acessível
   });
   it("c6p6: toco em x ≤ 4,5 com −2,875 e +2,875; erro 10,19 → 1,92; 5 de 8 resíduos trocam de sinal, x = 5 de +1,50 para −1,375", () => {
     const t = render(PrimeiraCorrecao);

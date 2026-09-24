@@ -55,7 +55,7 @@ function Grafico({ p, comparar }: { p: number; comparar: boolean }) {
     <svg viewBox={`0 0 ${W} ${H}`} className="eo-svg" role="img" aria-label={`Odds em função da PD, de 0% a 100%, com a janela vertical de 0 a ${YM}. ${aria}`}>
       {[0, 5, 10, 15, 20].map((v) => <g key={v}><line x1={sx(0)} x2={sx(1)} y1={sy(v)} y2={sy(v)} className={v === 0 ? "eo-zero" : "eo-grade"} /><text x={ML - 10} y={sy(v) + 6} textAnchor="end" className="eo-tick">{v}</text></g>)}
       <line x1={sx(0)} x2={sx(1)} y1={sy(1)} y2={sy(1)} className="eo-um" /><text x={ML - 10} y={sy(1) - 4} textAnchor="end" className="eo-tick eo-tick--um">1</text>
-      {[0, 0.25, 0.5, 0.75, 1].map((v) => <text key={v} x={sx(v)} y={H - MB + 26} textAnchor="middle" className="eo-tick">{fmtP(v)}</text>)}
+      {[0, 0.25, 0.5, 0.75, 1].map((v) => <text key={v} x={sx(v)} y={H - MB + 26} textAnchor="middle" className={`eo-tick ${v === 0 ? "eo-tick--ini" : v === 1 ? "eo-tick--fim" : ""}`}>{fmtP(v)}</text>)}
       <text x={sx(0.5)} y={H - 6} textAnchor="middle" className="eo-eixo-t">probabilidade de default</text>
       <line x1={sx(1)} x2={sx(1)} y1={MT} y2={sy(0)} className="eo-assintota" />
       <text x={sx(1) - 4} y={MT - 8} textAnchor="end" className="eo-assintota-t">odds → ∞</text>

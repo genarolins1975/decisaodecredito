@@ -2,7 +2,7 @@
 import { useMemo, useState } from "react";
 import { fmtNum } from "@/lib/visuais/metricas";
 import { PONTOS, boostingRegressao } from "@/lib/visuais/boosting";
-import { Formula } from "./tex";
+import { ComTex, Formula, Tex } from "./tex";
 
 /**
  * A ideia do boosting (capítulo 6, c6p2). Três estratégias para combinar modelos, e a terceira em ação sobre os
@@ -15,7 +15,7 @@ const ESTRATEGIAS = [
   { k: "sequencia", nome: "Corrigir em sequência", modelos: ["F₀", "+h₁", "+h₂", "F"], ativo: 0, texto: "Começar com um palpite simples, medir o que sobrou e treinar o modelo seguinte apenas sobre o que sobrou. Repetir.", nota: "Cada modelo é deliberadamente fraco e resolve uma fatia pequena. É o boosting." },
 ];
 const PASSOS = [
-  { rot: "Palpite", titulo: "Começamos simples", txt: "Para o caso x = 8, o modelo inicial prevê a média, 6,50; o observado é 12,00." },
+  { rot: "Palpite", titulo: "Começamos simples", txt: "Para o caso $x = 8$, o modelo inicial prevê a média, 6,50; o observado é 12,00." },
   { rot: "Árvore 1", titulo: "Corrigir o maior padrão", txt: "A primeira árvore encontra um grupo subestimado. Com taxa de aprendizagem 0,5, o caso recebe +1,44." },
   { rot: "Árvore 2", titulo: "Recalcular antes de continuar", txt: "A segunda árvore não corrige o erro original; ela aprende o erro que sobrou após a etapa 1." },
   { rot: "Árvore 3", titulo: "Ajustes ficam mais específicos", txt: "O caso recebe uma correção menor. Outros casos podem receber correção negativa." },
@@ -43,7 +43,7 @@ export function TresEstrategias() {
           <p className="eyebrow">{e.nome}</p><p className="vz-num vz-num--texto">{e.texto}</p><p className="hint">{e.nota}</p>
         </div>)}
       </div>
-      <div className="vz-estado"><b>{passo}. {PASSOS[passo].rot}: previsão para x = 8 de {fmtNum(prev, 2)}, erro restante {fmtNum(erro, 2)} até o observado 12,00.</b> {PASSOS[passo].txt}</div>
+      <div className="vz-estado"><b>{passo}. {PASSOS[passo].rot}: previsão para <Tex f={String.raw`\boldsymbol{x = 8}`} className="tx-linha" /> de {fmtNum(prev, 2)}, erro restante {fmtNum(erro, 2)} até o observado 12,00.</b> <ComTex t={PASSOS[passo].txt} /></div>
       <div className="vz-te-grade">
         <div className="vz-grafico">
           <p className="vz-grafico-t">A terceira estratégia em ação, sobre os oito pontos <span className="hint">o degrau é a previsão acumulada; o traço vertical é o que sobrou para x = 8</span></p>
@@ -68,7 +68,7 @@ export function TresEstrategias() {
           <div className="vz-tile vz-tile--alerta"><p className="eyebrow">O risco que isso cria</p><p className="vz-num vz-num--texto">Correções sucessivas no mesmo conjunto de dados acabam acompanhando o ruído daquele conjunto. O boosting não superajusta em uma iteração: ele superajusta na milésima. O controle é o número de iterações, e ele precisa ser escolhido fora da amostra de treino.</p></div>
         </div>
       </div>
-      <p className="vz-fonte">Oito pontos do gerador, tocos de profundidade 1 e taxa de aprendizagem 0,5. Para x = 8 a previsão vai de 6,50 a 7,94, 9,97, 10,35 e 10,86, e o erro cai de 5,50 a 1,14. Vamos ver isso acontecer ponto a ponto nas próximas páginas.</p>
+      <p className="vz-fonte"><ComTex t="Oito pontos do gerador, tocos de profundidade 1 e taxa de aprendizagem 0,5. Para $x = 8$ a previsão vai de 6,50 a 7,94, 9,97, 10,35 e 10,86, e o erro cai de 5,50 a 1,14. Vamos ver isso acontecer ponto a ponto nas próximas páginas." /></p>
     </figure>
   );
 }

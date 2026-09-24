@@ -397,25 +397,25 @@
       "pagina": "c6p10",
       "slug": "c6p10q",
       "rot": "O que a taxa multiplica",
-      "pergunta": "Na fórmula F_m(x) = F_{m−1}(x) + η × h_m(x), o que exatamente η multiplica?",
+      "pergunta": "Na fórmula Fₘ(x) = Fₘ₋₁(x) + η × hₘ(x), o que exatamente η multiplica?",
       "alt": [
-        "Só a nova correção h_m. O palpite inicial e as correções já somadas entram inteiros em F_{m−1}",
+        "Só a nova correção hₘ. O palpite inicial e as correções já somadas entram inteiros em Fₘ₋₁",
         "Toda a expressão, inclusive o palpite inicial F₀",
         "A nova correção, com um valor diferente a cada árvore, conforme a qualidade dela"
       ],
       "certa": 0,
-      "porqueCerta": "A fórmula diz tudo: η multiplica h_m e nada mais. F₀ entra inteiro, e cada correção já somada entrou no seu momento também multiplicada por η, mas uma única vez. Para x = 8, 6,50 + 0,5 × 2,875 = 7,94: o 6,50 não encolheu.",
+      "porqueCerta": "A fórmula diz tudo: η multiplica hₘ e nada mais. F₀ entra inteiro, e cada correção já somada entrou no seu momento também multiplicada por η, mas uma única vez. Para x = 8, 6,50 + 0,5 × 2,875 = 7,94: o 6,50 não encolheu.",
       "erros": [
         null,
         {
           "confusao": "A fórmula foi lida sem atenção ao que está dentro e fora da multiplicação.",
-          "conceito": "Se η multiplicasse F_{m−1}, o palpite inicial encolheria a cada iteração e o modelo convergiria para zero em vez de convergir para os dados. Escreva a conta de x = 8 nas duas leituras: a correta dá 7,94, a outra daria 3,25 mais 1,44. Só a correção é encolhida",
+          "conceito": "Se η multiplicasse Fₘ₋₁, o palpite inicial encolheria a cada iteração e o modelo convergiria para zero em vez de convergir para os dados. Escreva a conta de x = 8 nas duas leituras: a correta dá 7,94, a outra daria 3,25 mais 1,44. Só a correção é encolhida",
           "seu": "η encolheria também o palpite anterior",
           "adequado": "F₀ e o acumulado entram inteiros; só a nova correção é multiplicada"
         },
         {
           "confusao": "η foi entendido como um peso que o algoritmo atribui a cada árvore conforme ela é boa.",
-          "conceito": "η não é nota de qualidade: é um único número, igual para as M árvores, escolhido antes de treinar e mantido fixo durante todo o ajuste. O que muda de árvore para árvore é h_m, que reflete o resíduo daquele momento. Quem quiser dar pesos diferentes por árvore está descrevendo outro algoritmo",
+          "conceito": "η não é nota de qualidade: é um único número, igual para as M árvores, escolhido antes de treinar e mantido fixo durante todo o ajuste. O que muda de árvore para árvore é hₘ, que reflete o resíduo daquele momento. Quem quiser dar pesos diferentes por árvore está descrevendo outro algoritmo",
           "seu": "η variaria conforme a qualidade de cada árvore",
           "adequado": "η é o mesmo fator nas M árvores, escolhido antes do treino"
         }

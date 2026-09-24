@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "04198c18ed82d19b283aef901a99f371616063d0d86048fb6d733850f3551bb2",
- "extractedAt": "2026-09-24T13:40:42.923Z",
+ "sourceSha256": "339282ade35f20b2f3530a4f7b5304c3c1b7499061ad8ce63ecec5bce8c36f23",
+ "extractedAt": "2026-09-24T22:18:25.561Z",
  "meta": {
   "capitulos": [
    {
@@ -7156,8 +7156,8 @@
     "erros": [
      {
       "alt": "Achar que η multiplica F₀",
-      "confusao": "Lê a fórmula sem notar que η multiplica só h_m(x).",
-      "intervencao": "F_{m−1}(x), que contém F₀, entra inteiro. Só a nova correção é reduzida."
+      "confusao": "Lê a fórmula sem notar que η multiplica só hₘ(x).",
+      "intervencao": "Fₘ₋₁(x), que contém F₀, entra inteiro. Só a nova correção é reduzida."
      }
     ],
     "interacao": "Página expositiva.",
@@ -7165,8 +7165,8 @@
     "transicao": "Classificação.",
     "aula": "Próxima em sala: c6p13. Diga: em crédito a fórmula é a mesma, com duas trocas: o alvo passa a ser y − p e a soma acontece em log odds, a escala do capítulo 4; de volta às 16 propostas. Ficam para o estudo: c6p11 e c6p12, onde a soma acontece e o resíduo y − p."
    },
-   "html": "<div class=\"nv\"><div class=\"nv-formula-anatomy\"><div class=\"nv-term\"><span class=\"math\">F<sub>m−1</sub>(x)</span><b>previsão anterior</b><p>o que a sequência já aprendeu</p></div><div class=\"nv-op\">+</div><div class=\"nv-term\"><span class=\"math\">η</span><b>taxa de aprendizagem</b><p>o mesmo fator em todas as etapas, escolhido antes do treino</p></div><div class=\"nv-op\">×</div><div class=\"nv-term\"><span class=\"math\">h<sub>m</sub>(x)</span><b>nova correção</b><p>o padrão encontrado no erro atual</p></div></div>\n   <div class=\"formula\" data-original=\"F_m(x) = F_{m−1}(x) + η × h_m(x)\" data-latex=\"F_m(x)=F_{m-1}(x)+\\eta\\,h_m(x)\" role=\"math\" aria-label=\"F_m(x) = F_{m−1}(x) + η × h_m(x)\"></div><div class=\"nv-caption\"><b>No caso x = 8</b><span>6,50 + 0,5 × 2,875 = 7,94. Só então calculamos o novo resíduo: 12,00 − 7,94 = 4,06. Resíduo, não erro final: ele vai mudar de novo na próxima árvore.</span></div>\n   <div class=\"nv-caption\"><b>η não é um peso por árvore</b><span>Não é nota que o algoritmo dá a cada árvore conforme ela é boa. É um único número, igual para as M árvores, escolhido antes de treinar. O que muda de árvore para árvore é h<sub>m</sub>, nunca η.</span></div></div>",
-   "text": "Fm−1(x)\nprevisão anterior\n\no que a sequência já aprendeu\n\n+\nη\ntaxa de aprendizagem\n\no mesmo fator em todas as etapas, escolhido antes do treino\n\n×\nhm(x)\nnova correção\n\no padrão encontrado no erro atual\n\nNo caso x = 8\n6,50 + 0,5 × 2,875 = 7,94. Só então calculamos o novo resíduo: 12,00 − 7,94 = 4,06. Resíduo, não erro final: ele vai mudar de novo na próxima árvore.\nη não é um peso por árvore\nNão é nota que o algoritmo dá a cada árvore conforme ela é boa. É um único número, igual para as M árvores, escolhido antes de treinar. O que muda de árvore para árvore é hm, nunca η.",
+   "html": "<div class=\"nv\"><div class=\"nv-formula-anatomy\"><div class=\"nv-term\"><span class=\"math\">\\(F_{m-1}(x)\\)</span><b>previsão anterior</b><p>o que a sequência já aprendeu</p></div><div class=\"nv-op\">+</div><div class=\"nv-term\"><span class=\"math\">\\(\\eta\\)</span><b>taxa de aprendizagem</b><p>o mesmo fator em todas as etapas, escolhido antes do treino</p></div><div class=\"nv-op\">×</div><div class=\"nv-term\"><span class=\"math\">\\(h_m(x)\\)</span><b>nova correção</b><p>o padrão encontrado no erro atual</p></div></div>\n   <div class=\"formula\" data-latex=\"F_m(x)=F_{m-1}(x)+\\eta\\,h_m(x)\" data-original=\"F m de x igual a F m menos 1 de x mais eta vezes h m de x\" role=\"math\" aria-label=\"F m de x igual a F m menos 1 de x mais eta vezes h m de x\"></div><div class=\"nv-caption\"><b>No caso \\(\\boldsymbol{x = 8}\\)</b><span>\\(6{,}50 + 0{,}5 \\times 2{,}875 = 7{,}94\\). Só então calculamos o novo resíduo: \\(12{,}00 - 7{,}94 = 4{,}06\\). Resíduo, não erro final: ele vai mudar de novo na próxima árvore.</span></div>\n   <div class=\"nv-caption\"><b>η não é um peso por árvore</b><span>Não é nota que o algoritmo dá a cada árvore conforme ela é boa. É um único número, igual para as M árvores, escolhido antes de treinar. O que muda de árvore para árvore é h<sub>m</sub>, nunca η.</span></div></div>",
+   "text": "\\(F_{m-1}(x)\\)\nprevisão anterior\n\no que a sequência já aprendeu\n\n+\n\\(\\eta\\)\ntaxa de aprendizagem\n\no mesmo fator em todas as etapas, escolhido antes do treino\n\n×\n\\(h_m(x)\\)\nnova correção\n\no padrão encontrado no erro atual\n\nNo caso \\(\\boldsymbol{x = 8}\\)\n\\(6{,}50 + 0{,}5 \\times 2{,}875 = 7{,}94\\). Só então calculamos o novo resíduo: \\(12{,}00 - 7{,}94 = 4{,}06\\). Resíduo, não erro final: ele vai mudar de novo na próxima árvore.\nη não é um peso por árvore\nNão é nota que o algoritmo dá a cada árvore conforme ela é boa. É um único número, igual para as M árvores, escolhido antes de treinar. O que muda de árvore para árvore é hm, nunca η.",
    "controls": [],
    "interactive": false,
    "svgs": 0,

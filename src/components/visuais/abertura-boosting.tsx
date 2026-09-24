@@ -4,6 +4,8 @@ import { boostingRegressao } from "@/lib/visuais/boosting";
 import { fmtNum } from "@/lib/visuais/metricas";
 import type { Block } from "@/lib/services/content";
 import { Degraus8, Eixos8, F0_8, LinhaF0, Pontos8, Residuo8, X8, Y8, escala8, sinal8 } from "./plano-8";
+import { paraTex } from "@/lib/visuais/tex";
+import { ComTex } from "./tex";
 
 /**
  * Abertura do capítulo 6 (c6p1). Substitui o bloco do desafio, no mesmo desenho da abertura do capítulo 5: o texto do
@@ -24,6 +26,12 @@ export function AberturaBoosting({ episodio }: { palco?: boolean; episodio?: Epi
     `O palpite inicial é a média dos oito valores, ${fmtNum(F0_8, 1)}: a mesma previsão para todos, sem olhar para x.`,
     `O que sobra em cada ponto vira o alvo da próxima árvore: em x = 8, faltam ${fmtNum(res8, 1)}.`,
     `Quatro árvores rasas somadas com η = ${fmtNum(ETA, 1)}: o erro quadrático médio cai de ${fmtNum(passos[0].mse, 2)} para ${fmtNum(fim.mse, 2)}.`,
+  ];
+  // a mesma legenda com as igualdades em KaTeX, para a tela; a versão em texto fica como rótulo do gráfico
+  const legendaTex = [
+    legenda[0],
+    `O que sobra em cada ponto vira o alvo da próxima árvore: em $x = 8$, faltam ${fmtNum(res8, 1)}.`,
+    String.raw`Quatro árvores rasas somadas com $\eta = ${paraTex(fmtNum(ETA, 1))}$: o erro quadrático médio cai de ${fmtNum(passos[0].mse, 2)} para ${fmtNum(fim.mse, 2)}.`,
   ];
   const etapas = episodio?.steps ?? [];
   return (
@@ -54,10 +62,10 @@ export function AberturaBoosting({ episodio }: { palco?: boolean; episodio?: Epi
             </>}
             <Pontos8 e={E} destaque={etapa === 0 ? [] : [7]} />
           </svg>
-          <p className="vz-ab-legenda" aria-live="polite">{legenda[etapa]}</p>
+          <p className="vz-ab-legenda" aria-live="polite"><ComTex t={legendaTex[etapa]} /></p>
         </div>
       </div>
-      <p className="vz-fonte">Oito pontos de regressão, x de 1 a 8 e y = 2; 3; 4,5; 5; 8; 8,5; 9; 12. Boosting com tocos (profundidade 1) e η = {fmtNum(ETA, 1)}, recalculado aqui (src/lib/visuais/boosting.ts); em x = 8 a previsão chega a {fmtNum(fim.F[7], 2)} e o resíduo cai de {sinal8(res8, 2)} para {sinal8(Y8[7] - fim.F[7], 2)}.</p>
+      <p className="vz-fonte"><ComTex t={String.raw`Oito pontos de regressão, $x$ de 1 a 8 e $y = 2;\ 3;\ 4{,}5;\ 5;\ 8;\ 8{,}5;\ 9;\ 12$. Boosting com tocos (profundidade 1) e $\eta = ${paraTex(fmtNum(ETA, 1))}$, recalculado aqui; em $x = 8$ a previsão chega a ${fmtNum(fim.F[7], 2)} e o resíduo cai de ${sinal8(res8, 2)} para ${sinal8(Y8[7] - fim.F[7], 2)}.`} /></p>
     </figure>
   );
 }

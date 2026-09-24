@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
 import { ARVORES_TM, BASE_TM, ETA_TM, FAMILIAS, leituraDaProposta, tresModelos, type Familia } from "@/lib/visuais/tres-modelos";
 import { boostingClassificacao } from "@/lib/visuais/boosting";
+import { ComTex } from "./tex";
 
 /**
  * Fecho da Aula 2 (c6p20): as mesmas 16 propostas que atravessaram os capítulos 4, 5 e 6, cada uma com a PD das três
@@ -80,7 +81,8 @@ export function TresModelos({ palco = false }: { palco?: boolean }) {
           {/* cabeçalhos das colunas numa linha própria, acima da escala, para não encostar em 0% e 100% */}
           <text x={ML - 10} y={MT - 30} textAnchor="end" className="vz-rotulo">PROPOSTA</text>
           <text x={sx(0.5)} y={MT - 30} textAnchor="middle" className="vz-rotulo">PD ESTIMADA</text>
-          <text x={W - MR + 10} y={MT - 30} className="vz-rotulo">DESFECHO</text>
+          {/* desfecho alinhado à direita, cabeçalho e valores: começando em W − MR + 10, o cabeçalho passava da borda no palco */}
+          <text x={W - 6} y={MT - 30} textAnchor="end" className="vz-rotulo">DESFECHO</text>
           {linhas.map((x, i) => {
             const on = x.id === sel;
             const { menor, maior } = extremos(x);
@@ -93,7 +95,7 @@ export function TresModelos({ palco = false }: { palco?: boolean }) {
                 <text x={ML - 10} y={sy(i) + 4} textAnchor="end" className="vz-tick vz-tm-rot"><tspan className="vz-tm-id">#{x.id}</tspan>{`  ${x.util}% · ${x.atraso} d`}</text>
                 {visiveis.length > 1 && <line x1={sx(menor)} x2={sx(maior)} y1={sy(i)} y2={sy(i)} className="vz-tm-dist" />}
                 {visiveis.map((f) => <Marca key={f.id} f={f.id} x={sx(x.pd[f.id])} y={sy(i) + DY[f.id]} forte={on} />)}
-                <text x={W - MR + 10} y={sy(i) + 4} className={`vz-tick ${x.y ? "vz-tm-default" : ""}`}>{x.y ? "default" : "pagou"}</text>
+                <text x={W - 6} y={sy(i) + 4} textAnchor="end" className={`vz-tick ${x.y ? "vz-tm-default" : ""}`}>{x.y ? "default" : "pagou"}</text>
               </g>
             );
           })}
@@ -133,7 +135,7 @@ export function TresModelos({ palco = false }: { palco?: boolean }) {
         </table></div>
       </details>}
 
-      {!palco && <p className="vz-fonte">Base didática de 16 propostas, a mesma dos capítulos 4, 5 e 6. Logística com os coeficientes da aula β = (−5,6666; 0,7453; 1,3955); árvore de profundidade 2 crescida sobre as 16, com a PD igual à frequência da folha; boosting com quatro árvores de profundidade 2 e η = 0,4, partindo das log odds da prevalência. Distância: a maior menos a menor das três PDs de cada proposta. #12: 99,6%, 100% e 66,8%, como em c6p14.</p>}
+      {!palco && <p className="vz-fonte"><ComTex t={String.raw`Base didática de 16 propostas, a mesma dos capítulos 4, 5 e 6. Logística com os coeficientes da aula $\beta = (-5{,}6666;\ 0{,}7453;\ 1{,}3955)$; árvore de profundidade 2 crescida sobre as 16, com a PD igual à frequência da folha; boosting com quatro árvores de profundidade 2 e $\eta = 0{,}4$, partindo das log odds da prevalência. Distância: a maior menos a menor das três PDs de cada proposta. #12: 99,6%, 100% e 66,8%, como em c6p14.`} /></p>}
     </figure>
   );
 }

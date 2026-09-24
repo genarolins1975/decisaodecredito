@@ -5,6 +5,7 @@ import type { Proposta } from "@/lib/visuais/logistica";
 import { boostingClassificacao } from "@/lib/visuais/boosting";
 import { fmtNum } from "@/lib/visuais/metricas";
 import { SemCaixaAlta } from "./sem-caixa-alta";
+import { ComTex } from "./tex";
 
 /**
  * η e M são acoplados (c6p16). Para cada taxa, quantas árvores o boosting das 16 propostas precisa para a perda de
@@ -21,9 +22,10 @@ const sy = (m: number) => MT + (1 - m / YMAX) * (H - MT - MB);
 export function tabelaEtaArvores() {
   return ETAS.map((eta) => { const ps = boostingClassificacao(BASE, eta, MAX); const m = ps.findIndex((p) => p.perda <= ALVO); return { eta, arvores: m, produto: eta * m, perda60: ps[MAX].perda }; });
 }
-const NOTAS = [
-  "η × árvores fica perto de 1,5: reduzir η pela metade pede o dobro de árvores.",
-  "A última coluna é de treino: 0,06800 com η = 1 é memorização, não desempenho.",
+/** Notas da base, com os trechos de fórmula entre cifrões (ComTex). */
+export const NOTAS = [
+  String.raw`$\eta \times \text{árvores}$ fica perto de 1,5: reduzir $\eta$ pela metade pede o dobro de árvores.`,
+  String.raw`A última coluna é de treino: 0,06800 com $\eta = 1$ é memorização, não desempenho.`,
   "η pequeno custa tempo, mas dá à validação mais pontos onde parar.",
 ];
 
@@ -51,8 +53,8 @@ export function EtaEArvores() {
           </svg>
         </div>
       </div>
-      <ul className="vz-vf-notas">{NOTAS.map((n) => <li key={n}>{n}</li>)}</ul>
-      <p className="vz-fonte">Boosting de classificação nas 16 propostas didáticas, árvores de profundidade 2 com mínimo de 2 por folha, partindo das log odds da prevalência (src/lib/visuais/boosting.ts). As duas colunas de perda são de treino.</p>
+      <ul className="vz-vf-notas">{NOTAS.map((n) => <li key={n}><ComTex t={n} /></li>)}</ul>
+      <p className="vz-fonte">Boosting de classificação nas 16 propostas didáticas, árvores de profundidade 2 com mínimo de 2 por folha, partindo das log odds da prevalência. As duas colunas de perda são de treino.</p>
     </figure>
   );
 }

@@ -848,7 +848,8 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await page.goto("/aulas/c6p2");
   const te = page.locator('figure[data-vz="tres-estrategias"]');
   await te.getByRole("button", { name: "4. Árvore 4" }).click();
-  await expect(te).toContainText("previsão para x = 8 de 10,86, erro restante 1,14");
+  await expect(te.locator(".vz-estado")).toContainText("4. Árvore 4: previsão para"); await expect(te.locator(".vz-estado")).toContainText("de 10,86, erro restante 1,14");
+  await expect(te.locator(".vz-estado .katex")).toHaveCount(1); // x = 8 em KaTeX dentro da frase
   await page.goto("/aulas/c6p15");
   const hp = page.locator('figure[data-vz="hiperparametros"]');
   await expect(hp).toContainText("log loss de treino 0,47481 contra 0,43282 da logística, 16 folhas somadas, menor folha com 2, PD de 33% a 67%");

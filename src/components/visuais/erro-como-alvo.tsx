@@ -2,6 +2,8 @@
 import { useMemo } from "react";
 import { boostingRegressao } from "@/lib/visuais/boosting";
 import { fmtNum } from "@/lib/visuais/metricas";
+import { paraTex } from "@/lib/visuais/tex";
+import { ComTex, Tex } from "./tex";
 import { Eixos8, F0_8, LinhaF0, Pontos8, Residuo8, X8, Y8, escala8, sinal8 } from "./plano-8";
 
 /**
@@ -29,14 +31,14 @@ export function ErroComoAlvo() {
         </div>
         <div className="vz-up-folha">
           <p className="vz-rd-k">O novo alvo em x = 8</p>
-          <p className="vz-ea-conta">{fmtNum(Y8[7], 2)} − {fmtNum(F0_8, 2)} <span className="whitespace-nowrap">= <b>{sinal8(r8, 2)}</b></span></p>
+          <p className="vz-ea-conta" role="img" aria-label={`${fmtNum(Y8[7], 2)} − ${fmtNum(F0_8, 2)} = ${sinal8(r8, 2)}`}><span className="tx-inteira"><Tex f={String.raw`\boldsymbol{${paraTex(fmtNum(Y8[7], 2))} - ${paraTex(fmtNum(F0_8, 2))}}`} /></span> <span className="tx-inteira"><Tex f={String.raw`\boldsymbol{=}`} /> <b><Tex f={String.raw`\boldsymbol{${paraTex(sinal8(r8, 2))}}`} /></b></span></p>
           <p className="vz-ea-leg">observado menos previsão atual</p>
           <p className="vz-up-porque">Sinal positivo: a previsão precisa subir. Negativo: precisa descer.</p>
           <p className="vz-up-porque">A próxima árvore é ajustada a estes oito resíduos, não a y.</p>
         </div>
       </div>
-      <p className="vz-re-nota">Resíduo não é erro final: ele muda a cada árvore somada. Depois de quatro, em x = 8 sobram {fmtNum(Y8[7] - fim.F[7], 2)}.</p>
-      <p className="vz-fonte">Resíduo = y − previsão atual, com F₀ = {fmtNum(F0_8, 2)}, a média de 2; 3; 4,5; 5; 8; 8,5; 9; 12. Quatro tocos com η = 0,5 levam a previsão de x = 8 a {fmtNum(fim.F[7], 2)} (src/lib/visuais/boosting.ts, conferido com o gerador).</p>
+      <p className="vz-re-nota"><ComTex t={`Resíduo não é erro final: ele muda a cada árvore somada. Depois de quatro, em $x = 8$ sobram ${fmtNum(Y8[7] - fim.F[7], 2)}.`} /></p>
+      <p className="vz-fonte"><ComTex t={String.raw`$\text{resíduo} = y - \text{previsão atual}$, com $F_0 = ${paraTex(fmtNum(F0_8, 2))}$, a média de 2; 3; 4,5; 5; 8; 8,5; 9; 12. Quatro tocos com $\eta = 0{,}5$ levam a previsão de $x = 8$ a ${fmtNum(fim.F[7], 2)}, conferido com o gerador.`} /></p>
     </figure>
   );
 }

@@ -373,6 +373,67 @@ Verificado em 24/09/2026: typecheck; lint (0 erros; os mesmos 5 avisos); `lint:t
 
 **Não verificado.** A leitura por leitor de tela real; os rótulos acessíveis foram conferidos pelo papel e pelo nome. No celular, os gráficos do capítulo 5 continuam com rótulos pequenos (pendência abaixo, com a recomendação), e a tabela do c5p15 continua com rolagem lateral, como antes.
 
+### Vigésima terceira rodada (24/09/2026): o capítulo 6 revisto com as lentes dos capítulos 4 e 5
+
+**Pedido.** Seguir com o capítulo 6, aplicando às 20 páginas as lentes da rodada anterior: fórmulas e contas em KaTeX pela regra; nota de palco 9 ou mais; legibilidade no celular; nada vazando no estudo; estados extremos; rótulos que se atropelam ou são cortados nos gráficos. No mesmo pacote, os rótulos de c4p4 e c4p6 achados na vigésima segunda rodada.
+
+**Linha de base** (medida em 24/09/2026, antes das mudanças). Palco: as 20 páginas entre 9,6 e 10 na pior das quatro resoluções; c6p7, c6p8, c6p9, c6p12 e c6p20 em 9,6. Fórmulas e contas em texto em 17 das 20 páginas; c6p17, c6p18 e c6p19 não têm nenhuma pela regra. Rótulos: em c6p12, c6p13 e c6p14, porcentagens de PD umas sobre as outras («45%» sobre «55%», «33%» sobre «58%») e "100%" cortado na borda, no estudo e no palco; em c6p20, «DESFECHO» fora do desenho no palco a 1920 px; em c4p4 no celular, «0» sobre «0%» e "100%" cortado; em c4p6 no celular, "100%" cortado. Cinco legendas citavam caminho de arquivo ou nome de variável do código (c6p1, c6p5, c6p6, c6p16 e c6p17). A fórmula em bloco do c6p10 era lida pelo leitor de tela em notação crua ("F_m(x) = F_{m−1}(x) + η × h_m(x)"). No celular (390 px), os índices da fórmula do c6p10 saíam deslocados para cima (defeito da plataforma, descrito abaixo), e 14 páginas têm rótulos de SVG abaixo de 8 px, o menor com 4,4 px.
+
+**Decisões da regra.** A regra continua a das rodadas 21 e 22. O capítulo 6 pediu duas decisões:
+1. Enunciado de questão e nota do professor ficam em texto, com índices em Unicode (Fₘ₋₁(x), hₘ(x)) no lugar da notação com sublinhado. O enunciado é guardado no banco e aparece no estudo, no ao vivo, no acompanhamento e nos guias, que o mostram como texto; KaTeX ali pede mudança no componente de questão e em todas as telas que o exibem.
+2. O infográfico de abertura de capítulo fica fora desta rodada; está nas pendências.
+
+**O que mudou.**
+- Fórmulas e contas em KaTeX:
+  - c6p1: a legenda de cada etapa (x = 8 e η = 0,5) e a legenda do gráfico.
+  - c6p2: o x = 8 da frase de estado e do primeiro passo.
+  - c6p3: x, y e o erro inicial (y − 6,5 = +5,5) da frase de estado; os oito valores de y, F₀ = 6,5 e y − F₀ na legenda.
+  - c6p4: a conta 52,0 ÷ 8 = 6,50, com o texto como rótulo acessível; na legenda, o erro quadrático médio de um valor constante c, 10,1875 + (6,5 − c)².
+  - c6p5: a conta 12,00 − 6,50 = +5,50, com o texto como rótulo acessível; resíduo = y − previsão atual na legenda.
+  - c6p6: x = 5, y − 6,5 e η = 1.
+  - c6p7 a c6p9: o corte e o η da frase de estado, as duas dicas, o caso η = 1 e a regra F = F + η h na legenda.
+  - c6p10, página herdada, editada na fonte (`content/original/apresentacao-curso-pd.html`): os três termos da anatomia, Fₘ₋₁(x), η e hₘ(x), e as duas contas do caso x = 8 (6,50 + 0,5 × 2,875 = 7,94 e 12,00 − 7,94 = 4,06).
+  - c6p11: a faixa das três fórmulas, antes em texto com índices em HTML, com o texto como rótulo acessível; σ(2,25) = 90,47% e π na legenda.
+  - c6p12 a c6p14: F₀ = log odds da prevalência e o η da frase de estado, a dica e as fórmulas da legenda (F₀ = ln(π ÷ (1 − π)), y − p, F = F + η h, PD = σ(F)).
+  - c6p15: y − p, η e M na legenda.
+  - c6p16: η × árvores, η e η = 1 nas notas.
+  - c6p20: o vetor β = (−5,6666; 0,7453; 1,3955) e η = 0,4 na legenda.
+  - Questão c6p10q e notas do professor do c6p10 (roteiro e explicações do guia): índices em Unicode no lugar de F_{m−1}, h_m e F_m.
+- Rótulos nos gráficos:
+  - c6p12 a c6p14 (`perda-que-cai.tsx`): o rótulo de PD de cada proposta procura, entre acima, à direita, abaixo e à esquerda do ponto, a primeira posição que não bate em outro rótulo, em ponto nem na borda (`posicoesDasPds`); antes, a posição era fixa e os rótulos de #8 e #10 se sobrepunham. Margem direita de 12 para 17: o "100%" não perde o %.
+  - c6p20 (`tres-modelos.tsx`): «DESFECHO» e os valores do desfecho alinhados pela direita, dentro do desenho.
+  - c4p4 e c4p6 no celular: as marcas das pontas do eixo, 0% e 100%, ancoradas para dentro na consulta de contêiner de até 820 px.
+- Legendas sem caminho de arquivo nem nome de variável do código: c6p1, c6p5, c6p6, c6p16 e c6p17.
+- Leitor de tela: a fórmula em bloco do c6p10 ganhou o LaTeX explícito na fonte e o texto falado como rótulo ("F m de x igual a F m menos 1 de x mais eta vezes h m de x"); o desenho não muda. Outras sete fórmulas herdadas têm rótulo em notação crua na fonte (c2p12, c4p6, c4p7, c4p11, c5p6, c6p7 e c6p11), mas não aparecem na tela: essas páginas trocaram o bloco por visual nativo.
+- Quebra de linha e entrelinha:
+  - `ComTex` marca com `.tx-curta` o trecho de até 32 caracteres visíveis; nos visuais de texto corrido, a igualdade curta não quebra entre o sinal e o valor (antes, "η =" podia ficar no fim de uma linha e "0,5" no começo da seguinte). "No caso x = 8", no c6p10, não quebra dentro da fórmula.
+  - O KaTeX em linha de frase (`.tx-linha .katex`) passou a ter caixa de linha 1. Com a 1,2 do KaTeX, a linha com fórmula ficava 2 a 3 px mais alta que as outras, e no palco isso reduzia o zoom: com as fórmulas novas, o c6p7 caía de 9,9 para 9,6 em 1400x900. A regra vale para os capítulos 4 e 5; as dez páginas deles com fórmula em frase (c4p1, c4p12, c4p16, c5p3, c5p7, c5p12, c5p14, c5p15, c5p16 e c5p18) mantiveram a nota nas quatro resoluções.
+  - A conta grande do c6p5, a faixa do c6p11 e os termos da anatomia do c6p10 ficaram com o KaTeX na altura da letra vizinha.
+
+**Defeito da plataforma corrigido: KaTeX no celular.** Na tela até 720 px, `.conteudo [style*="height:"] { height: auto !important }`, pensada para desenhos herdados com altura fixa em estilo em linha, alcançava também os spans internos do KaTeX, que posicionam índices, expoentes e frações com alturas em linha (a régua `.pstrut`). A 390 px, índices e expoentes subiam: no c6p10 (Fₘ₋₁(x) e hₘ(x)) e, fora do capítulo 6, em c7p13, c11p8 e c11p13 (varredura das 181 páginas a 390 px; c3p15 e c4p1 foram acusados e conferidos na tela, sem defeito). A regra e a de `width` deixam o KaTeX de fora (`:not(.katex *)`). As duas regras existem desde o commit 23d0ec2 (18/09/2026).
+
+**Notas de palco** (auditoria em 1920x1080, 1400x900, 1366x768 e 1024x768; antes e depois, em 24/09/2026; pior nota das quatro resoluções):
+
+| Página | Antes | Depois | Palavras a 1920x1080, antes e depois |
+|---|---|---|---|
+| c6p10 | 9,9 | 10 | 114 e 99 |
+| c6p11 | 9,9 | 10 | 104 e 86 |
+| c6p7 | 9,6 (em 1366x768; 9,9 nas demais) | 9,6 (em 1366x768; 9,9 nas demais) | 123 e 113 |
+| c6p9 | 9,6 (em 1400x900 e 1366x768; 9,9 nas demais) | igual | 111 e 104 |
+| c6p8 | 9,6 | 9,6 | 148 e 141 |
+| c6p12 | 9,6 | 9,6 | 124 e 120 |
+| c6p20 | 9,6 | 9,6 | 134 e 134 |
+| c6p3 | 9,8 (em 1920x1080; 10 nas demais) | igual | 53 e 43 |
+| c6p19 | 9,8 (em 1920x1080 e 1400x900; 10 nas demais) | igual | 61 e 61 |
+| c6p1, c6p2, c6p4 a c6p6 e c6p13 a c6p18 | 9,9 a 10 | iguais | iguais ou menos |
+| c4p4 e c4p6 | 9,4 | 9,4 | 162 e 173, iguais |
+
+c6p8 fica em 9,6 pela densidade: 141 palavras, entre elas os 48 valores da tabela de cada árvore (9 no critério pede até 140). c6p7, c6p9, c6p12 e c6p20 ficam em 9,6 pela menor letra, entre 1,76% e 1,89% da altura do slide na resolução em que caem (10 pede 1,9%), somada à densidade de 104 a 134 palavras (10 pede até 100). c6p3 fica em 9,8 só em 1920x1080, pela letra do rótulo "Previsão inicial F₀" (1,72%), e c6p19, página herdada, pela ocupação. c4p4 e c4p6 seguem em 9,4 pela densidade dos quadros `.rl`, como desde a décima nona rodada.
+
+Verificado em 24/09/2026: typecheck; lint (0 erros; os mesmos 5 avisos); `lint:tracos` (0); `npm test` (345, com `tests/tex-capitulo-6.test.ts`: todas as expressões TeX dos visuais renderizadas pelo KaTeX com η de 0,1 a 1, os cortes e os oito pontos; o KaTeX e o rótulo acessível de c6p3, c6p4, c6p5, c6p11, c6p13 e c6p16; os rótulos de PD sem sobreposição em todo η, iteração e tamanho de ponto; nenhuma notação crua no c6p10, no rótulo da fórmula, na questão c6p10q e nas notas); `npx playwright test` (24 de 24; o bloco do c6p2 passou a conferir a frase de estado por trechos e o KaTeX do x = 8); auditoria de palco na tabela acima; rótulos de PD de c6p12 a c6p14 em 60 estados (as três páginas, η de 0,1 a 1 e as cinco iterações) sem bater em rótulo, ponto ou borda; rótulos de SVG de c6p1 a c6p20, c4p4 e c4p6 sem sobreposição nem corte na borda em 1920x1080, 1366x768, 1024x768 e 390x844, estudo e palco; 540 estados extremos sem corte (cada botão, cada opção de lista e cada controle deslizante no mínimo e no máximo das figuras de c6p1 a c6p20, c4p4 e c4p6, e o conteúdo herdado de c6p10 e c6p19, em Apresentação 1920x1080, 1366x768 e 1024x768 e Aulas 1366x768 e 390x844; os dois acusados na primeira passada eram o título do c6p19 oculto para leitor de tela, recortado de propósito, e o detector passou a ignorá-lo; com cortes forçados por estilo injetado, o detector os acusou); varredura das 61 páginas em Aulas e Apresentação nas quatro larguras, com estados clicados: 61 de 61 nas oito combinações; fórmulas com índice nas 181 páginas a 390 px conferidas depois da correção da plataforma; telas conferidas no palco, no estudo e a 390 px; guia do capítulo 6 regerado com as figuras novas (aluno com 28 páginas e professor com 38, as mesmas de antes) e pacote do professor remontado; figuras dos capítulos 4 e 5 recapturadas e comparadas com as dos guias atuais, iguais salvo deslocamento de 1 a 3 px em linhas com fórmula (c4p1, c4p12 e c5p3), e os guias desses capítulos mantidos.
+
+**Não verificado.** A leitura por leitor de tela real; os rótulos acessíveis foram conferidos pelo papel, pelo nome e pelo MathML. No celular, os gráficos em SVG do capítulo 6 continuam com rótulos pequenos (pendência abaixo, junto com a do capítulo 5).
+
 ## Pendências técnicas ordenadas
 
 0. Guia do professor dos capítulos 4, 5 e 6: enviar o pacote `guias-2026-09` a `bases/vguias-2026-09/` no bucket e registrar em Bases e gabaritos (instruções em `scripts/apostila/README.md`).
@@ -380,12 +441,12 @@ Verificado em 24/09/2026: typecheck; lint (0 erros; os mesmos 5 avisos); `lint:t
 0. Celular (390 px): 13 páginas dos capítulos 4 a 6 mostram tabela com rolagem lateral, padrão anterior a esta rodada; em 1.024 px ou mais, nenhuma.
 0. Tempo da Aula 2: essenciais somam 171 min para 165 úteis; decisão do professor, recomendação em `docs/NARRATIVA_AULA_2.md`, seção 6.
 0. Repositório público: gabaritos estão nos fontes do material e o guia do professor do baralho, de uma rodada anterior, continua no histórico do git. Recomendação: tornar o repositório privado.
-0. Fórmulas em texto fora dos capítulos 4 e 5: uma busca grosseira no código em 24/09/2026 (×, ÷, ≈, exp e ln em texto), anterior à revisão do capítulo 5, acusava 85 dos 94 arquivos de visual nativo fora do capítulo 4. A busca não separa fórmula de valor com unidade nem de rótulo de gráfico, que a regra mantém em texto; o número é teto, não inventário. O capítulo 5 foi inventariado e convertido na vigésima segunda rodada. Recomendação: seguir capítulo a capítulo, a começar pelo 6, com as mesmas lentes.
-0. Celular (390 px), gráficos em SVG do capítulo 5: o desenho é o da projeção reduzido à largura do telefone, e 13 páginas têm rótulos abaixo de 8 px, de 4,3 a 6,5 px (medição de 24/09/2026, rótulos abaixo de 8 px por página: c5p1 41, c5p2 41, c5p3 41, c5p7 53, c5p8 19, c5p10 44, c5p11 41, c5p12 12, c5p13 17, c5p14 71, c5p15 21, c5p16 71, c5p18 25). O texto em HTML fica entre 10 e 12 px. Recomendação: geometria compacta própria do celular em cada desenho, como a das réguas do c4p5; cerca de sete desenhos cobrem as 13 páginas (diagrama da árvore, plano das 16 propostas, plano e barras da árvore que cresce, curva do valor da folha, intervalos da confiança da folha, retas da poda). Decisão do professor, pelo custo.
-0. Rótulos de SVG nos capítulos 4 e 6 (checagem da vigésima segunda rodada): c4p4 no celular, «0» sobre «0%» e "100%" cortado; c4p6 no celular, "100%" cortado; c6p12, c6p13 e c6p14, rótulos de porcentagem sobrepostos e "100%" cortado, no estudo e no palco; c6p20 no palco a 1920 px, «DESFECHO» fora do desenho.
-0. Legendas com caminho de arquivo em quatro visuais do capítulo 6: `abertura-boosting`, `erro-como-alvo`, `eta-e-arvores` e `primeira-correcao`.
+0. Fórmulas em texto fora dos capítulos 4, 5 e 6: uma busca grosseira no código em 24/09/2026 (×, ÷, ≈, exp e ln em texto), anterior à revisão do capítulo 5, acusava 85 dos 94 arquivos de visual nativo fora do capítulo 4. A busca não separa fórmula de valor com unidade nem de rótulo de gráfico, que a regra mantém em texto; o número é teto, não inventário. Os capítulos 5 e 6 foram inventariados e convertidos na vigésima segunda e na vigésima terceira rodadas. Os infográficos de abertura (`content/infograficos/cNN.json`) ficaram fora das três revisões e também trazem fórmulas e contas em texto (no c06, Fₘ(x) = Fₘ₋₁(x) + η · hₘ(x) e F₁ = 6,50 + 0,5 × 2,875 = 7,94). Recomendação: seguir capítulo a capítulo, a começar pelo 7, com as mesmas lentes, e tratar os infográficos numa passada própria.
+0. Celular (390 px), gráficos em SVG dos capítulos 5 e 6: o desenho é o da projeção reduzido à largura do telefone; no capítulo 5, 13 páginas têm rótulos abaixo de 8 px, de 4,3 a 6,5 px (medição de 24/09/2026, rótulos abaixo de 8 px por página: c5p1 41, c5p2 41, c5p3 41, c5p7 53, c5p8 19, c5p10 44, c5p11 41, c5p12 12, c5p13 17, c5p14 71, c5p15 21, c5p16 71, c5p18 25). O texto em HTML fica entre 10 e 12 px. Recomendação: geometria compacta própria do celular em cada desenho, como a das réguas do c4p5; cerca de sete desenhos cobrem as 13 páginas do capítulo 5 (diagrama da árvore, plano das 16 propostas, plano e barras da árvore que cresce, curva do valor da folha, intervalos da confiança da folha, retas da poda). No capítulo 6, 14 páginas têm rótulos abaixo de 8 px, o menor de cada página entre 4,4 e 6,5 px (medição de 24/09/2026, antes e depois desta rodada, iguais: c6p1 3, c6p2 8, c6p3 4, c6p4 5, c6p5 11, c6p6 5, c6p7 6, c6p8 6, c6p9 12, c6p15 12, c6p16 8, c6p17 14, c6p18 18, c6p20 47); c6p12 a c6p14 já desenham a 8 px ou mais. Decisão do professor, pelo custo.
 0. Legibilidade no palco dos quadros do capítulo 4: c4p1, c4p11, c4p12 e c4p14 têm a menor letra a 1,56% a 1,63% da altura do slide (rótulos, campos e alternativas), abaixo do 1,7% que dá 9 no critério; c4p10 e c4p16 ficam em 1,69% em 1024x768. É o que segura esses quadros entre 9,0 e 9,3; anterior à vigésima primeira rodada.
 0. Guias dos capítulos 1 a 3 e 7 a 11: as sínteses da revisão 13 provavelmente trazem o mesmo descompasso entre guia e tela corrigido aqui nos capítulos 4 a 6; não auditadas.
+0. Enunciados de questão com fórmula: ficam em texto, com índices em Unicode (decisão da vigésima terceira rodada). Se o professor quiser KaTeX neles, o caminho é desenhar os trechos entre cifrões no componente de questão e nas telas que o reaproveitam (estudo, ao vivo, acompanhamento e guias), para todas as questões de uma vez. Decisão do professor.
+0. Legenda com nome de variável do código fora dos capítulos 4 a 6: c9p6 (`equidade.tsx`, "DADOS.fair").
 0. Aula 2: R1 a R4 e R7 de `docs/PLANO_MELHORIAS.md` (aviso de turma sem encontros, perguntas para slides sem página ligada, verificação em Firefox, Safari e projetor, validação com usuários, traços nas cascas, estados combinados que cabem reduzidos).
 
 1. Portar visuais legados de maior valor para componentes nativos (lista em docs/03, seção 6).
