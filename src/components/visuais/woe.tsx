@@ -2,6 +2,7 @@
 import { useState } from "react";
 import woe from "@/lib/visuais/woe.json";
 import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
+import { Formula } from "./tex";
 
 /**
  * O peso da evidência (capítulo 3, c3p16). A faixa vista pelos dois desfechos: WoE é o logaritmo da razão entre a
@@ -40,7 +41,7 @@ export function Woe() {
             <div className="vz-woe-lado"><span className="eyebrow">maus na faixa</span><span className="vz-woe-barra vz-woe-barra--mau" style={{ height: `${mau * 100}%` }} /><b>{fmtPct(mau)}</b></div>
             <div className="vz-woe-res"><span className="eyebrow">concentração relativa</span><p className={`vz-num ${w > 0.001 ? "vz-num--ok" : w < -0.001 ? "vz-num--default" : ""}`}>{fmtNum(w, 3)}</p><span className="hint">ln({fmtNum(bom / mau, 3)})</span></div>
           </div>
-          <div className="vz-formula">WoE da faixa = ln(proporção de bons ÷ proporção de maus)</div>
+          <Formula f={String.raw`\mathrm{WoE}_{\text{faixa}} = \ln\dfrac{\text{proporção de bons}}{\text{proporção de maus}}`} />
         </div>
         <div className="vz-woe-lado2">
           <div className="vz-grafico">

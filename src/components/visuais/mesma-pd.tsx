@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { fmtPct } from "@/lib/visuais/metricas";
+import { Formula } from "./tex";
 const fmtReais = (v: number) => `${v < 0 ? "−" : ""}R$ ${Math.round(Math.abs(v)).toLocaleString("pt-BR")}`;
 
 /**
@@ -57,7 +58,7 @@ export function MesmaPd() {
               </g>; })}
             </svg>
           </div>
-          <div className="vz-formula">resultado esperado = (1 − PD) × receita − PD × perda − funding × exposição − custo operacional</div>
+          <Formula f={String.raw`\text{resultado esperado} = (1-\mathrm{PD})\times\text{receita} - \mathrm{PD}\times\text{perda} - \text{funding}\times\text{exposição} - \text{custo operacional}`} />
           <div className="vz-tile vz-tile--ok"><p className="eyebrow">Decisão</p><p className="vz-num vz-num--texto">{decisao.charAt(0).toUpperCase() + decisao.slice(1)}. A PD ordena o risco; a operação se escolhe pelo valor esperado, e o capítulo 8 vai construir essa conta de forma completa, com provisão, capital e política.</p></div>
         </div>
       </div>

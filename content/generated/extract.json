@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "c0c51599d04327f8fa257fa69f515713d4bc99f26d05e47f0224a0b50a58a296",
- "extractedAt": "2026-09-23T21:52:15.176Z",
+ "sourceSha256": "83c4f1ddd6c769c37f17fc495b1e47a4cb2651bb4d4e4aac82e25d781f88db81",
+ "extractedAt": "2026-09-24T12:42:31.315Z",
  "meta": {
   "capitulos": [
    {
@@ -5530,7 +5530,7 @@
     "funcao": "Fixar a referência numérica do capítulo com uma conta que qualquer aluno refaz em dez segundos.",
     "pre": "Impureza.",
     "conducao": "Peça que a turma conte os defaults na tabela antes de você mostrar o número. São oito.",
-    "leitura": "Conta de quatro linhas à esquerda, tabela completa à direita.",
+    "leitura": "Fórmulas da proporção e do Gini no alto; à esquerda, a base das 16 propostas, com as linhas do grupo acesas; ao centro, as propostas do grupo em duas fileiras, default e pagou, e a conta em duas linhas; à direita, o painel; na base, A referência, Folha pura e O tamanho conta.",
     "pergunta": "O Gini da raiz depende de quais variáveis existem?",
     "resposta": "Não. Depende apenas da composição do alvo. As variáveis só entram quando se procura uma divisão.",
     "erros": [
@@ -5540,7 +5540,7 @@
       "intervencao": "É a base didática. Impureza alta na raiz é o que dá espaço para a divisão mostrar ganho."
      }
     ],
-    "interacao": "Três botões, raiz, folha pura e folha mista, refazem a conta do Gini para cada grupo.",
+    "interacao": "Três botões, raiz, folha pura e folha mista, trocam o grupo, acendem as linhas dele na tabela e refazem a conta do Gini.",
     "verificacao": "O aluno reproduz a conta sem consultar a fórmula.",
     "transicao": "Um corte de cada vez."
    },
@@ -5594,8 +5594,8 @@
    "guia": {
     "funcao": "Tornar a conta do ganho completamente transparente, com as propostas de cada lado visíveis, antes de automatizar a busca.",
     "pre": "Gini da raiz.",
-    "conducao": "Escolha utilização e leve o corte até 27,5: ganho zero, porque os dois lados continuam meio a meio (1 default em 2 e 7 em 14). Depois até 57,5: ganho 0,28125. Peça que a turma explique a diferença olhando as listas de propostas.",
-    "leitura": "À esquerda, o controle de corte, a régua das 16 propostas e os dois blocos de composição; à direita, a conta do ganho e as barras de Gini antes, de cada lado e depois, ponderado.",
+    "conducao": "Escolha utilização e leve o corte até 27,5%: ganho zero, porque os dois lados continuam meio a meio (1 default em 2 e 7 em 14). Depois até 57,5%: ganho 0,28125. Peça que a turma explique a diferença olhando a lista e a árvore. Em 22,5%, ligue Comparar com a média simples: 0,25111 sem ponderar, contra 0,03333 do ganho correto.",
+    "leitura": "Fórmulas do ganho e do Gini no alto; à esquerda, as 16 propostas em ordem da variável, com o corte entre duas delas e os candidatos marcados; ao centro, a conta em quatro passos: antes, cada lado com o seu peso, a média ponderada e o ganho; à direita, o painel; na base, Pesa o tamanho, Ganho zero e O melhor da raiz.",
     "pergunta": "Existe corte com ganho negativo?",
     "resposta": "Não. A média ponderada das impurezas nunca supera a impureza do grupo original, então o ganho é sempre maior ou igual a zero. Ganho zero significa divisão inútil, não prejudicial.",
     "erros": [
@@ -5610,7 +5610,7 @@
       "intervencao": "Mostre o corte em 22,5: lado esquerdo puro com uma proposta, ganho de apenas 0,033."
      }
     ],
-    "interacao": "Seletor de variável e controle de corte percorrendo apenas os pontos médios observados.",
+    "interacao": "Variável, atalhos, controle e clique nas marcas da lista mudam o corte; Comparar com a média simples mostra a conta sem ponderar; Restaurar exemplo volta a 62,5%.",
     "verificacao": "O aluno prevê o sinal do ganho antes de mover o controle.",
     "transicao": "Agora a varredura completa de todos os cortes candidatos."
    },
@@ -5638,7 +5638,7 @@
      "slug": "c5p6q",
      "id": "c5p6q",
      "rot": "Ganho de uma divisão",
-     "pergunta": "Um corte deixa uma única proposta de um lado, com Gini zero, e quinze do outro, com sete defaults. Esse corte tem ganho alto?",
+     "pergunta": "Um corte deixa uma única proposta de um lado, com Gini zero, e quinze do outro, com oito defaults. Esse corte tem ganho alto?",
      "alt": [
       "Sim, porque um dos lados ficou completamente puro",
       "Não, porque a média das impurezas é ponderada pelo tamanho e o lado puro pesa apenas um de dezesseis",

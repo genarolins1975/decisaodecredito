@@ -5692,7 +5692,7 @@ P({id:'c5p5',cap:5,n:5,nivel:'essencial',t:{exp:2,ex:4,prat:2,disc:1},origem:'re
 
 const Q_C5P6Q={id:'c5p6q',
  rot:'Ganho de uma divisão',
- pergunta:'Um corte deixa uma única proposta de um lado, com Gini zero, e quinze do outro, com sete defaults. Esse corte tem ganho alto?',
+ pergunta:'Um corte deixa uma única proposta de um lado, com Gini zero, e quinze do outro, com oito defaults. Esse corte tem ganho alto?',
  alt:['Sim, porque um dos lados ficou completamente puro',
       'Não, porque a média das impurezas é ponderada pelo tamanho e o lado puro pesa apenas um de dezesseis',
       'Não é possível avaliar sem conhecer o Gini da raiz'],
@@ -14048,9 +14048,11 @@ function guiaDaTelaV15(){
    {alt:'Ler o Gini como a taxa de erro do nó',confusao:'Toma a chance de errar com rótulo sorteado pelo erro de prever a maioria.',
     intervencao:'Em 10%, compare 18%, o Gini, com 10%, a curva pontilhada, e leia o cartão Não é taxa de erro.'}],
   interacao:'Controle deslizante de 0% a 100%, atalhos 0%, 10%, 50% e 90% e clique ou arrasto sobre o gráfico; botões Comparar com 1 − p e Restaurar exemplo. Tudo é recalculado no navegador.'});
- guia('c5p5',{interacao:'Três botões, raiz, folha pura e folha mista, refazem a conta do Gini para cada grupo.'});
- guia('c5p6',{conducao:'Escolha utilização e leve o corte até 27,5: ganho zero, porque os dois lados continuam meio a meio (1 default em 2 e 7 em 14). Depois até 57,5: ganho 0,28125. Peça que a turma explique a diferença olhando as listas de propostas.',
-  leitura:'À esquerda, o controle de corte, a régua das 16 propostas e os dois blocos de composição; à direita, a conta do ganho e as barras de Gini antes, de cada lado e depois, ponderado.'});
+ guia('c5p5',{leitura:'Fórmulas da proporção e do Gini no alto; à esquerda, a base das 16 propostas, com as linhas do grupo acesas; ao centro, as propostas do grupo em duas fileiras, default e pagou, e a conta em duas linhas; à direita, o painel; na base, A referência, Folha pura e O tamanho conta.',
+  interacao:'Três botões, raiz, folha pura e folha mista, trocam o grupo, acendem as linhas dele na tabela e refazem a conta do Gini.'});
+ guia('c5p6',{conducao:'Escolha utilização e leve o corte até 27,5%: ganho zero, porque os dois lados continuam meio a meio (1 default em 2 e 7 em 14). Depois até 57,5%: ganho 0,28125. Peça que a turma explique a diferença olhando a lista e a árvore. Em 22,5%, ligue Comparar com a média simples: 0,25111 sem ponderar, contra 0,03333 do ganho correto.',
+  leitura:'Fórmulas do ganho e do Gini no alto; à esquerda, as 16 propostas em ordem da variável, com o corte entre duas delas e os candidatos marcados; ao centro, a conta em quatro passos: antes, cada lado com o seu peso, a média ponderada e o ganho; à direita, o painel; na base, Pesa o tamanho, Ganho zero e O melhor da raiz.',
+  interacao:'Variável, atalhos, controle e clique nas marcas da lista mudam o corte; Comparar com a média simples mostra a conta sem ponderar; Restaurar exemplo volta a 62,5%.'});
  guia('c5p7',{leitura:'Plano à esquerda e árvore à direita, com os controles e os contadores abaixo dela; embaixo, a avaliação de um corte candidato e, ao lado, as barras de ganho dos 21 candidatos, com o vencedor e o segundo colocado no título.',
   erros:[{alt:'Achar que a busca é otimização',confusao:'Imagina que existe gradiente ou fórmula fechada.',intervencao:'Aponte o perfil irregular das barras de ganho: não há como derivar; só avaliando.'},{alt:'Ignorar a margem',confusao:'Trata o vencedor como escolha determinada.',intervencao:'Pergunte o que aconteceria se a proposta #8 mudasse de desfecho: a variável da raiz continua utilização, porque a margem sobre o atraso é folgada, mas o corte passa a 52,5% (0,27393 contra 0,19531), porque a margem sobre o corte vizinho é apertada.'}],
   interacao:'Deixar a árvore crescer, árvore de referência, profundidade máxima, mínimo por folha, proposta retirada e avaliação de qualquer dos 21 cortes, tudo recalculado no navegador.'});

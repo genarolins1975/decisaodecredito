@@ -467,6 +467,7 @@ main().catch((e) => { console.error(e); process.exit(1); });
 async function applyContentPatches(editionId: string) {
   await patchCapitulo11(editionId);
   await patchTrabalhoFinal(editionId);
+  await patchC5p6q(editionId);
   // P1 (auditoria de 17/09/2026, achado F03): pergunta de retomada de c3p7q com gabarito incoerente.
   // Com latência de 45 dias e decisão em 10 de agosto, junho (fecha 30/06, disponível 14/08) não estaria disponível;
   // a decisão passa a 20 de agosto para que "junho" seja de fato o mês mais recente utilizável.
@@ -549,6 +550,23 @@ const RUBRICA_TRABALHO_FINAL_V2 = {
   ].map((c) => ({ ...c, levels: NIVEIS })),
   individualQuestion: "Mostre uma decisão que foi sua, a evidência que a sustentou e uma resposta da IA que você recusou ou corrigiu.",
 };
+/**
+ * c5p6q (24/09/2026): o enunciado dizia "quinze do outro, com sete defaults", mas a explicação da própria questão e o quadro
+ * do c5p6 usam o corte de 22,5%, que isola a proposta #1 e deixa quinze propostas com oito defaults. A resposta e o ganho
+ * (0,03333) não mudam. A questão vem do material original, que só ganha versão nova com --republish; daí o patch.
+ */
+async function patchC5p6q(editionId: string) {
+  const [q] = await db.select().from(schema.questions).where(and(eq(schema.questions.editionId, editionId), eq(schema.questions.slug, "c5p6q")));
+  if (!q?.currentVersionId) return;
+  const [v] = await db.select().from(schema.questionVersions).where(eq(schema.questionVersions.id, q.currentVersionId));
+  if (!v?.prompt.includes("com sete defaults")) return;
+  const existing = await db.select({ v: schema.questionVersions.versionNo }).from(schema.questionVersions).where(eq(schema.questionVersions.questionId, q.id));
+  const versionNo = Math.max(...existing.map((e) => e.v)) + 1;
+  const vid = newId();
+  await db.insert(schema.questionVersions).values({ id: vid, questionId: q.id, versionNo, label: v.label, prompt: v.prompt.replace("com sete defaults", "com oito defaults"), options: v.options, answerKey: v.answerKey, feedback: v.feedback });
+  await db.update(schema.questions).set({ currentVersionId: vid }).where(eq(schema.questions.id, q.id));
+  console.log(`patch c5p6q: nova versão ${versionNo} (quinze propostas com oito defaults)`);
+}
 async function patchTrabalhoFinal(editionId: string) {
   // rubrica: nova versão com os oito critérios quando a corrente ainda tem só os quatro do modelo
   const [rb] = await db.select().from(schema.rubrics).where(and(eq(schema.rubrics.editionId, editionId), eq(schema.rubrics.slug, "trabalho-final")));

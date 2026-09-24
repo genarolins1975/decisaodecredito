@@ -291,8 +291,8 @@
   "vazamentos": [],
   "coberturas": [],
   "overflowX": 0,
-  "quadros": 0,
-  "caixas": 256,
+  "quadros": 1,
+  "caixas": 398,
   "quando": null,
   "ok": true
  },
@@ -302,8 +302,8 @@
   "vazamentos": [],
   "coberturas": [],
   "overflowX": 0,
-  "quadros": 0,
-  "caixas": 221,
+  "quadros": 1,
+  "caixas": 461,
   "quando": null,
   "ok": true
  },
@@ -402,7 +402,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 197,
+  "caixas": 226,
   "quando": null,
   "ok": true
  },
@@ -468,7 +468,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 0,
-  "caixas": 237,
+  "caixas": 347,
   "quando": null,
   "ok": true
  },

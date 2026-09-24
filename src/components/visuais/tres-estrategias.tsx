@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import { fmtNum } from "@/lib/visuais/metricas";
 import { PONTOS, boostingRegressao } from "@/lib/visuais/boosting";
+import { Formula } from "./tex";
 
 /**
  * A ideia do boosting (capítulo 6, c6p2). Três estratégias para combinar modelos, e a terceira em ação sobre os
@@ -62,7 +63,7 @@ export function TresEstrategias() {
           <div className="vz-tile"><p className="eyebrow">Erro absoluto restante para x = 8</p><p className="vz-num">{fmtNum(erro, 2)}</p>
             <div className="vz-tdc-trilho"><span className={`vz-tdc-fill ${erro < 2 ? "vz-tdc-fill--ok" : "vz-tdc-fill--erro"}`} style={{ width: `${(erro / erro0) * 100}%` }} /></div>
             <table className="table text-[.85em] vz-te-tabela"><thead><tr><th>Passo</th><th>Previsão</th><th>Erro</th></tr></thead><tbody>{passos.map((q, i) => <tr key={q.m} className={i === passo ? "vz-t-on" : ""} onClick={() => setPasso(i)} style={{ cursor: "pointer" }}><th scope="row">{i}. {PASSOS[i].rot}</th><td>{fmtNum(q.F[ALVO], 2)}</td><td>{fmtNum(PONTOS.y[ALVO] - q.F[ALVO], 2)}</td></tr>)}</tbody></table></div>
-          <div className="vz-formula">previsão final = palpite inicial + correção 1 + correção 2 + … + correção M</div>
+          <Formula f={String.raw`\text{previsão final} = \text{palpite inicial} + \text{correção}_1 + \text{correção}_2 + \cdots + \text{correção}_M`} />
           <div className="vz-tile vz-tile--ok"><p className="eyebrow">Por que fraco de propósito</p><p className="vz-num vz-num--texto">Se o primeiro modelo fosse forte, sobraria pouco para os seguintes e o conjunto seria essencialmente ele. A força do método vem de muitas correções pequenas, cada uma difícil de superajustar sozinha.</p></div>
           <div className="vz-tile vz-tile--alerta"><p className="eyebrow">O risco que isso cria</p><p className="vz-num vz-num--texto">Correções sucessivas no mesmo conjunto de dados acabam acompanhando o ruído daquele conjunto. O boosting não superajusta em uma iteração: ele superajusta na milésima. O controle é o número de iterações, e ele precisa ser escolhido fora da amostra de treino.</p></div>
         </div>

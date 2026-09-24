@@ -4047,7 +4047,7 @@ P({id:'c5p5',cap:5,n:5,nivel:'essencial',t:{exp:2,ex:4,prat:2,disc:1},origem:'re
 
 const Q_C5P6Q={id:'c5p6q',
  rot:'Ganho de uma divisão',
- pergunta:'Um corte deixa uma única proposta de um lado, com Gini zero, e quinze do outro, com sete defaults. Esse corte tem ganho alto?',
+ pergunta:'Um corte deixa uma única proposta de um lado, com Gini zero, e quinze do outro, com oito defaults. Esse corte tem ganho alto?',
  alt:['Sim, porque um dos lados ficou completamente puro',
       'Não, porque a média das impurezas é ponderada pelo tamanho e o lado puro pesa apenas um de dezesseis',
       'Não é possível avaliar sem conhecer o Gini da raiz'],
@@ -10617,9 +10617,11 @@ function guiaDaTelaV15(){
   conducao:'',
   erros:undefined,
   interacao:''});
- guia('c5p5',{interacao:''});
+ guia('c5p5',{leitura:'',
+  interacao:''});
  guia('c5p6',{conducao:'',
-  leitura:''});
+  leitura:'',
+  interacao:''});
  guia('c5p7',{leitura:'',
   erros:undefined,
   interacao:''});

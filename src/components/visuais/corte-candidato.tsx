@@ -1,81 +1,145 @@
 "use client";
-import { useMemo, useState } from "react";
-import did from "@/lib/visuais/did.json";
-import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
-import type { Proposta } from "@/lib/visuais/logistica";
-import { NOME_VAR, VARIAVEIS, avaliarCorte, cortesCandidatos, type Variavel } from "@/lib/visuais/arvore";
+import { useState } from "react";
+import { ATALHOS, avaliar, BASE, cartoes, comparacaoSimples, conta, CORTES, EIXO, fmtCorte, fmtNum, FORMULAS, indiceDe, INICIAL, leitura, NOME_CURTO, NOME_VAR, RODAPE, ROTULO_ATALHOS, ROTULO_SIMPLES, SUBTITULO, TITULO, TITULO_CONTA, TITULO_CTL, TITULO_REGUA, VARS, type Corte, type Variavel } from "@/lib/visuais/corte-candidato";
+import { Tex } from "./tex";
 
 /**
- * Avaliar um corte candidato (capítulo 5, c5p6). A variável e o ponto de corte na mão: os dois lados com suas
- * propostas, o Gini de cada um, a média ponderada e o ganho, sobre a régua da variável escolhida.
+ * Slide 6 do capítulo 5 (c5p6): avaliar um corte candidato, na gramática do c4p2. Quadro 16:9 no sistema .rl: a
+ * fórmula do ganho em KaTeX na faixa; à esquerda, onde cortar, com as 16 propostas sobre a régua da variável e os
+ * pontos médios candidatos; ao centro, a conta em três passos, em forma de árvore: antes, cada lado com o seu peso, e o
+ * ganho; à direita, o painel. A média simples entra sob demanda, como o erro que a ponderação evita. Contas em
+ * src/lib/visuais/corte-candidato.ts.
  */
-const BASE = did.base as Proposta[];
-const W = 640, ML = 40, MR = 20;
+const CARTOES = cartoes();
 
-export function CorteCandidato() {
-  const [v, setV] = useState<Variavel>("util");
-  const [idx, setIdx] = useState(8); // utilização 62,5%, o exemplo da página
-  const cortes = useMemo(() => cortesCandidatos(BASE, v), [v]);
-  const i = Math.min(idx, cortes.length - 1); const corte = cortes[i];
-  const a = useMemo(() => avaliarCorte(BASE, v, corte), [v, corte]);
-  const max = v === "util" ? 100 : 40; const un = v === "util" ? "%" : " d";
-  const sx = (x: number) => ML + (x / max) * (W - ML - MR);
-  const pE = a.esq.filter((p) => p.y).length / a.esq.length, pD = a.dir.filter((p) => p.y).length / a.dir.length;
+/**
+ * Onde cortar: as 16 propostas em ordem da variável, com o corte como linha entre duas delas. Cada fronteira entre valores
+ * diferentes é um candidato (o ponto médio dos dois vizinhos) e é clicável; dentro de um empate não há fronteira, porque
+ * nenhum corte separa valores iguais.
+ */
+function Lista({ v, a, onCorte }: { v: Variavel; a: Corte; onCorte: (i: number) => void }) {
+  const ord = [...BASE].sort((x, y) => x[v] - y[v] || x.id - y.id);
   return (
-    <figure className="vz" data-vz="corte-candidato">
-      <header className="vz-cab">
-        <div>
-          <p className="eyebrow">Avaliar um corte candidato · 16 propostas · Gini antes 0,50000</p>
-          <p className="vz-tit">Um corte vale pela redução da impureza que produz, ponderada pelo tamanho dos dois grupos.</p>
+    <ol className="ct-lista" aria-label={`As 16 propostas em ordem de ${NOME_VAR[v].toLowerCase()}; corte em ${fmtCorte(v, a.corte)}: ${a.nE} à esquerda, ${a.nD} à direita`}>
+      {ord.map((r, j) => {
+        const prox = ord[j + 1];
+        const cand = prox && prox[v] !== r[v] ? (r[v] + prox[v]) / 2 : null;
+        const k = cand === null ? -1 : CORTES[v].findIndex((c) => Math.abs(c - cand) < 1e-9);
+        const atual = cand !== null && Math.abs(cand - a.corte) < 1e-9;
+        const lado = r[v] <= a.corte ? "e" : "d";
+        return (
+          <li key={r.id} className={atual ? `ct-item ct-item--${lado} ct-item--corte` : `ct-item ct-item--${lado}`}>
+            <span className="ct-item-id">#{r.id}</span>
+            <span className="ct-item-v">{r[v]}</span>
+            <span className={`ct-item-y ${r.y ? "ct-item-y--d" : "ct-item-y--p"}`} role="img" aria-label={r.y ? "default" : "pagou"}>{r.y ? "D" : "✓"}</span>
+            {atual && cand !== null && <span className="ct-cand-t" aria-hidden="true">corte ≤ {fmtCorte(v, cand)}</span>}
+            {cand !== null && <button type="button" className={atual ? "ct-cand ct-cand--on" : "ct-cand"} onClick={() => onCorte(k)} aria-pressed={atual} aria-label={`Cortar em ${fmtCorte(v, cand)}`} />}
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+/** A conta em forma de árvore: a raiz em cima, os dois lados embaixo, com o peso de cada um na aresta. */
+const AW = 580, AH = 360, NW = 244, NH = 120;
+function No({ x, y, rot, n, d, gini, cls }: { x: number; y: number; rot: string; n: number; d: number; gini: number; cls: string }) {
+  const bw = NW - 28, bd = n ? (bw * d) / n : 0;
+  return (
+    <g className={`ct-no ${cls}`} transform={`translate(${x}, ${y})`}>
+      <rect width={NW} height={NH} rx={10} className="ct-no-caixa" />
+      <text x={14} y={29} className="ct-no-t">{rot}</text>
+      <rect x={14} y={40} width={bw} height={12} rx={3} className="ct-barra-p" />
+      {bd > 0 && <rect x={14} y={40} width={bd} height={12} rx={3} className="ct-barra-d" />}
+      <text x={14} y={79} className="ct-no-n">{n} proposta{n === 1 ? "" : "s"} · {d} D</text>
+      <text x={14} y={108} className="ct-no-g">Gini {fmtNum(gini, 5)}</text>
+    </g>
+  );
+}
+function Arvore({ v, a }: { v: Variavel; a: Corte }) {
+  const raiz = { x: (AW - NW) / 2, y: 26 }, e = { x: 0, y: AH - NH - 2 }, d = { x: AW - NW, y: AH - NH - 2 };
+  const pe = { x: e.x + NW / 2, y: e.y }, pd = { x: d.x + NW / 2, y: d.y }, pr = { x: AW / 2, y: raiz.y + NH };
+  return (
+    <svg viewBox={`0 0 ${AW} ${AH}`} className="ct-arv" role="img" aria-label={`Antes, ${BASE.length} propostas com Gini ${fmtNum(a.giniAntes, 5)}; à esquerda, ${a.nE} com Gini ${fmtNum(a.giniEsq, 5)} e peso ${a.nE} em ${BASE.length}; à direita, ${a.nD} com Gini ${fmtNum(a.giniDir, 5)} e peso ${a.nD} em ${BASE.length}.`}>
+      <text x={AW / 2} y={17} textAnchor="middle" className="ct-passo">1 · antes do corte</text>
+      <text x={AW / 2} y={e.y - 12} textAnchor="middle" className="ct-passo">2 · cada lado</text>
+      <path d={`M${pr.x} ${pr.y} L${pe.x} ${pe.y}`} className="ct-aresta" />
+      <path d={`M${pr.x} ${pr.y} L${pd.x} ${pd.y}`} className="ct-aresta" />
+      <text x={(pr.x + pe.x) / 2 - 14} y={(pr.y + pe.y) / 2 + 4} textAnchor="end" className="ct-peso">peso {a.nE}/{BASE.length}</text>
+      <text x={(pr.x + pd.x) / 2 + 14} y={(pr.y + pd.y) / 2 + 4} className="ct-peso">peso {a.nD}/{BASE.length}</text>
+      <No x={raiz.x} y={raiz.y} rot="Raiz" n={BASE.length} d={a.dE + a.dD} gini={a.giniAntes} cls="ct-no--raiz" />
+      <No x={e.x} y={e.y} rot={`e: ≤ ${fmtCorte(v, a.corte)}`} n={a.nE} d={a.dE} gini={a.giniEsq} cls="ct-no--e" />
+      <No x={d.x} y={d.y} rot={`d: > ${fmtCorte(v, a.corte)}`} n={a.nD} d={a.dD} gini={a.giniDir} cls="ct-no--d" />
+    </svg>
+  );
+}
+
+export function CorteCandidato({ pagina }: { pagina?: { index: number; total: number } }) {
+  const [v, setV] = useState<Variavel>(INICIAL.v);
+  const [i, setI] = useState(indiceDe(INICIAL.v, INICIAL.corte));
+  const [simples, setSimples] = useState(false);
+  const cortes = CORTES[v], idx = Math.min(i, cortes.length - 1);
+  const a = avaliar(v, cortes[idx]);
+  const c = conta(a);
+  const trocarVar = (nv: Variavel) => { if (nv === v) return; setV(nv); setI(indiceDe(nv, ATALHOS[nv][ATALHOS[nv].length - 1])); };
+  const restaurar = () => { setV(INICIAL.v); setI(indiceDe(INICIAL.v, INICIAL.corte)); setSimples(false); };
+  return (
+    <figure className="vz rl ct" data-vz="corte-candidato">
+      <section className="rl-slide" data-tela="6">
+        <header className="rl-cab">
+          <p className="rl-meta eyebrow"><span>Aula 2 · Capítulo 5 · Árvores de decisão</span><span>{pagina ? `${String(pagina.index).padStart(2, "0")} / ${pagina.total}` : "Corte candidato"}</span></p>
+          <h3 className="rl-tit">{TITULO}</h3>
+          <p className="rl-sub">{SUBTITULO}</p>
+        </header>
+
+        <div className="ct-eq">
+          {FORMULAS.map((f) => <div key={f.k}><p className="ct-eq-k">{f.k}</p><Tex f={f.tex} className="ct-eq-f" /></div>)}
         </div>
-        <div className="vz-acoes" role="group" aria-label="Variável">
-          {VARIAVEIS.map((k) => <button key={k} type="button" className={`btn btn-sm ${v === k ? "" : "btn-secondary"}`} onClick={() => { setV(k); setIdx(k === "util" ? 8 : 3); }}>{NOME_VAR[k]}</button>)}
-        </div>
-      </header>
-      <div className="vz-estado"><b>{NOME_VAR[v]} ≤ {fmtNum(corte, 1)}{un}:</b> esquerda com {a.esq.length} propostas e {a.esq.filter((p) => p.y).length} defaults (Gini {fmtNum(a.giniEsq, 5)}), direita com {a.dir.length} e {a.dir.filter((p) => p.y).length} (Gini {fmtNum(a.giniDir, 5)}); média ponderada {fmtNum(a.depois, 5)} e ganho {fmtNum(a.ganho, 5)}.</div>
-      <div className="vz-cc-grade">
-        <div className="vz-cc-painel">
-          <label className="vz-slider"><span className="vz-slider-rotulo"><b>Ponto de corte</b> <span className="vz-slider-valor">{fmtNum(corte, 1)}{un} · candidato {i + 1} de {cortes.length}</span></span>
-            <input type="range" min={0} max={cortes.length - 1} step={1} value={i} onChange={(e) => setIdx(Number(e.target.value))} aria-valuetext={`${fmtNum(corte, 1)}${un}`} /></label>
-          <div className="vz-grafico">
-            <p className="vz-grafico-t">As 16 propostas sobre a régua de {NOME_VAR[v].toLowerCase()} <span className="hint">o corte é o ponto médio entre dois valores vizinhos</span></p>
-            <svg viewBox={`0 0 ${W} 150`} role="img" aria-label={`Corte em ${fmtNum(corte, 1)}: ${a.esq.length} à esquerda e ${a.dir.length} à direita`}>
-              <rect x={ML} y={20} width={sx(corte) - ML} height={90} className="vz-cc-lado vz-cc-lado--esq" />
-              <rect x={sx(corte)} y={20} width={W - MR - sx(corte)} height={90} className="vz-cc-lado vz-cc-lado--dir" />
-              <line x1={ML} x2={W - MR} y1={80} y2={80} className="vz-regua" />
-              {(v === "util" ? [0, 25, 50, 75, 100] : [0, 10, 20, 30, 40]).map((t) => <g key={t}><line x1={sx(t)} x2={sx(t)} y1={76} y2={84} className="vz-regua" /><text x={sx(t)} y={100} textAnchor="middle" className="vz-tick">{t}{un}</text></g>)}
-              {BASE.map((p) => { const mesmos = BASE.filter((q) => q[v] === p[v]); const k = mesmos.indexOf(p); return <g key={p.id} className="vz-int-ponto" style={{ transform: `translate(${sx(p[v])}px, ${80 - 18 * k}px)` }}><circle r={7} className={p.y ? "vz-int-c--default" : "vz-int-c--pagou"} /><text y={3.5} textAnchor="middle" className="vz-cc-id">{p.id}</text></g>; })}
-              <line x1={sx(corte)} x2={sx(corte)} y1={14} y2={116} className="vz-arv-cand" />
-              <text x={sx(corte)} y={132} textAnchor="middle" className="vz-ks-t">≤ {fmtNum(corte, 1)}{un} à esquerda · maior à direita</text>
-              <text x={ML + 4} y={34} className="vz-tick vz-tick--forte">esquerda: {a.esq.length}</text>
-              <text x={W - MR - 4} y={34} textAnchor="end" className="vz-tick vz-tick--forte">direita: {a.dir.length}</text>
-            </svg>
+
+        <div className="rl-corpo ct-corpo">
+          <div className="ct-regua">
+            <p className="rl-k">{TITULO_REGUA}</p>
+            <p className="ct-regua-sub">Em ordem de {EIXO[v]}</p>
+            <Lista v={v} a={a} onCorte={setI} />
           </div>
-          <div className="vz-cc-lados">
-            <div className="vz-tile vz-cc-tile--esq"><p className="eyebrow">Lado esquerdo: {NOME_VAR[v]} ≤ {fmtNum(corte, 1)}{un}</p>
-              <p className="vz-num vz-num--texto"><b>{a.esq.length}</b> propostas · <b>{a.esq.filter((p) => p.y).length}</b> defaults · proporção {fmtPct(pE, 1)} · Gini <b>{fmtNum(a.giniEsq, 5)}</b></p>
-              <p className="hint">{a.esq.map((p) => `#${p.id}`).join(", ")}</p></div>
-            <div className="vz-tile vz-cc-tile--dir"><p className="eyebrow">Lado direito: {NOME_VAR[v]} &gt; {fmtNum(corte, 1)}{un}</p>
-              <p className="vz-num vz-num--texto"><b>{a.dir.length}</b> propostas · <b>{a.dir.filter((p) => p.y).length}</b> defaults · proporção {fmtPct(pD, 1)} · Gini <b>{fmtNum(a.giniDir, 5)}</b></p>
-              <p className="hint">{a.dir.map((p) => `#${p.id}`).join(", ")}</p></div>
+
+          <div className="ct-conta">
+            <p className="rl-k">{TITULO_CONTA}</p>
+            <div className="ct-arv-wrap"><Arvore v={v} a={a} /></div>
+            <dl className="ct-linhas">
+              <dt>3 · ponderada</dt><dd><Tex f={c.depois} className="ct-linha" /></dd>
+              <dt>4 · ganho</dt><dd><Tex f={c.ganho} className="ct-linha ct-linha--ganho" /></dd>
+              {simples && <><dt className="ct-linhas-simples">sem ponderar</dt><dd><Tex f={c.simples} className="ct-linha ct-linha--simples" /></dd></>}
+            </dl>
           </div>
+
+          <aside className="ct-painel">
+            <p className="rl-k">{TITULO_CTL}</p>
+            <div className="ct-vars" role="group" aria-label="Variável">
+              {VARS.map((k) => <button key={k} type="button" className={`rl-btn rl-btn--mini ${k === v ? "rl-btn--on" : ""}`} aria-pressed={k === v} onClick={() => trocarVar(k)}>{NOME_CURTO[k]}</button>)}
+            </div>
+            <div className="ct-atalhos" role="group" aria-label="Cortes de exemplo">
+              <span>{ROTULO_ATALHOS}</span>
+              {ATALHOS[v].map((x) => { const on = Math.abs(x - a.corte) < 1e-9; return <button key={x} type="button" className={`rl-btn rl-btn--mini ${on ? "rl-btn--on" : ""}`} aria-pressed={on} onClick={() => setI(indiceDe(v, x))}>{fmtCorte(v, x)}</button>; })}
+            </div>
+            <label className="ct-ctl" htmlFor="ct-range"><b>Corte:</b> ≤ {fmtCorte(v, a.corte)} · candidato {idx + 1} de {cortes.length}</label>
+            <input id="ct-range" type="range" min={0} max={cortes.length - 1} step={1} value={idx} onChange={(ev) => setI(Number(ev.target.value))}
+              aria-valuetext={`${NOME_VAR[v]} até ${fmtCorte(v, a.corte)}; ganho ${fmtNum(a.ganho, 5)}`} />
+            <dl className="ct-res" aria-live="polite"><div><dt>Ganho</dt><dd className="ct-res-g">{fmtNum(a.ganho, 5)}</dd></div></dl>
+            <p className="ct-lei">{leitura(a)}</p>
+            <div className="ct-acoes">
+              <button type="button" className={`rl-btn rl-btn--mini ${simples ? "rl-btn--on" : ""}`} aria-pressed={simples} onClick={() => setSimples((s) => !s)}>{ROTULO_SIMPLES}</button>
+              <button type="button" className="rl-btn rl-btn--mini" onClick={restaurar}>Restaurar exemplo</button>
+            </div>
+            {simples && <div className="ct-comp" aria-live="polite"><p>{comparacaoSimples(a)}</p></div>}
+          </aside>
         </div>
-        <div className="vz-cc-lado">
-          <div className="vz-tile"><p className="eyebrow">A conta do ganho</p>
-            <table className="table text-[.85em]"><tbody>
-              <tr><th scope="row">Gini antes</th><td>{fmtNum(a.giniAntes, 5)}</td></tr>
-              <tr><th scope="row">Média ponderada depois</th><td>{a.esq.length} ÷ 16 × {fmtNum(a.giniEsq, 4)} + {a.dir.length} ÷ 16 × {fmtNum(a.giniDir, 4)} = {fmtNum(a.depois, 5)}</td></tr>
-              <tr className="vz-t-on"><th scope="row">Ganho</th><td className="vz-t-forte">{fmtNum(a.ganho, 5)}</td></tr>
-            </tbody></table>
-            <p className="hint">{a.ganho > 0.28 ? "É o maior ganho possível na raiz: este é o corte que a árvore escolhe." : a.ganho > 0 ? "Ganho positivo, mas existe corte melhor. A próxima página varre todos." : "Ganho zero: os dois lados ficam tão misturados quanto a raiz."}</p></div>
-          <div className="vz-formula">ganho = Gini(antes) − [ n_esq ÷ n × Gini(esq) + n_dir ÷ n × Gini(dir) ]</div>
-          <div className="vz-cc-barras" role="img" aria-label="Antes e depois">
-            {[{ n: "antes", v: a.giniAntes, c: "vz-tdc-fill--erro" }, { n: "esquerda", v: a.giniEsq, c: "vz-cc-fill--esq" }, { n: "direita", v: a.giniDir, c: "vz-cc-fill--dir" }, { n: "depois, ponderada", v: a.depois, c: "vz-tdc-fill--ouro" }].map((b) => <div key={b.n} className="vz-tdc-linha"><span className="vz-tdc-rot">{b.n}</span><span className="vz-tdc-trilho"><span className={`vz-tdc-fill ${b.c}`} style={{ width: `${b.v * 200}%` }} /></span><b>{fmtNum(b.v, 4)}</b></div>)}
-          </div>
-          <p className="hint">Os candidatos são os pontos médios entre valores vizinhos: qualquer valor entre dois vizinhos dá a mesma divisão.</p>
+
+        <div className="ct-cartoes">
+          {CARTOES.map((k) => <div key={k.k}><p className="ct-cartao-k">{k.k}</p><p className="ct-cartao-t">{k.t}</p></div>)}
         </div>
-      </div>
-      <p className="vz-fonte">Utilização ≤ 62,5%: 9 propostas com 2 defaults (Gini 0,34568) e 7 com 6 (Gini 0,24490); média ponderada 0,30159 e ganho 0,19841. O melhor corte da raiz é utilização ≤ 57,5%, com ganho 0,28125.</p>
+        <p className="rl-rod nota">{RODAPE}</p>
+      </section>
     </figure>
   );
 }
