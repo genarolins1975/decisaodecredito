@@ -1,6 +1,8 @@
 "use client";
 import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
 import { sigmoide } from "@/lib/visuais/logistica";
+import { paraTex, pctTex } from "@/lib/visuais/tex";
+import { ComTex, Tex } from "./tex";
 
 /**
  * Onde a soma acontece (c6p11). Somar correções em probabilidade sai do intervalo (0,50 + 0,30 + 0,25 = 1,05); somar
@@ -39,14 +41,14 @@ export function SomaEmLogOdds() {
           <p className="vz-rd-nota">Qualquer soma vira uma PD entre 0 e 1.</p>
         </div>
       </div>
-      <p className="vz-sl-formula" aria-label="F M de x igual a F zero mais eta vezes a soma das árvores; PD igual à logística de F M">
-        <span>F<sub>M</sub>(x) = F<sub>0</sub> + η · Σ<sub>m</sub> h<sub>m</sub>(x)</span><span>PD(x) = σ(F<sub>M</sub>(x))</span><span>F<sub>0</sub> = ln(π ÷ (1 − π))</span>
+      <p className="vz-sl-formula" role="img" aria-label="F M de x igual a F zero mais eta vezes a soma das árvores; PD igual à logística de F M; F zero igual ao logaritmo de pi dividido por um menos pi">
+        <Tex f={String.raw`F_M(x) = F_0 + \eta \cdot \textstyle\sum_m h_m(x)`} /><Tex f={String.raw`\mathrm{PD}(x) = \sigma\big(F_M(x)\big)`} /><Tex f={String.raw`F_0 = \ln\big(\pi \div (1 - \pi)\big)`} />
       </p>
       <ul className="vz-vf-notas">
         <li>Logística e boosting somam na mesma escala, log odds: por isso o capítulo 7 compara os dois.</li>
         <li>F₀ é o log odds da prevalência: 50% dá 0; numa carteira com 10% de default, {fmtNum(f0Carteira, 4)}.</li>
       </ul>
-      <p className="vz-fonte">Correções ilustrativas. σ é a função logística do capítulo 4: σ({fmtNum(escore, 2)}) = {fmtPct(pd, 2)}. π é a prevalência de default da amostra de treino; na base didática de 16 propostas, 50%.</p>
+      <p className="vz-fonte"><ComTex t={String.raw`Correções ilustrativas. $\sigma$ é a função logística do capítulo 4: $\sigma(${paraTex(fmtNum(escore, 2))}) = ${pctTex(fmtPct(pd, 2))}$. $\pi$ é a prevalência de default da amostra de treino; na base didática de 16 propostas, 50%.`} /></p>
     </figure>
   );
 }

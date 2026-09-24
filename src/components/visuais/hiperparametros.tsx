@@ -4,6 +4,7 @@ import did from "@/lib/visuais/did.json";
 import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
 import type { Proposta } from "@/lib/visuais/logistica";
 import { boostingClassificacao, folhasReg } from "@/lib/visuais/boosting";
+import { ComTex } from "./tex";
 
 /**
  * Os quatro hiperparâmetros (capítulo 6, c6p15). Taxa de aprendizagem, número de árvores, profundidade e mínimo por
@@ -82,7 +83,7 @@ export function Hiperparametros() {
             <table className="table text-[.85em] vz-esc-usos vz-hp-controla"><tbody>{CONTROLA.map((c) => <tr key={c[0]}><th scope="row">{c[0]}</th><td>{c[1]}</td></tr>)}</tbody></table></div>
         </div>
       </div>
-      <p className="vz-fonte">Boosting de classificação na escala de log odds, árvores de regressão sobre y − p, utilização e atraso como variáveis. Com η 0,40, M 4, profundidade 2 e mínimo 2: log loss 0,47481, 16 folhas somadas, menor folha com 2, PD de 33% a 67%. Dois desses quatro não podem ser escolhidos separadamente: η e M são acoplados, a próxima página.</p>
+      <p className="vz-fonte"><ComTex t={String.raw`Boosting de classificação na escala de log odds, árvores de regressão sobre $y - p$, utilização e atraso como variáveis. Com $\eta$ 0,40, $M$ 4, profundidade 2 e mínimo 2: log loss 0,47481, 16 folhas somadas, menor folha com 2, PD de 33% a 67%. Dois desses quatro não podem ser escolhidos separadamente: $\eta$ e $M$ são acoplados, a próxima página.`} /></p>
     </figure>
   );
 }

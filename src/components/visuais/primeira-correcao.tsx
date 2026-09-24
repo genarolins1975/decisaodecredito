@@ -2,6 +2,7 @@
 import { useMemo } from "react";
 import { boostingRegressao } from "@/lib/visuais/boosting";
 import { fmtNum } from "@/lib/visuais/metricas";
+import { ComTex } from "./tex";
 import { Degraus8, Eixos8, LinhaF0, Pontos8, Residuo8, X8, Y8, escala8, sinal8 } from "./plano-8";
 
 /**
@@ -44,11 +45,11 @@ export function PrimeiraCorrecao() {
           <p className="vz-up-porque"><b>não: {sinal8(dir, 3)}</b>, o palpite está baixo</p>
           <p className="vz-pc-mse">Erro quadrático médio: {fmtNum(p0.mse, 2)} → <b>{fmtNum(p1.mse, 2)}</b></p>
           <p className="vz-re-pd">{trocam.length} de {X8.length}</p>
-          <p className="vz-re-conta">resíduos trocam de sinal; em x = 5, {sinal8(p0.res[i5], 2)} vira {sinal8(res1[i5], 3)}</p>
+          <p className="vz-re-conta"><ComTex t={`resíduos trocam de sinal; em $x = 5$, ${sinal8(p0.res[i5], 2)} vira ${sinal8(res1[i5], 3)}`} /></p>
         </div>
       </div>
       <p className="vz-re-nota">A direção está certa, mas o passo é grande demais: a correção inteira cai também sobre quem já estava perto. A taxa de aprendizagem, na próxima página, soma só um pedaço.</p>
-      <p className="vz-fonte">Toco (árvore de profundidade 1) ajustado aos resíduos y − 6,5 pela soma de quadrados; cada folha guarda a média dos resíduos do seu lado. Correção somada inteira, η = 1 (src/lib/visuais/boosting.ts).</p>
+      <p className="vz-fonte"><ComTex t={String.raw`Toco (árvore de profundidade 1) ajustado aos resíduos $y - 6{,}5$ pela soma de quadrados; cada folha guarda a média dos resíduos do seu lado. Correção somada inteira, $\eta = 1$.`} /></p>
     </figure>
   );
 }

@@ -1,5 +1,7 @@
 "use client";
 import { fmtNum } from "@/lib/visuais/metricas";
+import { paraTex } from "@/lib/visuais/tex";
+import { ComTex, Tex } from "./tex";
 import { F0_8, Y8 } from "./plano-8";
 
 /**
@@ -31,7 +33,7 @@ export function PalpiteConstante() {
           <div className="table-wrap"><table className="table vz-vf-tabela"><thead><tr><th>Valor constante</th><th>Erro quadrático médio</th></tr></thead><tbody>
             {CANDIDATOS.map((c) => <tr key={c} className={c === F0_8 ? "vz-t-on" : ""}><th scope="row">{fmtNum(c, 2)}</th><td className={c === F0_8 ? "vz-t-forte" : ""}>{fmtNum(erroConstante(c), 5)}</td></tr>)}
           </tbody></table></div>
-          <p className="vz-vf-min">O mínimo está na média dos oito valores: <span className="whitespace-nowrap">{fmtNum(SOMA, 1)} ÷ {Y8.length} = <b>{fmtNum(F0_8, 2)}</b></span>. Não foi escolhido: foi calculado.</p>
+          <p className="vz-vf-min">O mínimo está na média dos oito valores: <span className="tx-inteira" role="img" aria-label={`${fmtNum(SOMA, 1)} ÷ ${Y8.length} = ${fmtNum(F0_8, 2)}`}><Tex f={String.raw`${paraTex(fmtNum(SOMA, 1))} \div ${Y8.length} = \mathbf{${paraTex(fmtNum(F0_8, 2))}}`} className="tx-linha" /></span>. Não foi escolhido: foi calculado.</p>
         </div>
         <div className="vz-grafico">
           <p className="vz-grafico-t">Erro quadrático médio, por valor constante</p>
@@ -46,7 +48,7 @@ export function PalpiteConstante() {
         </div>
       </div>
       <ul className="vz-vf-notas">{NOTAS.map((n) => <li key={n}>{n}</li>)}</ul>
-      <p className="vz-fonte">Erro quadrático médio de um valor constante c = média de (y − c)² sobre os oito pontos; é {fmtNum(minimo, 4)} mais (6,5 − c)², por isso a curva é uma parábola com fundo na média. Confere com o gerador em Python: {fmtNum(minimo, 4)}.</p>
+      <p className="vz-fonte"><ComTex t={String.raw`Erro quadrático médio de um valor constante $c$: $\text{média de } (y - c)^2$ sobre os oito pontos, que é $${paraTex(fmtNum(minimo, 4))} + (6{,}5 - c)^2$; por isso a curva é uma parábola com fundo na média. Confere com o gerador em Python: ${fmtNum(minimo, 4)}.`} /></p>
     </figure>
   );
 }

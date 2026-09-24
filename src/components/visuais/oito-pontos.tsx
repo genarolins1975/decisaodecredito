@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { PONTOS } from "@/lib/visuais/boosting";
 import { fmtNum } from "@/lib/visuais/metricas";
+import { paraTex } from "@/lib/visuais/tex";
+import { ComTex, Tex } from "./tex";
 
 /**
  * Oito pontos, uma tendência e erros locais (c6p3). O palpite inicial F₀ é a média dos oito valores de y, e o erro de
@@ -29,7 +31,7 @@ export function OitoPontos() {
       </header>
 
       <div className="vz-estado" aria-live="polite">
-        <b>x = {X[sel]}, y = {fmtNum(Y[sel], 1)}.</b> Erro inicial: y − {fmtNum(F0, 1)} = {sinal(erro)}.{" "}
+        <b><Tex f={String.raw`\boldsymbol{x = ${X[sel]}}`} className="tx-linha" />, <Tex f={String.raw`\boldsymbol{y = ${paraTex(fmtNum(Y[sel], 1))}}`} className="tx-linha" />.</b> Erro inicial: <Tex f={String.raw`y - ${paraTex(fmtNum(F0, 1))} = ${paraTex(sinal(erro))}`} className="tx-linha" />.{" "}
         {erro > 0 ? "A previsão precisa subir" : "A previsão precisa descer"}; a próxima árvore tenta explicar esse erro.
       </div>
 
@@ -66,7 +68,7 @@ export function OitoPontos() {
         </div>
       </div>
 
-      <p className="vz-fonte">Oito pontos de regressão, os mesmos de c6p2 a c6p9: x de 1 a 8 e y = 2; 3; 4,5; 5; 8; 8,5; 9; 12. F₀ = 6,5 é a média dos oito valores, o melhor palpite constante pela perda quadrática (página 4). Erro inicial de cada ponto = y − F₀.</p>
+      <p className="vz-fonte"><ComTex t={String.raw`Oito pontos de regressão, os mesmos de c6p2 a c6p9: $x$ de 1 a 8 e $y = 2;\ 3;\ 4{,}5;\ 5;\ 8;\ 8{,}5;\ 9;\ 12$. $F_0 = 6{,}5$ é a média dos oito valores, o melhor palpite constante pela perda quadrática (página 4). Erro inicial de cada ponto: $y - F_0$.`} /></p>
     </figure>
   );
 }

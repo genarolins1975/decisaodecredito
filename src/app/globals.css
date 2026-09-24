@@ -125,6 +125,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .conteudo td { padding: 7px 9px; border-bottom: 1px solid var(--color-rule); vertical-align: top; }
 .conteudo svg { max-width: 100%; height: auto; }
 .conteudo .katex-display { overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
+/* c6p10: os termos da anatomia da fórmula em KaTeX no tamanho da letra Georgia de 38 px que substituíram; a conta do caso x = 8 em linha, a 1,1 em como as demais contas em frase */
+.conteudo .nv-term .math .katex { font-size: 1em; } .conteudo .nv-caption .katex { font-size: 1.1em; white-space: nowrap; }
 .conteudo figure { margin: 0; }
 .conteudo .nota { font-size: 13px; color: var(--color-muted); }
 .conteudo .fig-caption { font-size: 12.5px; color: var(--color-muted); margin-top: 6px; }
@@ -137,8 +139,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .conteudo .palcoflex { flex-direction: column; }
   .conteudo .palcoflex > .esq, .conteudo .palcoflex > .dir { flex: 1 1 auto; width: 100%; }
   .conteudo table { display: block; overflow-x: auto; max-width: 100%; }
-  .conteudo [style*="width:"] { max-width: 100%; }
-  .conteudo [style*="height:"], .conteudo .nv-samples { height: auto !important; }
+  /* o KaTeX fica de fora: ele posiciona índices, expoentes e frações com alturas em linha nos próprios spans (a régua
+     .pstrut); com height: auto, os índices subiam (c6p10, c7p13, c11p8 e c11p13 a 390 px, medido em 24/09/2026) */
+  .conteudo [style*="width:"]:not(.katex *) { max-width: 100%; }
+  .conteudo [style*="height:"]:not(.katex *), .conteudo .nv-samples { height: auto !important; }
 }
 
 /* Apresentação 16:9 */
@@ -857,10 +861,13 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-tile--alerta { border-left: 3px solid var(--color-alert); } .vz-tile--ok { border-left: 3px solid var(--color-ok); }
 .vz-formula { font-family: var(--font-mono); font-size: 13px; color: var(--color-ink); background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 6px; padding: 8px 12px; line-height: 1.5; }
 .vz-formula--tex { font-family: inherit; font-size: 14px; overflow-x: auto; overflow-y: hidden; } .vz-formula--tex .katex { font-size: 1.15em; }
-/* trecho de fórmula dentro de uma frase ou de uma linha de texto (ComTex, contas em rótulo): o KaTeX a 1,1 em acompanha a altura da letra do texto */
-.tx-linha .katex { font-size: 1.1em; }
+/* trecho de fórmula dentro de uma frase ou de uma linha de texto (ComTex, contas em rótulo): o KaTeX a 1,1 em acompanha a altura da letra do texto,
+   e a caixa de linha 1 não deixa a linha com fórmula mais alta que as outras (com a 1,2 do KaTeX, a frase de estado do c6p7 crescia 2,7 px e o palco reduzia o zoom) */
+.tx-linha .katex { font-size: 1.1em; line-height: 1; }
 /* fórmulas curtas nas frases de estado (α = 0,2813; y = 0) e contas curtas marcadas com .tx-inteira (1 ÷ 2 = 50,0%) não quebram entre o sinal e o valor */
 .vz-estado .tx-linha, .tx-inteira { white-space: nowrap; }
+/* igualdade curta em frase (ComTex marca `.tx-curta`) não quebra entre o sinal e o valor nos visuais de texto corrido; nos quadros .rl, de altura fixa, a quebra fica livre */
+.vz:not(.rl) .tx-curta { white-space: nowrap; }
 /* valor em KaTeX na mesma linha de valores em texto: a caixa de linha do KaTeX (1,2) fica da altura da vizinha, e os rótulos continuam alinhados */
 .ip-exp-v--tex .katex, .uc-soma .katex, .uc-res-v--tex .katex, .gp-v--tex .katex { line-height: 1; }
 .vz-esc-usos th { width: 34%; font-weight: 700; color: var(--color-ink); vertical-align: top; }
@@ -1029,12 +1036,16 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-pc-regra { margin: 2px 0 4px; font-family: var(--font-serif); font-size: 1.6em; font-weight: 700; color: var(--color-ink); }
 .vz-pc-mse { margin: 6px 0 4px; color: var(--color-body); }
 .vz-ea-conta { margin: 2px 0 0; font-family: var(--font-serif); font-size: 2em; font-weight: 700; color: var(--color-ink); } .vz-ea-conta b { color: var(--color-alert); }
+/* a conta em KaTeX no tamanho da conta em texto que substituiu (o KaTeX desenha a 1,21 em por padrão) */
+.vz-ea-conta .katex { font-size: 1em; }
 .vz-ea-leg { margin: 0 0 6px; color: var(--color-muted); font-size: .92em; }
 /* capítulo 6: soma em log odds (c6p11), η e árvores (c6p16), fecho com a perda de treino (c6p20) */
 .vz-sl-tabela { margin: 4px 0 0; } .vz-sl-tabela th { font-size: inherit; letter-spacing: 0; text-transform: none; color: var(--color-body); font-weight: 400; background: transparent; }
 .vz-sl-tabela td, .vz-tm-perdas td, .vz-ma-tabela td { text-align: right; font-variant-numeric: tabular-nums; }
 .vz-sl-fim th, .vz-sl-fim td { font-weight: 700; } .vz-sl-fim--ruim td { color: var(--color-alert); background: var(--color-alert-soft); } .vz-sl-fim--bom td { color: var(--color-ok); background: #EEF6F1; }
 .vz-sl-formula { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 36px; margin: 14px 0 0; padding: 10px 16px; background: var(--color-paper); border-left: 3px solid var(--color-ink); border-radius: 4px; font-family: var(--font-serif); font-size: 1.15em; color: var(--color-ink); }
+/* as três fórmulas em KaTeX, no tamanho do texto em serifa que substituíram */
+.vz-sl-formula .katex { font-size: 1em; }
 .vz-ma-tabela td { white-space: nowrap; } .vz-ma-tabela th { vertical-align: bottom; }
 .vz-ma-hip { fill: none; stroke: var(--color-muted); stroke-width: 1.6; stroke-dasharray: 6 5; }
 .vz-tm-corpo { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, .75fr); gap: 16px 24px; align-items: start; }
@@ -2194,6 +2205,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .eo-eq { padding: 12px 0; align-items: stretch; } .eo-eq > div { text-align: left; min-width: 0; } .eo-eq-k { font-size: 12px; } .eo-eq-f { font-size: 15px; white-space: normal; }
   .eo-graf, .eo-leituras, .eo-painel { padding: 14px; border-radius: 12px; gap: 6px; }
   .eo-svg-wrap { min-height: 260px; } .eo-tick, .eo-eixo-t, .eo-ref-t { font-size: 26px; } .eo-assintota-t { font-size: 24px; } .eo-ponto-t, .eo-comp-t { font-size: 28px; }
+  /* na letra de 26, "0%" centrado no começo do eixo tocava o "0" do eixo vertical e "100%" passava da borda: as pontas ancoram para dentro */
+  .eo-tick--ini { text-anchor: start; } .eo-tick--fim { text-anchor: end; }
   .eo-cadeia { gap: 16px; } .eo-elo { border-left-width: 4px; padding-left: 10px; }
   .eo-elo-k { font-size: 12px; } .eo-elo-v { font-size: 28px; } .eo-elo-l, .eo-comp p, .rl .eo-ctl-topo label, .eo-atalhos > span, .rl .eo-campo label, .eo-campo-in, .eo-cartao-t { font-size: 14px; } .eo .rl-k, .eo-cartao-k { font-size: 16px; }
   .eo-campo-in input { width: 110px; min-height: 36px; font-size: 14px; } .eo-msg { font-size: 12px; } .eo-comp { padding: 8px 10px; border-radius: 8px; }
@@ -2250,6 +2263,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .qe-eq { padding: 12px 0; align-items: stretch; } .qe-eq > div { text-align: left; min-width: 0; } .qe-eq-k { font-size: 12px; } .qe-eq-f { font-size: 15px; white-space: normal; }
   .qe-reguas, .qe-tabela, .qe-painel { padding: 14px; border-radius: 12px; gap: 6px; }
   .qe-svg-wrap { min-height: 290px; } .qe-nome { font-size: 30px; } .qe-nota { font-size: 24px; } .qe-tick { font-size: 26px; } .qe-valor { font-size: 30px; }
+  /* na letra de 26, os rótulos das pontas de cada régua passavam da borda do desenho: ancoram para dentro */
+  .qe-tick--ini { text-anchor: start; } .qe-tick--fim { text-anchor: end; }
   .qe .qe-tab th, .qe .qe-tab td { font-size: 14px; padding: 3px 8px; } .qe .qe-tab thead th { font-size: 12px; } .qe .qe-tab { height: auto; }
   .rl .qe-ctl-topo label, .qe-atalhos > span, .qe-res dt, .qe-cuidado, .qe-cartao-t { font-size: 14px; } .qe .rl-k, .qe-cartao-k { font-size: 16px; }
   .qe-res dd { font-size: 18px; } .qe-res .qe-res-e { font-size: 22px; } .qe-cuidado { padding: 8px 10px; border-radius: 8px; }

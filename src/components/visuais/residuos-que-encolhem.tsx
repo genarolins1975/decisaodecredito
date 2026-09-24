@@ -3,6 +3,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { boostingRegressao, PONTOS, type PassoReg } from "@/lib/visuais/boosting";
 import { fmtNum, fmtPct } from "@/lib/visuais/metricas";
 import { SemCaixaAlta } from "./sem-caixa-alta";
+import { paraTex } from "@/lib/visuais/tex";
+import { ComTex, Tex } from "./tex";
 
 /**
  * Resíduos que encolhem (capítulo 6). Oito pontos, um palpite constante e quatro tocos ajustados ao resíduo: a turma
@@ -60,7 +62,7 @@ export function ResiduosQueEncolhem({ modo = "taxa" }: { modo?: ModoResiduos }) 
           <button type="button" className="btn btn-sm" onClick={reproduzir} disabled={tocando}>{tocando ? "Somando árvores…" : "Reproduzir do início"}</button>
         </div>
       </header>
-      <div className="vz-estado"><b>Etapa {m === 0 ? "0: só o palpite F₀" : `${m}: ${m} ${m === 1 ? "árvore somada" : "árvores somadas"}`}.</b> Erro quadrático médio {fmtNum(atual.mse, 4)}{m > 0 && <>, {fmtPct(reducao, 1)} abaixo do palpite inicial</>}. {corte !== undefined && m > 0 && <>Corte da árvore {m} em x = {corte.toLocaleString("pt-BR")}: {fmtNum(arvore!.esq!.valor, 3)} à esquerda, +{fmtNum(arvore!.dir!.valor, 3)} à direita, cada um vezes η = {eta.toLocaleString("pt-BR")}.</>}</div>
+      <div className="vz-estado"><b>Etapa {m === 0 ? "0: só o palpite F₀" : `${m}: ${m} ${m === 1 ? "árvore somada" : "árvores somadas"}`}.</b> Erro quadrático médio {fmtNum(atual.mse, 4)}{m > 0 && <>, {fmtPct(reducao, 1)} abaixo do palpite inicial</>}. {corte !== undefined && m > 0 && <>Corte da árvore {m} em <Tex f={`x = ${paraTex(corte.toLocaleString("pt-BR"))}`} className="tx-linha" />: {fmtNum(arvore!.esq!.valor, 3)} à esquerda, +{fmtNum(arvore!.dir!.valor, 3)} à direita, cada um vezes <Tex f={String.raw`\eta = ${paraTex(eta.toLocaleString("pt-BR"))}`} className="tx-linha" />.</>}</div>
       <div className="vz-res-grade">
         <div className="vz-grafico">
           <p className="vz-grafico-t">Observado, previsão em degraus e resíduos <span className="hint">segmento vermelho: palpite baixo, precisa subir · azul: palpite alto</span></p>
@@ -92,7 +94,7 @@ export function ResiduosQueEncolhem({ modo = "taxa" }: { modo?: ModoResiduos }) 
           {modo === "soma" && <PainelSoma passos={passos} m={m} eta={eta} p={p} />}
         </div>
       </div>
-      <p className="vz-fonte">Pontos e conta do capítulo 6 (F₀ = média, tocos por soma de quadrados, F = F + η h). Com η = 0,5 os cortes são 4,5 · 7,5 · 2,5 · 5,5 e o erro cai de 10,1875 para 0,4485, os mesmos números do gerador em Python.</p>
+      <p className="vz-fonte"><ComTex t={String.raw`Pontos e conta do capítulo 6 ($F_0 = \text{média}$, tocos por soma de quadrados, $F = F + \eta\, h$). Com $\eta = 0{,}5$ os cortes são 4,5 · 7,5 · 2,5 · 5,5 e o erro cai de 10,1875 para 0,4485, os mesmos números do gerador em Python.`} /></p>
     </figure>
   );
 }
@@ -114,8 +116,8 @@ function PainelTaxa({ passos, m, eta, bateGerador }: { passos: PassoReg[]; m: nu
         </div>)}
       </div>
       <div className="vz-tiles vz-tiles--coluna">
-        <div className="vz-tile"><p className="eyebrow">Redução acumulada após {m} {m === 1 ? "árvore" : "árvores"}</p><p className="vz-num">{fmtPct(1 - passos[m].mse / max, 1)}</p><p className="hint">{bateGerador ? "η = 0,5 é o valor do capítulo; confere com o gerador" : `com η = 0,5 seria ${fmtPct(1 - REF.mse[m] / REF.mse[0], 1)}`}</p></div>
-        <div className="vz-tile"><p className="eyebrow">Por que não somar tudo</p><p className="vz-num vz-num--texto">{eta >= 0.95 ? "Com η = 1 a primeira árvore define quase todo o modelo." : eta <= 0.25 ? "Com η pequeno, cada árvore entra devagar: 4 árvores não bastam, mas nenhuma domina." : "Com η intermediário, nenhuma árvore isolada manda, e as seguintes ainda têm resíduo para trabalhar."}</p></div>
+        <div className="vz-tile"><p className="eyebrow">Redução acumulada após {m} {m === 1 ? "árvore" : "árvores"}</p><p className="vz-num">{fmtPct(1 - passos[m].mse / max, 1)}</p><p className="hint"><ComTex t={bateGerador ? String.raw`$\eta = 0{,}5$ é o valor do capítulo; confere com o gerador` : String.raw`com $\eta = 0{,}5$ seria ${fmtPct(1 - REF.mse[m] / REF.mse[0], 1)}`} /></p></div>
+        <div className="vz-tile"><p className="eyebrow">Por que não somar tudo</p><p className="vz-num vz-num--texto">{eta >= 0.95 ? <ComTex t={String.raw`Com $\boldsymbol{\eta = 1}$ a primeira árvore define quase todo o modelo.`} /> : eta <= 0.25 ? "Com η pequeno, cada árvore entra devagar: 4 árvores não bastam, mas nenhuma domina." : "Com η intermediário, nenhuma árvore isolada manda, e as seguintes ainda têm resíduo para trabalhar."}</p></div>
       </div>
     </div>
   );

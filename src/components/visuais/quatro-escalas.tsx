@@ -31,7 +31,7 @@ function Reguas({ t }: { t: Traducao }) {
             {e === "p"
               ? <><line x1={rx(0)} x2={rx(0)} y1={y - 10} y2={y + 10} className="qe-parede" /><line x1={rx(1)} x2={rx(1)} y1={y - 10} y2={y + 10} className="qe-parede" /></>
               : <><path d={`M${rx(0) - 16} ${y} l12 -7 v14 z`} className="qe-seta" /><path d={`M${rx(1) + 16} ${y} l-12 -7 v14 z`} className="qe-seta" /></>}
-            {TICKS[e].map((m) => <g key={m.texto}><line x1={rx(m.t)} x2={rx(m.t)} y1={y - 6} y2={y + 6} className="qe-tick-l" /><text x={rx(m.t)} y={y0 + 86} textAnchor="middle" className="qe-tick">{m.texto}</text></g>)}
+            {TICKS[e].map((m) => <g key={m.texto}><line x1={rx(m.t)} x2={rx(m.t)} y1={y - 6} y2={y + 6} className="qe-tick-l" /><text x={rx(m.t)} y={y0 + 86} textAnchor="middle" className={`qe-tick ${m.t === 0 ? "qe-tick--ini" : m.t === 1 ? "qe-tick--fim" : ""}`}>{m.texto}</text></g>)}
             <circle cx={x} cy={y} r={9} className="qe-ponto" />
             <text x={x + dx} y={y0 + 42} textAnchor={anc} className="qe-valor">{valor(e, t)}</text>
           </g>

@@ -72,7 +72,7 @@ export function DistanciaQueSeAbre() {
           <div className="vz-dist-leitura"><b>{criterio === "treino" ? "A leitura que destrói o modelo." : criterio === "validacao" ? "O procedimento defensável." : "Escolha um critério."}</b> {criterio === "treino" ? "Apresentar a AUC de treino como resultado aprova o modelo com a pior AUC fora do tempo da grade." : criterio === "validacao" ? "Escolher pela validação, reportar o fora do tempo, declarar a grade e o critério antes de olhar os resultados." : "Os dois botões acima aplicam a mesma grade com critérios diferentes."}</div>
         </div>
       </div>
-      <p className="vz-fonte">Gradient boosting com taxa 0,05 e mínimo de 60 por folha; grade de 4, 8 e 16 folhas por 60, 100, 160 e 240 árvores. Números do gerador (DADOS.grid). Configuração escolhida por validação: 60 árvores e 8 folhas.</p>
+      <p className="vz-fonte">Gradient boosting com taxa 0,05 e mínimo de 60 por folha; grade de 4, 8 e 16 folhas por 60, 100, 160 e 240 árvores. Números do gerador. Configuração escolhida por validação: 60 árvores e 8 folhas.</p>
     </figure>
   );
 }
