@@ -1486,8 +1486,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .lo .rl-k { font-size: 1.3cqw; }
 .lo-eq { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); align-items: center; gap: .2cqw 2.4cqw; border-top: 1px solid var(--rl-borda); border-bottom: 1px solid var(--rl-borda); padding: .5cqw 0; min-height: 0; }
 .lo-eq-k { font-size: 1.3cqw; letter-spacing: .06em; text-transform: uppercase; color: var(--rl-muted); font-weight: 600; }
-.lo-eq-f { font-size: 2.1cqw; font-weight: 600; color: var(--rl-navy); font-variant-numeric: tabular-nums; line-height: 1.1; }
-.lo-eq-u { font-size: 1.4cqw; color: var(--rl-text); font-variant-numeric: tabular-nums; }
+/* fórmulas em KaTeX, no tamanho das faixas dos quadros novos (c4p3, c4p4, c4p6, c5p4 a c5p6) */
+.lo-eq-f { display: block; font-size: 1.6cqw; color: var(--rl-navy); line-height: 1.2; white-space: nowrap; }
+.lo-eq-u { display: block; font-size: 1.6cqw; color: var(--rl-text); line-height: 1.2; white-space: nowrap; }
 .lo-corpo { display: grid; grid-template-columns: 64fr 2fr 34fr; align-items: stretch; min-height: 0; }
 .lo-corpo > .lo-graf { grid-column: 1; } .lo-corpo > .lo-painel { grid-column: 3; }
 .lo-graf { display: grid; grid-template-rows: auto minmax(0, 1fr); gap: .3cqw; min-width: 0; min-height: 0; }
@@ -1532,7 +1533,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .lo-base-k { font-size: 1.45cqw; font-weight: 600; color: var(--rl-navy); } .lo-base-t { font-size: 1.3cqw; color: var(--rl-text); line-height: 1.3; font-variant-numeric: tabular-nums; }
 @container quadro (max-width: 820px) {
   .lo-eq, .lo-corpo, .lo-graf, .lo-base { display: flex; flex-direction: column; gap: 10px; }
-  .lo-eq { padding: 12px 0; } .lo-eq-k { font-size: 12px; } .lo-eq-f { font-size: 20px; } .lo-eq-u { font-size: 13px; }
+  .lo-eq { padding: 12px 0; align-items: stretch; } .lo-eq > div { text-align: left; min-width: 0; } .lo-eq-k { font-size: 12px; } .lo-eq-f, .lo-eq-u { font-size: 15px; white-space: normal; }
   .lo-svg-wrap { position: static; } .lo-svg--larga { display: none; } .lo-svg--compacta { display: block; position: static; width: 100%; height: auto; }
   .lo-painel { padding: 14px; border-radius: 12px; gap: 6px; } .rl .lo-ctl label { font-size: 15px; } .rl .lo-ctl input[type="range"] { min-height: 32px; }
   .rl .lo-campo label, .lo-campo-in, .lo-lei, .lo-comp-v, .lo-atalhos > span { font-size: 14px; } .rl .lo-campo-in input { width: 80px; min-height: 40px; font-size: 15px; border-radius: 6px; padding: 4px 8px; }
@@ -2245,7 +2246,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .ll .rl-k { font-size: 1.3cqw; }
 .ll-eq { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; gap: .2cqw 2.4cqw; border-top: 1px solid var(--rl-borda); border-bottom: 1px solid var(--rl-borda); padding: .5cqw 0; min-height: 0; }
 .ll-eq-k { font-size: 1.3cqw; letter-spacing: .06em; text-transform: uppercase; color: var(--rl-muted); font-weight: 600; }
-.ll-eq-f { font-size: 2.1cqw; font-weight: 600; color: var(--rl-navy); line-height: 1.1; } .ll-eq-f--default { color: var(--ll-vinho); } .ll-eq-f--adimplente { color: var(--rl-verde); }
+/* fórmulas em KaTeX, no tamanho das faixas dos quadros novos */
+.ll-eq-f { display: block; font-size: 1.6cqw; color: var(--rl-navy); line-height: 1.2; white-space: nowrap; } .ll-eq-f--default { color: var(--ll-vinho); } .ll-eq-f--adimplente { color: var(--rl-verde); }
 .ll-corpo { display: grid; grid-template-columns: 64fr 2fr 34fr; align-items: stretch; min-height: 0; }
 .ll-corpo > .ll-graf { grid-column: 1; } .ll-corpo > .ll-painel { grid-column: 3; }
 .ll-graf { display: grid; grid-template-rows: auto minmax(0, 1fr); gap: .3cqw; min-width: 0; min-height: 0; }
@@ -2278,7 +2280,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .ll-dados dt { font-size: 1.3cqw; color: var(--rl-muted); } .ll-dados dd { margin: 0; font-size: 1.45cqw; font-weight: 600; color: var(--rl-navy); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .ll-v--default { color: var(--ll-vinho) !important; } .ll-v--adimplente { color: var(--rl-verde) !important; }
 .ll-res { display: grid; gap: .05cqw; } .ll-k { font-size: 1.3cqw; color: var(--rl-muted); }
-.ll-perda { font-size: 2.1cqw; font-weight: 600; color: var(--rl-navy); line-height: 1.1; font-variant-numeric: tabular-nums; } .ll-perda--zona { color: var(--ll-vinho); }
+/* a conta da perda em KaTeX: pode quebrar depois do ≈ quando o painel estreita */
+.ll-perda { font-size: 1.75cqw; color: var(--rl-navy); line-height: 1.25; } .ll-perda--zona { color: var(--ll-vinho); }
 .ll-leitura { font-size: 1.3cqw; color: var(--rl-text); line-height: 1.3; margin-top: .2cqw; } .ll-leitura--zona { color: var(--ll-vinho); font-weight: 600; }
 .ll-acoes { display: flex; flex-wrap: wrap; gap: .3cqw; } .ll-painel .rl-btn--mini { min-height: 1.7cqw; padding: .25cqw .5cqw; font-size: 1.1cqw; }
 .ll-comp-box { background: #FBF2F3; border-radius: .6cqw; padding: .3cqw .6cqw; display: grid; gap: 0; align-self: start; }
@@ -2287,10 +2290,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .ll-base-k { font-size: 1.45cqw; font-weight: 600; color: var(--rl-navy); } .ll-base-t { font-size: 1.3cqw; color: var(--rl-text); line-height: 1.3; }
 @container quadro (max-width: 820px) {
   .ll-eq, .ll-corpo, .ll-graf, .ll-base { display: flex; flex-direction: column; gap: 10px; }
-  .ll-eq { padding: 12px 0; } .ll-eq-k { font-size: 12px; } .ll-eq-f { font-size: 20px; }
+  .ll-eq { padding: 12px 0; align-items: stretch; } .ll-eq > div { text-align: left; min-width: 0; } .ll-eq-k { font-size: 12px; } .ll-eq-f { font-size: 15px; white-space: normal; }
   .ll-svg-wrap { min-height: 260px; }
   .ll-painel { padding: 14px; border-radius: 12px; gap: 6px; } .rl .ll-ctl label { font-size: 16px; } .rl .ll-ctl input[type="range"] { min-height: 32px; }
-  .ll-atalhos > span, .ll-carac, .ll-dados dt, .ll-k, .ll-leitura, .ll-comp-v, .ll-comp-f { font-size: 14px; } .ll-dados dd { font-size: 15px; } .ll-perda { font-size: 22px; }
+  .ll-atalhos > span, .ll-carac, .ll-dados dt, .ll-k, .ll-leitura, .ll-comp-v, .ll-comp-f { font-size: 14px; } .ll-dados dd { font-size: 15px; } .ll-perda { font-size: 18px; }
   .ll-painel .rl-btn--mini { min-height: 40px; padding: 8px 12px; font-size: 14px; } .ll-comp-box { padding: 8px 10px; border-radius: 8px; }
   .ll-base-k { font-size: 16px; } .ll-base-t { font-size: 14px; } .ll .rl-k { font-size: 14px; }
 }
@@ -2305,7 +2308,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .rp .rl-k { font-size: 1.3cqw; }
 .rp-eq { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); align-items: center; gap: .2cqw 2.4cqw; border-top: 1px solid var(--rl-borda); border-bottom: 1px solid var(--rl-borda); padding: .5cqw 0; min-height: 0; }
 .rp-eq-k { font-size: 1.3cqw; letter-spacing: .06em; text-transform: uppercase; color: var(--rl-muted); font-weight: 600; }
-.rp-eq-f { font-size: 2.1cqw; font-weight: 600; color: var(--rl-navy); font-variant-numeric: tabular-nums; line-height: 1.1; }
+/* a reta em KaTeX, no tamanho das faixas dos quadros novos */
+.rp-eq-f { display: block; font-size: 1.6cqw; color: var(--rl-navy); line-height: 1.2; white-space: nowrap; }
 .rp-eq-u { font-size: 1.4cqw; color: var(--rl-text); }
 .rp-corpo { display: grid; grid-template-columns: 64fr 2fr 34fr; align-items: stretch; min-height: 0; }
 .rp-corpo > .rp-graf { grid-column: 1; } .rp-corpo > .rp-painel { grid-column: 3; }
@@ -2359,7 +2363,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .rp-base-k { font-size: 1.45cqw; font-weight: 600; color: var(--rl-navy); } .rp-base-t { font-size: 1.3cqw; color: var(--rl-text); line-height: 1.3; }
 @container quadro (max-width: 820px) {
   .rp-eq, .rp-corpo, .rp-graf, .rp-base, .rp-res { display: flex; flex-direction: column; gap: 10px; }
-  .rp-eq { padding: 12px 0; } .rp-eq-k { font-size: 12px; } .rp-eq-f { font-size: 20px; } .rp-eq-u, .rp-leg, .rp-nota, .rp-comp-f { font-size: 13px; }
+  .rp-eq { padding: 12px 0; align-items: stretch; } .rp-eq > div { text-align: left; min-width: 0; } .rp-eq-k { font-size: 12px; } .rp-eq-f { font-size: 15px; white-space: normal; } .rp-eq-u, .rp-leg, .rp-nota, .rp-comp-f { font-size: 13px; }
   .rp-svg-wrap { min-height: 260px; } .rp-leg::before { width: 18px; height: 4px; }
   .rp-painel { padding: 14px; border-radius: 12px; } .rl .rp-ctl label { font-size: 15px; } .rl .rp-ctl input[type="range"] { min-height: 32px; }
   .rl .rp-campo label, .rp-campo-in, .rp-k, .rp-lei, .rp-comp-v, .rp-atalhos > span { font-size: 14px; } .rl .rp-campo-in input { width: 70px; min-height: 40px; font-size: 15px; border-radius: 6px; padding: 4px 8px; }

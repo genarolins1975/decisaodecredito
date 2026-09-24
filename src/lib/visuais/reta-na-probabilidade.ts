@@ -92,6 +92,11 @@ export function comparacao(util: number, passo = PASSO_COMPARACAO) {
 export const equacao = () => `p(u) = ${fmt(A, 4)} + ${fmt(POR_PP, 6)} × u`;
 export const EQUACAO_UNIDADES = "u em % de utilização; p de 0 a 1, exibida em %";
 export const FORMULA_TRUNCADA = "mín(1; máx(0; p))";
+/** Número com vírgula decimal e sinal de menos para o KaTeX, que trataria a vírgula como pontuação. */
+const paraTex = (s: string) => s.replace("−", "-").replace(/,/g, "{,}");
+/** A reta e o truncamento em TeX, para a faixa e a legenda do quadro. */
+export const equacaoTex = () => String.raw`p(u) = ${paraTex(fmt(A, 4))} + ${paraTex(fmt(POR_PP, 6))} \times u`;
+export const FORMULA_TRUNCADA_TEX = String.raw`\text{mín}\big(1;\ \text{máx}(0;\ p)\big)`;
 
 export const SUBTITULO = "O efeito é constante em pontos percentuais, e a previsão ultrapassa os limites nas duas pontas.";
 export const TITULO_GRAF = "O que a reta prevê?";

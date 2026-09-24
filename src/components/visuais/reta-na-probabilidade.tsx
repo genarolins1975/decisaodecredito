@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { ATALHOS, comparacao, CONCLUSOES, cruzamento, dobrasTruncada, DOMINIO, EIXO_X_T, EIXO_Y, EIXO_Y_T, equacao, EQUACAO_UNIDADES, fmt, fmtPct, fmtPp, FORMULA_TRUNCADA, forasDoIntervalo, fraseLimites, FRASE_RETA, FRASE_TRUNCADA, LIMITE_CONTRATADO, leitura, NOTA_ACIMA_DO_LIMITE, NOTA_TRUNCAR, PASSO_COMPARACAO, previsao, previsaoTruncada, RODAPE, ROTULO_ATALHOS, ROTULO_COMPARAR, ROTULO_TRUNCAR, SUBTITULO, TICKS_X, TICKS_Y, TITULO_CTL, TITULO_GRAF, TRANSICAO, trechoValido, UTIL_INICIAL, validarUtil, ZONA_ABAIXO, ZONA_ACIMA } from "@/lib/visuais/reta-na-probabilidade";
+import { ATALHOS, comparacao, CONCLUSOES, cruzamento, dobrasTruncada, DOMINIO, EIXO_X_T, EIXO_Y, EIXO_Y_T, equacao, equacaoTex, EQUACAO_UNIDADES, fmt, fmtPct, fmtPp, FORMULA_TRUNCADA, FORMULA_TRUNCADA_TEX, forasDoIntervalo, fraseLimites, FRASE_RETA, FRASE_TRUNCADA, LIMITE_CONTRATADO, leitura, NOTA_ACIMA_DO_LIMITE, NOTA_TRUNCAR, PASSO_COMPARACAO, previsao, previsaoTruncada, RODAPE, ROTULO_ATALHOS, ROTULO_COMPARAR, ROTULO_TRUNCAR, SUBTITULO, TICKS_X, TICKS_Y, TITULO_CTL, TITULO_GRAF, TRANSICAO, trechoValido, UTIL_INICIAL, validarUtil, ZONA_ABAIXO, ZONA_ACIMA } from "@/lib/visuais/reta-na-probabilidade";
+import { Tex } from "./tex";
 
 /**
  * Slide 2 do capítulo 4 (c4p2): uma reta ajustada na probabilidade não garante previsões entre 0 e 1. Quadro 16:9
@@ -68,7 +69,7 @@ export function RetaNaProbabilidade({ pagina }: { pagina?: { index: number; tota
         </header>
 
         <div className="rp-eq">
-          <div><p className="rp-eq-k">Reta ajustada na probabilidade</p><p className="rp-eq-f">{equacao()}</p></div>
+          <div><p className="rp-eq-k">Reta ajustada na probabilidade</p><span className="rp-eq-f" role="img" aria-label={equacao()}><Tex f={equacaoTex()} /></span></div>
           <div><p className="rp-eq-k">Unidades</p><p className="rp-eq-u">{EQUACAO_UNIDADES}</p></div>
         </div>
 
@@ -116,7 +117,7 @@ export function RetaNaProbabilidade({ pagina }: { pagina?: { index: number; tota
             <p className="rp-legenda">
               <span className="rp-leg rp-leg--reta">Reta ajustada</span>
               <span className="rp-leg rp-leg--fora">Fora de 0% a 100%</span>
-              {truncado && <span className="rp-leg rp-leg--trunc">Truncada: {FORMULA_TRUNCADA}</span>}
+              {truncado && <span className="rp-leg rp-leg--trunc">Truncada: <span role="img" aria-label={FORMULA_TRUNCADA}><Tex f={FORMULA_TRUNCADA_TEX} /></span></span>}
             </p>
           </div>
 

@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { ATALHOS, base, comparacaoPassos, DEFINICAO, fmtDesloc, fmtOdds, fmtPd, fmtPdCurta, fmtPp, fmtZ, IDENTIDADE, JANELA_Z, leitura, NOTA_LEGENDA, NOTA_PD, NOTA_Z, PD_INICIAL, posicaoPd, posicaoZ, REGUA_PD, REGUA_Z, RODAPE, ROTULO_ATALHOS, ROTULO_COMPARAR, SUBTITULO, TICKS_PD, TICKS_Z, TITULO, TITULO_CTL, TITULO_GRAF, validarPd, type Cenario, type Validacao } from "@/lib/visuais/escala-logodds";
+import { ATALHOS, base, comparacaoPassos, DEFINICAO, DEFINICAO_TEX, fmtDesloc, fmtOdds, fmtPd, fmtPdCurta, fmtPp, fmtZ, IDENTIDADE, IDENTIDADE_TEX, JANELA_Z, leitura, NOTA_LEGENDA, NOTA_PD, NOTA_Z, PD_INICIAL, posicaoPd, posicaoZ, REGUA_PD, REGUA_Z, RODAPE, ROTULO_ATALHOS, ROTULO_COMPARAR, SUBTITULO, TICKS_PD, TICKS_Z, TITULO, TITULO_CTL, TITULO_GRAF, validarPd, type Cenario, type Validacao } from "@/lib/visuais/escala-logodds";
+import { Tex } from "./tex";
 
 /**
  * Slide 5 do capítulo 4 (c4p5): a escala de log odds. Quadro 16:9 no sistema .rl, na gramática do c4p2: faixa da
@@ -151,8 +152,8 @@ export function EscalaLogOdds({ pagina }: { pagina?: { index: number; total: num
         </header>
 
         <div className="lo-eq">
-          <div><p className="lo-eq-k">A identidade</p><p className="lo-eq-f">{IDENTIDADE}</p></div>
-          <div><p className="lo-eq-k">Definição</p><p className="lo-eq-u">{DEFINICAO}</p></div>
+          <div><p className="lo-eq-k">A identidade</p><span className="lo-eq-f" role="img" aria-label={IDENTIDADE}><Tex f={IDENTIDADE_TEX} /></span></div>
+          <div><p className="lo-eq-k">Definição</p><span className="lo-eq-u" role="img" aria-label={DEFINICAO}><Tex f={DEFINICAO_TEX} /></span></div>
         </div>
 
         <div className="rl-corpo lo-corpo">

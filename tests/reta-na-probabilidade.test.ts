@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { A, ATALHOS, B, comparacao, cruzamento, dobrasTruncada, DOMINIO, equacao, fmt, fmtPct, fmtPp, forasDoIntervalo, fraseLimites, leitura, PASSO_COMPARACAO, POR_PP, previsao, previsaoTruncada, trechoValido, truncar, UTIL_INICIAL, validarUtil, ZONA_ABAIXO, ZONA_ACIMA } from "@/lib/visuais/reta-na-probabilidade";
+import { A, ATALHOS, B, comparacao, cruzamento, dobrasTruncada, DOMINIO, equacao, equacaoTex, fmt, fmtPct, fmtPp, forasDoIntervalo, fraseLimites, leitura, PASSO_COMPARACAO, POR_PP, previsao, previsaoTruncada, trechoValido, truncar, UTIL_INICIAL, validarUtil, ZONA_ABAIXO, ZONA_ACIMA } from "@/lib/visuais/reta-na-probabilidade";
 import { BETA_AULA } from "@/lib/visuais/logistica";
 import { RetaNaProbabilidade } from "@/components/visuais/reta-na-probabilidade";
 
@@ -12,7 +12,7 @@ describe("c4p2: a reta ajustada na probabilidade", () => {
     expect(POR_PP).toBeCloseTo(0.0111765, 7);
     expect(B).not.toBeCloseTo(BETA_AULA[1], 3);
     expect(A).not.toBeCloseTo(BETA_AULA[0], 3);
-    expect(equacao()).toBe("p(u) = −0,1426 + 0,011176 × u");
+    expect(equacao()).toBe("p(u) = −0,1426 + 0,011176 × u"); expect(equacaoTex()).toBe(String.raw`p(u) = -0{,}1426 + 0{,}011176 \times u`);
   });
 
   it("a previsão sai do intervalo válido pelas duas pontas do domínio", () => {
@@ -112,6 +112,7 @@ describe("c4p2: a reta ajustada na probabilidade", () => {
     expect(html).toContain("u = 102,2%");
     expect(html).toContain("saldo acima do limite");
     expect(html).toContain("5% → −8,68%");
+    expect(html).toContain('aria-label="p(u) = −0,1426 + 0,011176 × u"'); expect(html.match(/class="katex"/g)).toHaveLength(1); // a reta da faixa, em KaTeX
     // o defeito corrigido: o trecho vinho era desenhado antes da reta azul e ficava escondido por ela
     const reta = html.indexOf('class="rp-reta'), fora = html.indexOf('class="rp-fora');
     expect(reta).toBeGreaterThan(0);

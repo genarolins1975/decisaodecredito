@@ -17,7 +17,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 1,
-  "caixas": 78,
+  "caixas": 102,
   "quando": null,
   "ok": true
  },
@@ -50,7 +50,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 1,
-  "caixas": 94,
+  "caixas": 142,
   "quando": null,
   "ok": true
  },
@@ -160,7 +160,7 @@
   "coberturas": [],
   "overflowX": 0,
   "quadros": 1,
-  "caixas": 77,
+  "caixas": 126,
   "quando": null,
   "ok": true
  },

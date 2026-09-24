@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { ATALHOS, CASOS, cartoes, CURVA_ADIMPLENTE, CURVA_DEFAULT, curvaPerda, EIXO_X, EIXO_Y, EIXO_Y_MAX, fmt, fmtPct, formula, leitura, linhas, LN2, maiores, media, naZona, proposta, RODAPE, ROTULO_ATALHOS, ROTULO_INTERCEPTO, ROTULO_MEDIA, SELECAO_INICIAL, SUBTITULO, testeIntercepto, TICKS_X, TICKS_Y, TITULO, TITULO_CTL, TITULO_GRAF, ZONA, type Linha } from "@/lib/visuais/log-loss";
+import { Tex } from "./tex";
 
 /**
  * Slide 15 do capítulo 4 (c4p15): a log loss proposta a proposta, na gramática do c4p2. Quadro 16:9 no sistema .rl:
@@ -101,7 +102,7 @@ export function LogLoss({ pagina }: { pagina?: { index: number; total: number } 
         </header>
 
         <div className="ll-eq">
-          {CASOS.map((c) => <div key={c.k}><p className="ll-eq-k">{c.k}</p><p className={`ll-eq-f ll-eq-f--${c.y === 1 ? "default" : "adimplente"}`}>{c.f}</p></div>)}
+          {CASOS.map((c) => <div key={c.k}><p className="ll-eq-k">{c.k}</p><span className={`ll-eq-f ll-eq-f--${c.y === 1 ? "default" : "adimplente"}`} role="img" aria-label={c.f}><Tex f={c.tex} /></span></div>)}
         </div>
 
         <div className="rl-corpo ll-corpo">
@@ -170,7 +171,7 @@ export function LogLoss({ pagina }: { pagina?: { index: number; total: number } 
             </dl>
             <div className="ll-res" aria-live="polite">
               <p className="ll-k">Perda individual</p>
-              <p className={`ll-perda ${zona ? "ll-perda--zona" : ""}`}>{f.conta}</p>
+              <p className={`ll-perda ${zona ? "ll-perda--zona" : ""}`} role="img" aria-label={f.conta}><Tex f={f.contaTex} /></p>
               {!simular && <p className={`ll-leitura ${zona ? "ll-leitura--zona" : ""}`}>{leitura(l)}</p>}
             </div>
             <div className="ll-acoes">

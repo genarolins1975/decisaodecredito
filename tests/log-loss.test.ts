@@ -17,7 +17,7 @@ describe("c4p15: a log loss proposta a proposta", () => {
     expect(fmtPct(l.pd)).toBe("26,65%");
     expect(fmt(l.perda, 4)).toBe("1,3223");
     expect(l.pObservado).toBe(l.pd);
-    expect(formula(l).regra).toBe("Perda = −ln(PD)");
+    expect(formula(l).regra).toBe("Perda = −ln(PD)"); expect(formula(l).contaTex).toBe(String.raw`-\ln(0{,}2665) \approx 1{,}3223`);
     expect(leitura(l)).toContain("Houve default");
   });
 
@@ -27,7 +27,7 @@ describe("c4p15: a log loss proposta a proposta", () => {
     expect(fmtPct(l.pd)).toBe("73,91%");
     expect(l.pObservado).toBeCloseTo(1 - l.pd, 15);
     expect(fmt(l.perda, 4)).toBe("1,3435");
-    expect(formula(l).regra).toBe("Perda = −ln(1 − PD)");
+    expect(formula(l).regra).toBe("Perda = −ln(1 − PD)"); expect(formula(l).contaTex).toBe(String.raw`-\ln(1 - 0{,}7391) \approx 1{,}3435`);
     expect(leitura(l)).toContain("Não houve default");
   });
 
@@ -119,7 +119,9 @@ describe("c4p15: o quadro desenhado", () => {
     expect(html).toContain("Perda acima de ln 2 ≈ 0,69:");
     expect(html).toContain("Log loss média: 0,43282");
     expect(html).toContain("#2 · 1,32"); expect(html).toContain("#10 · 1,19"); expect(html).toContain("#15 · 1,34");
-    expect(html).toContain("−ln(0,2665) ≈ 1,3223");
+    expect(html).toContain('aria-label="−ln(0,2665) ≈ 1,3223"'); // a conta da perda, em KaTeX, com o texto como rótulo acessível
+    expect(html).toContain('aria-label="Perda = −ln(PD)"'); expect(html).toContain('aria-label="Perda = −ln(1 − PD)"');
+    expect(html.match(/class="katex"/g)).toHaveLength(3); // as duas fórmulas da faixa e a conta do painel
     expect(html).not.toContain("ll-barra");
   });
 

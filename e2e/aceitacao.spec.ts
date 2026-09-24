@@ -434,7 +434,7 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await page.goto("/aulas/c4p5");
   const lo = page.locator('figure[data-vz="escala-logodds"]');
   await expect(lo).toContainText("Nas odds, multiplicar; nos log odds, somar");
-  await expect(lo).toContainText("ln(2 × odds) = ln(odds) + ln(2)");
+  await expect(lo.getByRole("img", { name: "ln(2 × odds) = ln(odds) + ln(2)", exact: true })).toBeVisible(); // a faixa em KaTeX, com o texto como rótulo acessível
   await expect(lo).toContainText("Em PD: −13,24 pp e +16,62 pp, passos desiguais.");
   await expect(lo).toContainText("Em log odds: −0,6931 e +0,6931, sempre ln(2).");
   await expect(lo.locator(".lo-tab tbody tr")).toHaveCount(3);
@@ -563,24 +563,24 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await page.goto("/aulas/c4p15");
   const ll = page.locator('figure[data-vz="log-loss"]');
   await expect(ll).toContainText("Como a log loss orienta a estimação");
-  await expect(ll).toContainText("Perda = −ln(PD)"); await expect(ll).toContainText("Perda = −ln(1 − PD)");
+  await expect(ll.getByRole("img", { name: "Perda = −ln(PD)", exact: true })).toBeVisible(); await expect(ll.getByRole("img", { name: "Perda = −ln(1 − PD)", exact: true })).toBeVisible();
   expect(await ll.locator(".ll-ponto").count()).toBe(16);
   await expect(ll).toContainText("Log loss média: 0,43282");
   await expect(ll).toContainText("Perda acima de ln 2 ≈ 0,69:");
   await expect(ll).toContainText("Proposta #2"); await expect(ll).toContainText("Default · y = 1");
-  await expect(ll).toContainText("26,65%"); await expect(ll).toContainText("−ln(0,2665) ≈ 1,3223");
+  await expect(ll).toContainText("26,65%"); await expect(ll.getByRole("img", { name: "−ln(0,2665) ≈ 1,3223", exact: true })).toBeVisible();
   await expect(ll).toContainText("Os coeficientes minimizam a log loss média das 16 propostas de treino.");
   await expect(ll).not.toContainText("zera a perda sem decorar"); // o quadro não repete a afirmação; o apoio da página vem do banco
   await ll.getByRole("button", { name: "#15" }).click();
   await expect(ll).toContainText("Sem default · y = 0"); await expect(ll).toContainText("73,91%");
-  await expect(ll).toContainText("26,09%"); await expect(ll).toContainText("−ln(1 − 0,7391) ≈ 1,3435");
+  await expect(ll).toContainText("26,09%"); await expect(ll.getByRole("img", { name: "−ln(1 − 0,7391) ≈ 1,3435", exact: true })).toBeVisible();
   await expect(ll).toContainText("Log loss média: 0,43282"); // a média não muda com a escolha
   await ll.getByRole("button", { name: /Proposta 12/ }).press("Enter"); // pelo teclado: o ponto da #12 fica sob os vizinhos #14 e #16
-  await expect(ll).toContainText("Proposta #12"); await expect(ll).toContainText("≈ 0,0041");
+  await expect(ll).toContainText("Proposta #12"); await expect(ll.locator(".ll-perda")).toHaveAttribute("aria-label", /≈ 0,0041$/);
   await ll.locator("#ll-range").fill("7");
   await expect(ll).toContainText("Proposta #7");
   await ll.getByRole("button", { name: "Restaurar exemplo" }).click();
-  await expect(ll).toContainText("Proposta #2"); await expect(ll).toContainText("−ln(0,2665) ≈ 1,3223");
+  await expect(ll).toContainText("Proposta #2"); await expect(ll.getByRole("img", { name: "−ln(0,2665) ≈ 1,3223", exact: true })).toBeVisible();
   await expect(ll.locator(".ll-sim")).toHaveCount(0); // a simulação começa desligada
   await ll.getByRole("button", { name: "Subir o intercepto em 0,5" }).click();
   await expect(ll).toContainText("#2: 1,3223 → 0,9818 · média: 0,43282 → 0,45089");
@@ -592,7 +592,7 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await page.goto("/aulas/c4p2");
   const rp = page.locator('figure[data-vz="reta-na-probabilidade"]');
   await expect(rp).toContainText("Uma reta não garante probabilidades válidas");
-  await expect(rp).toContainText("p(u) = −0,1426 + 0,011176 × u");
+  await expect(rp.getByRole("img", { name: "p(u) = −0,1426 + 0,011176 × u", exact: true })).toBeVisible(); // a reta em KaTeX, com o texto como rótulo acessível
   await expect(rp).toContainText("−8,68%"); await expect(rp).toContainText("Abaixo de 0%: não é probabilidade.");
   await expect(rp).toContainText("Acima de 100%: não é probabilidade"); // as duas zonas, rotuladas no gráfico
   await expect(rp).toContainText("u = 12,8%"); await expect(rp).toContainText("u = 102,2%");
@@ -609,7 +609,7 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await expect(rp).toContainText("sai do domínio do exemplo");
   await rp.getByRole("button", { name: "Restaurar exemplo" }).click();
   await rp.getByRole("button", { name: "Limitar a previsão de 0% a 100%" }).click();
-  await expect(rp).toContainText("0,00%"); await expect(rp).toContainText("mín(1; máx(0; p))");
+  await expect(rp).toContainText("0,00%"); await expect(rp.getByRole("img", { name: "mín(1; máx(0; p))", exact: true })).toBeVisible();
   await rp.getByRole("button", { name: /Comparar \+10 pp/ }).click();
   await expect(rp).toContainText("De 5% para 15% de utilização");
   await expect(rp).toContainText("+11,18 pp"); await expect(rp).toContainText("+2,50 pp");
