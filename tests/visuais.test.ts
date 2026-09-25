@@ -631,6 +631,15 @@ describe("capítulo 5 no palco: as peças redesenhadas exibem os números confer
     const t = render(RaizEscolhida);
     expect(t).toContain("12,5%"); expect(t).toContain("1 default em 8"); expect(t).toContain("87,5%"); expect(t).toContain("7 defaults em 8");
   });
+  it("c5p9: a tabela diz quantas propostas cada corte manda para cada nó novo, ≤ corte e > corte sob Propostas, sem o antigo esq / dir", async () => {
+    const { Recursao } = await import("@/components/visuais/recursao");
+    const t = render(Recursao);
+    expect(t).not.toContain("esq / dir");
+    expect(t.split("Corte candidatoPropostasGanho≤ corte> corte").length - 1).toBe(2); // o mesmo cabeçalho nos dois nós
+    expect(t).toContain("utilização ≤\u00a027,5%260,09375"); expect(t).toContain("utilização ≤\u00a087,5%620,09375"); // 27,5 manda 2 e 6; 87,5 manda 6 e 2
+    expect(t).toContain("atraso ≤\u00a02,5 d260,09375"); // o empate do lado direito; o sinal não se separa do valor
+    expect(t).toContain("novas folhas com 2 e 6 propostas");
+  });
   it("c5p10: a #15 responde não e não, cai com a #16 numa folha de 50% e o intervalo vai de 9,5% a 90,5%, 81 pontos", async () => {
     const t = render(UmaProposta);
     expect(t).toContain("utilização ≤ 57,5%? não"); expect(t).toContain("utilização ≤ 87,5%? não");

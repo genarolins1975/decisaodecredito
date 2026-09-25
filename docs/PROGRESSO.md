@@ -434,6 +434,21 @@ Verificado em 24/09/2026: typecheck; lint (0 erros; os mesmos 5 avisos); `lint:t
 
 **Não verificado.** A leitura por leitor de tela real; os rótulos acessíveis foram conferidos pelo papel, pelo nome e pelo MathML. No celular, os gráficos em SVG do capítulo 6 continuam com rótulos pequenos (pendência abaixo, junto com a do capítulo 5).
 
+### Vigésima quarta rodada (25/09/2026): c5p9, a coluna "esq / dir"
+
+**Pedido.** No c5p9 (Recursão), o rótulo "esq / dir" de uma coluna da tabela não estava claro.
+
+**Diagnóstico.** A coluna dava quantas propostas do nó cada corte candidato manda para cada um dos dois nós novos: no nó esquerdo, "2 / 6" em utilização 27,5 queria dizer 2 propostas com utilização até 27,5% e 6 acima. "esq / dir" se confundia com os lados da raiz, que a página alterna nos botões "lado esquerdo" e "lado direito" e nomeia nos títulos dos dois nós; e a variável e o valor do corte ficavam em colunas separadas, sem o sinal.
+
+**O que mudou.**
+- A tabela (`recursao.tsx`) passou a ter "Corte candidato", com a regra escrita como no gráfico e na frase de estado (utilização ≤ 27,5%, atraso ≤ 2,5 d); "Propostas", em duas colunas, "≤ corte" e "> corte", o mesmo vocabulário da tabela do c5p7; e "Ganho".
+- A frase de estado diz "novas folhas com 2 e 6 propostas" (antes, "casos"); o texto do aluno no guia do capítulo 5 ganhou uma frase sobre as duas colunas.
+- No celular, a regra quebra depois do nome da variável, com espaço inseparável entre o sinal e o valor, e as células têm menos respiro lateral no quadro estreito: a tabela cabe em 390 px sem rolagem, como antes (a 360 px rola 13 px; antes, 39 px). No palco, a primeira célula da segunda linha do cabeçalho ("≤ corte") fica alinhada à direita, como os números, contra a regra herdada que alinha à esquerda a primeira célula de cada linha.
+
+**Nota de palco** (c5p9, 25/09/2026, as quatro resoluções): de 10 para 9,9, pela densidade. A contagem da auditoria foi de 97 para 111 palavras: ela ignora textos de até dois caracteres, e por isso as contagens "2 / 6" não somavam nada antes; agora cada linha escreve a regra inteira (três palavras em vez de duas) e o cabeçalho tem os nomes novos.
+
+Verificado em 25/09/2026: typecheck; lint (0 erros; os mesmos 5 avisos); `lint:tracos` (0); `npm test` (346, com um teste novo do c5p9: o cabeçalho nos dois nós, a regra e as contagens da primeira linha de cada nó e o empate do lado direito, sem "esq / dir"); `npx playwright test` (24 de 24); auditoria de palco do c5p9 nas quatro resoluções (9,9); rótulos de SVG do c5p9 nas oito combinações; 15 estados extremos do c5p9 sem corte; varredura das 61 páginas em Aulas e Apresentação nas quatro larguras, com estados: 61 de 61 nas oito combinações; tabela conferida no palco a 1920 px, no estudo a 1366 px e no celular a 390 px; guia do capítulo 5 regerado com a figura nova do c5p9 (aluno com 28 páginas e professor com 36, as mesmas de antes) e pacote do professor remontado.
+
 ## Pendências técnicas ordenadas
 
 0. Guia do professor dos capítulos 4, 5 e 6: enviar o pacote `guias-2026-09` a `bases/vguias-2026-09/` no bucket e registrar em Bases e gabaritos (instruções em `scripts/apostila/README.md`).
