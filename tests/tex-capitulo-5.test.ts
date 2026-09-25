@@ -12,6 +12,9 @@ import { Anatomia } from "@/components/visuais/anatomia";
 import { ArvoreQueCresce, contaGanho } from "@/components/visuais/arvore-que-cresce";
 import { ImpurezaCurva } from "@/components/visuais/impureza-curva";
 import { ValorDaFolha } from "@/components/visuais/valor-da-folha";
+import { ConfiancaDaFolha } from "@/components/visuais/confianca-da-folha";
+import * as VF from "@/lib/visuais/valor-da-folha";
+import * as CF from "@/lib/visuais/confianca-da-folha";
 import { Poda } from "@/components/visuais/poda";
 import { DuasFamilias } from "@/components/visuais/duas-familias";
 
@@ -28,12 +31,17 @@ function contasDeGanho() {
   return out;
 }
 
-describe("capítulo 5: contas e fórmulas em KaTeX (c5p3, c5p4, c5p7, c5p12, c5p14, c5p15, c5p16, c5p18)", () => {
+describe("capítulo 5: contas e fórmulas em KaTeX (c5p3, c5p4, c5p7, c5p12, c5p13, c5p14, c5p15, c5p16, c5p18)", () => {
   it("toda fórmula TeX renderiza sem erro, em qualquer estado dos controles", () => {
     const fs: string[] = contasDeGanho().map((c) => c.tex);
     for (let i = 0; i <= 100; i++) fs.push(String.raw`${TEX_ERRO} = \mathbf{${pctTex(fmtPct(giniP(i / 100), 2))}}`); // c5p4, controle de 0% a 100%
     for (let a = 0; a <= 350; a += 5) fs.push(String.raw`\boldsymbol{\alpha = ${paraTex(fmtNum(a / 1000, 3))}}`); // c5p15, α de 0 a 0,35
-    fs.push(String.raw`1 \div 2 = \mathbf{${pctTex(fmtPct(0.5, 1))}}`, String.raw`\boldsymbol{y = 0}`, String.raw`\boldsymbol{y = 1}`);
+    fs.push(String.raw`\boldsymbol{y = 0}`, String.raw`\boldsymbol{y = 1}`);
+    // c5p12: as duas fórmulas da faixa, os trechos dos cartões e os da frase do painel em toda folha e todo valor do controle
+    const trechos = (t: string) => t.split("$").filter((_, i) => i % 2);
+    fs.push(...VF.FORMULAS.map((q) => q.tex), ...VF.CARTOES.flatMap((c) => trechos(c.t)));
+    for (const f of VF.FOLHAS) for (let k = VF.V_MIN * 1000; k <= VF.V_MAX * 1000; k += VF.V_PASSO * 1000) fs.push(...trechos(VF.leitura(f, k / 1000)));
+    fs.push(...CF.FORMULAS.flatMap((q) => [...q.tex])); // c5p13: a estimativa e a regra de decisão
     expect(fs.length).toBeGreaterThan(300);
     for (const t of fs) {
       expect(() => katex.renderToString(t, { throwOnError: true, strict: "ignore" }), t).not.toThrow();
@@ -58,8 +66,9 @@ describe("capítulo 5: contas e fórmulas em KaTeX (c5p3, c5p4, c5p7, c5p12, c5p
     expect(c5p7).toContain('aria-label="0,50000 − (9 ÷ 16 × 0,3457 + 7 ÷ 16 × 0,2449) = 0,19841"');
     expect(katexes(c5p7)).toBe(2); // a conta do candidato e, na legenda, ganho = Gini antes − média ponderada
     const c5p12 = renderToStaticMarkup(createElement(ValorDaFolha));
-    expect(c5p12).toContain('class="tx-inteira" role="img" aria-label="1 ÷ 2 = 50,0%"'); // conta curta: não quebra entre o sinal e o valor
-    expect(katexes(c5p12)).toBe(4); // a conta e, na legenda, a fórmula da perda, d = 1 e n = 2
+    expect(katexes(c5p12)).toBe(7); // as duas fórmulas da faixa, as duas penalidades da legenda, o v da frase do painel, o v e o d ÷ n do primeiro cartão
+    const c5p13 = renderToStaticMarkup(createElement(ConfiancaDaFolha));
+    expect(katexes(c5p13)).toBe(3); // a estimativa e as duas metades da regra de decisão
     const c5p15 = renderToStaticMarkup(createElement(Poda));
     expect(katexes(c5p15)).toBe(7); // α atual e as duas trocas no estado, a fórmula do custo e as três da legenda
     expect(c5p15).toContain("α atual · vence profundidade 3, folhas de 1"); // o nome da vencedora na faixa de cima do gráfico

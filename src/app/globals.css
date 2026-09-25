@@ -994,7 +994,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-up-ic { fill: var(--color-gold-soft); stroke: var(--color-gold); stroke-width: 1.5; }
 .vz-up-ponto { fill: var(--color-ink); stroke: #fff; stroke-width: 2; }
 .vz-vf-grade { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 16px 28px; align-items: center; }
-.vz-vf-tabela { max-width: 380px; } .vz-vf-tabela td, .vz-ge-tabela td, .vz-cf-tabela td { font-variant-numeric: tabular-nums; }
+.vz-vf-tabela { max-width: 380px; } .vz-vf-tabela td, .vz-ge-tabela td { font-variant-numeric: tabular-nums; }
 .vz-vf-min { margin: 8px 0 0; color: var(--color-body); }
 .vz-vf-curva { fill: none; stroke: var(--color-ink); stroke-width: 2.6; }
 .vz-vf-cand { fill: var(--color-ink-soft); }
@@ -1002,9 +1002,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-vf-otimo-t { font-size: 13px; font-weight: 700; fill: var(--color-ok); }
 .vz-vf-notas { margin: 14px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
 .vz-vf-notas li { background: var(--color-paper); border-left: 3px solid var(--color-gold); border-radius: 4px; padding: 8px 12px; color: var(--color-body); }
-.vz-cf-grade { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px 28px; align-items: center; }
-.vz-cf-tabela th, .vz-cf-tabela td { white-space: nowrap; }
-.vz-cf-p { fill: var(--color-ink-soft); stroke: #fff; stroke-width: 2; } .vz-cf-p--alto { fill: var(--color-alert); }
 .vz-ge-grade { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr); gap: 16px 28px; align-items: start; }
 .vz-ge-nota { margin: 8px 0 0; color: var(--color-body); }
 .vz-ge-lado { display: grid; gap: 12px; }
@@ -1013,17 +1010,15 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-ge-quando { margin: 4px 0 0; display: grid; gap: 4px; }
 .vz-ge-quando > div { display: grid; grid-template-columns: 7.5em minmax(0, 1fr); gap: 8px; }
 .vz-ge-quando dt { font-weight: 700; color: var(--color-ink); } .vz-ge-quando dd { margin: 0; color: var(--color-body); }
-@container (max-width: 700px) { .vz-re-grade, .vz-up-grade, .vz-vf-grade, .vz-cf-grade, .vz-ge-grade { grid-template-columns: minmax(0, 1fr); } }
+@container (max-width: 700px) { .vz-re-grade, .vz-up-grade, .vz-vf-grade, .vz-ge-grade { grid-template-columns: minmax(0, 1fr); } }
 .slide-inner [data-vz="raiz-escolhida"] .vz-rd-painel svg { height: 56cqh; width: auto; max-width: 100%; margin: 0 auto; }
 .slide-inner .vz-re-pd { font-size: clamp(28px, 7cqh, 72px); }
 .slide-inner .vz-re-conta, .slide-inner .vz-re-ids, .slide-inner .vz-re-nota, .slide-inner .vz-up-passos, .slide-inner .vz-up-porque, .slide-inner .vz-up-largura,
 .slide-inner .vz-vf-min, .slide-inner .vz-vf-notas li, .slide-inner .vz-ge-nota, .slide-inner [data-vz="gini-ou-entropia"] .vz-rd-lista li, .slide-inner .vz-ge-quando { font-size: clamp(13px, 2.1cqh, 22px); }
-.slide-inner .vz-vf-tabela, .slide-inner .vz-cf-tabela, .slide-inner .vz-ge-tabela { font-size: clamp(13px, 2.1cqh, 22px); }
+.slide-inner .vz-vf-tabela, .slide-inner .vz-ge-tabela { font-size: clamp(13px, 2.1cqh, 22px); }
 .slide-inner .vz-ge-grade { align-items: center; }
 .slide-inner .vz-re-confere { display: none; }
 .slide-inner [data-vz="uma-proposta"] .vz-ad { height: auto; width: 100%; max-height: 50cqh; }
-.slide-inner [data-vz="valor-da-folha"] .vz-grafico svg { height: 44cqh; width: auto; max-width: 100%; }
-.slide-inner [data-vz="confianca-da-folha"] .vz-grafico svg { height: 36cqh; width: auto; max-width: 100%; }
 /* capítulo 6: o plano dos oito pontos (abertura c6p1, erro como alvo c6p5, primeira correção c6p6) */
 .vz-p8 { width: 100%; height: auto; display: block; }
 .vz-p8-apagado { opacity: .35; }
@@ -2095,6 +2090,121 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .slide-inner [data-vz="corte-candidato"] { padding: 0; border: 0; background: transparent; gap: 0; }
 /* a regra genérica .conteudo figure svg do palco devolveria a altura intrínseca do viewBox */
 .slide-inner [data-vz="corte-candidato"] .ct-arv { position: absolute; inset: 0; width: 100%; height: 100%; max-height: none; margin: 0; }
+
+/* Slide 12 do capítulo 5 (c5p12): a PD da folha é a frequência da folha. Quadro 16:9 no sistema .rl: a PD e a perda média em
+   KaTeX na faixa, o que cada proposta da folha paga com o valor v, a curva da perda média com o mínimo em d ÷ n, o painel e
+   três cartões. Vinho para quem deu default, azul para quem pagou, verde para o mínimo, navy para o valor escolhido. */
+.fv { --fv-vinho: #8C2332; --fv-azul: #3E6BB4; }
+[data-vz="valor-da-folha"] .rl-slide[data-tela="12"] { grid-template-rows: minmax(0, 144fr) minmax(0, 18fr) minmax(0, 88fr) minmax(0, 18fr) minmax(0, 596fr) minmax(0, 16fr) minmax(0, 114fr) minmax(0, 10fr) minmax(0, 24fr); }
+[data-vz="valor-da-folha"] .rl-slide[data-tela="12"] > .rl-cab { grid-row: 1; } [data-vz="valor-da-folha"] .rl-slide[data-tela="12"] > .fv-eq { grid-row: 3; } [data-vz="valor-da-folha"] .rl-slide[data-tela="12"] > .rl-corpo { grid-row: 5; } [data-vz="valor-da-folha"] .rl-slide[data-tela="12"] > .fv-base { grid-row: 7; } [data-vz="valor-da-folha"] .rl-slide[data-tela="12"] > .rl-rod { grid-row: 9; }
+.fv .rl-k { font-size: 1.3cqw; }
+.fv-eq { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); align-items: center; gap: .2cqw 2.4cqw; border-top: 1px solid var(--rl-borda); border-bottom: 1px solid var(--rl-borda); padding: .4cqw 0; min-height: 0; }
+.fv-eq-k { font-size: 1.3cqw; letter-spacing: .06em; text-transform: uppercase; color: var(--rl-muted); font-weight: 600; }
+.fv-eq-f { display: block; font-size: 1.7cqw; color: var(--rl-navy); line-height: 1.2; white-space: nowrap; }
+.fv-svg-wrap { position: relative; min-height: 0; min-width: 0; overflow: hidden; }
+.fv-svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; } /* arraste horizontal na curva; o dedo na vertical rola a página */
+.fv-painel { background: var(--rl-branco); border: 1px solid var(--rl-borda); border-radius: 16px; padding: .8cqw 1cqw; display: grid; gap: .35cqw; overflow: hidden; align-content: start; min-width: 0; min-height: 0; }
+.rl .fv-ctl { display: grid; gap: .3cqw; } .rl .fv-ctl label { font-size: 1.3cqw; color: var(--rl-text); font-variant-numeric: tabular-nums; } .rl .fv-ctl label b { color: var(--rl-navy); }
+.rl .fv-ctl input[type="range"] { width: 100%; min-height: 1.5cqw; accent-color: var(--rl-navy); height: auto; }
+.fv-res { margin: 0; display: grid; gap: .1cqw; } .fv-res > div { display: flex; justify-content: space-between; align-items: baseline; gap: .6cqw; border-bottom: 1px solid var(--rl-borda); padding: .1cqw 0; }
+.fv-res dt { font-size: 1.3cqw; color: var(--rl-muted); } .fv-res dd { margin: 0; font-size: 1.8cqw; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; color: var(--rl-navy); text-align: right; }
+.fv-lei { font-size: 1.3cqw; color: var(--rl-text); line-height: 1.3; }
+.fv-acoes { display: flex; flex-wrap: wrap; gap: .3cqw; } .fv-painel .rl-btn--mini { min-height: 1.7cqw; padding: .25cqw .5cqw; font-size: 1.15cqw; }
+.fv-base { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .2cqw 2.4cqw; align-content: center; border-top: 1px solid var(--rl-borda); padding-top: .5cqw; }
+.fv-base-k { font-size: 1.45cqw; font-weight: 600; color: var(--rl-navy); } .fv-base-t { font-size: 1.3cqw; color: var(--rl-text); line-height: 1.3; font-variant-numeric: tabular-nums; }
+.fv-corpo { display: grid; grid-template-columns: 33fr 1.5fr 39fr 1.5fr 26fr; align-items: stretch; min-height: 0; }
+.fv-corpo > .fv-col:nth-child(1) { grid-column: 1; } .fv-corpo > .fv-col:nth-child(2) { grid-column: 3; } .fv-corpo > .fv-painel { grid-column: 5; }
+.fv-col { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: .3cqw; min-width: 0; min-height: 0; }
+.fv-fundo { fill: var(--rl-branco); } .fv-grade { stroke: var(--rl-borda); stroke-width: 1.5; } .fv-zero { stroke: var(--rl-muted); stroke-width: 2; }
+.fv-tick { font-size: 19px; fill: var(--rl-muted); font-family: inherit; font-variant-numeric: tabular-nums; } .fv-eixo { font-size: 20px; fill: var(--rl-muted); font-family: inherit; }
+.fv-barra--d { fill: var(--fv-vinho); } .fv-barra--p { fill: var(--fv-azul); }
+.fv-barra-v { font-size: 20px; font-weight: 600; fill: var(--rl-text); font-family: inherit; font-variant-numeric: tabular-nums; paint-order: stroke; stroke: var(--rl-branco); stroke-width: 6px; stroke-linejoin: round; }
+.fv-token { stroke: #fff; stroke-width: 3; } .fv-token--d { fill: var(--fv-vinho); } .fv-token--p { fill: var(--fv-azul); }
+.fv-media { stroke: var(--rl-navy); stroke-width: 3; stroke-dasharray: 10 7; }
+.fv-curva { fill: none; stroke: var(--rl-navy); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.fv-guia { stroke: var(--rl-muted); stroke-width: 1.5; stroke-dasharray: 6 6; } .fv-guia--min { stroke: var(--rl-verde); stroke-width: 2; }
+.fv-ponto { stroke: #fff; stroke-width: 3.5; } .fv-ponto--min { fill: var(--rl-verde); } .fv-ponto--v { fill: var(--rl-navy); }
+.fv-anel { fill: none; stroke: var(--rl-navy); stroke-width: 3; }
+.fv-alvo { fill: transparent; cursor: col-resize; }
+.fv-legenda { display: flex; gap: .3cqw 1.2cqw; flex-wrap: wrap; align-items: baseline; }
+.fv-leg { font-size: 1.3cqw; color: var(--rl-text); display: inline-flex; align-items: baseline; gap: .4cqw; } .fv-leg::before { content: ""; width: 1cqw; height: 1cqw; border-radius: 3px; background: currentColor; align-self: center; }
+.fv-leg--d::before { background: var(--fv-vinho); } .fv-leg--p::before { background: var(--fv-azul); } .fv-leg--m::before { width: 1.6cqw; height: 0; border-top: .3cqw dashed var(--rl-navy); background: none; border-radius: 0; }
+.fv-leg--min::before { border-radius: 50%; background: var(--rl-verde); } .fv-leg--v::before { border-radius: 50%; background: var(--rl-navy); }
+.fv-painel { grid-template-rows: auto auto auto auto auto minmax(0, 1fr) auto; }
+.fv-folhas { display: grid; gap: .3cqw; } .fv-grupo { display: flex; flex-wrap: wrap; align-items: center; gap: .3cqw; } .fv-grupo > span { font-size: 1.3cqw; color: var(--rl-muted); min-width: 6.8cqw; }
+.fv-folhas .rl-btn--mini { min-height: 1.7cqw; padding: .25cqw .5cqw; font-size: 1.15cqw; }
+.fv-onde { font-size: 1.3cqw; color: var(--rl-muted); line-height: 1.25; }
+.fv-res-m { color: var(--rl-verde) !important; } .fv-res-a { color: var(--fv-vinho) !important; }
+@container quadro (max-width: 820px) {
+  .fv-eq, .fv-corpo, .fv-base { display: flex; flex-direction: column; gap: 10px; }
+  .fv-eq { padding: 12px 0; } .fv-eq > div { overflow-x: auto; } .fv-eq-k { font-size: 12px; } .fv-eq-f { font-size: 15px; }
+  .fv-svg-wrap { overflow: visible; } .fv-svg { position: static; height: auto; }
+  .fv-tick { font-size: 24px; } .fv-eixo, .fv-barra-v { font-size: 22px; }
+  .fv-painel { padding: 14px; border-radius: 12px; gap: 6px; } .fv-lei, .rl .fv-ctl label, .fv-res dt { font-size: 14px; } .fv-res dd { font-size: 20px; } .rl .fv-ctl input[type="range"] { min-height: 32px; }
+  .fv-painel .rl-btn--mini { min-height: 40px; padding: 8px 12px; font-size: 14px; }
+  .fv-base-k { font-size: 16px; } .fv-base-t { font-size: 14px; } .fv .rl-k { font-size: 14px; }
+  .fv-col { display: flex; flex-direction: column; gap: 8px; } .fv-legenda { gap: 4px 14px; } .fv-leg { font-size: 13px; gap: 6px; } .fv-leg::before { width: 12px; height: 12px; } .fv-leg--m::before { width: 18px; height: 0; border-top-width: 3px; }
+  .fv-grupo > span, .fv-onde { font-size: 14px; } .fv-grupo > span { min-width: 90px; } .fv-folhas .rl-btn--mini { min-height: 40px; padding: 8px 12px; font-size: 14px; }
+}
+.slide-inner [data-vz="valor-da-folha"] { padding: 0; border: 0; background: transparent; gap: 0; }
+/* a regra genérica .conteudo figure svg do palco devolveria a altura intrínseca do viewBox */
+.slide-inner [data-vz="valor-da-folha"] .fv-svg { position: absolute; inset: 0; width: 100%; height: 100%; max-height: none; margin: 0; }
+
+/* Slide 13 do capítulo 5 (c5p13): quanto cada folha afirma. Quadro 16:9 no sistema .rl: a estimativa e a regra de decisão
+   em KaTeX na faixa, as quatro folhas com o intervalo de 95% contra o limite L da política e o veredito de cada uma, o painel
+   e três cartões. O gráfico tem duas geometrias: a larga (palco e estudo) e a compacta (celular), escolhidas pela consulta de
+   contêiner. Verde aprova, vinho recusa, cinza tracejado não decide; o limite em âmbar. */
+.fq { --fq-vinho: #8C2332; --fq-vinho-soft: #F6E7EA; --fq-cinza-soft: #EEF0F3; }
+[data-vz="confianca-da-folha"] .rl-slide[data-tela="13"] { grid-template-rows: minmax(0, 144fr) minmax(0, 18fr) minmax(0, 88fr) minmax(0, 18fr) minmax(0, 596fr) minmax(0, 16fr) minmax(0, 114fr) minmax(0, 10fr) minmax(0, 24fr); }
+[data-vz="confianca-da-folha"] .rl-slide[data-tela="13"] > .rl-cab { grid-row: 1; } [data-vz="confianca-da-folha"] .rl-slide[data-tela="13"] > .fq-eq { grid-row: 3; } [data-vz="confianca-da-folha"] .rl-slide[data-tela="13"] > .rl-corpo { grid-row: 5; } [data-vz="confianca-da-folha"] .rl-slide[data-tela="13"] > .fq-base { grid-row: 7; } [data-vz="confianca-da-folha"] .rl-slide[data-tela="13"] > .rl-rod { grid-row: 9; }
+.fq .rl-k { font-size: 1.3cqw; }
+.fq-eq { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); align-items: center; gap: .2cqw 2.4cqw; border-top: 1px solid var(--rl-borda); border-bottom: 1px solid var(--rl-borda); padding: .4cqw 0; min-height: 0; }
+.fq-eq-k { font-size: 1.3cqw; letter-spacing: .06em; text-transform: uppercase; color: var(--rl-muted); font-weight: 600; }
+.fq-eq-f { display: block; font-size: 1.7cqw; color: var(--rl-navy); line-height: 1.2; white-space: nowrap; }
+.fq-svg-wrap { position: relative; min-height: 0; min-width: 0; overflow: hidden; }
+.fq-svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.fq-painel { background: var(--rl-branco); border: 1px solid var(--rl-borda); border-radius: 16px; padding: .8cqw 1cqw; display: grid; gap: .35cqw; overflow: hidden; align-content: start; min-width: 0; min-height: 0; }
+.rl .fq-ctl { display: grid; gap: .3cqw; } .rl .fq-ctl label, .fq-ctl-rot { font-size: 1.3cqw; color: var(--rl-text); font-variant-numeric: tabular-nums; } .rl .fq-ctl label b, .fq-ctl-rot b { color: var(--rl-navy); }
+.rl .fq-ctl input[type="range"] { width: 100%; min-height: 1.5cqw; accent-color: var(--rl-navy); height: auto; }
+.fq-res { margin: 0; display: grid; gap: .1cqw; } .fq-res > div { display: flex; justify-content: space-between; align-items: baseline; gap: .6cqw; border-bottom: 1px solid var(--rl-borda); padding: .1cqw 0; }
+.fq-res dt { font-size: 1.3cqw; color: var(--rl-muted); } .fq-res dd { margin: 0; font-size: 1.8cqw; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; color: var(--rl-navy); text-align: right; }
+.fq-lei { font-size: 1.3cqw; color: var(--rl-text); line-height: 1.3; }
+.fq-acoes { display: flex; flex-wrap: wrap; gap: .3cqw; } .fq-painel .rl-btn--mini { min-height: 1.7cqw; padding: .25cqw .5cqw; font-size: 1.15cqw; }
+.fq-base { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .2cqw 2.4cqw; align-content: center; border-top: 1px solid var(--rl-borda); padding-top: .5cqw; }
+.fq-base-k { font-size: 1.45cqw; font-weight: 600; color: var(--rl-navy); } .fq-base-t { font-size: 1.3cqw; color: var(--rl-text); line-height: 1.3; font-variant-numeric: tabular-nums; }
+.fq-eq-fs { display: flex; flex-wrap: wrap; gap: .2cqw 2.4cqw; }
+.fq-corpo { display: grid; grid-template-columns: 70fr 1.5fr 28.5fr; align-items: stretch; min-height: 0; }
+.fq-corpo > .fq-graf { grid-column: 1; } .fq-corpo > .fq-painel { grid-column: 3; }
+.fq-graf { display: grid; grid-template-rows: auto minmax(0, 1fr); gap: .3cqw; min-width: 0; min-height: 0; }
+/* especificidade acima da regra do palco que dá display: block aos svg dos visuais */
+.rl.fq .fq-svg--compacta { display: none; }
+.fq-fundo { fill: var(--rl-branco); } .fq-grade { stroke: var(--rl-borda); stroke-width: 1.5; }
+.fq-tick { font-size: 20px; fill: var(--rl-muted); font-family: inherit; font-variant-numeric: tabular-nums; }
+.fq-linha { cursor: pointer; outline: none; } .fq-linha-fundo { fill: transparent; } .fq-linha--on .fq-linha-fundo { fill: #FBF4EA; }
+.fq-linha:focus-visible .fq-linha-fundo { stroke: var(--rl-ambar); stroke-width: 3; }
+.fq-nome { font-size: 23px; font-weight: 600; fill: var(--rl-navy); font-family: inherit; } .fq-conta { font-size: 21px; fill: var(--rl-muted); font-family: inherit; font-variant-numeric: tabular-nums; }
+.fq-ic { stroke-width: 2; } .fq-ic--aprova { fill: var(--rl-verde-soft); stroke: var(--rl-verde); } .fq-ic--recusa { fill: var(--fq-vinho-soft); stroke: var(--fq-vinho); } .fq-ic--nao-decide { fill: var(--fq-cinza-soft); stroke: var(--rl-muted); stroke-dasharray: 6 4; }
+.fq-pd { fill: var(--rl-navy); stroke: #fff; stroke-width: 3; }
+.fq-ver { stroke-width: 2; } .fq-ver--aprova { fill: var(--rl-verde-soft); stroke: var(--rl-verde); } .fq-ver--recusa { fill: var(--fq-vinho-soft); stroke: var(--fq-vinho); } .fq-ver--nao-decide { fill: var(--rl-branco); stroke: var(--rl-muted); stroke-dasharray: 6 4; }
+.fq-ver-t { font-size: 21px; font-weight: 700; font-family: inherit; } .fq-ver-t--aprova { fill: var(--rl-verde); } .fq-ver-t--recusa { fill: var(--fq-vinho); } .fq-ver-t--nao-decide { fill: var(--rl-muted); }
+.fq-limite { stroke: var(--rl-ambar); stroke-width: 3; stroke-dasharray: 9 6; }
+.fq-limite-t { font-size: 22px; font-weight: 700; fill: var(--rl-ambar); font-family: inherit; font-variant-numeric: tabular-nums; paint-order: stroke; stroke: var(--rl-bg); stroke-width: 6px; stroke-linejoin: round; }
+.fq-painel { grid-template-rows: auto auto auto auto minmax(0, 1fr) auto; }
+.fq-mult { display: flex; flex-wrap: wrap; gap: .3cqw; } .fq-mult .rl-btn--mini { min-height: 1.7cqw; padding: .25cqw .5cqw; font-size: 1.15cqw; }
+.fq-res dd { font-size: 1.45cqw; }
+@container quadro (max-width: 820px) {
+  .fq-eq, .fq-corpo, .fq-base { display: flex; flex-direction: column; gap: 10px; }
+  .fq-eq { padding: 12px 0; } .fq-eq > div { overflow-x: auto; } .fq-eq-k { font-size: 12px; } .fq-eq-f { font-size: 15px; }
+  .fq-svg-wrap { overflow: visible; } .fq-svg { position: static; height: auto; }
+  .fq-painel { padding: 14px; border-radius: 12px; gap: 6px; } .fq-lei, .rl .fq-ctl label, .fq-ctl-rot, .fq-res dt { font-size: 14px; } .fq-res dd { font-size: 20px; } .rl .fq-ctl input[type="range"] { min-height: 32px; }
+  .fq-painel .rl-btn--mini { min-height: 40px; padding: 8px 12px; font-size: 14px; }
+  .fq-base-k { font-size: 16px; } .fq-base-t { font-size: 14px; } .fq .rl-k { font-size: 14px; }
+  .rl.fq .fq-svg--larga { display: none; } .rl.fq .fq-svg--compacta { display: block; }
+  .fq-nome { font-size: 30px; } .fq-conta, .fq-ver-t { font-size: 26px; } .fq-tick { font-size: 26px; } .fq-limite-t { font-size: 28px; }
+  .fq-mult .rl-btn--mini { min-height: 40px; padding: 8px 12px; font-size: 14px; } .fq-res dd { font-size: 16px; }
+}
+.slide-inner [data-vz="confianca-da-folha"] { padding: 0; border: 0; background: transparent; gap: 0; }
+.slide-inner [data-vz="confianca-da-folha"] .fq-svg--larga { position: absolute; inset: 0; width: 100%; height: 100%; max-height: none; margin: 0; }
 
 /* Slide 3 do capítulo 4 (c4p3): a escala de probabilidade. Quadro 16:9 no sistema .rl: as duas fórmulas em KaTeX na
    faixa, cem operações com a mesma PD, o mesmo incremento em três pontos da escala com a faixa acima de 100%, o painel e

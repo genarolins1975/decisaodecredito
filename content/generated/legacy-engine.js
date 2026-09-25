@@ -10687,8 +10687,8 @@ function capitulo5NoPalcoV16(){
  muda('c5p9',{aprendizado:'Cada nó resolve o seu problema só com os casos que chegaram até ele.',apoio:'Alterne os dois lados e veja a mesma varredura dar regras diferentes.',conexao:'Feita a recursão, a árvore está completa.'});
  muda('c5p10',{aprendizado:'A folha dá uma taxa; o tamanho da folha diz quanto ela vale.',apoio:'',conexao:'A taxa da folha explica a árvore; falta testar se ela generaliza.'});
  muda('c5p11',{titulo:'Percorrer a árvore',aprendizado:'O caminho da raiz à folha é a explicação completa da decisão.',apoio:'Mova os valores e siga o caminho aceso, regra por regra.'});
- muda('c5p12',{titulo:'A previsão da folha é a frequência da folha',aprendizado:'É o valor que minimiza a log loss no grupo, como no capítulo 2.',apoio:''});
- muda('c5p13',{titulo:'Quanto cada folha afirma',aprendizado:'Folhas pequenas produzem intervalos largos demais para decidir.',apoio:''});
+ muda('c5p12',{titulo:'A PD da folha é a frequência da folha',aprendizado:'É o valor que dá a menor perda média às propostas da folha, como no capítulo 2.',apoio:'Escolha a folha e mova o valor v até a menor perda média.'});
+ muda('c5p13',{titulo:'Quanto cada folha afirma',aprendizado:'Folhas pequenas produzem intervalos largos demais para decidir.',apoio:'Mova o limite da política e multiplique as propostas de cada folha.'});
  muda('c5p14',{titulo:'Os dois freios da árvore',aprendizado:'Profundidade limita as perguntas; o mínimo por folha limita o tamanho do grupo.',apoio:'Mova os dois controles e olhe a menor folha, não o erro.',conexao:'Há uma terceira forma de controlar a complexidade, depois de construir.'});
  muda('c5p15',{titulo:'Poda: crescer e depois cortar',aprendizado:'Cada folha tem um preço; a poda pesa impureza contra número de folhas.',apoio:'Mova o preço da folha e veja qual árvore vence.'});
  muda('c5p16',{titulo:'Instabilidade: uma proposta pode trocar a estrutura',aprendizado:'Com ganhos empatados, tirar um caso muda a variável escolhida.',apoio:'Retire uma proposta: a raiz resiste, o nó direito não.'});
@@ -10713,9 +10713,11 @@ function capitulo5NoPalcoV16(){
   leitura:'',
   interacao:''});
  guia('c5p12',{conducao:'',
-  leitura:''});
+  leitura:'',
+  interacao:''});
  guia('c5p13',{conducao:'',
-  leitura:''});
+  leitura:'',
+  interacao:''});
  guia('c5p17',{conducao:'',
   leitura:''});
 }
