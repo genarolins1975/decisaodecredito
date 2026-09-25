@@ -1,7 +1,7 @@
 {
  "source": "content/original/apresentacao-curso-pd.html",
- "sha256": "339282ade35f20b2f3530a4f7b5304c3c1b7499061ad8ce63ecec5bce8c36f23",
- "extractedAt": "2026-09-24T22:18:25.561Z",
+ "sha256": "3f3b9fe72d54e100e08f189c224f75cdbeb6ba5f9cc1a2ccedcebd47cfd04757",
+ "extractedAt": "2026-09-25T21:11:58.990Z",
  "edition": "2026",
  "units": [
   {
@@ -1612,7 +1612,7 @@
    "pageId": "62fxmh5kx4r51ns0r9ln2",
    "chapter": 5,
    "unit": 2,
-   "title": "A previsão da folha é a frequência da folha",
+   "title": "A PD da folha é a frequência da folha",
    "level": "complementar",
    "minutes": 9,
    "origin": "rec",
@@ -3668,7 +3668,8 @@
  },
  "resync": {
   "synced": [
-   "c6p10"
+   "c5p12",
+   "c5p13"
   ],
   "diverged": []
  }

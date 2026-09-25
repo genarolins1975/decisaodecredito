@@ -645,14 +645,17 @@ describe("capítulo 5 no palco: as peças redesenhadas exibem os números confer
     expect(t).toContain("utilização ≤ 57,5%? não"); expect(t).toContain("utilização ≤ 87,5%? não");
     expect(t).toContain("a #16, que deu default"); expect(t).toContain("9,5% a 90,5%"); expect(t).toContain("81 pontos");
   });
-  it("c5p12: perda média 1,20397 · 0,83699 · 0,69315 e mínimo na frequência, 50,0%", async () => {
+  it("c5p12: folha de 1 default em 8 com v em 50%: perda média 0,6931, mínimo 0,3768 em 12,5%, 0,3163 acima; as cinco folhas no painel", async () => {
     const t = render(ValorDaFolha);
-    for (const v of ["1,20397", "0,83699", "0,69315"]) expect(t).toContain(v);
-    expect(renderToStaticMarkup(createElement(ValorDaFolha))).toContain('aria-label="1 ÷ 2 = 50,0%"'); // a conta sai em KaTeX; o texto fica como rótulo acessível
+    for (const v of ["0,6931", "0,3768", "0,3163", "Mínimo, em 12,5%", "Desça", "até 12,5%, a frequência da folha, e a perda cai.", "Um corte", "Dois cortes", "Folha 1: utilização até 57,5%."]) expect(t).toContain(v);
+    for (const c of ["1 de 8", "7 de 8", "1 de 2", "0 de 6", "6 de 6"]) expect(t).toContain(c);
+    expect(t).toContain("Ir ao mínimo");
   });
-  it("c5p13: intervalos 9,5% a 90,5% · 0,0% a 39,0% · 61,0% a 100,0%; 0 em 600 vai até 0,6%", async () => {
+  it("c5p13: limite de 20% com as propostas da árvore: decide 1 de 4 folhas; em foco a folha 2, 0 de 6, com intervalo de 0,0% a 39,0%", async () => {
     const t = render(ConfiancaDaFolha);
-    for (const v of ["9,5% a 90,5%", "0,0% a 39,0%", "61,0% a 100,0%", "0% a 0,6%"]) expect(t).toContain(v);
+    for (const v of ["1 de 4", "0 de 6", "0,0% a 39,0%", "L = 20%", "não decide", "recusa", "como na árvore", "10 vezes", "100 vezes"]) expect(t).toContain(v);
+    expect(t).toContain("As folhas 1, 2 e 4 cruzam o limite de 20%: não decidem.");
+    expect(t).toContain("O intervalo vai até 39,0%");
   });
   it("c5p17: Gini e entropia escolhem utilização 57,5 (0,28125 e 0,45644); no atraso o Gini empata 15 e 27,5 e a entropia fica com 27,5", async () => {
     const t = render(GiniOuEntropia);

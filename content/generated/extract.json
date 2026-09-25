@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "339282ade35f20b2f3530a4f7b5304c3c1b7499061ad8ce63ecec5bce8c36f23",
- "extractedAt": "2026-09-24T22:18:25.561Z",
+ "sourceSha256": "3f3b9fe72d54e100e08f189c224f75cdbeb6ba5f9cc1a2ccedcebd47cfd04757",
+ "extractedAt": "2026-09-25T21:11:58.990Z",
  "meta": {
   "capitulos": [
    {
@@ -6007,7 +6007,7 @@
    "id": "c5p12",
    "cap": 5,
    "n": 12,
-   "titulo": "A previsão da folha é a frequência da folha",
+   "titulo": "A PD da folha é a frequência da folha",
    "nivel": "complementar",
    "nivel120": "assincrono",
    "min": 9,
@@ -6018,14 +6018,14 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "É o valor que minimiza a log loss no grupo, como no capítulo 2.",
-   "apoio": null,
+   "aprendizado": "É o valor que dá a menor perda média às propostas da folha, como no capítulo 2.",
+   "apoio": "Escolha a folha e mova o valor v até a menor perda média.",
    "conexao": "Quanto uma folha realmente afirma?",
    "guia": {
     "funcao": "Fechar a ligação entre árvore e o critério do capítulo 2, e mostrar que a previsão da folha é resultado e não convenção.",
     "pre": "Função de perda, capítulo 2 página 11.",
-    "conducao": "Cubra a tabela e a curva e pergunte: qual valor vocês atribuiriam a essa folha? A resposta espontânea é a frequência, e é a correta. Descubra e mostre que existe razão: é o mínimo da perda.",
-    "leitura": "À esquerda, a folha, com 1 default em 2 propostas, e a perda média de cinco valores atribuídos; à direita, a curva inteira, com o mínimo em 50,0%. Embaixo, três consequências, uma por linha.",
+    "conducao": "Antes de mexer, pergunte que PD vocês dariam à folha de 1 default em 8. A resposta espontânea é 12,5%, e é a correta; a tela mostra por quê. Com v em 50%, cada proposta paga 0,69. Desça v: o default passa a pagar mais, as sete que pagaram pagam menos, e a média cai até 12,5%, onde fica em 0,3768. Troque para 1 de 2 (mínimo em 50%) e para 0 de 6 (a perda só cai até 0%): a folha pura afirma uma certeza que não tem, o gancho da próxima página.",
+    "leitura": "Na faixa, a PD como d ÷ n e a perda média com o valor v. À esquerda, o que cada proposta da folha paga com o v escolhido: vinho para quem deu default, azul para quem pagou, e a média tracejada. Ao centro, a curva da perda média para cada v, com o mínimo em verde. À direita, a folha, o v e a perda contra o mínimo. Embaixo, o equilíbrio, a ligação com o capítulo 2 e o limite da folha pura.",
     "pergunta": "Por que a curva sobe tão rápido perto de zero?",
     "resposta": "Porque a folha tem um default. Atribuir probabilidade quase nula a um evento observado é o erro mais caro na log loss, como no capítulo 2.",
     "erros": [
@@ -6035,7 +6035,7 @@
       "intervencao": "Dentro da folha não há modelo. Só há contagem."
      }
     ],
-    "interacao": "Página expositiva, com tabela e curva recalculadas para a folha real da árvore.",
+    "interacao": "Botões das cinco folhas das árvores de um e de dois cortes, controle de v de 1% a 99% (também por clique ou arraste na curva), Ir ao mínimo e Restaurar exemplo. As contas são refeitas no navegador.",
     "verificacao": "O aluno relaciona esta página com a página 11 do capítulo 2 sem ser lembrado.",
     "transicao": "A confiabilidade de cada folha."
    },
@@ -6065,13 +6065,13 @@
    },
    "origem": "rec",
    "aprendizado": "Folhas pequenas produzem intervalos largos demais para decidir.",
-   "apoio": null,
+   "apoio": "Mova o limite da política e multiplique as propostas de cada folha.",
    "conexao": "Se folhas pequenas não afirmam nada, é preciso impedir que elas apareçam.",
    "guia": {
     "funcao": "Aplicar a incerteza do capítulo 2 à estrutura da árvore, e justificar numericamente o mínimo de casos por folha.",
     "pre": "Intervalo de Wilson, capítulo 2 página 16.",
-    "conducao": "Projete as barras e pergunte quais folhas são comprovadamente diferentes entre si. As barras sugerem; quem decide é o teste da diferença, no capítulo 7. Aqui ele separa só a folha de 0% da de 100% (teste exato de Fisher, p ≈ 0,002); as de 50%, com duas propostas cada, não se distinguem de nenhuma outra (p = 0,25).",
-    "leitura": "À esquerda, a tabela das quatro folhas, com n, defaults, PD e intervalo de 95%; à direita, as mesmas folhas em barras de intervalo. Embaixo, duas leituras: a folha de duas propostas e a mesma PD de 0% com 600 propostas. Compare larguras com distâncias.",
+    "conducao": "Com a política de aprovar a folha se a PD ficar abaixo de 20%, pergunte quais folhas a árvore permite aprovar. Pela PD, a folha 2 (0 de 6) seria aprovada; pelo intervalo, que vai até 39,0%, ela não decide, e só a folha 3 decide, para recusar. Clique em 10 vezes: mesma frequência, intervalos estreitos, as quatro folhas decidem. Com o limite em 50% e 100 vezes, as folhas de 1 em 2 seguem sem decidir: perto do limite, nem 200 propostas bastam. Se perguntarem quais folhas diferem entre si, isso é o teste do capítulo 7: aqui ele separa só a folha de 0% da de 100% (teste exato de Fisher, p ≈ 0,002); as de 50%, com duas propostas cada, dão p = 0,25 contra cada uma delas.",
+    "leitura": "Na faixa, a estimativa d ÷ n e a regra: a folha aprova quando o limite superior do intervalo fica abaixo de L e recusa quando o inferior fica acima. À esquerda, as quatro folhas da árvore de dois cortes, cada uma com a PD (ponto) e o intervalo de Wilson a 95% (barra), a linha do limite L e o veredito: aprova, recusa ou não decide. À direita, o limite, o volume de propostas e a folha em foco. Embaixo, três leituras: 0 de 6 não é risco zero, a PD sempre com o n e o mínimo por folha.",
     "pergunta": "A folha de 0% prova que aquele grupo não dá default?",
     "resposta": "Não. O intervalo vai até 39,0%. Com seis propostas, zero defaults observados é compatível com risco alto.",
     "erros": [
@@ -6086,7 +6086,7 @@
       "intervencao": "Exija n e intervalo em toda tabela de folhas, sempre."
      }
     ],
-    "interacao": "Página expositiva com intervalos calculados no navegador para as folhas reais.",
+    "interacao": "Controle do limite de 5% a 95%, três botões de volume (como na árvore, 10 e 100 vezes as propostas, com a mesma frequência) e clique em uma folha para vê-la no painel. Intervalos e vereditos são refeitos no navegador.",
     "verificacao": "O aluno pede o n de cada folha antes de comentar as taxas.",
     "transicao": "Os dois freios."
    },
