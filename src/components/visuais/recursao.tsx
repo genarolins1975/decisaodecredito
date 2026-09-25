@@ -8,7 +8,9 @@ import { gini, melhorCorte, rotuloCorte, todosOsCandidatos } from "@/lib/visuais
 /**
  * Recursão: a mesma busca, dentro de cada lado (capítulo 5, c5p9). Depois de utilização ≤ 57,5%, cada nó de oito
  * propostas repete a busca exaustiva só com os seus casos; os quatro melhores candidatos de cada lado, o plano de
- * cada nó e o corte escolhido.
+ * cada nó e o corte escolhido. Na tabela, cada linha é um corte candidato escrito como regra, e "Propostas ≤ corte" e
+ * "> corte" dizem quantas propostas do nó ele manda para cada um dos dois nós novos. Até 25/09/2026 essas duas contagens
+ * ficavam numa coluna "esq / dir", que se confundia com os lados da raiz, e variável e corte ocupavam duas colunas.
  */
 const BASE = did.base as Proposta[];
 /* margem de cima para o rótulo do melhor corte, que antes caía sobre a #12; margem da direita para o 100% do eixo, que saía cortado */
@@ -35,7 +37,7 @@ export function Recursao() {
           <button type="button" className={`btn btn-sm ${lado === "dir" ? "" : "btn-secondary"}`} onClick={() => setLado("dir")}>lado direito</button>
         </div>
       </header>
-      <div className="vz-estado"><b>Nó {lado === "esq" ? "esquerdo, utilização ≤ 57,5%" : "direito, utilização > 57,5%"}:</b> {atual.grupo.length} propostas e {atual.d} default{atual.d === 1 ? "" : "s"}, Gini {fmtNum(atual.g, 5)}. Vence {rotuloCorte(atual.melhor.v, atual.melhor.corte)} com ganho local {fmtNum(atual.melhor.ganho, 5)}, novas folhas com {atual.melhor.esq.length} e {atual.melhor.dir.length} casos. A busca recomeça somente com os casos deste nó.</div>
+      <div className="vz-estado"><b>Nó {lado === "esq" ? "esquerdo, utilização ≤ 57,5%" : "direito, utilização > 57,5%"}:</b> {atual.grupo.length} propostas e {atual.d} default{atual.d === 1 ? "" : "s"}, Gini {fmtNum(atual.g, 5)}. Vence {rotuloCorte(atual.melhor.v, atual.melhor.corte)} com ganho local {fmtNum(atual.melhor.ganho, 5)}, novas folhas com {atual.melhor.esq.length} e {atual.melhor.dir.length} propostas. A busca recomeça somente com os casos deste nó.</div>
       <div className="vz-rec-grade">
         {nos.map((n) => <div key={n.k} className={`vz-rec-no ${n.k === lado ? "vz-rec-no--on" : ""} ${n.k === "esq" ? "vz-cc-tile--esq" : "vz-cc-tile--dir"}`} onClick={() => setLado(n.k)}>
           <p className="eyebrow">Nó {n.k === "esq" ? "esquerdo: utilização ≤ 57,5%" : "direito: utilização > 57,5%"}</p>
@@ -51,8 +53,8 @@ export function Recursao() {
               {BASE.map((p) => { const dentro = n.grupo.includes(p); return <g key={p.id} style={{ transform: `translate(${su(p.util)}px, ${sa(p.atraso)}px)`, opacity: dentro ? 1 : 0.18 }}><circle r={dentro ? 8 : 5} className={p.y ? "vz-int-c--default" : "vz-int-c--pagou"} />{dentro && <text y={3.5} textAnchor="middle" className="vz-cc-id">{p.id}</text>}</g>; })}
               <text x={n.k === "esq" ? su(n.u0) + 4 : su(n.u1) - 4} y={PMT - 8} textAnchor={n.k === "esq" ? "start" : "end"} className="vz-ks-t">{rotuloCorte(n.melhor.v, n.melhor.corte)} · ganho {fmtNum(n.melhor.ganho, 3)}</text>
             </svg>
-            <div className="table-wrap"><table className="table text-[.8em]"><thead><tr><th>Variável</th><th>Corte</th><th>esq / dir</th><th>Ganho</th></tr></thead><tbody>
-              {n.cands.slice(0, 4).map((c, i) => <tr key={`${c.v}-${c.corte}`} className={i === 0 ? "vz-t-on" : ""}><th scope="row">{c.v === "util" ? "utilização" : "atraso"}</th><td>{fmtNum(c.corte, 1)}</td><td>{c.esq.length} / {c.dir.length}</td><td className={i === 0 ? "vz-t-forte" : ""}>{fmtNum(c.ganho, 5)}</td></tr>)}
+            <div className="table-wrap"><table className="table text-[.8em] vz-rec-tab"><thead><tr><th rowSpan={2} scope="col">Corte candidato</th><th colSpan={2} scope="colgroup" className="vz-rec-grupo">Propostas</th><th rowSpan={2} scope="col">Ganho</th></tr><tr><th scope="col">≤ corte</th><th scope="col">&gt; corte</th></tr></thead><tbody>
+              {n.cands.slice(0, 4).map((c, i) => <tr key={`${c.v}-${c.corte}`} className={i === 0 ? "vz-t-on" : ""}><th scope="row">{rotuloCorte(c.v, c.corte).replace("≤ ", "≤\u00a0")}</th><td>{c.esq.length}</td><td>{c.dir.length}</td><td className={i === 0 ? "vz-t-forte" : ""}>{fmtNum(c.ganho, 5)}</td></tr>)}
             </tbody></table></div>
           </div>
         </div>)}

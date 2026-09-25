@@ -1090,6 +1090,12 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-rec-grade { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 22px; } .vz-rec-no { background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 6px; padding: 8px 10px; cursor: pointer; transition: box-shadow .2s; } .vz-rec-no--on { box-shadow: 0 0 0 2px var(--color-gold); }
 .vz-rec-corpo { display: grid; gap: 8px; } .vz-rec-plano { width: 100%; height: auto; display: block; } .vz-rec-fora { fill: #F5F4F0; } .vz-rec-dentro { fill: #fff; stroke: var(--color-rule); }
 .vz-rec-tiles { margin-top: 12px; }
+/* c5p9: cabeçalho em dois níveis, "≤ corte" e "> corte" sob "Propostas", e o corte candidato escrito como regra, em caixa normal
+   como no gráfico e na frase de estado. No palco, a regra de tabela herdada alinha à esquerda a primeira célula de cada linha; na
+   segunda linha do cabeçalho ela é "≤ corte", coluna de número, alinhada à direita como os valores */
+.vz .vz-rec-tab thead th { vertical-align: bottom; } .vz .vz-rec-tab thead th.vz-rec-grupo { text-align: center; }
+.vz .vz-rec-tab tbody th { text-transform: none; letter-spacing: 0; } /* na tela estreita a regra quebra depois da variável; o sinal fica com o valor (espaço inseparável no componente) */
+.conteudo .vz-rec-tab thead tr + tr th:first-child { text-align: right; } .conteudo .vz-rec-tab thead th.vz-rec-grupo { box-shadow: inset 0 -1px 0 rgba(255, 255, 255, .35); }
 .vz-cam-plano svg { max-width: 360px; } .vz-cam-regiao { stroke: #fff; stroke-width: 1; transition: fill-opacity .25s; } .vz-cam-ponto { fill: var(--color-gold); stroke: var(--color-ink); stroke-width: 2.5; }
 .vz-poda-linha { stroke-width: 2.4; opacity: .55; transition: opacity .2s, stroke-width .2s; } .vz-poda-linha--venc { opacity: 1; stroke-width: 4; }
 .vz-poda-c--0 { stroke: var(--color-muted); background: var(--color-muted); } .vz-poda-c--1 { stroke: var(--color-ink); background: var(--color-ink); } .vz-poda-c--2 { stroke: #6B4E8C; background: #6B4E8C; } .vz-poda-c--3 { stroke: var(--color-alert); background: var(--color-alert); }
@@ -1147,6 +1153,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .vz-tm-tabela > summary { cursor: pointer; font-weight: 700; color: var(--color-ink); }
 .vz-tm-tabela .table-wrap { margin-top: 8px; }
 @container (max-width: 760px) { .vz-ana-grade, .vz-cam-grade, .vz-poda-grade, .vz-df-grade, .vz-rec-grade { grid-template-columns: minmax(0, 1fr); } }
+/* c5p9 no celular: com as duas colunas de propostas, a tabela passava 7 px da largura a 390 px; células com menos respiro lateral */
+@container (max-width: 760px) { .vz .vz-rec-tab th, .vz .vz-rec-tab td { padding-left: 7px; padding-right: 7px; } }
 /* palco */
 .slide-inner .vz-ana-grade, .slide-inner .vz-cam-grade, .slide-inner .vz-poda-grade, .slide-inner .vz-df-grade { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1cqh 2cqh; }
 .slide-inner .vz-ana-lado, .slide-inner .vz-cam-painel, .slide-inner .vz-poda-painel, .slide-inner .vz-poda-lado, .slide-inner .vz-df-lado, .slide-inner .vz-rec-corpo { gap: .8cqh; }
