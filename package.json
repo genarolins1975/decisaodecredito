@@ -15,6 +15,7 @@
     "db:migrate": "tsx --tsconfig scripts/tsconfig.json scripts/migrate.ts",
     "db:seed": "tsx --tsconfig scripts/tsconfig.json scripts/seed.ts",
     "db:reset": "tsx --tsconfig scripts/tsconfig.json scripts/reset.ts",
+    "senha:provisoria": "tsx --tsconfig scripts/tsconfig.json scripts/senha-provisoria.ts",
     "content:import": "tsx --tsconfig scripts/tsconfig.json scripts/import-content.ts",
     "test": "vitest run",
     "test:e2e": "playwright test",

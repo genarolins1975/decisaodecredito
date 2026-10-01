@@ -27,6 +27,10 @@ export async function login(emailRaw: string, password: string) {
     await audit({ action: "auth.login_failed", entity: "user", entityId: u?.id ?? null, ipHash: meta.ipHash, details: { email: u ? undefined : "desconhecido" } });
     throw new ApiError(401, GENERIC, "invalid_credentials");
   }
+  if (u.mustChangePassword && u.tempPasswordExpiresAt && u.tempPasswordExpiresAt < new Date()) {
+    await audit({ action: "auth.temp_password_expired", entity: "user", entityId: u.id, ipHash: meta.ipHash });
+    throw new ApiError(401, "Esta senha provisória expirou. Peça uma nova ao professor.", "temp_password_expired");
+  }
   await createSession(u.id);
   await db.update(schema.users).set({ lastLoginAt: new Date() }).where(eq(schema.users.id, u.id));
   await audit({ actorUserId: u.id, action: "auth.login", entity: "user", entityId: u.id, ipHash: meta.ipHash });
@@ -82,7 +86,7 @@ export async function setFirstPassword(userId: string, sessionId: string, passwo
   if (!u.mustChangePassword) throw new ApiError(400, "A senha já foi definida. Use a troca de senha.", "already_set");
   const problems = passwordProblems(password, u.email);
   if (problems.length) throw new ApiError(400, problems.join(" "), "weak_password");
-  await db.update(schema.users).set({ passwordHash: await hashPassword(password), mustChangePassword: false, updatedAt: new Date() }).where(eq(schema.users.id, userId));
+  await db.update(schema.users).set({ passwordHash: await hashPassword(password), mustChangePassword: false, tempPasswordExpiresAt: null, updatedAt: new Date() }).where(eq(schema.users.id, userId));
   // ativa todas as matrículas pendentes desta pessoa
   await db.update(schema.enrollments).set({ status: "ativo", activatedAt: new Date(), updatedAt: new Date() })
     .where(and(eq(schema.enrollments.userId, userId), eq(schema.enrollments.status, "convidado")));
@@ -90,6 +94,9 @@ export async function setFirstPassword(userId: string, sessionId: string, passwo
     .where(and(eq(schema.enrollments.userId, userId), eq(schema.enrollments.status, "autorizado")));
   await revokeAllSessions(userId, "password_set", sessionId);
   await audit({ actorUserId: userId, action: "auth.password_set", entity: "user", entityId: userId });
+  // após senha provisória, quem já completou o perfil volta direto à plataforma
+  const [p] = await db.select({ done: schema.profiles.onboardingCompletedAt }).from(schema.profiles).where(eq(schema.profiles.userId, userId)).limit(1);
+  return { next: p?.done ? "/inicio" : "/perfil/primeiro-acesso" };
 }
 
 export async function changePassword(userId: string, sessionId: string, current: string, next: string) {
@@ -97,7 +104,7 @@ export async function changePassword(userId: string, sessionId: string, current:
   if (!u || !(await verifyPassword(u.passwordHash, current))) throw new ApiError(400, "Senha atual incorreta", "invalid_current");
   const problems = passwordProblems(next, u.email);
   if (problems.length) throw new ApiError(400, problems.join(" "), "weak_password");
-  await db.update(schema.users).set({ passwordHash: await hashPassword(next), updatedAt: new Date() }).where(eq(schema.users.id, userId));
+  await db.update(schema.users).set({ passwordHash: await hashPassword(next), tempPasswordExpiresAt: null, updatedAt: new Date() }).where(eq(schema.users.id, userId));
   await revokeAllSessions(userId, "password_changed", sessionId);
   await audit({ actorUserId: userId, action: "auth.password_changed", entity: "user", entityId: userId });
 }
@@ -128,7 +135,7 @@ export async function resetPassword(token: string, password: string) {
   const problems = passwordProblems(password, u.email);
   if (problems.length) throw new ApiError(400, problems.join(" "), "weak_password");
   await db.update(schema.passwordResetTokens).set({ usedAt: new Date() }).where(eq(schema.passwordResetTokens.id, row.id));
-  await db.update(schema.users).set({ passwordHash: await hashPassword(password), mustChangePassword: false, updatedAt: new Date() }).where(eq(schema.users.id, u.id));
+  await db.update(schema.users).set({ passwordHash: await hashPassword(password), mustChangePassword: false, tempPasswordExpiresAt: null, updatedAt: new Date() }).where(eq(schema.users.id, u.id));
   await revokeAllSessions(u.id, "password_reset");
   await audit({ actorUserId: u.id, action: "auth.password_reset", entity: "user", entityId: u.id });
 }

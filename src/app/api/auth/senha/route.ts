@@ -7,7 +7,7 @@ import { changePassword, setFirstPassword } from "@/lib/services/auth";
 export const POST = handle(async (req) => {
   const u = await requireUser();
   const body = await parseBody(req, z.object({ password: z.string().min(1).max(200), current: z.string().max(200).optional() }));
-  if (u.mustChangePassword) { await setFirstPassword(u.id, u.sessionId, body.password); return json({ ok: true, next: "/perfil/primeiro-acesso" }); }
+  if (u.mustChangePassword) { const r = await setFirstPassword(u.id, u.sessionId, body.password); return json({ ok: true, next: r.next }); }
   if (!body.current) return json({ error: "Informe a senha atual", code: "invalid_current" }, 400);
   await changePassword(u.id, u.sessionId, body.current, body.password);
   return json({ ok: true });
