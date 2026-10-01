@@ -59,3 +59,15 @@ export const SLIDE = Object.fromEntries(ROTEIRO.map((s) => [s.slug, s])) as Reco
 export const TOTAL = ROTEIRO.length;
 export const PRINCIPAL = ROTEIRO.filter((s) => s.nivel !== "apendice").length;
 export const minutos = (nivel?: Nivel) => ROTEIRO.filter((s) => (nivel ? s.nivel === nivel : s.nivel !== "apendice")).reduce((a, s) => a + s.min, 0);
+
+/** Rótulo curto de cada slide, para o mapa do slide 1 e a conclusão. */
+export const CURTO: Record<string, string> = {
+  c7p1: "Mapa", c7p21: "Evento, população e horizonte", c7p2: "Armadilha da acurácia", c7p3: "Ordenar, prever, decidir",
+  c7p4: "Fila de risco", c7p5: "AUC como disputa", c7p22: "AUC exata e empates", c7p23: "Matriz de confusão", c7p6: "ROC",
+  c7p24: "Limites da AUC", c7p7: "KS", c7p8: "Ganho acumulado", c7p25: "Lift", c7p26: "Precisão e recall", c7p27: "Laboratório de ordenação",
+  c7p28: "Boa fila, risco errado", c7p9: "PD de um grupo", c7p29: "Calibração global", c7p10: "Confiabilidade", c7p30: "Escolha das faixas",
+  c7p31: "Incerteza de Wilson", c7p32: "Nível e inclinação", c7p33: "Brier", c7p34: "Log loss", c7p11: "Brier e calibração",
+  c7p35: "Laboratório de calibração", c7p16: "Amostra própria", c7p12: "Intercepto", c7p13: "Platt", c7p36: "Isotônica",
+  c7p37: "Depois de recalibrar", c7p18: "Política e corte econômico", c7p14: "Bootstrap", c7p15: "Comparação justa", c7p17: "OOT congelado",
+  c7p38: "Caso integrador", c7p20: "Conclusão", c7p19: "Apêndice",
+};

@@ -1,6 +1,8 @@
 "use client";
 import { Fragment, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { PERGUNTAS, SLIDE, TOTAL, type Pergunta } from "@/lib/capitulo7/roteiro";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Tex } from "@/components/visuais/tex";
 
 /**
@@ -188,4 +190,15 @@ export function useMovimentoReduzido() {
   const [r, setR] = useState(false);
   useEffect(() => { const m = window.matchMedia?.("(prefers-reduced-motion: reduce)"); if (!m) return; setR(m.matches); const f = () => setR(m.matches); m.addEventListener?.("change", f); return () => m.removeEventListener?.("change", f); }, []);
   return r;
+}
+
+/**
+ * Link para outro slide do capítulo no mesmo modo em que o quadro está (apresentação ou estudo). Na sessão ao vivo e
+ * em qualquer outro contexto, o link vira texto: navegar tiraria o aluno da sessão.
+ */
+export function LinkSlide({ slug, children, className, rotulo }: { slug: string; children: ReactNode; className?: string; rotulo?: string }) {
+  const caminho = usePathname() ?? "";
+  const base = caminho.startsWith("/apresentacao/") ? "/apresentacao" : caminho.startsWith("/aulas/") ? "/aulas" : null;
+  if (!base) return <span className={className}>{children}</span>;
+  return <Link href={`${base}/${slug}`} className={className} aria-label={rotulo}>{children}</Link>;
 }

@@ -1,6 +1,8 @@
 "use client";
 import type { ComponentType } from "react";
 import type { Pagina } from "./base";
+import { S01Mapa } from "./slides/s01-mapa";
+import { S02Contrato } from "./slides/s02-contrato";
 import { S03Armadilha } from "./slides/s03-armadilha";
 import { S04TresObjetos } from "./slides/s04-tres-objetos";
 import { S05Fila } from "./slides/s05-fila";
@@ -33,6 +35,10 @@ import { S31DepoisDeRecalibrar } from "./slides/s31-depois-de-recalibrar";
 import { S32Politica } from "./slides/s32-politica";
 import { S33Bootstrap } from "./slides/s33-bootstrap";
 import { S34ComparacaoJusta } from "./slides/s34-comparacao-justa";
+import { S35OotCongelado } from "./slides/s35-oot-congelado";
+import { S36CasoIntegrador } from "./slides/s36-caso-integrador";
+import { S37Conclusao } from "./slides/s37-conclusao";
+import { S38Apendice } from "./slides/s38-apendice";
 
 /**
  * Quadros do capítulo 7, um por página, no modo "conteudo" do registro de visuais: o quadro substitui todo o conteúdo
@@ -40,6 +46,8 @@ import { S34ComparacaoJusta } from "./slides/s34-comparacao-justa";
  * palco, o quadro é a tela inteira (PALCO_PROPRIO).
  */
 export const QUADROS_C7: Record<string, ComponentType<{ pagina?: Pagina }>> = {
+  c7p1: S01Mapa,
+  c7p21: S02Contrato,
   c7p2: S03Armadilha,
   c7p3: S04TresObjetos,
   c7p4: S05Fila,
@@ -72,4 +80,8 @@ export const QUADROS_C7: Record<string, ComponentType<{ pagina?: Pagina }>> = {
   c7p18: S32Politica,
   c7p14: S33Bootstrap,
   c7p15: S34ComparacaoJusta,
+  c7p17: S35OotCongelado,
+  c7p38: S36CasoIntegrador,
+  c7p20: S37Conclusao,
+  c7p19: S38Apendice,
 };
