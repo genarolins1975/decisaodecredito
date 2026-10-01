@@ -54,3 +54,27 @@ const mod = { fonte: "content/generated/dados.json (DADOS.oot.pg, pgr, gains, ca
   res: { logit_treino: DADOS.res.logit_treino, gbm_treino: DADOS.res.gbm_treino, logit_val: DADOS.res.logit_val, gbm_val: DADOS.res.gbm_val, logit_oot: DADOS.res.logit_oot, gbm_raw_oot: DADOS.res.gbm_raw_oot, gbm_platt_oot: DADOS.res.gbm_platt_oot }, platt: DADOS.platt };
 writeFileSync("src/lib/visuais/oot-modelos.json", JSON.stringify(mod));
 console.log(`oot-modelos.json: ${mod.pg.length} PDs do boosting, ganhos ${Object.keys(mod.gains).join("/")}`);
+
+// Capítulo 7 reconstruído (outubro de 2026): uma base só para o capítulo inteiro. Os quatro vetores de PD da janela
+// fora do tempo, o desfecho, a exposição, os resultados do gerador e a amostra de calibração simulada (ver
+// docs/CAPITULO_7_RECONSTRUCAO.md, seção 7). Nada aqui é recalculado: os vetores são os do gerador, com seis casas.
+{
+  const r6 = (x) => Math.round(x * 1e6) / 1e6;
+  const mulberry32 = (seed) => { let t = seed >>> 0; return () => { t += 0x6d2b79f5; let x = Math.imul(t ^ (t >>> 15), 1 | t); x ^= x + Math.imul(x ^ (x >>> 7), 61 | x); return ((x ^ (x >>> 14)) >>> 0) / 4294967296; }; };
+  /* Amostra de calibração simulada: 3.000 propostas sorteadas da janela com reposição e desfecho sorteado da PD
+     verdadeira do gerador (pt). Existe só porque a base é sintética; numa base real seria uma safra anterior ao OOT,
+     com desfecho maturado. As 300 primeiras formam a amostra pequena do exemplo da isotônica. */
+  const SEMENTE_CAL = 20261001, N_CAL = 3000;
+  const rnd = mulberry32(SEMENTE_CAL); const calI = [], calY = [];
+  for (let k = 0; k < N_CAL; k++) { const i = Math.floor(rnd() * oot.y.length); calI.push(i); calY.push(rnd() < oot.pt[i] ? 1 : 0); }
+  const base7 = {
+    fonte: "content/generated/dados.json (DADOS.meta, DADOS.oot, DADOS.res, DADOS.platt, DADOS.dif_decis), gerador com semente 20260501",
+    meta: { seed: DADOS.meta.seed, dataReferencia: DADOS.meta.data_referencia, treino: DADOS.meta.treino, validacao: DADOS.meta.validacao, oot: DADOS.meta.oot,
+      nTreino: DADOS.meta.n_treino, nVal: DADOS.meta.n_val, nOot: DADOS.meta.n_oot, horizonte: DADOS.meta.horizonte, unidade: DADOS.meta.unidade, gbm: DADOS.meta.gbm_hp, variaveis: DADOS.meta.features },
+    oot: { y: oot.y, pl: oot.pl.map(r6), pgr: oot.pgr.map(r6), pg: oot.pg.map(r6), pt: oot.pt.map(r6), ead: oot.ead, g2: oot.g2 },
+    res: DADOS.res, platt: DADOS.platt, difDecis: DADOS.dif_decis,
+    calibracao: { semente: SEMENTE_CAL, n: N_CAL, nPequena: 300, indices: calI, y: calY },
+  };
+  writeFileSync("src/lib/capitulo7/base.json", JSON.stringify(base7));
+  console.log(`capitulo7/base.json: ${base7.oot.y.length} propostas OOT, amostra de calibração simulada com ${N_CAL} (${calY.reduce((a, b) => a + b, 0)} defaults)`);
+}

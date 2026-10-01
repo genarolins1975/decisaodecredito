@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import "./capitulo7.css";
 import "katex/dist/katex.min.css";
 import "../../content/generated/legacy-scoped.css";
 
