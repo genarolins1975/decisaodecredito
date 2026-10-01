@@ -24,7 +24,7 @@ export function S28Intercepto({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c7p12" pagina={pagina} layout="gl"
       conclusao={!aberto ? <>Na amostra de calibração ({int(CAL.n)} casos, {ALVO} defaults), Newton chega a <b>a = {num(A, 4)}</b> em poucos passos. A diferença de logits das médias daria {num(INGENUO, 4)}, que não fecha a conta: esperaria {num(somaCom(INGENUO), 1)} defaults, não {ALVO}. Agora abra o teste.</>
-        : <>No teste, a PD média vai de {pct(media(PGR)!, 2)} para <b>{pct(media(DEPOIS)!, 2)}</b> contra {pct(D / N, 2)} observados, e a AUC fica em {num(AUC1, 4)}: a fila não mudou. O ajuste aprendeu o nível da amostra de calibração, e não o do teste.</>}
+        : <>No teste, a PD média vai de {pct(media(PGR)!, 2)} para <b>{pct(media(DEPOIS)!, 2)}</b> contra {pct(D / N, 2)} observados, e a AUC fica em {num(AUC1, 4)}: a fila não mudou. Brier e log loss pioram um pouco: o ajuste aprendeu o nível da amostra de calibração ({pct(ALVO / CAL.n, 1)}), e não o do teste.</>}
       fonte={`Modelo: boosting sem recalibrar. Amostra de calibração simulada (${int(CAL.n)} casos, semente ${CAL.semente}); teste: janela fora do tempo, ${N} propostas, ${D} defaults. p' = σ(logit p + a).`}>
       <Painel titulo="Antes e depois, na mesma escala: 20 propostas da mini-base">
         <Grafico rotulo={`PD do boosting antes e depois do ajuste de intercepto ${num(A, 3)} para 20 propostas; nenhuma linha se cruza`} arCelular="4 / 3">
@@ -43,25 +43,25 @@ export function S28Intercepto({ pagina }: { pagina?: Pagina }) {
           }}
         </Grafico>
         <Formula f={String.raw`p'=\sigma\big(\operatorname{logit}(p)+a\big)\quad\text{com}\quad \sum_i \sigma\big(\operatorname{logit}(p_i)+a\big)=\sum_i y_i`} />
+        <Expandir resumo="Por que não a diferença de logits das médias?">
+          <p className="q7-nota">logit(média de y) − logit(média de p) = {num(INGENUO, 4)}. Como σ não é linear, somar esse valor a cada logit não leva a média das PDs à taxa observada: dá {num(somaCom(INGENUO), 1)} esperados contra {ALVO}. A equação precisa de uma raiz numérica, aqui por Newton.</p>
+        </Expandir>
       </Painel>
       <Painel>
         <p className="q7-k">Na amostra de calibração: Newton</p>
         <table className="q7-tab">
           <thead><tr><th className="q7-t-l">Passo</th><th>a</th><th>Defaults esperados</th></tr></thead>
-          <tbody>{ITER.slice(0, 4).map((it) => <tr key={it.k}><th>{it.k}</th><td>{num(it.a, 4)}</td><td>{num(it.soma, 2)}</td></tr>)}<tr data-on="1"><th>alvo</th><td></td><td>{ALVO}</td></tr></tbody>
+          <tbody>{ITER.slice(0, 3).map((it) => <tr key={it.k}><th>{it.k}</th><td>{num(it.a, 4)}</td><td>{num(it.soma, 2)}</td></tr>)}<tr data-on="1"><th>alvo</th><td></td><td>{ALVO}</td></tr></tbody>
         </table>
         {aberto ? (
           <div className="q7-kpis q7-kpis--2">
-            <Kpi rotulo="PD média no teste" valor={pct(media(DEPOIS)!, 2)} detalhe={`antes ${pct(media(PGR)!, 2)} · obs. ${pct(D / N, 2)}`} tom="prob" />
-            <Kpi rotulo="AUC no teste" valor={num(AUC1, 4)} detalhe={`antes ${num(AUC0, 4)}`} />
-            <Kpi rotulo="Brier" valor={num(brier(Y, DEPOIS), 5)} detalhe={`antes ${num(brier(Y, PGR), 5)}`} />
-            <Kpi rotulo="Log loss" valor={num(logLoss(Y, DEPOIS).valor, 4)} detalhe={`antes ${num(logLoss(Y, PGR).valor, 4)}`} />
+            <Kpi rotulo="PD média no teste" valor={pct(media(DEPOIS)!, 2)} detalhe={`antes ${pct(media(PGR)!, 2)} · obs. ${pct(D / N, 2)}`} tom="prob" tam="mini" />
+            <Kpi rotulo="AUC no teste" valor={num(AUC1, 4)} detalhe={`antes ${num(AUC0, 4)}`} tam="mini" />
+            <Kpi rotulo="Brier" valor={num(brier(Y, DEPOIS), 5)} detalhe={`antes ${num(brier(Y, PGR), 5)}`} tam="mini" />
+            <Kpi rotulo="Log loss" valor={num(logLoss(Y, DEPOIS).valor, 4)} detalhe={`antes ${num(logLoss(Y, PGR).valor, 4)}`} tam="mini" />
           </div>
         ) : <p className="q7-p">O teste continua fechado: nenhuma escolha olhou para ele.</p>}
         <div className="q7-botoes"><Botao prim={!aberto} onClick={() => setAberto(true)} desab={aberto}>Abrir o teste</Botao><Botao sec onClick={() => setAberto(false)}>Restaurar</Botao></div>
-        <Expandir resumo="Por que não a diferença de logits das médias?">
-          <p className="q7-nota">logit(média de y) − logit(média de p) = {num(INGENUO, 4)}. Como σ não é linear, somar esse valor a cada logit não leva a média das PDs à taxa observada: dá {num(somaCom(INGENUO), 1)} esperados contra {ALVO}. A equação precisa de uma raiz numérica, aqui por Newton.</p>
-        </Expandir>
       </Painel>
     </Quadro>
   );

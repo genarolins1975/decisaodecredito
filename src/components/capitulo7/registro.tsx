@@ -27,6 +27,12 @@ import { S25BrierCalibracao } from "./slides/s25-brier-calibracao";
 import { S26LaboratorioCalibracao } from "./slides/s26-laboratorio-calibracao";
 import { S27AmostraPropria } from "./slides/s27-amostra-propria";
 import { S28Intercepto } from "./slides/s28-intercepto";
+import { S29Platt } from "./slides/s29-platt";
+import { S30Isotonica } from "./slides/s30-isotonica";
+import { S31DepoisDeRecalibrar } from "./slides/s31-depois-de-recalibrar";
+import { S32Politica } from "./slides/s32-politica";
+import { S33Bootstrap } from "./slides/s33-bootstrap";
+import { S34ComparacaoJusta } from "./slides/s34-comparacao-justa";
 
 /**
  * Quadros do capítulo 7, um por página, no modo "conteudo" do registro de visuais: o quadro substitui todo o conteúdo
@@ -60,4 +66,10 @@ export const QUADROS_C7: Record<string, ComponentType<{ pagina?: Pagina }>> = {
   c7p35: S26LaboratorioCalibracao,
   c7p16: S27AmostraPropria,
   c7p12: S28Intercepto,
+  c7p13: S29Platt,
+  c7p36: S30Isotonica,
+  c7p37: S31DepoisDeRecalibrar,
+  c7p18: S32Politica,
+  c7p14: S33Bootstrap,
+  c7p15: S34ComparacaoJusta,
 };
