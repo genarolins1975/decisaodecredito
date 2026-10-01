@@ -52,6 +52,7 @@ export function EnrollmentsPanel({ classId, rows, sender }: { classId: string; r
                   <td className="whitespace-nowrap">
                     {r.status === "ativo" && <button className="btn btn-sm btn-ghost" onClick={() => { const reason = prompt("Motivo da suspensão (bloqueia o acesso imediatamente):"); if (reason) run(async () => { await api(`/api/professor/turmas/${classId}/matriculas/${r.id}`, { method: "PATCH", body: { status: "suspenso", reason } }); return "Matrícula suspensa."; }); }}>Suspender</button>}
                     {r.status === "suspenso" && <button className="btn btn-sm btn-ghost" onClick={() => { const reason = prompt("Motivo da reativação:"); if (reason) run(async () => { await api(`/api/professor/turmas/${classId}/matriculas/${r.id}`, { method: "PATCH", body: { status: "ativo", reason } }); return "Matrícula reativada."; }); }}>Reativar</button>}
+                    {r.userId && r.status !== "encerrado" && <button className="btn btn-sm btn-ghost" disabled={busy || !sender.ok} title={sender.ok ? "Envia uma senha provisória ao e-mail cadastrado" : "Conecte o Gmail para redefinir senhas"} onClick={() => { if (!confirm(`Redefinir a senha de ${r.name}?\n\nUma senha provisória, válida por 72 horas, será enviada para ${r.email}. A senha atual deixa de funcionar e as sessões abertas são encerradas. No próximo acesso o aluno define uma senha pessoal.`)) return; run(async () => (await api<{ note: string }>(`/api/professor/turmas/${classId}/matriculas/${r.id}/senha-provisoria`, { method: "POST", body: {} })).note); }}>Redefinir senha</button>}
                     {r.status !== "encerrado" && <button className="btn btn-sm btn-ghost text-alert" onClick={() => { const reason = prompt("Motivo do encerramento (o histórico é preservado):"); if (reason) run(async () => { await api(`/api/professor/turmas/${classId}/matriculas/${r.id}`, { method: "PATCH", body: { status: "encerrado", reason } }); return "Matrícula encerrada."; }); }}>Encerrar</button>}
                   </td>
                 </tr>
@@ -60,7 +61,7 @@ export function EnrollmentsPanel({ classId, rows, sender }: { classId: string; r
             </tbody>
           </table>
         </div>
-        <p className="hint">Situações: sem convite (na lista) → convidado (recebeu o e-mail) → com acesso (definiu a senha). Suspender ou encerrar bloqueia o acesso na hora, sem afetar outras turmas da mesma pessoa. Senhas nunca são visíveis.</p>
+        <p className="hint">Situações: sem convite (na lista) → convidado (recebeu o e-mail) → com acesso (definiu a senha). Suspender ou encerrar bloqueia o acesso na hora, sem afetar outras turmas da mesma pessoa. Redefinir senha envia ao aluno uma senha provisória de 72 horas e exige a troca no próximo acesso. Senhas nunca são visíveis aqui.</p>
       </div>
       <aside className="flex flex-col gap-4">
         <section className="card">

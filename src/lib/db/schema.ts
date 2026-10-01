@@ -22,6 +22,7 @@ export const users = pgTable("users", {
   name: text("name").notNull(),
   passwordHash: text("password_hash"),        // nulo até o primeiro acesso; argon2id
   mustChangePassword: boolean("must_change_password").notNull().default(false),
+  tempPasswordExpiresAt: ts("temp_password_expires_at"), // validade da senha provisória emitida pelo professor
   isStaff: boolean("is_staff").notNull().default(false), // professor/administrador global
   emailVerifiedAt: ts("email_verified_at"),
   disabledAt: ts("disabled_at"),
@@ -161,7 +162,7 @@ export const gmailConnections = pgTable("gmail_connections", {
 
 export const emailMessages = pgTable("email_messages", {
   id: id(),
-  kind: text("kind").notNull(), // invite | invite_existing | password_reset | test | notice
+  kind: text("kind").notNull(), // invite | invite_existing | password_reset | temp_password | test | notice
   toEmail: text("to_email").notNull(),
   toUserId: text("to_user_id").references(() => users.id),
   enrollmentId: text("enrollment_id").references(() => enrollments.id),

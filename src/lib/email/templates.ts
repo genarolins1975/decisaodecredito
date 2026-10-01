@@ -74,6 +74,30 @@ O link vale até ${p.expiresAtText} e só pode ser usado uma vez. Se você não 
   return { subject, text, html };
 }
 
+/** Senha provisória emitida pelo professor: vale até a validade e só serve para entrar e definir a senha pessoal. */
+export function tempPasswordTemplate(p: { studentName: string; courseName: string; loginLink: string; tempPassword: string; expiresAtText: string }) {
+  const subject = `Senha provisória: ${p.courseName}`;
+  const saud = nomeConhecido(p.studentName) ? `Olá, ${p.studentName}.` : "Olá.";
+  const text = `${saud}
+
+O professor redefiniu o seu acesso à plataforma do curso ${p.courseName}.
+
+1. Abra ${p.loginLink}
+2. Entre com este e-mail e a senha provisória: ${p.tempPassword}
+3. Defina a sua senha pessoal. A plataforma pede isso logo após a entrada.
+
+A senha provisória vale até ${p.expiresAtText}. Senhas anteriores e sessões abertas foram encerradas. Se você não pediu esta redefinição, avise o professor.
+
+Prof. Genaro Dueire Lins`;
+  const html = layout("Senha provisória", `
+<p style="font-size:15px;line-height:1.5">${nomeConhecido(p.studentName) ? `Olá, <b>${esc(p.studentName)}</b>.` : "Olá."} O professor redefiniu o seu acesso à plataforma do curso <b>${esc(p.courseName)}</b>.</p>
+<p style="font-size:15px;line-height:1.5">Entre com este e-mail e a senha provisória abaixo. Logo em seguida a plataforma pede que você defina a sua senha pessoal.</p>
+<p style="margin:16px 0;font-family:Consolas,monospace;font-size:20px;letter-spacing:.08em;color:#00205B"><b>${esc(p.tempPassword)}</b></p>
+<p style="margin:20px 0"><a href="${esc(p.loginLink)}" style="display:inline-block;background:#00205B;color:#fff;text-decoration:none;padding:12px 20px;border-radius:4px;font-family:Arial,sans-serif;font-weight:bold">Entrar na plataforma</a></p>
+<p style="font-size:13px;color:#5B6475">Válida até ${esc(p.expiresAtText)}. Senhas anteriores e sessões abertas foram encerradas. Se você não pediu esta redefinição, avise o professor.</p>`);
+  return { subject, text, html };
+}
+
 export function testTemplate(p: { sender: string }) {
   return {
     subject: "Teste de envio da plataforma do curso",

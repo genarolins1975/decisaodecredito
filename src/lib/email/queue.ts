@@ -61,6 +61,10 @@ export async function processEmailQueue(limit = 20): Promise<{ sent: number; fai
       const r = await p.send({ to: m.toEmail, subject: m.subject, text: m.bodyText, html: m.bodyHtml ?? undefined });
       await db.update(schema.emailMessages).set({ status: "accepted", acceptedAt: new Date(), providerMessageId: r.providerMessageId, lastError: null })
         .where(eq(schema.emailMessages.id, id));
+      if (m.kind === "temp_password") {
+        // a senha provisória não fica guardada no banco depois de aceita pelo Gmail
+        await db.update(schema.emailMessages).set({ bodyText: "[senha provisória removida após o envio]", bodyHtml: null }).where(eq(schema.emailMessages.id, id));
+      }
       if (m.enrollmentId && (m.kind === "invite" || m.kind === "invite_existing")) {
         await db.update(schema.enrollments).set({ status: "convidado", updatedAt: new Date() })
           .where(and(eq(schema.enrollments.id, m.enrollmentId), eq(schema.enrollments.status, "autorizado")));

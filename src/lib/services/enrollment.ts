@@ -1,5 +1,5 @@
 import "server-only";
-import { and, desc, eq, inArray, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import { db, schema } from "@/lib/db/client";
 import { newId, humanCode } from "@/lib/ids";
 import { sha256 } from "@/lib/crypto";
@@ -7,7 +7,8 @@ import { isValidEmail, normalizeEmail } from "@/lib/auth/email";
 import { ApiError } from "@/lib/auth/guard";
 import { audit } from "@/lib/audit";
 import { enqueueEmail } from "@/lib/email/queue";
-import { existingUserTemplate, inviteTemplate } from "@/lib/email/templates";
+import { existingUserTemplate, inviteTemplate, tempPasswordTemplate } from "@/lib/email/templates";
+import { generateTempPassword, hashPassword, TEMP_PASSWORD_TTL_HOURS } from "@/lib/auth/password";
 import { fmtDT } from "@/lib/time";
 import { parseCsv } from "@/lib/csv";
 
@@ -133,6 +134,40 @@ export async function setEnrollmentStatus(classId: string, enrollmentId: string,
   // Revogação bloqueia imediatamente APIs, arquivos e canais da turma (verificado por requisição);
   // não derruba outras matrículas válidas da mesma pessoa.
   await audit({ actorUserId: actorId, action: `enrollment.${status}`, entity: "enrollment", entityId: enrollmentId, classId, details: { reason } });
+}
+
+/**
+ * Redefinição pelo professor: grava senha provisória com validade, exige a troca no próximo acesso,
+ * encerra sessões e links de redefinição pendentes e envia a senha ao e-mail cadastrado.
+ * A senha não é devolvida ao professor nem registrada em auditoria.
+ */
+export async function issueTempPassword(classId: string, enrollmentId: string, actorId: string) {
+  const ctx = await classContext(classId);
+  const [e] = await db.select().from(schema.enrollments).where(and(eq(schema.enrollments.id, enrollmentId), eq(schema.enrollments.classId, classId)));
+  if (!e) throw new ApiError(404, "Matrícula não encontrada");
+  if (e.status === "encerrado") throw new ApiError(400, "Matrícula encerrada: reative antes de redefinir a senha", "enrollment_state");
+  const [u] = await db.select().from(schema.users).where(e.userId ? eq(schema.users.id, e.userId) : eq(schema.users.email, e.email)).limit(1);
+  if (!u) throw new ApiError(400, "Este aluno ainda não ativou o acesso. Use Enviar convite.", "no_account");
+  if (u.isStaff) throw new ApiError(403, "Contas de professor não são redefinidas por aqui", "staff_account");
+  if (u.disabledAt) throw new ApiError(400, "Conta desativada", "disabled");
+
+  const tempPassword = generateTempPassword(u.email);
+  const now = new Date();
+  const expiresAt = new Date(now.getTime() + TEMP_PASSWORD_TTL_HOURS * 3600e3);
+  const passwordHash = await hashPassword(tempPassword);
+  const appUrl = process.env.APP_URL ?? "http://localhost:3000";
+  const t = tempPasswordTemplate({ studentName: u.name, courseName: ctx.courseName, loginLink: `${appUrl}/entrar`, tempPassword, expiresAtText: fmtDT(expiresAt) });
+  await db.transaction(async (tx) => {
+    await tx.update(schema.users).set({ passwordHash, mustChangePassword: true, tempPasswordExpiresAt: expiresAt, updatedAt: now }).where(eq(schema.users.id, u.id));
+    await tx.update(schema.sessions).set({ revokedAt: now, revokedReason: "temp_password_issued" }).where(and(eq(schema.sessions.userId, u.id), isNull(schema.sessions.revokedAt)));
+    await tx.update(schema.passwordResetTokens).set({ usedAt: now }).where(and(eq(schema.passwordResetTokens.userId, u.id), isNull(schema.passwordResetTokens.usedAt)));
+    await tx.insert(schema.emailMessages).values({
+      id: newId(), kind: "temp_password", toEmail: u.email, toUserId: u.id, enrollmentId: e.id, classId, subject: t.subject, bodyText: t.text, bodyHtml: t.html,
+      dedupeKey: `temp_password:${u.id}:${now.getTime()}`, createdBy: actorId,
+    });
+    await audit({ actorUserId: actorId, action: "auth.temp_password_issued", entity: "user", entityId: u.id, classId, details: { enrollmentId: e.id, expiresAt } }, tx);
+  });
+  return { email: u.email, expiresAt };
 }
 
 /** Lista para o painel: estado da matrícula, último convite, último envio e falhas. Nunca inclui senhas. */

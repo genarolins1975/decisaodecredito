@@ -29,6 +29,13 @@
       "when": 1789943963507,
       "tag": "0003_slide_ao_vivo",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790853091245,
+      "tag": "0004_senha_provisoria",
+      "breakpoints": true
     }
   ]
 }
