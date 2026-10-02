@@ -60,10 +60,12 @@ function Pontos({ d, filas, revelado }: { d: Dim; filas: Fila[]; revelado: boole
   const x = escala([lo0 - pad, hi0 + pad], [m.l, d.w - m.r]);
   const xt: number[] = []; for (let t = Math.ceil((lo0 - pad) / passo) * passo; t <= hi0 + pad + 1e-12; t += passo) xt.push(Math.round(t * 1000) / 1000);
   const alt = (d.h - m.t - m.b) / filas.length, r = fs * 0.34, larg = (t: string, k = 1) => t.length * fs * 0.53 * k;
+  // no celular o gráfico tem cerca de 30 letras de largura: rótulos curtos para nada passar da borda
+  const estreito = d.w < fs * 36;
   return (
     <g>
-      {xt.map((t) => <g key={t}><line className="q7-grade" x1={x(t)} x2={x(t)} y1={m.t} y2={d.h - m.b} /><text className="q7-tick" x={x(t)} y={d.h - m.b} dy="1.25em" textAnchor="middle" style={t === 0 ? { fontWeight: 700, fill: "#5B6475" } : undefined}>{t === 0 ? "0: sem sorteio" : sinal(t, 3)}</text></g>)}
-      <text className="q7-eixo-t" x={(m.l + d.w - m.r) / 2} y={d.h - m.b} dy="2.55em" textAnchor="middle">Ganho de log loss sobre o modelo sem sorteio (à direita, o sorteio ajuda)</text>
+      {xt.map((t) => <g key={t}><line className="q7-grade" x1={x(t)} x2={x(t)} y1={m.t} y2={d.h - m.b} /><text className="q7-tick" x={x(t)} y={d.h - m.b} dy="1.25em" textAnchor="middle" style={t === 0 ? { fontWeight: 700, fill: "#5B6475" } : undefined}>{t === 0 ? (estreito ? "0" : "0: sem sorteio") : sinal(t, 3)}</text></g>)}
+      <text className="q7-eixo-t" x={(m.l + d.w - m.r) / 2} y={d.h - m.b} dy="2.55em" textAnchor="middle">{estreito ? "Ganho sobre o sem sorteio (0); à direita, ajuda" : "Ganho de log loss sobre o modelo sem sorteio (à direita, o sorteio ajuda)"}</text>
       {filas.map((f, i) => {
         const y0 = m.t + alt * i, ver = revelado || i > 0;
         const topo = y0 + fs * 1.75, base = y0 + alt - fs * 0.4, cyM = base - fs * 0.85, cyD = (topo + cyM - fs * 0.8) / 2;
@@ -79,7 +81,7 @@ function Pontos({ d, filas, revelado }: { d: Dim; filas: Fila[]; revelado: boole
             {i > 0 && <line className="q7-eixo" x1={m.l} x2={d.w - m.r} y1={y0} y2={y0} />}
             <rect x={bx0} y={topo} width={bx1 - bx0} height={base - topo} rx={fs * 0.3} fill="#9AA1AD" fillOpacity={0.2} />
             <line x1={x(0)} x2={x(0)} y1={topo} y2={base} stroke="#5B6475" strokeWidth={2} strokeDasharray="6 4" />
-            <text className="q7-rot" x={m.l} y={y0} dy="1.2em" style={{ fill: "#00205B", fontWeight: 700 }}>{f.tit}<tspan style={{ fill: "#5B6475", fontWeight: 500 }}>{` · erro da validação ±${num(Z95 * f.ev, 4)}`}</tspan></text>
+            <text className="q7-rot" x={m.l} y={y0} dy="1.2em" style={{ fill: "#00205B", fontWeight: 700 }}>{estreito ? f.tit.split(",")[0] : f.tit}<tspan style={{ fill: "#5B6475", fontWeight: 500 }}>{estreito ? ` · ±${num(Z95 * f.ev, 4)}` : ` · erro da validação ±${num(Z95 * f.ev, 4)}`}</tspan></text>
             {!ver && <text className="q7-rot" x={x(0)} y={(topo + base) / 2} dy=".35em" textAnchor="middle" style={{ fill: "#2E6B4F", fontWeight: 700, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.35em", strokeLinejoin: "round" }}>sementes: abrem depois da previsão</text>}
             {ver && <>
               {pos.map((p, k) => <circle key={k} cx={p.x} cy={p.y} r={r} fill="#2E6B4F" fillOpacity={0.6} stroke="#fff" strokeWidth={1.2} />)}
