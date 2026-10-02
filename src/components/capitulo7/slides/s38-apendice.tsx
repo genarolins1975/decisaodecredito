@@ -1,11 +1,11 @@
 "use client";
 import { useState } from "react";
 import { Formula, LinkSlide, Painel, Quadro, Seg, type Pagina } from "../base";
-import { D, N, PL, Y } from "@/lib/capitulo7/dados";
+import { D, MESES_TOTAL, META, MONITOR, N, PL, Y, monitoramento } from "@/lib/capitulo7/dados";
 import { aucPorPares } from "@/lib/capitulo7/metricas";
 import { SLIDE } from "@/lib/capitulo7/roteiro";
 import { PARAMETROS } from "@/lib/visuais/economia";
-import { num, pct } from "@/lib/capitulo7/formato";
+import { int, num, pct } from "@/lib/capitulo7/formato";
 
 /**
  * 38 · c7p19 · Apêndice de consulta: fórmulas do capítulo, métricas fora do protocolo (com o motivo), fronteira do
@@ -13,6 +13,9 @@ import { num, pct } from "@/lib/capitulo7/formato";
  * sementes para reproduzir. Fora do percurso da aula. Rodada 3: as fórmulas se dividem em duas abas, a de medir e a de
  * comparar e decidir (perda esperada pela PD verdadeira, que decide os slides 27 a 29; E(c) do motor; DeLong e
  * bootstrap pareado); as referências se agrupam por tema, cada uma com o que sustenta e o slide que a usa.
+ * Rodada 6: na Fronteira, o Jeffreys repetido no tempo (falso alarme do acumulado com e sem repartir o nível entre as
+ * 12 safras, e o poder contra 1 ponto, de monitoramento em dados.ts) e o ajuste ao ciclo sem atribuir à 4.966 o que
+ * ela não diz: a base cobre poucos meses para a média de longo prazo, que fica fora do capítulo.
  */
 type Aba = "formulas" | "comparar" | "fora" | "fronteira" | "refs" | "repro";
 type Grupo = "ord" | "medir" | "calibrar" | "decval" | "reg";
@@ -41,14 +44,15 @@ const FORA: [string, string][] = [
   ["Erro de calibração esperado (ECE; Naeini, Cooper e Hauskrecht, 2015)", "Média ponderada das distâncias por faixa: depende da escolha das faixas (slide 20) e não tem escala de referência."],
   ["Índice de estabilidade populacional (PSI)", "Mede mudança de distribuição entre amostras, não qualidade do modelo; é ferramenta de monitoramento."],
 ];
-const FRONTEIRA: [string, string, string?][] = [
+const PERIODO = `${META.treino.match(/\d{4}-\d{2}/)![0]} a ${META.oot.match(/\d{4}-\d{2}/g)![1]}`;
+const fronteira = (mon: ReturnType<typeof monitoramento>): [string, string, string?][] => [
   ["Diagrama CORP e decomposição MCB, DSC, UNC", "A isotônica escolhe os blocos no lugar do analista e separa o Brier em erro de calibração, discriminação e incerteza. Use para diagnosticar; não é calibrador para outra amostra.", "c7p30"],
-  ["Teste de Jeffreys por faixa", "O teste que o BCE pede no backtesting de PD: p = F_Beta(PD; d + ½, n − d + ½). Com muitas faixas, conte os p pequenos esperados ao acaso.", "c7p31"],
+  ["Teste de Jeffreys por faixa e no tempo", `O teste do BCE no backtesting de PD: p = F_Beta(PD; d + ½, n − d + ½). Repetido a cada safra, o falso alarme acumula: ${MONITOR.safras} olhadas a ${pct(MONITOR.alfa, 0)} dão ${pct(mon.falsoSemRepartir, 1)}; com ${pct(MONITOR.alfa, 0)} repartido, ${pct(mon.falsoAcumulado, 1)}, e poder de ${pct(mon.poderAcumulado, 0)} contra 1 ponto (slide 37).`, "c7p31"],
   ["Beta calibration e temperature scaling", "Beta calibration: σ(c + a ln p − b ln(1 − p)); com a = b, recai no Platt sobre o logit. Use quando a curva de confiabilidade distorce de modo diferente nas duas caudas. Temperature scaling é o Platt sem intercepto, padrão em redes neurais."],
   ["Venn-Abers e predição conformal", "Calibradores com garantia de validade em amostra finita, supondo observações trocáveis (por exemplo, independentes e de mesma distribuição); entregam um par de probabilidades cuja distância mostra a incerteza do próprio calibrador. Use com amostra de calibração pequena, quando importa a incerteza da PD de cada grau."],
   ["Benefício líquido e curva de decisão", "Mede o valor do modelo em cada limiar: acertos menos falsos positivos ponderados por pt ÷ (1 − pt), a razão implícita no limiar. Ponte entre calibração e decisão quando não há custos completos; o capítulo não a calcula: usa o resultado esperado em reais."],
   ["Calibração por segmento e multicalibração", "Calibrar na carteira não garante calibrar em cada segmento (produto, canal, região). Multicalibração exige calibração em todo subgrupo identificável; na prática, repita a curva por segmento relevante."],
-  ["PD de longo prazo e ajuste ao ciclo", "Para capital regulatório (abordagem IRB), a PD por grau é calibrada à média de longo prazo das taxas de default, cobrindo um ciclo econômico; para provisão, a perda esperada usa informação corrente e prospectiva. No caso, a finalidade escolhe a amostra do nível: provisão, a safra maturada mais recente; capital, várias safras.", "c7p38"],
+  ["PD de longo prazo e ajuste ao ciclo", `Para capital (IRB), a PD por grau segue a média de longo prazo das taxas de default ao longo de um ciclo; a base tem ${int(MESES_TOTAL)} meses de safras (${PERIODO}) e não cobre um ciclo: a PD de capital fica fora do capítulo. Para provisão, a Res. CMN 4.966/2021 pede informação corrente e prospectiva, sem fixar safras: o caso declara antes as maturadas mais recentes, sem ajuste prospectivo.`, "c7p38"],
   ["Provisão por perda esperada no Brasil", "Desde 1/1/2025, a Resolução CMN 4.966/2021 (com a Resolução BCB 352/2023) baseia a provisão na perda esperada: PD mal calibrada vira provisão errada.", "c7p28"],
 ];
 /** Referências por tema: o que cada uma sustenta no capítulo, o slide que a usa (ou a aba do apêndice) e a citação. */
@@ -102,6 +106,8 @@ function Onde({ onde }: { onde: string }) {
 export function S38Apendice({ pagina }: { pagina?: Pagina }) {
   const [aba, setAba] = useState<Aba>("formulas");
   const [grupo, setGrupo] = useState<Grupo>("ord");
+  // simulação do monitoramento só quando a aba Fronteira abre (nunca no carregamento do módulo)
+  const FRONTEIRA = aba === "fronteira" ? fronteira(monitoramento()) : [];
   const formulas = (lista: typeof COMPARAR) => <div className="q7-s38-f">{lista.map(([t, f, sl, sb]) => <div key={t}><p className="q7-k"><LinkSlide slug={sl} className="q7-s38-l">{t}</LinkSlide></p><Formula f={f} simbolos={sb} /></div>)}</div>;
   return (
     <Quadro slug="c7p19" pagina={pagina} layout="um"

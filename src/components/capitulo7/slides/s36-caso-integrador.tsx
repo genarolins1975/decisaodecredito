@@ -1,10 +1,10 @@
 "use client";
 import { useState, type ReactNode } from "react";
-import { Botao, caminho, escala, Grafico, LinkSlide, Painel, Previsao, Quadro, type Dim, type Pagina } from "../base";
+import { Botao, caminho, escala, Grafico, LinkSlide, Painel, Previsao, Quadro, Seg, type Dim, type Pagina } from "../base";
 import { ANCORA, D, EAD, N, PG, PL, PT, RES, Y } from "@/lib/capitulo7/dados";
 import { calibracaoGlobal, delong, faixasQuantis, jeffreys, slopeComIntervalo, Z95 } from "@/lib/capitulo7/metricas";
 import { curva, esperado, fmtReais, GRADE_CORTES, otimo, realizado } from "@/lib/visuais/economia";
-import { num, pct, pp } from "@/lib/capitulo7/formato";
+import { int, num, pct, reais } from "@/lib/capitulo7/formato";
 import { N_JANELAS, SEMENTE_JANELAS, vantagemEmJanelasNovas } from "@/lib/capitulo7/janelas";
 
 /**
@@ -31,8 +31,17 @@ import { N_JANELAS, SEMENTE_JANELAS, vantagemEmJanelasNovas } from "@/lib/capitu
  * lados opostos; a amostra sai da finalidade, declarada antes (provisão pela 4.966: nível corrente, a safra maturada
  * mais recente; capital: média de várias safras). Ação: monitorar o O/E por safra com Jeffreys (definido no cartão
  * Probabilidade) e recalibrar o intercepto só quando o teste rejeitar em duas safras seguidas no mesmo sentido
- * (regra do slide 37). O cartão Validação liga os 13,2% do candidato
+ * (regra do slide 37, retirada na rodada 6). O cartão Validação liga os 13,2% do candidato
  * ao Platt ajustado na validação.
+ * Rodada 6: a finalidade do caso fica na tela antes da decisão (provisão de estágio 1 pela 4.966 e corte do slide 32,
+ * as duas com nível corrente; a norma não fixa as safras) e, com ela, o que a janela prova (a ordenação). A decisão
+ * certa passa a ser manter a logística e recalibrar o nível nas safras maturadas mais recentes, validação e janela
+ * (ANCORA.recentes de dados.ts), depois de encerrada a prova; manter sem recalibrar vira a alternativa errada, com o
+ * O/E e a rejeição da validação no retorno. O retorno certo e a leitura dizem a mesma ação. Depois do acerto, a tabela
+ * de conferência (só na base sintética) põe as quatro âncoras lado a lado: PD média, O/E observado, O/E pela PD
+ * verdadeira e perda esperada em reais pelo motor do slide 32, contra a perda pela PD verdadeira. Ela ocupa o
+ * painel do dossiê, com um seletor para voltar aos cartões, e abre com uma régua da PD média de cada âncora contra a
+ * PD verdadeira e a taxa observada da janela.
  */
 type P = "ord" | "prob" | "dec" | "val";
 const DL = delong(Y, PL, PG);
@@ -53,6 +62,12 @@ const V_L = verd(PL, OT_L.corte), V_G = verd(PG, OT_G.corte);
 const OBS = D / N;
 const AUCS = { l: [RES.logit_treino.auc, RES.logit_val.auc, DL.auc1], g: [RES.gbm_treino.auc, RES.gbm_val.auc, DL.auc2] };
 const AN = ANCORA;
+/** as quatro âncoras do nível, na ordem do slide 27 */
+const LINHAS_AN: [string, { pdMedia: number; oe: number; oeVerd: number; perda: number }, boolean][] = [
+  ["Sem recalibrar (treino)", AN.sem, false], ["Validação", AN.soValidacao, false], ["Treino e validação", AN.variasSafras, false], ["Validação e janela", AN.recentes, true],
+];
+const mil = (v: number) => reais(v).replace("R$ ", "").replace(" mil", "");
+const CERTA = 2;
 const COR: Record<P, string> = { ord: "#3D5A8A", prob: "#176C73", dec: "#A85A0C", val: "#2E6B4F" };
 
 /* miniaturas: logística sempre traço cheio e disco; candidato tracejado e quadrado vazado, na cor da pergunta */
@@ -141,6 +156,34 @@ function MiniVal({ d }: { d: Dim }) {
   );
 }
 
+/** régua da conferência: PD média de cada âncora na janela, contra a PD verdadeira e a taxa observada */
+function ReguaNivel({ d }: { d: Dim }) {
+  const fs = d.fs, vals = [...LINHAS_AN.map((l) => l[1].pdMedia), AN.ptJanela, OBS];
+  const lo = Math.floor(Math.min(...vals) * 100) / 100, hi = Math.ceil(Math.max(...vals) * 100) / 100;
+  const x = escala([lo, hi], [fs * 1.2, d.w - fs * 1.2]);
+  // de baixo para cima: marcas do eixo, eixo, duas fileiras de rótulos das âncoras (alternadas pela ordem da PD) e, no topo, a PD verdadeira
+  const cy = d.h - fs * 1.7, filas = [cy - fs * 0.85, cy - fs * 2.05];
+  const ticks: number[] = []; for (let t = lo; t <= hi + 1e-9; t += 0.01) ticks.push(Math.round(t * 100) / 100);
+  const ordem = LINHAS_AN.map((l, i) => ({ l, i })).sort((a, b) => a.l[1].pdMedia - b.l[1].pdMedia);
+  const ancora = (xv: number) => (xv > d.w - fs * 5 ? "end" : xv < fs * 5 ? "start" : "middle");
+  return (
+    <g>
+      <line className="q7-eixo" x1={x(lo)} x2={x(hi)} y1={cy} y2={cy} />
+      {ticks.map((t) => <text key={t} className="q7-tick" x={x(t)} y={d.h - fs * 0.2} textAnchor="middle">{pct(t, 0)}</text>)}
+      <line x1={x(AN.ptJanela)} x2={x(AN.ptJanela)} y1={fs * 0.3} y2={cy + fs * 0.6} stroke="#00205B" strokeWidth={2} strokeDasharray="6 4" />
+      <text className="q7-rot--peq" x={x(AN.ptJanela) + fs * 0.3} y={fs * 1} style={{ fill: "#00205B", fontWeight: 700 }}>PD verdadeira {pct(AN.ptJanela, 1)}</text>
+      <line x1={x(OBS)} x2={x(OBS)} y1={cy - fs * 0.6} y2={cy + fs * 0.6} stroke="#5B6475" strokeWidth={2.5} />
+      <text className="q7-rot--peq" x={x(OBS) - fs * 0.3} y={filas[0]} textAnchor="end" style={{ fill: "#5B6475" }}>observado {pct(OBS, 1)}</text>
+      {ordem.map(({ l: [r, a, on] }, k) => { const xv = x(a.pdMedia); return (
+        <g key={r}>
+          <circle cx={xv} cy={cy} r={fs * 0.42} fill={on ? COR.prob : "#fff"} stroke={COR.prob} strokeWidth={2.5} />
+          <text className="q7-rot--peq" x={xv} y={filas[k % 2]} textAnchor={ancora(xv)} style={{ fill: on ? COR.prob : "#2A3342", fontWeight: on ? 700 : 400, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em", strokeLinejoin: "round" }}>{r.replace(" (treino)", "")} {pct(a.pdMedia, 1)}</text>
+        </g>
+      ); })}
+    </g>
+  );
+}
+
 type Cartao = { k: P; t: string; s: string; mini: (d: Dim) => ReactNode; rot: string };
 const CARTOES: Cartao[] = [
   { k: "ord", t: "Ordenação", s: "●", mini: (d) => <MiniOrd d={d} />, rot: `AUC na janela com IC de DeLong: logística ${num(DL.auc1, 4)}, candidato ${num(DL.auc2, 4)}` },
@@ -152,6 +195,9 @@ const CARTOES: Cartao[] = [
 export function S36CasoIntegrador({ pagina }: { pagina?: Pagina }) {
   const [vistos, setVistos] = useState<P[]>([]);
   const [esc, setEsc] = useState<number | null>(null);
+  const [vista, setVista] = useState<"dossie" | "conf">("dossie");
+  const decidir = (i: number | null) => { setEsc(i); setVista(i === CERTA ? "conf" : "dossie"); };
+  const conf = esc === CERTA && vista === "conf";
   const [jn] = useState(() => vantagemEmJanelasNovas());
   const liberado = vistos.length >= 3;
   const consultar = (k: P) => { if (!vistos.includes(k)) setVistos([...vistos, k]); };
@@ -159,16 +205,29 @@ export function S36CasoIntegrador({ pagina }: { pagina?: Pagina }) {
     ord: <>Logística melhor nesta janela (p = {num(DL.p, 3)}); nas {N_JANELAS} réplicas sintéticas da janela, a vantagem esperada cai a {num(jn.vantagem, 4)}.</>,
     prob: <>Jeffreys (unilateral, PD média contra os defaults observados, priori de Jeffreys, BCE): candidato O/E {num(CAL_G.razaoOE!, 3)}, 1 − p = {num(J_G, 3)}; logística p = {num(J_L, 2)}. Slopes {num(SL_L.slope, 2)} e {num(SL_G.slope, 2)}, {COM1 ? "ICs com 1" : "IC sem o 1"}.</>,
     dec: <>Corte {pct(OT_L.corte, 1)}, pela PD verdadeira: □ {fmtReais(V_G)}, ● {fmtReais(V_L)}. O □ prometia {fmtReais(OT_G.parcelas.total)}.</>,
-    val: <>Treino {num(AUCS.g[0], 4)}, janela {num(AUCS.g[2], 4)}: sobreajuste e safra. O Platt foi ajustado na validação, que teve {pct(RES.gbm_val.obs, 1)} de default: por isso o candidato prevê {pct(CAL_G.pdMedia!, 1)}.</>,
+    val: <>Treino {num(AUCS.g[0], 4)}, janela {num(AUCS.g[2], 4)}: sobreajuste e mudança entre safras. O Platt foi ajustado na validação, que teve {pct(RES.gbm_val.obs, 1)} de default: por isso o candidato prevê {pct(CAL_G.pdMedia!, 1)}.</>,
   };
   return (
     <Quadro slug="c7p38" pagina={pagina} layout="gl"
       conclusao={esc === null ? <>O comitê recebe o boosting com Platt para substituir a logística. Leia as quatro miniaturas e consulte pelo menos três cartões antes de decidir. {vistos.length ? `Consultados: ${vistos.length} de 4.` : ""}</>
-        : esc === 2 ? <><b>Manter a logística</b>: AUC {num(DL.auc1, 4)} contra {num(DL.auc2, 4)} (p = {num(DL.p, 3)}); o candidato superestima (O/E {num(CAL_G.razaoOE!, 3)}). Pela PD verdadeira ({pct(AN.ptJanela, 1)}), as âncoras da última safra ({pct(AN.soValidacao.pdMedia, 1)}) e de várias ({pct(AN.variasSafras.pdMedia, 1)}) erram {pp(AN.soValidacao.pdMedia - AN.ptJanela)} e {pp(AN.variasSafras.pdMedia - AN.ptJanela)}. <b>Monitorar o O/E por safra com Jeffreys; recalibrar se rejeitar em duas safras seguidas no mesmo sentido; confirmar nas safras de 2024.</b></>
+        : esc === CERTA ? <><b>Manter a logística</b> (AUC {num(DL.auc1, 4)} contra {num(DL.auc2, 4)}, p = {num(DL.p, 3)}) <b>e recalibrar o intercepto em validação e janela: a PD média vai de {pct(AN.sem.pdMedia, 1)} a {pct(AN.recentes.pdMedia, 1)}.</b> A regra veio antes, da finalidade; a tabela é conferência. Daqui em diante, Jeffreys no acumulado desde a calibração (<LinkSlide slug="c7p20">slide 37</LinkSlide>).</>
           : <>Revise a evidência: a decisão escolhida ignora pelo menos uma das quatro perguntas. Tente outra.</>}
-      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. IC de DeLong; Jeffreys com a PD média (o do BCE testa subestimação; a cauda oposta, para o candidato, é adaptação); slope com IC de Wald; motor do slide 32. Réplicas sintéticas da janela: ${N_JANELAS} sorteios do desfecho pela PD verdadeira (semente ${SEMENTE_JANELAS}). Âncoras: intercepto aproximado do slide 27.`}>
-      <Painel titulo="Dossiê: logística (● cheio) contra candidato (□ vazado)">
-        <div className="q7-s36-m">
+      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. IC de DeLong; Jeffreys com a PD média (o do BCE testa subestimação; a cauda oposta, para o candidato, é adaptação); slope com IC de Wald; motor do slide 32. Réplicas sintéticas da janela: ${N_JANELAS} sorteios do desfecho pela PD verdadeira (semente ${SEMENTE_JANELAS}). Nível: intercepto que zera a equação de escore da janela somada à da validação agregada (aproximação, slide 27); perda esperada Σ PD × ${pct(AN.lgd, 0)} × EAD; PD verdadeira só na base sintética.`}>
+      <Painel titulo={conf ? "Conferência do nível: só na base sintética, não é prova" : "Dossiê: logística (● cheio) contra candidato (□ vazado)"}>
+        {esc === CERTA && <div className="q7-s36-vista"><Seg rotulo="O que ver" opcoes={[{ v: "dossie" as const, r: "Dossiê" }, { v: "conf" as const, r: "Conferência do nível" }]} valor={vista} onChange={setVista} /></div>}
+        {conf ? (
+          <div className="q7-s36-conf">
+            <Grafico rotulo={`PD média na janela por âncora do nível: ${LINHAS_AN.map(([r, a]) => `${r} ${pct(a.pdMedia, 1)}`).join("; ")}; PD verdadeira ${pct(AN.ptJanela, 1)}; observado ${pct(OBS, 1)}`} arCelular="16 / 6">{(d) => <ReguaNivel d={d} />}</Grafico>
+            <table className="q7-tab q7-tab--comp q7-s36-t">
+              <thead><tr><th className="q7-t-l">Âncora do nível</th><th>PD média</th><th>O/E obs.</th><th>O/E verd.</th><th>Perda esperada, R$ mil</th></tr></thead>
+              <tbody>
+                {LINHAS_AN.map(([r, a, on]) => <tr key={r} data-on={on ? "1" : undefined}><th>{r}</th><td>{pct(a.pdMedia, 1)}</td><td>{num(a.oe, 3)}</td><td>{num(a.oeVerd, 3)}</td><td>{mil(a.perda)}</td></tr>)}
+                <tr className="q7-s36-alvo"><th>PD verdadeira</th><td>{pct(AN.ptJanela, 1)}</td><td>{num(OBS / AN.ptJanela, 3)}</td><td>{num(1, 3)}</td><td>{mil(AN.perdaVerd)}</td></tr>
+              </tbody>
+            </table>
+            <p className="q7-nota">A janela entra na última âncora: o O/E observado dela não testa nada. O/E verd. = PD verdadeira ÷ PD média; perda = Σ PD × {pct(AN.lgd, 0)} × EAD (<LinkSlide slug="c7p18">slide 32</LinkSlide>).</p>
+          </div>
+        ) : <div className="q7-s36-m">
           {CARTOES.map((c) => {
             const visto = vistos.includes(c.k);
             return (
@@ -181,16 +240,21 @@ export function S36CasoIntegrador({ pagina }: { pagina?: Pagina }) {
               </section>
             );
           })}
-        </div>
+        </div>}
       </Painel>
       <Painel className="q7-s36-dir">
+        <div className="q7-s36-fin">
+          <p className="q7-k">Declarado antes da janela</p>
+          <p><b>Finalidade:</b> PD de 12 meses para a provisão de estágio 1 (Res. CMN 4.966/2021, informação atual e prospectiva) e para o corte do <LinkSlide slug="c7p18">slide 32</LinkSlide>: nível corrente. A norma não fixa as safras.</p>
+          <p><b>A janela prova:</b> a ordenação; o nível não entra na escolha do modelo.</p>
+        </div>
         {liberado ? (
-          <Previsao rotulo="Sua decisão" pergunta="O que o comitê deve fazer?" escolha={esc} onEscolha={setEsc}
+          <Previsao recolher rotulo="Sua decisão" pergunta="O que o comitê deve fazer?" escolha={esc} onEscolha={decidir}
             opcoes={[
               { certa: false, texto: "Aprovar o boosting com Platt", retorno: <>Confunde modelo novo com modelo melhor: AUC {num(DL.auc2, 4)} contra {num(DL.auc1, 4)} e PD média {pct(CAL_G.pdMedia!, 1)} contra {pct(OBS, 1)} observados.</> },
               { certa: false, texto: "Recalibrar o boosting na janela e aprovar", retorno: <>Usa a prova para ajustar (<LinkSlide slug="c7p16">slide 27</LinkSlide>): depois, a janela não mede mais nada. E recalibrar não tira a AUC de {num(DL.auc2, 4)}.</> },
-              { texto: "Manter a logística e vigiar o nível por safra", certa: true, retorno: <>Isso. A finalidade escolhe a amostra do nível antes da janela: provisão (Res. CMN 4.966), a safra maturada mais recente; capital, várias safras (<LinkSlide slug="c7p16">slide 27</LinkSlide>).</> },
-              { certa: false, texto: "Trocar: a diferença de AUC é pequena", retorno: <>Diferença pequena não prova equivalência, e o ônus é de quem substitui; nas réplicas sintéticas da janela, a vantagem esperada ({num(jn.vantagem, 4)}) ainda é da logística.</> },
+              { texto: "Manter a logística e recalibrar o nível nas safras recentes", certa: true, retorno: <>Isso. Provada a ordenação, o nível vem das safras maturadas mais recentes, validação e janela: {AN.recentes.defaults} defaults em {int(AN.recentes.n)} ({pct(AN.recentes.taxa, 1)}).</> },
+              { certa: false, texto: "Manter a logística sem recalibrar até o monitoramento rejeitar", retorno: <>Deixa em produção um nível que a validação já rejeitava (O/E {num(AN.validacao.oe, 2)}, Jeffreys p = {num(AN.validacao.jeffreys, 3)}); validação e janela juntas também rejeitam (p = {num(AN.recentes.jeffreys, 4)}). Esperar só adia a correção.</> },
             ]} />
         ) : (
           <div className="q7-s36-trava">
@@ -199,7 +263,7 @@ export function S36CasoIntegrador({ pagina }: { pagina?: Pagina }) {
             <ul className="q7-nota">{CARTOES.map((c) => <li key={c.k}>{vistos.includes(c.k) ? "■" : "□"} {c.t}</li>)}</ul>
           </div>
         )}
-        <div className="q7-botoes q7-s36-rest"><Botao sec onClick={() => { setVistos([]); setEsc(null); }}>Restaurar</Botao></div>
+        <div className="q7-botoes q7-s36-rest"><Botao sec onClick={() => { setVistos([]); decidir(null); }}>Restaurar</Botao></div>
       </Painel>
     </Quadro>
   );

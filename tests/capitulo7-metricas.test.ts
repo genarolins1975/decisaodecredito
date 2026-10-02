@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import ref from "./fixtures/capitulo7-referencia.json";
 import * as M from "@/lib/capitulo7/metricas";
-import { ANCORA, CAL, EAD, MINI_PD, MINI_Y, PG, PGR, PL, PT, Y, CENARIOS, D, N, PREVALENCIA } from "@/lib/capitulo7/dados";
+import { ANCORA, CAL, EAD, MINI_PD, MINI_Y, PG, PGR, PL, PT, Y, CENARIOS, D, N, PREVALENCIA, MESES_TOTAL, SAFRA_MEDIA, MONITOR, monitoramento } from "@/lib/capitulo7/dados";
 import { aucEsperada, aucsEmJanelasNovas, calibradores, janelasNovas, llEmJanelasNovas, vantagemEmJanelasNovas, vitorias, type IdCalibrador } from "@/lib/capitulo7/janelas";
 
 /**
@@ -261,15 +261,76 @@ describe("capítulo 7: âncora do nível pela PD verdadeira e regra de controle 
     expect(M.rejeicaoJeffreys(5, 200, 0.08)).toBe(-1);
     expect(M.jeffreys(5, 200, 0.08)).toBeGreaterThan(0.95);
   });
-  it("gatilho: duas rejeições seguidas no mesmo sentido; sentidos opostos ou um zero não disparam", () => {
-    expect(M.gatilhoSeguidas([1, 1])).toBe(true); expect(M.gatilhoSeguidas([0, -1, -1])).toBe(true);
-    expect(M.gatilhoSeguidas([1, 0])).toBe(false); expect(M.gatilhoSeguidas([1, -1])).toBe(false); expect(M.gatilhoSeguidas([0, 0])).toBe(false); expect(M.gatilhoSeguidas([1])).toBe(false);
+});
+
+describe("capítulo 7: nível de produção nas safras recentes e monitoramento no acumulado (slides 16, 27, 36, 37 e 38)", () => {
+  const lg = (p: number) => Math.log(p) - Math.log(1 - p);
+  it("intercepto com amostras agregadas: zera a soma das duas equações de escore; sem propostas, é o das médias", () => {
+    const g = { n: 760, taxa: 0.13158, pdMedia: 0.09723 };
+    const a = M.interceptoComAgregadas(Y, PL, [g]);
+    let s = 0; for (let i = 0; i < N; i++) s += Y[i] - M.sigmoide(a + lg(PL[i]));
+    s += 100 - 760 * M.sigmoide(a + lg(0.09723));
+    expect(Math.abs(s)).toBeLessThan(1e-6);
+    perto(M.interceptoComAgregadas([], [], [g]), M.interceptoDasMedias(100 / 760, 0.09723), 1e-9);
+    perto(M.interceptoComAgregadas(Y, PL, []), M.interceptoComSlope1(Y, PL), 1e-12);
   });
-  it("falso alarme de duas rejeições seguidas a 5%: 0,25%, igual à simulação com safras independentes", () => {
-    perto(M.falsoAlarmeSeguidas(0.05, 2), 0.0025, 1e-15);
-    const r = M.mulberry32(20261002); let n = 0; const T = 400000;
-    for (let i = 0; i < T; i++) if (r() < 0.05 && r() < 0.05) n++;
-    expect(Math.abs(n / T - 0.0025)).toBeLessThan(0.0004);
+  it("validação e janela: 181 defaults em 1.497; Jeffreys da logística sem recalibrar rejeita nas duas juntas", () => {
+    expect(ANCORA.recentes.n).toBe(1497); expect(ANCORA.recentes.defaults).toBe(181);
+    perto(ANCORA.recentes.taxa, 181 / 1497, 1e-15);
+    perto(ANCORA.recentes.a, M.interceptoComAgregadas(Y, PL, [{ n: 760, taxa: 0.13158, pdMedia: 0.09723 }]), 1e-12);
+    perto(ANCORA.recentes.pdMediaAmostra, (760 * 0.09723 + PL.reduce((a, b) => a + b, 0)) / 1497, 1e-15);
+    expect(ANCORA.recentes.jeffreys).toBeLessThan(0.01); expect(ANCORA.validacao.jeffreys).toBeLessThan(0.01);
+    perto(ANCORA.validacao.jeffreys, M.jeffreys(100, 760, 0.09723), 1e-15);
+  });
+  it("perda esperada em reais com a LGD do motor: Σ PD × 65% × EAD, e a PD verdadeira como alvo", () => {
+    const pe = (p: readonly number[]) => p.reduce((s, x, i) => s + x * 0.65 * EAD[i], 0);
+    perto(ANCORA.sem.perda, pe(PL), 1e-6); perto(ANCORA.perdaVerd, pe(PT), 1e-6);
+    perto(ANCORA.recentes.perda, pe(M.transformar(PL, ANCORA.recentes.a, 1)), 1e-6);
+  });
+  it("conferência pela PD verdadeira: validação e janela fica mais perto que as outras três; sem recalibrar, a mais longe", () => {
+    const op = [ANCORA.sem, ANCORA.soValidacao, ANCORA.variasSafras, ANCORA.recentes];
+    const dist = op.map((o) => Math.abs(o.pdMedia - ANCORA.ptJanela));
+    expect(Math.min(...dist)).toBe(dist[3]); expect(Math.max(...dist)).toBe(dist[0]);
+    const dr = op.map((o) => Math.abs(o.perda - ANCORA.perdaVerd));
+    expect(Math.min(...dr)).toBe(dr[3]);
+  });
+  it("tamanho médio de safra: 3.600 propostas em 24 meses", () => { expect(MESES_TOTAL).toBe(24); expect(SAFRA_MEDIA).toBe(150); });
+  it("fronteiras de Jeffreys bilateral: rejeita fora de (baixo, alto) e só ali", () => {
+    for (const [n, p0, al] of [[150, 0.12, 0.05], [1800, 0.12, 0.05 / 12], [760, 0.09723, 0.05]] as const) {
+      const { baixo, alto } = M.limitesJeffreys(n, p0, al);
+      expect(1 - M.jeffreys(baixo, n, p0)).toBeLessThan(al / 2); expect(1 - M.jeffreys(baixo + 1, n, p0)).toBeGreaterThanOrEqual(al / 2);
+      expect(M.jeffreys(alto, n, p0)).toBeLessThan(al / 2); expect(M.jeffreys(alto - 1, n, p0)).toBeGreaterThanOrEqual(al / 2);
+    }
+  });
+  it("monitoramento simulado igual à conta exata (cadeia sobre os defaults acumulados), com e sem erro de nível", () => {
+    const exato = (m: number, p0: number, pr: number, S: number, alfa: number, alfaOlhada: number) => {
+      const b: number[] = []; for (let k = 0; k <= m; k++) b.push(Math.exp(M.lnGama(m + 1) - M.lnGama(k + 1) - M.lnGama(m - k + 1) + k * Math.log(pr) + (m - k) * Math.log(1 - pr)));
+      const u = M.limitesJeffreys(m, p0, alfa); let safra = 0; b.forEach((q, k) => { if (k <= u.baixo || k >= u.alto) safra += q; });
+      let dist = [1], absorvido = 0;
+      for (let s = 1; s <= S; s++) {
+        const nova = new Array(dist.length + m).fill(0);
+        dist.forEach((q, d) => { if (q) for (let k = 0; k <= m; k++) nova[d + k] += q * b[k]; });
+        const L = M.limitesJeffreys(s * m, p0, alfaOlhada);
+        nova.forEach((q, d) => { if (d <= L.baixo || d >= L.alto) { absorvido += q; nova[d] = 0; } });
+        dist = nova;
+      }
+      return { safra, acumulado: absorvido };
+    };
+    for (const pr of [0.12, 0.13]) {
+      const e = exato(150, 0.12, pr, 12, 0.05, 0.05 / 12);
+      const s = M.monitorarNivel({ m: 150, p0: 0.12, pReal: pr, safras: 12, alfa: 0.05, alfaOlhada: 0.05 / 12, sorteios: 20000, semente: 20261041 });
+      expect(Math.abs(s.porSafra - e.safra)).toBeLessThan(0.003);
+      expect(Math.abs(s.acumulado - e.acumulado)).toBeLessThan(4 * Math.sqrt(e.acumulado * (1 - e.acumulado) / 20000));
+    }
+  });
+  it("no caso: repartir 5% entre 12 olhadas segura o falso alarme; uma safra quase não enxerga 1 ponto; o acumulado enxerga mais", () => {
+    const r = monitoramento();
+    expect(r.m).toBe(150); perto(r.p0, ANCORA.recentes.pdMedia, 1e-15);
+    expect(r.falsoAcumulado).toBeLessThan(MONITOR.alfa);
+    expect(r.falsoSemRepartir).toBeGreaterThan(0.15);
+    expect(r.poderSafra - r.falsoSafra).toBeLessThan(0.03);
+    expect(r.poderAcumulado).toBeGreaterThan(r.poderSafra);
+    expect(monitoramento()).toBe(r);
   });
 });
 

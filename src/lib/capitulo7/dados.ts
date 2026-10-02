@@ -5,7 +5,8 @@
  * seção 7, e os números são conferidos em tests/capitulo7-metricas.test.ts.
  */
 import base from "./base.json";
-import { arredondar, fila, interceptoDasMedias, juntarAmostras, media, mulberry32, transformar } from "./metricas";
+import { arredondar, fila, interceptoComAgregadas, interceptoDasMedias, jeffreys, juntarAmostras, media, monitorarNivel, mulberry32, transformar } from "./metricas";
+import { PARAMETROS } from "@/lib/visuais/economia";
 
 export const META = base.meta;
 export const RES = base.res;
@@ -91,34 +92,78 @@ export const FILA_PL = fila(PL);
 export const PL_4CASAS = arredondar(PL, 4);
 
 /**
- * Ancorar o nível da logística em safras anteriores à janela (slides 27, 36 e 37). Numa carteira real, a amostra de
- * calibração viria de safras maturadas antes da janela; a base mostra a deriva da taxa de default entre elas: treino
- * (safras 2022-01 a 2023-02), validação (2023-03 a 2023-07) e janela (2023-08 a 2023-12). Treino e validação só
- * existem agregados em RES (n, taxa observada, PD média da logística), sem PD por proposta, então o intercepto é a
- * diferença de logits das médias (interceptoDasMedias), aproximação declarada na tela. Cada intercepto é somado ao log
- * odds das PDs da janela, e a PD média resultante se compara com a taxa da janela (O/E = observado ÷ esperado) e com a
- * PD verdadeira média da janela (oeVerd = PD verdadeira média ÷ esperado), que só a base sintética tem: com 81
- * defaults, a taxa observada é ruidosa, e a PD verdadeira mostra quanto cada âncora erra de fato. No treino, a PD
- * média da logística iguala a taxa por construção (o modelo foi estimado ali, com intercepto); juntar o treino dilui a
- * correção da validação, com o peso pesoTreino.
+ * Safra é a coorte mensal de concessão (slide 2). Cada partição da base reúne safras: treino (2022-01 a 2023-02),
+ * validação (2023-03 a 2023-07) e janela (2023-08 a 2023-12); os meses saem dos textos de META, e o tamanho médio de
+ * uma safra é o total de propostas dividido pelo total de meses.
  */
+const mesesDe = (t: string) => { const [a, b] = (t.match(/\d{4}-\d{2}/g) ?? []).map((x) => { const [ano, mes] = x.split("-").map(Number); return ano * 12 + mes; }); return b - a + 1; };
+export const MESES = { treino: mesesDe(base.meta.treino), validacao: mesesDe(base.meta.validacao), janela: mesesDe(base.meta.oot) };
+export const MESES_TOTAL = MESES.treino + MESES.validacao + MESES.janela;
+export const SAFRA_MEDIA = (base.meta.nTreino + base.meta.nVal + base.meta.nOot) / MESES_TOTAL;
+
+/**
+ * O nível da logística ancorado em safras maturadas (slides 16, 27, 36 e 37). A finalidade do caso (provisão de
+ * estágio 1 e corte, nível corrente) pede as safras maturadas mais recentes; a norma não fixa quais, e a escolha é
+ * declarada antes da janela. A janela prova a ordenação; encerrada a prova, ela entra no nível de produção com a
+ * validação (recentes). Treino e validação só existem agregados em RES (n, taxa observada, PD média da logística),
+ * sem PD por proposta: a validação sozinha e treino com validação usam interceptoDasMedias; validação e janela usam
+ * interceptoComAgregadas, com a equação de escore exata das 737 propostas da janela somada à da validação agregada.
+ * Cada intercepto é somado ao log odds das PDs da janela; a PD média resultante se compara com a taxa da janela
+ * (O/E = observado ÷ esperado) e com a PD verdadeira média (oeVerd), que só a base sintética tem. Na âncora recentes
+ * a janela está dentro da amostra: a comparação é conferência, não prova. A perda esperada em reais é Σ PD × LGD × EAD
+ * com a LGD do motor do slide 32 (PARAMETROS.lgd) e a EAD de cada proposta; perdaVerd usa a PD verdadeira.
+ */
+const LGD = PARAMETROS.lgd;
+const perdaEsperadaReais = (pd: readonly number[]) => { let s = 0; for (let i = 0; i < pd.length; i++) s += pd[i] * LGD * base.oot.ead[i]; return s; };
 const taxaJanela = Y.reduce((a, b) => a + b, 0) / Y.length;
 const ptJanela = media(PT)!;
-function aplicar(a: number) { const pdMedia = media(transformar(PL, a, 1))!; return { a, pdMedia, oe: taxaJanela / pdMedia, oeVerd: ptJanela / pdMedia }; }
+function aplicar(a: number) { const q = transformar(PL, a, 1); const pdMedia = media(q)!; return { a, pdMedia, oe: taxaJanela / pdMedia, oeVerd: ptJanela / pdMedia, perda: perdaEsperadaReais(q) }; }
 const SAFRA_TREINO = { n: base.meta.nTreino, taxa: base.res.logit_treino.obs, pdMedia: base.res.logit_treino.pd_media };
 const SAFRA_VAL = { n: base.meta.nVal, taxa: base.res.logit_val.obs, pdMedia: base.res.logit_val.pd_media };
 const JUNTAS = juntarAmostras([SAFRA_TREINO, SAFRA_VAL]);
+const DEF_VAL = Math.round(SAFRA_VAL.n * SAFRA_VAL.taxa), DEF_JAN = Y.reduce((a, b) => a + b, 0);
+const N_REC = SAFRA_VAL.n + Y.length, D_REC = DEF_VAL + DEF_JAN;
+/** PD média da logística em validação e janela juntas, ponderada pelo número de propostas */
+const PM_REC = (SAFRA_VAL.n * SAFRA_VAL.pdMedia + PL.reduce((a, b) => a + b, 0)) / N_REC;
 export const ANCORA = {
   taxaJanela,
   /** PD verdadeira média da janela: só existe porque a base é sintética */
   ptJanela,
+  /** perda esperada da janela pela PD verdadeira, com a LGD do motor: o alvo da conferência */
+  perdaVerd: perdaEsperadaReais(PT),
+  lgd: LGD,
   treino: { ...SAFRA_TREINO, defaults: Math.round(SAFRA_TREINO.n * SAFRA_TREINO.taxa) },
-  validacao: { ...SAFRA_VAL, defaults: Math.round(SAFRA_VAL.n * SAFRA_VAL.taxa) },
+  validacao: { ...SAFRA_VAL, defaults: DEF_VAL, oe: SAFRA_VAL.taxa / SAFRA_VAL.pdMedia, jeffreys: jeffreys(DEF_VAL, SAFRA_VAL.n, SAFRA_VAL.pdMedia) },
+  /** a logística como estimada no treino */
   sem: aplicar(0),
-  /** peso do treino na âncora de várias safras (n do treino ÷ n de treino e validação) */
+  /** peso do treino na âncora de treino e validação (n do treino ÷ n de treino e validação) */
   pesoTreino: SAFRA_TREINO.n / JUNTAS.n,
-  /** intercepto ajustado só na validação, a safra maturada mais recente antes da janela */
+  /** intercepto ajustado só nas safras da validação (2023-03 a 2023-07) */
   soValidacao: aplicar(interceptoDasMedias(SAFRA_VAL.taxa, SAFRA_VAL.pdMedia)),
-  /** treino e validação juntos: várias safras maturadas */
+  /** treino e validação juntos (2022-01 a 2023-07), dominados pelo treino */
   variasSafras: { n: JUNTAS.n, defaults: JUNTAS.defaults, taxa: JUNTAS.taxa!, pdMediaAmostra: JUNTAS.pdMedia!, ...aplicar(interceptoDasMedias(JUNTAS.taxa!, JUNTAS.pdMedia!)) },
+  /**
+   * validação e janela juntas (2023-03 a 2023-12): as safras maturadas mais recentes na data da base, o nível que vai
+   * para produção depois da prova. jeffreys: o teste da PD da logística sem recalibrar contra os defaults das duas.
+   */
+  recentes: { n: N_REC, defaults: D_REC, taxa: D_REC / N_REC, pdMediaAmostra: PM_REC, jeffreys: jeffreys(D_REC, N_REC, PM_REC), ...aplicar(interceptoComAgregadas(Y, PL, [SAFRA_VAL])) },
 };
+
+/**
+ * Monitoramento do nível depois da recalibração (slides 36, 37 e 38): 12 safras mensais do tamanho médio da base, com
+ * a PD média de produção (ANCORA.recentes); teste de Jeffreys bilateral a 5% na safra isolada e, no acumulado desde a
+ * calibração, 5% repartido entre as 12 olhadas (Bonferroni, 5% ÷ 12 em cada uma). Falso alarme com a PD certa; poder
+ * contra uma subestimação de 1 ponto. Também o falso alarme do acumulado sem repartir (5% em cada olhada), que mostra
+ * por que repartir. Simulado sob demanda (nunca no carregamento do módulo), com cache.
+ */
+export const MONITOR = { safras: 12, alfa: 0.05, erro: 0.01, sorteios: 20000, semente: 20261041 };
+let cacheMonitor: { m: number; p0: number; falsoSafra: number; poderSafra: number; falsoAcumulado: number; poderAcumulado: number; falsoSemRepartir: number } | null = null;
+export function monitoramento() {
+  if (cacheMonitor) return cacheMonitor;
+  const m = Math.round(SAFRA_MEDIA), p0 = ANCORA.recentes.pdMedia;
+  const cfg = { m, p0, safras: MONITOR.safras, alfa: MONITOR.alfa, alfaOlhada: MONITOR.alfa / MONITOR.safras, sorteios: MONITOR.sorteios, semente: MONITOR.semente };
+  const h0 = monitorarNivel({ ...cfg, pReal: p0 }), h1 = monitorarNivel({ ...cfg, pReal: p0 + MONITOR.erro });
+  const solto = monitorarNivel({ ...cfg, pReal: p0, alfaOlhada: MONITOR.alfa });
+  cacheMonitor = { m, p0, falsoSafra: h0.porSafra, poderSafra: h1.porSafra, falsoAcumulado: h0.acumulado, poderAcumulado: h1.acumulado, falsoSemRepartir: solto.acumulado };
+  return cacheMonitor;
+}

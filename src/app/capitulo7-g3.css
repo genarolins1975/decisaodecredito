@@ -69,3 +69,28 @@
 .q7-s38-rf-u b { color: var(--q7-ink); }
 .q7-s38-rf-c { margin: 0; font-size: 1.02cqw; line-height: 1.25; color: var(--q7-mudo); }
 @container q7 (max-width: 820px) { .q7-s38-rf { grid-template-columns: 1fr; gap: 8px; } .q7-s38-rf-u { font-size: 14px; } .q7-s38-rf-c { font-size: 12.5px; } }
+/* rodada 6 · 27: a âncora do nível se escolhe na própria tabela; a linha da PD verdadeira é o alvo, não uma âncora */
+.q7 .q7-slide .q7-s27-ab { all: unset; cursor: pointer; display: inline-flex; gap: .4cqw; align-items: baseline; font: inherit; color: var(--q7-ink); }
+.q7 .q7-slide .q7-s27-ab span { color: var(--q7-prob); }
+.q7 .q7-slide .q7-s27-ab:focus-visible { outline: .22cqw solid var(--q7-ouro); outline-offset: .12cqw; border-radius: .25cqw; }
+.q7 .q7-slide .q7-s27-ab[aria-pressed="true"] { font-weight: 700; }
+.q7 .q7-slide .q7-s27-t--anc tr.q7-s27-alvo th, .q7 .q7-slide .q7-s27-t--anc tr.q7-s27-alvo td { border-top: 2px solid var(--q7-borda); color: var(--q7-mudo); font-style: italic; }
+.q7-s27-k { color: var(--q7-prob); }
+/* rodada 6 · 36: finalidade e o que a janela prova, declarados antes da decisão; tabela de conferência depois do acerto */
+.q7-s36-fin { display: grid; gap: .25cqw; border-left: .3cqw solid var(--q7-ouro); padding: .1cqw 0 .1cqw .8cqw; }
+.q7-s36-fin p:not(.q7-k) { margin: 0; font-size: 1.27cqw; line-height: 1.28; color: var(--q7-texto); }
+.q7-s36-fin b { color: var(--q7-ink); }
+.q7 .q7-slide .q7-s36-fin a { color: inherit; text-decoration: underline; text-underline-offset: .2em; }
+.q7 .q7-slide .q7-s36-t thead th { white-space: normal; line-height: 1.15; }
+.q7 .q7-slide .q7-s36-t tr.q7-s36-alvo th, .q7 .q7-slide .q7-s36-t tr.q7-s36-alvo td { border-top: 2px solid var(--q7-borda); color: var(--q7-mudo); font-style: italic; }
+@container q7 (max-width: 820px) { .q7-s36-fin p:not(.q7-k) { font-size: 13.5px; } }
+/* rodada 6 · 37: sete passos no procedimento, com o monitoramento separado do nível */
+.q7 .q7-slide .q7-s37-pp.q7-s37-pp--7 { font-size: 1.27cqw; line-height: 1.2; gap: .05cqw; }
+@container q7 (max-width: 820px) { .q7 .q7-slide .q7-s37-pp.q7-s37-pp--7 { font-size: 13.5px; } }
+.q7-s36-conf { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: .5cqw; }
+.q7-s36-conf .q7-graf { flex: 1; min-height: 0; }
+.q7-s36-conf .q7-gw { font-size: 1.15cqw; }
+.q7 .q7-slide .q7-s36-conf .q7-tab th, .q7 .q7-slide .q7-s36-conf .q7-tab td { font-size: 1.3cqw; }
+.q7-s36-vista { margin-bottom: .3cqw; }
+@container q7 (max-width: 820px) { .q7 .q7-slide .q7-s36-conf .q7-tab th, .q7 .q7-slide .q7-s36-conf .q7-tab td { font-size: 12.5px; } .q7-s36-conf .q7-gw { font-size: 11px; } }
+.q7-s36-conf .q7-graf { min-height: 6.6cqw; }
