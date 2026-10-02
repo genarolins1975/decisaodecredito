@@ -21,7 +21,9 @@ import { int, num, pct } from "@/lib/capitulo7/formato";
  * Rodada 6: os rótulos de saída ficam acima do topo do quadro, terminando na coluna da sua seta, com detecção de
  * colisão (o segundo sobe uma linha); o rótulo dos defaults com PD 0% procura, na faixa de baixo, o primeiro lugar longe
  * de toda curva. Onde a isotônica dá PD 0% (ou 100%), a log loss esperada seria infinita: a fonte, a tabela e a
- * leitura dizem que o valor vem do limite de 10⁻¹⁵.
+ * leitura dizem que o valor vem do limite de 10⁻¹⁵. Rodada 7: piso e teto de PD se decidem pelas PDs de 0% e 100% que a
+ * isotônica atribui (limiteExigido), não pelos desfechos da janela, porque o critério é a perda esperada; a leitura diz
+ * isso em todos os blocos e com 3.000 casos (conferido por script nos onze estados).
  */
 /** Valor da isotônica (interpolação linear entre os pontos, constante fora deles) numa PD. */
 const isoEm = (f: { x: number[]; y: number[] }, q: number) => aplicarIsotonica(f, [q])[0];
@@ -104,16 +106,31 @@ function recortar(pts: { x: number; y: number }[], teto: number) {
   return runs.filter((r) => r.length > 1);
 }
 const nProp = (n: number) => `${int(n)} ${n === 1 ? "proposta" : "propostas"}`;
-/** Leitura de um bloco de 300: cita PD 0% e 100% só quando existem; piso se um default levou PD 0%, teto se um adimplente levou PD 100%. */
+type Extremos = { zeros: number; uns: number };
+/**
+ * O limite de PD que a isotônica exige, decidido pelas PDs de 0% e de 100% que ela atribui às propostas da janela, não
+ * pelo que aconteceu nelas: o critério do slide é a perda esperada pela PD verdadeira, e cada PD 0% (ou 100%) a torna
+ * infinita, com ou sem default ali. Piso com alguma PD 0%, teto com alguma PD 100%, os dois com as duas; null sem nenhuma.
+ */
+export const limiteExigido = (I: Extremos) => (I.zeros && I.uns ? "piso e teto de PD" : I.zeros ? "piso de PD" : I.uns ? "teto de PD" : null);
+/** "PD 0% a 9 propostas da janela e 100% a 3", só com os extremos que existem. */
+const extremos = (I: Extremos) => (I.zeros && I.uns ? <>PD 0% a {nProp(I.zeros)} da janela e 100% a {int(I.uns)}</> : I.zeros ? <>PD 0% a {nProp(I.zeros)} da janela</> : <>PD 100% a {nProp(I.uns)} da janela</>);
+/** "PD 0%", "PD 100%" ou "PD 0% ou 100%", conforme o que a isotônica atribui. */
+const quais = (I: Extremos) => (I.zeros && I.uns ? "PD 0% ou 100%" : I.zeros ? "PD 0%" : "PD 100%");
+/**
+ * Leitura de um bloco de 300. Sempre que a isotônica dá PD 0% ou 100%, diz quantas, que cada uma torna infinita a perda
+ * esperada (o critério) e que ela exige piso, teto ou os dois (limiteExigido), aconteça ou não um default nessas
+ * propostas; quando também há previsões cortadas na janela, conta quantas e quanto pesam.
+ */
 export function leituraBloco(a: ReturnType<typeof ajustes>, bloco: number): ReactNode {
-  const I = a.isot;
-  if (I.limitadas > 0) {
-    const ext = I.zeros && I.uns ? <>PD 0% a {nProp(I.zeros)} da janela e 100% a {int(I.uns)}</> : I.zeros ? <>PD 0% a {nProp(I.zeros)} da janela</> : <>PD 100% a {nProp(I.uns)} da janela</>;
-    const limite = I.defZero && I.adiUm ? "piso e teto de PD" : I.defZero ? "piso de PD" : "teto de PD";
-    return <>Bloco {bloco} ({a.defaults} defaults em {NB}): a isotônica dá {ext}; {I.limitadas} {I.limitadas === 1 ? "previsão dá" : "previsões dão"} probabilidade zero ao que aconteceu, cortada em 10⁻¹⁵ (+{num(CUSTO_LIM, 1)} cada), e a log loss na janela vai a <b>{num(I.ll, 4)}</b>. <b>Com poucos dados, a isotônica exige {limite}.</b> Pela PD verdadeira{I.espLim ? " (com o mesmo limite; sem ele, infinita)" : ""}, {num(I.esp, 4)} contra {num(a.platt.esp, 4)} do Platt.</>;
-  }
+  const I = a.isot, limite = limiteExigido(I);
+  const esperada = <>Pela PD verdadeira, que é o critério, basta uma {quais(I)} para a perda esperada ser infinita{I.limitadas ? "" : ", mesmo sem default da janela nela"} (com o limite de 10⁻¹⁵, {num(I.esp, 4)} contra {num(a.platt.esp, 4)} do Platt): <b>com poucos dados, a isotônica exige {limite}</b>.</>;
+  if (I.limitadas > 0 && limite)
+    return <>Bloco {bloco} ({a.defaults} defaults em {NB}): a isotônica dá {extremos(I)}. Na janela, {I.limitadas} {I.limitadas === 1 ? "previsão dá" : "previsões dão"} probabilidade zero ao que aconteceu, {I.limitadas === 1 ? "cortada" : "cortadas"} em 10⁻¹⁵ (+{num(CUSTO_LIM, 1)}{I.limitadas === 1 ? "" : " cada"}), e a log loss vai a <b>{num(I.ll, 4)}</b>. {esperada}</>;
+  const nivel = <>Bloco {bloco} ({a.defaults} defaults em {NB}): PD média {pct(a.platt.media, 1)} (Platt) e {pct(I.media, 1)} (isotônica) contra {pct(D / N, 1)} observados. Nos dez blocos, a do Platt vai de {pct(FAIXA_PLATT[0], 1)} a {pct(FAIXA_PLATT[1], 1)}: <b>com {NB} casos, o nível segue a sorte do bloco</b>.</>;
+  if (limite) return <>{nivel} A isotônica dá {extremos(I)}. {esperada}</>;
   const melhor = a.platt.esp < I.esp ? "Platt" : "isotônica";
-  return <>Bloco {bloco} ({a.defaults} defaults em {NB}): PD média {pct(a.platt.media, 1)} (Platt) e {pct(I.media, 1)} (isotônica) contra {pct(D / N, 1)} observados. Nos dez blocos, a do Platt vai de {pct(FAIXA_PLATT[0], 1)} a {pct(FAIXA_PLATT[1], 1)}: <b>com {NB} casos, o nível segue a sorte do bloco</b>. Pela PD verdadeira, o {melhor} perde menos ({num(a.platt.esp, 4)} contra {num(I.esp, 4)}{I.espLim ? <>, este com o limite de 10⁻¹⁵: a isotônica dá PD {I.uns && !I.zeros ? "100%" : I.zeros && !I.uns ? "0%" : "0% ou 100%"} a {nProp(I.espLim)}</> : null}).</>;
+  return <>{nivel} Pela PD verdadeira, o {melhor} perde menos ({num(a.platt.esp, 4)} contra {num(I.esp, 4)}); sem PD 0% ou 100%, a isotônica não exige piso nem teto.</>;
 }
 /** Índice da alternativa certa da previsão: a comparação só abre depois dela; errar mostra o retorno e pede nova tentativa. */
 const CERTA = 1;
@@ -138,7 +155,7 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
     <Quadro slug="c7p36" pagina={pagina} layout="gl"
       titulo={revelado ? undefined : "Isotônica: o que acontece com a fila?"} sub={revelado ? undefined : "Uma função que nunca desce, ajustada aos dados sem forma imposta."}
       conclusao={!revelado ? <>Primeiro a previsão: a isotônica também nunca inverte duas propostas.</>
-        : t === "grande" ? <>Com {int(a.n)} casos, a isotônica reduz as {int(BRUTO.distintos)} PDs distintas da janela a <b>{I.distintos}</b> degraus: {int(I.pares.empates - BRUTO.pares.empates)} pares viram empates{BRUTO.pares.empates ? <> (havia {int(BRUTO.pares.empates)})</> : null} e a AUC cai de {num(BRUTO.pares.auc!, 4)} para <b>{num(I.pares.auc!, 4)}</b>. Pela PD verdadeira, a log loss esperada fica {num(a.platt.esp, 4)} no Platt e {num(I.esp, 4)} na isotônica{I.espLim ? <> (com o limite de 10⁻¹⁵: ela dá PD {I.uns && !I.zeros ? "100%" : I.zeros && !I.uns ? "0%" : "0% ou 100%"} a {nProp(I.espLim)})</> : null}; a janela, com {D} defaults, não separa os dois. {proxima}</>
+        : t === "grande" ? <>Com {int(a.n)} casos, a isotônica reduz as {int(BRUTO.distintos)} PDs distintas da janela a <b>{I.distintos}</b> degraus: {int(I.pares.empates - BRUTO.pares.empates)} pares viram empates{BRUTO.pares.empates ? <> (havia {int(BRUTO.pares.empates)})</> : null} e a AUC cai de {num(BRUTO.pares.auc!, 4)} para <b>{num(I.pares.auc!, 4)}</b>. Pela PD verdadeira, a log loss esperada fica {num(a.platt.esp, 4)} no Platt e {num(I.esp, 4)} na isotônica{limiteExigido(I) ? <>, esta com o limite de 10⁻¹⁵: ela dá {quais(I)} a {nProp(I.zeros + I.uns)}, o que sem o limite tornaria a esperada infinita; mesmo com {int(a.n)} casos, <b>exige {limiteExigido(I)}</b></> : null}. A janela, com {D} defaults, não separa os dois. {proxima}</>
           : leituraBloco(a, bloco)}
       fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults, ${int(BRUTO.pares.pares)} pares default × adimplente; empate conta meio par. Calibração sintética: sorteios dos proponentes da janela, desfecho da PD verdadeira (semente ${CAL.semente}); blocos de ${NB} consecutivos, com ${EVENTOS.join(", ")} defaults. Log loss com limite de 10⁻¹⁵, também na esperada (média exata pela PD verdadeira), que sem ele seria infinita onde a calibrada dá PD 0% ou 100%.`}>
       <Painel>
@@ -258,7 +275,7 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
                 <tr><th>AUC</th><td>{num(a.platt.pares.auc!, 4)}</td><td>{num(I.pares.auc!, 4)}</td></tr>
                 <tr><th>PD média</th><td>{pct(a.platt.media, 2)}</td><td>{pct(I.media, 2)}</td></tr>
                 <tr data-on={I.zeros + I.uns > 0 ? "1" : undefined}><th>PD de 0% ou 100%</th><td>{a.platt.zeros + a.platt.uns}</td><td>{I.zeros + I.uns}</td></tr>
-                <tr><th>Log loss na janela</th><td>{num(a.platt.ll, 4)}{a.platt.limitadas ? ` (${a.platt.limitadas})` : ""}</td><td>{num(I.ll, 4)}{I.limitadas ? ` (${I.limitadas} cortadas)` : ""}</td></tr>
+                <tr><th>Log loss na janela</th><td>{num(a.platt.ll, 4)}{a.platt.limitadas ? ` (${a.platt.limitadas})` : ""}</td><td>{num(I.ll, 4)}{I.limitadas ? ` (${I.limitadas} ${I.limitadas === 1 ? "cortada" : "cortadas"})` : ""}</td></tr>
                 <tr><th>Log loss esperada</th><td>{num(a.platt.esp, 4)}</td><td>{num(I.esp, 4)}{I.espLim ? " (limite)" : ""}</td></tr>
               </tbody>
             </table>

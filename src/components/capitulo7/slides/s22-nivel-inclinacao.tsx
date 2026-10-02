@@ -9,30 +9,34 @@ import { SLIDE } from "@/lib/capitulo7/roteiro";
 
 /**
  * 22 · c7p32 · Assinaturas de erro. Ponto de partida: a PD verdadeira do gerador (só existe porque a base é sintética),
- * distorcida de quatro jeitos com p' = σ(a + b · logit p). As duas distorções de inclinação giram em torno de 11%
- * (a = c(1 − b), c = logit 11%). Duas frequências por faixa: a esperada, que troca o desfecho pela PD verdadeira (sem
- * ruído de amostra: erro de nível dá slope 1 e intercepto −a; erro de inclinação dá slope 1/b), e a observada nos 81
- * defaults da janela, com o ruído da amostra (nela a própria PD verdadeira tem slope 1,14). Intercepto com slope fixado em
- * 1 e o par (intercepto, slope) da regressão de y em logit(PD), por máxima verossimilhança; na observada, o intervalo
- * de Wald de 95% do slope. No quadro ampliado, a e b viram controles: o aluno cria a própria assinatura, e a leitura
- * dela compõe nível (intercepto com slope 1 e PD média) e inclinação (slope), não olha só b. As miniaturas são largas
- * (mesma escala de 0% a 55% nas quatro), com slope e intercepto numa linha abaixo. No quadro ampliado, os rótulos de
- * acima e abaixo da diagonal ficam numa linha sob o gráfico, fora da área dos dados; "Ver os quatro" fica junto dos
- * controles e "Restaurar" no alto do painel lateral, para que nenhum botão dependa da altura que sobra. A fonte
- * liga a frequência esperada às réplicas sintéticas da janela (slides 10 e 27): é a frequência que elas dão em média.
- * Quando a distorção do aluno passa de 55%, o eixo do quadro ampliado se estende até o maior valor desenhado, com
- * margem, e a última marca do eixo é o próprio teto (60%, 80%, 90% ou 100%); nenhum ponto fica preso na borda. A leitura decide o lado do nível
- * pela PD média contra a frequência esperada (o intercepto com slope 1 tem o mesmo sinal), e estimativa que não
- * existe aparece como "—".
+ * distorcida de quatro jeitos com p' = σ(a + b · logit p). Cada caso pronto é o que o nome diz: os de nível só deslocam
+ * (b = 1, a = ±0,7); os de inclinação giram em torno do ponto que mantém a PD média igual à da verdadeira (a resolvido
+ * por bisseção para cada b em aNeutro), e por isso têm intercepto com slope 1 igual a 0. Duas frequências por faixa: a
+ * esperada, que troca o desfecho pela PD verdadeira (sem ruído de amostra: erro de nível dá slope 1 e intercepto −a;
+ * erro de inclinação dá slope 1/b), e a observada nos 81 defaults da janela, com o ruído da amostra (nela a própria PD
+ * verdadeira tem slope 1,14). Intercepto com slope fixado em 1 e o par (intercepto, slope) da regressão de y em
+ * logit(PD), por máxima verossimilhança; na observada, o intervalo de Wald de 95% do slope. A leitura de qualquer
+ * distorção, pronta ou criada pelo aluno no quadro ampliado, é a mesma regra (leituraComposta): nível pela PD média
+ * contra a frequência esperada, com o intercepto com slope 1, e inclinação pelo slope; classificar devolve as duas
+ * partes e NOME_DA_LEITURA diz que nome a regra dá (conferido por script: cada caso pronto recebe o próprio nome). As
+ * miniaturas são largas (mesma escala de 0% a 55% nas quatro), com slope e intercepto numa linha abaixo. No quadro
+ * ampliado, os rótulos de acima e abaixo da diagonal ficam numa linha sob o gráfico, fora da área dos dados; "Ver os
+ * quatro" fica junto dos controles e "Restaurar" no alto do painel lateral. A fonte liga a frequência esperada às
+ * réplicas sintéticas da janela (slides 10 e 27): é a frequência que elas dão em média. Quando a distorção passa de
+ * 55%, o eixo do quadro ampliado se estende até o maior valor desenhado, com margem, e a última marca do eixo é o
+ * próprio teto (60%, 80%, 90% ou 100%). Estimativa que não existe aparece como "—".
  */
 type Freq = "esperada" | "observada";
-const C = logit(0.11);
-const BASE = [
-  { id: "sub", nome: "Subestimação global", a: -0.7, b: 1, leitura: "o modelo prevê menos risco do que acontece; corrige-se com o nível (intercepto)" },
-  { id: "super", nome: "Superestimação global", a: 0.7, b: 1, leitura: "o modelo prevê mais risco do que acontece; corrige-se com o nível" },
-  { id: "extremas", nome: "Probabilidades extremas", a: C * (1 - 1.8), b: 1.8, leitura: "excesso de confiança: slope abaixo de 1" },
-  { id: "comprimidas", nome: "Probabilidades comprimidas", a: C * (1 - 0.45), b: 0.45, leitura: "falta de confiança: slope acima de 1" },
-];
+export const PD_VERD = media(PT)!;
+/**
+ * O a que mantém a PD média da distorção igual à da verdadeira para uma inclinação b: a média de σ(a + b · logit p)
+ * cresce com a, e a bisseção acha a raiz. É o ponto em torno do qual a inclinação gira sem mexer no nível.
+ */
+export const aNeutro = (b: number) => {
+  let lo = -10, hi = 10;
+  for (let i = 0; i < 80; i++) { const m = (lo + hi) / 2; if (media(transformar(PT, m, b))! < PD_VERD) lo = m; else hi = m; }
+  return (lo + hi) / 2;
+};
 /** Faixas com a frequência esperada: o "desfecho" de cada proposta é a PD verdadeira; defaults esperados arredondados para a tabela acessível. */
 const arred = (fs: Faixa[]) => fs.map((f) => ({ ...f, d: Math.round(f.d) }));
 /** As duas leituras de uma distorção (a, b): a esperada, sem ruído, e a observada na janela, com o intervalo do slope. */
@@ -42,9 +46,8 @@ export const medir = (a: number, b: number) => {
   const e = calc(PT);
   return { esperada: { ...e, faixas: arred(e.faixas) }, observada: { ...calc(Y), ic: slopeComIntervalo(Y, p).ic } };
 };
-export const PD_VERD = media(PT)!;
-/** Número da regressão na tela: "—" quando a estimativa não existe (nunca NaN). */
-const nr = (v: number, casas = 2) => (Number.isFinite(v) ? num(v, casas) : "—");
+/** Número da regressão na tela: "—" quando a estimativa não existe (nunca NaN); zero arredondado sem sinal (nunca "−0,00"). */
+const nr = (v: number, casas = 2) => (Number.isFinite(v) ? num(Math.abs(v) < 0.5 * 10 ** -casas ? 0 : v, casas) : "—");
 /**
  * Lado do nível de uma distorção (a, b), medido contra a frequência esperada (a média da PD verdadeira): a PD média
  * prevista abaixo dela é risco subestimado (pontos acima da diagonal no agregado), acima dela é superestimado. O
@@ -58,17 +61,30 @@ export const ladoDoNivel = (pdMedia: number, freq: number, i1: number): "subesti
   return freq > pdMedia ? "subestimado" : "superestimado";
 };
 /**
- * Leitura de uma distorção qualquer (a do aluno): compõe nível e inclinação a partir da frequência esperada, sem ruído.
+ * Regra de leitura de uma distorção qualquer (os quatro casos prontos e a do aluno): nível e inclinação a partir da
+ * frequência esperada, sem ruído.
  * Nível pela PD média contra a frequência esperada, com o intercepto com slope 1 (ladoDoNivel); inclinação pelo slope
  * (abaixo de 1: PDs extremas demais; acima: comprimidas). "Deitada" e "em pé" valem na escala de log odds.
  */
-export const leituraComposta = (a: number, b: number, e: { i1: number; slope: number }) => {
+export const classificar = (a: number, b: number, e: { i1: number; slope: number }) => {
   const pm = media(transformar(PT, a, b))!;
   const lado = ladoDoNivel(pm, PD_VERD, e.i1);
-  const nivel = lado && `de nível (PD média ${pct(pm, 1)} contra ${pct(PD_VERD, 1)} da verdadeira: risco ${lado})`;
-  const incl = !Number.isFinite(e.slope) || Math.abs(e.slope - 1) < 0.05 ? null : e.slope < 1 ? "de inclinação (PDs extremas demais, excesso de confiança)" : "de inclinação (PDs comprimidas, falta de confiança)";
-  if (!nivel && !incl) return `nível e inclinação perto do ideal (PD média ${pct(pm, 1)} contra ${pct(PD_VERD, 1)})`;
-  return `erro ${[nivel, incl].filter(Boolean).join(" e ")}; corrige-se ${nivel && incl ? "o intercepto e b" : nivel ? "o intercepto" : "b"}`;
+  const incl: "extremas" | "comprimidas" | null = !Number.isFinite(e.slope) || Math.abs(e.slope - 1) < 0.05 ? null : e.slope < 1 ? "extremas" : "comprimidas";
+  return { pm, lado, incl };
+};
+/** O nome que a regra dá a uma distorção de um erro só (null quando há dois erros ou nenhum). */
+export const NOME_DA_LEITURA = (c: ReturnType<typeof classificar>) =>
+  c.lado && !c.incl ? (c.lado === "subestimado" ? "Subestimação global" : "Superestimação global")
+    : !c.lado && c.incl ? (c.incl === "extremas" ? "Probabilidades extremas" : "Probabilidades comprimidas") : null;
+/** A leitura que a tela mostra, montada pela regra: os dois erros, um só (com o outro no lugar) ou nenhum. */
+export const leituraComposta = (a: number, b: number, e: { i1: number; slope: number }) => {
+  const { pm, lado, incl: tipo } = classificar(a, b, e);
+  const medias = `PD média ${pct(pm, 1)} contra ${pct(PD_VERD, 1)} da verdadeira`;
+  const nivel = lado && `de nível (${medias}: risco ${lado})`;
+  const incl = tipo && (tipo === "extremas" ? "de inclinação (PDs extremas demais, excesso de confiança)" : "de inclinação (PDs comprimidas, falta de confiança)");
+  if (!nivel && !incl) return `nível e inclinação perto do ideal (${medias})`;
+  if (!nivel) return `erro ${incl}, com o nível no lugar (${medias}); corrige-se b`;
+  return `erro ${[nivel, incl].filter(Boolean).join(" e ")}; corrige-se ${incl ? "o intercepto e b" : "o intercepto"}`;
 };
 /**
  * Teto do eixo ampliado: 55% ou, se o maior valor desenhado mais 2 pontos de margem passar disso, o primeiro de 60%, 80%,
@@ -96,7 +112,14 @@ function Mini({ faixas, nome }: { faixas: Faixa[]; nome: string }) {
     </Grafico>
   );
 }
-const CASOS = BASE.map((c) => ({ ...c, ...medir(c.a, c.b) }));
+/** Os quatro casos prontos: nível puro (b = 1) e inclinação pura (a = aNeutro(b)); a leitura é a mesma regra das distorções do aluno. */
+const BASE = [
+  { id: "sub", nome: "Subestimação global", a: -0.7, b: 1 },
+  { id: "super", nome: "Superestimação global", a: 0.7, b: 1 },
+  { id: "extremas", nome: "Probabilidades extremas", a: aNeutro(1.8), b: 1.8 },
+  { id: "comprimidas", nome: "Probabilidades comprimidas", a: aNeutro(0.45), b: 0.45 },
+];
+export const CASOS = BASE.map((c) => { const r = medir(c.a, c.b); return { ...c, leitura: leituraComposta(c.a, c.b, r.esperada), ...r }; });
 const REF = interceptoESlope(Y, PT);
 const IDX = { sub: 0, extremas: 2, comprimidas: 3 };
 const OPS = [
@@ -125,7 +148,7 @@ export function S22NivelInclinacao({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c7p32" pagina={pagina} layout="gl"
       conclusao={!revelado ? <>Quatro distorções da mesma PD verdadeira, cada uma com a sua forma. Qual delas tem slope abaixo de 1?</>
-        : <><b>{c.nome}</b> (a = {num(c.a, 2)}, b = {num(c.b, 2)}): {assinatura ? <>{assinatura}. Slope</> : "slope"} {nr(m.slope)}{m.ic ? ` (intervalo de 95%: ${nr(m.ic[0])} a ${nr(m.ic[1])})` : ""}, intercepto com slope 1 de {nr(m.i1)}: {c.leitura}.{freq === "observada" ? ` Com o ruído da janela, a referência já tem slope ${num(REF.slope, 2)}.` : ""}</>}
+        : <><b>{c.nome}</b> (a = {num(c.a, 2)}, b = {num(c.b, 2)}): {assinatura ? <>{assinatura}. Slope</> : "slope"} {nr(m.slope)}{m.ic ? ` (intervalo de 95%: ${nr(m.ic[0])} a ${nr(m.ic[1])})` : ""}, intercepto com slope 1 de {nr(m.i1)}{freq === "observada" ? "; pela frequência esperada, sem ruído" : ""}: {c.leitura}.{freq === "observada" ? ` Com o ruído da janela, a referência já tem slope ${num(REF.slope, 2)}.` : ""}</>}
       fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults. Base: PD verdadeira do gerador (só existe em base sintética). Esperada: média da PD verdadeira na faixa, a frequência esperada nas réplicas sintéticas da janela (slides ${SLIDE.c7p24.n} e ${SLIDE.c7p16.n}: desfecho sorteado de novo pela PD verdadeira), sem ruído de amostra. Observada: defaults da janela; nela a PD verdadeira tem intercepto ${num(REF.intercepto, 2)} e slope ${num(REF.slope, 2)}. Faixas: decis de PD prevista.`}>
       <Painel titulo={foco ? `Em foco: ${c.nome}` : "Quatro jeitos de errar a probabilidade · clique num quadro para ampliar"}>
         {foco ? (
