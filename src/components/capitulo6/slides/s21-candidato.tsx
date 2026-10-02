@@ -250,7 +250,7 @@ export function S21Candidato({ pagina }: { pagina?: Pagina }) {
   const restaurar = () => { setSel(null); setEnviado(null); setEnvios([]); setTent(0); setModo("tem"); };
   const dif = (g: G) => BEST.auc_val - g.auc_val;
   const retorno = !enviado ? null
-    : certo ? <>Isso: a maior AUC de validação{CONFERE ? ", a regra que escolheu o candidato" : ""}. Mas {N_1EP} das {NCEL} células ficam a menos de um erro padrão ({num(EP, 3)}) dela.</>
+    : certo ? <>Isso: a maior AUC de validação{CONFERE ? ", a regra que escolheu o candidato" : ""}; {N_1EP} das {NCEL} ficam a menos de um erro padrão dela.</>
       : aceito ? <>Não é erro: {num(dif(enviado), 4)} abaixo da maior, dentro de um erro padrão ({num(EP, 3)}); um validador pode preferir o mais simples. O candidato é a maior: {BEST.max_iter} árvores e {BEST.max_leaf_nodes} folhas.</>
         : <>{enviado === TOP_T ? <>Confunde ajuste com generalização. </> : null}{regiao(enviado)}: treino {num(enviado.auc_treino, 2)}, validação {num(enviado.auc_val, 4)}{dif(enviado) < EP ? <>, {num(dif(enviado), 4)} abaixo da maior (dentro de um erro padrão)</> : null}.{" "}
           {esgotou ? <>A maior: {BEST.max_iter} árvores e {BEST.max_leaf_nodes} folhas, {num(BEST.auc_val, 4)}.</> : <>A maior validação tem {direcao(enviado)}.</>}</>;
@@ -261,14 +261,14 @@ export function S21Candidato({ pagina }: { pagina?: Pagina }) {
       tem: <>diferença {num(DIF_LOG, 4)}, {EMPATA ? "menor" : "maior"} que {num(Z95, 2)} × {num(EP, 3)} = {num(REGUA, 3)}: {EMPATA ? "empate" : DIF_LOG > 0 ? "supera" : "perde"}</>,
       pede: <>previsões por proposta e DeLong pareado (correlação {num(corr, 2)} no {s17}): IC acima de zero</> },
     { t: "Nível da PD", s: "c6p18", e: NIVEL_OK ? "ok" : "nao", g: <MiniNivel />,
-      tem: <>só a média; {dois ? "os dois abaixo da faixa de Wilson" : NIVEL_OK ? "boosting na faixa de Wilson" : "boosting fora da faixa de Wilson"}</>,
+      tem: <>só a média: {dois ? "os dois erram" : NIVEL_OK ? "no Wilson" : "o boosting erra"}</>,
       pede: <>recalibrar {dois ? "os dois" : "o boosting"}; curva por faixa e slope com IC contendo 1</> },
     { t: "Escolha pela validação", s: "c6p15", e: "provar", g: <MiniEscolha vistas={envios} revelado={revelado} />,
-      tem: !revelado ? <>a maior de {NCEL} células, nas mesmas {int(NV)} da comparação</>
+      tem: !revelado ? <>a maior de {NCEL}, nas mesmas {int(NV)} da comparação</>
         : <>{BEST.max_iter} árvores e {BEST.max_leaf_nodes} folhas{NA_BORDA ? ", na borda" : ""}; favorece o boosting</>,
       pede: <>AUC em propostas que não escolheram a célula (slides 13 e 15){revelado && NA_BORDA ? "; grade além da borda" : ""}</> },
     { t: "Monotonia e explicação", s: "c6p20", e: "provar", g: <MiniVars />,
-      tem: <>sem as árvores, nada a conferir</>,
+      tem: <>sem as árvores</>,
       pede: <>as árvores: sem queda em variável com sinal de negócio; contribuições (slide 19)</> },
     { t: "Janela fora do tempo", s: "c7p1", e: "provar", g: <MiniJanela />,
       tem: <>intocada até o capítulo 7</>,
@@ -277,13 +277,12 @@ export function S21Candidato({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c6p21" pagina={pagina} layout="gl"
       conclusao={!revelado
-        ? <>Qual célula tem a maior AUC de validação? Escolha e envie (tentativa {Math.min(tent + (enviado ? 0 : 1), TENTATIVAS)} de {TENTATIVAS}).</>
-        : <>O excesso de <b>{num(EXCESSO, 3)}</b> do <LinkSlide slug="c6p1">slide 1</LinkSlide> era otimismo do treino: na validação temporal os dois empatam (<b>{num(RES.gbm_val.auc, 4)}</b> contra {num(RES.logit_val.auc, 4)}) e erram a mesma safra (<b>{pct(RES.gbm_val.pd_media, 2)}</b> e {pct(RES.logit_val.pd_media, 2)} contra {pct(TAXA.p, 2)}). <b>Mecanismo:</b> F₀ = {num(F0, 2)} mais {HP.max_iter} árvores × {num(HP.learning_rate, 2)}. <b>Probabilidade:</b> soma em log odds, sigmoide no fim; recalibrar; cada PD se explica por contribuições quando as árvores estiverem disponíveis (<LinkSlide slug="c6p19">slide 19</LinkSlide>). <b>Controle:</b> {BEST.max_iter} árvores, {BEST.max_leaf_nodes} folhas{NA_BORDA ? ", na borda" : ""}. <b>Prova:</b> {EMPATA ? "empate" : "diferença"} pela régua aproximada; o comitê do <LinkSlide slug="c7p1">capítulo 7</LinkSlide> só troca a logística se o boosting ganhar na janela futura.</>}
-      fonte={`Base sintética do curso (semente ${META.seed}). Candidato: boosting do gerador ajustado nas ${int(META.n_treino)} propostas do treino (${periodo(META.treino)}) com ${VARS}; ${HP.max_iter} árvores de até ${HP.max_leaf_nodes} folhas, taxa ${num(HP.learning_rate, 2)}, mínimo ${HP.min_samples_leaf} por folha, L2 = ${num(HP.l2_regularization, 0)}. Validação temporal: ${int(NV)} propostas, ${DV} defaults, ${periodo(META.validacao)}, não o sorteio dos slides 11 a 20. Wilson; Hanley e McNeil (1982).`}>
+        ? <>Qual célula valida melhor? Escolha e envie (tentativa {Math.min(tent + (enviado ? 0 : 1), TENTATIVAS)} de {TENTATIVAS}).</>
+        : <>O excesso de <b>{num(EXCESSO, 3)}</b> do <LinkSlide slug="c6p1">slide 1</LinkSlide> era otimismo do treino: na validação temporal os dois empatam (<b>{num(RES.gbm_val.auc, 4)}</b> contra {num(RES.logit_val.auc, 4)}) e erram a mesma safra (<b>{pct(RES.gbm_val.pd_media, 2)}</b> e {pct(RES.logit_val.pd_media, 2)} contra {pct(TAXA.p, 2)}). <b>Mecanismo:</b> F₀ = {num(F0, 2)} mais {HP.max_iter} árvores × {num(HP.learning_rate, 2)}. <b>Probabilidade:</b> em log odds, sigmoide no fim; recalibrar; cada PD se explica por contribuições quando houver as árvores (<LinkSlide slug="c6p19">slide 19</LinkSlide>). <b>Controle:</b> {BEST.max_iter} × {BEST.max_leaf_nodes}{NA_BORDA ? ", na borda" : ""}. <b>Prova:</b> só troca a logística se ganhar na janela futura (<LinkSlide slug="c7p1">capítulo 7</LinkSlide>).</>}
+      fonte={`Base sintética (semente ${META.seed}). Candidato: ajustado nas ${int(META.n_treino)} propostas do treino (${periodo(META.treino)}) com ${VARS}; ${HP.max_iter} árvores de até ${HP.max_leaf_nodes} folhas, taxa ${num(HP.learning_rate, 2)}, mínimo ${HP.min_samples_leaf} por folha, L2 = ${num(HP.l2_regularization, 0)}. Validação temporal: ${int(NV)} propostas, ${DV} defaults, ${periodo(META.validacao)} (não o sorteio dos slides 11 a 20). Wilson; Hanley e McNeil (1982).`}>
       <Painel>
         <div className="q6-s21-cab">
-          <p className="q7-k">Lista do validador</p>
-          <Seg rotulo="O que a lista mostra" opcoes={[{ v: "tem" as Modo, r: "Evidência" }, { v: "pede" as Modo, r: "O que pedir" }]} valor={modo} onChange={setModo} cor />
+          <Seg rotulo="O que a lista do validador mostra" opcoes={[{ v: "tem" as Modo, r: "Evidência" }, { v: "pede" as Modo, r: "O que pedir" }]} valor={modo} onChange={setModo} cor />
         </div>
         <ol className="q6-s21-lista">
           {LISTA.map((it) => (
@@ -297,7 +296,7 @@ export function S21Candidato({ pagina }: { pagina?: Pagina }) {
           ))}
         </ol>
       </Painel>
-      <Painel titulo="Grade · AUC de validação (treino)" className="q6-s21-dir">
+      <Painel titulo="AUC: validação (treino)" className="q6-s21-dir">
         <div className="q6-s21-grade" role="group" aria-label="Grade de hiperparâmetros: escolha uma célula">
           <span className="q6-s21-g0">folhas \ árvores</span>
           {ARVS.map((a) => <span key={a} className="q6-s21-gc">{a}</span>)}
@@ -322,7 +321,7 @@ export function S21Candidato({ pagina }: { pagina?: Pagina }) {
         </div>
         {retorno && <p className="q7-retorno" data-tom={certo ? "certa" : aceito ? undefined : "errada"} aria-live="polite">{retorno}</p>}
         <p className="q6-s21-sint">
-          <b>Base sintética:</b> dá a PD verdadeira da janela futura, guardada intocada (o capítulo 7 usa as duas), o que nenhuma carteira real dá; não traz as previsões do candidato nas {int(NV)}: o DeLong pareado fica para o validador.
+          <b>Base sintética:</b> dá a PD verdadeira da janela futura, intocada até o capítulo 7, que usa as duas: nenhuma carteira real dá isso. Sem as previsões do candidato nas {int(NV)}, o DeLong pareado fica com o validador.
         </p>
       </Painel>
     </Quadro>

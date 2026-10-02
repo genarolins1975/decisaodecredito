@@ -53,7 +53,7 @@ export const ROTEIRO: Slide[] = [
   { slug: "c6p18", n: 18, pergunta: "probabilidade", titulo: "Árvores demais distorcem as PDs, mesmo com a média certa", sub: "Parado pela validação, os sinais são mistos; com mais árvores, as PDs exageram. O capítulo 7 mede e corrige.", nivel: "essencial", min: 3 },
   { slug: "c6p19", n: 19, pergunta: "probabilidade", titulo: "Por que esta PD? A contribuição de cada variável", sub: "Contribuições de Shapley pelo caminho das árvores somam exatamente a log odds da proposta.", nivel: "essencial", min: 4 },
   { slug: "c6p20", n: 20, pergunta: "decisao", titulo: "PD que cai quando o atraso sobe? Restrição monotônica", sub: "O modelo livre pode contrariar a lógica de crédito em trechos com poucos dados.", nivel: "essencial", min: 3 },
-  { slug: "c6p21", n: 21, pergunta: "todas", titulo: "O candidato do comitê: o que o boosting precisa provar", sub: "Hiperparâmetros escolhidos na validação e a lista que o validador independente confere.", nivel: "essencial", min: 4 },
+  { slug: "c6p21", n: 21, pergunta: "todas", titulo: "O candidato do comitê: o que o boosting precisa provar", sub: "Hiperparâmetros escolhidos na validação e a lista do validador independente.", nivel: "essencial", min: 4 },
   { slug: "c6p22", n: 22, pergunta: "apoio", titulo: "Apêndice: fórmulas, fronteira e referências", sub: "Material de consulta; o percurso da aula termina no slide anterior.", nivel: "apendice", min: 3 },
 ];
 

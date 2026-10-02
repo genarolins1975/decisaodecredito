@@ -118,7 +118,7 @@ export function S18Nivel({ pagina }: { pagina?: Pagina }) {
         <div className="q6-s18-kpis">
           <Kpi tam="mini" tom="prob" rotulo="PD média" valor={pct(e.g.pdMedia!, 1)} detalhe={`taxa ${pct(TAXA.p, 1)} (${pct(TAXA.lo, 1)} a ${pct(TAXA.hi, 1)})`} />
           <Kpi tam="mini" tom="prob" rotulo="Faixas no intervalo" valor={`${e.dentro} de ${NF}`} detalhe="Wilson" />
-          <Kpi tam="mini" tom="prob" rotulo="Slope" valor={num(e.s.slope, 2)} detalhe={<>IC {num(e.s.ic[0], 2)} a {num(e.s.ic[1], 2)}<br />&lt; 1 extremas, &gt; 1 tímidas</>} />
+          <Kpi tam="mini" tom="prob" rotulo="Slope" valor={num(e.s.slope, 2)} detalhe={<>IC {num(e.s.ic[0], 2)} a {num(e.s.ic[1], 2)}<br />{"<\u00a01:\u00a0extremas"}<br />{">\u00a01:\u00a0tímidas"}</>} />
         </div>
       </Painel>
     </Quadro>
