@@ -32,7 +32,7 @@ const pareada = (p: readonly number[], q: readonly number[]) => {
 const OPS = [
   { texto: "Sim: está perto de zero, o mínimo", certa: false, retorno: <>Perto de zero não diz nada sozinho: com evento raro, até uma PD constante, que não separa ninguém, tem Brier pequeno. Confunde a escala absoluta com qualidade.</> },
   { texto: "Depende de uma referência na mesma amostra", certa: true, retorno: <>Isso: contra a constante honesta do treino ({num(REF_TREINO, 5)}), a logística é {pct(1 - BS0 / REF_TREINO, 1)} melhor.</> },
-  { texto: "Não: acima de 0,05 já é ruim", certa: false, retorno: <>Não há limiar universal: uma constante c tem Brier <span style={{ whiteSpace: "nowrap" }}>π(1 − π) + (c − π)²</span>, com π a taxa da amostra (a do treino dá {num(BC_TREINO, 5)}). Confunde o Brier com uma nota absoluta.</> },
+  { texto: "Não: acima de 0,05 já é ruim", certa: false, retorno: <>Não há limiar universal: uma constante c tem Brier <span style={{ whiteSpace: "nowrap" }}>π(1 − π) + (c − π)²</span>, com π a taxa da amostra (a constante do treino, {pct(PREVALENCIA.treino, 2)}, dá {num(BC_TREINO, 5)}). Confunde o Brier com uma nota absoluta.</> },
 ];
 
 export function S23Brier({ pagina }: { pagina?: Pagina }) {

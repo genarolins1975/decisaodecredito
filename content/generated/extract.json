@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "29557d091964875c7c6c8c9bfc4687690512ced00f8bf5d0967a7b230407e6c1",
- "extractedAt": "2026-10-02T15:52:44.805Z",
+ "sourceSha256": "86d520b3104c32005fe820a2e2ec9bc547bde5239bea28ef05461ab7175e6863",
+ "extractedAt": "2026-10-02T16:07:58.642Z",
  "meta": {
   "capitulos": [
    {
@@ -7648,7 +7648,7 @@
     "conducao": "Mostre a fila de baixo, aberta: com 200 árvores, todas as sementes ganham do modelo sem sorteio. Peça a previsão para a parada (16 árvores) com 50%. Depois do acerto, leia a tabela, que usa a mesma régua nas duas filas: na parada, ganho de 0,0010, faixa entre sementes de +0,0001 a +0,0019 (consistente, por pouco), z = 0,37: cabe com folga; com 200 árvores, ganho cerca de 11 vezes maior (0,0109), consistente em 10 de 10 sementes, z = 1,92: cabe, no limite (1,964). Nas duas filas, consistente entre sementes e dentro do erro da validação. Feche com a conclusão da leitura: sortear não muda a decisão tomada na parada; é um controle barato, não uma prova. Por fim, troque para 30% e 80% e mostre que título e leitura acompanham a régua.",
     "leitura": "50%, parada em 16: ganho médio de 0,0010 (perda 0,2946 contra 0,2955), faixa de 95% entre sementes de +0,0001 a +0,0019 (8 de 10 com ganho: consistente, por pouco); erro padrão da validação 0,0026, faixa ±0,0051, z = 0,37: cabe. 200 árvores: 0,0109 (cerca de 11 vezes o da parada), de +0,0089 a +0,0130 entre sementes, 10 de 10; erro padrão da validação 0,0057, faixa ±0,0111, z = 1,92: cabe, no limite. Nas duas filas, 631 propostas ainda não distinguem o ganho do zero. 30%, parada: −0,0030 (1 de 10, piora consistente entre sementes, z = −0,92: cabe). 80%, parada: 0,0007 (6 de 10, sem sinal consistente, z = 0,71). O resultado é desta amostra (três variáveis, 631 propostas de validação); Friedman (2002) é a origem do método, e o artigo relata melhora com subamostra.",
     "pergunta": "Parando na árvore 16, a subamostra de 50% melhora a perda de validação?",
-    "resposta": "Melhora pouco: 8 de 10 sementes ganham e a faixa de 95% entre sementes não toca o zero, por pouco (de +0,0001 a +0,0019), mas z = 0,37: o ganho de 0,0010 cabe na faixa de 95% da validação (±0,0051). Longe da parada, com 200 árvores, o ganho é cerca de 11 vezes maior e aparece em 10 de 10 sementes, mas z = 1,92 também cabe na faixa (1,964). Conclusão: nesta carteira, sortear não muda a decisão tomada na parada; o ganho existe, mas 631 propostas não o distinguem do acaso.",
+    "resposta": "Melhora pouco: 8 de 10 sementes ganham e a faixa de 95% entre sementes não toca o zero, por pouco (de +0,0001 a +0,0019), mas z = 0,37: o ganho de 0,0010 cabe na faixa de 95% da validação (±0,0051). Longe da parada, com 200 árvores, o ganho é cerca de 11 vezes maior e aparece em 10 de 10 sementes, mas z = 1,92 também cabe na faixa (1,964). Conclusão: nesta carteira, sortear não muda a decisão tomada na parada; o ganho se repete nas sementes, por pouco, mas fica dentro do erro da validação de 631 propostas.",
     "erros": [
      {
       "alt": "Melhora com folga: o ganho passa da faixa da validação",

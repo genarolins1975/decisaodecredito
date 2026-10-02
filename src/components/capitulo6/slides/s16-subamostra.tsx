@@ -75,7 +75,7 @@ function tituloRevelado(f: number, a: Fila, b: Fila) {
 /** Subtítulo revelado: o tamanho relativo das filas (razão calculada) e a origem do método. */
 function subRevelado(f: number, a: Fila, b: Fila) {
   const lim = cabe(b) ? (Math.abs(b.z) >= 0.9 * TV ? "chega ao limite da faixa" : "cabe na faixa") : "passa da faixa";
-  const frase = a.m > 0 && b.m > a.m
+  const frase = sinalS(a) === "ganho" && !porPouco(a) && sinalS(b) === "ganho" && b.m > a.m
     ? `Longe da parada, ganho cerca de ${int(Math.round(b.m / a.m))} vezes maior, que ${lim}`
     : `Na parada, ${sinal(a.m, 4)}; com ${T} árvores, ${sinal(b.m, 4)}, que ${lim}`;
   return `${frase}. Método de Friedman (2002); resultado desta amostra.`;
@@ -84,7 +84,7 @@ function subRevelado(f: number, a: Fila, b: Fila) {
 function conclusaoParada(f: number, a: Fila) {
   if (!cabe(a)) return a.m > 0 ? <>Aqui a validação distingue o ganho do acaso: sortear muda a decisão tomada na parada.</> : <>Aqui a validação distingue a piora do acaso: com {pct(f, 0)}, não sortear.</>;
   const s = sinalS(a);
-  if (s === "ganho") return <><b>Nesta carteira, sortear não muda a decisão tomada na parada</b>: o ganho existe, mas {int(NV)} propostas não o distinguem do acaso; é um controle barato, não uma prova.</>;
+  if (s === "ganho") return <><b>Nesta carteira, sortear não muda a decisão tomada na parada</b>: o ganho se repete nas sementes{porPouco(a) ? ", por pouco" : ""}, mas fica dentro do erro da validação de {int(NV)} propostas; é um controle barato, não uma prova.</>;
   if (s === "nulo") return <><b>Nesta carteira, sortear não muda a decisão tomada na parada</b>: ali o ganho nem se repete entre sementes; é um controle barato, não uma prova.</>;
   return <><b>Com {pct(f, 0)}, sortear piora a parada em {a.g.length - a.ganham} de {a.g.length} sementes</b>, ainda dentro do erro da validação: a fração também se escolhe na validação, não se presume.</>;
 }
@@ -190,7 +190,7 @@ export function S16Subamostra({ pagina }: { pagina?: Pagina }) {
         </div>
       </Painel>
       <Painel>
-        <Previsao pergunta={`Parando na árvore ${k0}, a parada sem sorteio, a subamostra de ${pct(0.5, 0)}...`} opcoes={ops} escolha={esc} onEscolha={setEsc} recolher />
+        <Previsao pergunta={`Parando na árvore ${k0}, a parada sem sorteio, a subamostra de ${pct(0.5, 0)}...`} opcoes={ops} escolha={esc} onEscolha={(i) => { setEsc(i); if (i === null) setF(0.5); }} recolher />
         {revelado && a && b && <>
           <table className="q7-tab q6-s16-tab">
             <thead><tr><th className="q7-t-l">Régua, {pct(f, 0)}</th><th>Parada em {k0}</th><th>{T} árvores</th></tr></thead>

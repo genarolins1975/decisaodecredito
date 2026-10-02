@@ -21,7 +21,9 @@ import { SLIDE } from "@/lib/capitulo7/roteiro";
  * controles e "Restaurar" no alto do painel lateral, para que nenhum botão dependa da altura que sobra. A fonte
  * liga a frequência esperada às réplicas sintéticas da janela (slides 10 e 27): é a frequência que elas dão em média.
  * Quando a distorção do aluno passa de 55%, o eixo do quadro ampliado se estende até o maior valor desenhado, com
- * margem, e o subtítulo avisa; nenhum ponto fica preso na borda.
+ * margem, e a linha sob o gráfico avisa o teto; nenhum ponto fica preso na borda. A leitura decide o lado do nível
+ * pela PD média contra a frequência esperada (o intercepto com slope 1 tem o mesmo sinal), e estimativa que não
+ * existe aparece como "—".
  */
 type Freq = "esperada" | "observada";
 const C = logit(0.11);
@@ -34,23 +36,37 @@ const BASE = [
 /** Faixas com a frequência esperada: o "desfecho" de cada proposta é a PD verdadeira; defaults esperados arredondados para a tabela acessível. */
 const arred = (fs: Faixa[]) => fs.map((f) => ({ ...f, d: Math.round(f.d) }));
 /** As duas leituras de uma distorção (a, b): a esperada, sem ruído, e a observada na janela, com o intervalo do slope. */
-const medir = (a: number, b: number) => {
+export const medir = (a: number, b: number) => {
   const p = transformar(PT, a, b);
   const calc = (y: readonly number[]) => { const s = interceptoESlope(y, p); const fx = faixasQuantis(y, p, 10); return { faixas: fx, i1: interceptoComSlope1(y, p), ...s, acima: fx.filter((f) => f.obs! > f.pdMedia!).length, ic: null as [number, number] | null }; };
   const e = calc(PT);
   return { esperada: { ...e, faixas: arred(e.faixas) }, observada: { ...calc(Y), ic: slopeComIntervalo(Y, p).ic } };
 };
-const PD_VERD = media(PT)!;
-type Medida = ReturnType<typeof medir>["esperada"];
+export const PD_VERD = media(PT)!;
+/** Número da regressão na tela: "—" quando a estimativa não existe (nunca NaN). */
+const nr = (v: number, casas = 2) => (Number.isFinite(v) ? num(v, casas) : "—");
+/**
+ * Lado do nível de uma distorção (a, b), medido contra a frequência esperada (a média da PD verdadeira): a PD média
+ * prevista abaixo dela é risco subestimado (pontos acima da diagonal no agregado), acima dela é superestimado. O
+ * intercepto com slope 1 resolve Σ σ(logit pᵢ + α) = Σ yᵢ, que só tem raiz positiva quando a frequência passa da PD
+ * média: os dois critérios dão o mesmo lado. Sem intercepto finito, o tamanho do erro vem da diferença de logits das
+ * médias. Devolve null quando o nível está perto do ideal (|α| abaixo de 0,1).
+ */
+export const ladoDoNivel = (pdMedia: number, freq: number, i1: number): "subestimado" | "superestimado" | null => {
+  const tamanho = Number.isFinite(i1) ? Math.abs(i1) : Math.abs(logit(freq) - logit(pdMedia));
+  if (!(tamanho >= 0.1) || freq === pdMedia) return null;
+  return freq > pdMedia ? "subestimado" : "superestimado";
+};
 /**
  * Leitura de uma distorção qualquer (a do aluno): compõe nível e inclinação a partir da frequência esperada, sem ruído.
- * Nível pelo intercepto com slope 1 (positivo: o modelo prevê menos risco que o verdadeiro) e pela PD média; inclinação
- * pelo slope (abaixo de 1: PDs extremas demais; acima: comprimidas). "Deitada" e "em pé" valem na escala de log odds.
+ * Nível pela PD média contra a frequência esperada, com o intercepto com slope 1 (ladoDoNivel); inclinação pelo slope
+ * (abaixo de 1: PDs extremas demais; acima: comprimidas). "Deitada" e "em pé" valem na escala de log odds.
  */
-const leituraComposta = (a: number, b: number, e: Medida) => {
+export const leituraComposta = (a: number, b: number, e: { i1: number; slope: number }) => {
   const pm = media(transformar(PT, a, b))!;
-  const nivel = Math.abs(e.i1) < 0.1 ? null : `de nível (PD média ${pct(pm, 1)} contra ${pct(PD_VERD, 1)} da verdadeira: risco ${e.i1 > 0 ? "subestimado" : "superestimado"})`;
-  const incl = Math.abs(e.slope - 1) < 0.05 ? null : e.slope < 1 ? "de inclinação (PDs extremas demais, excesso de confiança)" : "de inclinação (PDs comprimidas, falta de confiança)";
+  const lado = ladoDoNivel(pm, PD_VERD, e.i1);
+  const nivel = lado && `de nível (PD média ${pct(pm, 1)} contra ${pct(PD_VERD, 1)} da verdadeira: risco ${lado})`;
+  const incl = !Number.isFinite(e.slope) || Math.abs(e.slope - 1) < 0.05 ? null : e.slope < 1 ? "de inclinação (PDs extremas demais, excesso de confiança)" : "de inclinação (PDs comprimidas, falta de confiança)";
   if (!nivel && !incl) return `nível e inclinação perto do ideal (PD média ${pct(pm, 1)} contra ${pct(PD_VERD, 1)})`;
   return `erro ${[nivel, incl].filter(Boolean).join(" e ")}; corrige-se ${nivel && incl ? "o intercepto e b" : nivel ? "o intercepto" : "b"}`;
 };
@@ -106,17 +122,17 @@ export function S22NivelInclinacao({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c7p32" pagina={pagina} layout="gl"
       conclusao={!revelado ? <>Quatro distorções da mesma PD verdadeira, cada uma com a sua forma. Qual delas tem slope abaixo de 1?</>
-        : <><b>{c.nome}</b> (a = {num(c.a, 2)}, b = {num(c.b, 2)}): {assinatura ? <>{assinatura}. Slope</> : "slope"} {num(m.slope, 2)}{m.ic ? ` (intervalo de 95%: ${num(m.ic[0], 2)} a ${num(m.ic[1], 2)})` : ""}, intercepto com slope 1 de {num(m.i1, 2)}: {c.leitura}.{freq === "observada" ? ` Com o ruído da janela, a referência já tem slope ${num(REF.slope, 2)}.` : ""}</>}
+        : <><b>{c.nome}</b> (a = {num(c.a, 2)}, b = {num(c.b, 2)}): {assinatura ? <>{assinatura}. Slope</> : "slope"} {nr(m.slope)}{m.ic ? ` (intervalo de 95%: ${nr(m.ic[0])} a ${nr(m.ic[1])})` : ""}, intercepto com slope 1 de {nr(m.i1)}: {c.leitura}.{freq === "observada" ? ` Com o ruído da janela, a referência já tem slope ${num(REF.slope, 2)}.` : ""}</>}
       fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults. Base: PD verdadeira do gerador (só existe em base sintética). Esperada: média da PD verdadeira na faixa, a frequência esperada nas réplicas sintéticas da janela (slides ${SLIDE.c7p24.n} e ${SLIDE.c7p16.n}: desfecho sorteado de novo pela PD verdadeira), sem ruído de amostra. Observada: defaults da janela; nela a PD verdadeira tem intercepto ${num(REF.intercepto, 2)} e slope ${num(REF.slope, 2)}. Faixas: decis de PD prevista.`}>
       <Painel titulo={foco ? `Em foco: ${c.nome}` : "Quatro jeitos de errar a probabilidade · clique num quadro para ampliar"}>
         {foco ? (
-          <div className="q7-g2-s22-foco"><div className="q7-g2-quad"><Confiabilidade titulo={`y: frequência ${freq}`} sub={tetoF > 0.55 ? `x: PD média · eixos até ${pct(tetoF, 0)}` : "x: PD média prevista"} semTitulos anotar={false} rotulo={`Curva de confiabilidade: ${c.nome}, frequência ${freq}, eixos de 0% a ${pct(tetoF, 0)}`} max={tetoF} ticks={ticksF(tetoF)} series={[{ faixas: m.faixas, classe: "prob", linha: true, ic: freq === "observada" }]}
-            /><p className="q7-nota q7-s22-cantos"><span>▲ acima: subestima</span><span>▼ abaixo: superestima</span></p></div>
+          <div className="q7-g2-s22-foco"><div className="q7-g2-quad"><Confiabilidade titulo={`y: frequência ${freq}`} sub="x: PD média prevista" semTitulos anotar={false} rotulo={`Curva de confiabilidade: ${c.nome}, frequência ${freq}, eixos de 0% a ${pct(tetoF, 0)}`} max={tetoF} ticks={ticksF(tetoF)} series={[{ faixas: m.faixas, classe: "prob", linha: true, ic: freq === "observada" }]}
+            /><p className="q7-nota q7-s22-cantos"><span>▲ acima: subestima</span>{tetoF > 0.55 && <span>eixos de 0% a {pct(tetoF, 0)}</span>}<span>▼ abaixo: superestima</span></p></div>
             <div className="q7-g2-s22-lado"><dl className="q7-lista">
-              <div><dt>Slope</dt><dd>{revelado ? num(m.slope, 2) : "?"}</dd></div>
-              {revelado && m.ic && <div data-tom="mudo"><dt>Intervalo de 95% do slope</dt><dd>{num(m.ic[0], 2)} a {num(m.ic[1], 2)}</dd></div>}
-              <div><dt>Intercepto com slope 1</dt><dd>{num(m.i1, 2)}</dd></div>
-              <div><dt>Intercepto da regressão livre</dt><dd>{num(m.intercepto, 2)}</dd></div>
+              <div><dt>Slope</dt><dd>{revelado ? nr(m.slope) : "?"}</dd></div>
+              {revelado && m.ic && <div data-tom="mudo"><dt>Intervalo de 95% do slope</dt><dd>{nr(m.ic[0])} a {nr(m.ic[1])}</dd></div>}
+              <div><dt>Intercepto com slope 1</dt><dd>{nr(m.i1)}</dd></div>
+              <div><dt>Intercepto da regressão livre</dt><dd>{nr(m.intercepto)}</dd></div>
             </dl>
             {revelado && <div className="q7-g2-s22-ctl">
               <div className="q7-s21-l"><p className="q7-k">Crie a sua assinatura</p>{verQuatro}</div>
@@ -130,7 +146,7 @@ export function S22NivelInclinacao({ pagina }: { pagina?: Pagina }) {
               <div key={x.id} role="button" tabIndex={0} className="q7-s22-m q7-g2-s22-m" data-on={sel === x.id ? "1" : "0"} onClick={() => abrir(x.id)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); abrir(x.id); } }} aria-label={`Ampliar: ${x.nome}`}>
                 <span className="q7-s22-t">{x.nome}</span>
                 <Mini faixas={x[freq].faixas} nome={x.nome} />
-                <span className="q7-s22v3-v"><b>slope {revelado ? num(x[freq].slope, 2) : "?"}</b><span>intercepto (slope 1): {num(x[freq].i1, 2)}</span></span>
+                <span className="q7-s22v3-v"><b>slope {revelado ? nr(x[freq].slope) : "?"}</b><span>intercepto (slope 1): {nr(x[freq].i1)}</span></span>
               </div>
             ))}
           </div>

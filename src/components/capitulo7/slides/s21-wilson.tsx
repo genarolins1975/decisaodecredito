@@ -13,14 +13,16 @@ import { int, num, pct, pp } from "@/lib/capitulo7/formato";
  * negativo. O nível de confiança é escolhido no quadro (z de 1,645, 1,960 ou 2,576), travado em 95% até a resposta certa,
  * como o controle de casos; a leitura usa o z e o nível escolhidos. O eixo se estende quando um limite passa de 25%
  * (1 em 20 a 99% vai a 31,8%) ou quando a normal desce abaixo da faixa negativa: nenhuma linha é cortada na borda. Abaixo do gráfico, a ponte com
- * o slide 19: as faixas vizinhas F8 e F9 da logística, com o intervalo de cada uma e o da diferença (e não a
- * sobreposição dos dois intervalos). Na expansão, o teste de Jeffreys que o BCE pede no backtesting de PD.
+ * o slide 19: as faixas vizinhas F8 e F9 da logística, com o intervalo de cada uma (Wilson) e o da diferença (normal,
+ * com o erro padrão das duas proporções), e não a sobreposição dos dois intervalos; os três no nível escolhido. Na expansão, o teste de Jeffreys que o BCE pede no backtesting de PD.
  */
 const NS = [20, 40, 60, 100, 140, 200, 300, 500, 740, 1000, 2000];
 const Z = { "90": 1.6448536269514722, "95": 1.959963984540054, "99": 2.5758293035489004 } as const;
 type Nivel = keyof typeof Z;
 const F = faixasQuantis(Y, PL, 10); const F8 = F[7], F9 = F[8];
 const DIF = diferencaProporcoes(F8.d, F8.n, F9.d, F9.n);
+/** A ponte no nível escolhido: Wilson de F8 e F9 e a diferença ± z vezes o erro padrão da diferença. */
+const ponte = (z: number) => ({ f8: wilson(F8.d, F8.n, z)!, f9: wilson(F9.d, F9.n, z)!, dif: [DIF.dif - z * DIF.ep, DIF.dif + z * DIF.ep] as [number, number] });
 const PDM = media(PL)!, JC = jeffreys(D, N, PDM);
 const JD = F.map((f) => ({ j: f.j, p: jeffreys(f.d, f.n, f.pdMedia!) })); const JMIN = JD.reduce((a, b) => (b.p < a.p ? b : a));
 const ACASO = 1 - 0.95 ** F.length;
@@ -38,12 +40,12 @@ export function S21Wilson({ pagina }: { pagina?: Pagina }) {
   const [esc, setEsc] = useState<number | null>(null);
   const liberado = esc !== null && !!OPS[esc].certa; // só a resposta certa revela a linha e libera o controle
   const n = NS[i], d = Math.round(0.05 * n), z = Z[nivel];
-  const w = wilson(d, n, z)!, wa = wald(d, n, z)!;
+  const w = wilson(d, n, z)!, wa = wald(d, n, z)!; const P = ponte(z); const zero = P.dif[0] < 0 && P.dif[1] > 0;
   const linhas = [{ rot: `${d} em ${int(n)} (controle)`, n, d, on: true, oculto: false }, { rot: "5 em 100", n: 100, d: 5, oculto: !liberado }, { rot: "50 em 1.000", n: 1000, d: 50, oculto: false }];
   return (
     <Quadro slug="c7p31" pagina={pagina} layout="gl"
-      conclusao={!liberado ? <>1 default em 20: intervalo de {nivel}% <b>{faixa(wilson(1, 20, z)!)}</b>; 50 em 1.000: {faixa(wilson(50, 1000, z)!)}. Antes de mover o número de casos, preveja o intervalo de 5 em 100.</> : <>{d} default{d === 1 ? "" : "s"} em {int(n)} casos: frequência de {pct(d / n, 1)}, intervalo de {nivel}% de <b>{pct(w.lo, 1)} a {pct(w.hi, 1)}</b>. {wa.lo < 0 ? <>A aproximação normal daria limite inferior negativo ({pct(wa.lo, 1)}).</> : n >= 500 ? "Com muitos casos, os dois métodos quase coincidem." : "Mais casos, intervalo mais estreito."} As faixas do slide 19 têm cerca de {F8.n} casos: F8 observou {F8.d} em {F8.n}, intervalo de {pct(F8.ic!.lo, 1)} a {pct(F8.ic!.hi, 1)}.</>}
-      fonte={`Wilson (1927) para uma proporção binomial, com o denominador real de cada linha; nível de confiança de ${nivel}%. Exemplos ilustrativos com frequência de 5%; a comparação de faixas usa a janela fora do tempo (logística).`}>
+      conclusao={!liberado ? <>1 default em 20: intervalo de {nivel}% <b>{faixa(wilson(1, 20, z)!)}</b>; 50 em 1.000: {faixa(wilson(50, 1000, z)!)}. Antes de mover o número de casos, preveja o intervalo de 5 em 100.</> : <>{d} default{d === 1 ? "" : "s"} em {int(n)} casos: frequência de {pct(d / n, 1)}, intervalo de {nivel}% de <b>{pct(w.lo, 1)} a {pct(w.hi, 1)}</b>. {wa.lo < 0 ? <>A aproximação normal daria limite inferior negativo ({pct(wa.lo, 1)}).</> : n >= 500 ? "Com muitos casos, os dois métodos quase coincidem." : "Mais casos, intervalo mais estreito."} As faixas do slide 19 têm cerca de {F8.n} casos: F8 observou {F8.d} em {F8.n}, intervalo de {nivel}% de {pct(P.f8.lo, 1)} a {pct(P.f8.hi, 1)}.</>}
+      fonte={`Wilson (1927) para uma proporção binomial, com o denominador real de cada linha; nível de confiança de ${nivel}% nas linhas e na ponte. Exemplos ilustrativos com frequência de 5%; a comparação de faixas usa a janela fora do tempo (logística), com a diferença F8 − F9 pela aproximação normal (erro padrão das duas proporções).`}>
       <Painel titulo="A mesma frequência observada, 5%, com números de casos diferentes">
         <Grafico rotulo={linhas.map((l) => { const ww = wilson(l.d, l.n, z)!; return l.oculto ? `${l.rot}: oculto até a previsão` : `${l.rot}: ${pct(ww.lo, 1)} a ${pct(ww.hi, 1)}`; }).join("; ")} arCelular="4 / 3">
           {(dm) => {
@@ -102,11 +104,11 @@ export function S21Wilson({ pagina }: { pagina?: Pagina }) {
             );
           }}
         </Grafico>
-        <p className="q7-k">Ponte com o slide 19: F9 tem PD maior que F8 e observou menos</p>
+        <p className="q7-k">Ponte com o slide 19: F9 tem PD maior que F8 e observou menos · intervalos de {nivel}%</p>
         <dl className="q7-lista q7-g2-s21-l">
-          <div><dt>F8: {F8.d} em {F8.n} = {pct(F8.obs!, 1)}</dt><dd>{pct(F8.ic!.lo, 1)} a {pct(F8.ic!.hi, 1)}</dd></div>
-          <div><dt>F9: {F9.d} em {F9.n} = {pct(F9.obs!, 1)}</dt><dd>{pct(F9.ic!.lo, 1)} a {pct(F9.ic!.hi, 1)}</dd></div>
-          <div data-tom={DIF.ic[0] < 0 && DIF.ic[1] > 0 ? "mudo" : undefined}><dt>Diferença F8 − F9: {pp(DIF.dif, 1)}; {DIF.ic[0] < 0 && DIF.ic[1] > 0 ? "contém o zero: a inversão é compatível com ruído" : "não contém o zero"}</dt><dd>{pp(DIF.ic[0], 1)} a {pp(DIF.ic[1], 1)}</dd></div>
+          <div><dt>F8: {F8.d} em {F8.n} = {pct(F8.obs!, 1)}</dt><dd>{pct(P.f8.lo, 1)} a {pct(P.f8.hi, 1)}</dd></div>
+          <div><dt>F9: {F9.d} em {F9.n} = {pct(F9.obs!, 1)}</dt><dd>{pct(P.f9.lo, 1)} a {pct(P.f9.hi, 1)}</dd></div>
+          <div data-tom={zero ? "mudo" : undefined}><dt>Diferença F8 − F9: {pp(DIF.dif, 1)}; {zero ? "contém o zero: a inversão é compatível com ruído" : "não contém o zero"}</dt><dd>{pp(P.dif[0], 1)} a {pp(P.dif[1], 1)}</dd></div>
         </dl>
       </Painel>
       <Painel>
