@@ -38,12 +38,14 @@ function Painel2({ c, m, revelado, kmin, passa }: { c: Curvas; m: number; revela
   const graf = (tipo: "perda" | "auc") => {
     const sa = tipo === "perda" ? c.pa : c.aa, sv = tipo === "perda" ? c.pv : c.av;
     const todos = [...sa, ...sv];
-    const lo = tipo === "perda" ? Math.floor(Math.min(...todos) * 50) / 50 : 0.5, hi = tipo === "perda" ? Math.ceil(Math.max(...todos) * 50) / 50 + 0.035 : Math.ceil(Math.max(...todos) * 10) / 10;
-    const passo = tipo === "perda" ? 0.04 : 0.2; const yt: number[] = []; for (let v = lo; v <= hi + 1e-9; v += passo) yt.push(Math.round(v * 1000) / 1000);
+    const lo = tipo === "perda" ? Math.floor(Math.min(...todos) * 50) / 50 : 0.5, hi0 = tipo === "perda" ? Math.ceil(Math.max(...todos) * 50) / 50 : Math.ceil(Math.max(...todos) * 10) / 10;
+    const passo = tipo === "perda" ? 0.04 : 0.2; const yt: number[] = []; for (let v = lo; v <= hi0 + 1e-9; v += passo) yt.push(Math.round(v * 1000) / 1000);
     return (
-      <Grafico titulo={tipo === "perda" ? "Perda (log loss): menor é melhor" : "AUC: maior é melhor"} rotulo={`${tipo === "perda" ? "Log loss" : "AUC"} por número de árvores, em escala log, no ajuste${revelado ? " e na validação sorteada" : ""}; com ${m} árvores, ajuste ${num(sa[m], 3)}${revelado ? ` e validação ${num(sv[m], 3)}` : ""}${revelado && tipo === "perda" ? `; mínimo da validação ${num(c.pv[kmin], 3)} com ${kmin} árvores; passa do palpite ${num(c.pv[0], 3)} na árvore ${passa}` : ""}`} arCelular="16 / 9">
+      <Grafico titulo={tipo === "perda" ? "Perda (log loss): menor é melhor" : "AUC: maior é melhor"} rotulo={`${tipo === "perda" ? "Log loss" : "AUC"} por número de árvores, em escala log, no ajuste${revelado ? " e na validação sorteada" : ""}; com ${m} árvores, ajuste ${num(sa[m], 3)}${revelado ? ` e validação ${num(sv[m], 3)}` : ""}${revelado && tipo === "perda" ? `; mínimo da validação ${num(c.pv[kmin], 3)} com ${kmin} árvores; passa do palpite ${num(c.pv[0], 3)} na árvore ${passa}` : ""}`} arCelular={tipo === "perda" ? "4 / 3" : "16 / 9"}>
         {(d) => {
           const g = margens(d.fs, { l: 3.2, r: 6.4, t: 0.8, b: tipo === "auc" ? 2.7 : 1.5 });
+          // folga acima das curvas para as anotações do mínimo e do cruzamento (maior no celular, onde o gráfico é estreito)
+          const hi = tipo === "perda" ? hi0 + (d.w < d.fs * 30 ? 0.07 : 0.035) : hi0;
           const x = escalaLog([g.l, d.w - g.r]), y = escala([lo, hi], [d.h - g.b, g.t]);
           const pts = (s: number[]) => xs.map((k) => ({ x: x(k), y: y(s[k]) }));
           const tri = (cx: number, cy: number, r: number) => `M${cx} ${cy - r}L${cx + r * 0.95} ${cy + r * 0.7}L${cx - r * 0.95} ${cy + r * 0.7}Z`;
@@ -55,7 +57,7 @@ function Painel2({ c, m, revelado, kmin, passa }: { c: Curvas; m: number; revela
           const topo = g.t + d.fs * 0.9; // faixa das anotações, acima da linha do palpite
           return (
             <g>
-              <Eixos x={x} y={y} xt={XT} yt={yt.filter((v) => v <= hi - 0.035 + 1e-9 || tipo === "auc")} fx={(v) => (tipo === "auc" ? int(v) : "")} fy={fy} xTit={tipo === "auc" ? "número de árvores somadas (escala log)" : undefined} />
+              <Eixos x={x} y={y} xt={XT} yt={yt} fx={(v) => (tipo === "auc" ? int(v) : "")} fy={fy} xTit={tipo === "auc" ? "número de árvores somadas (escala log)" : undefined} />
               {tipo === "perda" && revelado && <g>
                 <line x1={x(0)} x2={x(MAXA)} y1={y(c.pv[0])} y2={y(c.pv[0])} stroke="#2E6B4F" strokeWidth={1.6} strokeDasharray="2 4" />
                 <text className="q7-rot--peq" x={x(0) + d.fs * 0.5} y={y(c.pv[0])} dy="-.45em" style={{ fill: "#2E6B4F", fontWeight: 700, ...halo }}>palpite na validação {num(c.pv[0], 3)}</text>

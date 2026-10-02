@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "b7e719d41a8017ec5b233de0745677e7c32c6e0b6b576bbf48ab4a9250d2ffc3",
- "extractedAt": "2026-10-02T12:45:52.896Z",
+ "sourceSha256": "891499ed26f5eaf99a787e4b1227038c937dc38c316fffd765ccbc9cee2ed89b",
+ "extractedAt": "2026-10-02T12:59:19.329Z",
  "meta": {
   "capitulos": [
    {
@@ -6590,20 +6590,25 @@
    },
    "origem": "esq",
    "aprendizado": "Situar o capítulo: o candidato do comitê perde ordenação fora do treino, e o capítulo monta o boosting à mão, roda na carteira e mostra o que o comitê precisa conferir.",
-   "apoio": "Leia o gancho (AUC no treino e na validação), as três escalas do caso e as quatro perguntas; os números de slide levam a cada trecho.",
+   "apoio": "Leia o gancho (AUC do candidato e da logística do gerador no treino e na validação temporal do gerador), as três escalas do caso e as quatro perguntas; os números de slide levam a cada trecho.",
    "conexao": "Antes de qualquer fórmula: três maneiras de juntar árvores, e só uma usa o erro da anterior.",
    "guia": {
     "funcao": "Abrir o capítulo com algo em jogo: um modelo que o comitê do capítulo 7 vai julgar e que ordena bem só no treino.",
     "pre": "Capítulo 5 (árvores de decisão) e capítulo 4 (logística e log odds).",
-    "conducao": "O candidato do comitê tem 7 variáveis, 60 árvores de até 8 folhas e taxa 0,05. No treino (2.103 propostas) a AUC é 0,8196; na validação (760 propostas de safras seguintes), 0,6476: 0,1720 a menos. Apresente as três escalas do caso: 16 propostas para fazer o algoritmo à mão (slides 2 a 10), 2.103 propostas do treino (1.472 de ajuste e 631 de validação) para rodá-lo de verdade (slides 11 a 20) e o candidato (slide 21). As quatro perguntas organizam o percurso. A janela fora do tempo só abre no capítulo 7.",
-    "leitura": "À esquerda, a AUC do candidato no treino e na validação, com o acaso em 0,5; abaixo, as três escalas. À direita, as quatro perguntas com os slides de cada uma; tracejado é aprofundamento.",
-    "pergunta": "Se o treino tem AUC de 0,82, por que o comitê não aprova o modelo só com esse número?",
-    "resposta": "Porque o treino é a amostra em que o modelo foi ajustado: na validação a AUC cai para 0,6476. O que vale para a decisão é o desempenho em propostas que o modelo não viu.",
+    "conducao": "O candidato do comitê tem 7 variáveis, 60 árvores de até 8 folhas e taxa 0,05. No treino (2.103 propostas, safras 2022-01 a 2023-02) a AUC é 0,8196; na validação temporal do gerador (760 propostas, safras 2023-03 a 2023-07), 0,6476: 0,1720 a menos. A decoreba explica só parte da queda: a taxa de default sobe de 9,6% para 13,2% e a logística do gerador, que decora pouco, também perde 0,056 (0,6968 para 0,6408). Apresente as três escalas do caso: 16 propostas para fazer o algoritmo à mão (slides 2 a 10), 2.103 propostas do treino (1.472 de ajuste e 631 de validação sorteada, que é parte do treino) para rodá-lo na carteira (slides 11 a 20) e o candidato (slide 21). As quatro perguntas organizam o percurso. A janela fora do tempo só abre no capítulo 7.",
+    "leitura": "À esquerda, a AUC do candidato e da logística do gerador no treino (●) e na validação temporal do gerador (□), com a taxa de default de cada amostra; abaixo, as três escalas. À direita, as quatro perguntas com os slides de cada uma; tracejado é aprofundamento.",
+    "pergunta": "Se o treino tem AUC de 0,82, por que o comitê não aprova o modelo só com esse número? E a queda de 0,17 é toda decoreba?",
+    "resposta": "Porque o treino é a amostra em que o modelo foi ajustado: na validação temporal do gerador a AUC cai para 0,6476. A queda não é toda decoreba: a safra muda (default de 9,6% para 13,2%) e a logística também perde 0,056; o excesso do boosting é o que o capítulo explica.",
     "erros": [
      {
       "alt": "Ler 0,8196 como a qualidade do modelo",
       "confusao": "Confunde ajuste com desempenho fora da amostra.",
-      "intervencao": "Aponte a linha que desce até a validação e pergunte quantas propostas cada número usa."
+      "intervencao": "Aponte a seta que desce até a validação temporal e pergunte quantas propostas cada número usa."
+     },
+     {
+      "alt": "Atribuir toda a queda de 0,17 à decoreba",
+      "confusao": "Ignora a mudança de safra entre as duas amostras.",
+      "intervencao": "Compare com a seta da logística (−0,056) e com a taxa de default de cada amostra."
      },
      {
       "alt": "Achar que a queda prova que o boosting não serve",
@@ -6658,20 +6663,20 @@
    },
    "origem": "esq",
    "aprendizado": "Distinguir escolher uma árvore, votar com árvores em paralelo e corrigir com árvores em sequência, e reconhecer que só o boosting usa o erro da árvore anterior.",
-   "apoio": "Preveja o que acontece com a log loss de treino de 1 a 20 árvores; depois mova o número de árvores e compare votar e corrigir, olhando o alvo da árvore na proposta #3.",
+   "apoio": "Leia no gráfico o que é escolher, votar e corrigir; preveja como a log loss de treino de votar e de corrigir anda de 1 a 20 árvores; depois mova o número de árvores, olhando o alvo da árvore na proposta #3.",
    "conexao": "A sequência precisa de um ponto de partida: o palpite inicial.",
    "guia": {
     "funcao": "Mostrar com as 16 propostas que só corrigir em sequência continua reduzindo o erro de treino, porque cada árvore mira o que sobrou.",
     "pre": "Slide 1 (o caso) e o capítulo 5 (a árvore de profundidade 2).",
-    "conducao": "Escolher: uma árvore de profundidade 2 no default dá log loss de 0,173. Votar: árvores em amostras sorteadas com reposição (semente 20260502); com uma árvore a log loss não tem limite (a amostra deu PD 0% a um default); com 20 árvores fica em 0,237. Corrigir: cada árvore ajusta o erro que sobrou; a log loss vai de 0,452 com uma árvore a 0,030 com 20. Peça a previsão antes de abrir as curvas. Depois, mostre o alvo da árvore na proposta #3: em votar é sempre y = 0; em corrigir encolhe de −0,50 para −0,01. Feche com o alerta: com 20 árvores, #1 e #2, vizinhas no plano, terminam com 7% e 93%: nas 16 isso já é decorar.",
+    "conducao": "Escolher: uma única árvore de profundidade 2 no default; PD = taxa de default da folha; log loss 0,173. Votar: média de árvores no default, cada uma numa amostra sorteada com reposição (semente 20260502); com uma árvore a log loss não tem limite (a amostra deu PD 0% a um default), cai a 0,346 com 2 e a 0,232 com 8, e depois oscila entre 0,232 e 0,252 até a 20 (0,237). Corrigir: cada árvore ajusta o erro que sobrou; a log loss cai a cada árvore, de 0,452 com uma a 0,030 com 20. Peça a previsão antes de abrir as curvas. Depois, mostre o alvo da árvore na proposta #3: em votar é sempre y = 0; em corrigir encolhe de −0,50 para −0,01. Feche com o alerta: com 20 árvores, #1 e #2, vizinhas no plano, terminam com 7% e 93%: nas 16 isso já é decorar.",
     "leitura": "Log loss de treino conforme as árvores se somam: escolher como referência tracejada, votar em quadrados, corrigir em círculos.",
-    "pergunta": "Por que votar não continua caindo com mais árvores?",
-    "resposta": "Porque todas as árvores olham o mesmo y em amostras parecidas e repetem o mesmo erro; a média reduz a variância, não o erro comum.",
+    "pergunta": "Por que votar para de cair depois de poucas árvores?",
+    "resposta": "Porque todas as árvores olham o mesmo y em amostras parecidas e repetem o mesmo erro; a média reduz a variância e estaciona no erro comum (a menor perda, 0,232, vem na árvore 8). Só corrigir mira o erro que sobrou.",
     "erros": [
      {
-      "alt": "Cai nas duas: mais árvores, menos erro",
-      "confusao": "Confunde votar com corrigir.",
-      "intervencao": "Mostre o alvo da árvore na proposta #3: em votar ele não muda."
+      "alt": "As duas continuam caindo a cada árvore até a 20",
+      "confusao": "Confunde votar com corrigir: votar cai nas primeiras árvores e depois oscila.",
+      "intervencao": "Leve o controle de 8 a 20 e mostre votar entre 0,232 e 0,252; depois o alvo na proposta #3, que em votar não muda."
      },
      {
       "alt": "Votar cai mais, porque cada árvore vê outra amostra",
@@ -6841,10 +6846,10 @@
    "guia": {
     "funcao": "Mostrar que a árvore do boosting prevê o erro, não o default, e agrupa erros parecidos.",
     "pre": "Slide 4 (os resíduos) e capítulo 5 (corte por redução de impureza).",
-    "conducao": "Erro quadrático dos resíduos no palpite: 4,00. Utilização ≤ 57,5% deixa 1,75, o menor entre os 18 cortes possíveis; o melhor de atraso (≤ 15 dias) deixa 3,43; utilização ≤ 27,5% isola #1 e #2, que têm erros opostos, e não reduz nada (4,00). No segundo nível: A = #1 e #2 (média 0), B = #3 a #8 (−0,50), C = #9 a #14 (+0,50), D = #15 e #16 (0); erro quadrático 1,00. O mínimo de 2 por folha é o que deixa A e D com duas propostas.",
+    "conducao": "Erro quadrático dos resíduos no palpite: 4,00. Utilização ≤ 57,5% deixa 1,75, o menor entre os 18 cortes possíveis; o melhor de atraso (≤ 15 dias) deixa 3,43; utilização ≤ 27,5% isola #1 e #2, que têm erros opostos, e não reduz nada (4,00). Com palpite único, y − p̄ é o default menos 0,50: a primeira árvore faz os mesmos cortes de uma árvore no default; a diferença aparece da segunda árvore em diante, quando os erros deixam de ser ±0,50 (slide 8). No segundo nível: A = #1 e #2 (média 0), B = #3 a #8 (−0,50), C = #9 a #14 (+0,50), D = #15 e #16 (0); erro quadrático 1,00. À direita, utilização ≤ 87,5% e atraso ≤ 2,5 dias empatam (0,50 cada): a biblioteca fica com a primeira variável na ordem, utilização, e o scikit-learn com semente 0 faz o mesmo. O mínimo de 2 por folha é o que deixa A e D com duas propostas.",
     "leitura": "Plano utilização por atraso com o erro de cada proposta; o corte divide o plano e as quatro folhas aparecem como faixas com a média do erro.",
-    "pergunta": "Por que a folha A tem média zero se #2 deu default?",
-    "resposta": "Porque #1 (adimplente) e #2 (default) têm erros +0,5 e −0,5, que se cancelam: a folha não tem nada a corrigir.",
+    "pergunta": "Se o primeiro corte é o mesmo de uma árvore no default, o que o boosting tem de diferente?",
+    "resposta": "Na primeira árvore, nada: com palpite único, prever o erro é prever o default. A diferença vem da segunda árvore, que corta os erros que sobraram, não o default (slide 8).",
     "erros": [
      {
       "alt": "Atraso ≤ 15 dias: atraso é o sinal clássico",
@@ -6934,15 +6939,15 @@
    },
    "origem": "rec",
    "aprendizado": "Ler a taxa de aprendizagem como a fração do passo somada a cada árvore e saber que, no treino, a taxa alta desce mais rápido.",
-   "apoio": "Preveja a taxa de menor perda depois da primeira árvore; depois mova a taxa e compare as curvas com η = 0,1 e η = 1.",
+   "apoio": "Preveja a taxa de menor perda depois da primeira árvore; depois mova a taxa e compare as curvas com η = 0,1, η = 0,95 e η = 1.",
    "conexao": "Com a taxa do curso, as quatro árvores uma a uma.",
    "guia": {
     "funcao": "Separar o papel da taxa no ajuste (desce mais devagar) do papel fora da amostra (regulariza), que os slides 11 e 15 medem.",
     "pre": "Slide 6 (o passo de Newton).",
-    "conducao": "Depois da primeira árvore, a log loss cai a cada aumento da taxa: 0,622 com η = 0,1, 0,452 com 0,4 e 0,268 com 1. Depois de quatro árvores, a menor perda da grade é a de η = 0,95 (0,073), seguida de η = 0,90 (0,082); com η = 1, 0,102; com 0,4, 0,217. Não diga que a correção inteira passa do ponto: no ajuste, a taxa alta desce mais rápido. A taxa pequena só se justifica em propostas que o modelo não viu (slides 11 e 15). A PD da folha B depois da primeira árvore vai a σ(−2η): 31,0% com 0,4 e 11,9% com 1.",
-    "leitura": "Log loss de treino depois de cada árvore para a taxa escolhida, com η = 0,1 e η = 1 como referência.",
+    "conducao": "Depois da primeira árvore, a log loss cai a cada aumento da taxa: 0,622 com η = 0,1, 0,452 com 0,4 e 0,268 com 1. Na árvore 2, a correção inteira passa do ponto: 0,195 com η = 1 contra 0,172 com η = 0,95. Depois de quatro árvores, a menor perda da grade é a de η = 0,95 (0,073); com η = 1, 0,102; com 0,4, 0,217. Use o dado para desmontar a ideia de que a correção inteira é sempre melhor no treino. Quantas árvores cada taxa pede fica para o slide 14. A PD da folha B depois da primeira árvore vai a σ(−2η): 31,0% com 0,4 e 11,9% com 1.",
+    "leitura": "Log loss de treino depois de cada árvore para a taxa escolhida, com η = 0,1, η = 0,95 e η = 1 como referência; o círculo marca a árvore em que η = 1 passa do ponto.",
     "pergunta": "Se a taxa alta desce mais rápido, por que o curso usa 0,1 na carteira?",
-    "resposta": "Porque a escolha é feita na validação: passos pequenos espalham o ajuste por mais árvores e decoram menos (slides 11, 14 e 15).",
+    "resposta": "Porque taxa e número de árvores se escolhem juntos: metade da taxa pede o dobro de árvores (slide 14), e o número de árvores sai da validação (slide 15).",
     "erros": [
      {
       "alt": "η = 0,1: passos pequenos erram menos",
@@ -6952,7 +6957,7 @@
      {
       "alt": "η = 0,4, a do curso: o meio-termo",
       "confusao": "Confunde convenção com ótimo.",
-      "intervencao": "Lembre que a taxa da carteira sai da validação."
+      "intervencao": "Lembre que, na carteira, taxa e número de árvores se escolhem juntos (slide 14)."
      }
     ],
     "interacao": "Previsão com retorno; o controle da taxa e as curvas de referência abrem no acerto. Restaurar volta a η = 0,4 e à previsão em aberto.",
@@ -7182,7 +7187,7 @@
    "id": "c6p10",
    "cap": 6,
    "n": 10,
-   "titulo": "A fórmula depois da história",
+   "titulo": "A fórmula de Friedman resume os passos já vistos",
    "nivel": "complementar",
    "nivel120": "essencial",
    "min": 3,
@@ -7215,7 +7220,7 @@
      {
       "alt": "σ aplicada a cada passo",
       "confusao": "Soma em probabilidade em vez de log odds.",
-      "intervencao": "Mostre o slide 9: a sigmoide só entra no fim."
+      "intervencao": "Mostre que F soma em log odds; a sigmoide só converte F em PD, para o resíduo da linha 2 e para a PD final (slide 9). PDs nunca se somam."
      }
     ],
     "interacao": "Seletor da árvore m e das 16 propostas, liberados depois da previsão; a coluna do exemplo se recalcula com os números da biblioteca. Links para os slides 3 a 9 no mesmo modo.",
@@ -7246,15 +7251,15 @@
    },
    "origem": "esq",
    "aprendizado": "Ver que a perda de ajuste cai a cada árvore e que a validação não acompanha: desce no começo e depois piora até passar do palpite inicial.",
-   "apoio": "Mova o número de árvores e compare perda e AUC de ajuste e de validação. A validação é sorteada do mesmo período (631 propostas), não uma safra posterior.",
+   "apoio": "Mova o número de árvores e compare perda e AUC de ajuste e de validação, com o eixo de árvores em escala log. A validação sorteada são 631 propostas do mesmo período, não uma safra posterior.",
    "conexao": "Leva o algoritmo do slide 10 à carteira e abre a pergunta dos slides 13 a 16: que controles evitam a decoreba, e onde parar (slide 15).",
    "guia": {
     "funcao": "Separar o que o ajuste mede (o que o modelo já viu) do que a validação mede (propostas que ele não viu).",
     "pre": "Slides 8 e 10: perda que cai nas 16 propostas e o algoritmo em cinco linhas.",
     "conducao": "Mostre o ajuste: perda de 0,313 a 0,234, caindo em 300 de 300 árvores; AUC de ajuste de 0,50 a 0,874. Peça a previsão para a validação antes de desenhá-la. Leia a nota: a validação é sorteada, não temporal.",
-    "leitura": "Na validação, a perda desce até 0,296 e termina em 0,329 com 300 árvores, acima do palpite (0,321), que ela passa a partir da árvore 169. A AUC de validação termina em 0,587, contra 0,874 no ajuste.",
-    "pergunta": "Com 300 árvores, o que acontece com a perda nas 631 propostas de validação?",
-    "resposta": "Melhora no começo, depois piora até ficar acima do palpite inicial: 0,329 contra 0,321.",
+    "leitura": "Eixo de árvores em escala log. Na validação sorteada, a perda desce até 0,296 com 16 árvores e termina em 0,329 com 300, acima do palpite (0,321, a linha pontilhada), que ela passa na árvore 169; os dois pontos estão marcados. A AUC de validação termina em 0,587, contra 0,874 no ajuste.",
+    "pergunta": "Com 300 árvores, o que acontece com a perda nas 631 propostas da validação sorteada?",
+    "resposta": "Melhora no começo, depois piora até ficar acima do palpite inicial: 0,329 contra 0,321. A AUC de validação ainda é 0,587, acima do acaso: o modelo ordena, mas as PDs pioraram. Isso vale com taxa 0,1 e sem subamostra.",
     "erros": [
      {
       "alt": "Acompanha o ajuste: cai a cada árvore",
@@ -7295,15 +7300,15 @@
    },
    "origem": "rec",
    "aprendizado": "Entender a profundidade como ordem de interação: com tocos o modelo é aditivo; com profundidade 2 o efeito de uma variável depende de outra.",
-   "apoio": "Compare as três curvas de log odds por utilização, uma por score: com tocos elas são paralelas; com profundidade 2 se afastam. Troque o atraso fixo e veja o mapa de PD.",
+   "apoio": "Cada modelo parado no mínimo da validação sorteada: tocos em 20 árvores, profundidade 2 em 16, profundidade 3 em 8. O efeito da utilização é a média da log odds de 50% a 60% menos a de 0% a 10%. Com profundidade 2 parada, ele vale +0,17 com score 750, +0,10 com 820 e +0,01 com 900: a utilização pesa onde o score é baixo. Com tocos, +0,07 nos três scores: curvas paralelas. Com 300 árvores, a 'interação' vira +1,36 contra −1,09 e a validação piora de 0,2955 para 0,3289. Na validação sorteada, a melhor perda é a dos tocos (0,2936), contra 0,2955 e 0,2974.",
    "conexao": "Primeiro dos controles da complexidade; o slide 13 junta os quatro, e a pergunta sobre interação volta no slide 17, quando a logística, sem interação, valida melhor.",
    "guia": {
     "funcao": "Ligar a profundidade à forma da PD: quantas variáveis uma folha combina.",
     "pre": "Slides 5 e 11: a árvore corta em sequência e o mesmo algoritmo na carteira com profundidade 2.",
-    "conducao": "Abra na profundidade 2: de 0% a 60% de utilização, as log odds mudam +2,73 com score 700 e −0,16 com score 900. Pergunte o que os tocos fariam antes de liberar a profundidade 1.",
-    "leitura": "Com tocos, a utilização soma +0,99 em log odds com score 700, 800 ou 900: curvas paralelas, modelo aditivo. Na validação, a melhor perda é 0,2936 com tocos (20 árvores), 0,2955 com profundidade 2 e 0,2974 com 3: aqui a interação não melhora a validação.",
+    "conducao": "Abra na profundidade 2 parada em 16 árvores: +0,17 com score 750 e +0,01 com 900. Peça o que os tocos fariam antes de liberar os seletores. Depois do acerto, troque para 300 árvores e mostre a interação de decoreba; leia a tabela da validação sorteada.",
+    "leitura": "Com tocos parados em 20 árvores, a utilização soma +0,07 com score 750, 820 ou 900: modelo aditivo. Profundidade 2 parada: +0,17 contra +0,01. A interação só vale se validar: aqui os tocos validam melhor (0,2936 contra 0,2955 e 0,2974).",
     "pergunta": "Com tocos (profundidade 1), o que acontece com as três curvas de log odds?",
-    "resposta": "Ficam paralelas: a utilização soma +0,99 em qualquer score, porque nenhuma folha combina duas variáveis.",
+    "resposta": "Ficam paralelas: tocos parados em 20 árvores somam +0,07 em qualquer score, porque nenhuma folha combina duas variáveis.",
     "erros": [
      {
       "alt": "Continuam a se afastar, como com profundidade 2",
@@ -7316,9 +7321,9 @@
       "intervencao": "Aponte os degraus das curvas: cada árvore soma um valor de cada lado de um corte."
      }
     ],
-    "interacao": "Profundidade (1, 2, 3), liberada depois da previsão, e atraso fixo (0, 5, 15 dias) redesenham o mapa de PD e as curvas; a expansão calcula na validação se a interação paga. Restaurar volta à profundidade 2.",
-    "verificacao": "Com profundidade 3, de 0% a 60% a utilização soma +1,87 com score 700 e +0,20 com score 900.",
-    "transicao": "Profundidade é um dos quatro controles; o slide 13 mexe nos quatro e mede o ajuste e a validação ao mesmo tempo."
+    "interacao": "Profundidade (1, 2, 3) e número de árvores (parada ou 300), liberados depois da previsão, redesenham as curvas; a tabela da validação sorteada mostra a parada e a perda mínima de cada profundidade. Restaurar volta à profundidade 2 parada.",
+    "verificacao": "A turma explica por que, com 300 árvores, o efeito no score 900 fica negativo (−1,09) e por que isso não é interação real: a validação piora de 0,2955 para 0,3289.",
+    "transicao": "Profundidade e número de árvores mexem na mesma complexidade; o slide 13 junta os quatro controles."
    },
    "html": "<div class=\"v13-interativo\"><div class=\"v13-tabs\"><button type=\"button\" data-v13-y=\"0\" class=\"ativo\">y = 0 · pagou</button><button type=\"button\" data-v13-y=\"1\">y = 1 · default</button></div><div class=\"v13-cena\"><div class=\"v13-cena-lado\"><small>PD atual</small><span class=\"big\" id=\"v13-res-p\">50%</span><input id=\"v13-res-range\" type=\"range\" min=\"1\" max=\"99\" value=\"50\" style=\"width:100%\"></div><div class=\"v13-cena-main\"><h3>Alvo da próxima árvore</h3><div class=\"v13-metricas\"><div><small>y</small><strong id=\"v13-res-y\">0</strong></div><div><small>p</small><strong id=\"v13-res-p2\">0,50</strong></div><div><small>y − p</small><strong id=\"v13-res-r\">-0,50</strong></div></div><p id=\"v13-res-texto\">Caso ainda mal previsto: a árvore recebe uma correção relevante.</p></div></div><div class=\"formula\" data-latex=\"r_i^{(m)}=y_i-p_i^{(m-1)}\" data-original=\"resíduo na iteração m = y − p da iteração anterior\" role=\"math\" aria-label=\"resíduo na iteração m = y − p da iteração anterior\"></div></div>",
    "text": "y = 0 · pagou\ny = 1 · default\nPD atual\n50%\nAlvo da próxima árvore\ny\n0\np\n0,50\ny − p\n-0,50\n\nCaso ainda mal previsto: a árvore recebe uma correção relevante.",
@@ -7541,13 +7546,13 @@
    },
    "origem": "rec",
    "aprendizado": "Escolher o número de árvores pelo mínimo da perda de validação e reconhecer que o ajuste não dá sinal de parada.",
-   "apoio": "Preveja quantas das 300 árvores ficam; depois mova o ponto de parada e compare a perda de validação com o mínimo. A faixa verde mostra onde a perda fica a menos de 0,001 do mínimo.",
+   "apoio": "Preveja quantas das 300 árvores ficam; depois mova o ponto de parada e compare a perda de validação com o mínimo. A faixa verde mostra onde a perda fica a menos de 0,001 do mínimo; a AUC de ajuste e a de validação ficam nos números ao lado.",
    "conexao": "Responde à pergunta aberta no slide 11 e entrega ao slide 17 o modelo parado na validação, para enfrentar a logística.",
    "guia": {
     "funcao": "Transformar a curva de validação em decisão: parada antecipada.",
     "pre": "Slides 11 e 14: curvas de ajuste e validação na carteira, e taxa e árvores acopladas.",
     "conducao": "Lembre que a perda de ajuste cai até a árvore 300. Peça a previsão. Revelado o mínimo (16 árvores, 0,2955), mova o cursor para 100 e 300 e leia a perda de validação e a AUC de ajuste.",
-    "leitura": "Mínimo em 16 árvores (0,2955); com 100, 0,3096; com 300, 0,3289. A AUC de ajuste sobe de 0,743 em 16 árvores para 0,874 em 300. De 9 a 22 árvores, a perda fica a menos de 0,001 do mínimo.",
+    "leitura": "Mínimo em 16 árvores (0,2955); com 100, 0,3096; com 300, 0,3289. A AUC de ajuste sobe de 0,743 em 16 árvores para 0,874 em 300. De 9 a 22 árvores, a perda fica a menos de 0,001 do mínimo. Como a mesma validação sorteada escolheu o ponto, a perda no mínimo é otimista: por isso a janela fora do tempo segue fechada.",
     "pergunta": "Das 300 árvores do slide 11, quantas a perda de validação manda manter?",
     "resposta": "16 (menos de 20); as outras 284 só baixam o ajuste.",
     "erros": [
@@ -7558,11 +7563,11 @@
      },
      {
       "alt": "Cerca de 100",
-      "confusao": "Corta por intuição, sem olhar a curva.",
-      "intervencao": "Com 100 árvores a perda de validação já é 0,3096."
+      "confusao": "Supõe que o dano está só no fim da curva.",
+      "intervencao": "Depois de 22 árvores a validação já passa de 0,001 acima do mínimo; com 100, 0,3096."
      }
     ],
-    "interacao": "Controle do ponto de parada, seletor do eixo (0 a 60 ou 0 a 300) e previsão; a curva de validação aparece só depois do acerto. A expansão mostra a regra de paciência calculada na mesma curva. Restaurar volta a 300 árvores.",
+    "interacao": "Controle do ponto de parada, seletor do eixo (0 a 60 ou 0 a 300) e Restaurar abaixo da curva; previsão ao lado. A curva de validação e a tabela da regra de paciência aparecem depois do acerto.",
     "verificacao": "Regra de paciência: com 10 árvores sem melhorar, o treino para na 26 e guarda a 16; com 3, para na 14 e guarda a 11, um mínimo local.",
     "transicao": "Parar cedo é um freio; o slide 16 mostra outro, sortear propostas a cada árvore. Depois, o slide 17 põe o modelo parado contra a logística."
    },
@@ -7605,7 +7610,7 @@
    "id": "c6p16",
    "cap": 6,
    "n": 16,
-   "titulo": "Sortear propostas a cada árvore também regulariza",
+   "titulo": "Sortear propostas regulariza longe da parada; perto dela, o efeito some no ruído",
    "nivel": "complementar",
    "nivel120": "assincrono",
    "min": 3,
@@ -7615,29 +7620,29 @@
    },
    "origem": "rec",
    "aprendizado": "Entender a subamostra (boosting estocástico de Friedman, 2002) como regularização e ler o efeito com a variação entre sementes.",
-   "apoio": "Preveja o efeito de sortear metade das propostas a cada árvore; depois compare as dez sementes com a curva sem sorteio e troque a fração.",
+   "apoio": "Antes de cada árvore, sorteia-se uma fração das 1.472 propostas de ajuste (dez sementes). A pergunta é feita no ponto de parada. Com 50%, a média dos mínimos das sementes é 0,2935 contra 0,2955 sem sorteio, melhora de 0,0020, menor que a faixa entre sementes (0,2912 a 0,2955). Com 30%, piora: 0,2966. Com 200 árvores, longe da parada, todas as sementes ficam abaixo de 0,3228 (50%: de 0,3075 a 0,3173): o sorteio achata a subida depois da parada, não o mínimo.",
    "conexao": "Completa os controles dos slides 12 a 15 e prepara a comparação com a logística do slide 17.",
    "guia": {
-    "funcao": "Mostrar um freio que não muda o número de árvores: ruído deliberado em cada árvore.",
+    "funcao": "Separar onde o sorteio regulariza (longe da parada) de onde o modelo seria usado (no mínimo), com o sinal medido.",
     "pre": "Slides 13 e 15: os quatro controles e a parada pela validação.",
-    "conducao": "Mostre a curva sem sorteio (mínimo 0,2955, 0,3228 com 200 árvores). Peça a previsão para a subamostra de 50%.",
-    "leitura": "Com 50% e 200 árvores, as dez sementes ficam entre 0,3075 e 0,3173, todas abaixo de 0,3228 sem sorteio. No mínimo, a média das sementes é 0,2935 contra 0,2955, diferença menor que a faixa entre sementes (0,2912 a 0,2955).",
-    "pergunta": "Com subamostra de 50% e 200 árvores, a perda de validação melhora ou piora?",
-    "resposta": "Melhora em todas as dez sementes com 200 árvores; no ponto mínimo, a diferença é menor que a variação entre sementes.",
+    "conducao": "Mostre a curva sem sorteio (mínimo 0,2955 em 16 árvores, 0,3228 com 200). Peça a previsão no ponto de parada para 50%. Depois do acerto o eixo abre de 0 a 50: aponte os mínimos das sementes espalhados. Troque para 0 a 200 e para 30%.",
+    "leitura": "50%: no mínimo, 0,2935 contra 0,2955, melhora de 0,0020, dentro da faixa entre sementes (0,2912 a 0,2955). 30%: 0,2966, piora de 0,0011. Com 200 árvores, todas as sementes abaixo de 0,3228.",
+    "pergunta": "Parando no mínimo de cada curva, a subamostra de 50% melhora a perda de validação?",
+    "resposta": "Quase nada: 0,0020, menos que a variação entre sementes, e com 30% o sinal troca. O ganho claro aparece longe da parada, com 200 árvores.",
     "erros": [
      {
-      "alt": "Piora: cada árvore vê menos propostas",
-      "confusao": "Pensa em cada árvore isolada, não na soma de muitas árvores com amostras diferentes.",
-      "intervencao": "Mostre a média das sementes contra a curva cinza depois de 100 árvores."
+      "alt": "Melhora com folga: o sorteio regulariza",
+      "confusao": "Confunde o efeito longe da parada com o efeito na parada.",
+      "intervencao": "Compare as duas colunas da tabela: 0,3119 contra 0,3228 com 200 árvores, 0,2935 contra 0,2955 no mínimo."
      },
      {
-      "alt": "Não muda: só acrescenta ruído",
-      "confusao": "Não vê que o ruído é o que impede a decoreba.",
-      "intervencao": "Compare as perdas com 200 árvores na tabela."
+      "alt": "Piora: cada árvore vê menos propostas",
+      "confusao": "Pensa em cada árvore isolada, não na soma de muitas árvores com sorteios diferentes.",
+      "intervencao": "Com 50% a média dos mínimos fica abaixo de 0,2955; troque para 30% e veja o sinal mudar."
      }
     ],
-    "interacao": "Previsão com retorno; depois, seletor da fração (80%, 50%, 30%), com as dez sementes calculadas uma a uma. Restaurar volta a 50% e limpa a previsão.",
-    "verificacao": "Peça à turma a faixa entre sementes no mínimo e com 200 árvores, lida na tabela, e o que ela permite concluir.",
+    "interacao": "Previsão com retorno; depois, fração sorteada (80%, 50%, 30%) com dez sementes calculadas uma a uma, eixo de 0 a 50 ou 0 a 200 e mínimos de cada curva marcados. Restaurar volta a 50%, eixo inteiro e limpa a previsão.",
+    "verificacao": "A turma lê na tabela a faixa entre sementes no mínimo e com 200 árvores e diz qual das duas diferenças cabe no ruído.",
     "transicao": "Com os freios na mão, o slide 17 compara o boosting parado na validação com a logística das mesmas três variáveis."
    },
    "html": "<div class=\"palcoflex\" data-colunas=\"dados\"><div class=\"esq\" style=\"flex: 0.52 1 0px;\"><div class=\"rolax\" data-exploravel=\"tabela\" data-aberta=\"true\"><table>\n   <thead><tr><th><span class=\"letra-grega\">η</span></th><th>Árvores até perda de treino 0,50</th><th><span class=\"letra-grega\">η</span> × árvores</th>\n    <th>Perda de treino com 60 árvores</th></tr></thead><tbody>\n   <tr>\n    <th scope=\"row\">0,10</th><td class=\"num\">14</td>\n    <td class=\"num\">1,40</td>\n    <td class=\"num\">0,28394</td></tr><tr>\n    <th scope=\"row\">0,15</th><td class=\"num\">10</td>\n    <td class=\"num\">1,50</td>\n    <td class=\"num\">0,23680</td></tr><tr>\n    <th scope=\"row\">0,20</th><td class=\"num\">7</td>\n    <td class=\"num\">1,40</td>\n    <td class=\"num\">0,20965</td></tr><tr>\n    <th scope=\"row\">0,30</th><td class=\"num\">5</td>\n    <td class=\"num\">1,50</td>\n    <td class=\"num\">0,16621</td></tr><tr style=\"background:#FBF3DE\">\n    <th scope=\"row\">0,40</th><td class=\"num\">4</td>\n    <td class=\"num\">1,60</td>\n    <td class=\"num\">0,13711</td></tr><tr>\n    <th scope=\"row\">0,50</th><td class=\"num\">3</td>\n    <td class=\"num\">1,50</td>\n    <td class=\"num\">0,11702</td></tr><tr>\n    <th scope=\"row\">0,60</th><td class=\"num\">3</td>\n    <td class=\"num\">1,80</td>\n    <td class=\"num\">0,10227</td></tr><tr>\n    <th scope=\"row\">0,80</th><td class=\"num\">2</td>\n    <td class=\"num\">1,60</td>\n    <td class=\"num\">0,08165</td></tr><tr>\n    <th scope=\"row\">1,00</th><td class=\"num\">2</td>\n    <td class=\"num\">2,00</td>\n    <td class=\"num\">0,06800</td></tr>\n   </tbody></table></div>\n   <p class=\"nota\" style=\"margin-top:8px\">A terceira coluna é quase constante. Reduzir η pela metade exige\n   aproximadamente dobrar M para chegar ao mesmo ponto. <span class=\"selo s-rec\">Recalculado aqui</span></p>\n   <p class=\"nota\" style=\"margin-top:7px\">As duas colunas de perda são de treino. A última coluna desce\n   sem parar conforme η cresce: com dezesseis propostas e sessenta árvores, 0,06800\n   é memorização, não desempenho. É por isso que a pergunta “qual η dá a menor perda” não se\n   responde nesta tabela.</p>\n   </div><div class=\"dir\" style=\"flex: 0.48 1 0px;\"><div class=\"svgfit\" data-exploravel=\"grafico\"><svg viewBox=\"0 0 600 340\" role=\"img\" aria-label=\"árvores até a perda alvo por taxa de aprendizagem η\" style=\"font-family:system-ui,sans-serif\"><line x1=\"62\" y1=\"294.0\" x2=\"582\" y2=\"294.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"298.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0</text><line x1=\"62\" y1=\"130.0\" x2=\"582\" y2=\"130.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"134.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">10</text><line x1=\"62\" y1=\"-34.0\" x2=\"582\" y2=\"-34.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"-30.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">20</text><line x1=\"62\" y1=\"-197.9\" x2=\"582\" y2=\"-197.9\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"-193.9\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">30</text><line x1=\"62\" y1=\"-361.9\" x2=\"582\" y2=\"-361.9\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"-357.9\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">40</text><line x1=\"62\" y1=\"30\" x2=\"62\" y2=\"294\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <line x1=\"62\" y1=\"294\" x2=\"582\" y2=\"294\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <text transform=\"translate(12,162) rotate(-90)\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">árvores até a perda alvo</text>\n   <text x=\"322\" y=\"335\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">taxa de aprendizagem η</text><text x=\"88.0\" y=\"310\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">0,10</text><text x=\"166.0\" y=\"310\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">0,25</text><text x=\"296.0\" y=\"310\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">0,50</text><text x=\"426.0\" y=\"310\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">0,75</text><text x=\"556.0\" y=\"310\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">1,00</text><line x1=\"66\" y1=\"15\" x2=\"82\" y2=\"15\" stroke=\"#00205B\" stroke-width=\"2.5\"></line>\n      <text x=\"87\" y=\"18\" font-size=\"11.5\" fill=\"#333\">árvores necessárias</text><path d=\"M88.0 64.4L114.0 130.0L140.0 179.2L192.0 212.0L244.0 228.4L296.0 244.8L348.0 244.8L452.0 261.2L556.0 261.2\" fill=\"none\" stroke=\"#00205B\" stroke-width=\"2.6\" stroke-linejoin=\"round\"></path><circle cx=\"88.0\" cy=\"64.4\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"114.0\" cy=\"130.0\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"140.0\" cy=\"179.2\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"192.0\" cy=\"212.0\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"244.0\" cy=\"228.4\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"296.0\" cy=\"244.8\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"348.0\" cy=\"244.8\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"452.0\" cy=\"261.2\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"556.0\" cy=\"261.2\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle></svg></div>\n   <div class=\"revelacao\" style=\"margin-top:10px\"><h4>Chegando à mesma perda alvo, por que preferir η pequeno?</h4>\n   Porque o caminho não é idêntico. Com η pequeno, o modelo passa por muitos estágios intermediários, e a\n   validação pode interromper em qualquer um deles. Com η grande, os saltos são grossos e o melhor ponto\n   pode ficar entre duas iterações. A granularidade do controle é a vantagem.</div>\n   <div class=\"revelacao ruim\" style=\"margin-top:10px\"><h4>O custo</h4>\n   Tempo. η de 0,01 com dez mil árvores custa cem vezes mais que η de 1 com cem. Em produção, a escolha\n   típica fica entre 0,01 e 0,1 com parada antecipada monitorada em validação, e não em uma grade fixa.</div></div></div>",
@@ -7703,11 +7708,11 @@
      "pergunta": "Na validação, a logística das três variáveis tem AUC 0,7006, e o boosting parado em 16 árvores tem 0,6553; o intervalo de 95% de DeLong da diferença vai de 0,020 a 0,070. O que levar ao comitê?",
      "alt": [
       "O boosting, porque no ajuste chega a 0,8740 com 300 árvores",
-      "A logística como referência, com a diferença e o intervalo; o boosting só entra se superar a referência na validação",
+      "A logística como referência, com a diferença e o intervalo; o boosting vai ao comitê como desafiante e só substitui a referência se superá-la em propostas que não viu",
       "Os dois como equivalentes, porque a diferença é pequena"
      ],
      "certa": 1,
-     "porqueCerta": "A comparação justa é na mesma amostra que nenhum dos dois viu. Ali a logística valida melhor, e o intervalo da diferença não contém o zero. O ganho do boosting no ajuste mede quanto ele se adapta às propostas que já viu.",
+     "porqueCerta": "A comparação justa é na mesma amostra que nenhum dos dois viu. Ali a logística valida melhor, e o intervalo da diferença não contém o zero: ela fica como referência. O boosting segue ao comitê como desafiante, com a lista do que precisa provar (slide 21). O ganho dele no ajuste mede quanto se adapta às propostas que já viu.",
      "erros": [
       {
        "confusao": "O ajuste foi tomado como prova. A AUC de ajuste sobe com qualquer árvore a mais e não diz nada sobre propostas novas.",
@@ -7789,7 +7794,7 @@
       "intervencao": "A PD média vai de 9,3% a 8,9%: o que muda é a inclinação."
      }
     ],
-    "interacao": "Previsão com título provisório; controle de árvores com nove posições (1 a 300); a curva do modelo parado fica como referência em quadrados vazados; Restaurar volta ao modelo parado.",
+    "interacao": "Previsão com título provisório; controle de árvores com nove posições (1 a 300); a curva larga mostra o modelo escolhido com o intervalo de Wilson por faixa, e o modelo parado fica como referência em quadrados cinza; Restaurar volta ao modelo parado.",
     "verificacao": "A turma explica por que slope abaixo de 1 significa PDs extremas demais, com os números da faixa 1 e da faixa 5.",
     "transicao": "Média certa não diz por que cada proposta recebeu a sua PD. O slide 19 decompõe uma PD em contribuições."
    },
@@ -7904,13 +7909,13 @@
    },
    "origem": "rec",
    "aprendizado": "Reconhecer quando o modelo livre contraria a lógica de crédito em trechos com poucos dados e medir o custo de impor monotonia.",
-   "apoio": "Preveja o que o modelo livre aprende das propostas com atraso alto e nenhum default; depois compare a dependência parcial do atraso com e sem restrição monotônica e o custo na validação.",
+   "apoio": "Na amostra de ajuste, as 11 propostas com 31 a 60 dias de atraso não tiveram default, mas zero em 11 cabe numa taxa de até 25,9% (Wilson); de 0 a 30 dias a taxa observada é quase plana. Com 300 árvores e mínimo de 10 por folha, a dependência parcial do modelo livre vai de 14,6% com 30 dias para 3,4% a partir de 34 dias e cai em 10 trechos; com monotonia (utilização +1, atraso +1, score −1), nenhum. Na validação sorteada, AUC 0,6756 contra 0,5979 (IC da diferença de 0,035 a 0,121); parados pela validação, 0,6796 contra 0,6574 (IC de 0,003 a 0,041). Monotonia não é calibração: com 300 árvores, o monotônico dá 20,4% de PD média acima de 30 dias, onde se observaram 0 de 11. Cada modelo foi parado na mesma validação em que é comparado.",
    "conexao": "Usa a dependência parcial e a explicação do slide 19 e leva a monotonia à lista do comitê no slide 21.",
    "guia": {
     "funcao": "Mostrar que o modelo não conhece a lógica de crédito e que a restrição monotônica a impõe, com custo medido.",
     "pre": "Slide 13 (mínimo por folha e número de árvores como controles) e slide 19 (o atraso fora do modelo parado).",
     "conducao": "Mostre os pontos observados por faixa de atraso, com o 0 de 11 e o intervalo até 25,9%. Peça a previsão sobre a PD livre acima de 30 dias. Revele as duas curvas, conte os trechos de queda e leia a tabela da validação. Troque para Parada e para mínimo de 40: o modelo livre parado quase não usa o atraso; a monotonia segue sem custo.",
-    "leitura": "300 árvores, mínimo de 10: PD livre de 14,6% com 30 dias para 3,4% a partir de 34; 10 trechos de queda contra 0 com monotonia; AUC de validação 0,5979 livre e 0,6756 monotônico.",
+    "leitura": "300 árvores, mínimo de 10: PD livre de 14,6% com 30 dias para 3,4% a partir de 34; 10 trechos de queda contra 0 com monotonia; AUC de validação 0,5979 livre e 0,6756 monotônico. O monotônico põe 20,4% acima de 30 dias, contra 0 de 11 observados.",
     "pergunta": "Por que a monotonia melhorou a validação em vez de custar?",
     "resposta": "Porque ela impede o modelo de gastar cortes em padrões de poucas propostas que não se repetem: funciona como regularização alinhada à lógica de crédito.",
     "erros": [
@@ -7925,7 +7930,7 @@
       "intervencao": "Troque para mínimo de 40 e compare as curvas."
      }
     ],
-    "interacao": "Previsão com título e subtítulo provisórios; depois, número de árvores (parada, 100, 300) e mínimo por folha (10, 40), com curvas, trechos de queda e tabela da validação recalculados; Restaurar volta ao início.",
+    "interacao": "Previsão com título e subtítulo provisórios; depois, número de árvores (parada, 100, 300) e mínimo por folha (10, 40), com curvas e tabela da validação (árvores, quedas, AUC, log loss) recalculadas; contagens observadas sob o eixo; Restaurar volta ao início.",
     "verificacao": "A turma diz quantos trechos caem em cada configuração e se a diferença de AUC está acima do ruído.",
     "transicao": "Referência linear, parada, nível, explicação e monotonia: o slide 21 junta tudo na lista que o validador confere."
    },
@@ -7953,15 +7958,15 @@
    },
    "origem": "rec",
    "aprendizado": "Escolher os hiperparâmetros pela validação e montar a lista de evidências que um validador independente exige antes do comitê.",
-   "apoio": "Escolha a combinação de árvores e folhas que levaria ao comitê antes de ver a validação; depois leia a grade de treino e validação e a lista do que o validador independente confere.",
+   "apoio": "O candidato do comitê é o boosting do gerador, com sete variáveis, julgado na validação temporal do gerador (760 propostas, 100 defaults, safras 2023-03 a 2023-07). A lista do validador usa os números dele: referência linear não cumprida (AUC 0,6476 contra 0,6408 da logística de sete variáveis: empate; log loss 0,38293 contra 0,38298); nível não cumprido (PD média 9,70% contra 13,16% observados, fora do Wilson de 10,9% a 15,7%); complexidade a provar (60 árvores e 8 folhas pela validação, mas 60 é o menor valor testado, e a célula vizinha fica só 0,0076 abaixo, com erro padrão de 0,031 por AUC); monotonia e explicação a provar (o gerador não publica as árvores; método nos slides 19 e 20, na validação sorteada); janela fora do tempo a provar no capítulo 7 (737 propostas, 2023-08 a 2023-12). Vai ao comitê como desafiante, com a logística como referência.",
    "conexao": "Fecha o capítulo voltando ao gancho do slide 1 (0,8196 no treino, 0,6476 na validação) e entrega o candidato ao comitê do capítulo 7.",
    "guia": {
-    "funcao": "Transformar o capítulo num procedimento: regra de escolha e lista de adoção.",
-    "pre": "Slides 15, 17, 18, 19 e 20, cada um com uma prova da lista.",
-    "conducao": "Mostre a grade de treino e peça que cada grupo escolha a combinação antes de ver a validação. Envie as escolhas mais votadas, uma de cada vez, e leia o retorno. Depois percorra a lista, abrindo os slides de cada prova.",
-    "leitura": "Pela validação, 60 árvores e 8 folhas: 0,6476 contra 0,8196 no treino. A combinação de maior treino, 240 árvores e 16 folhas (0,9927), tem a pior validação, 0,6063.",
-    "pergunta": "Por que a janela fora do tempo fica fechada até o comitê?",
-    "resposta": "Porque ela é a prova do desempenho em safras futuras: usada para escolher, deixa de medir. A Resolução CMN 4.557/2017 pede validação independente do desenvolvimento.",
+    "funcao": "Fechar o capítulo: responder às quatro perguntas com os números do candidato e entregar a lista do validador com o estado de cada item.",
+    "pre": "Slides 15, 17, 18, 19 e 20, cada um com o método de um item da lista.",
+    "conducao": "Mostre a grade de treino e peça que cada grupo escolha a combinação antes de ver a validação. Envie as mais votadas e leia o retorno. Depois percorra a lista: dois itens não cumpridos, três a provar; abra o slide de método de cada um.",
+    "leitura": "Mecanismo: 60 árvores de 8 folhas, treino 0,8196. Probabilidade: PD média 9,70% contra 13,16%. Controle: escolha pela validação, na borda da grade. Prova: 0,6476 contra 0,6408 da logística, empate. A base sintética permite guardar a janela futura e conhecer a PD verdadeira.",
+    "pergunta": "Se o boosting empata com a logística e erra o nível, por que ele vai ao comitê?",
+    "resposta": "Como desafiante, não como vencedor: o comitê julga na janela fora do tempo, e a logística segue como referência. A recalibração do nível é tema do capítulo 7.",
     "erros": [
      {
       "alt": "240 árvores e 16 folhas",
@@ -7969,13 +7974,13 @@
       "intervencao": "Leia a célula da validação: 0,6063, a pior da grade."
      },
      {
-      "alt": "Uma combinação do meio da grade",
-      "confusao": "Escolhe por intuição de equilíbrio, não pela regra.",
-      "intervencao": "Compare com a maior validação, 0,6476."
+      "alt": "60 árvores e 4 folhas",
+      "confusao": "Toma uma diferença de 0,0076 como prova.",
+      "intervencao": "Compare com o erro padrão de cada AUC, 0,031: a grade não separa as duas."
      }
     ],
-    "interacao": "Escolha de árvores e folhas com envio ao comitê antes de ver a validação; retorno por escolha e Tentar outra; itens da lista com link para o slide da prova; Restaurar volta ao início.",
-    "verificacao": "Cada grupo cita os seis itens da lista e o número que prova cada um.",
+    "interacao": "Escolha de árvores e folhas com envio ao comitê antes de ver a validação; retorno por escolha e Tentar outra; itens da lista com estado (cumprido, não cumprido, a provar) e link para o slide de método; Restaurar volta ao início.",
+    "verificacao": "Cada grupo diz o estado de cada item e o número que o sustenta.",
     "transicao": "O candidato vai ao comitê como desafiante da logística. No capítulo 7, a janela fora do tempo abre e o comitê julga ordenação, probabilidade e decisão."
    },
    "html": "<div class=\"painel\"><p>Escolher os hiperparâmetros pela validação e montar a lista de evidências que um validador independente exige antes do comitê.</p><p class=\"nota\">Quadro interativo do capítulo 6 na plataforma.</p></div>",
@@ -8002,13 +8007,13 @@
    },
    "origem": "rec",
    "aprendizado": "Consultar as fórmulas do algoritmo, os métodos da fronteira com o que resolvem e quando usar, as referências primárias e o caminho para reproduzir os números.",
-   "apoio": "Fórmulas do palpite inicial, do pseudo-resíduo, do passo de Newton, da atualização com taxa, da log loss, das contribuições de Shapley, da dependência parcial e da monotonia. Fronteira: XGBoost (objetivo regularizado de segunda ordem), LightGBM (histogramas e amostragem por gradiente), CatBoost (categóricas sem vazamento), EBM e GA2M (modelo aditivo legível), árvores contra redes em dados tabulares e explicações contrafactuais. Reprodução: semente 20260501 da base, 20260601 da divisão, scripts/capitulo6/referencia.py e tests/capitulo6-gbm.test.ts.",
+   "apoio": "Fórmulas do palpite inicial, do pseudo-resíduo, do passo de Newton, da atualização com taxa, da log loss, das contribuições de Shapley (K variáveis), da dependência parcial e da monotonia, com legenda de símbolos (n propostas, K variáveis, p a PD). Fronteira: XGBoost (folha w* = −G ÷ (H + λ), com G a soma de p − y e H a de p(1 − p)), LightGBM, CatBoost, EBM e GA2M, árvores contra redes e explicações contrafactuais, cada um com quando usar e o slide do curso. Referências com DOI, incluindo Potharst e Feelders (2002) para monotonia e Hanley e McNeil (1982) para o erro padrão da AUC. Reprodução: sementes 20260501 e 20260601, scripts/capitulo6/referencia.py e tests/capitulo6-gbm.test.ts.",
    "conexao": "Material de consulta: o percurso da aula termina no slide 21.",
    "guia": {
     "funcao": "Servir de consulta para fórmulas, métodos atuais, referências e reprodução.",
     "pre": "Todo o capítulo; as fórmulas têm link para o slide em que aparecem.",
     "conducao": "Não é slide de aula. Indique as abas no fim e use a de Fronteira se a turma perguntar por XGBoost, LightGBM ou CatBoost.",
-    "leitura": "Cada método da fronteira traz o que resolve e quando usar; a folha do XGBoost é o passo de Newton do slide 6 com λ no denominador.",
+    "leitura": "Cada método da fronteira traz o que resolve, quando usar e o slide em que o tema aparece; a folha do XGBoost é w* = −G ÷ (H + λ): com λ = 0, é o passo de Newton do slide 6, porque −G é a soma de y − p.",
     "pergunta": "Qual método da fronteira você usaria numa carteira com CEP e CNAE como variáveis?",
     "resposta": "CatBoost, que codifica categóricas de alta cardinalidade pela taxa de default em ordem, sem vazamento do alvo.",
     "erros": [
@@ -8018,7 +8023,7 @@
       "intervencao": "Releia a linha do CatBoost na aba Fronteira."
      }
     ],
-    "interacao": "Cinco abas: fórmulas, fronteira, referências de método, referências de validação e reprodução.",
+    "interacao": "Cinco abas: fórmulas, fronteira, referências de método, referências de validação e reprodução; links para os slides e para o DOI de cada referência.",
     "verificacao": "O aluno localiza a referência primária de cada item do checklist.",
     "transicao": "Volte ao slide 21 ou siga para o capítulo 7."
    },
