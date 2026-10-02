@@ -110,10 +110,9 @@ export function S15LaboratorioDiscriminacao({ pagina }: { pagina?: Pagina }) {
       </Painel>
       <Painel>
         <Previsao pergunta={`Se a fila for invertida (o mais arriscado vai para o fim), o que acontece com a AUC de ${num(AUC0, 2)}?`} opcoes={OPS} escolha={esc} onEscolha={setEsc} recolher={liberado} />
-        <p className="q7-k">Cenário{liberado ? "" : ": liberado depois da previsão"}</p>
+        <div className="q7-s21-l"><p className="q7-k">Cenário{liberado ? "" : ": liberado depois da previsão"}</p><Botao sec onClick={() => { setEsc(null); setCen("boa"); setSigma(1); setFoco("roc"); }}>Restaurar</Botao></div>
         <div className="q7-g2-grade2"><Seg rotulo="Cenário" opcoes={(Object.keys(NOMES) as Cen[]).map((c) => ({ v: c, r: NOMES[c] }))} valor={cen} onChange={setCen} desab={!liberado} /></div>
         {cen === "perturbada" && <Controle rotulo="Ruído σ em log odds" valor={sigma} min={0} max={3} passo={0.1} onChange={setSigma} mostrar={num(sigma, 1)} escala={["0: a logística", "3: quase acaso"]} />}
-        <div className="q7-botoes"><Botao sec onClick={() => { setEsc(null); setCen("boa"); setSigma(1); setFoco("roc"); }}>Restaurar</Botao></div>
       </Painel>
     </Quadro>
   );
