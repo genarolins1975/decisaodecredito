@@ -107,3 +107,24 @@ describe("capítulo 6: diferença pareada de log loss", () => {
     perto(r.ep, Math.sqrt((s2 - (s * s) / n) / (n - 1) / n), 1e-12);
   });
 });
+
+describe("capítulo 6: ganho médio pareado de várias sementes e quantil da t de Student", () => {
+  it("com uma semente, o ganho médio pareado é a diferença pareada; com duas, a média das perdas por proposta", () => {
+    const mod = G.ajustar(XA, base.ajuste.y, { eta: 0.1, arvores: 30, profundidade: 2, minFolha: 40 });
+    const ev = G.estagios(mod, XV), y = base.validacao.y, n = y.length;
+    const um = G.ganhoMedioPareado(ev[10], [ev[30]], y), ref1 = G.diferencaPerdaPareada(ev[10], ev[30], y);
+    perto(um.dif, ref1.dif, 1e-14); perto(um.ep, ref1.ep, 1e-14); expect(um.n).toBe(n);
+    const dois = G.ganhoMedioPareado(ev[10], [ev[20], ev[30]], y);
+    perto(dois.dif, G.perdaLog(ev[10], y) - (G.perdaLog(ev[20], y) + G.perdaLog(ev[30], y)) / 2, 1e-12);
+    const l = (f: number, yi: number) => -(yi ? Math.log(G.sigmoide(f)) : Math.log(1 - G.sigmoide(f)));
+    const d = y.map((yi, i) => l(ev[10][i], yi) - (l(ev[20][i], yi) + l(ev[30][i], yi)) / 2);
+    const m = d.reduce((a, b) => a + b, 0) / n;
+    perto(dois.ep, Math.sqrt(d.reduce((a, v) => a + (v - m) ** 2, 0) / (n - 1) / n), 1e-12);
+  });
+  it("quantil e distribuição da t iguais aos do SciPy (scipy.stats.t.ppf e t.cdf, SciPy 1.17.1)", () => {
+    // valores de python3 -c "from scipy import stats; print(repr(stats.t.ppf(p, gl)))"
+    const ppf: [number, number, number][] = [[0.975, 9, 2.262157162798205], [0.975, 630, 1.9637366160205678], [0.95, 4, 2.1318467863266495], [0.025, 9, -2.2621571627982053], [0.995, 1, 63.656741162871526], [0.9, 30, 1.3104150253913955]];
+    for (const [p, gl, q] of ppf) perto(G.quantilT(p, gl), q, 1e-9 * Math.max(1, Math.abs(q)));
+    perto(G.distribuicaoT(2, 9), 0.9617235881146495, 1e-12); perto(G.distribuicaoT(-1.5, 3), 0.11529193262241147, 1e-12);
+  });
+});

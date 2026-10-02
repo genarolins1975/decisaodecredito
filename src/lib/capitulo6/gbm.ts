@@ -13,6 +13,8 @@
  * A busca de corte segue a do scikit-learn: valores ordenados, corte no ponto médio entre valores distintos, os dois
  * lados com pelo menos o mínimo por folha, melhor melhoria n_e·n_d·(média_e − média_d)²; em empate, o primeiro.
  */
+import { betaRegularizada } from "@/lib/capitulo7/metricas";
+
 export type Vetor = readonly number[];
 export type Matriz = readonly Vetor[]; // linhas: propostas; colunas: variáveis
 
@@ -226,4 +228,41 @@ export function diferencaPerdaPareada(Fa: Vetor, Fb: Vetor, y: Vetor): { dif: nu
   const dif = s / n; let q = 0; for (let i = 0; i < n; i++) q += (d[i] - dif) ** 2;
   const ep = Math.sqrt(q / (n - 1) / n), z = 1.959963984540054;
   return { dif, ep, ic: [dif - z * ep, dif + z * ep], n };
+}
+
+/**
+ * Ganho de perda de vários ajustes (as sementes de uma subamostra) sobre um modelo de referência, nas mesmas propostas:
+ * dᵢ = perdaᵢ(referência) − média, sobre os ajustes, de perdaᵢ(ajuste). Devolve a média de dᵢ (igual à log loss da
+ * referência menos a média das log loss dos ajustes) e o erro padrão dessa média (desvio padrão amostral de dᵢ ÷ √n).
+ * Positivo: os ajustes perdem menos. É a régua da validação para o ganho médio de dez sementes: mede o que n propostas
+ * distinguem, com as propostas como unidades independentes; a variação entre sementes fica de fora.
+ */
+export function ganhoMedioPareado(Fref: Vetor, Fs: readonly Vetor[], y: Vetor): { dif: number; ep: number; n: number } {
+  const n = y.length, k = Fs.length; const d = new Array<number>(n);
+  const perda1 = (f: number, yi: number) => { const p = Math.min(1 - 1e-15, Math.max(1e-15, sigmoide(f))); return -(yi * Math.log(p) + (1 - yi) * Math.log(1 - p)); };
+  let s = 0;
+  for (let i = 0; i < n; i++) { let m = 0; for (const F of Fs) m += perda1(F[i], y[i]); d[i] = perda1(Fref[i], y[i]) - m / k; s += d[i]; }
+  const dif = s / n; let q = 0; for (let i = 0; i < n; i++) q += (d[i] - dif) ** 2;
+  return { dif, ep: Math.sqrt(q / (n - 1) / n), n };
+}
+
+/**
+ * Função de distribuição da t de Student com gl graus de liberdade, pela beta incompleta regularizada de
+ * src/lib/capitulo7/metricas.ts: para t ≥ 0, F(t) = 1 − I_{gl ÷ (gl + t²)}(gl ÷ 2, ½) ÷ 2; simétrica em torno de 0.
+ */
+export function distribuicaoT(t: number, gl: number): number {
+  const cauda = 0.5 * betaRegularizada(gl / (gl + t * t), gl / 2, 0.5);
+  return t >= 0 ? 1 - cauda : cauda;
+}
+/**
+ * Quantil da t de Student (o t tal que distribuicaoT(t, gl) = p), por bisseção na distribuição; conferido com
+ * scipy.stats.t.ppf em tests/capitulo6-gbm.test.ts. Com p = 0,975 e gl = 9, o multiplicador do intervalo de 95% da
+ * média de dez sementes.
+ */
+export function quantilT(p: number, gl: number): number {
+  if (p === 0.5) return 0;
+  if (p < 0.5) return -quantilT(1 - p, gl);
+  let lo = 0, hi = 1; while (distribuicaoT(hi, gl) < p) { lo = hi; hi *= 2; }
+  for (let i = 0; i < 200 && hi - lo > 1e-13 * Math.max(1, hi); i++) { const m = (lo + hi) / 2; if (distribuicaoT(m, gl) < p) lo = m; else hi = m; }
+  return (lo + hi) / 2;
 }

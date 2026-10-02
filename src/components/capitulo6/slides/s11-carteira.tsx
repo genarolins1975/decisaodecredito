@@ -81,22 +81,14 @@ function Painel2({ c, m, revelado, kmin, passa, kauc }: { c: Curvas; m: number; 
                 <line x1={x(kmin)} x2={x(kmin)} y1={y(c.pv[kmin]) - r * 1.6} y2={topo + d.fs * 0.3} stroke="#2E6B4F" strokeWidth={1.2} strokeDasharray="2 3" />
                 <circle cx={x(kmin)} cy={y(c.pv[kmin])} r={r * 1.7} fill="none" stroke="#2E6B4F" strokeWidth={2} />
                 <text className="q7-rot--peq" x={x(kmin)} y={topo} textAnchor="middle" style={{ fill: "#2E6B4F", fontWeight: 700, ...halo }}>mínimo {num(c.pv[kmin], 3)} em {kmin}</text>
-                {(() => {
-                  // a anotação do cruzamento desce uma linha se encostar na do mínimo
-                  const larg = (t: string) => t.length * d.fs * 0.47;
-                  const tm = `mínimo ${num(c.pv[kmin], 3)} em ${kmin}`, tp = `cruza o palpite em ${passa}`;
-                  const yp = x(passa) + r * 1.7 - larg(tp) < x(kmin) + larg(tm) / 2 + d.fs * 0.6 ? topo + d.fs * 1.15 : topo;
-                  return <>
-                    <line x1={x(passa)} x2={x(passa)} y1={y(c.pv[passa]) - r * 1.6} y2={yp + d.fs * 0.3} stroke="#2E6B4F" strokeWidth={1.2} strokeDasharray="2 3" />
-                    <circle cx={x(passa)} cy={y(c.pv[passa])} r={r * 1.7} fill="none" stroke="#2E6B4F" strokeWidth={2} />
-                    <text className="q7-rot--peq" x={x(passa) + r * 1.7} y={yp} textAnchor="end" style={{ fill: "#2E6B4F", fontWeight: 700, ...halo }}>{tp}</text>
-                  </>;
-                })()}
+                {/* o cruzamento é anotado abaixo do ponto, entre as duas curvas, para deixar o alto livre ao valor do cursor */}
+                <circle cx={x(passa)} cy={y(c.pv[passa])} r={r * 1.7} fill="none" stroke="#2E6B4F" strokeWidth={2} />
+                <text className="q7-rot--peq" x={x(passa) + r * 1.7} y={y(c.pv[passa]) + r * 1.7} dy="1.55em" textAnchor="end" style={{ fill: "#2E6B4F", fontWeight: 700, ...halo }}>cruza o palpite em {passa}</text>
               </g>}
               {tipo === "perda" && !revelado && <text className="q7-rot--peq" x={x(0) + d.fs * 0.4} y={y(sa[0]) - d.fs * 0.5} style={{ fill: "#5B6475" }}>palpite inicial F₀</text>}
               {tipo === "auc" && revelado && <g>
                 <circle cx={x(kauc)} cy={y(c.av[kauc])} r={r * 1.7} fill="none" stroke="#2E6B4F" strokeWidth={2} />
-                <text className="q7-rot--peq" x={x(kauc)} y={y(c.av[kauc]) + r * 1.7} dy="1.15em" textAnchor="middle" style={{ fill: "#2E6B4F", fontWeight: 700, ...halo }}>pico {num(c.av[kauc], 3)} em {kauc}</text>
+                <text className="q7-rot--peq" x={x(kauc) + r * 1.7} y={y(c.av[kauc]) + r * 1.7} dy="1.1em" textAnchor="end" style={{ fill: "#2E6B4F", fontWeight: 700, ...halo }}>pico {num(c.av[kauc], 3)} em {kauc}</text>
               </g>}
               {tipo === "auc" && fora && <text className="q7-rot--peq" x={x(0) + d.fs * 0.5} y={d.h - g.b - d.fs * 0.5} style={{ fill: "#5B6475", ...halo }}>0 árvores: PD igual para todas, AUC {num(sa[0], 2)}</text>}
               <line x1={x(m)} x2={x(m)} y1={g.t} y2={d.h - g.b} stroke="#5B6475" strokeWidth={1.8} strokeDasharray="3 4" />
@@ -104,6 +96,15 @@ function Painel2({ c, m, revelado, kmin, passa, kauc }: { c: Curvas; m: number; 
               {revelado && <path className="q7-linha q7-linha--val" strokeDasharray="9 6" d={caminho(pts(sv))} />}
               {!fora && <circle cx={x(m)} cy={y(sa[m])} r={r} fill="#00205B" stroke="#fff" strokeWidth={2} />}
               {revelado && !fora && <path d={tri(x(m), y(sv[m]), r * 1.2)} fill="#2E6B4F" stroke="#fff" strokeWidth={1.5} />}
+              {!fora && (() => {
+                // valores no cursor, rotulados na própria série: do lado com mais espaço, a série de cima acima e a de baixo abaixo
+                const lado = x(m) > (g.l + d.w - g.r) / 2 ? -1 : 1;
+                const vs = [{ v: sa[m], cor: "#00205B", k: "a" }, ...(revelado && !(tipo === "auc" && m === kauc) ? [{ v: sv[m], cor: "#2E6B4F", k: "v" }] : [])];
+                const cima = vs.length > 1 && y(vs[1].v) < y(vs[0].v) ? "v" : "a";
+                // a de baixo sobe para cima do ponto quando o rótulo sairia pela base do gráfico
+                const baixo = (v: number) => y(v) + d.fs * 1.4 < d.h - g.b;
+                return vs.map((q) => <text key={q.k} className="q7-rot" x={x(m) + lado * r * 1.8} y={y(q.v)} dy={q.k === cima || vs.length === 1 || !baixo(q.v) ? "-.55em" : "1.2em"} textAnchor={lado < 0 ? "end" : "start"} style={{ fill: q.cor, fontWeight: 700, ...halo }}>{num(q.v, 3)}</text>);
+              })()}
               <text className="q7-rot" x={d.w - g.r + d.fs * 0.4} y={ya + d.fs * 0.34} style={{ fill: "#00205B" }}>● ajuste</text>
               {revelado && <text className="q7-rot" x={d.w - g.r + d.fs * 0.4} y={yv + d.fs * 0.34} style={{ fill: "#2E6B4F" }}>▲ validação</text>}
             </g>
@@ -126,18 +127,19 @@ function Intervalos({ c, m, kmin }: { c: Curvas; m: number; kmin: number }) {
   ];
   return (
     <div className="q6-s11-ic">
-      <p className="q7-k">Com {m} árvores, perda de validação a mais (IC 95%)</p>
+      <p className="q7-k">Perda de validação a mais com {m} (IC 95%)</p>
       {linhas.map((l) => (
-        <div key={l.r} className="q6-s11-ic-l" data-zero={l.p && l.p.ic[0] <= 0 && l.p.ic[1] >= 0 ? "1" : "0"}>
+        <div key={l.r} className="q6-s11-ic-l">
           <span className="q6-s11-ic-r">{l.r}</span>
+          <span className="q6-s11-ic-v">{l.p ? <><b>{sinal(l.p.dif)}</b> <small>({num(l.p.ic[0], 3)} a {num(l.p.ic[1], 3)})</small></> : l.igual}</span>
           <span className="q6-s11-ic-t" aria-hidden="true">
             <i className="q6-s11-ic-0" style={{ left: pos(0) }} />
             {l.p && <i className="q6-s11-ic-b" style={{ left: pos(l.p.ic[0]), width: `calc(${pos(l.p.ic[1])} - ${pos(l.p.ic[0])})` }} />}
             {l.p && <i className="q6-s11-ic-p" style={{ left: pos(l.p.dif) }} />}
           </span>
-          <span className="q6-s11-ic-v">{l.p ? <><b>{sinal(l.p.dif)}</b> <small>({num(l.p.ic[0], 3)} a {num(l.p.ic[1], 3)})</small></> : l.igual}</span>
         </div>
       ))}
+      <p className="q6-s11-ic-e" aria-hidden="true"><span style={{ left: pos(-dom) }}>{num(-dom, 2)}</span><span style={{ left: pos(0) }}>0</span><span style={{ left: pos(dom) }}>+{num(dom, 2)}</span></p>
     </div>
   );
 }
@@ -157,34 +159,25 @@ export function S11Carteira({ pagina }: { pagina?: Pagina }) {
   const ops = [
     { texto: "Acompanha o ajuste: cai a cada árvore", certa: false, retorno: <>Confunde <b>ajuste com generalização</b>: o ajuste mede o que o modelo já viu. Na validação, a perda termina em {num(c.pv[MAXA], 3)}, no nível do palpite ({num(c.pv[0], 3)}).</> },
     { texto: "Melhora mais devagar, mas sempre melhora", certa: false, retorno: <>Confunde <b>desacelerar com inverter</b>: a decoreba não só freia o ganho, ela o desfaz. A perda de validação desce até {num(vmin, 3)} com {kmin} árvores e volta a {num(c.pv[MAXA], 3)} com {MAXA}.</> },
-    { texto: "Melhora no começo, depois piora até voltar ao nível do palpite", certa: true, retorno: <>Isso: desce até {num(vmin, 3)} com {kmin} árvores e volta ao nível do palpite ({num(c.pv[0], 3)}). A ordenação também piora: a AUC de validação chega a {num(c.av[kauc], 3)} com {kauc} árvores e cai para {num(c.av[MAXA], 3)} com {MAXA}.</> },
+    { texto: "Melhora, depois piora até o nível do palpite", certa: true, retorno: <>Isso: desce até {num(vmin, 3)} com {kmin} árvores e volta ao nível do palpite ({num(c.pv[0], 3)}); a AUC cai de {num(c.av[kauc], 3)} com {kauc} para {num(c.av[MAXA], 3)} com {MAXA}.</> },
   ];
   const revelado = esc !== null && ops[esc].certa;
-  const kv = (v: number, cc: number) => (revelado ? num(v, cc) : "·");
   return (
     <Quadro slug="c6p11" pagina={pagina} layout="gl"
       conclusao={revelado
-        ? <>Com taxa {num(CFG_CARTEIRA.eta, 1)} e sem subamostra, <b>o ajuste melhora em {quedas} de {MAXA} árvores; a validação desce até {num(vmin, 3)} em {kmin} e volta ao nível do palpite</b>: com {DV} defaults, {MAXA} árvores não se distinguem do palpite, mas perdem {num(contraMin.dif, 3)} a mais que {kmin} (intervalos ao lado). Onde parar: <LinkSlide slug="c6p15">slide 15</LinkSlide>.</>
+        ? <><b>O ajuste melhora em {quedas} de {MAXA} árvores; a validação desce até {num(vmin, 3)} em {kmin} e volta ao nível do palpite</b>: com {DV} defaults, {MAXA} árvores não se distinguem dele, mas perdem {num(contraMin.dif, 3)} a mais que {kmin} (ao lado). Onde parar: <LinkSlide slug="c6p15">slide 15</LinkSlide>.</>
         : <>O algoritmo do <LinkSlide slug="c6p10">slide 10</LinkSlide>, {MAXA} vezes: a perda de ajuste cai em {quedas} de {MAXA} árvores, de {num(c.pa[0], 3)} a <b>{num(c.pa[MAXA], 3)}</b>; a AUC de ajuste vai de {num(c.aa[0], 2)} a {num(c.aa[MAXA], 3)}. E na validação?</>}
-      fonte={`Ajuste: ${int(NA)} propostas, ${DA} defaults; validação sorteada: ${int(NV)} propostas, ${DV} defaults. η = ${num(CFG_CARTEIRA.eta, 1)}, profundidade ${CFG_CARTEIRA.profundidade}, mínimo ${CFG_CARTEIRA.minFolha} por folha, até ${MAXA} árvores (gbm.ts, conferida contra o scikit-learn); log loss média. IC: diferença pareada de perda por proposta, normal, sem a variação do ajuste.`}>
+      fonte={`Ajuste: ${int(NA)} propostas, ${DA} defaults; validação: ${int(NV)}, ${DV} defaults. η = ${num(CFG_CARTEIRA.eta, 1)}, profundidade ${CFG_CARTEIRA.profundidade}, mínimo ${CFG_CARTEIRA.minFolha} por folha, sem subamostra (gbm.ts, conferida contra o scikit-learn). IC: perda pareada por proposta.`}>
       <Painel>
         <Painel2 c={c} m={m} revelado={revelado} kmin={kmin} passa={passa} kauc={kauc} />
-        <div className="q6-s11-rod">
-          <Controle rotulo="Árvores somadas" valor={m} min={0} max={MAXA} passo={1} onChange={setM} mostrar={int(m)} />
-        </div>
       </Painel>
       <Painel>
-        <table className="q7-tab q6-s11-tab">
-          <caption className="q7-k">Com {m} árvores</caption>
-          <thead><tr><th className="q7-t-l" scope="col"><span className="q7-sr">Medida</span></th><th scope="col">● ajuste</th><th scope="col">▲ validação</th></tr></thead>
-          <tbody>
-            <tr><th scope="row">Perda</th><td>{num(c.pa[m], 3)}</td><td className="q6-s11-v">{kv(c.pv[m], 3)}</td></tr>
-            <tr><th scope="row">AUC</th><td>{num(c.aa[m], 3)}</td><td className="q6-s11-v">{kv(c.av[m], 3)}</td></tr>
-          </tbody>
-        </table>
+        <div className="q6-s11-topo">
+          <Controle rotulo="Árvores somadas" valor={m} min={0} max={MAXA} passo={1} onChange={setM} mostrar={int(m)} />
+          <Botao sec onClick={() => { setM(MAXA); setEsc(null); }}>Restaurar</Botao>
+        </div>
         <Previsao pergunta={`Com ${MAXA} árvores, e a perda nas ${int(NV)} da validação sorteada?`} opcoes={ops} escolha={esc} onEscolha={setEsc} recolher />
         {revelado && <Intervalos c={c} m={m} kmin={kmin} />}
-        <div className="q7-botoes q6-fim"><Botao sec onClick={() => { setM(MAXA); setEsc(null); }}>Restaurar</Botao></div>
       </Painel>
     </Quadro>
   );
