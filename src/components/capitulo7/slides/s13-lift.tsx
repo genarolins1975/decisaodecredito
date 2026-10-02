@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Botao, caminho, Controle, Eixos, escala, Expandir, Formula, Grafico, Painel, Quadro, Seg, margens, type Pagina } from "../base";
+import { Botao, caminho, Controle, Eixos, escala, Grafico, Painel, Previsao, Quadro, Seg, margens, type Opcao, type Pagina } from "../base";
 import { useCompartilhado } from "../estado";
 import { CENARIOS, D, FILA_PL, N, PL, Y } from "@/lib/capitulo7/dados";
 import { aucPorPares, fila, ganho, liftFaixa } from "@/lib/capitulo7/metricas";
@@ -11,7 +11,8 @@ import { int, num, pct, vezes } from "@/lib/capitulo7/formato";
  * carteira. Lift de faixa = taxa numa faixa de 10% ÷ taxa da carteira. A tabela separa defaults capturados (fração dos
  * 81) de inadimplência entre os examinados (fração do grupo). Mesmo controle do slide 12. O seletor troca a fila da
  * logística pela fila embaralhada (as mesmas PDs em ordem sorteada, semente do capítulo): o experimento mostra que o
- * lift vem da ordem, não das PDs, e que ao acaso ele oscila em torno de 1.
+ * lift vem da ordem, não das PDs, e que ao acaso ele oscila em torno de 1. A turma aposta antes de embaralhar: a escolha
+ * troca a fila e mostra o resultado; "Tentar outra" volta à logística.
  */
 type Fila = "logistica" | "embaralhada";
 const PI = D / N;
@@ -22,9 +23,18 @@ const SERIES = Object.fromEntries(([["logistica", PL, FILA_PL], ["embaralhada", 
   bandas: Array.from({ length: 10 }, (_, j) => ({ j, ...liftFaixa(Y, pd, j / 10, (j + 1) / 10, ord) })),
 }])) as Record<Fila, { pd: readonly number[]; ord: number[]; auc: number; lifts: { q: number; l: number }[]; bandas: ({ j: number } & ReturnType<typeof liftFaixa>)[] }>;
 
+const Q0 = 0.1;
+const LE = ganho(Y, CENARIOS.filaFracaMediaCerta, Q0, fila(CENARIOS.filaFracaMediaCerta)).lift!, LL = ganho(Y, PL, Q0, FILA_PL).lift!;
+const OPCOES: Opcao[] = [
+  { texto: `Fica perto de ${vezes(LL, 1)}: as PDs são as mesmas`, retorno: <>Confunde o <b>nível das PDs com a ordem</b>. As PDs são as mesmas, mas quem fica no topo passa a ser sorteado: o lift vem da ordem.</> },
+  { texto: "Cai para perto de 1", certa: true, retorno: <>Isso. Embaralhada, a fila põe no topo um grupo qualquer: lift de <b>{vezes(LE)}</b> nos {pct(Q0, 0)}, ruído em torno de 1.</> },
+  { texto: "Vai a zero", retorno: <>Zero seria um topo <b>sem nenhum default</b>. Ao acaso, o topo tem em média a taxa da carteira: lift perto de 1, não 0.</> },
+];
+
 export function S13Lift({ pagina }: { pagina?: Pagina }) {
   const [q, setQ] = useCompartilhado("fracaoExaminada");
   const [f, setF] = useState<Fila>("logistica");
+  const [esc, setEsc] = useState<number | null>(null);
   const S = SERIES[f], LIFTS = S.lifts, BANDAS = S.bandas;
   const g = ganho(Y, S.pd, q, S.ord);
   return (
@@ -45,31 +55,21 @@ export function S13Lift({ pagina }: { pagina?: Pagina }) {
               <path className="q7-linha q7-linha--ord" d={caminho(LIFTS.map((p) => ({ x: x(p.q), y: y(p.l) })))} />
               <line className="q7-corte" x1={x(q)} x2={x(q)} y1={y(0)} y2={y(g.lift!)} />
               <circle cx={x(q)} cy={y(g.lift!)} r={d.fs * 0.42} fill="#A85A0C" stroke="#fff" strokeWidth={2.5} />
-              <text className="q7-corte-t" x={x(q) + d.fs * 0.6} y={y(g.lift!) - d.fs * 0.4}>{vezes(g.lift!)}</text>
+              <text className="q7-corte-t" x={x(q) + d.fs * 0.6} y={g.lift! >= 1 ? y(g.lift!) - d.fs * 0.4 : y(g.lift!) + d.fs * 1.3}>{vezes(g.lift!)}</text>
               <text className="q7-rot--peq" x={x(1) + d.fs * 0.5} y={y(1)} dy=".35em" style={{ fill: "#5B6475" }}>acaso</text>
             </g>
           );
         }}
       </Grafico>
-      <Painel>
-        <Seg rotulo="Fila" opcoes={[{ v: "logistica" as Fila, r: "Logística" }, { v: "embaralhada" as Fila, r: "Embaralhada" }]} valor={f} onChange={setF} cor />
-        <Controle rotulo="Fração da carteira examinada" valor={q} min={0.05} max={1} passo={0.05} onChange={setQ} mostrar={`${pct(q, 0)} (${int(g.examinados)})`} escala={["5%", "100%"]} />
-        <table className="q7-tab">
-          <thead><tr><th className="q7-t-l">Grupo</th><th>n</th><th>Defaults</th><th>Taxa</th></tr></thead>
-          <tbody>
-            <tr data-on="1"><th>Examinados</th><td>{int(g.examinados)}</td><td>{g.capturados}</td><td>{pct(g.taxaGrupo!, 1)}</td></tr>
-            <tr><th>Carteira</th><td>{int(N)}</td><td>{D}</td><td>{pct(PI, 1)}</td></tr>
-          </tbody>
-        </table>
-        <dl className="q7-lista">
-          <div data-tom="dec"><dt>Lift acumulado</dt><dd>{pct(g.taxaGrupo!, 1)} ÷ {pct(PI, 1)} = {vezes(g.lift!)}</dd></div>
-          <div data-tom="def"><dt>Defaults capturados (ganho)</dt><dd>{g.capturados} ÷ {D} = {pct(g.ganho!, 1)}</dd></div>
+      <Painel className="q7-s13-p">
+        <div className="q7-s13-topo"><Seg rotulo="Fila" opcoes={[{ v: "logistica" as Fila, r: "Logística" }, { v: "embaralhada" as Fila, r: "Embaralhada" }]} valor={f} onChange={setF} cor desab={esc === null} /><Botao sec onClick={() => { setF("logistica"); setQ(Q0); setEsc(null); }}>Restaurar</Botao></div>
+        <Previsao rotulo="Antes de embaralhar" pergunta={`Se as mesmas PDs forem sorteadas entre as propostas, o lift nos ${pct(Q0, 0)} do topo:`} opcoes={OPCOES} escolha={esc} onEscolha={(i) => { setEsc(i); setQ(Q0); setF(i === null ? "logistica" : "embaralhada"); }} recolher />
+        <Controle rotulo="Fração da carteira examinada" valor={q} min={0.05} max={1} passo={0.05} onChange={setQ} mostrar={`${pct(q, 0)} (${int(g.examinados)})`} />
+        <dl className="q7-lista q7-s13-l">
+          <div><dt>Taxa nos examinados</dt><dd>{g.capturados} ÷ {int(g.examinados)} = {pct(g.taxaGrupo!, 1)}</dd></div>
+          <div><dt>Lift = taxa ÷ {pct(PI, 1)} ({D} ÷ {int(N)})</dt><dd>{vezes(g.lift!)}</dd></div>
+          <div><dt>Ganho: defaults capturados</dt><dd>{g.capturados} ÷ {D} = {pct(g.ganho!, 1)}</dd></div>
         </dl>
-        <div className="q7-botoes"><Botao onClick={() => setQ(0.1)}>10%</Botao><Botao onClick={() => setQ(0.5)}>50%</Botao><Botao onClick={() => setQ(1)}>100%</Botao><Botao sec onClick={() => { setF("logistica"); setQ(0.1); }}>Restaurar</Botao></div>
-        <Expandir resumo="Lift acumulado e lift de faixa">
-          <Formula f={String.raw`\begin{aligned}\mathrm{lift}(q)&=\frac{\mathrm{ganho}(q)}{q}\\&=\frac{\text{taxa no grupo}}{\text{taxa da carteira}}\end{aligned}`} />
-          <p className="q7-nota">O lift de faixa usa só a faixa (barras); o acumulado usa tudo até q (linha). Em 100% da carteira, o lift acumulado é 1.</p>
-        </Expandir>
       </Painel>
     </Quadro>
   );

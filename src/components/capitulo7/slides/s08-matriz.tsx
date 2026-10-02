@@ -28,8 +28,8 @@ export function S08Matriz({ pagina }: { pagina?: Pagina }) {
   const cont = [[c.vp, c.vp + c.fn], [c.vn, c.vn + c.fp], [c.vp, c.vp + c.fp]];
   return (
     <Quadro slug="c7p23" pagina={pagina} layout="um"
-      conclusao={<>Com corte em {pct(corte, 0)}: {c.vp} default{c.vp === 1 ? "" : "s"} evitado{c.vp === 1 ? "" : "s"}, <b>{c.fp} {c.fp === 1 ? "bom cliente recusado" : "bons clientes recusados"}</b> e <b>{c.fn} default{c.fn === 1 ? "" : "s"} aprovado{c.fn === 1 ? "" : "s"}</b>. Prever default é decidir recusar; o default realizado só se conhece 12 meses depois.</>}
-      fonte="Mini-base de 20 propostas da janela fora do tempo (5 defaults, 15 adimplentes), PD da logística em pontos inteiros. Regra: recusa quando PD ≥ corte. Positivo = default previsto = proposta recusada.">
+      conclusao={<>Com corte em {pct(corte, 0)}: {c.vp} default{c.vp === 1 ? "" : "s"} evitado{c.vp === 1 ? "" : "s"}, <b>{c.fp} {c.fp === 1 ? "bom cliente recusado" : "bons clientes recusados"}</b> e <b>{c.fn} default{c.fn === 1 ? "" : "s"} aprovado{c.fn === 1 ? "" : "s"}</b>. Nesta regra, o positivo da matriz é a recusa: a PD acima do corte vira decisão de recusar, e o default realizado só se conhece 12 meses depois.</>}
+      fonte="Mini-base de 20 propostas da janela fora do tempo (5 defaults, 15 adimplentes), PD da logística em pontos inteiros. Regra: recusa quando PD ≥ corte; nesta regra, positivo = proposta recusada.">
       <div className="q7-s08">
         <Painel titulo="A fila e a fronteira de recusa" className="q7-s08-a">
           <div className="q7-s08-fila"><Fila itens={ORD} revelado compacta corteK={k < ORD.length ? k : null} rotuloCorte={`corte ${pct(corte, 0)}`} /></div>

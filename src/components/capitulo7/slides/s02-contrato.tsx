@@ -36,7 +36,7 @@ export function S02Contrato({ pagina }: { pagina?: Pagina }) {
     <Quadro slug="c7p21" pagina={pagina} layout="gl"
       conclusao={pop === "aprovados" ? <>A pergunta deste capítulo: entre propostas <b>aprovadas</b>, quem atrasa 90 dias ou mais em 12 meses? Na janela, {pct(D / N, 1)} atrasaram, e a logística tem AUC {num(r.auc, 4)}.</>
         : <>Mesma logística, outra pergunta: com os recusados (desfecho que só existe na base sintética), a taxa de default vai a {pct(r.obs, 1)} e a AUC a <b>{num(r.auc, 4)}</b>. Números de perguntas diferentes não se comparam.</>}
-      fonte={`Base sintética do curso, semente ${META.seed}; data de referência ${META.dataReferencia.split("-").reverse().join("/")}. Taxa de aprovação na janela: ${pct(PREVALENCIA.taxaAprovacao, 0)}. Resultados da população inteira: gerador do curso, que conhece o desfecho dos recusados.`}>
+      fonte={`Base sintética do curso, semente ${META.seed}; data de referência ${META.dataReferencia.split("-").reverse().join("/")}. Aprovação no gerador, todas as safras: ${pct(PREVALENCIA.taxaAprovacao, 0)}. Resultados da população inteira: gerador do curso, que conhece o desfecho dos recusados.`}>
       <Painel titulo="Cada safra precisa de 12 meses para ter desfecho">
         <Grafico rotulo="Linha do tempo: safras de treino, validação e janela final, cada uma seguida de 12 meses de observação; data de referência em 31 de janeiro de 2025" arCelular="16 / 9">
           {(d) => {
@@ -65,7 +65,7 @@ export function S02Contrato({ pagina }: { pagina?: Pagina }) {
       <Painel>
         <Seg rotulo="População avaliada" opcoes={[{ v: "aprovados" as Pop, r: "Só aprovados" }, { v: "todos" as Pop, r: "Aprovados e recusados" }]} valor={pop} onChange={setPop} cor />
         <div className="q7-kpis q7-kpis--2">
-          <Kpi rotulo="Taxa de default" valor={pct(r.obs, 1)} detalhe={pop === "aprovados" ? `${D} de ${N}` : "inclui recusados"} tom="def" tam="mini" />
+          <Kpi rotulo="Taxa de default" valor={pct(r.obs, 1)} detalhe={pop === "aprovados" ? `${D} de ${N}` : `aprovados ${pct(PREVALENCIA.oot, 1)}; recusados ${pct(PREVALENCIA.rejeitados, 1)}`} tom="def" tam="mini" />
           <Kpi rotulo="AUC da logística" valor={num(r.auc, 4)} detalhe={pop === "aprovados" ? "a pergunta do capítulo" : "outra pergunta"} tam="mini" />
         </div>
         <Previsao rotulo="Antes de seguir" pergunta="Outro banco reporta AUC de 0,80 para o seu modelo de cartão. O nosso, com 0,73, é pior?" escolha={prev} onEscolha={setPrev} recolher

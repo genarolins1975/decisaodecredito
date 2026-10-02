@@ -6,9 +6,10 @@ import { logit, sigmoide } from "@/lib/capitulo7/metricas";
 import { num, pct } from "@/lib/capitulo7/formato";
 
 /**
- * 04 · c7p3 · Ordenar, prever e decidir. Os mesmos quatro clientes (propostas reais da mini-base) numa fila, numa
- * escala de PD e diante de um corte. Mudar o nível das PDs (somar δ em log odds) mexe na escala e preserva a fila;
- * mudar o corte mexe nas decisões e preserva as PDs. O painel diz, a cada estado, o que mudou e o que ficou.
+ * 04 · c7p3 · Ordenar, prever e decidir. Os mesmos quatro clientes (propostas reais da janela, que voltam na fila do
+ * slide 5) numa fila, numa escala de PD e diante de um corte. Mudar o nível das PDs (somar δ em log odds) mexe na
+ * escala e preserva a fila; mudar o corte mexe nas decisões e preserva as PDs. O painel separa o efeito do nível (PDs
+ * novas contra as originais, no corte atual) do efeito do corte (PDs originais, corte atual contra o inicial).
  */
 const BASE = QUATRO.map((c) => ({ ...c, pd: c.pd }));
 const CORTE0 = 0.12;
@@ -21,17 +22,21 @@ export function S04TresObjetos({ pagina }: { pagina?: Pagina }) {
   const ord = BASE.map((_, i) => i).sort((a, b) => pds[b] - pds[a]);
   const mudouOrdem = ordem(pds) !== ordem(BASE.map((c) => c.pd));
   const mudouPd = Math.abs(delta) > 1e-9;
-  const rec = pds.map((p) => p >= corte), rec0 = BASE.map((c) => c.pd >= CORTE0);
-  const mudouDec = rec.some((r, i) => r !== rec0[i]);
+  // efeito do nível: PDs novas contra as originais, no mesmo corte; efeito do corte: PDs originais, corte atual contra o inicial
+  const rec = pds.map((p) => p >= corte), recOrig = BASE.map((c) => c.pd >= corte), recIni = BASE.map((c) => c.pd >= CORTE0);
+  const pelaPd = BASE.filter((_, i) => rec[i] !== recOrig[i]);
+  const peloCorte = BASE.filter((_, i) => recOrig[i] !== recIni[i]);
+  const mudouNivel = pelaPd.length > 0, mudouCorte = peloCorte.length > 0;
   const nRec = rec.filter(Boolean).length;
-  const estado = (m: boolean) => <b data-mudou={m ? "1" : "0"} className="q7-s04-est">{m ? "mudou" : "igual"}</b>;
+  const ids = (v: typeof BASE) => v.map((c) => `#${c.id}`).join(" e ");
+  const estado = (m: boolean, papel: "ord" | "prob" | "dec") => <b data-mudou={m ? "1" : "0"} data-papel={papel} className="q7-s04-est">{m ? "mudou" : "igual"}</b>;
   return (
     <Quadro slug="c7p3" pagina={pagina} layout="glx"
       conclusao={!mudouPd && corte === CORTE0 ? "Mexa no nível ou no corte. A fila só mudaria se a ordem entre as PDs mudasse, e somar δ em log odds nunca muda essa ordem."
-        : mudouPd && !mudouDec ? <>As PDs andaram {delta > 0 ? "para cima" : "para baixo"} e a fila ficou igual: <b>uma boa ordenação não garante o nível certo</b>.</>
-        : mudouPd ? <>Mesma fila, PDs em outro nível, e com o corte de {pct(corte, 0)} a decisão mudou para {mudouDec ? "pelo menos um cliente" : "ninguém"}: <b>o nível importa quando o corte é em PD</b>.</>
-        : <>As PDs são as mesmas; só o corte andou. Decidir é uma escolha separada de ordenar e de prever.</>}
-      fonte="Quatro propostas da mini-base (janela fora do tempo; PD da logística em pontos inteiros). Nível alterado por δ em log odds: p' = σ(logit p + δ). Recusa quando PD ≥ corte.">
+        : mudouPd && !mudouNivel ? <>As PDs andaram {delta > 0 ? "para cima" : "para baixo"} e a fila ficou igual: <b>uma boa ordenação não garante o nível certo</b>.</>
+        : mudouPd ? <>Mesma fila, PDs em outro nível: no corte de {pct(corte, 0)}, só o nível mudou a decisão de {ids(pelaPd)}. <b>O nível importa quando o corte é em PD</b>.</>
+        : <>As PDs são as mesmas; só o corte andou{mudouCorte ? `, e mudou a decisão de ${ids(peloCorte)}` : ""}. Decidir é uma escolha separada de ordenar e de prever.</>}
+      fonte="Quatro propostas reais da janela fora do tempo, que voltam na fila do slide 5; PD da logística em pontos inteiros. Nível alterado por δ em log odds: p' = σ(logit p + δ). Recusa quando PD ≥ corte.">
       <Painel titulo="Os mesmos quatro clientes, três tarefas">
         <div className="q7-s04">
           <p className="q7-s04-l"><span>1</span>Ordenar</p>
@@ -78,9 +83,10 @@ export function S04TresObjetos({ pagina }: { pagina?: Pagina }) {
       </Painel>
       <Painel titulo="O que mudou desde o início">
         <dl className="q7-s04-tab">
-          <div><dt>A fila (quem vem antes)</dt><dd>{estado(mudouOrdem)}</dd></div>
-          <div><dt>As PDs (o nível)</dt><dd>{estado(mudouPd)}</dd></div>
-          <div><dt>As decisões no corte</dt><dd>{estado(mudouDec)}</dd></div>
+          <div><dt>A fila (quem vem antes)</dt><dd>{estado(mudouOrdem, "ord")}</dd></div>
+          <div><dt>As PDs (o nível)</dt><dd>{estado(mudouPd, "prob")}</dd></div>
+          <div><dt>Decisões, pelo nível</dt><dd>{estado(mudouNivel, "dec")}</dd></div>
+          <div><dt>Decisões, pelo corte</dt><dd>{estado(mudouCorte, "dec")}</dd></div>
         </dl>
         <p className="q7-p">Ordenar pede só a <b>posição</b>. Prever pede o <b>valor</b> da PD. Decidir pede um <b>corte</b>, escolhido por critério econômico.</p>
         <div className="q7-botoes"><Botao sec onClick={() => { setDelta(0); setCorte(CORTE0); }}>Restaurar</Botao><Botao sec onClick={() => setDelta(0.8)}>Exemplo: PDs altas demais</Botao></div>
