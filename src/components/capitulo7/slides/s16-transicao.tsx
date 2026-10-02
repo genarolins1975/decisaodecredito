@@ -19,7 +19,7 @@ const AUC = aucPorPares(Y, PL).auc!;
 const AJUSTE = interceptoComSlope1(Y, PL);
 const modelo = (nome: string, sub: string, pd: readonly number[], cor: string) => ({ nome, sub, pd, cor, auc: aucPorPares(Y, pd).auc!, esp: soma(pd), media: soma(pd) / N, pe: pe(pd) });
 const A = modelo("Modelo A", "logística como estimada", PL, "#176C73");
-const B0 = modelo("Modelo B", "", transformar(PL, INICIO, 1), "#A85A0C");
+const B0 = modelo("Modelo B", "", transformar(PL, INICIO, 1), "#176C73");
 const sinal = (v: number) => `${v >= 0 ? "+" : "−"}${num(Math.abs(v), 2)}`;
 const OPS = [
   { texto: "A, porque está mais perto do observado", certa: false, retorno: <>A está mais perto no agregado ({num(A.esp, 1)} esperados contra {D}), mas ainda subestima. E perto no total não garante perto em cada faixa: é o que os próximos slides verificam.</> },
@@ -30,7 +30,7 @@ const OPS = [
 export function S16Transicao({ pagina }: { pagina?: Pagina }) {
   const [esc, setEsc] = useState<number | null>(null);
   const [delta, setDelta] = useState(INICIO);
-  const B = (modelo("Modelo B", `a mesma, ${sinal(delta)} em log odds`, transformar(PL, delta, 1), "#A85A0C"));
+  const B = (modelo("Modelo B", `a mesma, ${sinal(delta)} em log odds`, transformar(PL, delta, 1), "#176C73"));
   const M = [A, B];
   return (
     <Quadro slug="c7p28" pagina={pagina} layout="gl"
@@ -39,8 +39,8 @@ export function S16Transicao({ pagina }: { pagina?: Pagina }) {
       <Painel titulo="Dois modelos com a mesma fila">
         <div className="q7-s16-mod">
           {M.map((m) => (
-            <div key={m.nome} className="q7-s16-c" style={{ borderTopColor: m.cor }}>
-              <p className="q7-s16-n">{m.nome} <small>{m.sub}</small></p>
+            <div key={m.nome} className="q7-s16-c" style={{ borderTopColor: m.cor, borderTopStyle: m.nome === "Modelo B" ? "dashed" : "solid" }}>
+              <p className="q7-s16-n"><span className="q7-g2-amostra" data-hachura={m.nome === "Modelo B" ? "1" : undefined} aria-hidden="true" />{m.nome} <small>{m.sub}</small></p>
               <div className="q7-kpis q7-kpis--2">
                 <Kpi rotulo="AUC" valor={num(m.auc, 4)} tam="mini" />
                 <Kpi rotulo="PD média" valor={pct(m.media, 1)} detalhe={`observado ${pct(D / N, 1)}`} tam="mini" tom="prob" />
@@ -53,13 +53,13 @@ export function S16Transicao({ pagina }: { pagina?: Pagina }) {
             const meio = d.w / 2, alt = d.h - d.fs * 3.2, base = d.h - d.fs * 2;
             const bloco = (x0: number, w: number, vals: number[], real: number, fmt: (v: number) => string, tit: string) => {
               const mx = Math.max(...vals, real) * 1.18; const y = escala([0, mx], [base, base - alt + d.fs * 1.4]); const bw = w * 0.24; const bx = (i: number) => x0 + w * (0.08 + i * 0.32);
-              return <g>{vals.map((v, i) => <g key={i}><rect x={bx(i)} y={y(v)} width={bw} height={base - y(v)} fill={M[i].cor} />{(() => { const dentro = Math.abs(y(v) - d.fs * 0.8 - y(real)) < d.fs * 1.1 && base - y(v) > d.fs * 2; return <text className="q7-rot" x={bx(i) + bw / 2} y={dentro ? y(v) + d.fs * 1.3 : y(v) - d.fs * 0.4} textAnchor="middle" style={{ fill: dentro ? "#fff" : M[i].cor, fontWeight: 700 }}>{fmt(v)}</text>; })()}<text className="q7-tick" x={bx(i) + bw / 2} y={base} dy="1.2em" textAnchor="middle">{M[i].nome}</text></g>)}
+              return <g>{vals.map((v, i) => <g key={i}><rect x={bx(i)} y={y(v)} width={bw} height={base - y(v)} fill={i ? "url(#q7-s16-hachura)" : M[i].cor} stroke={M[i].cor} strokeWidth={i ? 2.5 : 0} />{(() => { const dentro = Math.abs(y(v) - d.fs * 0.8 - y(real)) < d.fs * 1.1 && base - y(v) > d.fs * 2; return <text className="q7-rot" x={bx(i) + bw / 2} y={dentro ? y(v) + d.fs * 1.3 : y(v) - d.fs * 0.4} textAnchor="middle" style={{ fill: dentro && !i ? "#fff" : M[i].cor, fontWeight: 700, paintOrder: "stroke", stroke: dentro && i ? "#fff" : "none", strokeWidth: dentro && i ? "0.3em" : 0 }}>{fmt(v)}</text>; })()}<text className="q7-tick" x={bx(i) + bw / 2} y={base} dy="1.2em" textAnchor="middle">{M[i].nome}</text></g>)}
                 <line x1={x0 + w * 0.04} x2={x0 + w * 0.7} y1={y(real)} y2={y(real)} stroke="#8C2332" strokeWidth={3} strokeDasharray="8 5" />
                 <text className="q7-rot--peq" x={x0 + w * 0.72} y={y(real)} style={{ fill: "#8C2332" }}><tspan x={x0 + w * 0.72} dy="-.2em">realizado</tspan><tspan x={x0 + w * 0.72} dy="1.15em" style={{ fontWeight: 700 }}>{fmt(real)}</tspan></text>
                 <text className="q7-eixo-t" x={x0 + w * 0.04} y={d.fs * 0.9}>{tit}</text>
                 <line className="q7-eixo" x1={x0 + w * 0.04} x2={x0 + w * 0.7} y1={base} y2={base} /></g>;
             };
-            return <g>{bloco(0, meio, M.map((m) => m.esp), D, (v) => num(v, 0), "Defaults esperados")}{bloco(meio, meio, M.map((m) => m.pe), REAL, (v) => reais(v).replace("R$ ", ""), "Perda esperada, em R$")}</g>;
+            return <g><defs><pattern id="q7-s16-hachura" width={10} height={10} patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width={10} height={10} fill="#EAF6F6" /><line x1={0} y1={0} x2={0} y2={10} stroke="#176C73" strokeWidth={4} /></pattern></defs>{bloco(0, meio, M.map((m) => m.esp), D, (v) => num(v, 0), "Defaults esperados")}{bloco(meio, meio, M.map((m) => m.pe), REAL, (v) => reais(v).replace("R$ ", ""), "Perda esperada, em R$")}</g>;
           }}
         </Grafico>
       </Painel>

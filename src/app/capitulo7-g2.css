@@ -1,1 +1,81 @@
 /* Capítulo 7, correções da revisão independente (grupo 2). Fundido em capitulo7.css ao final. */
+.q7-g2-col { gap: .7cqw; }
+.q7-g2-col > .q7-ctl { flex: none; }
+.q7-g2-linha { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1.6cqw; align-items: end; flex: none; }
+@container q7 (max-width: 820px) { .q7-g2-linha { grid-template-columns: minmax(0, 1fr); gap: 10px; } }
+/* gráfico quadrado que se dimensiona pela altura disponível; o resto da linha fica para números e controles */
+.q7-g2-quad { height: 100%; aspect-ratio: 1; max-width: 100%; min-height: 0; min-width: 0; display: flex; flex-direction: column; }
+.q7-g2-quad > .q7-graf { flex: 1; min-height: 0; }
+/* 15 · laboratório de discriminação */
+.q7-g2-s15 { flex: 1; min-height: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.4cqw; }
+.q7-g2-s15-lado { display: flex; flex-direction: column; gap: .9cqw; justify-content: center; min-width: 0; }
+@container q7 (max-width: 820px) { .q7-g2-s15 { display: flex; flex-direction: column; } .q7-g2-quad { height: auto; aspect-ratio: auto; } }
+.q7-g2-grade2 .q7-seg { display: grid !important; grid-template-columns: 1fr 1fr; width: 100%; }
+.q7 .q7-slide .q7-g2-grade2 .q7-seg .q7-btn { border-right: 1px solid #C9CDD5; border-bottom: 1px solid #C9CDD5; }
+.q7 .q7-slide .q7-g2-grade2 .q7-seg .q7-btn:nth-child(2n) { border-right: 0; }
+.q7 .q7-slide .q7-g2-grade2 .q7-seg .q7-btn:nth-last-child(-n + 2) { border-bottom: 0; }
+/* 16 · amostra de cor das séries: cheia para A, hachurada para B (mesmo papel de probabilidade, símbolo além da cor) */
+.q7-g2-amostra { display: inline-block; width: 1.3cqw; height: 1.3cqw; margin-right: .5cqw; vertical-align: -.15cqw; background: var(--q7-prob); border: .15cqw solid var(--q7-prob); box-sizing: border-box; border-radius: .15cqw; }
+.q7-g2-amostra[data-hachura="1"] { background: repeating-linear-gradient(45deg, var(--q7-prob) 0 .22cqw, var(--q7-prob-s) .22cqw .55cqw); }
+@container q7 (max-width: 820px) { .q7-g2-amostra { width: 13px; height: 13px; margin-right: 5px; border-width: 1.5px; } .q7-g2-amostra[data-hachura="1"] { background: repeating-linear-gradient(45deg, var(--q7-prob) 0 2px, var(--q7-prob-s) 2px 5px); } }
+/* 17 · grade de pessoas menor, histograma maior */
+.q7-g2-s17 .q7-s17-pes .q7-pes { max-width: 21cqw; }
+.q7-g2-s17 { gap: 2cqw; }
+.q7-g2-s17 > .q7-s17-pes { max-width: 22cqw; }
+@container q7 (max-width: 820px) { .q7-g2-s17 > .q7-s17-pes { max-width: none; } }
+/* 19 · curva quadrada à esquerda, na altura toda; régua, controles e conta à direita */
+.q7-g2-s19 { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.1cqw; min-height: 0; }
+.q7-g2-s19-dir { display: flex; flex-direction: column; gap: 1.1cqw; min-height: 0; min-width: 0; }
+.q7-g2-s19-r { flex: none; }
+.q7-g2-s19-r .q7-gw { height: 5.4cqw; flex: none; }
+.q7-g2-s19-ctl { display: flex; flex-wrap: wrap; gap: .45cqw; align-items: center; margin-top: .4cqw; }
+.q7-g2-s19-ctl > .q7-k { margin-right: .4cqw; }
+.q7 .q7-slide .q7-g2-s19-tab { font-size: 1.2cqw; }
+.q7 .q7-slide .q7-g2-s19-tab th, .q7 .q7-slide .q7-g2-s19-tab td { padding: .3cqw .25cqw; white-space: nowrap; }
+.q7 .q7-slide .q7-g2-s19-tab td { color: var(--q7-texto); }
+.q7 .q7-slide .q7-g2-s19-tab thead th[data-on="1"], .q7 .q7-slide .q7-g2-s19-tab td[data-on="1"] { background: var(--q7-cor-s); }
+.q7-g2-s19-c { height: 100%; aspect-ratio: 1.02; min-height: 0; }
+.q7-g2-s19-t { flex: 1; min-height: 0; }
+.q7-g2-s19-fb { margin: 0; font-size: 1.35cqw; line-height: 1.3; padding: .4cqw .8cqw; border-left: .35cqw solid #9AA1AD; background: var(--q7-papel2); border-radius: 0 .5cqw .5cqw 0; }
+.q7-g2-s19-fb[data-ok="1"] { border-left-color: var(--q7-val); background: var(--q7-val-s); }
+@container q7 (max-width: 820px) {
+  .q7-g2-s19 { display: flex; flex-direction: column; }
+  .q7-g2-s19-t { overflow-x: auto; } .q7 .q7-slide .q7-g2-s19-tab { font-size: 12px; }
+  .q7-g2-s19-r .q7-gw { height: auto; }
+  .q7-g2-s19-c { height: auto; aspect-ratio: auto; }
+  .q7-g2-s19-fb { font-size: 14px; padding: 8px 10px; border-left-width: 4px; }
+}
+.q7 .q7-slide .q7-g2-s19-tab { table-layout: fixed; }
+.q7 .q7-slide .q7-g2-s19-tab thead th:first-child { width: 7.6cqw; }
+@container q7 (max-width: 820px) { .q7 .q7-slide .q7-g2-s19-tab { table-layout: auto; } }
+/* 20 · curva quadrada e, ao lado, ocupação e bordas */
+.q7-g2-s20 { flex: 1; min-height: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.4cqw; }
+.q7-g2-s20-lado { display: flex; flex-direction: column; gap: .6cqw; min-width: 0; min-height: 0; }
+.q7-g2-s20-lado > .q7-graf { flex: 1; min-height: 6cqw; }
+@container q7 (max-width: 820px) { .q7-g2-s20 { display: flex; flex-direction: column; } }
+/* KaTeX: o .conteudo svg { height: auto } global achatava o traço dos radicais; volta à regra do próprio KaTeX */
+.q7 .q7-slide .katex svg, .q7 .katex svg { width: 100%; height: inherit; max-width: none; max-height: none; margin: 0; }
+/* 22 · cartões com a miniatura quadrada e os números ao lado; diagonal mais visível */
+.q7-g2-s22 .q7-diag, .q7-g2-s22-foco .q7-diag { stroke: #2A3342; stroke-width: 2; }
+.q7-g2-s22-m { padding: .45cqw .7cqw .5cqw; }
+.q7-g2-s22-c { flex: 1; min-height: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .9cqw; align-items: center; }
+.q7-g2-s22-v { display: grid; gap: .3cqw; font-size: 1.25cqw; color: var(--q7-mudo); font-variant-numeric: tabular-nums; line-height: 1.25; }
+.q7-g2-s22-v b { font-size: 1.7cqw; color: var(--q7-prob); }
+.q7-g2-s22-foco { flex: 1; min-height: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.4cqw; align-items: center; }
+@container q7 (max-width: 820px) { .q7-g2-s22-c, .q7-g2-s22-foco { display: flex; flex-direction: column; align-items: stretch; } .q7-g2-s22-v { font-size: 12.5px; } .q7-g2-s22-v b { font-size: 16px; } }
+.q7-g2-s22-m[data-on="1"], .q7-g2-s22-m:hover { border-color: var(--q7-prob) !important; box-shadow: inset 0 0 0 1px var(--q7-prob); }
+/* 23 · a carteira é a peça principal; abrir a fórmula não pode espremer o gráfico (o cartão sobe por cima) */
+.q7-g2-s23 > .q7-graf { flex: 1 0 auto; min-height: 23cqw; } .q7-g2-s23 > .q7-graf .q7-gw { min-height: 22cqw; }
+@container q7 (max-width: 820px) { .q7-g2-s23 > .q7-graf, .q7-g2-s23 > .q7-graf .q7-gw { min-height: 0; } }
+/* 25 · A maior que B; tabela da decomposição */
+.q7-g2-s25 { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 1.2cqw; }
+.q7 .q7-slide .q7-g2-s25-tab { font-size: 1.2cqw; }
+.q7 .q7-slide .q7-g2-s25-tab th, .q7 .q7-slide .q7-g2-s25-tab td { padding: .25cqw .3cqw; }
+.q7 .q7-slide .q7-g2-s25-tab thead th { white-space: normal; line-height: 1.15; }
+.q7 .q7-slide .q7-g2-s25-tab thead th:first-child { font-weight: 600; }
+@container q7 (max-width: 820px) { .q7-g2-s25 { display: flex; flex-direction: column; } .q7 .q7-slide .q7-g2-s25-tab { font-size: 12px; } }
+/* 26 · atalhos em grade e Restaurar ao lado dos controles */
+.q7-g2-atalhos { display: grid; grid-template-columns: 1fr 1fr; gap: .45cqw; }
+.q7 .q7-slide .q7-g2-atalhos .q7-btn { width: 100%; }
+.q7-s26-ctl:has(> .q7-btn) { grid-template-columns: 1fr 1fr auto; align-items: center; }
+@container q7 (max-width: 820px) { .q7-g2-atalhos { grid-template-columns: 1fr; } }
