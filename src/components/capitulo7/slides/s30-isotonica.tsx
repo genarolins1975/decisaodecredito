@@ -182,12 +182,14 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
             // rótulo dos defaults com PD 0%: na faixa de baixo do quadro, no primeiro lugar à direita das marcas em que a
             // caixa do texto fica a mais de meio corpo de toda curva (Platt, isotônica, diagonal); as curvas sobem com a PD
             const rotZero = (() => {
-              const txt = `● ${zerosDef.length} ${zerosDef.length === 1 ? "default" : "defaults"} da janela com PD 0%`, w = txt.length * fs * 0.86 * 0.6;
-              const base = y(0) - fs * 0.9, topo = base - fs * 0.75, fundo = base + fs * 0.25;
-              const livre = (x0: number) => longeDasCurvas(x0, x0 + w, topo, fundo);
-              const ini = zerosDef.length ? x(cl(Math.max(...zerosDef))) + fs * 0.6 : x(0), fim = x(0.55) - w;
-              for (let x0 = ini; x0 <= fim; x0 += fs * 0.25) if (livre(x0)) return { txt, x0, base };
-              return { txt, x0: fim, base };
+              const nDef = `● ${zerosDef.length} ${zerosDef.length === 1 ? "default" : "defaults"}`;
+              const ini = zerosDef.length ? x(cl(Math.max(...zerosDef))) + fs * 0.6 : x(0);
+              // texto inteiro na linha de baixo; depois o curto; depois uma linha acima, e assim por diante
+              for (let k = 0; k < 3; k++) for (const txt of [`${nDef} da janela com PD 0%`, `${nDef} com PD 0%`]) {
+                const w = txt.length * fs * 0.86 * 0.6, base = y(0) - fs * (0.9 + k * 1.15), topo = base - fs * 0.75, fundo = base + fs * 0.25;
+                for (let x0 = ini; x0 <= x(0.55) - w; x0 += fs * 0.25) if (longeDasCurvas(x0, x0 + w, topo, fundo)) return { txt, x0, base };
+              }
+              const txt = `${nDef} com PD 0%`; return { txt, x0: x(0.55) - txt.length * fs * 0.86 * 0.6, base: y(0) - fs * 0.9 };
             })();
             const colL = estreito ? 0 : Math.min(fs * 19, d.w * 0.45), px = escala([0, BRUTO.pares.pares], [colL, d.w - mg.r]);
             return (
