@@ -2,13 +2,14 @@
 import { useState } from "react";
 import { Botao, caminho, Controle, escala, Grafico, LinkSlide, Painel, Previsao, Quadro, type Dim, type Pagina } from "@/components/capitulo7/base";
 import { CFG_CARTEIRA, LOGISTICA, modelo, NA, NV, XA, XV, YA, YV } from "@/lib/capitulo6/dados";
+import { SLIDE } from "@/lib/capitulo6/roteiro";
 import { auc, diferencaPerdaPareada, estagios, perdaLog, type No } from "@/lib/capitulo6/gbm";
 import { escoreLogistica } from "@/lib/capitulo6/logistica";
 import { delong } from "@/lib/capitulo7/metricas";
 import { int, num } from "@/lib/capitulo7/formato";
 
 /**
- * 17 · c6p17 · A logística nas mesmas três variáveis (LOGISTICA de dados.ts, ajustada nas 1.472 propostas de ajuste)
+ * 18 · c6p17 · A logística nas mesmas três variáveis (LOGISTICA de dados.ts, ajustada nas 1.472 propostas de ajuste)
  * como referência do boosting da carteira (CFG_CARTEIRA). O gráfico mostra AUC e log loss por número de árvores, no
  * ajuste e na validação, com as duas linhas da logística; a validação fica escondida até a previsão. Tudo sai da
  * biblioteca: estágios do boosting (conferidos com staged_decision_function), logística (conferida com o statsmodels),
@@ -121,7 +122,7 @@ export function S17Logistica({ pagina }: { pagina?: Pagina }) {
       sub={revelado ? <>Árvores ganhariam com interação ou forma curva (Friedman, 2001); parado em {K_PARADA}, o boosting {USA_ATRASO ? "corta pouco" : "nem corta"} no atraso.</> : <>Os dois modelos com as mesmas {int(NA)} propostas de ajuste e {int(NV)} de validação.</>}
       conclusao={!revelado
         ? <>No ajuste, o boosting passa a AUC da logística ({num(LOG.aucA, 4)}) já com {K_PASSA} árvores e chega a {num(AUC_A[K_MAX], 4)} com {K_MAX}. E na validação? Preveja ao lado.</>
-        : <>Validação: logística com AUC <b>{num(LOG.aucV, 4)}</b> e log loss <b>{num(LOG.llV, 4)}</b>; boosting parado em {K_PARADA}, {num(AUC_V[K_PARADA], 4)} e {num(LL_V[K_PARADA], 4)}. Na AUC, diferença de {num(DL.dif, 3)} (IC de 95% de {num(DL.ic[0], 3)} a {num(DL.ic[1], 3)}): {SEPARA_AUC ? "não é ruído" : "cabe no ruído"}; na log loss, {num(DP.dif, 4)} (IC de {num(DP.ic[0], 4)} a {num(DP.ic[1], 4)}): {EMPATE_LL ? "empate" : "a amostra separa os dois"}. <b>{SEPARA_AUC && EMPATE_LL ? "Só a AUC separa os modelos" : SEPARA_AUC ? "AUC e log loss separam os modelos" : "Nenhuma das duas separa os modelos"}</b>: com {DA} defaults no ajuste, nada que o boosting aproveite. <LinkSlide slug="c6p18">Slide 18</LinkSlide>: o nível das PDs.</>}
+        : <>Validação: logística com AUC <b>{num(LOG.aucV, 4)}</b> e log loss <b>{num(LOG.llV, 4)}</b>; boosting parado em {K_PARADA}, {num(AUC_V[K_PARADA], 4)} e {num(LL_V[K_PARADA], 4)}. Na AUC, diferença de {num(DL.dif, 3)} (IC de 95% de {num(DL.ic[0], 3)} a {num(DL.ic[1], 3)}): {SEPARA_AUC ? "não é ruído" : "cabe no ruído"}; na log loss, {num(DP.dif, 4)} (IC de {num(DP.ic[0], 4)} a {num(DP.ic[1], 4)}): {EMPATE_LL ? "empate" : "a amostra separa os dois"}. <b>{SEPARA_AUC && EMPATE_LL ? "Só a AUC separa os modelos" : SEPARA_AUC ? "AUC e log loss separam os modelos" : "Nenhuma das duas separa os modelos"}</b>: com {DA} defaults no ajuste, nada que o boosting aproveite. <LinkSlide slug="c6p18">Slide {SLIDE.c6p18.n}</LinkSlide>: o nível das PDs.</>}
       fonte={`Ajuste: ${int(NA)} propostas, ${DA} defaults; validação sorteada: ${int(NV)}, ${DV} defaults. Boosting: taxa ${num(CFG_CARTEIRA.eta, 1)}, profundidade ${CFG_CARTEIRA.profundidade}, mínimo de ${CFG_CARTEIRA.minFolha} por folha; parada em ${K_PARADA} escolhida nesta validação. ICs pareados: DeLong na AUC, por proposta na log loss. Benchmark de crédito: Lessmann et al. (2015).`}>
       <Painel titulo="AUC e log loss por número de árvores; a logística é uma reta">
         <Grafico rotulo={`AUC e log loss do boosting por número de árvores, no ajuste e na validação, contra a logística. Logística na validação: AUC ${num(LOG.aucV, 4)}, log loss ${num(LOG.llV, 4)}; boosting parado em ${K_PARADA} árvores: ${num(AUC_V[K_PARADA], 4)} e ${num(LL_V[K_PARADA], 4)}`} arCelular="4 / 5">

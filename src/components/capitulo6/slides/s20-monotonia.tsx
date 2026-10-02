@@ -2,12 +2,13 @@
 import { useState } from "react";
 import { Botao, caminho, Eixos, escala, Grafico, LinkSlide, Painel, Previsao, Quadro, Seg, margens, type Dim, type Pagina } from "@/components/capitulo7/base";
 import { CFG_CARTEIRA, modelo, NA, NV, XA, XV, YA, YV } from "@/lib/capitulo6/dados";
+import { SLIDE } from "@/lib/capitulo6/roteiro";
 import { auc, dependenciaParcialRapida, estagios, perdaLog, type Modelo, type Opcoes } from "@/lib/capitulo6/gbm";
 import { delong, wilson } from "@/lib/capitulo7/metricas";
 import { int, num, pct } from "@/lib/capitulo7/formato";
 
 /**
- * 20 · c6p20 · Restrição monotônica. Na amostra de ajuste, as propostas com 31 a 60 dias de atraso não tiveram default
+ * 21 · c6p20 · Restrição monotônica. Na amostra de ajuste, as propostas com 31 a 60 dias de atraso não tiveram default
  * (contagem e intervalo de Wilson calculados na tela). O boosting da carteira (taxa 0,1, profundidade 2) com folhas
  * pequenas e muitas árvores aprende uma PD que cai quando o atraso sobe: a dependência parcial (dependenciaParcial de
  * gbm.ts, a PD média da carteira de ajuste com o atraso fixado em cada valor) mostra isso. Com monotonia [utilização
@@ -124,7 +125,7 @@ export function S20Monotonia({ pagina }: { pagina?: Pagina }) {
       sub={revelado ? undefined : <>Na amostra de ajuste. O que o boosting livre aprende com isso?</>}
       conclusao={!revelado
         ? <>Zero default em {ALTA.n} propostas não prova risco baixo: o intervalo de Wilson vai até <b>{pct(ALTA.ic!.hi, 1)}</b>. Com {ARV0} árvores e mínimo de {MF0} por folha, o que a PD do modelo livre faz acima de 30 dias? Preveja ao lado.</>
-        : <>{e.livre.k} árvores, mínimo de {mf}: a PD livre cai em <b>{ql} {ql === 1 ? "trecho" : "trechos"}</b>; com monotonia, em {qm}. Na validação, AUC {num(e.livre.auc, 4)} livre e {num(e.mono.auc, 4)} monotônico (diferença {num(custo, 3)}, IC de {num(e.dl.ic[0], 3)} a {num(e.dl.ic[1], 3)}): {e.dl.ic[0] > 0 ? "com monotonia a ordenação melhora, e o IC exclui zero" : e.dl.ic[1] < 0 ? "a monotonia custa ordenação, e o IC exclui zero" : custo >= 0 ? "a diferença cabe no ruído, e a restrição sai sem custo medido" : "o custo cabe no ruído"}. O <LinkSlide slug="c6p21">slide 21</LinkSlide> leva isso à lista do comitê.</>}
+        : <>{e.livre.k} árvores, mínimo de {mf}: a PD livre cai em <b>{ql} {ql === 1 ? "trecho" : "trechos"}</b>; com monotonia, em {qm}. Na validação, AUC {num(e.livre.auc, 4)} livre e {num(e.mono.auc, 4)} monotônico (diferença {num(custo, 3)}, IC de {num(e.dl.ic[0], 3)} a {num(e.dl.ic[1], 3)}): {e.dl.ic[0] > 0 ? "com monotonia a ordenação melhora, e o IC exclui zero" : e.dl.ic[1] < 0 ? "a monotonia custa ordenação, e o IC exclui zero" : custo >= 0 ? "a diferença cabe no ruído, e a restrição sai sem custo medido" : "o custo cabe no ruído"}. O <LinkSlide slug="c6p21">slide {SLIDE.c6p21.n}</LinkSlide> leva isso à lista do comitê.</>}
       fonte={`Ajuste: ${int(NA)} propostas, ${DA} defaults; validação sorteada: ${int(NV)}, ${DV}. Taxa 0,1, profundidade 2; monotonia: utilização +1, atraso +1, score −1. Parada de cada modelo na mesma validação. Wilson de 95%; DeLong pareado.`}>
       <Painel titulo="PD por atraso, outras variáveis mantidas · ■ observado e IC de 95%">
         <Grafico rotulo={`PD por atraso pela dependência parcial. Observado no ajuste: ${OBS.map((o) => `${o.a} a ${o.b} dias, ${o.d} de ${o.n}`).join("; ")}. ${revelado ? `Modelo livre com ${ql} trechos de queda; monotônico com ${qm}.` : "Modelo livre oculto até a previsão."}`} arCelular="5 / 4">

@@ -1,6 +1,6 @@
 "use client";
 import { Grafico, LinkSlide, Quadro, escala, margens, type Pagina } from "@/components/capitulo7/base";
-import { CURTO, PERGUNTAS, ROTEIRO } from "@/lib/capitulo6/roteiro";
+import { CURTO, PERGUNTAS, ROTEIRO, SLIDE } from "@/lib/capitulo6/roteiro";
 import { DIDATICA, HP_CANDIDATO, NA, NV, RES } from "@/lib/capitulo6/dados";
 import base from "@/lib/capitulo6/base.json";
 import { int, num } from "@/lib/capitulo7/formato";
@@ -106,15 +106,15 @@ function Cartao({ p }: { p: P }) {
 }
 
 const ESCALAS = [
-  { slug: "c6p2", n: int(DIDATICA.length), o: "propostas à mão", ate: "slides 2 a 10" },
-  { slug: "c6p11", n: int(NA + NV), o: `${int(NA)} ajuste + ${int(NV)} validação`, ate: "slides 11 a 20" },
-  { slug: "c6p21", n: String(NVARS), o: "variáveis no candidato", ate: "slide 21" },
+  { slug: "c6p23", n: int(DIDATICA.length), o: "propostas à mão", ate: `slides ${SLIDE.c6p23.n} a ${SLIDE.c6p10.n}` },
+  { slug: "c6p11", n: int(NA + NV), o: `${int(NA)} ajuste + ${int(NV)} validação`, ate: `slides ${SLIDE.c6p11.n} a ${SLIDE.c6p20.n}` },
+  { slug: "c6p21", n: String(NVARS), o: "variáveis no candidato", ate: `slide ${SLIDE.c6p21.n}` },
 ];
 
 export function S01Mapa({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c6p1" pagina={pagina} layout="um"
-      conclusao={<>O candidato cai <b>{num(QUEDA, CASAS)}</b>; a logística, que decora pouco, <b>{num(QUEDA_LOG, CASAS)}</b>. Se a safra custa ao boosting o mesmo que à logística, cerca de <b>{num(EXCESSO, CASAS)}</b> é excesso do boosting (estimativa); {num(VAL, CASAS)} é otimista: escolheu os hiperparâmetros (<LinkSlide slug="c6p21">slide 21</LinkSlide>). Mecanismo: <LinkSlide slug="c6p2">slide 2</LinkSlide>.</>}
+      conclusao={<>O candidato cai <b>{num(QUEDA, CASAS)}</b>; a logística, que decora pouco, <b>{num(QUEDA_LOG, CASAS)}</b>. Se a safra custa ao boosting o mesmo que à logística, cerca de <b>{num(EXCESSO, CASAS)}</b> é excesso do boosting (estimativa); {num(VAL, CASAS)} é otimista: escolheu os hiperparâmetros (<LinkSlide slug="c6p21">slide {SLIDE.c6p21.n}</LinkSlide>). Mecanismo: <LinkSlide slug="c6p23">slide {SLIDE.c6p23.n}</LinkSlide>.</>}
       fonte={`Base sintética (semente ${META.seed}). Candidato: ${HP_CANDIDATO.max_iter} árvores de até ${HP_CANDIDATO.max_leaf_nodes} folhas, taxa ${num(HP_CANDIDATO.learning_rate, 2)}, mínimo ${HP_CANDIDATO.min_samples_leaf} por folha, regularização l2 = ${num(HP_CANDIDATO.l2_regularization, 0)}; logística com as mesmas ${NVARS} variáveis. Tracejado: aprofundamento.`}>
       <div className="q6-s01">
         <div className="q6-s01-g"><Gancho /></div>

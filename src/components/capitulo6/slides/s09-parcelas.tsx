@@ -2,12 +2,13 @@
 import { useState } from "react";
 import { Botao, caminho, Eixos, escala, Grafico, LinkSlide, Painel, Previsao, Quadro, margens, type Pagina } from "@/components/capitulo7/base";
 import { CFG_DIDATICA, DIDATICA, XD, YD, modelo } from "@/lib/capitulo6/dados";
+import { SLIDE } from "@/lib/capitulo6/roteiro";
 import { sigmoide, valorArvore, type No, type Vetor } from "@/lib/capitulo6/gbm";
 import { num, pct } from "@/lib/capitulo7/formato";
 import base from "@/lib/capitulo6/base.json";
 
 /**
- * 09 · c6p9 · A PD de uma das 16 propostas decomposta: F₀ mais η vezes a folha de cada uma das quatro árvores, tudo em
+ * 10 · c6p9 · A PD de uma das 16 propostas decomposta: F₀ mais η vezes a folha de cada uma das quatro árvores, tudo em
  * log odds, e a sigmoide só no fim. Cascata horizontal em log odds em cima; embaixo, a sigmoide no mesmo eixo de log
  * odds, onde a soma vira PD. Modelo CFG_DIDATICA (η = 0,4, 4 árvores de profundidade 2, mínimo 2 por folha) ajustado
  * pela biblioteca do capítulo (gbm.ts, conferida contra o scikit-learn) nas 16 propostas sintéticas dos capítulos 4 e 5.
@@ -143,8 +144,8 @@ export function S09Parcelas({ pagina }: { pagina?: Pagina }) {
     <Quadro slug="c6p9" pagina={pagina} layout="gl"
       sub={revelado ? undefined : "Quatro árvores, quatro parcelas em log odds: quanto cada uma vale em PD?"}
       conclusao={revelado
-        ? <>Proposta {p.id}: {soma} em log odds, e PD = σ({num(dc.acum[M], 2)}) = <b>{pct(sigmoide(dc.acum[M]), 1)}</b>. {MESMA ? <>A mesma folha de {sinal(P4)} vale {sinal(G10 * 100, 1)} pp na {id10} e {sinal(G9 * 100, 1)} pp na {id9}: só as log odds somam.</> : null} O <LinkSlide slug="c6p10">slide 10</LinkSlide> escreve esta soma como a fórmula de Friedman.</>
-        : <>Proposta {p.id}: {soma} em log odds. Cada parcela é η = {num(ETA, 1)} vezes a folha em que a proposta cai, as quatro árvores do <LinkSlide slug="c6p8">slide 8</LinkSlide>. Responda à previsão para ver a PD.</>}
+        ? <>Proposta {p.id}: {soma} em log odds, e PD = σ({num(dc.acum[M], 2)}) = <b>{pct(sigmoide(dc.acum[M]), 1)}</b>. {MESMA ? <>A mesma folha de {sinal(P4)} vale {sinal(G10 * 100, 1)} pp na {id10} e {sinal(G9 * 100, 1)} pp na {id9}: só as log odds somam.</> : null} O <LinkSlide slug="c6p10">slide {SLIDE.c6p10.n}</LinkSlide> escreve esta soma como a fórmula de Friedman.</>
+        : <>Proposta {p.id}: {soma} em log odds. Cada parcela é η = {num(ETA, 1)} vezes a folha em que a proposta cai, as quatro árvores do <LinkSlide slug="c6p8">slide {SLIDE.c6p8.n}</LinkSlide>. Responda à previsão para ver a PD.</>}
       fonte={`${YD.length} propostas sintéticas dos capítulos 4 e 5 (gerador do curso, semente ${SEMENTE_BASE}; ${NDEF} defaults). η = ${num(ETA, 1)}; ${M} árvores, profundidade ${CFG_DIDATICA.profundidade}, mínimo ${CFG_DIDATICA.minFolha} por folha; folha por Newton; gbm.ts, conferida contra o scikit-learn.`}>
       <Painel>
         <Cascata i={sel} revelado={revelado} />

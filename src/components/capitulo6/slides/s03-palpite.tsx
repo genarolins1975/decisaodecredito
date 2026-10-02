@@ -2,16 +2,17 @@
 import { useState } from "react";
 import { Botao, Controle, Formula, Grafico, LinkSlide, Marca, Painel, Previsao, Quadro, Seg, caminho, escala, margens, type Opcao, type Pagina } from "@/components/capitulo7/base";
 import { DIDATICA, NA, XD, YA, YD, CFG_DIDATICA, modelo } from "@/lib/capitulo6/dados";
+import { SLIDE } from "@/lib/capitulo6/roteiro";
 import { logit, perdaLog, sigmoide } from "@/lib/capitulo6/gbm";
 import { int, num, pct } from "@/lib/capitulo7/formato";
 import base from "@/lib/capitulo6/base.json";
 
 /**
- * 03 · c6p3 · O palpite inicial. Uma PD única q para todas as propostas; a log loss média é mínima quando q é a taxa de
+ * 04 · c6p3 · O palpite inicial. Uma PD única q para todas as propostas; a log loss média é mínima quando q é a taxa de
  * default da carteira, e o palpite em log odds é F₀ = ln(p̄ ÷ (1 − p̄)). Nas 16 propostas didáticas, 8 defaults: F₀ = 0
  * (PD de 50%) e perda de partida ln 2. Depois da previsão (que pede F₀ em log odds, com as confusões de escala: taxa no
  * lugar de log odds, chance no lugar de log odds), a curva da perda e o controle de q aparecem, e a chave leva ao ajuste
- * de 1.472 propostas do slide 11 (139 defaults, F₀ = −2,26). F₀ e a perda de partida conferidos com modelo() da
+ * de 1.472 propostas do slide 12 (139 defaults, F₀ = −2,26). F₀ e a perda de partida conferidos com modelo() da
  * biblioteca: o f0 do boosting e a log loss do estágio zero.
  */
 const SEMENTE_BASE = base.meta.seed; // semente do gerador do curso, que também gerou as 16 propostas didáticas
@@ -47,7 +48,7 @@ export function S03Palpite({ pagina }: { pagina?: Pagina }) {
       titulo={rev ? undefined : "Qual número único dar a todas as propostas?"}
       sub={rev ? undefined : "Dezesseis propostas, as mesmas dos capítulos 4 e 5, e um palpite antes de qualquer árvore."}
       conclusao={!rev ? <>{BASES.did.d} das {BASES.did.n} propostas deram default. Antes de ver a perda, escolha ao lado o palpite F₀, em log odds, que a minimiza.</>
-        : <>Com {B.nome}, a log loss da PD única é mínima na taxa, <b>{pct(taxa, b === "did" ? 0 : 2)}</b>: F₀ = ln({int(B.d)} ÷ {int(B.n - B.d)}) = <b>{num(F0[b], 2)}</b>, perda de partida {num(PARTIDA[b], 3)}. Em PD {pct(q, 0)}, a perda é {num(L, 3)}. Cada proposta erra de um jeito: <LinkSlide slug="c6p4">slide 4</LinkSlide>.</>}
+        : <>Com {B.nome}, a log loss da PD única é mínima na taxa, <b>{pct(taxa, b === "did" ? 0 : 2)}</b>: F₀ = ln({int(B.d)} ÷ {int(B.n - B.d)}) = <b>{num(F0[b], 2)}</b>, perda de partida {num(PARTIDA[b], 3)}. Em PD {pct(q, 0)}, a perda é {num(L, 3)}. Cada proposta erra de um jeito: <LinkSlide slug="c6p4">slide {SLIDE.c6p4.n}</LinkSlide>.</>}
       fonte={`${DIDATICA.length} propostas didáticas sintéticas dos capítulos 4 e 5 (gerador do curso, semente ${SEMENTE_BASE}; ${BASES.did.d} defaults). Ajuste: ${int(NA)} propostas sorteadas (semente ${base.meta.sementeDivisao}) do treino da mesma base, ${base.meta.treino}, ${int(BASES.aj.d)} defaults. Log loss média, log natural; F₀ é o palpite do boosting da biblioteca.`}>
       <Painel>
         <Grafico titulo={rev ? `Log loss de uma PD única: ${B.nome}` : "Uma PD única para as 16 propostas"} sub={rev ? "o mínimo cai na taxa" : "a perda abre depois da previsão"} rotulo={rev ? `Log loss em função da PD única; mínimo em ${pct(taxa, 2)}, F₀ ${num(F0[b], 2)}; na PD ${pct(q, 0)}, perda ${num(L, 3)}` : "As 16 propostas, 8 defaults, todas com a mesma PD; a curva da perda está oculta até a previsão"} arCelular="4 / 3">

@@ -31,9 +31,10 @@ const dados = ROTEIRO.map((s) => {
 });
 
 const camada = `${INI}
-/* Revisão 19: capítulo 6 reconstruído (outubro de 2026). Vinte e duas páginas, uma por quadro nativo
-   (src/components/capitulo6): as vinte antigas mantêm o identificador; as duas novas entram aqui por P(). O conteúdo
-   herdado continua no arquivo para a extração das questões originais. */
+/* Revisão 19: capítulo 6 reconstruído (outubro de 2026). Vinte e três páginas, uma por quadro nativo
+   (src/components/capitulo6): as vinte antigas mantêm o identificador; as novas (entre elas c6p23, na
+   posição 2) entram aqui por P(), e a ordem vem do n do roteiro. O conteúdo herdado continua no arquivo para a extração das
+   questões originais. */
 const C6V19=${JSON.stringify(dados)};
 function capitulo6ReconstruidoV19(){
  for(const d of C6V19){

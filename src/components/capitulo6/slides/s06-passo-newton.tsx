@@ -2,12 +2,13 @@
 import { useState } from "react";
 import { Botao, Controle, Expandir, Formula, Grafico, LinkSlide, Painel, Previsao, Quadro, Seg, caminho, escala, margens, type Opcao, type Pagina } from "@/components/capitulo7/base";
 import { CFG_DIDATICA, DIDATICA, XD, YD, modelo } from "@/lib/capitulo6/dados";
+import { SLIDE } from "@/lib/capitulo6/roteiro";
 import { sigmoide, valorArvore, type No } from "@/lib/capitulo6/gbm";
 import { num, pct } from "@/lib/capitulo7/formato";
 import base from "@/lib/capitulo6/base.json";
 
 /**
- * 06 · c6p6 · O valor da folha. Para cada folha da primeira árvore (slide 5), a perda da folha em função do valor γ somado
+ * 07 · c6p6 · O valor da folha. Para cada folha da primeira árvore (slide 6), a perda da folha em função do valor γ somado
  * às log odds das suas propostas, L(γ) = Σ ℓ(yᵢ, F₀ + γ); a parábola de segunda ordem em γ = 0,
  * L(0) − γ Σr + ½ γ² Σp(1 − p), tem mínimo no passo de Newton Σr ÷ Σp(1 − p), que é o valor da folha na biblioteca
  * (conferido aqui contra valorArvore) e no GradientBoostingClassifier do scikit-learn. A média do resíduo, Σr ÷ n, está
@@ -58,9 +59,9 @@ export function S06PassoNewton({ pagina }: { pagina?: Pagina }) {
     <Quadro slug="c6p6" pagina={pagina} layout="gl"
       titulo={rev ? undefined : "Quanto a folha soma às log odds?"}
       sub={rev ? undefined : "Folha B da primeira árvore: seis adimplentes, cada uma com erro −0,5 no palpite de 50%."}
-      conclusao={!rev ? <>A árvore do <LinkSlide slug="c6p5">slide 5</LinkSlide> agrupou os erros; falta o número que cada folha soma às log odds F. A perda da folha B cai sempre que esse número desce. Qual valor somar?</>
-        : <>Folha {f.nome} ({lista(f.membros)}): média {sinal(f.media)}, Newton <b>{sinal(f.newton)}</b>. Com γ = {sinal(g)}, a PD vai de {pct(P0, 0)} a <b>{pct(pg, 1)}</b> e a perda da folha de {num(perdaFolha(f, 0), 2)} a {num(perdaFolha(f, g), 2)}. Quanto somar desse passo: <LinkSlide slug="c6p7">slide 7</LinkSlide>.</>}
-      fonte={`${DIDATICA.length} propostas didáticas sintéticas dos capítulos 4 e 5 (gerador do curso, semente ${SEMENTE_BASE}); árvore 1 do slide 5, palpite F₀ = ${num(F0, 2)}. Valor da folha: passo de Newton de Friedman (2001), aproximação finita do mínimo exato da perda na folha, o do GradientBoostingClassifier do scikit-learn, que a biblioteca reproduz (tests/capitulo6-gbm.test.ts). Perda da folha: soma da log loss das suas propostas.`}>
+      conclusao={!rev ? <>A árvore do <LinkSlide slug="c6p5">slide {SLIDE.c6p5.n}</LinkSlide> agrupou os erros; falta o número que cada folha soma às log odds F. A perda da folha B cai sempre que esse número desce. Qual valor somar?</>
+        : <>Folha {f.nome} ({lista(f.membros)}): média {sinal(f.media)}, Newton <b>{sinal(f.newton)}</b>. Com γ = {sinal(g)}, a PD vai de {pct(P0, 0)} a <b>{pct(pg, 1)}</b> e a perda da folha de {num(perdaFolha(f, 0), 2)} a {num(perdaFolha(f, g), 2)}. Quanto somar desse passo: <LinkSlide slug="c6p7">slide {SLIDE.c6p7.n}</LinkSlide>.</>}
+      fonte={`${DIDATICA.length} propostas didáticas sintéticas dos capítulos 4 e 5 (gerador do curso, semente ${SEMENTE_BASE}); árvore 1 do slide ${SLIDE.c6p5.n}, palpite F₀ = ${num(F0, 2)}. Valor da folha: passo de Newton de Friedman (2001), aproximação finita do mínimo exato da perda na folha, o do GradientBoostingClassifier do scikit-learn, que a biblioteca reproduz (tests/capitulo6-gbm.test.ts). Perda da folha: soma da log loss das suas propostas.`}>
       <Painel>
         <Grafico titulo={`Perda da folha ${f.nome} conforme o valor somado`} sub={`${f.membros.length} propostas: ${lista(f.membros)}`} rotulo={rev ? `Folha ${f.nome}: média ${sinal(f.media)}, passo de Newton ${sinal(f.newton)}; perda ${num(perdaFolha(f, g), 2)} em γ ${sinal(g)}` : `Perda da folha ${f.nome} em função do valor somado às log odds; parábola e marcadores ocultos até a previsão`} arCelular="4 / 3">
           {(d) => {

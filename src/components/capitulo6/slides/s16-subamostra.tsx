@@ -2,14 +2,15 @@
 import { useEffect, useState } from "react";
 import { Botao, escala, Grafico, LinkSlide, Painel, Previsao, Quadro, Seg, type Dim, type Pagina } from "@/components/capitulo7/base";
 import { CFG_CARTEIRA, NA, NV, XV, YV, modelo } from "@/lib/capitulo6/dados";
+import { SLIDE } from "@/lib/capitulo6/roteiro";
 import { estagios, ganhoMedioPareado, perdaLog, quantilT } from "@/lib/capitulo6/gbm";
 import { int, num, pct, sinal } from "@/lib/capitulo7/formato";
 
 /**
- * 16 · c6p16 · Subamostra (boosting estocástico; o método é de Friedman, 2002): cada árvore é ajustada numa fração das
+ * 17 · c6p16 · Subamostra (boosting estocástico; o método é de Friedman, 2002): cada árvore é ajustada numa fração das
  * 1.472 propostas, sorteada sem reposição com semente (opções subamostra e semente de gbm.ts), dez sementes por fração.
  * A peça principal é um gráfico de pontos do ganho de log loss de cada semente sobre o modelo sem sorteio, em dois
- * pontos: na parada do modelo sem sorteio (o mínimo da curva do slide 15, um ponto fixo para todas as sementes) e com
+ * pontos: na parada do modelo sem sorteio (o mínimo da curva do slide 16, um ponto fixo para todas as sementes) e com
  * 200 árvores, longe dela. A ideia: com 50%, o ganho é consistente entre sementes nas duas filas e cabe na faixa da
  * validação nas duas; a diferença entre as filas é de tamanho (a razão é calculada), não de veredito. Título, subtítulo,
  * retornos e leitura acompanham a fração escolhida. Duas faixas de 95%, com o mesmo nome em gráfico, tabela e leitura:
@@ -174,10 +175,10 @@ export function S16Subamostra({ pagina }: { pagina?: Pagina }) {
       titulo={!revelado ? `Cada árvore vê metade das propostas: na parada, a validação melhora?` : a && b ? tituloRevelado(f, a, b) : undefined}
       sub={!revelado ? `Cada árvore ajusta ${pct(0.5, 0)} das ${int(NA)} propostas, sorteadas. Preveja na parada.` : a && b ? subRevelado(f, a, b) : `Método de Friedman (2002); resultado desta amostra (${int(NV)} propostas de validação).`}
       conclusao={!revelado
-        ? <>Sem sorteio, a perda de validação desce até {num(L[k0], 4)} em {k0} árvores e sobe a {num(L[T], 4)} com {T} (<LinkSlide slug="c6p15">slide 15</LinkSlide>). Com {T} árvores, sortear {pct(0.5, 0)} baixa a perda {P ? (P[1].ganham === NS ? "em todas as sementes" : `em ${P[1].ganham} de ${NS} sementes`) : "nas sementes"}. E na parada?</>
+        ? <>Sem sorteio, a perda de validação desce até {num(L[k0], 4)} em {k0} árvores e sobe a {num(L[T], 4)} com {T} (<LinkSlide slug="c6p15">slide {SLIDE.c6p15.n}</LinkSlide>). Com {T} árvores, sortear {pct(0.5, 0)} baixa a perda {P ? (P[1].ganham === NS ? "em todas as sementes" : `em ${P[1].ganham} de ${NS} sementes`) : "nas sementes"}. E na parada?</>
         : !a || !b ? <>Sorteando: {ss.length} de {NS} sementes calculadas para a subamostra de {pct(f, 0)}.</>
-        : <>Com {pct(f, 0)}, {cabe(a) && cabe(b) ? "as duas filas cabem na faixa" : !cabe(a) && !cabe(b) ? "as duas filas passam da faixa" : cabe(a) ? `só a de ${T} árvores passa da faixa` : "só a da parada passa da faixa"} (z = {num(a.z, 2)} e {num(b.z, 2)}). {conclusaoParada(f, a)} <LinkSlide slug="c6p17">Slide 17</LinkSlide>: contra a logística.</>}
-      fonte={`Validação: ${int(NV)} propostas, ${DV} defaults; boosting do slide 15, sementes 1 a ${NS}, parada escolhida nesta validação. 95%: t de ${NS - 1} graus (${num(TS, 3)}) entre sementes; t de ${int(NV - 1)} (${num(TV, 3)}) com erro pareado por proposta.`}>
+        : <>Com {pct(f, 0)}, {cabe(a) && cabe(b) ? "as duas filas cabem na faixa" : !cabe(a) && !cabe(b) ? "as duas filas passam da faixa" : cabe(a) ? `só a de ${T} árvores passa da faixa` : "só a da parada passa da faixa"} (z = {num(a.z, 2)} e {num(b.z, 2)}). {conclusaoParada(f, a)} <LinkSlide slug="c6p17">Slide {SLIDE.c6p17.n}</LinkSlide>: contra a logística.</>}
+      fonte={`Validação: ${int(NV)} propostas, ${DV} defaults; boosting do slide ${SLIDE.c6p15.n}, sementes 1 a ${NS}, parada escolhida nesta validação. 95%: t de ${NS - 1} graus (${num(TS, 3)}) entre sementes; t de ${int(NV - 1)} (${num(TV, 3)}) com erro pareado por proposta.`}>
       <Painel>
         {filas
           ? <Grafico titulo={`Subamostra de ${pct(f, 0)}`} sub="● semente · ◆ média ± 95% entre sementes · cinza: validação" rotulo={`Ganho de log loss de dez sementes com subamostra de ${pct(f, 0)} sobre o modelo sem sorteio. ${filas.map((q, i) => `${q.tit}: ${revelado || i > 0 ? `média ${sinal(q.m, 4)}, faixa de 95% entre sementes ±${num(TS * q.se, 4)}, ${q.ganham} de ${NS} com ganho, z ${num(q.z, 2)}` : "oculto até a previsão"}; faixa de 95% da validação ±${num(TV * q.ev, 4)}`).join(". ")}`} arCelular="4 / 3">

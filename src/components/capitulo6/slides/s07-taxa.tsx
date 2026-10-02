@@ -2,18 +2,19 @@
 import { useState } from "react";
 import { Botao, Controle, Formula, Grafico, LinkSlide, Painel, Previsao, Quadro, caminho, escala, margens, type Opcao, type Pagina } from "@/components/capitulo7/base";
 import { CFG_DIDATICA, DIDATICA, XD, YD, modelo } from "@/lib/capitulo6/dados";
+import { SLIDE } from "@/lib/capitulo6/roteiro";
 import { estagios, perdaLog, valorArvore } from "@/lib/capitulo6/gbm";
 import { num } from "@/lib/capitulo7/formato";
 import base from "@/lib/capitulo6/base.json";
 
 /**
- * 07 · c6p7 · A taxa de aprendizagem. F ← F + η · valor da folha. Nas 16 propostas didáticas, com as quatro árvores de
+ * 08 · c6p7 · A taxa de aprendizagem. F ← F + η · valor da folha. Nas 16 propostas didáticas, com as quatro árvores de
  * CFG_DIDATICA (profundidade 2, mínimo 2 por folha), a log loss de treino depois de cada árvore para cada η da grade de
  * 0,05 a 1, todas do boosting da biblioteca (modelo()). A turma prevê que taxa desce mais rápido no treino; a certa é
  * "perto de 1" (após a árvore 1, a perda cai a cada aumento de η em toda a grade; após M árvores, cai até a melhor taxa
  * da grade, η = 1 fica um pouco acima dela, e todas as taxas a partir de PERTO terminam abaixo de todas as menores,
  * conferido abaixo). O título diz "taxas perto de 1", não "a maior", porque η = 1 não é a menor perda após M árvores. A virada está na leitura: somar só um pedaço não serve para descer mais rápido no treino, serve
- * para que nenhuma árvore, ajustada a poucos casos, pese sozinha na soma; quem julga isso é a validação (slides 14 e 15).
+ * para que nenhuma árvore, ajustada a poucos casos, pese sozinha na soma; quem julga isso é a validação (slides 15 e 16).
  * η = 1 termina acima de η = 0,95 porque da árvore 2 em diante cada taxa gera árvores diferentes, não porque o passo
  * inteiro passe do ponto: a busca em linha na árvore 2 do caminho de η = 1 dá o mínimo da perda acima de 1 vez o passo
  * (MULT, calculado abaixo com a biblioteca), ou seja, o passo inteiro ainda fica curto.
@@ -43,7 +44,7 @@ const MULT = (() => {
   let lo = 0, hi = 4; for (let it = 0; it < 120; it++) { const u = lo + (hi - lo) / 3, w = hi - (hi - lo) / 3; if (f(u) < f(w)) hi = w; else lo = u; }
   return (lo + hi) / 2;
 })();
-if (!(CAI1 && CAI_ATE_TOP && PERTO_DESCE && TOP < 1 && L(1)[M] > L(TOP)[M] && MULT > 1)) throw new Error("a leitura do slide 7 não vale nos dados");
+if (!(CAI1 && CAI_ATE_TOP && PERTO_DESCE && TOP < 1 && L(1)[M] > L(TOP)[M] && MULT > 1)) throw new Error("a leitura do quadro c6p7 não vale nos dados");
 /** Curvas de referência depois da previsão: a taxa pequena, a melhor da grade e a correção inteira. */
 const REFS = [0.1, TOP, 1];
 const ESTILO: Record<string, { tr?: string; larg: number; cor: string }> = { [String(0.1)]: { tr: "8 6", larg: 1.6, cor: "#9AA1AD" }, [String(TOP)]: { tr: "2 5", larg: 2.4, cor: "#5B6475" }, "1": { larg: 2.6, cor: "#5B6475" } };
@@ -65,7 +66,7 @@ export function S07Taxa({ pagina }: { pagina?: Pagina }) {
       titulo={rev ? undefined : "Taxa de aprendizagem: quanto da correção somar?"}
       sub={rev ? undefined : "Que pedaço do passo de Newton somar a cada árvore?"}
       conclusao={!rev ? <>Com η = {num(ETA0, 1)}, a log loss de treino cai de {num(L(ETA0)[0], 3)} para {num(L(ETA0)[1], 3)} na primeira árvore. Que taxa desceria mais rápido? Responda ao lado.</>
-        : <>No treino, a perda cai a cada aumento da taxa até η = {num(TOP, 2)} (<b>{num(L(TOP)[M], 3)}</b> após {M} árvores); η = 1 fica acima ({num(L(1)[M], 3)}) por gerar outras árvores, sem passar do ponto (ao lado). Somar só um pedaço evita que uma árvore de poucos casos pese sozinha; se compensa, diz a validação (<LinkSlide slug="c6p14">slides 14</LinkSlide> e <LinkSlide slug="c6p15">15</LinkSlide>).</>}
+        : <>No treino, a perda cai a cada aumento da taxa até η = {num(TOP, 2)} (<b>{num(L(TOP)[M], 3)}</b> após {M} árvores); η = 1 fica acima ({num(L(1)[M], 3)}) por gerar outras árvores, sem passar do ponto (ao lado). Somar só um pedaço evita que uma árvore de poucos casos pese sozinha; se compensa, diz a validação (<LinkSlide slug="c6p14">slides {SLIDE.c6p14.n}</LinkSlide> e <LinkSlide slug="c6p15">{SLIDE.c6p15.n}</LinkSlide>).</>}
       fonte={`${DIDATICA.length} propostas didáticas sintéticas dos capítulos 4 e 5 (gerador do curso, semente ${SEMENTE_BASE}). Boosting da biblioteca com ${M} árvores de profundidade ${CFG_DIDATICA.profundidade} e mínimo de ${CFG_DIDATICA.minFolha} por folha; taxa η de 0,05 a 1 em passos de 0,05. Log loss média de treino, log natural.`}>
       <Painel>
         <Grafico titulo="Log loss de treino, árvore a árvore" sub={rev ? `● η = ${num(eta, 2)}; referências: ${refs.map((e) => `η = ${num(e, 2)}`).join(", ")}` : `η = ${num(ETA0, 1)}; as outras taxas abrem depois da previsão`} rotulo={rev ? `Com η ${num(eta, 2)}: ${l.map((v) => num(v, 3)).join(", ")}; ${refs.map((e) => `com η ${num(e, 2)}: ${num(L(e)[M], 3)} após ${M} árvores`).join("; ")}` : `Com η ${num(ETA0, 1)}: ${L(ETA0).map((v) => num(v, 3)).join(", ")}`} arCelular="4 / 3">

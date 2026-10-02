@@ -1,7 +1,7 @@
 {
  "source": "content/original/apresentacao-curso-pd.html",
- "sha256": "ae6488c7de01c3ae022d08e0e2b305b756c0b72c78f297913736eb46b4c7adcc",
- "extractedAt": "2026-10-02T19:14:02.298Z",
+ "sha256": "4f186dbc3eabbb9d23691f4175114444ff3aad9d74a4c0dafed5b439b2fdb93a",
+ "extractedAt": "2026-10-02T22:38:56.380Z",
  "edition": "2026",
  "units": [
   {
@@ -1774,6 +1774,25 @@
    "origin": "esq",
    "rendering": "native",
    "controls": 3,
+   "svgs": 0,
+   "tables": 0,
+   "questions": [],
+   "predictions": [],
+   "hasGuide": true,
+   "hasFormula": false
+  },
+  {
+   "source": "#/c6p23",
+   "slug": "c6p23",
+   "pageId": "hl1bu3dryvoka1l5uykgw",
+   "chapter": 6,
+   "unit": 2,
+   "title": "Várias árvores: escolher uma, votar entre muitas ou corrigir em sequência",
+   "level": "essencial",
+   "minutes": 3,
+   "origin": "rec",
+   "rendering": "static",
+   "controls": 0,
    "svgs": 0,
    "tables": 0,
    "questions": [],
@@ -3961,7 +3980,7 @@
    "hasFormula": false
   }
  ],
- "questions": 270,
+ "questions": 271,
  "rubrics": [
   {
    "slug": "comite",
@@ -4043,11 +4062,13 @@
  ],
  "rendering": {
   "legacy": 84,
-  "static": 96,
+  "static": 97,
   "native": 21
  },
  "resync": {
-  "synced": [],
+  "synced": [
+   "c6p23"
+  ],
   "diverged": []
  }
 }

@@ -359,7 +359,7 @@
     null,
     {
      "confusao": "O passo de Newton foi confundido com a taxa de aprendizagem.",
-     "conceito": "Neste quadro o valor da folha entra inteiro: −2,00 sai só de Σ r ÷ Σ p(1 − p), sem taxa nenhuma. A taxa vem depois (slide 7) e encolhe o passo, não o limita: com η = 0,4, a folha B soma 0,4 × (−2,00) = −0,80 às log odds",
+     "conceito": "Neste quadro o valor da folha entra inteiro: −2,00 sai só de Σ r ÷ Σ p(1 − p), sem taxa nenhuma. A taxa vem depois (slide 8) e encolhe o passo, não o limita: com η = 0,4, a folha B soma 0,4 × (−2,00) = −0,80 às log odds",
      "seu": "A taxa de aprendizagem definiria o valor da folha",
      "adequado": "A folha vale o passo de Newton; a taxa multiplica esse valor depois"
     }
@@ -387,7 +387,7 @@
     null,
     {
      "confusao": "Regularização foi confundida com ajuste no treino.",
-     "conceito": "Somar só um pedaço do passo não serve para descer mais no treino: as taxas pequenas descem mais devagar, e η = 0,1 termina as quatro árvores em 0,470. O papel da taxa pequena é evitar que uma árvore de poucos casos pese sozinha na soma, e esse efeito só aparece fora da amostra, na validação dos slides 14 e 15",
+     "conceito": "Somar só um pedaço do passo não serve para descer mais no treino: as taxas pequenas descem mais devagar, e η = 0,1 termina as quatro árvores em 0,470. O papel da taxa pequena é evitar que uma árvore de poucos casos pese sozinha na soma, e esse efeito só aparece fora da amostra, na validação dos slides 15 e 16",
      "seu": "A taxa menor protegeria do sobreajuste e baixaria a perda de treino",
      "adequado": "No treino, a perda mede o ajuste; o efeito de regularizar se mede na validação"
     }
@@ -432,7 +432,7 @@
     "Sobe, de 0,329 para 0,388: a taxa maior acelera a complexidade, e as árvores além do ponto de parada só decoram o ajuste"
    ],
    "certa": 2,
-   "porqueCerta": "Taxa maior soma mais de cada folha e acelera o ajuste; com 300 árvores, isso já é decorar. Com η = 0,5, a AUC de ajuste chega a 0,978 e a de validação fica em 0,575. A melhor validação dessa combinação, 0,296, vem com só 4 árvores (escolhida na própria validação, portanto otimista), e as 296 seguintes só baixam o ajuste; a referência chega ao mesmo 0,296 com 16. Por isso cada controle se lê no ajuste e na validação ao mesmo tempo, e taxa e árvores se escolhem juntas (slides 14 e 15).",
+   "porqueCerta": "Taxa maior soma mais de cada folha e acelera o ajuste; com 300 árvores, isso já é decorar. Com η = 0,5, a AUC de ajuste chega a 0,978 e a de validação fica em 0,575. A melhor validação dessa combinação, 0,296, vem com só 4 árvores (escolhida na própria validação, portanto otimista), e as 296 seguintes só baixam o ajuste; a referência chega ao mesmo 0,296 com 16. Por isso cada controle se lê no ajuste e na validação ao mesmo tempo, e taxa e árvores se escolhem juntas (slides 15 e 16).",
    "erros": [
     {
      "confusao": "A perda de ajuste foi tomada como medida do que o modelo aprendeu de útil.",
@@ -460,7 +460,7 @@
     "Nada de útil, porque 20,4% contra 0 de 11 mostra que a restrição distorceu o modelo"
    ],
    "certa": 1,
-   "porqueCerta": "A restrição impõe o sinal de cada variável (utilização +1, atraso +1, score −1) e mais nada: com ela, a dependência parcial no atraso não cai em nenhum trecho, contra 10 trechos de queda no modelo livre, e a AUC na validação sorteada sobe de 0,5979 para 0,6756. O nível é outra pergunta. Acima de 30 dias, 0 em 11 cabe numa taxa de até 25,9% (Wilson), então 20,4% não é refutado por esses dados, mas também não é confirmado: o nível se confere à parte, como no slide 18 e no capítulo 7.",
+   "porqueCerta": "A restrição impõe o sinal de cada variável (utilização +1, atraso +1, score −1) e mais nada: com ela, a dependência parcial no atraso não cai em nenhum trecho, contra 10 trechos de queda no modelo livre, e a AUC na validação sorteada sobe de 0,5979 para 0,6756. O nível é outra pergunta. Acima de 30 dias, 0 em 11 cabe numa taxa de até 25,9% (Wilson), então 20,4% não é refutado por esses dados, mas também não é confirmado: o nível se confere à parte, como no slide 19 e no capítulo 7.",
    "erros": [
     {
      "confusao": "Monotonia foi confundida com calibração.",

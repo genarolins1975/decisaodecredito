@@ -2,12 +2,13 @@
 import { useState } from "react";
 import { Botao, Controle, Grafico, LinkSlide, Marca, Painel, Previsao, Quadro, Seg, escala, margens, type Opcao, type Pagina } from "@/components/capitulo7/base";
 import { CFG_DIDATICA, DIDATICA, XD, YD, modelo } from "@/lib/capitulo6/dados";
+import { SLIDE } from "@/lib/capitulo6/roteiro";
 import { sigmoide, type No } from "@/lib/capitulo6/gbm";
 import { num } from "@/lib/capitulo7/formato";
 import base from "@/lib/capitulo6/base.json";
 
 /**
- * 05 · c6p5 · A primeira árvore, ajustada nos resíduos do palpite (y − p com p = 50%: ±0,5). Os cortes candidatos são os
+ * 06 · c6p5 · A primeira árvore, ajustada nos resíduos do palpite (y − p com p = 50%: ±0,5). Os cortes candidatos são os
  * pontos médios entre valores distintos de cada variável, com ao menos 2 propostas de cada lado (o mínimo por folha de
  * CFG_DIDATICA); para cada um, o erro quadrático dos resíduos em torno da média de cada lado. A turma prevê o primeiro
  * corte antes de ver os números; as alternativas erradas são o melhor corte de atraso (a intuição de crédito) e o
@@ -90,9 +91,9 @@ export function S05PrimeiraArvore({ pagina }: { pagina?: Pagina }) {
   const restaurar = () => { setEsc(null); setV(0); setK(iniU); setCresceu(false); };
   return (
     <Quadro slug="c6p5" pagina={pagina} layout="gl"
-      conclusao={!rev ? <>No palpite, cada default erra +0,50 e cada adimplente −0,50 (<LinkSlide slug="c6p4">slide 4</LinkSlide>). Erro quadrático total: {num(SSE0, 2)}. Onde a árvore corta primeiro?</>
-        : cresceu ? <>Quatro folhas, erro quadrático <b>{num(SSE2, 2)}</b>.{EMPATE ? <> À direita, {rotC({ v: 0, c: EMPATE.u.c } as Corte)} empata com {rotC({ v: 1, c: EMPATE.a.c } as Corte)} ({num(EMPATE.u.sse, 2)} cada): vence a primeira variável na ordem, como no scikit-learn com semente 0.</> : null} O valor que a folha soma às log odds: <LinkSlide slug="c6p6">slide 6</LinkSlide>.</>
-        : <>Com {rotC(corte)}: médias {sinal(media(corte.e))} e {sinal(media(corte.d))}; o erro quadrático cai de {num(SSE0, 2)} para <b>{num(corte.sse, 2)}</b>.{corte === MELHOR[0] ? null : <> O melhor: {rotC(MELHOR[0])}.</>} Como y{"\u00a0−\u00a0"}p̄ é o default menos {num(P0, 2)}, os cortes são os de uma árvore no default; a diferença vem da segunda árvore (<LinkSlide slug="c6p8">slide 8</LinkSlide>).</>}
+      conclusao={!rev ? <>No palpite, cada default erra +0,50 e cada adimplente −0,50 (<LinkSlide slug="c6p4">slide {SLIDE.c6p4.n}</LinkSlide>). Erro quadrático total: {num(SSE0, 2)}. Onde a árvore corta primeiro?</>
+        : cresceu ? <>Quatro folhas, erro quadrático <b>{num(SSE2, 2)}</b>.{EMPATE ? <> À direita, {rotC({ v: 0, c: EMPATE.u.c } as Corte)} empata com {rotC({ v: 1, c: EMPATE.a.c } as Corte)} ({num(EMPATE.u.sse, 2)} cada): vence a primeira variável na ordem, como no scikit-learn com semente 0.</> : null} O valor que a folha soma às log odds: <LinkSlide slug="c6p6">slide {SLIDE.c6p6.n}</LinkSlide>.</>
+        : <>Com {rotC(corte)}: médias {sinal(media(corte.e))} e {sinal(media(corte.d))}; o erro quadrático cai de {num(SSE0, 2)} para <b>{num(corte.sse, 2)}</b>.{corte === MELHOR[0] ? null : <> O melhor: {rotC(MELHOR[0])}.</>} Como y{"\u00a0−\u00a0"}p̄ é o default menos {num(P0, 2)}, os cortes são os de uma árvore no default; a diferença vem da segunda árvore (<LinkSlide slug="c6p8">slide {SLIDE.c6p8.n}</LinkSlide>).</>}
       fonte={`${DIDATICA.length} propostas didáticas sintéticas dos capítulos 4 e 5 (gerador do curso, semente ${SEMENTE_BASE}). Árvore de regressão nos resíduos do palpite F₀ = ${num(MOD.f0, 2)}: profundidade ${CFG_DIDATICA.profundidade}, mínimo de ${CFG_DIDATICA.minFolha} por folha, cortes nos pontos médios entre valores distintos; erro quadrático em torno da média de cada lado; em empate, a primeira variável na ordem (utilização). Árvore 1 do boosting da biblioteca.`}>
       <Painel>
         <Grafico titulo="Os erros no plano das 16 propostas" sub={cresceu ? "as quatro folhas da primeira árvore" : `erro no palpite: ● default ${sinal(R[YD.indexOf(1)])} · ○ adimplente ${sinal(R[YD.indexOf(0)])}`} rotulo={cresceu ? `Quatro folhas: ${FOLHAS.map((f) => `${f.nome}, ${lista(f.membros)}, média ${sinal(media(f.membros))}`).join("; ")}` : rev ? `Corte ${rotC(corte)}: erro quadrático de ${num(SSE0, 2)} para ${num(corte.sse, 2)}` : "As 16 propostas no plano utilização por atraso, com o erro de cada uma"} arCelular="1 / 1">

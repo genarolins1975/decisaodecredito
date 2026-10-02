@@ -2,11 +2,12 @@
 import { useState } from "react";
 import { Botao, caminho, Controle, Eixos, escala, Grafico, Kpi, LinkSlide, Painel, Previsao, Quadro, Seg, margens, type Pagina } from "@/components/capitulo7/base";
 import { CFG_CARTEIRA, NA, NV, XA, XV, YA, YV, modelo } from "@/lib/capitulo6/dados";
+import { SLIDE } from "@/lib/capitulo6/roteiro";
 import { auc, estagios, perdaLog } from "@/lib/capitulo6/gbm";
 import { int, num } from "@/lib/capitulo7/formato";
 
 /**
- * 15 · c6p15 · Parada pela validação, na configuração de referência do slide 11 (CFG_CARTEIRA): a perda de validação
+ * 16 · c6p15 · Parada pela validação, na configuração de referência do slide 12 (CFG_CARTEIRA): a perda de validação
  * desce e sobe, e o ponto mais baixo escolhe o número de árvores; a AUC de ajuste (nos números ao lado) continua
  * subindo depois dele. Tudo sai de gbm.ts (estagios, perdaLog, auc). A faixa "a menos de 0,001 do mínimo" mostra que o
  * ponto exato é ruidoso; depois da previsão, a regra de paciência (parar depois de k árvores sem melhorar e guardar a
@@ -115,8 +116,8 @@ export function S15QuandoParar({ pagina }: { pagina?: Pagina }) {
       titulo={revelado ? undefined : `Das ${MAXA} árvores, quantas a validação manda manter?`}
       sub={revelado ? undefined : "A perda de ajuste cai até a última. Preveja antes de ver a validação."}
       conclusao={revelado
-        ? <>Parando em {m}: perda de validação {num(c.pv[m], 4)}{m === imin ? ", o mínimo" : ""}; a AUC de ajuste segue até <b>{num(c.aa[MAXA], 3)}</b> em {MAXA}. <b>Só a validação diz onde parar</b>, e de {faixa[0]} a {faixa[1]} tanto faz; escolhido nesta amostra, o ponto não se mede sem viés. <LinkSlide slug="c6p17">Slide 17</LinkSlide>: contra a logística.</>
-        : <>No ajuste, a perda cai de {num(c.pa[0], 3)} a {num(c.pa[MAXA], 3)} e a AUC sobe de {num(c.aa[0], 2)} a {num(c.aa[MAXA], 3)} nas {MAXA} árvores do <LinkSlide slug="c6p11">slide 11</LinkSlide>: nenhuma das duas avisa quando parar.</>}
+        ? <>Parando em {m}: perda de validação {num(c.pv[m], 4)}{m === imin ? ", o mínimo" : ""}; a AUC de ajuste segue até <b>{num(c.aa[MAXA], 3)}</b> em {MAXA}. <b>Só a validação diz onde parar</b>, e de {faixa[0]} a {faixa[1]} tanto faz; escolhido nesta amostra, o ponto não se mede sem viés. <LinkSlide slug="c6p17">Slide {SLIDE.c6p17.n}</LinkSlide>: contra a logística.</>
+        : <>No ajuste, a perda cai de {num(c.pa[0], 3)} a {num(c.pa[MAXA], 3)} e a AUC sobe de {num(c.aa[0], 2)} a {num(c.aa[MAXA], 3)} nas {MAXA} árvores do <LinkSlide slug="c6p11">slide {SLIDE.c6p11.n}</LinkSlide>: nenhuma das duas avisa quando parar.</>}
       fonte={`Ajuste: ${int(NA)} propostas, ${DA} defaults; validação sorteada: ${int(NV)}, ${DV} defaults. η ${num(CFG_CARTEIRA.eta, 1)}, profundidade ${CFG_CARTEIRA.profundidade}, mínimo ${CFG_CARTEIRA.minFolha}, até ${MAXA} árvores (gbm.ts).`}>
       <Painel>
         <Graficos c={c} m={m} revelado={revelado} ate={ate} imin={imin} faixa={faixa} />
@@ -132,7 +133,7 @@ export function S15QuandoParar({ pagina }: { pagina?: Pagina }) {
           <Kpi rotulo="AUC" valor={num(c.aa[m], 3)} detalhe="ajuste" tam="mini" />
           <Kpi rotulo="AUC" valor={revelado ? num(c.av[m], 3) : "?"} detalhe="validação" tom="val" tam="mini" />
         </div>
-        <Previsao pergunta={`Quantas das ${MAXA} árvores do slide 11 ficam?`} opcoes={ops} escolha={esc} onEscolha={escolher} recolher />
+        <Previsao pergunta={`Quantas das ${MAXA} árvores do slide ${SLIDE.c6p11.n} ficam?`} opcoes={ops} escolha={esc} onEscolha={escolher} recolher />
         {revelado && (
           <div className="q6-s15-pac">
             <p className="q7-k">Paciência k: árvores sem melhorar</p>

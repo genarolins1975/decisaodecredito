@@ -2,15 +2,16 @@
 import { useState } from "react";
 import { Botao, caminho, Controle, Eixos, escala, Grafico, Kpi, LinkSlide, Painel, Previsao, Quadro, margens, type Pagina } from "@/components/capitulo7/base";
 import { CFG_CARTEIRA, modelo, NV, XV, YV } from "@/lib/capitulo6/dados";
+import { SLIDE } from "@/lib/capitulo6/roteiro";
 import { estagios, perdaLog, sigmoide } from "@/lib/capitulo6/gbm";
 import { calibracaoGlobal, faixasQuantis, slopeComIntervalo, wilson, type Faixa } from "@/lib/capitulo7/metricas";
 import { int, num, pct } from "@/lib/capitulo7/formato";
 
 /**
- * 18 · c6p18 · Nível das PDs do boosting da carteira (CFG_CARTEIRA) na validação: PD média contra taxa observada
+ * 19 · c6p18 · Nível das PDs do boosting da carteira (CFG_CARTEIRA) na validação: PD média contra taxa observada
  * (com o intervalo de Wilson da taxa), curva de confiabilidade por quintis de PD (126 ou 127 propostas por faixa: com decis de 63, os intervalos ficam largos demais para ler a inclinação) com o intervalo de Wilson de cada faixa
  * e slope de calibração com IC de Wald (funções de src/lib/capitulo7/metricas.ts, conferidas com scikit-learn e
- * statsmodels). O modelo parado (mínimo da log loss de validação, o mesmo do slide 17) é o estado inicial; a previsão
+ * statsmodels). O modelo parado (mínimo da log loss de validação, o mesmo do slide 18) é o estado inicial; a previsão
  * pergunta o que acontece sem a parada, com todas as árvores; depois, o controle percorre o número de árvores e a curva
  * do modelo parado fica como referência (quadrados vazados). As frases sobre as faixas extremas e sobre o slope são
  * calculadas: o retorno só afirma a direção que os números mostram, e o slope só é chamado de desvio quando o IC exclui 1.
@@ -103,8 +104,8 @@ export function S18Nivel({ pagina }: { pagina?: Pagina }) {
       conclusao={!revelado
         ? <>A PD média do modelo parado, <b>{pct(E0.g.pdMedia!, 1)}</b>, cabe no intervalo da taxa observada ({DV} de {int(NV)}). E com {K_MAX} árvores? Preveja ao lado.</>
         : parado
-          ? <>Parado em {K_PARADA} árvores: PD média {pct(e.g.pdMedia!, 1)} contra {pct(TAXA.p, 1)}{MEDIA_OK ? ", no intervalo," : ""} e slope <b>{num(e.s.slope, 2)}</b> (IC de {num(e.s.ic[0], 2)} a {num(e.s.ic[1], 2)}{SLOPE_OK ? ", contém 1" : ""}){FORA.length ? <>, mas {FORA.length === 1 ? `a faixa ${FORA[0].j} fica` : `as faixas ${FORA.map((f) => f.j).join(" e ")} ficam`} fora do intervalo de Wilson (faixa {LONGE.j}: {pct(LONGE.pdMedia!, 1)} previstos contra {pct(LONGE.obs!, 1)} observados, intervalo de {pct(LONGE.ic!.lo, 1)} a {pct(LONGE.ic!.hi, 1)}): <b>sinais mistos</b>, que {int(NV)} propostas não resolvem</> : <>: {int(NV)} propostas não provam desvio, e não provar não é conferir</>}. O <LinkSlide slug="c6p19">slide 19</LinkSlide> explica cada PD; o capítulo 7 mede com mais casos e recalibra.</>
-          : <>Com {k} {k === 1 ? "árvore" : "árvores"}, a PD média fica em {pct(e.g.pdMedia!, 1)} (observado {pct(TAXA.p, 1)}), e a faixa 1 recebe {pct(e.F[0].pdMedia!, 1)} contra {pct(e.F[0].obs!, 1)} observados: slope <b>{num(e.s.slope, 2)}</b> (IC de {num(e.s.ic[0], 2)} a {num(e.s.ic[1], 2)}), {forma(e.s)}. Média certa não é PD certa; o <LinkSlide slug="c6p19">slide 19</LinkSlide> explica cada PD, e o capítulo 7 recalibra.</>}
+          ? <>Parado em {K_PARADA} árvores: PD média {pct(e.g.pdMedia!, 1)} contra {pct(TAXA.p, 1)}{MEDIA_OK ? ", no intervalo," : ""} e slope <b>{num(e.s.slope, 2)}</b> (IC de {num(e.s.ic[0], 2)} a {num(e.s.ic[1], 2)}{SLOPE_OK ? ", contém 1" : ""}){FORA.length ? <>, mas {FORA.length === 1 ? `a faixa ${FORA[0].j} fica` : `as faixas ${FORA.map((f) => f.j).join(" e ")} ficam`} fora do intervalo de Wilson (faixa {LONGE.j}: {pct(LONGE.pdMedia!, 1)} previstos contra {pct(LONGE.obs!, 1)} observados, intervalo de {pct(LONGE.ic!.lo, 1)} a {pct(LONGE.ic!.hi, 1)}): <b>sinais mistos</b>, que {int(NV)} propostas não resolvem</> : <>: {int(NV)} propostas não provam desvio, e não provar não é conferir</>}. O <LinkSlide slug="c6p19">slide {SLIDE.c6p19.n}</LinkSlide> explica cada PD; o capítulo 7 mede com mais casos e recalibra.</>
+          : <>Com {k} {k === 1 ? "árvore" : "árvores"}, a PD média fica em {pct(e.g.pdMedia!, 1)} (observado {pct(TAXA.p, 1)}), e a faixa 1 recebe {pct(e.F[0].pdMedia!, 1)} contra {pct(e.F[0].obs!, 1)} observados: slope <b>{num(e.s.slope, 2)}</b> (IC de {num(e.s.ic[0], 2)} a {num(e.s.ic[1], 2)}), {forma(e.s)}. Média certa não é PD certa; o <LinkSlide slug="c6p19">slide {SLIDE.c6p19.n}</LinkSlide> explica cada PD, e o capítulo 7 recalibra.</>}
       fonte={`Validação sorteada: ${int(NV)} propostas, ${DV} defaults. ${NF === 5 ? "Cinco" : NF} faixas pela fila de PD (${NMIN} ou ${NMAX}); Wilson de 95%; slope com IC de Wald.`}>
       <Painel>
         <Curva F={e.F} ref={parado ? null : E0.F} max={MAX} k={k} />

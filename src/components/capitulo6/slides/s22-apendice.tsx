@@ -2,10 +2,11 @@
 import { useState } from "react";
 import { Formula, LinkSlide, Painel, Quadro, Seg, type Pagina } from "@/components/capitulo7/base";
 import { CFG_CARTEIRA, NA, NV } from "@/lib/capitulo6/dados";
+import { SLIDE } from "@/lib/capitulo6/roteiro";
 import { int, num } from "@/lib/capitulo7/formato";
 
 /**
- * 22 · c6p22 · Apêndice de consulta, fora do percurso da aula: fórmulas do capítulo (cada uma com o slide em que
+ * 23 · c6p22 · Apêndice de consulta, fora do percurso da aula: fórmulas do capítulo (cada uma com o slide em que
  * aparece), fronteira do tema (XGBoost, LightGBM, CatBoost, EBM e GA2M, árvores contra redes em dados tabulares,
  * explicações contrafactuais: o que cada um resolve, quando usar e o slide do curso em que o tema aparece), referências
  * primárias do checklist de estado da arte (references/estado-da-arte.md, capítulo 6), com DOI ou endereço, e reprodução
@@ -74,7 +75,7 @@ const RefLista = ({ refs }: { refs: Ref[] }) => (
 export function S22Apendice({ pagina }: { pagina?: Pagina }) {
   const [aba, setAba] = useState<Aba>("formulas");
   return (
-    <Quadro slug="c6p22" pagina={pagina} layout="um" fonte="Material de consulta; a aula termina no slide 21.">
+    <Quadro slug="c6p22" pagina={pagina} layout="um" fonte={`Material de consulta; a aula termina no slide ${SLIDE.c6p21.n}.`}>
       <Painel>
         <Seg rotulo="Seção do apêndice" opcoes={[{ v: "formulas" as Aba, r: "Fórmulas" }, { v: "fronteira" as Aba, r: "Fronteira" }, { v: "metodo" as Aba, r: "Referências: método" }, { v: "validacao" as Aba, r: "Referências: validação" }, { v: "repro" as Aba, r: "Reprodução" }]} valor={aba} onChange={setAba} cor />
         {aba === "formulas" && <>
@@ -82,7 +83,7 @@ export function S22Apendice({ pagina }: { pagina?: Pagina }) {
           <p className="q7-nota">Símbolos: n propostas, i uma proposta, p a PD; K variáveis, V o conjunto delas, j uma variável; R a região de uma folha, m a árvore; σ a sigmoide; η a taxa.</p>
         </>}
         {aba === "fronteira" && <div className="q6-s22-c">{FRONTEIRA.map((c) => <section key={c.t}>
-          <p className="q6-s22-ct">{c.t}{c.s && <LinkSlide slug={c.s} className="q6-s22-sl">slide {c.s.slice(3)}</LinkSlide>}<small>{c.r}</small></p>
+          <p className="q6-s22-ct">{c.t}{c.s && <LinkSlide slug={c.s} className="q6-s22-sl">slide {SLIDE[c.s].n}</LinkSlide>}<small>{c.r}</small></p>
           {c.f && <Formula f={c.f} compacta />}
           <p className="q6-s22-co">{c.o}</p>
           <p className="q6-s22-cu"><b>Quando usar:</b> {c.u}</p>

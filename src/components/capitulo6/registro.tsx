@@ -5,12 +5,13 @@ import type { Pagina } from "@/components/capitulo7/base";
 import { ProvedorC6 } from "./provedor";
 
 /**
- * Quadros do capítulo 6 por página, cada um dentro do provedor do roteiro do capítulo. Cada quadro é carregado sob
+ * Quadros do capítulo 6 por página, na ordem do roteiro (c6p23 é o slide 2), cada um dentro do provedor do roteiro do capítulo. Cada quadro é carregado sob
  * demanda (next/dynamic, com renderização no servidor): os quadros ajustam modelos de boosting, e importar todos de
  * uma vez faria qualquer página pagar essa conta. A versão estática fica em registro-estatico.tsx, para os testes.
  */
 const SOB_DEMANDA: Record<string, ComponentType<{ pagina?: Pagina }>> = {
   c6p1: dynamic(() => import("./slides/s01-mapa").then((m) => m.S01Mapa)),
+  c6p23: dynamic(() => import("./slides/s23-escolher-votar-corrigir").then((m) => m.S23EscolherVotarCorrigir)),
   c6p2: dynamic(() => import("./slides/s02-tres-estrategias").then((m) => m.S02TresEstrategias)),
   c6p3: dynamic(() => import("./slides/s03-palpite").then((m) => m.S03Palpite)),
   c6p4: dynamic(() => import("./slides/s04-erro-alvo").then((m) => m.S04ErroAlvo)),

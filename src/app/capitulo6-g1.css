@@ -1,4 +1,4 @@
-/* Capítulo 6, quadros do grupo 1 (slides 1 a 8). Prefixo q6-; o resto vem de capitulo7.css. */
+/* Capítulo 6, quadros do grupo 1 (slides 1 a 9, com o c6p23 na posição 2). Prefixo q6-; o resto vem de capitulo7.css. */
 
 /* 01 · c6p1 · mapa e gancho: o gancho é a peça principal (dois terços da largura); escalas e perguntas, compactas, à direita */
 .q6-s01 { display: grid; grid-template-columns: minmax(0, 62fr) minmax(0, 38fr); gap: 1.2cqw; min-height: 0; height: 100%; }
@@ -36,11 +36,50 @@
   .q6-s01-f { font-size: 14px; } .q6-s01-l { gap: 4px; } .q7 .q7-slide .q6-s01-k { font-size: 14px; min-width: 32px; padding: 2px 6px; }
 }
 
-/* 06 · c6p6 · passo de Newton: seletor de folha e Restaurar na mesma linha, tabela compacta */
+/* 07 · c6p6 · passo de Newton: seletor de folha e Restaurar na mesma linha, tabela compacta */
 .q6-s06-l { justify-content: space-between; }
 .q7 .q7-slide [data-q7="c6p6"] .q7-tab th, .q7 [data-q7="c6p6"] .q7-slide .q7-tab td, .q7[data-q7="c6p6"] .q7-slide .q7-tab th, .q7[data-q7="c6p6"] .q7-slide .q7-tab td { padding-top: .14cqw; padding-bottom: .14cqw; }
 
-/* 08 · c6p8 · quatro árvores: seletor da proposta acompanhada */
+/* 09 · c6p8 · quatro árvores: seletor da proposta acompanhada */
 .q6-s08-sel { display: grid; gap: .25cqw; font-size: 1.3cqw; color: var(--q7-mudo); font-weight: 600; }
 .q7 .q7-slide .q6-s08-sel select { font: inherit; font-size: 1.4cqw; font-weight: 600; color: var(--q7-ink); background: #fff; border: 1px solid #C9CDD5; border-radius: .6cqw; padding: .4cqw .6cqw; min-height: 2.6cqw; }
 @container q7 (max-width: 820px) { .q6-s08-sel { font-size: 13px; gap: 4px; } .q7 .q7-slide .q6-s08-sel select { font-size: 15px; min-height: 44px; border-radius: 8px; } }
+
+/* 02 · c6p23 · escolher, votar, corrigir: três colunas, cada uma com o desenho do método e três linhas comparativas
+   (alvo, ligação, PD) alinhadas pela grade; os rótulos das linhas ficam numa coluna estreita à esquerda. No celular,
+   cada método vira um cartão com as suas linhas rotuladas. */
+.q6-s23 { display: grid; grid-template-columns: 5.6cqw repeat(3, minmax(0, 1fr)); grid-template-rows: auto minmax(0, 1fr) auto auto auto auto; column-gap: .9cqw; row-gap: .3cqw; flex: 1; min-height: 0; }
+.q6-s23-col { display: contents; }
+.q6-s23-col > * { grid-column: var(--c); position: relative; z-index: 1; min-width: 0; }
+.q6-s23-col > .q6-s23-fundo { grid-row: 1 / 6; z-index: 0; margin: -.35cqw -.45cqw; border-radius: .8cqw; background: var(--q7-papel2); border: 1px solid var(--q7-borda); }
+.q6-s23-col[data-m="cor"] > .q6-s23-fundo { border-color: #C9D3E6; }
+.q7 .q7-slide .q6-s23-h { grid-row: 1; margin: 0; font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-size: 1.65cqw; line-height: 1.1; color: var(--q7-mudo); }
+.q7 .q7-slide .q6-s23-h[data-cor="1"] { color: var(--q7-ink); }
+.q6-s23-h small { display: block; font-family: Inter, "Helvetica Neue", Arial, sans-serif; font-size: 1.15cqw; font-weight: 500; color: var(--q7-mudo); margin-top: .15cqw; }
+.q6-s23-g { grid-row: 2; display: flex; min-height: 0; }
+.q6-s23-g > .q7-graf { flex: 1; }
+.q6-s23-rl { grid-column: 1; margin: 0; font-size: 1.15cqw; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--q7-mudo); border-top: 1px solid var(--q7-borda); padding-top: .3cqw; }
+.q6-s23-leg { grid-column: 1 / -1; grid-row: 6; gap: .3cqw 1.6cqw; font-size: 1.15cqw; margin-top: .55cqw; }
+.q6-s23-mkr { display: inline-block; width: 1.1cqw; height: 1.1cqw; border-radius: 50%; border: .13cqw dashed #9AA1AD; box-sizing: border-box; }
+.q6-s23-mkf { display: inline-block; width: 1.1cqw; height: 1.4cqw; border: .16cqw solid var(--q7-ink); background: #EFF3FA; border-radius: .2cqw; box-sizing: border-box; }
+.q6-s23-c { margin: 0; font-size: 1.3cqw; line-height: 1.22; color: var(--q7-texto); border-top: 1px solid var(--q7-borda); padding-top: .3cqw; }
+.q6-s23-c[data-oculta="1"] > span:last-child { display: inline-block; min-width: 2.4cqw; text-align: center; color: var(--q7-mudo); font-weight: 700; border: 1px dashed #B5BAC4; border-radius: 99px; }
+.q6-s23-cl { display: none; }
+@container q7 (max-width: 820px) {
+  .q6-s23 { display: flex; flex-direction: column; gap: 12px; }
+  .q6-s23-col { display: flex; flex-direction: column; gap: 6px; background: var(--q7-papel2); border: 1px solid var(--q7-borda); border-radius: 10px; padding: 10px; }
+  .q6-s23-col > .q6-s23-fundo, .q6-s23-rl { display: none; }
+  .q7 .q7-slide .q6-s23-h { font-size: 18px; } .q6-s23-h small { font-size: 12.5px; margin-top: 2px; }
+  .q6-s23-g .q7-gw { aspect-ratio: var(--q7-ar-cel, 4 / 3); }
+  .q6-s23-leg { flex-direction: row; font-size: 12.5px; gap: 12px; } .q6-s23-mkf { width: 11px; height: 14px; border-width: 2px; }
+  .q6-s23-c { font-size: 14px; padding-top: 4px; }
+  .q6-s23-cl { display: inline-block; min-width: 64px; font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--q7-mudo); margin-right: 6px; }
+  .q6-s23-c[data-oculta="1"] > span:last-child { min-width: 28px; }
+}
+
+/* 03 · c6p2 · a primeira árvore explicada na expansão */
+.q6-s02-um { margin: 0; display: grid; gap: .45cqw; }
+.q6-s02-um > div { border-top: 1px solid var(--q7-borda); padding-top: .3cqw; }
+.q6-s02-um dt { font-size: 1.25cqw; font-weight: 700; color: var(--q7-ink); }
+.q6-s02-um dd { margin: .1cqw 0 0; font-size: 1.25cqw; line-height: 1.25; }
+@container q7 (max-width: 820px) { .q6-s02-um dt, .q6-s02-um dd { font-size: 13.5px; } }

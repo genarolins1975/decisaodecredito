@@ -3,6 +3,7 @@ import type { ComponentType } from "react";
 import type { Pagina } from "@/components/capitulo7/base";
 import { ProvedorC6 } from "./provedor";
 import { S01Mapa } from "./slides/s01-mapa";
+import { S23EscolherVotarCorrigir } from "./slides/s23-escolher-votar-corrigir";
 import { S02TresEstrategias } from "./slides/s02-tres-estrategias";
 import { S03Palpite } from "./slides/s03-palpite";
 import { S04ErroAlvo } from "./slides/s04-erro-alvo";
@@ -28,6 +29,7 @@ import { S22Apendice } from "./slides/s22-apendice";
 /** Os mesmos quadros de registro.tsx, importados de uma vez: para os testes de renderização no servidor. */
 const BRUTO: Record<string, ComponentType<{ pagina?: Pagina }>> = {
   c6p1: S01Mapa,
+  c6p23: S23EscolherVotarCorrigir,
   c6p2: S02TresEstrategias,
   c6p3: S03Palpite,
   c6p4: S04ErroAlvo,

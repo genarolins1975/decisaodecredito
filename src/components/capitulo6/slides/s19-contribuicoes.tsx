@@ -2,12 +2,13 @@
 import { useState } from "react";
 import { Botao, Controle, escala, Grafico, LinkSlide, Painel, Previsao, Quadro, type Dim, type Pagina } from "@/components/capitulo7/base";
 import { CFG_CARTEIRA, modelo, NV, VARIAVEIS, XA, XV, YA, YV } from "@/lib/capitulo6/dados";
+import { SLIDE } from "@/lib/capitulo6/roteiro";
 import { contribuicoes, cortesDe, dependenciaParcialRapida, escore, estagios, importanciaGanho, perdaLog, sigmoide, type Modelo, type No, type Vetor } from "@/lib/capitulo6/gbm";
 import { int, num, pct, sinal } from "@/lib/capitulo7/formato";
 
 /**
- * 19 · c6p19 · Contribuições de Shapley de cada variável para a log odds de uma proposta da validação, no boosting da
- * carteira parado pela validação (o mesmo dos slides 17 e 18). contribuicoes() de gbm.ts usa a expectativa pelo
+ * 20 · c6p19 · Contribuições de Shapley de cada variável para a log odds de uma proposta da validação, no boosting da
+ * carteira parado pela validação (o mesmo dos slides 18 e 19). contribuicoes() de gbm.ts usa a expectativa pelo
  * caminho das árvores e foi conferida com o shap.TreeExplainer em tests/capitulo6-gbm.test.ts; a soma valor esperado
  * + contribuições = escore é verificada na tela. A importância por ganho é a redução do erro quadrático do
  * pseudo-resíduo em cada corte, somada por variável e normalizada: a definição de feature_importances_ do
@@ -16,7 +17,7 @@ import { int, num, pct, sinal } from "@/lib/capitulo7/formato";
  * move a log odds (em valor absoluto) não é a de maior ganho, com a maior folga entre a primeira e a segunda
  * contribuição; assim, quem responde pelo ganho erra. A alternativa certa é calculada. Quando a proposta exibida tem
  * utilização acima do último corte e contribuição negativa dela, uma nota mostra a queda da dependência parcial nesse
- * trecho (com quantas propostas de ajuste o sustentam) e leva ao slide 20.
+ * trecho (com quantas propostas de ajuste o sustentam) e leva ao slide 21.
  */
 function calcular() {
   const M0 = modelo(CFG_CARTEIRA);
@@ -64,7 +65,7 @@ function calcular() {
         : j === J_GANHO ? <>Confunde importância na carteira com peso na proposta: o ganho soma cortes em todas as propostas, sem sinal; o que conta aqui é onde caem os valores desta proposta, como {ART0[j]} de {fmtV(j, XV[I_PREV][j])}, nos cortes das árvores.</>
           : <>Confunde valor alarmante com contribuição: a contribuição mede o uso que o modelo faz do valor desta proposta, não o valor em si.</>,
   }));
-  // utilização acima do último corte: a dependência parcial cai ali, num trecho com poucas propostas (ligação com o slide 20)
+  // utilização acima do último corte: a dependência parcial cai ali, num trecho com poucas propostas (ligação com o slide 21)
   const CORTE_U = Math.max(...cortesDe(M, 0));
   const [PD_ANTES, PD_DEPOIS] = dependenciaParcialRapida(M, XA, 0, [CORTE_U - 0.05, CORTE_U + 0.05]);
   const N_ACIMA = XA.filter((x) => Math.fround(x[0]) > CORTE_U).length;
@@ -136,7 +137,7 @@ export function S19Contribuicoes({ pagina }: { pagina?: Pagina }) {
         ? <>Proposta da validação com {fmtX(XV[I_PREV])}: PD de {pct(sigmoide(escore(M, XV[I_PREV])), 1)}. A tabela traz o ganho de cada variável na carteira. Qual delas mais move esta PD? Preveja ao lado.</>
         : <>Valor esperado {num(c.base, 2)} {c.phi.map((p, j) => <span key={j}>{p < 0 ? "− " : "+ "}{num(Math.abs(p), 2)} ({VARIAVEIS[j].toLowerCase()}) </span>)}= <b>{num(f, 2)}</b>, PD de {pct(sigmoide(f), 1)}; {dif < 1e-12 ? "a soma fecha exatamente" : `diferença de ${num(dif, 12)}`}. {ip === 0 && !editada && esc !== null
           ? <><b>Sua previsão acertou</b>: {OPS[esc].retorno} Caso raro: {N_RARO} das {int(NV)} propostas.</>
-          : <>O ganho põe {ART[jg]} em {pct(GANHO[jg], 0)} para a carteira, sem sinal; nesta proposta, pesa mais {ART[jm]}{!editada && ip >= 2 && EMPATES[ip].todas > 1 ? ` (${ip === 4 ? `um dos ${EMPATES[ip].defaults} defaults` : ip === 3 ? `uma das ${EMPATES[ip].todas - EMPATES[ip].defaults} adimplentes` : `uma das ${EMPATES[ip].todas} propostas`} com esta PD, a primeira na ordem da validação)` : ""}.</>} O <LinkSlide slug="c6p20">slide 20</LinkSlide> põe o atraso no modelo, na direção errada.</>}
+          : <>O ganho põe {ART[jg]} em {pct(GANHO[jg], 0)} para a carteira, sem sinal; nesta proposta, pesa mais {ART[jm]}{!editada && ip >= 2 && EMPATES[ip].todas > 1 ? ` (${ip === 4 ? `um dos ${EMPATES[ip].defaults} defaults` : ip === 3 ? `uma das ${EMPATES[ip].todas - EMPATES[ip].defaults} adimplentes` : `uma das ${EMPATES[ip].todas} propostas`} com esta PD, a primeira na ordem da validação)` : ""}.</>} O <LinkSlide slug="c6p20">slide {SLIDE.c6p20.n}</LinkSlide> põe o atraso no modelo, na direção errada.</>}
       fonte={`Validação sorteada: ${int(NV)} propostas. Boosting parado em ${K_PARADA} árvores (taxa ${num(CFG_CARTEIRA.eta, 1)}, profundidade ${CFG_CARTEIRA.profundidade}, mínimo de ${CFG_CARTEIRA.minFolha} por folha). Contribuições de Shapley pelo caminho das árvores, conferidas com o shap.TreeExplainer; ganho como no scikit-learn, nas ${int(XA.length)} propostas de ajuste.`}>
       <Painel titulo={`Da média do modelo à log odds da proposta${editada ? " (editada)" : ""}`}>
         <Grafico rotulo={`Cascata das contribuições: valor esperado ${num(c.base, 2)}; ${c.phi.map((p, j) => `${VARIAVEIS[j]} ${revelado ? sinal(p, 2) : "oculta"}`).join("; ")}; escore ${num(f, 2)}, PD ${pct(sigmoide(f), 1)}`} arCelular="5 / 4">
@@ -157,7 +158,7 @@ export function S19Contribuicoes({ pagina }: { pagina?: Pagina }) {
           <tbody>{VARIAVEIS.map((v, j) => <tr key={v} data-on={revelado && j === jm ? "1" : undefined}><th>{v}</th><td>{pct(GANHO[j], 0)}</td><td>{revelado ? `${c.phi[j] > 0 ? "▲" : c.phi[j] < 0 ? "▼" : ""} ${sinal(c.phi[j], 2)}` : "?"}</td></tr>)}</tbody>
         </table>
         {revelado && (x[0] > CORTE_U && c.phi[0] < 0
-          ? <p className="q7-nota">Utilização de {num(x[0], 1)}% baixa a PD: acima de {num(CORTE_U, 1)}%, a dependência parcial (PD média com a utilização fixada) cai de {pct(PD_ANTES, 2)} para {pct(PD_DEPOIS, 2)}, com {int(N_ACIMA)} das {int(XA.length)} propostas de ajuste. Sem lógica de crédito: o <LinkSlide slug="c6p20">slide 20</LinkSlide> a proíbe.</p>
+          ? <p className="q7-nota">Utilização de {num(x[0], 1)}% baixa a PD: acima de {num(CORTE_U, 1)}%, a dependência parcial (PD média com a utilização fixada) cai de {pct(PD_ANTES, 2)} para {pct(PD_DEPOIS, 2)}, com {int(N_ACIMA)} das {int(XA.length)} propostas de ajuste. Sem lógica de crédito: o <LinkSlide slug="c6p20">slide {SLIDE.c6p20.n}</LinkSlide> a proíbe.</p>
           : <p className="q7-nota">Ganho: redução do erro quadrático dos pseudo-resíduos nos cortes que usam a variável, somada na carteira, normalizada e sem sinal (feature_importances_ do scikit{"\u2011"}learn).</p>)}
         {!revelado && <p className="q7-nota">Ganho: quanto os cortes na variável reduzem o erro quadrático dos resíduos, somado nas árvores e sem sinal.</p>}
       </Painel>

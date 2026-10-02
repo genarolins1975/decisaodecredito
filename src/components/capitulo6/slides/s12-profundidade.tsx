@@ -2,13 +2,14 @@
 import { useMemo, useState } from "react";
 import { Botao, caminho, Eixos, escala, Grafico, LinkSlide, Painel, Previsao, Quadro, Seg, margens, type Pagina } from "@/components/capitulo7/base";
 import { CFG_CARTEIRA, NA, NV, XA, XV, YV, modelo } from "@/lib/capitulo6/dados";
+import { SLIDE } from "@/lib/capitulo6/roteiro";
 import { escore, estagios, perdaLog } from "@/lib/capitulo6/gbm";
 import { int, num } from "@/lib/capitulo7/formato";
 
 /**
- * 12 · c6p12 · Profundidade como ordem de interação. Modelos da carteira com a referência do slide 11 (η = 0,1,
+ * 13 · c6p12 · Profundidade como ordem de interação. Modelos da carteira com a referência do slide 12 (η = 0,1,
  * mínimo 40), mudando só a profundidade (1, 2, 3), cada um parado no mínimo da log loss da validação sorteada (o mesmo
- * critério do slide 15); o seletor de árvores mostra também o modelo de 300 árvores, para ver a "interação" de
+ * critério do slide 16); o seletor de árvores mostra também o modelo de 300 árvores, para ver a "interação" de
  * decoreba. A peça é a log odds ao longo da utilização em três scores, com o atraso fixo em 0 dias. O efeito da utilização é a
  * média da log odds de 50% a 60% menos a de 0% a 10% (uma média por faixa, não um ponto da curva). Os eixos vão até o
  * percentil 95 da utilização no ajuste, e os três scores ficam entre os percentis 5 e 95 do score (calculados aqui e
@@ -98,7 +99,7 @@ export function S12Profundidade({ pagina }: { pagina?: Pagina }) {
         ? <>Profundidade 2, parada em {R.k} árvores: {efeitoTxt}. E com tocos, de profundidade 1?</>
         : <>Profundidade {p}, {k} árvores: {efeitoTxt}{iguais ? ": curvas paralelas, modelo aditivo." : ": o efeito de uma variável depende da outra."} {arv === 300
           ? <>Sem parada, a validação piora de {num(R.min, 4)} para {num(R.fim, 4)}: interação de decoreba.</>
-          : <>Interação só vale se validar: aqui a melhor perda é a da profundidade {melhor.p} ({num(melhor.min, 4)}).</>} O <LinkSlide slug="c6p13">slide 13</LinkSlide> junta os quatro controles.</>}
+          : <>Interação só vale se validar: aqui a melhor perda é a da profundidade {melhor.p} ({num(melhor.min, 4)}).</>} O <LinkSlide slug="c6p13">slide {SLIDE.c6p13.n}</LinkSlide> junta os quatro controles.</>}
       fonte={`Ajuste: ${int(NA)} propostas; validação sorteada: ${int(NV)}, ${DV} defaults. η ${num(CFG_CARTEIRA.eta, 1)}, mínimo ${CFG_CARTEIRA.minFolha} (gbm.ts). Eixo até o percentil 95 da utilização (${num(U95, 1)}%); scores entre os percentis 5 e 95 (${int(S05)} e ${int(S95)}). Efeito: média nas faixas cinza, a alta menos a baixa.`}>
       <Painel>
         <Curvas m={m} atr={atr} ds={ds} p={p} k={k} />

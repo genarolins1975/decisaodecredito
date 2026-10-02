@@ -2,15 +2,16 @@
 import { useState } from "react";
 import { Botao, caminho, Controle, Eixos, escala, Grafico, LinkSlide, Painel, Previsao, Quadro, margens, type Escala, type Pagina } from "@/components/capitulo7/base";
 import { CFG_CARTEIRA, NA, NV, XA, XV, YA, YV, modelo } from "@/lib/capitulo6/dados";
+import { SLIDE } from "@/lib/capitulo6/roteiro";
 import { auc, diferencaPerdaPareada, estagios, perdaLog } from "@/lib/capitulo6/gbm";
 import { int, num } from "@/lib/capitulo7/formato";
 
 /**
- * 11 · c6p11 · O mesmo algoritmo dos slides 3 a 10 nas 1.472 propostas de ajuste (utilização, atraso, score), com a
+ * 12 · c6p11 · O mesmo algoritmo dos slides 4 a 11 nas 1.472 propostas de ajuste (utilização, atraso, score), com a
  * configuração de referência CFG_CARTEIRA (η = 0,1, profundidade 2, mínimo 40 por folha, 300 árvores). Perda (log loss)
  * e AUC por número de árvores, no ajuste e nas 631 propostas de validação. A validação é sorteada do mesmo período, não
  * uma safra posterior: a base não traz a safra por proposta; a janela fora do tempo fica fechada até o capítulo 7. A
- * previsão pede o comportamento da validação antes de desenhá-la. O ponto de parada fica para o slide 15.
+ * previsão pede o comportamento da validação antes de desenhá-la. O ponto de parada fica para o slide 16.
  * O título ("o ajuste melhora em todas as 300 árvores") é conferido abaixo: a perda de ajuste cai em cada uma das 300.
  * A frase sobre a validação acompanha o intervalo: com 62 defaults, a diferença pareada de perda entre 300 árvores e o
  * palpite tem intervalo de 95% que contém o zero (volta ao nível do palpite, não "passa" dele), e a entre 300 e o mínimo
@@ -143,10 +144,10 @@ export function S11Carteira({ pagina }: { pagina?: Pagina }) {
   const passa = c.pv.findIndex((v, k) => k > 0 && v > c.pv[0] && c.pv.slice(k).every((w) => w > c.pv[0]));
   const vmin = Math.min(...c.pv), kmin = c.pv.indexOf(vmin);
   const aucMax = Math.max(...c.av.slice(1)), kauc = c.av.indexOf(aucMax); // maior AUC de validação: a ordenação também piora depois dela
-  if (!(kauc < kmin && c.av[kmin] < aucMax && c.av[MAXA] < c.av[kmin])) throw new Error("a frase sobre a AUC de validação do slide 11 não vale nos dados");
+  if (!(kauc < kmin && c.av[kmin] < aucMax && c.av[MAXA] < c.av[kmin])) throw new Error("a frase sobre a AUC de validação do quadro c6p11 não vale nos dados");
   // título: o ajuste melhora em todas as árvores; leitura: 300 árvores perdem mais que o mínimo e não se distinguem do palpite
   const contraMin = amais(c, MAXA, kmin)!, contraPalpite = amais(c, MAXA, 0)!;
-  if (!(quedas === MAXA && contraMin.ic[0] > 0 && contraPalpite.ic[0] < 0 && contraPalpite.ic[1] > 0)) throw new Error("título ou leitura do slide 11 não valem nos dados");
+  if (!(quedas === MAXA && contraMin.ic[0] > 0 && contraPalpite.ic[0] < 0 && contraPalpite.ic[1] > 0)) throw new Error("título ou leitura do quadro c6p11 não valem nos dados");
   const ops = [
     { texto: "Acompanha o ajuste: cai a cada árvore", certa: false, retorno: <>Confunde <b>ajuste com generalização</b>: o ajuste mede o que o modelo já viu. Na validação, a perda termina em {num(c.pv[MAXA], 3)}, no nível do palpite ({num(c.pv[0], 3)}).</> },
     { texto: "Melhora mais devagar, mas sempre melhora", certa: false, retorno: <>Confunde <b>desacelerar com inverter</b>: a decoreba não só freia o ganho, ela o desfaz. A perda de validação desce até {num(vmin, 3)} com {kmin} árvores e volta a {num(c.pv[MAXA], 3)} com {MAXA}.</> },
@@ -156,8 +157,8 @@ export function S11Carteira({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c6p11" pagina={pagina} layout="gl"
       conclusao={revelado
-        ? <><b>O ajuste melhora em {quedas} de {MAXA} árvores; a validação desce até {num(vmin, 3)} em {kmin} e volta ao nível do palpite</b>: com {DV} defaults, {MAXA} árvores não se distinguem dele, mas perdem {num(contraMin.dif, 3)} a mais que {kmin} (ao lado). Onde parar: <LinkSlide slug="c6p15">slide 15</LinkSlide>.</>
-        : <>O algoritmo do <LinkSlide slug="c6p10">slide 10</LinkSlide>, {MAXA} vezes: a perda de ajuste cai em {quedas} de {MAXA} árvores, de {num(c.pa[0], 3)} a <b>{num(c.pa[MAXA], 3)}</b>; a AUC de ajuste vai de {num(c.aa[0], 2)} a {num(c.aa[MAXA], 3)}. E na validação?</>}
+        ? <><b>O ajuste melhora em {quedas} de {MAXA} árvores; a validação desce até {num(vmin, 3)} em {kmin} e volta ao nível do palpite</b>: com {DV} defaults, {MAXA} árvores não se distinguem dele, mas perdem {num(contraMin.dif, 3)} a mais que {kmin} (ao lado). Onde parar: <LinkSlide slug="c6p15">slide {SLIDE.c6p15.n}</LinkSlide>.</>
+        : <>O algoritmo do <LinkSlide slug="c6p10">slide {SLIDE.c6p10.n}</LinkSlide>, {MAXA} vezes: a perda de ajuste cai em {quedas} de {MAXA} árvores, de {num(c.pa[0], 3)} a <b>{num(c.pa[MAXA], 3)}</b>; a AUC de ajuste vai de {num(c.aa[0], 2)} a {num(c.aa[MAXA], 3)}. E na validação?</>}
       fonte={`Ajuste: ${int(NA)} propostas, ${DA} defaults; validação: ${int(NV)}, ${DV} defaults. η = ${num(CFG_CARTEIRA.eta, 1)}, profundidade ${CFG_CARTEIRA.profundidade}, mínimo ${CFG_CARTEIRA.minFolha} por folha, sem subamostra (gbm.ts, conferida contra o scikit-learn). IC: perda pareada por proposta.`}>
       <Painel>
         <Painel2 c={c} m={m} revelado={revelado} kmin={kmin} passa={passa} kauc={kauc} />

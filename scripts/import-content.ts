@@ -302,7 +302,7 @@ async function main() {
         id: vid, pageId: pg.id, versionNo, title: p.titulo, objective: p.aprendizado, support: p.apoio, connection: p.conexao, timeBudget: p.t,
         blocks, teacherGuide: guia, changeNote: nota, publishedAt: new Date(),
       });
-      const meta = metaDoProfessor.has(pg.id) ? {} : { level: p.nivel, level120: p.nivel120, minutes: p.min, origin: p.origem, position: i };
+      const meta = metaDoProfessor.has(pg.id) ? {} : { level: p.nivel, level120: p.nivel120, minutes: p.min, origin: p.origem, position: i, number: p.n };
       if (metaDoProfessor.has(pg.id)) metaPreservada++;
       await db.update(schema.pages).set({ publishedVersionId: vid, updatedAt: new Date(), ...meta }).where(eq(schema.pages.id, pg.id));
       if (publicada) sincronizadas.push(p.id);

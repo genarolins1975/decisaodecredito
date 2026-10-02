@@ -2,13 +2,14 @@
 import { useState, type ReactNode } from "react";
 import { Botao, LinkSlide, Painel, Quadro, Seg, type Pagina } from "@/components/capitulo7/base";
 import { GRID, HP_CANDIDATO, RES } from "@/lib/capitulo6/dados";
+import { SLIDE } from "@/lib/capitulo6/roteiro";
 import { logit } from "@/lib/capitulo6/gbm";
 import { wilson, Z95 } from "@/lib/capitulo7/metricas";
 import { int, num, pct } from "@/lib/capitulo7/formato";
 import base from "@/lib/capitulo6/base.json";
 
 /**
- * 21 · c6p21 · O fecho. A peça principal é a lista do validador independente, com os números do candidato do comitê:
+ * 22 · c6p21 · O fecho. A peça principal é a lista do validador independente, com os números do candidato do comitê:
  * o boosting completo do gerador do curso (hiperparâmetros e variáveis de base.json meta), julgado na validação temporal
  * do gerador (760 propostas, safras 2023-03 a 2023-07; RES de dados.ts). Cada item tem um estado (cumprido, não
  * cumprido, a provar), uma evidência gráfica mínima e dois modos de texto: o veredito e o que o validador deve pedir.
@@ -16,13 +17,13 @@ import base from "@/lib/capitulo6/base.json";
  *                      McNeil, 1982); a régua exibida é a que decide (EMPATA). O gerador não publica as previsões do
  *                      candidato nas 760 (base.json só as traz na janela fora do tempo, congelada para o capítulo 7):
  *                      o DeLong pareado fica para o validador. A correlação das duas AUC nas 760 não é conhecida (a
- *                      do slide 17 é de outro par de modelos, de três variáveis, nas 631 sorteadas): a tela não a usa;
+ *                      do slide 18 é de outro par de modelos, de três variáveis, nas 631 sorteadas): a tela não a usa;
  *   nível              PD média dos dois contra a faixa de Wilson da taxa observada: os dois erram a safra;
  *   escolha            as 12 AUC da grade com a faixa de um erro padrão da melhor (quantas cabem nela, calculado); a
  *                      melhor só aparece depois do acerto ou da terceira tentativa. Antes disso, só as células enviadas,
  *                      no eixo inteiro da AUC (0,5 a 1, que não entrega onde fica a maior), com o rótulo da célula ao
  *                      lado de cada ponto e afastamento horizontal quando dois pontos se tocariam;
- *   monotonia          as sete variáveis do candidato (meta.features); o score de bureau dos slides 11 a 20 aparece
+ *   monotonia          as sete variáveis do candidato (meta.features); o score de bureau dos slides 12 a 21 aparece
  *                      riscado, com a legenda visível "fora do candidato";
  *   janela             a linha das safras (meta.treino, validacao, oot); a janela fora do tempo traz a PD verdadeira
  *                      de cada proposta (base.oot.pt), que só a base sintética dá (uma carteira real também pode
@@ -223,7 +224,7 @@ function MiniEnviadas({ vistas }: { vistas: G[] }) {
   );
 }
 
-/** Variáveis do candidato (meta.features), sem o score de bureau dos slides 11 a 20. */
+/** Variáveis do candidato (meta.features), sem o score de bureau dos slides 12 a 21. */
 function MiniVars() {
   const FORA = "fora do candidato";
   const tags = [...META.features.map((v) => ({ r: nome(v).curto, fora: false })), ...(TEM_SCORE ? [] : [{ r: "score", fora: true }])];
@@ -233,7 +234,7 @@ function MiniVars() {
   // a pílula riscada leva a legenda ao lado, na mesma linha
   for (const t of tags) { const w = larg(t.r), ocupa = w + (t.fora ? 4 + largTxt(FORA, 10.5) : 0); if (lx + ocupa > W && lx > 0) { li++; lx = 0; } linhas.push({ ...t, x: lx, w, l: li }); lx += w + 4; }
   return (
-    <Mini h={li * 14 + 14} rotulo={`As ${META.features.length} variáveis do candidato: ${VARS}${TEM_SCORE ? "" : "; o score de bureau dos slides 11 a 20 fica fora do candidato"}`}>
+    <Mini h={li * 14 + 14} rotulo={`As ${META.features.length} variáveis do candidato: ${VARS}${TEM_SCORE ? "" : `; o score de bureau dos slides ${SLIDE.c6p11.n} a ${SLIDE.c6p20.n} fica fora do candidato`}`}>
       {linhas.map((t) => (
         <g key={t.r} transform={`translate(${t.x} ${t.l * 14})`} fontSize={10.5}>
           <rect x={0.5} y={0.75} width={t.w} height={12.5} rx={6.25} fill={t.fora ? "#fff" : "var(--q7-papel2)"} stroke={t.fora ? "var(--q7-mudo)" : "var(--q7-borda)"} strokeDasharray={t.fora ? "3 2" : undefined} />
@@ -310,8 +311,8 @@ export function S21Candidato({ pagina }: { pagina?: Pagina }) {
     <Quadro slug="c6p21" pagina={pagina} layout="gl"
       conclusao={!revelado
         ? <>Qual célula valida melhor? Escolha e envie (tentativa {Math.min(tent + (enviado ? 0 : 1), TENTATIVAS)} de {TENTATIVAS}).</>
-        : <>O excesso de <b>{num(EXCESSO, 3)}</b> do <LinkSlide slug="c6p1">slide 1</LinkSlide> era otimismo do treino: na validação temporal os dois empatam (<b>{num(RES.gbm_val.auc, 4)}</b> contra {num(RES.logit_val.auc, 4)}) e erram a mesma safra (<b>{pct(RES.gbm_val.pd_media, 2)}</b> e {pct(RES.logit_val.pd_media, 2)} contra {pct(TAXA.p, 2)}). <b>Mecanismo:</b> F₀ = {num(F0, 2)} mais {HP.max_iter} árvores{"\u00a0×\u00a0"}{num(HP.learning_rate, 2)}. <b>Probabilidade:</b> em log odds, sigmoide no fim; cada PD se explica por contribuições quando as árvores estiverem disponíveis (<LinkSlide slug="c6p19">slide 19</LinkSlide>). <b>Controle:</b> {BEST.max_iter} árvores, {BEST.max_leaf_nodes} folhas{NA_BORDA ? ", na borda" : ""}. <b>Prova:</b> só troca a logística se ganhar na janela futura (<LinkSlide slug="c7p1">capítulo 7</LinkSlide>).</>}
-      fonte={`Base sintética (semente ${META.seed}). Candidato ajustado nas ${int(META.n_treino)} propostas do treino (${periodo(META.treino)}): ${VARS}; ${HP.max_iter} árvores de até ${HP.max_leaf_nodes} folhas, taxa ${num(HP.learning_rate, 2)}, mínimo ${HP.min_samples_leaf} por folha, L2 = ${num(HP.l2_regularization, 0)}. Validação temporal: ${int(NV)} propostas, ${DV} defaults, ${periodo(META.validacao)}, não o sorteio dos slides 11 a 20. Hanley e McNeil (1982).`}>
+        : <>O excesso de <b>{num(EXCESSO, 3)}</b> do <LinkSlide slug="c6p1">slide {SLIDE.c6p1.n}</LinkSlide> era otimismo do treino: na validação temporal os dois empatam (<b>{num(RES.gbm_val.auc, 4)}</b> contra {num(RES.logit_val.auc, 4)}) e erram a mesma safra (<b>{pct(RES.gbm_val.pd_media, 2)}</b> e {pct(RES.logit_val.pd_media, 2)} contra {pct(TAXA.p, 2)}). <b>Mecanismo:</b> F₀ = {num(F0, 2)} mais {HP.max_iter} árvores{"\u00a0×\u00a0"}{num(HP.learning_rate, 2)}. <b>Probabilidade:</b> em log odds, sigmoide no fim; cada PD se explica por contribuições quando as árvores estiverem disponíveis (<LinkSlide slug="c6p19">slide {SLIDE.c6p19.n}</LinkSlide>). <b>Controle:</b> {BEST.max_iter} árvores, {BEST.max_leaf_nodes} folhas{NA_BORDA ? ", na borda" : ""}. <b>Prova:</b> só troca a logística se ganhar na janela futura (<LinkSlide slug="c7p1">capítulo 7</LinkSlide>).</>}
+      fonte={`Base sintética (semente ${META.seed}). Candidato ajustado nas ${int(META.n_treino)} propostas do treino (${periodo(META.treino)}): ${VARS}; ${HP.max_iter} árvores de até ${HP.max_leaf_nodes} folhas, taxa ${num(HP.learning_rate, 2)}, mínimo ${HP.min_samples_leaf} por folha, L2 = ${num(HP.l2_regularization, 0)}. Validação temporal: ${int(NV)} propostas, ${DV} defaults, ${periodo(META.validacao)}, não o sorteio dos slides ${SLIDE.c6p11.n} a ${SLIDE.c6p20.n}. Hanley e McNeil (1982).`}>
       <Painel>
         <div className="q6-s21-cab">
           <p className="q6-s21-sint">

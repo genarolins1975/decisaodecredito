@@ -2,14 +2,15 @@
 import { useMemo, useState } from "react";
 import { Botao, caminho, Controle, Eixos, escala, Grafico, Kpi, LinkSlide, Painel, Previsao, Quadro, Seg, margens, type Pagina } from "@/components/capitulo7/base";
 import { CFG_CARTEIRA, NA, NV, XA, XV, YA, YV, modelo } from "@/lib/capitulo6/dados";
+import { SLIDE } from "@/lib/capitulo6/roteiro";
 import { auc, estagios, perdaLog, type Opcoes } from "@/lib/capitulo6/gbm";
 import { int, num } from "@/lib/capitulo7/formato";
 
 /**
- * 13 · c6p13 · Laboratório dos quatro controles na carteira: taxa η, número de árvores, profundidade e mínimo por folha.
+ * 14 · c6p13 · Laboratório dos quatro controles na carteira: taxa η, número de árvores, profundidade e mínimo por folha.
  * Cada combinação de η, profundidade e mínimo é ajustada ao vivo com gbm.ts (até 300 árvores, memorizada por modelo());
  * o número de árvores só corta os estágios. Perdas de ajuste e validação por árvore, com a validação da referência
- * (CFG_CARTEIRA, slide 11) em cinza; AUC de ajuste e de validação no ponto escolhido. A previsão (qual dos quatro freia
+ * (CFG_CARTEIRA, slide 12) em cinza; AUC de ajuste e de validação no ponto escolhido. A previsão (qual dos quatro freia
  * a complexidade quando aumenta) trava os controles até a resposta certa; o retorno de cada alternativa é calculado
  * com o par de ajustes que a prova, só quando ela é escolhida.
  */
@@ -32,8 +33,8 @@ const OPS_T = ["Taxa de aprendizagem η", "Número de árvores", "Profundidade",
 /** Retorno de cada alternativa, calculado só quando ela é escolhida (dois ajustes por alternativa). */
 function retorno(i: number) {
   if (i === 0) { const a = pa300({ ...REF, eta: ETAS[0] }), b = pa300({ ...REF, eta: ETAS[3] }); return <>Taxa maior soma mais de cada folha: com {MAXA} árvores, a perda de ajuste vai de {num(a, 3)} (η {num(ETAS[0], 2)}) a {num(b, 3)} (η {num(ETAS[3], 1)}). Acelera, não freia.</>; }
-  if (i === 1) { const p = perdas(REF).pa; return <>Cada árvore a mais baixa a perda de ajuste: {num(p[50], 3)} com 50, {num(p[MAXA], 3)} com {MAXA} (<LinkSlide slug="c6p11">slide 11</LinkSlide>). Acelera, não freia.</>; }
-  if (i === 2) { const a = pa300({ ...REF, prof: PROFS[0] }), b = pa300({ ...REF, prof: PROFS[3] }); return <>Árvore mais funda combina mais variáveis por folha (<LinkSlide slug="c6p12">slide 12</LinkSlide>): a perda de ajuste vai de {num(a, 3)} (profundidade {PROFS[0]}) a {num(b, 3)} ({PROFS[3]}). Acelera.</>; }
+  if (i === 1) { const p = perdas(REF).pa; return <>Cada árvore a mais baixa a perda de ajuste: {num(p[50], 3)} com 50, {num(p[MAXA], 3)} com {MAXA} (<LinkSlide slug="c6p11">slide {SLIDE.c6p11.n}</LinkSlide>). Acelera, não freia.</>; }
+  if (i === 2) { const a = pa300({ ...REF, prof: PROFS[0] }), b = pa300({ ...REF, prof: PROFS[3] }); return <>Árvore mais funda combina mais variáveis por folha (<LinkSlide slug="c6p12">slide {SLIDE.c6p12.n}</LinkSlide>): a perda de ajuste vai de {num(a, 3)} (profundidade {PROFS[0]}) a {num(b, 3)} ({PROFS[3]}). Acelera.</>; }
   const a = pa300({ ...REF, min: MINS[0] }), b = pa300({ ...REF, min: MINS[3] });
   return <>Isso: folha maior não pode isolar poucas propostas. A perda de ajuste <b>sobe</b> de {num(a, 3)} (mínimo {MINS[0]}) para {num(b, 3)} ({MINS[3]}).</>;
 }
@@ -84,8 +85,8 @@ export function S13QuatroControles({ pagina }: { pagina?: Pagina }) {
       titulo={revelado ? undefined : "Qual dos quatro controles freia a complexidade?"}
       sub={revelado ? undefined : "Taxa, número de árvores, profundidade e mínimo por folha: preveja antes de mexer."}
       conclusao={!revelado
-        ? <>Referência do <LinkSlide slug="c6p11">slide 11</LinkSlide>: com {MAXA} árvores, perda de ajuste {num(P.pa[MAXA], 3)} e de validação {num(P.pv[MAXA], 3)}. Responda à previsão para liberar os controles.</>
-        : <>{ref ? "Referência" : <>η {num(cfg.eta, 2)}, profundidade {cfg.prof}, mínimo {cfg.min}</>} com {m} árvores: ajuste {num(P.pa[m], 3)}, validação <b>{num(P.pv[m], 3)}</b>. A melhor validação desta combinação, escolhida na própria validação e por isso otimista, é {num(vmin, 3)}, com {imin} {imin === 1 ? "árvore" : "árvores"}{m > imin ? <>; as {m - imin} seguintes só baixam o ajuste</> : ""}. Taxa e árvores se compensam: <LinkSlide slug="c6p14">slide 14</LinkSlide>.</>}
+        ? <>Referência do <LinkSlide slug="c6p11">slide {SLIDE.c6p11.n}</LinkSlide>: com {MAXA} árvores, perda de ajuste {num(P.pa[MAXA], 3)} e de validação {num(P.pv[MAXA], 3)}. Responda à previsão para liberar os controles.</>
+        : <>{ref ? "Referência" : <>η {num(cfg.eta, 2)}, profundidade {cfg.prof}, mínimo {cfg.min}</>} com {m} árvores: ajuste {num(P.pa[m], 3)}, validação <b>{num(P.pv[m], 3)}</b>. A melhor validação desta combinação, escolhida na própria validação e por isso otimista, é {num(vmin, 3)}, com {imin} {imin === 1 ? "árvore" : "árvores"}{m > imin ? <>; as {m - imin} seguintes só baixam o ajuste</> : ""}. Taxa e árvores se compensam: <LinkSlide slug="c6p14">slide {SLIDE.c6p14.n}</LinkSlide>.</>}
       fonte={`Ajuste: ${int(NA)} propostas, ${DA} defaults; validação sorteada: ${int(NV)}, ${DV} defaults. Cada combinação ajustada ao vivo (gbm.ts), até ${MAXA} árvores; referência: η ${num(REF.eta, 1)}, profundidade ${REF.prof}, mínimo ${REF.min}.`}>
       <Painel>
         <Curva cfg={cfg} m={m} revelado={revelado} />

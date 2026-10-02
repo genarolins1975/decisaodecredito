@@ -2,11 +2,12 @@
 import { useState } from "react";
 import { Botao, caminho, Eixos, escala, Grafico, Kpi, LinkSlide, Painel, Previsao, Quadro, Seg, margens, type Pagina } from "@/components/capitulo7/base";
 import { CFG_CARTEIRA, NV, XV, YV, modelo } from "@/lib/capitulo6/dados";
+import { SLIDE } from "@/lib/capitulo6/roteiro";
 import { estagios, perdaLog } from "@/lib/capitulo6/gbm";
 import { int, num } from "@/lib/capitulo7/formato";
 
 /**
- * 14 · c6p14 · Metade da taxa pede o dobro de árvores: perda de validação por árvore para η e η/2, com as demais
+ * 15 · c6p14 · Metade da taxa pede o dobro de árvores: perda de validação por árvore para η e η/2, com as demais
  * opções da referência (CFG_CARTEIRA: profundidade 2, mínimo 40). Dois pares: 0,1 e 0,05; 0,05 e 0,025. O eixo troca
  * de "número de árvores" para "η × número de árvores" (o passo total), e as duas curvas se alinham. Ajustes de gbm.ts,
  * com árvores suficientes para que a taxa menor cubra o mesmo passo total (10 em η × M). A previsão (onde fica o
@@ -86,8 +87,8 @@ export function S14TaxaArvores({ pagina }: { pagina?: Pagina }) {
       titulo={revelado ? undefined : "Com metade da taxa, onde fica o mínimo da validação?"}
       sub={revelado ? undefined : `Com η ${f(P0[0])}, a perda de validação é mínima em ${a1} árvores. E com η ${f(P0[1])}?`}
       conclusao={revelado
-        ? <>η {f(e1)}: mínimo em {i1} árvores ({num(c1[i1], 4)}); η {f(e2)}: em <b>{i2}</b> ({num(c2[i2], 4)}), cerca do dobro ({num(i2 / i1, 1)} vezes; o ponto exato do mínimo é ruidoso). No eixo η × árvores as curvas quase coincidem (maior distância {num(dmax, 4)}): com taxas pequenas, conta o passo total. Fixe a taxa e ache as árvores na validação, como no <LinkSlide slug="c6p15">slide 15</LinkSlide>.</>
-        : <>Referência do <LinkSlide slug="c6p13">slide 13</LinkSlide>: com η {f(P0[0])}, a validação desce até {num(curva(P0[0])[a1], 4)} em {a1} árvores e depois sobe.</>}
+        ? <>η {f(e1)}: mínimo em {i1} árvores ({num(c1[i1], 4)}); η {f(e2)}: em <b>{i2}</b> ({num(c2[i2], 4)}), cerca do dobro ({num(i2 / i1, 1)} vezes; o ponto exato do mínimo é ruidoso). No eixo η × árvores as curvas quase coincidem (maior distância {num(dmax, 4)}): com taxas pequenas, conta o passo total. Fixe a taxa e ache as árvores na validação, como no <LinkSlide slug="c6p15">slide {SLIDE.c6p15.n}</LinkSlide>.</>
+        : <>Referência do <LinkSlide slug="c6p13">slide {SLIDE.c6p13.n}</LinkSlide>: com η {f(P0[0])}, a validação desce até {num(curva(P0[0])[a1], 4)} em {a1} árvores e depois sobe.</>}
       fonte={`Validação sorteada: ${int(NV)} propostas, ${YV.reduce((s, v) => s + v, 0)} defaults. Profundidade ${CFG_CARTEIRA.profundidade}, mínimo ${CFG_CARTEIRA.minFolha}; cada taxa até ${PASSO} ÷ η árvores (gbm.ts). Distância: M árvores com η contra 2M com η ÷ 2.`}>
       <Painel>
         <Grafico2 par={par} alinhado={alinhado && revelado} revelado={revelado} />

@@ -2,17 +2,18 @@
 import { useState } from "react";
 import { Botao, Controle, Expandir, Formula, Grafico, LinkSlide, Marca, Painel, Previsao, Quadro, caminho, escala, margens, type Opcao, type Pagina } from "@/components/capitulo7/base";
 import { CFG_DIDATICA, DIDATICA, NA, XD, YA, YD, modelo } from "@/lib/capitulo6/dados";
+import { SLIDE } from "@/lib/capitulo6/roteiro";
 import { logit, sigmoide } from "@/lib/capitulo6/gbm";
 import { int, num, pct } from "@/lib/capitulo7/formato";
 import base from "@/lib/capitulo6/base.json";
 
 /**
- * 04 · c6p4 · O pseudo-resíduo. Em cima, a perda de uma proposta em função das log odds F: ℓ = ln(1 + e^−F) para um
+ * 05 · c6p4 · O pseudo-resíduo. Em cima, a perda de uma proposta em função das log odds F: ℓ = ln(1 + e^−F) para um
  * default e ln(1 + e^F) para um adimplente, com a tangente no palpite atual; a inclinação é p − y, e menos ela, y − p, é
  * o erro que a próxima árvore ajusta. Embaixo, o resíduo de cada uma das 16 propostas didáticas nesse palpite. A turma
- * prevê o resíduo no palpite do slide 3 (F₀ = 0) antes de ver as barras; as alternativas erradas trocam o resíduo pelo
- * próprio y (o votar do slide 2) ou pela perda de cada proposta. Depois, o controle move o palpite comum; o atalho leva
- * ao F₀ do ajuste do slide 3 (−2,26). A derivação fica na expansão. A inclinação numérica (diferença central da perda)
+ * prevê o resíduo no palpite do slide 4 (F₀ = 0) antes de ver as barras; as alternativas erradas trocam o resíduo pelo
+ * próprio y (o votar explicado no slide 2, c6p23) ou pela perda de cada proposta. Depois, o controle move o palpite comum; o atalho leva
+ * ao F₀ do ajuste do slide 4 (−2,26). A derivação fica na expansão. A inclinação numérica (diferença central da perda)
  * confere a fórmula na tela.
  */
 const SEMENTE_BASE = base.meta.seed; // semente do gerador do curso, que também gerou as 16 propostas didáticas
@@ -26,7 +27,7 @@ const sinal = (v: number) => `${v > 0 ? "+" : ""}${num(v, 2)}`;
 
 const OPCOES: Opcao[] = [
   { texto: "+0,5 num default e −0,5 num adimplente", certa: true, retorno: <>Isso: com p = {pct(sigmoide(F_DID), 0)}, y − p vale ±0,5. É menos a inclinação da perda em F: <b>o quanto e para onde</b> cada proposta quer que F se mova.</> },
-  { texto: "1 num default e 0 num adimplente: o próprio y", retorno: <>Confunde o alvo com o <b>default</b>. Árvores no y são o votar do slide 2; o boosting ajusta o que o palpite <b>errou</b>.</> },
+  { texto: "1 num default e 0 num adimplente: o próprio y", retorno: <>Confunde o alvo com o <b>default</b>. Árvores no y são o votar do slide {SLIDE.c6p23.n}; o boosting ajusta o que o palpite <b>errou</b>.</> },
   { texto: `${num(Math.log(2), 3)} nas 16: a perda de cada uma`, retorno: <>Confunde a perda com a <b>inclinação</b> dela. ln 2 é quanto cada proposta custa, igual para todas; não diz para que lado F deve ir.</> },
 ];
 
@@ -39,9 +40,9 @@ export function S04ErroAlvo({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c6p4" pagina={pagina} layout="gl"
       sub={rev ? undefined : "Em log loss, quanto vale o erro de cada proposta no palpite F₀ = 0?"}
-      conclusao={!rev ? <>Palpite do slide 3: F₀ = {num(F_DID, 2)}, PD de {pct(p, 0)} para as 16. Que número cada proposta passa à próxima árvore? Responda ao lado.</>
-        : <>No palpite F = {num(F, 2)} (PD {pct(p, 1)}), cada default tem erro y − p = <b>{sinal(1 - p)}</b> e cada adimplente <b>{sinal(-p)}</b>: a inclinação da perda com sinal trocado. {Math.abs(F - F_AJ) < 1e-9 ? <> No F₀ do ajuste, o default pesa {num((1 - p) / p, 1)} vezes o adimplente: a próxima árvore vai atrás dos defaults.</> : null} A próxima árvore ajusta esses 16 números: <LinkSlide slug="c6p5">slide 5</LinkSlide>.</>}
-      fonte={`${DIDATICA.length} propostas didáticas sintéticas dos capítulos 4 e 5 (gerador do curso, semente ${SEMENTE_BASE}; y = 1 para default). Perda de uma proposta: log loss, log natural, com p = σ(F). F₀ do ajuste: ${int(NA)} propostas sorteadas (semente ${base.meta.sementeDivisao}) do treino da mesma base, ${base.meta.treino} (slide 3).`}>
+      conclusao={!rev ? <>Palpite do slide {SLIDE.c6p3.n}: F₀ = {num(F_DID, 2)}, PD de {pct(p, 0)} para as 16. Que número cada proposta passa à próxima árvore? Responda ao lado.</>
+        : <>No palpite F = {num(F, 2)} (PD {pct(p, 1)}), cada default tem erro y − p = <b>{sinal(1 - p)}</b> e cada adimplente <b>{sinal(-p)}</b>: a inclinação da perda com sinal trocado. {Math.abs(F - F_AJ) < 1e-9 ? <> No F₀ do ajuste, o default pesa {num((1 - p) / p, 1)} vezes o adimplente: a próxima árvore vai atrás dos defaults.</> : null} A próxima árvore ajusta esses 16 números: <LinkSlide slug="c6p5">slide {SLIDE.c6p5.n}</LinkSlide>.</>}
+      fonte={`${DIDATICA.length} propostas didáticas sintéticas dos capítulos 4 e 5 (gerador do curso, semente ${SEMENTE_BASE}; y = 1 para default). Perda de uma proposta: log loss, log natural, com p = σ(F). F₀ do ajuste: ${int(NA)} propostas sorteadas (semente ${base.meta.sementeDivisao}) do treino da mesma base, ${base.meta.treino} (slide ${SLIDE.c6p3.n}).`}>
       <Painel>
         <Grafico titulo="A perda de uma proposta e o erro de cada uma" sub={`no palpite F = ${num(F, 2)}`} rotulo={rev ? `No palpite ${num(F, 2)}, PD ${pct(p, 1)}: inclinação da perda ${num(p - 1, 2)} num default e ${num(p, 2)} num adimplente; resíduos ${sinal(1 - p)} e ${sinal(-p)}` : "Perda de um default e de um adimplente em função das log odds; os resíduos estão ocultos até a previsão"}
           tabela={rev ? <table><thead><tr><th>Proposta</th><th>y</th><th>y − p</th></tr></thead><tbody>{DIDATICA.map((q, i) => <tr key={q.id}><td>{q.id}</td><td>{q.y}</td><td>{num(R[i], 3)}</td></tr>)}</tbody></table> : undefined} arCelular="3 / 4">
