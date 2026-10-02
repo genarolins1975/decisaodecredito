@@ -60,3 +60,20 @@ describe("capítulo 6: gradient boosting contra o scikit-learn", () => {
     expect(G.escore(a, XV[0])).toBe(G.escore(b, XV[0])); expect(G.escore(a, XV[0])).not.toBe(G.escore(c, XV[0]));
   });
 });
+
+import { CFG_DIDATICA, LOGISTICA, XD, YD } from "@/lib/capitulo6/dados";
+import { escoreLogistica } from "@/lib/capitulo6/logistica";
+describe("capítulo 6: exemplo didático e logística de referência", () => {
+  it("16 propostas: palpite, as quatro árvores e a log loss por estágio iguais às do scikit-learn", () => {
+    const d = ref.didatica; const mod = G.ajustar(XD, YD, CFG_DIDATICA);
+    perto(mod.f0, d.f0, 1e-12); d.arvores.forEach((a, k) => mesmaArvore(mod.arvores[k], a as Arv));
+    const e = G.estagios(mod, XD); d.estagios.forEach((s, k) => s.forEach((v, i) => perto(e[k + 1][i], v, 1e-9)));
+    d.logloss.forEach((l, k) => perto(G.perdaLog(e[k + 1], YD), l, 1e-9));
+  });
+  it("logística nas três variáveis: coeficientes, AUC e log loss iguais aos do statsmodels e do scikit-learn", () => {
+    const r = ref.logistica; LOGISTICA.forEach((b, j) => perto(b, r.coef[j], 1e-7 * Math.max(1, Math.abs(r.coef[j]))));
+    const z = (X: number[][]) => X.map((x) => escoreLogistica(LOGISTICA, x));
+    perto(G.auc(base.ajuste.y, z(XA)), r.auc.ajuste, 1e-12); perto(G.auc(base.validacao.y, z(XV)), r.auc.validacao, 1e-12); perto(G.auc(base.oot.y, z(XO)), r.auc.oot, 1e-12);
+    perto(G.perdaLog(z(XV), base.validacao.y), r.logloss.validacao, 1e-9);
+  });
+});

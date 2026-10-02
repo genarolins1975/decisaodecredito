@@ -1,6 +1,6 @@
 "use client";
-import { Fragment, useId, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
-import { PERGUNTAS, SLIDE, TOTAL, type Pergunta } from "@/lib/capitulo7/roteiro";
+import { createContext, Fragment, useContext, useId, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { PERGUNTAS, SLIDE, TOTAL, type Pergunta, type Slide } from "@/lib/capitulo7/roteiro";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Tex } from "@/components/visuais/tex";
@@ -20,26 +20,35 @@ const dois = (n: number) => String(n).padStart(2, "0");
  * declaração antes do texto.
  */
 const BASE_CURSO = "Base sintética (semente 20260501), safras 2023-08 a 2023-12";
-export function declararBase(fonte: ReactNode): ReactNode {
+export function declararBase(fonte: ReactNode, base = BASE_CURSO): ReactNode {
   if (typeof fonte !== "string" || /sint[ée]tic/i.test(fonte)) return fonte;
-  if (/^Janela fora do tempo:/.test(fonte)) return fonte.replace(/^Janela fora do tempo:/, `${BASE_CURSO}, janela fora do tempo:`);
-  return `${BASE_CURSO}. ${fonte}`;
+  if (/^Janela fora do tempo:/.test(fonte)) return fonte.replace(/^Janela fora do tempo:/, `${base}, janela fora do tempo:`);
+  return `${base}. ${fonte}`;
 }
+
+/**
+ * Roteiro que o Quadro lê: o do capítulo 7 por padrão; outro capítulo envolve os seus quadros em ProvedorRoteiro com o
+ * próprio roteiro, as próprias perguntas e a própria declaração da base.
+ */
+export type RoteiroQuadro = { SLIDE: Record<string, Slide>; PERGUNTAS: { id: string; nome: string; frase: string }[]; TOTAL: number; base?: string };
+const RoteiroCtx = createContext<RoteiroQuadro>({ SLIDE, PERGUNTAS, TOTAL, base: BASE_CURSO });
+export const ProvedorRoteiro = RoteiroCtx.Provider;
 
 /** `titulo` e `sub` substituem os do roteiro enquanto uma previsão está aberta (pergunta antes, afirmação depois). */
 export function Quadro({ slug, pagina, layout = "gl", conclusao, fonte, children, rotuloConclusao = "Leitura", sub, titulo }: {
   slug: string; pagina?: Pagina; layout?: "gl" | "lg" | "gg" | "g3" | "um" | "glx" | "qd"; conclusao?: ReactNode; fonte?: ReactNode; children: ReactNode; rotuloConclusao?: string; sub?: ReactNode; titulo?: ReactNode;
 }) {
-  const s = SLIDE[slug];
+  const R = useContext(RoteiroCtx);
+  const s = R.SLIDE[slug];
   const atual = ORDEM.indexOf(s.pergunta);
-  const num = pagina ? `${dois(pagina.index)} / ${dois(pagina.total)}` : `${dois(s.n)} / ${dois(TOTAL)}`;
+  const num = pagina ? `${dois(pagina.index)} / ${dois(pagina.total)}` : `${dois(s.n)} / ${dois(R.TOTAL)}`;
   return (
     <figure className="q7" data-q7={slug} data-pergunta={s.pergunta} aria-labelledby={`${slug}-tit`}>
       <div className="q7-slide">
         <header className="q7-cab">
           <div className="q7-trilha">
             <ol aria-label="As quatro perguntas do capítulo">
-              {PERGUNTAS.map((p, i) => (
+              {R.PERGUNTAS.map((p, i) => (
                 <li key={p.id} data-on={p.id === s.pergunta ? "1" : "0"} data-feito={atual > i ? "1" : "0"} aria-current={p.id === s.pergunta ? "step" : undefined}><i aria-hidden="true" />{p.nome}</li>
               ))}
             </ol>
@@ -51,7 +60,7 @@ export function Quadro({ slug, pagina, layout = "gl", conclusao, fonte, children
         <div className={`q7-corpo q7-l-${layout}`}>{children}</div>
         <footer className="q7-rod">
           {conclusao && <p className="q7-conclusao" aria-live="polite"><span>{rotuloConclusao}</span><span>{conclusao}</span></p>}
-          {fonte && <p className="q7-fonte">{declararBase(fonte)}</p>}
+          {fonte && <p className="q7-fonte">{declararBase(fonte, R.base)}</p>}
         </footer>
       </div>
     </figure>

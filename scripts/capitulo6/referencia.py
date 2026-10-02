@@ -65,6 +65,21 @@ for nome, cfg in CONFIGS.items():
         sv = ex.shap_values(Xo[:10])
         ref["modelos"][nome]["shap"] = {"base": float(np.ravel(ex.expected_value)[0]), "phi": np.asarray(sv).tolist(), "escore": m.decision_function(Xo[:10]).tolist()}
 
+# exemplo didático: as 16 propostas dos capítulos 4 e 5 (utilização e atraso), profundidade 2, taxa 0,4, quatro árvores
+D = B["didatica"]; Xd = np.array([[d["util"], d["atraso"]] for d in D], dtype=float); yd = np.array([d["y"] for d in D])
+md = GradientBoostingClassifier(loss="log_loss", subsample=1.0, random_state=0, learning_rate=0.4, n_estimators=4, max_depth=2, min_samples_leaf=2).fit(Xd, yd)
+Sd = np.array(list(md.staged_decision_function(Xd)))[:, :, 0]
+ref["didatica"] = {"cfg": dict(learning_rate=0.4, n_estimators=4, max_depth=2, min_samples_leaf=2), "f0": float(np.log(yd.mean() / (1 - yd.mean()))),
+                   "arvores": [arvore(md.estimators_[k, 0]) for k in range(4)], "estagios": Sd.tolist(), "logloss": [log_loss(yd, 1 / (1 + np.exp(-s))) for s in Sd]}
+
+# referência linear: logística sem penalidade nas três variáveis, ajustada na amostra de ajuste (statsmodels)
+import statsmodels.api as sm
+lg = sm.Logit(ya, sm.add_constant(Xa)).fit(disp=0, tol=1e-12, maxiter=200)
+za = sm.add_constant(Xa) @ lg.params; zv = sm.add_constant(Xv) @ lg.params; zo = sm.add_constant(Xo) @ lg.params
+ref["logistica"] = {"coef": lg.params.tolist(), "auc": {"ajuste": roc_auc_score(ya, za), "validacao": roc_auc_score(yv, zv), "oot": roc_auc_score(yo, zo)},
+                    "logloss": {"ajuste": log_loss(ya, 1 / (1 + np.exp(-za))), "validacao": log_loss(yv, 1 / (1 + np.exp(-zv))), "oot": log_loss(yo, 1 / (1 + np.exp(-zo)))}}
+ref["versoes"]["statsmodels"] = sm.__version__ if hasattr(sm, "__version__") else __import__("statsmodels").__version__
+
 saida = RAIZ / "tests/fixtures/capitulo6-referencia.json"
 saida.write_text(json.dumps(ref, indent=1))
 print("ok", saida, {k: round(v["auc"][str(v["cfg"]["n_estimators"])]["validacao"], 4) for k, v in ref["modelos"].items()})
