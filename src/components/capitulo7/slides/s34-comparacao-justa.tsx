@@ -51,7 +51,7 @@ export function S34ComparacaoJusta({ pagina }: { pagina?: Pagina }) {
                 <text className="q7-eixo-t" x={(x(0.6) + x(0.85)) / 2} y={d.h - d.fs * 0.1} textAnchor="middle">AUC</text>
                 {linhas.map((o) => { const y0 = cy(o); const la = AGG[o].l.auc, ga = AGG[o].g.auc; const usaL = o === ol, usaG = o === og; return (
                   <g key={o}>
-                    <text className="q7-rot" x={0} y={y0} dy=".35em" style={{ fontWeight: usaL || usaG ? 700 : 400, opacity: usaL || usaG ? 1 : 0.5 }}>{ROT[o].replace("Janela fora do tempo", "Janela OOT")}</text>
+                    <text className="q7-rot" x={0} y={y0} dy=".35em" style={{ fontWeight: usaL || usaG ? 700 : 400, opacity: usaL || usaG ? 1 : 0.5 }}>{ROT[o].replace("Janela fora do tempo", "Janela")}</text>
                     {o === "oot" && <><line x1={x(la - Z * DL.ep1)} x2={x(la + Z * DL.ep1)} y1={y0 - d.fs * 0.5} y2={y0 - d.fs * 0.5} stroke="#00205B" strokeWidth={2.5} opacity={usaL ? 1 : 0.3} /><line x1={x(ga - Z * DL.ep2)} x2={x(ga + Z * DL.ep2)} y1={y0 + d.fs * 0.5} y2={y0 + d.fs * 0.5} stroke="#176C73" strokeWidth={2.5} opacity={usaG ? 1 : 0.3} /></>}
                     <circle cx={x(la)} cy={y0} r={d.fs * 0.5} fill="#00205B" stroke="#fff" strokeWidth={2} opacity={usaL ? 1 : 0.3} />
                     <rect x={x(ga) - d.fs * 0.45} y={y0 - d.fs * 0.45} width={d.fs * 0.9} height={d.fs * 0.9} fill="#176C73" stroke="#fff" strokeWidth={2} opacity={usaG ? 1 : 0.3} />
@@ -81,7 +81,7 @@ export function S34ComparacaoJusta({ pagina }: { pagina?: Pagina }) {
           </table>
         ) : (
           <table className="q7-tab q7-tab--comp">
-            <thead><tr><th className="q7-t-l">Métrica</th><th>Logística ({ol === "oot" ? "OOT" : ROT[ol].toLowerCase()})</th><th>Boosting ({og === "oot" ? "OOT" : ROT[og].toLowerCase()})</th></tr></thead>
+            <thead><tr><th className="q7-t-l">Métrica</th><th>Logística ({ol === "oot" ? "janela" : ROT[ol].toLowerCase()})</th><th>Boosting ({og === "oot" ? "janela" : ROT[og].toLowerCase()})</th></tr></thead>
             <tbody>
               <tr><th>AUC</th><td>{num(L.auc, 4)}</td><td>{num(G.auc, 4)}</td></tr>
               <tr><th>KS</th><td>{num(L.ks, 4)}</td><td>{num(G.ks, 4)}</td></tr>

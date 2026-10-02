@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import ref from "./fixtures/capitulo7-referencia.json";
 import * as M from "@/lib/capitulo7/metricas";
-import { CAL, MINI_PD, MINI_Y, PG, PGR, PL, PT, Y, CENARIOS, D, N } from "@/lib/capitulo7/dados";
+import { CAL, EAD, MINI_PD, MINI_Y, PG, PGR, PL, PT, Y, CENARIOS, D, N } from "@/lib/capitulo7/dados";
+import { aucEsperada, aucsEmJanelasNovas, janelasNovas, vantagemEmJanelasNovas } from "@/lib/capitulo7/janelas";
 
 /**
  * O núcleo numérico do capítulo 7 contra uma referência independente: scikit-learn, statsmodels e SciPy, rodados por
@@ -82,6 +83,41 @@ describe("capítulo 7: métricas contra scikit-learn e statsmodels", () => {
     perto(d.dif, r.dif, 1e-12); perto(d.ep, r.ep, 1e-10); perto(d.z, r.z, 1e-8); perto(d.p, r.p, 1e-6); perto(d.ep1, r.ep1, 1e-10);
     expect(Math.round(d.dif * 1e4) / 1e4).toBe(ref.delongGerador.diferenca); expect(Math.round(d.ep * 1e4) / 1e4).toBe(ref.delongGerador.erro_padrao);
     expect(Math.round(d.p * 1e4) / 1e4).toBe(ref.delongGerador.p_valor);
+  });
+});
+
+describe("capítulo 7: funções da revisão (erro padrão do slope, Platt suavizado, melhor corte, janelas novas)", () => {
+  for (const [k, pd] of Object.entries(MOD)) {
+    const r = ref.slopeEp[k as keyof typeof MOD];
+    it(`${k}: erro padrão e intervalo de Wald do slope iguais ao bse e ao conf_int do GLM do statsmodels`, () => {
+      const s = M.slopeComIntervalo(Y, pd); perto(s.slope, r.slope, 1e-8); perto(s.epSlope, r.epSlope, 1e-8); perto(s.epIntercepto, r.epIntercepto, 1e-8);
+      perto(s.ic[0], r.lo, 1e-7); perto(s.ic[1], r.hi, 1e-7);
+    });
+    it(`${k}: melhor corte em todos os limiares distintos igual à busca exaustiva em NumPy`, () => {
+      const v = Y.map((y, i) => (y ? -0.65 * EAD[i] : 0.28 * EAD[i]) - 0.12 * EAD[i] - 120 - 0.02 * EAD[i]);
+      const m = M.melhorCorte(pd, v); const g = ref.melhorCorte[k as keyof typeof MOD];
+      expect(m.corte).toBe(g.corte); expect(m.aprovados).toBe(g.aprovados); perto(m.total, g.total, 1e-6);
+    });
+  }
+  it("melhor corte: empates entram juntos, total negativo em todo corte devolve nenhum aprovado", () => {
+    expect(M.melhorCorte([0.1, 0.1, 0.3, 0.2], [5, -1, 10, -20])).toEqual({ corte: 0.2, total: 4, aprovados: 2 });
+    expect(M.melhorCorte([0.1, 0.2], [-1, -1]).aprovados).toBe(0);
+    expect(M.melhorCorte([0.1, 0.2], [1, 1])).toEqual({ corte: 1, total: 2, aprovados: 2 });
+  });
+  for (const nome of ["pgr", "pl"] as const) {
+    it(`${nome}: Platt com alvos suavizados igual ao GLM em alvos fracionários e ao _sigmoid_calibration do scikit-learn`, () => {
+      const g = ref.plattSuavizado[nome]; const p = M.ajustarPlattSuavizado(CAL.y, CAL.indices.map((i) => MOD[nome][i]));
+      perto(p.a, g.glmA, 1e-8); perto(p.b, g.glmB, 1e-8); perto(-p.b, g.sklearnA, 1e-6); perto(-p.a, g.sklearnB, 1e-6);
+    });
+  }
+  it("postos médios: AUC de Mann-Whitney igual a roc_auc_score, com e sem empates", () => {
+    for (const [k, pd] of Object.entries(MOD)) { perto(M.aucPorPostos(Y, M.postosMedios(pd)), ref.modelos[k as keyof typeof MOD].auc, 1e-12); perto(M.aucPorPostos(Y, M.postosMedios(M.arredondar(pd, 4))), ref.modelos[k as keyof typeof MOD].auc4casas, 1e-12); }
+    perto(M.aucPorPostos(MINI_Y, M.postosMedios(MINI_PD)), ref.mini.auc, 1e-12); expect(M.aucPorPostos([0, 0], [1, 2])).toBeNull();
+  });
+  it("janelas novas: 300 sorteios com a semente 20261033 reproduzem as AUCs do scikit-learn", () => {
+    const j = ref.janelasNovas; expect(janelasNovas()).toHaveLength(j.n);
+    for (const [k, pd] of [["pl", PL], ["pgr", PGR], ["pg", PG]] as const) { perto(aucEsperada(pd), j.media[k], 1e-12); aucsEmJanelasNovas(pd).slice(0, 5).forEach((v, i) => perto(v, j.primeiras[k][i], 1e-12)); }
+    const v = vantagemEmJanelasNovas(); expect(v.acima).toBe(j.acima); perto(v.vantagem, j.media.pl - j.media.pgr, 1e-12);
   });
 });
 

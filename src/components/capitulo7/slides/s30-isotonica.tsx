@@ -10,6 +10,7 @@ import { int, num, pct } from "@/lib/capitulo7/formato";
  * (3.000 casos) ou só com os 300 primeiros. A isotônica é monotônica mas não estritamente: junta propostas em
  * degraus, cria empates e a AUC na janela cai. Com poucos dados, as duas aprendem também o ruído do nível da amostra.
  * Isotônica pelo PAV com interpolação linear entre os pontos de quebra, como o IsotonicRegression do scikit-learn.
+ * A barra de pares da isotônica (empates e AUC) fica escondida até a previsão certa, para não mostrar a resposta.
  */
 type Tam = "grande" | "pequena";
 function ajustes(n: number) {
@@ -29,6 +30,7 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
   const [t, setT] = useState<Tam>("grande");
   const [prev, setPrev] = useState<number | null>(null);
   const a = AJ[t];
+  const revelado = prev === CERTA;
   const barras = [
     { nome: "Sem calibrar", c: BRUTO.pares, dist: BRUTO.distintos },
     { nome: "Platt", c: a.platt.pares, dist: a.platt.distintos },
@@ -39,7 +41,7 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
       conclusao={prev !== CERTA ? <>Primeiro a previsão: a isotônica também é crescente.</>
         : t === "grande" ? <>Com {int(a.n)} casos, a isotônica reduz as {int(BRUTO.distintos)} PDs distintas da janela a <b>{a.isot.distintos}</b> degraus: {int(a.isot.pares.empates)} pares viram empates e a AUC cai de {num(BRUTO.pares.auc!, 4)} para <b>{num(a.isot.pares.auc!, 4)}</b>. Platt mantém a AUC e, aqui, tem Brier e log loss menores.</>
           : <>Com {int(a.n)} casos ({a.defaults} defaults, {pct(a.defaults / a.n, 1)}), as duas erram o nível: PD média {pct(a.platt.media, 1)} (Platt) e {pct(a.isot.media, 1)} (isotônica) contra {pct(D / N, 1)} observados. A isotônica fica com {a.isot.distintos} degraus e AUC {num(a.isot.pares.auc!, 4)}. A amostra pequena tinha mais defaults que a janela, e as duas aprenderam esse nível: <b>com pouco dado, nenhum calibrador é confiável.</b></>}
-      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults, ${int(BRUTO.pares.pares)} pares default × adimplente. Amostra de calibração simulada (semente ${CAL.semente}); a pequena são os ${CAL.nPequena} primeiros casos da mesma amostra. Empate conta meio par na AUC.`}>
+      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults, ${int(BRUTO.pares.pares)} pares default × adimplente. Calibração sintética: sorteios dos proponentes da janela, desfecho da PD verdadeira (semente ${CAL.semente}); a pequena são os ${CAL.nPequena} primeiros casos da mesma amostra. Empate conta meio par na AUC.`}>
       <Painel>
         <div className="q7-s26-g">
           <Grafico titulo="As duas transformações" sub={`em ${int(a.n)} casos`} rotulo={`Isotônica em degraus e curva de Platt ajustadas em ${a.n} casos`} arCelular="1 / 1">
@@ -54,18 +56,20 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
                   <Eixos x={x} y={y} xt={[0, 0.1, 0.2, 0.3, 0.4, 0.5]} yt={[0, 0.1, 0.2, 0.3, 0.4, 0.5]} fx={(v) => pct(v, 0)} fy={(v) => pct(v, 0)} xTit="PD sem calibrar" yTit="PD calibrada" />
                   <line className="q7-diag" x1={x(0)} y1={y(0)} x2={x(0.5)} y2={y(0.5)} />
                   <path className="q7-linha q7-linha--prob" d={caminho(qs.map((q) => ({ x: x(q), y: y(cl(sigmoide(a.pc.a + a.pc.b * logit(q)))) })))} />
-                  <path className="q7-linha q7-linha--dec" d={caminho(isoPts.map((p) => ({ x: x(p.x), y: y(cl(p.y)) })))} />
+                  <path className="q7-linha q7-linha--ink" d={caminho(isoPts.map((p) => ({ x: x(p.x), y: y(cl(p.y)) })))} />
                   {CAL_PGR.slice(0, a.n).map((p, i) => <line key={i} x1={x(cl(p))} x2={x(cl(p))} y1={y(0)} y2={y(0) - d.fs * 0.5} stroke="#5B6475" strokeOpacity={a.n > 1000 ? 0.12 : 0.35} />)}
                 </g>
               );
             }}
           </Grafico>
-          <Grafico titulo="Os pares da janela" sub="certos, empatados, invertidos" rotulo={barras.map((b) => `${b.nome}: ${b.c.corretos} certos, ${b.c.empates} empates, ${b.c.invertidos} invertidos`).join("; ")} arCelular="1 / 1">
+          <Grafico titulo="Os pares da janela" sub="certos, empatados, invertidos" rotulo={barras.filter((b, i) => revelado || i < 2).map((b) => `${b.nome}: ${b.c.corretos} certos, ${b.c.empates} empates, ${b.c.invertidos} invertidos`).join("; ") + (revelado ? "" : "; isotônica: aguardando a previsão")} arCelular="1 / 1">
             {(d) => {
               const x = escala([0, BRUTO.pares.pares], [d.fs * 0.5, d.w - d.fs * 0.5]); const lh = (d.h - d.fs * 1) / barras.length;
               return (
                 <g>
-                  {barras.map((b, k) => { const y0 = k * lh + d.fs * 2.4, h = lh - d.fs * 3.6; const seg = [{ v: b.c.corretos, c: "#2E6B4F" }, { v: b.c.empates, c: "#A85A0C" }, { v: b.c.invertidos, c: "#8C2332" }]; let acc = 0; return (
+                  {barras.map((b, k) => { const y0 = k * lh + d.fs * 2.4, h = lh - d.fs * 3.6;
+                    if (k === 2 && !revelado) return <g key={b.nome}><text className="q7-rot" x={x(0)} y={y0 - d.fs * 0.6}>{b.nome}</text><rect x={x(0)} y={y0} width={x(BRUTO.pares.pares) - x(0)} height={h} fill="#FBFAF7" stroke="#C9CDD5" strokeDasharray="6 5" /><text className="q7-rot--peq" x={(x(0) + x(BRUTO.pares.pares)) / 2} y={y0 + h / 2} dy=".35em" textAnchor="middle" style={{ fill: "#5B6475" }}>? responda à previsão</text></g>;
+                    const seg = [{ v: b.c.corretos, c: "#2E6B4F" }, { v: b.c.empates, c: "#5B6475" }, { v: b.c.invertidos, c: "#8C2332" }]; let acc = 0; return (
                     <g key={b.nome}>
                       <text className="q7-rot" x={x(0)} y={y0 - d.fs * 0.6}>{b.nome}<tspan className="q7-rot--peq" dx="8" style={{ fill: "#5B6475" }}>{int(b.dist)} PDs distintas · AUC {num(b.c.auc!, 4)}</tspan></text>
                       {seg.map((s, i) => { const r = <rect key={i} x={x(acc)} y={y0} width={Math.max(0, x(acc + s.v) - x(acc))} height={h} fill={s.c} />; acc += s.v; return r; })}
@@ -77,7 +81,7 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
             }}
           </Grafico>
         </div>
-        <Legenda itens={[{ mk: "linha prob", r: "Platt" }, { mk: "linha dec", r: "isotônica" }, { mk: "", r: "barras: verde certos, âmbar empates, vinho invertidos" }]} />
+        <Legenda itens={[{ mk: "linha prob", r: "Platt" }, { mk: "linha ink", r: "isotônica" }, { mk: "", r: "barras: verde certos, cinza empates, vinho invertidos" }]} />
       </Painel>
       <Painel>
         {prev !== CERTA ? (

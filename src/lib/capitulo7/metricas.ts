@@ -46,6 +46,22 @@ export function aucPorPares(y: Vetor, pd: Vetor): Contagem {
   return { auc: pares ? (corretos + 0.5 * empates) / pares : null, corretos, empates, invertidos: pares - corretos - empates, nDefaults: n1, nAdimplentes: n0, pares };
 }
 
+/** Postos médios (1 a n) das PDs em ordem crescente; empates recebem a média dos postos que ocupam. */
+export function postosMedios(pd: Vetor): number[] {
+  const asc = pd.map((_, i) => i).sort((a, b) => pd[a] - pd[b]); const r = new Array<number>(pd.length);
+  for (let i = 0; i < asc.length;) { let j = i; while (j < asc.length && pd[asc[j]] === pd[asc[i]]) j++; const m = (i + 1 + j) / 2; for (let k = i; k < j; k++) r[asc[k]] = m; i = j; }
+  return r;
+}
+/**
+ * AUC pela estatística de Mann-Whitney com postos médios: (soma dos postos dos defaults − n₁(n₁ + 1)/2) ÷ (n₁ n₀).
+ * É a mesma AUC da contagem de pares, com meio ponto por empate; com os postos calculados uma vez, cada novo vetor de
+ * desfechos para as mesmas PDs custa O(n), o que permite medir um modelo em centenas de janelas simuladas.
+ */
+export function aucPorPostos(y: Vetor, postos: Vetor): number | null {
+  let n1 = 0, s = 0; for (let i = 0; i < y.length; i++) if (y[i]) { n1++; s += postos[i]; }
+  const n0 = y.length - n1; return n1 && n0 ? (s - (n1 * (n1 + 1)) / 2) / (n1 * n0) : null;
+}
+
 export type Par = { d: number; a: number; estado: "correto" | "empate" | "invertido" };
 /** Todos os pares de uma base pequena, linha a linha (defaults) e coluna a coluna (adimplentes). */
 export function paresDetalhados(y: Vetor, pd: Vetor): Par[] {
@@ -101,6 +117,24 @@ export function confusao(y: Vetor, pd: Vetor, corte: number): Confusao {
   for (let i = 0; i < y.length; i++) { const rec = pd[i] >= corte; if (rec) { if (y[i]) vp++; else fp++; } else if (y[i]) fn++; else vn++; }
   const n = y.length;
   return { corte, n, vp, fp, fn, vn, sensibilidade: razao(vp, vp + fn), especificidade: razao(vn, vn + fp), precisao: razao(vp, vp + fp), acuracia: razao(vp + vn, n), prevalencia: razao(vp + fn, n), taxaRecusa: razao(vp + fp, n), defaultAprovados: razao(fn, fn + vn) };
+}
+
+/**
+ * Melhor corte de uma política "aprova quando PD < corte", dado o valor de cada proposta (por exemplo, o resultado
+ * realizado): percorre todos os limiares distintos de PD, do menor ao maior, mais o corte 1, que aprova todos. Cada
+ * limiar c aprova as propostas com PD estritamente menor que c. Empate no total fica com o menor corte. É uma busca
+ * exaustiva, não uma grade: nenhum corte que mude o conjunto aprovado fica de fora.
+ */
+export function melhorCorte(pd: Vetor, valores: Vetor): { corte: number; total: number; aprovados: number } {
+  const asc = pd.map((_, i) => i).sort((a, b) => pd[a] - pd[b]);
+  let acum = 0, m = { corte: asc.length ? pd[asc[0]] : 1, total: 0, aprovados: 0 };
+  for (let i = 0; i < asc.length;) {
+    let j = i; while (j < asc.length && pd[asc[j]] === pd[asc[i]]) { acum += valores[asc[j]]; j++; }
+    const c = j < asc.length ? pd[asc[j]] : 1;
+    if (acum > m.total) m = { corte: c, total: acum, aprovados: j };
+    i = j;
+  }
+  return m;
 }
 
 export type Ganho = { q: number; examinados: number; capturados: number; defaults: number; ganho: number | null; lift: number | null; taxaGrupo: number | null; taxaMedia: number | null };
@@ -217,6 +251,19 @@ export function logisticaNewton(y: Vetor, x: Vetor | null, offset: Vetor, iter =
 const logits = (pd: Vetor) => pd.map(logit);
 /** Intercepto e slope de calibração: regressão de y em logit(PD). Ideal: intercepto 0 e slope 1 juntos. */
 export function interceptoESlope(y: Vetor, pd: Vetor) { const r = logisticaNewton(y, logits(pd), pd.map(() => 0)); return { intercepto: r.a, slope: r.b }; }
+/**
+ * Intercepto e slope de calibração com os erros padrão da máxima verossimilhança: a inversa da matriz de informação
+ * da logística no ótimo, Σ pᵢ(1 − pᵢ)[1, xᵢ][1, xᵢ]ᵀ com x = logit(PD) (a mesma que o GLM binomial do statsmodels usa
+ * em bse). Intervalo de Wald de 95% para o slope: com poucos defaults ele é largo e um slope pontual longe de 1 pode
+ * ser só ruído.
+ */
+export function slopeComIntervalo(y: Vetor, pd: Vetor) {
+  const x = logits(pd); const r = logisticaNewton(y, x, pd.map(() => 0));
+  let h00 = 0, h01 = 0, h11 = 0;
+  for (let i = 0; i < y.length; i++) { const p = sigmoide(r.a + r.b * x[i]); const w = p * (1 - p); h00 += w; h01 += w * x[i]; h11 += w * x[i] * x[i]; }
+  const det = h00 * h11 - h01 * h01; const epA = Math.sqrt(h11 / det), epB = Math.sqrt(h00 / det);
+  return { intercepto: r.a, slope: r.b, epIntercepto: epA, epSlope: epB, ic: [r.b - Z95 * epB, r.b + Z95 * epB] as [number, number] };
+}
 /** Intercepto com slope fixado em 1 (calibração no agregado): o a que faz Σ σ(a + logit PD) = Σ y. Ideal: 0. */
 export function interceptoComSlope1(y: Vetor, pd: Vetor) { return logisticaNewton(y, null, logits(pd)).a; }
 
@@ -251,6 +298,18 @@ export const transformar = (pd: Vetor, a: number, b: number) => pd.map((p) => si
 export const ajustarIntercepto = (yCal: Vetor, pdCal: Vetor) => interceptoComSlope1(yCal, pdCal);
 /** Platt sobre o escore s = logit(PD): regressão logística de y em s, por máxima verossimilhança, sem suavizar os alvos. */
 export function ajustarPlatt(yCal: Vetor, pdCal: Vetor) { const r = logisticaNewton(yCal, logits(pdCal), pdCal.map(() => 0)); return { a: r.a, b: r.b }; }
+
+/**
+ * Platt com a suavização de alvos do artigo original (Platt, 1999), a convenção do CalibratedClassifierCV
+ * (method="sigmoid") do scikit-learn: o default vale (N₁ + 1)/(N₁ + 2) e o adimplente 1/(N₀ + 2), e a logística é
+ * ajustada nesses alvos fracionários por máxima verossimilhança. Devolve a e b na convenção do capítulo,
+ * p' = σ(a + b · logit p); o scikit-learn escreve 1/(1 + exp(A f + B)), com A = −b e B = −a.
+ */
+export function ajustarPlattSuavizado(yCal: Vetor, pdCal: Vetor) {
+  const n1 = soma(yCal), n0 = yCal.length - n1; const t1 = (n1 + 1) / (n1 + 2), t0 = 1 / (n0 + 2);
+  const r = logisticaNewton(yCal.map((v) => (v ? t1 : t0)), logits(pdCal), pdCal.map(() => 0));
+  return { a: r.a, b: r.b };
+}
 
 export type Isotonica = { x: number[]; y: number[] };
 /**
@@ -359,7 +418,6 @@ export function delong(y: Vetor, s1: Vetor, s2: Vetor) {
   return { auc1: c1.auc, auc2: c2.auc, ep1, ep2, dif, ep, z, p, ic: [dif - Z95 * ep, dif + Z95 * ep] as [number, number], correlacao: (s10[1] / m + s01[1] / n) / (ep1 * ep2) };
 }
 
-/** Diferença entre duas proporções independentes com erro padrão próprio (teste de Wald da diferença). */
 /** Log da função gama (Lanczos, g = 7, nove coeficientes): erro relativo abaixo de 10⁻¹⁴ para x > 0. */
 export function lnGama(x: number): number {
   const c = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
@@ -391,6 +449,7 @@ export function betaRegularizada(x: number, a: number, b: number): number {
  * Beta(d + ½, n − d + ½) no ponto PD. H0: a PD não subestima a taxa verdadeira; p-valor pequeno indica subestimação.
  */
 export const jeffreys = (d: number, n: number, pd: number) => betaRegularizada(pd, d + 0.5, n - d + 0.5);
+/** Diferença entre duas proporções independentes com erro padrão próprio (teste de Wald da diferença). */
 export function diferencaProporcoes(d1: number, n1: number, d2: number, n2: number) {
   const p1 = d1 / n1, p2 = d2 / n2, ep = Math.sqrt((p1 * (1 - p1)) / n1 + (p2 * (1 - p2)) / n2), dif = p1 - p2;
   return { dif, ep, ic: [dif - Z95 * ep, dif + Z95 * ep] as [number, number] };

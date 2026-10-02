@@ -45,7 +45,7 @@ describe("roteiro do capítulo 7", () => {
       // "página N" no pré-requisito vira link para c7pN, que não é o slide N: o guia cita slides pelo número de ordem
       expect(/p[áa]gina\s+\d/i.test(p.guia.pre), `${s.slug}.pre`).toBe(false);
     }
-    expect(minutos("essencial")).toBe(107);
+    expect(minutos("essencial")).toBe(114);
     expect(minutos()).toBe(134);
   });
 

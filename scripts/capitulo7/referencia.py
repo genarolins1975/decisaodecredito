@@ -190,6 +190,50 @@ from scipy.stats import beta as beta_dist
 ref["jeffreysDecis"] = [float(beta_dist.cdf(f["pdMedia"], f["d"] + 0.5, f["n"] - f["d"] + 0.5)) for f in faixas_quantis(y, MOD["pl"], 10)]
 ref["jeffreysCasos"] = {f"{d}/{n}/{p}": float(beta_dist.cdf(p, d + 0.5, n - d + 0.5)) for d, n, p in [(0, 20, 0.01), (5, 100, 0.03), (5, 100, 0.08), (22, 74, 0.2), (81, 737, 0.09), (300, 1000, 0.33), (1, 2, 0.5)]}
 
+# erros padrão do intercepto e do slope de calibração: bse do GLM binomial (inversa da informação de Fisher)
+ref["slopeEp"] = {}
+for nome, p in MOD.items():
+    r = glm(y, sm.add_constant(lg(p)))
+    lo, hi = r.conf_int(alpha=0.05)[1]
+    ref["slopeEp"][nome] = {"slope": float(r.params[1]), "epIntercepto": float(r.bse[0]), "epSlope": float(r.bse[1]), "lo": float(lo), "hi": float(hi)}
+
+# Platt com alvos suavizados (Platt, 1999): o _sigmoid_calibration do scikit-learn (otimizador numérico) e o GLM
+# binomial do statsmodels nos mesmos alvos fracionários (máxima verossimilhança exata). Convenção do capítulo: a = −B, b = −A.
+from sklearn.calibration import _sigmoid_calibration
+ref["plattSuavizado"] = {}
+for nome in ("pgr", "pl"):
+    pc = MOD[nome][ci]
+    A, Bk = _sigmoid_calibration(lg(pc), cy)
+    n1 = int(cy.sum()); n0 = len(cy) - n1
+    t = np.where(cy == 1, (n1 + 1) / (n1 + 2), 1 / (n0 + 2))
+    g = sm.GLM(t, sm.add_constant(lg(pc)), family=sm.families.Binomial()).fit(tol=1e-14, maxiter=200)
+    ref["plattSuavizado"][nome] = {"sklearnA": float(A), "sklearnB": float(Bk), "glmA": float(g.params[0]), "glmB": float(g.params[1])}
+
+# melhor corte em retrospecto: busca exaustiva em todos os limiares distintos, aprova quando PD < corte; valor de cada
+# proposta: receita de 28% da exposição se paga, perda de 65% se dá default, menos 14% de custos e R$ 120 (motor do capítulo 8)
+ead = np.array(O["ead"])
+val = np.where(y == 1, -0.65 * ead, 0.28 * ead) - 0.12 * ead - 120 - 0.02 * ead
+ref["melhorCorte"] = {}
+for nome, p in MOD.items():
+    cortes = np.unique(np.append(p, 1.0))
+    tot = np.array([val[p < c].sum() for c in cortes])
+    k = int(np.argmax(tot))
+    best = {"corte": float(cortes[k]), "total": float(tot[k]), "aprovados": int((p < cortes[k]).sum())}
+    if tot[k] <= 0:
+        best = {"corte": float(cortes[0]), "total": 0.0, "aprovados": 0}
+    ref["melhorCorte"][nome] = best
+
+# janelas novas: os mesmos proponentes, desfecho sorteado da PD verdadeira (mesmo gerador do TypeScript, semente 20261033)
+r = mulberry32(20261033); pt = MOD["pt"]; aucs = {k: [] for k in ("pl", "pgr", "pg")}
+for b in range(300):
+    yb = np.array([1 if r() < q else 0 for q in pt])
+    for k in aucs:
+        aucs[k].append(roc_auc_score(yb, MOD[k]))
+obs = roc_auc_score(y, MOD["pl"]) - roc_auc_score(y, MOD["pgr"])
+ref["janelasNovas"] = {"semente": 20261033, "n": 300, "media": {k: float(np.mean(v)) for k, v in aucs.items()},
+                       "primeiras": {k: v[:5] for k, v in aucs.items()},
+                       "acima": int(sum(1 for u, v in zip(aucs["pl"], aucs["pgr"]) if u - v >= obs))}
+
 saida = RAIZ / "tests/fixtures/capitulo7-referencia.json"
 saida.parent.mkdir(parents=True, exist_ok=True)
 saida.write_text(json.dumps(ref, indent=1, default=float))
