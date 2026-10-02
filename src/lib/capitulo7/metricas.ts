@@ -284,6 +284,17 @@ export function aplicarIsotonica(f: Isotonica, pd: Vetor): number[] {
     const t = (p - f.x[lo]) / (f.x[hi] - f.x[lo]); return f.y[lo] + t * (f.y[hi] - f.y[lo]);
   });
 }
+/**
+ * Diagrama de confiabilidade CORP (Dimitriadis, Gneiting e Jordan, 2021, PNAS 118(8)): a isotônica de y sobre a PD,
+ * ajustada na própria amostra avaliada, substitui a escolha de faixas. Com ela, o Brier se decompõe em
+ * BS = MCB − DSC + UNC: MCB (erro de calibração) = BS − BS da PD recalibrada; DSC (discriminação) = UNC − BS da
+ * recalibrada; UNC (incerteza) = BS da taxa média. É diagnóstico na amostra, não calibrador para outra amostra.
+ */
+export function corp(y: Vetor, pd: Vetor) {
+  const iso = ajustarIsotonica(pd, y); const rc = aplicarIsotonica(iso, pd);
+  const tx = media(y)!; const bs = brier(y, pd), bsRc = brier(y, rc), unc = tx * (1 - tx);
+  return { iso, recalibrada: rc, blocos: iso.x.length, bs, bsRc, mcb: bs - bsRc, dsc: unc - bsRc, unc };
+}
 export const valoresDistintos = (v: Vetor) => new Set(v).size;
 /**
  * Arredondamento comercial (meio para cima) feito em inteiros: as PDs da base têm seis casas, então x·10⁶ é inteiro e
@@ -349,6 +360,37 @@ export function delong(y: Vetor, s1: Vetor, s2: Vetor) {
 }
 
 /** Diferença entre duas proporções independentes com erro padrão próprio (teste de Wald da diferença). */
+/** Log da função gama (Lanczos, g = 7, nove coeficientes): erro relativo abaixo de 10⁻¹⁴ para x > 0. */
+export function lnGama(x: number): number {
+  const c = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+  if (x < 0.5) return Math.log(Math.PI / Math.abs(Math.sin(Math.PI * x))) - lnGama(1 - x);
+  x -= 1; let a = c[0]; const t = x + 7.5;
+  for (let i = 1; i < 9; i++) a += c[i] / (x + i);
+  return 0.5 * Math.log(2 * Math.PI) + (x + 0.5) * Math.log(t) - t + Math.log(a);
+}
+/** Beta incompleta regularizada I_x(a, b) pela fração contínua de Lentz (como em Numerical Recipes, 6.4). */
+export function betaRegularizada(x: number, a: number, b: number): number {
+  if (x <= 0) return 0; if (x >= 1) return 1;
+  const ln = lnGama(a + b) - lnGama(a) - lnGama(b) + a * Math.log(x) + b * Math.log(1 - x);
+  const fc = (xx: number, aa: number, bb: number) => {
+    const TINY = 1e-300; let c = 1, d = 1 - ((aa + bb) * xx) / (aa + 1); if (Math.abs(d) < TINY) d = TINY; d = 1 / d; let h = d;
+    for (let m = 1; m <= 500; m++) {
+      const m2 = 2 * m; let num = (m * (bb - m) * xx) / ((aa + m2 - 1) * (aa + m2));
+      d = 1 + num * d; if (Math.abs(d) < TINY) d = TINY; c = 1 + num / c; if (Math.abs(c) < TINY) c = TINY; d = 1 / d; h *= d * c;
+      num = (-(aa + m) * (aa + bb + m) * xx) / ((aa + m2) * (aa + m2 + 1));
+      d = 1 + num * d; if (Math.abs(d) < TINY) d = TINY; c = 1 + num / c; if (Math.abs(c) < TINY) c = TINY; d = 1 / d; const del = d * c; h *= del;
+      if (Math.abs(del - 1) < 1e-15) break;
+    }
+    return h;
+  };
+  return x < (a + 1) / (a + b + 2) ? (Math.exp(ln) * fc(x, a, b)) / a : 1 - (Math.exp(ln) * fc(1 - x, b, a)) / b;
+}
+/**
+ * Teste de Jeffreys usado pelo BCE no backtesting de PD (ECB, Instructions for reporting the validation results of
+ * internal models): com d defaults em n casos e a PD aplicada à faixa, o p-valor é a função de distribuição da
+ * Beta(d + ½, n − d + ½) no ponto PD. H0: a PD não subestima a taxa verdadeira; p-valor pequeno indica subestimação.
+ */
+export const jeffreys = (d: number, n: number, pd: number) => betaRegularizada(pd, d + 0.5, n - d + 0.5);
 export function diferencaProporcoes(d1: number, n1: number, d2: number, n2: number) {
   const p1 = d1 / n1, p2 = d2 / n2, ep = Math.sqrt((p1 * (1 - p1)) / n1 + (p2 * (1 - p2)) / n2), dif = p1 - p2;
   return { dif, ep, ic: [dif - Z95 * ep, dif + Z95 * ep] as [number, number] };

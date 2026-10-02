@@ -23,12 +23,16 @@ for (const m of modosArg.split(",")) {
       const f = document.querySelector("figure.q7"); if (!f) return { semQuadro: true };
       const slide = f.querySelector(".q7-slide").getBoundingClientRect();
       const oculto = (el) => !!(el.closest(".q7-sr, .katex-mathml") || (el.closest("details:not([open])") && !el.closest("summary")));
+      // Conteúdo dentro de um contêiner que rola de propósito (tabela larga no celular, fórmula longa) e o traço interno
+      // dos radicais do KaTeX (um SVG recortado por ele mesmo) não são cortes.
+      const rolaDentro = (el, p) => { for (let a = el.parentElement; a && a !== p; a = a.parentElement) { const o = getComputedStyle(a).overflowX; if ((o === "auto" || o === "scroll") && a.scrollWidth > a.clientWidth + 1) return true; } return false; };
+      const katexInterno = (el) => !!el.closest(".katex .svg-align, .katex .hide-tail, .katex svg");
       const cortes = [];
       for (const p of f.querySelectorAll(".q7-painel, .q7-corpo, .q7-rod")) {
         const pr = p.getBoundingClientRect();
         for (const el of p.querySelectorAll("*")) {
           const r = el.getBoundingClientRect(); if (!r.width || !r.height) continue;
-          if (getComputedStyle(el).visibility === "hidden" || oculto(el)) continue;
+          if (getComputedStyle(el).visibility === "hidden" || oculto(el) || katexInterno(el) || rolaDentro(el, p)) continue;
           if (r.bottom > pr.bottom + 2 || r.right > pr.right + 2 || r.top < pr.top - 2) { cortes.push(`${el.tagName.toLowerCase()}.${String(el.className?.baseVal ?? el.className).slice(0, 30)} em ${String(p.className).slice(0, 20)} (+${Math.round(Math.max(r.bottom - pr.bottom, r.right - pr.right))}px)`); break; }
         }
       }

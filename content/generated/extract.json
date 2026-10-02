@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "680af2366582abac15bf9335211177ea4b939ef60ae3ce5155e340bcefe92f63",
- "extractedAt": "2026-10-02T00:57:11.234Z",
+ "sourceSha256": "d36ca66facab6feb0d6be6228f5b277fa93d8552fd19008d5221206de7af24f0",
+ "extractedAt": "2026-10-02T07:52:01.314Z",
  "meta": {
   "capitulos": [
    {
@@ -7906,7 +7906,7 @@
    "guia": {
     "funcao": "Dar o mapa do capítulo antes da primeira métrica: cada medida responde a uma de quatro perguntas.",
     "pre": "Logística do capítulo 4 e boosting do capítulo 6.",
-    "conducao": "Leia em voz alta as quatro frases, na ordem do fluxo. Mostre que validação é uma faixa embaixo das três, não uma quarta etapa no fim. Leia o número de cada cartão e diga que todos vêm da mesma janela de 737 propostas.",
+    "conducao": "Leia em voz alta as quatro frases, na ordem do fluxo. Mostre que validação é uma faixa embaixo das três, não uma quarta etapa no fim. Leia o número de cada cartão e diga que todos vêm da mesma janela de 737 propostas. Anuncie o caso: no slide 36, o comitê decide se a logística entra em produção; cada pergunta traz uma evidência para essa decisão.",
     "leitura": "Três cartões em fluxo (ordenação, probabilidade, decisão) e a faixa de validação. Cada cartão traz a pergunta, um número da janela e os slides que a tratam.",
     "pergunta": "Um gerente diz que o modelo é bom porque tem AUC de 0,73. Qual das quatro perguntas isso responde?",
     "resposta": "Só a de ordenação. Nada sobre o nível da PD, sobre o corte ou sobre a robustez fora da amostra.",
@@ -8568,12 +8568,12 @@
    },
    "origem": "rec",
    "aprendizado": "Interpretar o lift acumulado e o lift de faixa, sem confundir defaults capturados com inadimplência entre os recusados.",
-   "apoio": "Mova a fração examinada e compare a taxa de default do grupo com a da carteira.",
+   "apoio": "Mova a fração examinada e troque a fila da logística pela embaralhada: o lift vem da ordem.",
    "conexao": "Quando o evento é raro, quem é sinalizado carrega muitos falsos positivos.",
    "guia": {
     "funcao": "Definir lift como razão entre taxa do grupo e taxa da carteira.",
     "pre": "Slide 12, o ganho.",
-    "conducao": "Nos 10% piores, 29,7% de default contra 11,0% da carteira: lift de 2,71. Em 100%, lift 1 por definição.",
+    "conducao": "Nos 10% piores, 29,7% de default contra 11,0% da carteira: lift de 2,71. Em 100%, lift 1 por definição. Troque para a fila embaralhada: as mesmas PDs em outra ordem dão lift perto de 1 em toda a fila (0,86 nos 10%).",
     "leitura": "Curva de lift acumulado e linha do acaso em 1.",
     "pergunta": "Lift alto em 1% da carteira é útil?",
     "resposta": "Só se a operação examina essa fração; e com poucos casos ele é instável.",
@@ -8584,7 +8584,7 @@
       "intervencao": "Mostre a fórmula: ganho dividido pela fração."
      }
     ],
-    "interacao": "Controle compartilhado com o slide 12.",
+    "interacao": "Seletor de fila (logística ou embaralhada) e controle de fração compartilhado com o slide 12. Restaurar volta à logística e a 10%.",
     "verificacao": "O aluno calcula o lift a partir do ganho.",
     "transicao": "Com evento raro, outra dupla conta outra história."
    },
@@ -8702,12 +8702,12 @@
    },
    "origem": "rec",
    "aprendizado": "Mostrar que dois modelos com a mesma fila podem implicar perdas esperadas muito diferentes.",
-   "apoio": "Compare os dois modelos com a mesma fila e escolha qual PD usaria para provisionar.",
+   "apoio": "Mova o nível do modelo B: a AUC fica parada e a perda esperada muda. Depois escolha qual PD usaria para provisionar.",
    "conexao": "Para checar o nível, primeiro é preciso saber o que uma PD afirma.",
    "guia": {
     "funcao": "Abrir a segunda pergunta: probabilidade, não só ordem.",
     "pre": "Slide 10.",
-    "conducao": "A e B têm a mesma AUC. B é a logística com 0,8 a mais em log odds: PD média de 18,5%. Compare perda esperada e defaults esperados com o realizado e peça a escolha antes de comentar.",
+    "conducao": "A e B têm a mesma AUC. B é a logística com 0,8 a mais em log odds: PD média de 18,5%. Compare perda esperada e defaults esperados com o realizado e peça a escolha antes de comentar. Mova o controle: a AUC não sai de 0,7257. Clique em “B no total observado” (+0,15): B espera os 81, mas o ajuste usou a própria janela, o que o slide 27 proíbe. Ligue à provisão: desde 1/1/2025 a Resolução CMN 4.966/2021 baseia a provisão na perda esperada.",
     "leitura": "Barras de defaults esperados e perda esperada (perda de 65% no default) de A e B contra o realizado.",
     "pergunta": "Qual PD você usaria para provisionar esta carteira?",
     "resposta": "Nenhuma sem verificar o nível faixa a faixa. A está mais perto no agregado (71,6 defaults esperados contra 81) e ainda subestima; B exagera. A AUC igual não ajuda a escolher.",
@@ -8723,7 +8723,7 @@
       "intervencao": "Mostre a perda esperada de B contra a realizada: provisão alta encarece e distorce o preço."
      }
     ],
-    "interacao": "Pergunta com retorno e nova tentativa.",
+    "interacao": "Controle do nível de B (de −1,0 a +1,5 em log odds), botão de ajuste ao total observado e pergunta com retorno e nova tentativa. Restaurar volta a +0,80.",
     "verificacao": "O aluno explica por que AUC igual não implica provisão igual e diz o que verificaria antes de escolher.",
     "transicao": "O que quer dizer uma PD de 10%."
    },
@@ -8911,12 +8911,12 @@
    },
    "origem": "rec",
    "aprendizado": "Comparar faixas fixas e por quantis e tratar faixas vazias e pequenas sem fabricar taxas.",
-   "apoio": "Troque entre faixas de mesmo tamanho e de largura fixa e mude o número de faixas; veja a ocupação de cada uma.",
+   "apoio": "Troque entre faixas de mesmo tamanho, de largura fixa e sem faixas (CORP); mude o número de faixas e veja a ocupação de cada uma.",
    "conexao": "Cada ponto tem um denominador, e com ele vem a incerteza.",
    "guia": {
     "funcao": "Mostrar que o agrupamento muda o diagnóstico visual, não as PDs.",
     "pre": "Slide 19.",
-    "conducao": "Com faixas de largura fixa, as de PD alta ficam quase vazias e os pontos pulam. Com mesmo tamanho, cada ponto tem cerca de 737 ÷ k casos. Mude k e mostre a curva mudando sem que nenhuma PD mude.",
+    "conducao": "Com faixas de largura fixa, as de PD alta ficam quase vazias e os pontos pulam. Com mesmo tamanho, cada ponto tem cerca de 737 ÷ k casos. Mude k e mostre a curva mudando sem que nenhuma PD mude. Termine em “Sem faixas (CORP)”: a isotônica forma 11 degraus pelos próprios dados e o Brier se separa em MCB 0,0024, DSC 0,0090 e UNC 0,0978; o boosting tem MCB maior e DSC menor. É diagnóstico na própria amostra (Dimitriadis, Gneiting e Jordan, 2021).",
     "leitura": "Curva de confiabilidade e barras de ocupação por faixa.",
     "pergunta": "Mais faixas é sempre melhor?",
     "resposta": "Não: cada faixa fica com menos casos e a frequência observada fica mais ruidosa.",
@@ -8927,7 +8927,7 @@
       "intervencao": "Mostre a barra de ocupação e antecipe o slide 21."
      }
     ],
-    "interacao": "Dois seletores. Ao voltar, mesmo tamanho e dez faixas.",
+    "interacao": "Três agrupamentos (mesmo tamanho, largura fixa, CORP) e número de faixas. Ao voltar, mesmo tamanho e dez faixas.",
     "verificacao": "O aluno escolhe um agrupamento e justifica.",
     "transicao": "Quanta incerteza cabe numa faixa?"
    },
@@ -8960,7 +8960,7 @@
    "guia": {
     "funcao": "Dar incerteza à frequência observada com o intervalo de Wilson.",
     "pre": "Slide 17.",
-    "conducao": "Cinco defaults em cem: observado 5%, Wilson de 2,2% a 11,2%. Dois em vinte: de 2,8% a 30,1%. Mostre o limite inferior negativo do intervalo normal com poucos casos e compare as faixas 8 e 9 da janela.",
+    "conducao": "Cinco defaults em cem: observado 5%, Wilson de 2,2% a 11,2%. Dois em vinte: de 2,8% a 30,1%. Mostre o limite inferior negativo do intervalo normal com poucos casos e compare as faixas 8 e 9 da janela. Abra “Como o supervisor testa a PD”: o teste de Jeffreys do BCE dá p = 0,123 para a carteira (PD média de 9,7% contra 11,0%) e não rejeita a 5%. Por decil, o menor p é o de F8 (0,040), compatível com o acaso em dez testes.",
     "leitura": "Intervalo de Wilson e normal lado a lado; largura e limite inferior.",
     "pergunta": "Uma faixa com 20% observados e intervalo de 10% a 35% contradiz PD de 13%?",
     "resposta": "Não: 13% está dentro do intervalo.",
@@ -8971,7 +8971,7 @@
       "intervencao": "Diminua n e veja o intervalo abrir."
      }
     ],
-    "interacao": "Controles de n e de confiança. Ao voltar, n = 20 e 95%.",
+    "interacao": "Controles de n e de confiança e três expansões, uma delas com o teste de Jeffreys. Ao voltar, n = 20 e 95%.",
     "verificacao": "O aluno diz se uma diferença entre faixa e diagonal é compatível com o acaso.",
     "transicao": "Formas típicas de errar a probabilidade."
    },
@@ -9705,12 +9705,12 @@
    },
    "origem": "rec",
    "aprendizado": "Comparar modelos nas mesmas linhas, com a diferença e seu intervalo, sem concluir por diferença de arredondamento.",
-   "apoio": "Troque entre treino, validação e janela; leia a tabela e as comparações injustas.",
+   "apoio": "Escolha em que amostra cada modelo é medido e veja quando a comparação deixa de ser justa.",
    "conexao": "A comparação só vale se o teste final não foi usado para escolher.",
    "guia": {
     "funcao": "Fixar as condições de uma comparação justa entre modelos.",
     "pre": "Slide 33.",
-    "conducao": "No treino o boosting vence por 0,123 (sobreajuste). Na validação, quase empate. Na janela, a logística vence por 0,030 com p = 0,049. A ordem mudou de amostra para amostra.",
+    "conducao": "Comece com os dois na janela: a logística vence por 0,030, p = 0,049. Peça à turma uma combinação injusta antes de clicar em “Exemplo injusto”: boosting no treino contra logística na janela dá 0,094 a favor do boosting, diferença que mistura modelo e amostra. No treino, os dois na mesma amostra: o boosting vence por 0,123 (sobreajuste). Na validação, quase empate.",
     "leitura": "Halteres de AUC por amostra, com intervalo na janela; tabela de métricas.",
     "pergunta": "Qual número usar para escolher o modelo?",
     "resposta": "O da janela, medido uma vez, com a diferença pareada e o seu intervalo.",
@@ -9721,7 +9721,7 @@
       "intervencao": "Mostre a primeira comparação injusta."
      }
     ],
-    "interacao": "Seletor de amostra. Ao voltar, janela.",
+    "interacao": "Dois seletores de amostra, um por modelo, com veredito de comparação justa ou injusta. Restaurar volta aos dois na janela.",
     "verificacao": "O aluno lista as condições de comparação justa.",
     "transicao": "Por que a janela só vale uma vez."
    },
@@ -9903,7 +9903,7 @@
    "guia": {
     "funcao": "Fechar o capítulo com as quatro respostas e um fluxo de diagnóstico.",
     "pre": "Todo o capítulo.",
-    "conducao": "Leia as quatro respostas para a logística e o que falta em cada uma. Depois peça sintomas da prática da turma e use o seletor.",
+    "conducao": "Leia as quatro respostas para a logística e o que falta em cada uma. Depois peça sintomas da prática da turma e use o seletor. Na probabilidade, o nível parece baixo, mas o teste de Jeffreys ainda não rejeita (p = 0,12): a correção vem de uma amostra própria, não da janela.",
     "leitura": "Quatro cartões de resposta e o diagnóstico por sintoma, com links.",
     "pergunta": "Qual das quatro respostas é a mais fraca para a logística?",
     "resposta": "Validação: uma janela, 81 defaults e margem estreita.",
@@ -9960,7 +9960,7 @@
    },
    "origem": "doc",
    "aprendizado": "Consultar fórmulas, métricas que ficam fora do protocolo e as referências do capítulo.",
-   "apoio": "Consulte fórmulas, métricas fora do protocolo, referências e dados de reprodução.",
+   "apoio": "Consulte fórmulas, métricas fora do protocolo, fronteira e regulação, referências e dados de reprodução.",
    "conexao": "Capítulo 8: da previsão à decisão econômica.",
    "guia": {
     "funcao": "Material de consulta, fora do percurso da aula.",
@@ -9970,7 +9970,7 @@
     "pergunta": "Como converter AUC em Gini?",
     "resposta": "Gini = 2 × AUC menos 1: 0,4514 na janela.",
     "erros": [],
-    "interacao": "Abas. Ao voltar, fórmulas.",
+    "interacao": "Cinco abas, com links para os slides em que cada método aparece. Ao voltar, fórmulas.",
     "verificacao": "Não se aplica.",
     "transicao": "Fim do capítulo 7."
    },

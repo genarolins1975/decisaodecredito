@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Botao, LinkSlide, Painel, Quadro, Seg, type Pagina } from "../base";
 import { D, EAD, N, PGR, PL, Y } from "@/lib/capitulo7/dados";
-import { calibracaoGlobal, delong, ganho, interceptoESlope, ks } from "@/lib/capitulo7/metricas";
+import { calibracaoGlobal, delong, ganho, interceptoESlope, jeffreys, ks } from "@/lib/capitulo7/metricas";
 import { CURTO } from "@/lib/capitulo7/roteiro";
 import { curva, GRADE_CORTES, otimo } from "@/lib/visuais/economia";
 import { int, num, pct } from "@/lib/capitulo7/formato";
@@ -14,10 +14,11 @@ import { int, num, pct } from "@/lib/capitulo7/formato";
  */
 type Sint = "auc" | "cal" | "dec" | "oot";
 const DL = delong(Y, PL, PGR), KS_ = ks(Y, PL), G10 = ganho(Y, PL, 0.1), G = calibracaoGlobal(Y, PL), SL = interceptoESlope(Y, PL).slope;
+const JC = jeffreys(D, N, G.pdMedia!);
 const ECON = otimo(curva(PL as number[], EAD as number[], GRADE_CORTES)).corte;
 const RESPOSTAS = [
   { p: "ordenacao", s: "●", t: "Ordena?", r: "Sim, de forma moderada.", ev: `AUC ${num(DL.auc1, 4)}; os 10% piores têm ${pct(G10.ganho!, 0)} dos defaults.`, falta: "Estabilidade da ordem por segmento e no tempo." },
-  { p: "probabilidade", s: "▲", t: "Prevê bem a probabilidade?", r: "O nível está baixo.", ev: `PD média ${pct(G.pdMedia!, 1)} contra ${pct(D / N, 1)} observados; slope ${num(SL, 2)}.`, falta: "Correção de nível em amostra própria, avaliada em outra." },
+  { p: "probabilidade", s: "▲", t: "Prevê bem a probabilidade?", r: "Nível baixo, ainda sem prova.", ev: `PD média ${pct(G.pdMedia!, 1)} contra ${pct(D / N, 1)}; Jeffreys p = ${num(JC, 2)}; slope ${num(SL, 2)}.`, falta: "Correção de nível em amostra própria, avaliada em outra." },
   { p: "decisao", s: "◆", t: "Sustenta a decisão?", r: "Com hipóteses explícitas.", ev: `Corte econômico de ${pct(ECON, 1)}; o KS (${pct(KS_.limiar, 1)}) não é política.`, falta: "Sensibilidade a perda, receita e capacidade." },
   { p: "validacao", s: "■", t: "Prova fora da amostra?", r: "Uma vez, com margem estreita.", ev: `${D} defaults; vantagem de ${num(DL.dif, 4)} sobre o boosting, IC de ${num(DL.ic[0], 4)} a ${num(DL.ic[1], 4)}.`, falta: "Nova janela para qualquer escolha feita depois desta." },
 ];

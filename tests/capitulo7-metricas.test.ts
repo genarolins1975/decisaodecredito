@@ -117,5 +117,16 @@ describe("capítulo 7: casos de borda definidos", () => {
     perto(d.confiabilidade - d.resolucao + d.incerteza + d.residuo, M.brier(Y, PL), 1e-15); perto(d.incerteza, (81 / 737) * (656 / 737), 1e-15);
     const constante = M.faixasQuantis([1, 0, 0, 1], [0.2, 0.2, 0.6, 0.6], 2); perto(M.decomposicaoBrier([1, 0, 0, 1], [0.2, 0.2, 0.6, 0.6], constante).residuo, 0, 1e-15);
   });
+  it("CORP: isotônica na própria amostra e decomposição MCB, DSC, UNC iguais às do scikit-learn", () => {
+    for (const k of ["pl", "pgr"] as const) {
+      const c = M.corp(Y, MOD[k]), r = ref.corp[k];
+      expect(c.blocos).toBe(r.blocos); perto(c.bs, r.bs, 1e-12); perto(c.bsRc, r.bsRc, 1e-12); perto(c.mcb, r.mcb, 1e-12); perto(c.dsc, r.dsc, 1e-12); perto(c.unc, r.unc, 1e-12);
+      c.recalibrada.slice(0, 12).forEach((v, i) => perto(v, r.amostra[i], 1e-12)); perto(c.mcb - c.dsc + c.unc, c.bs, 1e-15);
+    }
+  });
+  it("Jeffreys: p-valor igual a scipy.stats.beta.cdf nos decis da logística e em casos de borda", () => {
+    M.faixasQuantis(Y, PL, 10).forEach((f, i) => perto(M.jeffreys(f.d, f.n, f.pdMedia!), ref.jeffreysDecis[i], 1e-10));
+    for (const [k, v] of Object.entries(ref.jeffreysCasos)) { const [d, n, p] = k.split("/").map(Number); perto(M.jeffreys(d, n, p), v, 1e-10); }
+  });
   it("normal: Φ(1,96) e o p bilateral de z = 1,967 batem com scipy", () => { perto(M.normalCdf(M.Z95), 0.975, 2e-7); perto(2 * (1 - M.normalCdf(1.9667935304518058)), 0.049207018740550584, 2e-7); });
 });

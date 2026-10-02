@@ -1,21 +1,25 @@
 "use client";
 import { useState } from "react";
 import { Botao, Controle, escala, Expandir, Formula, Grafico, Kpi, Painel, Quadro, Seg, type Pagina } from "../base";
-import { PL, Y } from "@/lib/capitulo7/dados";
-import { diferencaProporcoes, faixasQuantis, wald, wilson } from "@/lib/capitulo7/metricas";
-import { int, pct, pp } from "@/lib/capitulo7/formato";
+import { D, N, PL, Y } from "@/lib/capitulo7/dados";
+import { diferencaProporcoes, faixasQuantis, jeffreys, media, wald, wilson } from "@/lib/capitulo7/metricas";
+import { int, num, pct, pp } from "@/lib/capitulo7/formato";
 
 /**
  * 21 · c7p31 · Incerteza da frequência observada. A mesma frequência de 5% com números de casos diferentes: o intervalo
  * de Wilson encolhe com √n e nunca sai de [0, 1]; a aproximação normal (Wald), com poucos casos, dá limite inferior
  * negativo. O nível de confiança é escolhido no quadro (z de 1,645, 1,960 ou 2,576). Na expansão, duas faixas
- * vizinhas da logística comparadas pelo intervalo da diferença, e não pela sobreposição dos dois intervalos.
+ * vizinhas da logística comparadas pelo intervalo da diferença, e não pela sobreposição dos dois intervalos. Na
+ * terceira expansão, o teste de Jeffreys que o BCE pede no backtesting de PD, na carteira e por decil.
  */
 const NS = [20, 30, 50, 74, 100, 150, 200, 300, 500, 737, 1000, 2000];
 const Z = { "90": 1.6448536269514722, "95": 1.959963984540054, "99": 2.5758293035489004 } as const;
 type Nivel = keyof typeof Z;
 const F = faixasQuantis(Y, PL, 10); const F8 = F[7], F9 = F[8];
 const DIF = diferencaProporcoes(F8.d, F8.n, F9.d, F9.n);
+const PDM = media(PL)!, JC = jeffreys(D, N, PDM);
+const JD = F.map((f) => ({ j: f.j, p: jeffreys(f.d, f.n, f.pdMedia!) })); const JMIN = JD.reduce((a, b) => (b.p < a.p ? b : a));
+const ACASO = 1 - 0.95 ** F.length;
 
 export function S21Wilson({ pagina }: { pagina?: Pagina }) {
   const [i, setI] = useState(0);
@@ -25,7 +29,7 @@ export function S21Wilson({ pagina }: { pagina?: Pagina }) {
   const linhas = [{ rot: `${d} em ${int(n)} (controle)`, n, d, on: true }, { rot: "5 em 100", n: 100, d: 5 }, { rot: "50 em 1.000", n: 1000, d: 50 }];
   return (
     <Quadro slug="c7p31" pagina={pagina} layout="gl"
-      conclusao={<>{d} defaults em {int(n)} casos: frequência de {pct(d / n, 1)}, intervalo de {nivel}% de <b>{pct(w.lo, 1)} a {pct(w.hi, 1)}</b>. {wa.lo < 0 ? <>A aproximação normal daria limite inferior negativo ({pct(wa.lo, 1)}), sem sentido para uma frequência.</> : n >= 500 ? "Com muitos casos, os dois métodos quase coincidem." : "Mais casos, intervalo mais estreito."}</>}
+      conclusao={<>{d} default{d === 1 ? "" : "s"} em {int(n)} casos: frequência de {pct(d / n, 1)}, intervalo de {nivel}% de <b>{pct(w.lo, 1)} a {pct(w.hi, 1)}</b>. {wa.lo < 0 ? <>A aproximação normal daria limite inferior negativo ({pct(wa.lo, 1)}), sem sentido para uma frequência.</> : n >= 500 ? "Com muitos casos, os dois métodos quase coincidem." : "Mais casos, intervalo mais estreito."}</>}
       fonte={`Wilson (1927) para uma proporção binomial, com o denominador real de cada linha; nível de confiança de ${nivel}%. Exemplos ilustrativos com frequência de 5%; a comparação de faixas usa a janela fora do tempo (logística).`}>
       <Painel titulo="A mesma frequência observada, com números de casos diferentes">
         <Grafico rotulo={linhas.map((l) => { const ww = wilson(l.d, l.n, z)!; return `${l.rot}: ${pct(ww.lo, 1)} a ${pct(ww.hi, 1)}`; }).join("; ")} arCelular="4 / 3">
@@ -53,8 +57,8 @@ export function S21Wilson({ pagina }: { pagina?: Pagina }) {
         </Grafico>
       </Painel>
       <Painel>
-        <Controle rotulo="Número de casos" valor={i} min={0} max={NS.length - 1} passo={1} onChange={setI} mostrar={`${int(n)} (${d} defaults)`} escala={["20", "2.000"]} />
-        <Seg rotulo="Nível de confiança" opcoes={(Object.keys(Z) as Nivel[]).map((k) => ({ v: k, r: `${k}%` }))} valor={nivel} onChange={setNivel} />
+        <Controle rotulo="Número de casos" valor={i} min={0} max={NS.length - 1} passo={1} onChange={setI} mostrar={`${int(n)} (${d} default${d === 1 ? "" : "s"})`} escala={["20", "2.000"]} />
+        <div className="q7-s21-l"><Seg rotulo="Nível de confiança" opcoes={(Object.keys(Z) as Nivel[]).map((k) => ({ v: k, r: `${k}%` }))} valor={nivel} onChange={setNivel} /><Botao sec onClick={() => { setI(0); setNivel("95"); }}>Restaurar</Botao></div>
         <div className="q7-kpis q7-kpis--2">
           <Kpi rotulo="Largura do intervalo" valor={pp(w.hi - w.lo, 1).replace("+", "")} detalhe={`${pct(w.lo, 1)} a ${pct(w.hi, 1)}`} tom="prob" />
           <Kpi rotulo="Limite inferior normal" valor={pct(wa.lo, 1)} detalhe={wa.lo < 0 ? "negativo: sem sentido" : "dentro de [0, 1]"} tom={wa.lo < 0 ? "def" : undefined} />
@@ -66,7 +70,10 @@ export function S21Wilson({ pagina }: { pagina?: Pagina }) {
         <Expandir resumo="Duas faixas vizinhas: a diferença tem intervalo próprio">
           <p className="q7-nota">Logística, faixas F8 e F9: {F8.d} em {F8.n} ({pct(F8.obs!, 1)}) contra {F9.d} em {F9.n} ({pct(F9.obs!, 1)}). A faixa de PD maior observou menos. Diferença {pp(DIF.dif, 1)}, intervalo de 95% de {pp(DIF.ic[0], 1)} a {pp(DIF.ic[1], 1)}: contém o zero, a inversão é compatível com ruído. Sobrepor dois intervalos não é teste.</p>
         </Expandir>
-        <div className="q7-botoes"><Botao sec onClick={() => { setI(0); setNivel("95"); }}>Restaurar</Botao></div>
+        <Expandir resumo="Como o supervisor testa a PD: Jeffreys">
+          <Formula compacta f={String.raw`p=F_{\mathrm{Beta}}\big(\mathrm{PD};\ d+\tfrac12,\ n-d+\tfrac12\big)`} />
+          <p className="q7-nota">Carteira: {D} defaults em {int(N)} contra PD média de {pct(PDM, 1)}; p = {num(JC, 3)}. A 5%, o teste não rejeita: a diferença de {pp(D / N - PDM, 1).replace("+", "")} ainda cabe no ruído de {D} defaults. Por decil, o menor p é o de F{JMIN.j} ({num(JMIN.p, 3)}); com {F.length} testes, ao menos um abaixo de 5% surgiria ao acaso em cerca de {pct(ACASO, 0)} das vezes, se fossem independentes. H0: a PD não subestima a taxa verdadeira (BCE, instruções de validação de modelos internos).</p>
+        </Expandir>
       </Painel>
     </Quadro>
   );

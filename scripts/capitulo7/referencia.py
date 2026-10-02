@@ -176,6 +176,20 @@ ref["bootstrap"] = {"replicas": len(dif), "semente": 20260501, "difQ025": float(
 ref["delong"] = delong_rapido(y, MOD["pl"], MOD["pgr"])
 ref["delongGerador"] = B["res"]["comparacao_auc"]
 
+# CORP (Dimitriadis, Gneiting e Jordan, 2021): isotônica de y sobre a PD na própria amostra, decomposição do Brier
+corp = {}
+for nome in ("pl", "pgr"):
+    p = MOD[nome]
+    iso = IsotonicRegression(out_of_bounds="clip", y_min=0, y_max=1).fit(p, y)
+    rc = iso.predict(p); bs = brier_score_loss(y, p); bs_rc = brier_score_loss(y, rc); unc = float(y.mean() * (1 - y.mean()))
+    corp[nome] = {"blocos": int(len(iso.X_thresholds_)), "bs": bs, "bsRc": bs_rc, "mcb": bs - bs_rc, "dsc": unc - bs_rc, "unc": unc, "amostra": rc[:12].tolist()}
+ref["corp"] = corp
+
+# Jeffreys (BCE): p-valor = F_Beta(PD; d + 1/2, n − d + 1/2), pelos decis da logística e por casos avulsos
+from scipy.stats import beta as beta_dist
+ref["jeffreysDecis"] = [float(beta_dist.cdf(f["pdMedia"], f["d"] + 0.5, f["n"] - f["d"] + 0.5)) for f in faixas_quantis(y, MOD["pl"], 10)]
+ref["jeffreysCasos"] = {f"{d}/{n}/{p}": float(beta_dist.cdf(p, d + 0.5, n - d + 0.5)) for d, n, p in [(0, 20, 0.01), (5, 100, 0.03), (5, 100, 0.08), (22, 74, 0.2), (81, 737, 0.09), (300, 1000, 0.33), (1, 2, 0.5)]}
+
 saida = RAIZ / "tests/fixtures/capitulo7-referencia.json"
 saida.parent.mkdir(parents=True, exist_ok=True)
 saida.write_text(json.dumps(ref, indent=1, default=float))

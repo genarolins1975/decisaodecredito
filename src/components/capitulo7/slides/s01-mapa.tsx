@@ -52,7 +52,7 @@ export function S01Mapa({ pagina }: { pagina?: Pagina }) {
         <div className="q7-s01-val"><Cartao p="validacao" /></div>
         <nav className="q7-s01-pe" aria-label="Atalhos do capítulo">
           <LinkSlide slug="c7p21" className="q7-s01-ir q7-s01-ir--prim">Começar: slide 2</LinkSlide>
-          <LinkSlide slug="c7p38" className="q7-s01-ir">Caso: slide 36</LinkSlide>
+          <LinkSlide slug="c7p38" className="q7-s01-ir">Comitê: slide 36</LinkSlide>
           <LinkSlide slug="c7p20" className="q7-s01-ir">Conclusão: slide 37</LinkSlide>
           <LinkSlide slug="c7p19" className="q7-s01-ir">Apêndice: slide 38</LinkSlide>
         </nav>

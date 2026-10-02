@@ -15,7 +15,7 @@ export const PERGUNTAS: { id: Exclude<Pergunta, "todas" | "apoio">; nome: string
 ];
 
 export const ROTEIRO: Slide[] = [
-  { slug: "c7p1", n: 1, pergunta: "todas", titulo: "Da PD à decisão: quatro perguntas para confiar no modelo", sub: "Cada métrica deste capítulo entra para responder a uma delas.", nivel: "essencial", min: 4 },
+  { slug: "c7p1", n: 1, pergunta: "todas", titulo: "Da PD à decisão: quatro perguntas para confiar no modelo", sub: "O comitê decide no slide 36; cada métrica responde a uma destas perguntas.", nivel: "essencial", min: 4 },
   { slug: "c7p21", n: 2, pergunta: "todas", titulo: "Estamos prevendo qual evento, para quem e em quanto tempo?", sub: "Métricas só se comparam quando a pergunta e a amostra são as mesmas.", nivel: "essencial", min: 3 },
   { slug: "c7p2", n: 3, pergunta: "ordenacao", titulo: "Aprovar todos pode produzir alta acurácia", sub: "Com evento raro, a regra que ignora o risco acerta quase tudo e não separa ninguém.", nivel: "essencial", min: 4 },
   { slug: "c7p3", n: 4, pergunta: "ordenacao", titulo: "Ordenar, prever e decidir são tarefas distintas", sub: "Os mesmos quatro clientes numa fila, numa escala de PD e diante de um corte.", nivel: "essencial", min: 4 },
