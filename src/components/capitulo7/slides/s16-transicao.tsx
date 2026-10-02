@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Botao, Controle, Grafico, Kpi, LinkSlide, Painel, Previsao, Quadro, escala, type Pagina } from "../base";
-import { ANCORA, D, EAD, N, PL, Y } from "@/lib/capitulo7/dados";
+import { D, EAD, N, PL, Y } from "@/lib/capitulo7/dados";
 import { PARAMETROS } from "@/lib/visuais/economia";
 import { aucPorPares, interceptoComSlope1, soma, transformar } from "@/lib/capitulo7/metricas";
 import { int, num, pct, reais } from "@/lib/capitulo7/formato";
@@ -14,7 +14,8 @@ import { int, num, pct, reais } from "@/lib/capitulo7/formato";
  * estimado nesta mesma janela só para mostrar que ele existe; o slide 27 explica por que isso exige amostra própria.
  * A linha de referência é a perda com os defaults observados, sob a mesma LGD hipotética (hipóteses no slide 32).
  * Rodada 6: LGD e EAD definidos na leitura em meia linha, com a LGD do motor do slide 32 (PARAMETROS.lgd); o retorno
- * da alternativa certa liga a pergunta ao slide 36, com a PD média de produção (ANCORA.recentes de dados.ts).
+ * da alternativa certa liga a pergunta ao slide 36. Rodada 7: o retorno certo não entrega mais o nível de produção;
+ * deixa a pergunta (qual nível, com que amostra) para o slide 36, que a responde com a regra do contrato do slide 2.
  */
 const LGD = PARAMETROS.lgd, INICIO = 0.8;
 const pe = (p: readonly number[]) => p.reduce((s, x, i) => s + x * LGD * EAD[i], 0);
@@ -28,7 +29,7 @@ const sinal = (v: number) => `${v >= 0 ? "+" : "−"}${num(Math.abs(v), 2)}`;
 const OPS = [
   { texto: "A, porque está mais perto do observado", certa: false, retorno: <>A está mais perto no agregado ({num(A.esp, 1)} esperados contra {D}), mas ainda subestima. E perto no total não garante perto em cada faixa: é o que os próximos slides verificam.</> },
   { texto: "B com +0,80, porque é mais conservador", certa: false, retorno: <>Conservador demais: {num(B0.esp, 1)} esperados contra {D} observados. Provisão alta demais também é erro: encarece e distorce o preço.</> },
-  { texto: "Nenhuma sem antes verificar o nível, faixa a faixa", certa: true, retorno: <>Isso: AUC idêntica não escolhe; o nível pede diagnóstico (média, faixas, incerteza). No caso, o nível de produção vem das safras recentes: PD média de {pct(ANCORA.recentes.pdMedia, 1)} (<LinkSlide slug="c7p38">slide 36</LinkSlide>).</> },
+  { texto: "Nenhuma sem antes verificar o nível, faixa a faixa", certa: true, retorno: <>Isso: AUC idêntica não escolhe; o nível pede diagnóstico (média, faixas, incerteza). Qual nível vai para produção, e com que amostra? O <LinkSlide slug="c7p38">slide 36</LinkSlide> responde com a regra do <LinkSlide slug="c7p21">slide 2</LinkSlide>.</> },
 ];
 
 export function S16Transicao({ pagina }: { pagina?: Pagina }) {

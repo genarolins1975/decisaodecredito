@@ -1,7 +1,7 @@
 "use client";
 import { useId, useState, type ReactNode } from "react";
 import { Botao, Grafico, LinkSlide, Painel, Previsao, Quadro, Seg, escala, type Pagina } from "../base";
-import { ANCORA, CAL, D, META } from "@/lib/capitulo7/dados";
+import { ANCORA, CAL, D, META, REPLICAS_ANCORA, ancoraEmReplicas } from "@/lib/capitulo7/dados";
 import { calibradores, N_JANELAS, SEMENTE_JANELAS, vitorias } from "@/lib/capitulo7/janelas";
 import { valoresDistintos } from "@/lib/capitulo7/metricas";
 import { int, num, pct, pp, reais, sinal } from "@/lib/capitulo7/formato";
@@ -29,9 +29,14 @@ import { int, num, pct, pp, reais, sinal } from "@/lib/capitulo7/formato";
  * pela PD verdadeira e perda esperada em reais pelo motor do slide 32 (ANCORA de dados.ts). Clicar numa linha escolhe
  * a âncora: a seta "ajusta o nível" sai das partições dela, e a leitura muda com os números dela. Na âncora validação
  * e janela não há seta "mede": a janela está dentro da amostra, e a tabela é conferência, não prova.
+ * Rodada 7: a regra do nível está no contrato do slide 2 (todas as safras maturadas fora do treino); a leitura remete
+ * a ela e ao slide 36, sem dar a resposta. A tabela ganha a âncora só a janela (ANCORA.soJanela), igualmente recente.
+ * Nas âncoras que contêm a janela, o nó diz de onde vem a prova (as safras seguintes, slide 37), e a nota mostra a
+ * sorte da janela: em 2.000 réplicas sintéticas da janela (ancoraEmReplicas de dados.ts), a PD média da âncora de
+ * validação e janela tem média e faixa central de 95%.
  */
 type Modo = "certo" | "atalho" | "safras";
-type Ancora = "sem" | "validacao" | "varias" | "recentes";
+type Ancora = "sem" | "validacao" | "varias" | "janela" | "recentes";
 const C = calibradores("pl");
 const PLATT_CAL = { a: C.platt!.a!, b: C.platt!.b! };
 const PLATT_OOT = { a: C.atalho!.a!, b: C.atalho!.b! };
@@ -46,9 +51,9 @@ type Faixa = { k: string; nome: string; n: number; de: number; ate: number; cor:
 /** taxa de default observada em cada partição, mostrada no modo Safras anteriores */
 const TAXA: Record<string, number> = { treino: ANCORA.treino.taxa, val: ANCORA.validacao.taxa, oot: ANCORA.taxaJanela };
 /** as quatro âncoras do nível, na ordem da tabela; sem recalibrar é o nível do treino, onde a logística foi estimada */
-const ANC: Record<Ancora, { a: number; pdMedia: number; oe: number; oeVerd: number; perda: number }> = { sem: ANCORA.sem, validacao: ANCORA.soValidacao, varias: ANCORA.variasSafras, recentes: ANCORA.recentes };
-const NOME_ANC: Record<Ancora, string> = { sem: "Do treino, sem recalibrar", validacao: "Da validação", varias: "De treino e validação", recentes: "De validação e janela" };
-const ROT_ANC: Record<Ancora, string> = { sem: "Sem recalibrar (treino)", validacao: "Validação", varias: "Treino e validação", recentes: "Validação e janela" };
+const ANC: Record<Ancora, { a: number; pdMedia: number; oe: number; oeVerd: number; perda: number }> = { sem: ANCORA.sem, validacao: ANCORA.soValidacao, varias: ANCORA.variasSafras, janela: ANCORA.soJanela, recentes: ANCORA.recentes };
+const NOME_ANC: Record<Ancora, string> = { sem: "Do treino, sem recalibrar", validacao: "Da validação", varias: "De treino e validação", janela: "Só da janela", recentes: "De validação e janela" };
+const ROT_ANC: Record<Ancora, string> = { sem: "Sem recalibrar (treino)", validacao: "Validação", varias: "Treino e validação", janela: "Só a janela", recentes: "Validação e janela" };
 const mil = (v: number) => reais(v).replace("R$ ", "").replace(" mil", "");
 const FAIXAS: Faixa[] = [
   { k: "treino", nome: "Treino", n: META.nTreino, de: 0, ate: 14, cor: "#3D5A8A", faz: "estima o modelo", curto: "estima o modelo" },
@@ -58,11 +63,13 @@ const FAIXAS: Faixa[] = [
 ];
 
 function Linha({ modo, ancora }: { modo: Modo; ancora: Ancora }) {
-  const atalho = modo === "atalho", safras = modo === "safras", varias = safras && ancora === "varias", recentes = safras && ancora === "recentes", sem = safras && ancora === "sem";
+  const atalho = modo === "atalho", safras = modo === "safras", varias = safras && ancora === "varias", recentes = safras && ancora === "recentes", sem = safras && ancora === "sem", soJ = safras && ancora === "janela";
+  // nas duas âncoras que contêm a janela, nada mede o nível aqui: a prova vem das safras seguintes (slide 37)
+  const dentro = recentes || soJ;
   const aNivel = ANC[ancora].a;
   const id = useId().replace(/:/g, "");
   return (
-    <Grafico rotulo={`Linha do tempo: treino ${META.nTreino}, validação ${META.nVal}, janela fora do tempo ${META.nOot} e calibração sintética ${CAL.n} sorteios dos mesmos proponentes da janela; ${atalho ? "no atalho, o calibrador é ajustado e medido na janela" : safras ? `numa carteira real, o nível vem ${NOME_ANC[ancora].toLowerCase()} (default de ${pct(TAXA.treino, 1)} no treino, ${pct(TAXA.val, 1)} na validação e ${pct(TAXA.oot, 1)} na janela)${recentes ? "; a janela está dentro da amostra e não mede mais nada" : " e é medido na janela"}` : "o calibrador é ajustado na calibração e medido na janela"}`} arCelular="1 / 1">
+    <Grafico rotulo={`Linha do tempo: treino ${META.nTreino}, validação ${META.nVal}, janela fora do tempo ${META.nOot} e calibração sintética ${CAL.n} sorteios dos mesmos proponentes da janela; ${atalho ? "no atalho, o calibrador é ajustado e medido na janela" : safras ? `numa carteira real, o nível vem ${NOME_ANC[ancora].toLowerCase()} (default de ${pct(TAXA.treino, 1)} no treino, ${pct(TAXA.val, 1)} na validação e ${pct(TAXA.oot, 1)} na janela)${dentro ? "; a janela está dentro da amostra, e a prova do nível vem das safras seguintes" : " e é medido na janela"}` : "o calibrador é ajustado na calibração e medido na janela"}`} arCelular="1 / 1">
       {(d) => {
         const fs = d.fs, estreito = d.w < 520;
         const colL = estreito ? d.w * 0.36 : d.w * 0.27, noW = fs * (estreito ? 3.4 : 4.4), gapSeta = fs * (estreito ? 2.6 : 3.8);
@@ -80,15 +87,15 @@ function Linha({ modo, ancora }: { modo: Modo; ancora: Ancora }) {
         // treino e validação: uma chave junta o fim das duas barras, e a seta sai do meio dela; validação e janela: a
         // chave junta o fim da validação e o da janela, à direita da janela
         const xb = x(19) + fs * 0.9, yChave = (cy(R.treino) + cy(R.val)) / 2, xb2 = x(24) + fs * 0.9;
-        const sx = x(24) + fs * 0.25, ex = noX - fs * 0.15, sxAj = varias ? xb : recentes ? xb2 : sem ? x(14) + fs * 0.25 : safras ? x(19) + fs * 0.25 : sx;
+        const sx = x(24) + fs * 0.25, ex = noX - fs * 0.15, sxAj = varias ? xb : recentes ? xb2 : soJ ? sx : sem ? x(14) + fs * 0.25 : safras ? x(19) + fs * 0.25 : sx;
         // as duas setas nunca se cruzam: a de cima liga o topo do nó, a de baixo liga a base
         const curva = (x1: number, y1: number, x2: number, y2: number) => `M${x1} ${y1} C${(x1 + x2) / 2} ${y1} ${(x1 + x2) / 2} ${y2} ${x2} ${y2}`;
-        const yAj = atalho ? cy(R.oot) - R.oot.barra * 0.3 : varias ? yChave : recentes ? noY : sem ? cy(R.treino) : safras ? cy(R.val) : cy(R.cal), yMe = atalho ? cy(R.oot) + R.oot.barra * 0.3 : cy(R.oot);
+        const yAj = atalho ? cy(R.oot) - R.oot.barra * 0.3 : varias ? yChave : recentes ? noY : soJ ? cy(R.oot) : sem ? cy(R.treino) : safras ? cy(R.val) : cy(R.cal), yMe = atalho ? cy(R.oot) + R.oot.barra * 0.3 : cy(R.oot);
         const cima = atalho || safras; // a seta de ajuste chega pelo topo do nó
-        const nAj = recentes ? noY : cima ? noY - fs * 0.45 : noY + fs * 0.45, nMe = cima ? noY + fs * 0.45 : noY - fs * 0.45;
+        const nAj = recentes ? noY : soJ ? noY + fs * 0.45 : cima ? noY - fs * 0.45 : noY + fs * 0.45, nMe = cima ? noY + fs * 0.45 : noY - fs * 0.45;
         const ajusta = curva(sxAj, yAj, ex, nAj), mede = curva(ex, nMe, sx + fs * 0.3, yMe);
         // rótulos das setas longe da ponta: a ponta de "mede" tem meia altura de 0,5 fs
-        const yRotAj = varias ? cy(R.treino) - fs * 0.5 : recentes ? cy(R.val) - fs * 0.5 : cima ? yAj - fs * 0.5 : yAj + fs * 1.1, yRotMe = cima ? yMe + fs * 1.55 : yMe - fs * 1.05;
+        const yRotAj = varias ? cy(R.treino) - fs * 0.5 : recentes ? cy(R.val) - fs * 0.5 : soJ ? cy(R.oot) - R.oot.barra / 2 - fs * 0.35 : cima ? yAj - fs * 0.5 : yAj + fs * 1.1, yRotMe = cima ? yMe + fs * 1.55 : yMe - fs * 1.05;
         return (
           <g>
             <defs>
@@ -118,9 +125,9 @@ function Linha({ modo, ancora }: { modo: Modo; ancora: Ancora }) {
             {varias && <path d={`M${x(14) + fs * 0.25} ${cy(R.treino)}H${xb}V${cy(R.val)}H${x(19) + fs * 0.25}`} fill="none" stroke="#176C73" strokeWidth={3} strokeLinejoin="round" />}
             {recentes && <path d={`M${x(19) + fs * 0.25} ${cy(R.val)}H${xb2}V${cy(R.oot)}H${x(24) + fs * 0.25}`} fill="none" stroke="#176C73" strokeWidth={3} strokeLinejoin="round" />}
             <path d={ajusta} fill="none" stroke="#176C73" strokeWidth={3} markerEnd={`url(#${id}p)`} />
-            {!recentes && <path d={mede} fill="none" stroke="#2E6B4F" strokeWidth={3} markerEnd={`url(#${id}v)`} />}
-            <text className="q7-rot--peq" x={varias ? x(14) + fs * 0.5 : recentes ? x(19) + fs * 0.5 : sxAj + fs * 0.2} y={yRotAj} style={{ fill: "#176C73", fontWeight: 700 }}>{safras && !estreito ? "ajusta o nível" : "ajusta"}</text>
-            {recentes ? <text className="q7-rot--peq" x={noX + noW} y={noY + noH / 2 + fs * 1.1} textAnchor="end" style={{ fill: "#5B6475", fontWeight: 700 }}>sem prova</text>
+            {!dentro && <path d={mede} fill="none" stroke="#2E6B4F" strokeWidth={3} markerEnd={`url(#${id}v)`} />}
+            <text className="q7-rot--peq" x={varias ? x(14) + fs * 0.5 : recentes || soJ ? x(19) + fs * 0.5 : sxAj + fs * 0.2} y={yRotAj} style={{ fill: "#176C73", fontWeight: 700 }}>{safras && !estreito ? "ajusta o nível" : "ajusta"}</text>
+            {dentro ? <text className="q7-rot--peq" x={noX + noW} y={noY + noH / 2 + fs * 1.1} textAnchor="end" style={{ fill: "#2E6B4F", fontWeight: 700 }}>{estreito ? "prova: safras seguintes" : "prova: safras seguintes (slide 37)"}</text>
               : <text className="q7-rot--peq" x={sx + fs * 0.2} y={yRotMe} style={{ fill: "#2E6B4F", fontWeight: 700 }}>mede</text>}
             <rect x={noX} y={noY - noH / 2} width={noW} height={noH} rx={fs * 0.4} fill="#fff" stroke={atalho ? "#8C2332" : "#00205B"} strokeWidth={2} />
             <text className="q7-rot" x={noX + noW / 2} y={noY - fs * 0.15} textAnchor="middle" style={{ fill: "#00205B" }}>{safras ? "Nível" : "Platt"}</text>
@@ -146,7 +153,8 @@ const LEITURA_ANC: Record<Ancora, ReactNode> = {
   sem: <>Sem recalibrar, o nível é o do treino: {erro("sem")}. A validação já rejeitava esse nível (O/E {num(ANCORA.validacao.oe, 2)}, Jeffreys p = {num(ANCORA.validacao.jeffreys, 3)}).</>,
   validacao: <>Só a validação, cinco safras: {erro("validacao")}.</>,
   varias: <>Treino e validação: {erro("varias")}; o treino pesa {pct(ANCORA.pesoTreino, 0)}, e nele a logística acerta a média por construção.</>,
-  recentes: <>Validação e janela: {erro("recentes")}. Escolhida por ser a mais recente, não por acertar aqui.</>,
+  janela: <>Só a janela, cinco safras: {erro("janela")}; a PD média iguala a taxa da janela por construção.</>,
+  recentes: <>Validação e janela: {erro("recentes")}. O acerto tem sorte (réplicas, ao lado); a prova do nível vem das safras seguintes (<LinkSlide slug="c7p20">slide 37</LinkSlide>).</>,
 };
 
 export function S27AmostraPropria({ pagina }: { pagina?: Pagina }) {
@@ -160,12 +168,14 @@ export function S27AmostraPropria({ pagina }: { pagina?: Pagina }) {
   const A = ANCORA;
   const escolher = (i: number | null) => { setPrev(i); setModo(i === CERTA ? "atalho" : "certo"); setAncora("sem"); };
   const PT_ = A.ptJanela;
+  // sorte da janela na âncora de produção: 2.000 réplicas sob demanda, só quando o modo Safras abre (cache em dados.ts)
+  const rep = safras ? ancoraEmReplicas() : null;
   return (
     <Quadro slug="c7p16" pagina={pagina} layout="gl"
-      conclusao={safras ? <>As taxas oscilam: treino {pct(TAXA.treino, 1)}, validação {pct(TAXA.val, 1)}, janela {pct(TAXA.oot, 1)}. {LEITURA_ANC[ancora]} <b>A regra vem antes da janela: o nível corrente pede as safras maturadas mais recentes</b> (<LinkSlide slug="c7p38">slide 36</LinkSlide>).</>
+      conclusao={safras ? <>As taxas oscilam: treino {pct(TAXA.treino, 1)}, validação {pct(TAXA.val, 1)}, janela {pct(TAXA.oot, 1)}. {LEITURA_ANC[ancora]} <b>A âncora não se escolhe por esta tabela: a regra está no contrato do <LinkSlide slug="c7p21">slide 2</LinkSlide></b>, e o <LinkSlide slug="c7p38">slide 36</LinkSlide> a aplica.</>
         : !atalho ? <>Platt da calibração, medido na janela: log loss {num(LL_CERTO, 4)} contra {num(LL_SEM, 4)} sem calibrar; com {D} defaults, {num(DIF, 4)} é ruído. Nas <b>réplicas sintéticas da janela</b> (os mesmos {int(META.nOot)} proponentes com o desfecho sorteado de novo pela PD verdadeira; {N_JANELAS} sorteios, só possível em base sintética), o Platt é <b>o melhor dos três ({num(C.platt!.esperada.logLoss, 4)})</b> e vence sem calibrar em {VENCE} delas.</>
         : <>Ajustado e medido na mesma janela: <b>{num(LL_ATALHO, 4)}</b>, menor que o protocolo ({num(LL_CERTO, 4)}) por construção. Nas réplicas sintéticas da janela, o atalho entrega {num(C.atalho!.esperada.logLoss, 4)}, pior que o protocolo ({num(C.platt!.esperada.logLoss, 4)}): aprendeu a sorte da janela. <b>Nunca reporte um calibrador na amostra em que ele foi ajustado.</b></>}
-      fonte={safras ? `Janela fora do tempo: ${int(META.nOot)} propostas, ${D} defaults; PD verdadeira média ${pct(PT_, 2)}, só na base sintética. Treino (${int(A.treino.n)} propostas, ${A.treino.defaults} defaults) e validação (${int(A.validacao.n)}, ${A.validacao.defaults}) só existem agregados: intercepto pela diferença de logits entre taxa e PD média (aproximação); em validação e janela, a equação de escore exata da janela somada à da validação agregada. Perda esperada: Σ PD × ${pct(A.lgd, 0)} × EAD (motor do slide 32).`
+      fonte={safras ? `Janela fora do tempo: ${int(META.nOot)} propostas, ${D} defaults; PD verdadeira média ${pct(PT_, 2)}, só na base sintética. Treino (${int(A.treino.n)} propostas, ${A.treino.defaults} defaults) e validação (${int(A.validacao.n)}, ${A.validacao.defaults}) só existem agregados: intercepto pela diferença de logits entre taxa e PD média (aproximação); em validação e janela, a equação de escore exata da janela somada à da validação agregada. Só a janela: equação de escore exata das 737. Perda esperada: Σ PD × ${pct(A.lgd, 0)} × EAD (motor do slide 32). Réplicas da âncora: ${int(REPLICAS_ANCORA.replicas)} sorteios do desfecho da janela pela PD verdadeira, validação fixa (semente ${REPLICAS_ANCORA.semente}).`
         : `Janela fora do tempo: ${int(META.nOot)} propostas, ${D} defaults. Calibração sintética: ${int(CAL.n)} sorteios com reposição dos ${int(META.nOot)} proponentes (${int(DISTINTOS)} aparecem), desfecho pela PD verdadeira (semente ${CAL.semente}), sem deriva: o ganho é um teto. Réplicas sintéticas da janela: semente ${SEMENTE_JANELAS}; esperada: média exata pela PD verdadeira.`}>
       <Painel titulo="Onde o calibrador aprende e onde é medido">
         <Linha modo={aberto ? modo : "certo"} ancora={ancora} />
@@ -187,7 +197,7 @@ export function S27AmostraPropria({ pagina }: { pagina?: Pagina }) {
         )}
         {aberto && !safras && <p className="q7-retorno" data-tom="certa">Isso: nos mesmos casos, o atalho escolhe a&nbsp;=&nbsp;{num(PLATT_OOT.a, 3)} e b&nbsp;=&nbsp;{num(PLATT_OOT.b, 3)} (protocolo: {num(PLATT_CAL.a, 3)} e {num(PLATT_CAL.b, 3)}) para minimizar a perda que vai reportar. Ler o número menor como calibrador melhor confunde ajuste com prova.</p>}
         {safras ? (<>
-          <p className="q7-k q7-s27-k">Conferência, não prova: a janela entra na última âncora</p>
+          <p className="q7-k q7-s27-k">Conferência, não prova: a janela entra nas duas últimas âncoras</p>
           <table className="q7-tab q7-tab--comp q7-s27-t q7-s27-t--4 q7-s27-t--anc">
             <thead><tr><th className="q7-t-l">Âncora do nível</th><th>PD média</th><th>O/E obs.</th><th>O/E verd.</th><th>Perda, R$ mil</th></tr></thead>
             <tbody>
@@ -201,6 +211,7 @@ export function S27AmostraPropria({ pagina }: { pagina?: Pagina }) {
             </tbody>
           </table>
           <p className="q7-nota">Escolha a âncora na tabela. O/E = taxa ÷ PD média, observada ({pct(TAXA.oot, 1)}, {D} defaults) ou verdadeira ({pct(PT_, 1)}). Validação e janela: {A.recentes.defaults} defaults em {int(A.recentes.n)} ({pct(A.recentes.taxa, 1)}).</p>
+          {rep && <p className="q7-nota q7-s27-sorte"><b>Sorte da janela:</b> em {int(REPLICAS_ANCORA.replicas)} réplicas sintéticas da janela, validação e janela dá PD média de {pct(rep.media, 1)} ({pct(rep.lo, 1)} a {pct(rep.hi, 1)}), contra {pct(A.recentes.pdMedia, 1)} aqui.</p>}
         </>) : <table className="q7-tab q7-tab--comp q7-s27-t">
           <thead><tr><th className="q7-t-l">Log loss da logística</th><th>Na janela</th><th>Esperada nas réplicas</th></tr></thead>
           <tbody>{LINHAS.filter((l) => aberto || l.id !== "atalho").map((l) => { const c = C[l.id]!; return (

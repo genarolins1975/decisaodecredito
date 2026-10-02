@@ -371,6 +371,36 @@ export function interceptoComAgregadas(y: Vetor, pd: Vetor, agregadas: { n: numb
   for (const g of agregadas) { const d = Math.round(g.n * g.taxa); for (let i = 0; i < g.n; i++) { yy.push(i < d ? 1 : 0); pp.push(g.pdMedia); } }
   return interceptoComSlope1(yy, pp);
 }
+/**
+ * Nível ancorado em réplicas sintéticas de uma amostra (slides 27 e 36): o desfecho das propostas é sorteado de novo
+ * pela PD verdadeira (y = 1 quando u < πᵢ, um uniforme por proposta, na ordem das propostas, mulberry32 com a semente:
+ * a convenção das réplicas de janelas.ts), as amostras agregadas ficam como estão, e o intercepto com slope 1 de
+ * interceptoComAgregadas é somado ao log odds de pd. Devolve a PD média resultante em cada réplica, os defaults
+ * sorteados, a média das PDs médias e a faixa central de 95% (quantis de 2,5% e 97,5%). A equação de escore com slope 1
+ * depende do desfecho só pela soma dos defaults; por isso o intercepto é resolvido uma vez por contagem (cache), sem
+ * mudar o resultado.
+ */
+export function nivelEmReplicas(pt: Vetor, pd: Vetor, agregadas: { n: number; taxa: number; pdMedia: number }[], replicas: number, semente: number) {
+  const r = mulberry32(semente), porContagem = new Map<number, number>(), pdMedias: number[] = [], defaults: number[] = [];
+  const y = new Array<number>(pt.length);
+  for (let b = 0; b < replicas; b++) {
+    let d = 0; for (let i = 0; i < pt.length; i++) { y[i] = r() < pt[i] ? 1 : 0; d += y[i]; }
+    let m = porContagem.get(d);
+    if (m === undefined) { m = media(transformar(pd, interceptoComAgregadas(y, pd, agregadas), 1))!; porContagem.set(d, m); }
+    pdMedias.push(m); defaults.push(d);
+  }
+  const o = pdMedias.slice().sort((a, b) => a - b);
+  return { pdMedias, defaults, media: media(pdMedias)!, lo: quantil(o, 0.025), hi: quantil(o, 0.975) };
+}
+/**
+ * Decisões que mudam quando a PD de cada proposta passa de `antes` para `depois` (aprova quando PD < corte): recusa conta
+ * as aprovadas que passam a recusadas; aprova, o contrário. Com corteDepois, o corte também muda.
+ */
+export function mudancasDeDecisao(antes: Vetor, depois: Vetor, corte: number, corteDepois = corte) {
+  let recusa = 0, aprova = 0;
+  for (let i = 0; i < antes.length; i++) { const a0 = antes[i] < corte, a1 = depois[i] < corteDepois; if (a0 && !a1) recusa++; if (!a0 && a1) aprova++; }
+  return { recusa, aprova, total: recusa + aprova };
+}
 /** Platt sobre o escore s = logit(PD): regressão logística de y em s, por máxima verossimilhança, sem suavizar os alvos. */
 export function ajustarPlatt(yCal: Vetor, pdCal: Vetor) { const r = logisticaNewton(yCal, logits(pdCal), pdCal.map(() => 0)); return { a: r.a, b: r.b }; }
 

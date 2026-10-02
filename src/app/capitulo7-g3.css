@@ -94,3 +94,8 @@
 .q7-s36-vista { margin-bottom: .3cqw; }
 @container q7 (max-width: 820px) { .q7 .q7-slide .q7-s36-conf .q7-tab th, .q7 .q7-slide .q7-s36-conf .q7-tab td { font-size: 12.5px; } .q7-s36-conf .q7-gw { font-size: 11px; } }
 .q7-s36-conf .q7-graf { min-height: 6.6cqw; }
+/* slide 2 (rodada 7): finalidade e regra do nível em linhas inteiras do contrato, dt e dd na mesma linha */
+.q7 .q7-slide .q7-s02-ct .q7-s02-fin { grid-column: 1 / -1; display: flex; gap: .8cqw; align-items: baseline; }
+.q7 .q7-slide .q7-s02-ct .q7-s02-fin dt { flex: none; min-width: 13cqw; }
+.q7 .q7-slide .q7-s02-ct .q7-s02-fin a { color: inherit; text-decoration: underline; text-underline-offset: .2em; }
+@container q7 (max-width: 820px) { .q7 .q7-slide .q7-s02-ct .q7-s02-fin { display: grid; gap: 0; } }

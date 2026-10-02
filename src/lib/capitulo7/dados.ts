@@ -5,8 +5,8 @@
  * seção 7, e os números são conferidos em tests/capitulo7-metricas.test.ts.
  */
 import base from "./base.json";
-import { arredondar, fila, interceptoComAgregadas, interceptoDasMedias, jeffreys, juntarAmostras, media, monitorarNivel, mulberry32, transformar } from "./metricas";
-import { PARAMETROS } from "@/lib/visuais/economia";
+import { arredondar, fila, interceptoComAgregadas, interceptoComSlope1, interceptoDasMedias, jeffreys, juntarAmostras, ks, media, monitorarNivel, mudancasDeDecisao, mulberry32, nivelEmReplicas, transformar } from "./metricas";
+import { curva, esperado, GRADE_CORTES, otimo, PARAMETROS } from "@/lib/visuais/economia";
 
 export const META = base.meta;
 export const RES = base.res;
@@ -102,10 +102,10 @@ export const MESES_TOTAL = MESES.treino + MESES.validacao + MESES.janela;
 export const SAFRA_MEDIA = (base.meta.nTreino + base.meta.nVal + base.meta.nOot) / MESES_TOTAL;
 
 /**
- * O nível da logística ancorado em safras maturadas (slides 16, 27, 36 e 37). A finalidade do caso (provisão de
- * estágio 1 e corte, nível corrente) pede as safras maturadas mais recentes; a norma não fixa quais, e a escolha é
- * declarada antes da janela. A janela prova a ordenação; encerrada a prova, ela entra no nível de produção com a
- * validação (recentes). Treino e validação só existem agregados em RES (n, taxa observada, PD média da logística),
+ * O nível da logística ancorado em safras maturadas (slides 2, 27, 36 e 37). A finalidade e a regra estão no contrato
+ * do slide 2, antes da prova: PD para provisão de estágio 1 e corte, nível corrente; depois da prova, intercepto em
+ * todas as safras maturadas fora do treino (validação e janela, recentes). A norma não fixa as safras. A janela prova
+ * a ordenação; encerrada a prova, ela entra no nível de produção com a validação. Treino e validação só existem agregados em RES (n, taxa observada, PD média da logística),
  * sem PD por proposta: a validação sozinha e treino com validação usam interceptoDasMedias; validação e janela usam
  * interceptoComAgregadas, com a equação de escore exata das 737 propostas da janela somada à da validação agregada.
  * Cada intercepto é somado ao log odds das PDs da janela; a PD média resultante se compara com a taxa da janela
@@ -140,6 +140,8 @@ export const ANCORA = {
   pesoTreino: SAFRA_TREINO.n / JUNTAS.n,
   /** intercepto ajustado só nas safras da validação (2023-03 a 2023-07) */
   soValidacao: aplicar(interceptoDasMedias(SAFRA_VAL.taxa, SAFRA_VAL.pdMedia)),
+  /** só a janela (2023-08 a 2023-12): tão recente quanto validação e janela, com metade das safras; a PD média iguala a taxa da janela */
+  soJanela: aplicar(interceptoComSlope1(Y, PL)),
   /** treino e validação juntos (2022-01 a 2023-07), dominados pelo treino */
   variasSafras: { n: JUNTAS.n, defaults: JUNTAS.defaults, taxa: JUNTAS.taxa!, pdMediaAmostra: JUNTAS.pdMedia!, ...aplicar(interceptoDasMedias(JUNTAS.taxa!, JUNTAS.pdMedia!)) },
   /**
@@ -147,6 +149,46 @@ export const ANCORA = {
    * para produção depois da prova. jeffreys: o teste da PD da logística sem recalibrar contra os defaults das duas.
    */
   recentes: { n: N_REC, defaults: D_REC, taxa: D_REC / N_REC, pdMediaAmostra: PM_REC, jeffreys: jeffreys(D_REC, N_REC, PM_REC), ...aplicar(interceptoComAgregadas(Y, PL, [SAFRA_VAL])) },
+};
+
+/**
+ * Sorte da janela na âncora de produção (slides 27, 36 e 38): em réplicas sintéticas da janela, o desfecho das 737
+ * propostas é sorteado de novo pela PD verdadeira (2.000 réplicas, semente própria), a validação agregada fica como
+ * está, e o intercepto de validação e janela é refeito (nivelEmReplicas de metricas.ts). A média e a faixa central de
+ * 95% da PD média resultante mostram quanto do acerto da âncora na tabela de conferência veio dos 81 defaults
+ * observados. Calculado sob demanda (nunca no carregamento do módulo), com cache.
+ */
+export const REPLICAS_ANCORA = { replicas: 2000, semente: 20261043 };
+let cacheReplicas: ReturnType<typeof nivelEmReplicas> | null = null;
+export function ancoraEmReplicas() {
+  if (!cacheReplicas) cacheReplicas = nivelEmReplicas(PT, PL, [SAFRA_VAL], REPLICAS_ANCORA.replicas, REPLICAS_ANCORA.semente);
+  return cacheReplicas;
+}
+
+/**
+ * A finalidade da PD é provisão e corte (slide 2): recalibrado o nível, o corte econômico se refaz pelo motor do
+ * slide 32 (curva e otimo de economia.ts, na grade de 0,5% até 40%). Para a logística sem recalibrar e para a
+ * recalibrada em validação e janela: o corte, os aprovados, a promessa (o resultado esperado pela PD do modelo) e o
+ * que os mesmos aprovados valem pela PD verdadeira (só na base sintética); também as decisões que mudam no corte antigo
+ * com a PD recalibrada e o corte do KS na escala recalibrada (a mesma fila, outro número de PD).
+ */
+const CORTES_MOTOR = GRADE_CORTES.filter((c) => c <= 0.4);
+function politica(pd: readonly number[]) {
+  const o = otimo(curva(pd as number[], base.oot.ead, CORTES_MOTOR));
+  let verdadeiro = 0; for (let i = 0; i < pd.length; i++) if (pd[i] < o.corte) verdadeiro += esperado(PT[i], base.oot.ead[i]);
+  return { corte: o.corte, aprovados: o.parcelas.aprovados, promessa: o.parcelas.total, verdadeiro };
+}
+const PL_PRODUCAO = transformar(PL, ANCORA.recentes.a, 1);
+const SEM_POL = politica(PL);
+export const PRODUCAO = {
+  /** PD da logística com o nível de produção (intercepto de validação e janela) */
+  pd: PL_PRODUCAO as readonly number[],
+  sem: SEM_POL,
+  recalibrada: politica(PL_PRODUCAO),
+  /** decisões que mudam no corte antigo quando a PD passa à recalibrada */
+  mudamNoCorteAntigo: mudancasDeDecisao(PL, PL_PRODUCAO, SEM_POL.corte),
+  /** limiar do KS na escala recalibrada */
+  ks: ks(Y, PL_PRODUCAO).limiar,
 };
 
 /**
