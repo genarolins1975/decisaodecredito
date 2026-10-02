@@ -16,7 +16,11 @@ for (const m of modosArg.split(",")) {
   for (const [i, slug] of SLUGS.entries()) {
     const errs = []; const onErr = (e) => errs.push(String(e)); const onCon = (c) => { if (c.type() === "error") errs.push(c.text()); };
     page.on("pageerror", onErr); page.on("console", onCon);
-    await page.goto(`http://localhost:3000/${modo === "palco" ? "apresentacao" : "aulas"}/${slug}`, { waitUntil: "networkidle" });
+    // navegação abortada acontece quando o servidor de desenvolvimento recompila no meio; tenta de novo até três vezes
+    for (let t = 1; ; t++) {
+      try { await page.goto(`http://localhost:3000/${modo === "palco" ? "apresentacao" : "aulas"}/${slug}`, { waitUntil: "networkidle" }); break; }
+      catch (e) { if (t >= 3) throw e; await page.waitForTimeout(3000); }
+    }
     await page.waitForTimeout(2000); // espera a hidratação: com o servidor ocupado, 700 ms mediam SVG ainda no tamanho padrão
     if (abrir) { await page.evaluate(() => document.querySelectorAll("figure.q7 details").forEach((d) => (d.open = true))); await page.waitForTimeout(250); }
     const r = await page.evaluate(() => {
