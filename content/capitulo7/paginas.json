@@ -276,8 +276,8 @@
    "guia": {
     "funcao": "Delimitar a AUC: mede a ordem, não o nível, o corte ou a perda.",
     "pre": "Slide 9, a ROC.",
-    "conducao": "Até a escolha, o subtítulo é pergunta e a leitura só dá a instrução: peça a frase antes de mostrar os cenários. Depois teste: transformação crescente, nenhuma linha se cruza e a AUC fica igual; fila embaralhada, AUC perto de 0,5; orientação invertida, 1 menos AUC. Feche com o que a AUC não diz: o nível da PD (slide 19), o corte e a perda (slide 32).",
-    "leitura": "Ponte entre a PD original e a do cenário para 20 propostas, ao lado da ROC da janela; cada linha liga as posições exatas nos dois eixos, então só se cruza quando o par troca de ordem (zero cruzamentos na transformação crescente, 85 na fila embaralhada, 190 na invertida). No cenário PD verdadeira, a leitura usa as réplicas sintéticas da janela (os mesmos 737 proponentes com o desfecho sorteado de novo pela PD verdadeira; 300 sorteios, semente 20261033, só possível em base sintética): AUC média 0,7026 da PD verdadeira contra 0,6673 da logística; nesta janela, 0,7373 contra 0,7257. Em média nenhum modelo passa da verdadeira; numa réplica isolada pode (em 9 de 300 a logística supera a verdadeira).",
+    "conducao": "Até a resposta certa, o subtítulo é pergunta e a leitura só dá a instrução; uma frase errada recebe o retorno que nomeia a confusão (acurácia, nível, corte) e pede Tentar outra, sem entregar a resposta. Os cenários podem ser usados para testar a frase. Depois do acerto: transformação crescente, nenhuma linha se cruza e a AUC fica igual; fila embaralhada, AUC perto de 0,5; orientação invertida, tudo se cruza e 1 − AUC devolve 0,7257; PD verdadeira, outra fila (41 dos 190 pares trocados) que ainda ordena melhor. Feche com o que a AUC não diz: o nível da PD (slide 19), o corte e a perda (slide 32).",
+    "leitura": "Ponte entre a PD original e a do cenário para 20 propostas, ao lado da ROC da janela (logística em cinza, cenário em azul tracejado); cada linha liga as posições exatas nos dois eixos, então só se cruza quando o par troca de ordem (zero cruzamentos na transformação crescente, 85 na fila embaralhada, 190 na invertida, 41 na PD verdadeira, de 190 pares). No cenário PD verdadeira, a leitura diz que a verdadeira troca 41 dos 190 pares da logística e usa as réplicas sintéticas da janela (os mesmos 737 proponentes com o desfecho sorteado de novo pela PD verdadeira; 300 sorteios, semente 20261033, só possível em base sintética): AUC média 0,7026 da PD verdadeira contra 0,6673 da logística; nesta janela, 0,7373 contra 0,7257. Em média nenhum modelo passa da verdadeira; numa réplica isolada pode (em 9 de 300 a logística supera a verdadeira).",
     "pergunta": "Duas carteiras com a mesma AUC precisam da mesma provisão?",
     "resposta": "Não. A AUC não diz o nível da PD; a provisão depende dele.",
     "erros": [
@@ -287,7 +287,7 @@
       "intervencao": "Use o cenário crescente: AUC igual, PDs muito diferentes."
      }
     ],
-    "interacao": "Pergunta com retorno por alternativa e Tentar outra; seletor de cenário; depois da escolha, links para os slides que tratam do que a AUC não diz. Ao voltar, cenário inicial e pergunta em aberto.",
+    "interacao": "Pergunta com retorno por alternativa e Tentar outra; seletor de cenário, livre para testar a frase; só a resposta certa troca o subtítulo, abre a leitura de cada cenário e os links para os slides que tratam do que a AUC não diz. Ao voltar, cenário inicial e pergunta em aberto.",
     "verificacao": "O aluno lista três coisas que a AUC não informa.",
     "transicao": "Outra leitura da ordenação: o KS."
    }
@@ -420,10 +420,10 @@
    "guia": {
     "funcao": "Consolidar a ordenação: todas as métricas se movem juntas quando a fila muda.",
     "pre": "Slides 5 a 14.",
-    "conducao": "Título: só a ordem move AUC, KS, ganho e lift. Peça a previsão: somar +1 em log odds a todas as PDs leva a PD média de 9,7% a 21,4%; o que acontece com as quatro? Nada, porque ninguém troca de lugar na fila. A resposta certa abre o controle de nível já em +1,0, com a tabela ao lado (0,7257 → 0,7257; 0,362 → 0,362; 22 → 22; 2,7× → 2,7×), e libera os cenários. Os retornos errados nomeiam a confusão: nível com ordem; corte na fila com corte de PD; calibração com ordenação. Na invertida, a AUC vira 0,2743 e o KS, pela convenção (maior TPR − FPR), cai a 0,003; medido por |TPR − FPR|, seria 0,362, o mesmo da logística: KS baixo não separa fila invertida de fila sem informação, e a AUC abaixo de 0,5 separa. Com ruído σ = 3, a AUC cai a 0,6249, ainda acima da faixa do acaso (0,44 a 0,56). Lembre que, entre modelos cujas ROC se cruzam, AUC e KS podem discordar.",
-    "leitura": "Seletor de foco (ROC, KS, ganho, lift), quatro indicadores e o controle de ruído.",
+    "conducao": "Título: só a ordem move AUC, KS, ganho e lift. Peça a previsão: somar +1 em log odds a todas as PDs leva a PD média de 9,7% a 21,4%; o que acontece com as quatro? Nada, porque ninguém troca de lugar na fila. A resposta certa abre o controle de nível já em +1,0, com a tabela ao lado (0,7257 → 0,7257; 0,362 → 0,362; 22 → 22; 2,7× → 2,7×), e libera os cenários. Os retornos errados nomeiam a confusão: nível com ordem; corte na fila com corte de PD; calibração com ordenação. Na invertida, a AUC vira 0,2743 e o KS, pela convenção (maior TPR − FPR), cai a 0,003; medido por |TPR − FPR|, seria 0,362, o mesmo da logística: KS baixo não separa fila invertida de fila sem informação, e a AUC abaixo de 0,5 separa. Com ruído σ = 3, a AUC cai a 0,6249, ainda acima da faixa do acaso (0,44 a 0,56). O ruído também sobe a PD média (9,7% para 12,9% com σ = 1 e 25,3% com σ = 3), e a leitura diz isso: o nível se corrige com um intercepto, os pares trocados não. Lembre que, entre modelos cujas ROC se cruzam, AUC e KS podem discordar.",
+    "leitura": "Quatro pequenos múltiplos (ROC, TPR − FPR ao longo da fila, ganho e lift acumulados), cada um com o cenário em azul, a logística em cinza e o acaso tracejado; ao lado, a tabela logística → cenário (AUC, KS, defaults nos 10% piores, lift); abaixo, o controle de nível em log odds com a PD média; no cenário com ruído, o controle de σ.",
     "pergunta": "Ruído em log odds muda o nível médio da PD?",
-    "resposta": "Pouco; o que ele estraga é a ordem.",
+    "resposta": "Sim: ruído simétrico em log odds infla a média (9,7% para 12,9% com σ = 1 e 25,3% com σ = 3). O nível se corrige com um intercepto; a ordem perdida (AUC de 0,7257 para 0,6842 e 0,6249) não.",
     "erros": [
      {
       "alt": "Achar que somar uma constante em log odds a todas as PDs melhora AUC, KS, ganho e lift",
@@ -432,7 +432,7 @@
      }
     ],
     "interacao": "Previsão com retorno por alternativa e Tentar outra; a resposta certa abre o controle de nível já em +1,0 e libera os cenários (logística, aleatória, invertida, com ruído) e o controle de ruído. Trocar de cenário volta o nível a 0. Restaurar volta à logística, ruído 1, nível 0 e previsão em aberto.",
-    "verificacao": "O aluno antecipa o efeito do ruído nas quatro métricas.",
+    "verificacao": "O aluno antecipa o efeito do ruído nas quatro métricas e na PD média, e diz qual dos dois um intercepto corrige.",
     "transicao": "Uma boa fila ainda pode cobrar o risco errado."
    }
   },
@@ -555,7 +555,7 @@
       "intervencao": "Leia os títulos dos eixos: PD prevista contra frequência observada."
      }
     ],
-    "interacao": "Botões de previsão (acima, abaixo) que calculam a próxima faixa, Todas e Restaurar; com as dez prontas, a previsão conceitual, e o intervalo de Wilson (eixo cortado em 35%, com a ponta de F10 marcada) abre com a resposta certa. Ao voltar, nenhuma faixa.",
+    "interacao": "Botões de previsão (acima, abaixo) que calculam a próxima faixa, Todas e Restaurar; com as dez prontas, a previsão conceitual, e o intervalo de Wilson abre com a resposta certa: o eixo vertical vai a 45% para caber o intervalo de F10, e cada rótulo defaults/n vai para o lado do próprio intervalo, sem cruzar traço nem diagonal. Ao voltar, nenhuma faixa.",
     "verificacao": "O aluno lê duas faixas e diz em qual o modelo subestima.",
     "transicao": "A escolha das faixas também muda a leitura."
    }
@@ -610,7 +610,7 @@
       "intervencao": "Diminua n e veja o intervalo abrir."
      }
     ],
-    "interacao": "Previsão com retorno; a linha de 5 em 100 e o controle do número de casos abrem só com a resposta certa. Seletor do nível de confiança. Restaurar volta a 20 casos, 95% e previsão em aberto.",
+    "interacao": "Previsão com retorno; a linha de 5 em 100, o controle do número de casos e o seletor do nível de confiança abrem só com a resposta certa (antes, nível fixo em 95%). A leitura usa o nível escolhido. Restaurar volta a 20 casos, 95% e previsão em aberto.",
     "verificacao": "O aluno diz se uma diferença entre faixa e diagonal é compatível com o acaso.",
     "transicao": "Formas típicas de errar a probabilidade."
    }
@@ -627,7 +627,7 @@
    "guia": {
     "funcao": "Distinguir erro de nível e erro de inclinação pela curva e pela regressão de calibração.",
     "pre": "Slide 19.",
-    "conducao": "Quatro distorções da mesma PD verdadeira, em miniaturas largas na mesma escala, com slope e intercepto numa linha abaixo. Só a resposta certa (probabilidades extremas) revela os slopes. Na frequência esperada, erro de nível dá slope 1 e erro de inclinação dá 1 ÷ b. No quadro ampliado, mova a e b: a leitura da distorção do aluno compõe nível (intercepto com slope 1 e PD média contra 11,6% da verdadeira) e inclinação (slope). Com a = 0,70 e b = 2,20: PD média 4,4%, intercepto com slope 1 de 1,33 (risco subestimado) e slope 0,45 (PDs extremas demais): os dois erros juntos. Deitada e em pé valem na escala de log odds. A fonte define as réplicas sintéticas da janela, que entram no slide 27: os mesmos 737 proponentes com o desfecho sorteado de novo pela PD verdadeira; 300 sorteios, só possível em base sintética.",
+    "conducao": "Quatro distorções da mesma PD verdadeira, em miniaturas largas na mesma escala, com slope e intercepto numa linha abaixo. Só a resposta certa (probabilidades extremas) revela os slopes. Na frequência esperada, erro de nível dá slope 1 e erro de inclinação dá 1 ÷ b. No quadro ampliado, mova a e b: a leitura da distorção do aluno compõe nível (intercepto com slope 1 e PD média contra 11,6% da verdadeira) e inclinação (slope). Com a = 0,70 e b = 2,20: PD média 4,4%, intercepto com slope 1 de 1,33 (risco subestimado) e slope 0,45 (PDs extremas demais): os dois erros juntos. Deitada e em pé valem na escala de log odds. A frequência esperada é a média da PD verdadeira na faixa, isto é, a frequência que as réplicas sintéticas da janela (slides 10 e 27: os mesmos 737 proponentes com o desfecho sorteado de novo pela PD verdadeira) dão em média, sem ruído de amostra. Quando a distorção passa de 55% (por exemplo a = 2 e b = 0,3, faixas de 71% a 85%), o eixo do quadro ampliado se estende até o maior valor, com margem, e o subtítulo do gráfico avisa; nenhum ponto fica preso na borda.",
     "leitura": "Quatro miniaturas sobre a PD verdadeira da base sintética e o detalhe da escolhida.",
     "pergunta": "A logística da janela tem slope 1,12 e intercepto com slope 1 de 0,145. Qual assinatura é essa?",
     "resposta": "Nível baixo, com leve falta de confiança.",
@@ -667,7 +667,7 @@
      {
       "alt": "Não: acima de 0,05 já é ruim",
       "confusao": "Trata o Brier como nota absoluta.",
-      "intervencao": "Mostre a fórmula π(1 menos π) da constante."
+      "intervencao": "Mostre que uma constante c tem Brier π(1 − π) + (c − π)²: a do treino (9,56%) dá 0,09803, e só c = π, a taxa da janela, chega a π(1 − π) = 0,09783, que muda com a prevalência."
      }
     ],
     "interacao": "Previsão com retorno; as referências e o controle de nível da logística abrem com a resposta certa. Ao lado, seletor de desfecho e controle da PD de um cliente. Restaurar volta ao cliente adimplente com PD de 10%, nível 0 e previsão em aberto.",
@@ -714,7 +714,7 @@
    "guia": {
     "funcao": "Mostrar que o Brier mistura separação e nível.",
     "pre": "Slides 19 e 23.",
-    "conducao": "A é a logística com o nível deslocado em a; B dá 10,99% a todos (MCB zero por construção). A tela define isotônica, MCB, DSC e UNC em uma frase cada. Em a = 0, a MCB da logística (0,00242) cai dentro da banda da calibração perfeita (0,00185 a 0,00394): compatível com calibração, como nos slides 19 e 21. A banda vem de 200 réplicas de desfechos sorteados da própria PD (semente 20261025), porque a MCB na própria amostra tem viés para cima. Peça a previsão: a resposta certa (perto de +0,8; exatamente 0,82) abre o controle em a = +0,7, o primeiro deslocamento em que a MCB de A (0,00633) sai da banda (até 0,00586) com A ainda abaixo de B no Brier (0,09518 contra 0,09783): menor Brier, descalibração além do acaso. Com a = 1,4, B vence.",
+    "conducao": "A é a logística com o nível deslocado em a; B dá 10,99% a todos (MCB zero por construção). A tela define isotônica, MCB, DSC e UNC em uma frase cada. Em a = 0, a MCB da logística (0,00242) cai dentro da banda da calibração perfeita (0,00185 a 0,00394): compatível com calibração, como nos slides 19 e 21. A banda vem de 200 sorteios do desfecho pela PD do modelo (semente 20261025), porque a MCB na própria amostra tem viés para cima. Peça a previsão: a resposta certa (perto de +0,8; exatamente 0,82) abre o controle em a = +0,7, o primeiro deslocamento em que a MCB de A (0,00633) sai da banda (até 0,00586) com A ainda abaixo de B no Brier (0,09518 contra 0,09783): menor Brier, descalibração além do acaso. Com a = 1,4, B vence.",
     "leitura": "Curvas de confiabilidade de A e B, controle de nível e decomposição.",
     "pergunta": "Subindo o nível de A, a partir de que deslocamento o Brier de B fica menor?",
     "resposta": "Perto de +0,8 (0,82). Pouco antes, em +0,7, a MCB de A já sai da banda da calibração perfeita e A ainda tem o Brier menor.",
@@ -811,11 +811,16 @@
    "guia": {
     "funcao": "Estimar a correção de nível por intercepto e ler seu efeito no teste.",
     "pre": "Slide 27.",
-    "conducao": "Antes da previsão, a tabela de Newton mostra a raiz da equação na amostra de calibração. Depois do acerto, a leitura justifica: o Brier na janela vai de 0,09128 para 0,09092, porque o intercepto move só o nível e a ordem fica (AUC 0,7257). A PD média antes (9,72%) cabe no IC de Wilson da janela e o teste de Jeffreys não rejeita (p = 0,12): a correção vem dos 3.000 casos da calibração, e a evidência de que ela melhora é a log loss esperada nas réplicas, de 0,3439 para 0,3419. Os marcadores ▲ do gráfico são a média da janela inteira (737 propostas), não das 20 desenhadas. Feche com a pergunta que leva ao slide 29: e se a inclinação também estiver errada?",
+    "conducao": "Antes da previsão, a tabela de Newton mostra a raiz da equação na amostra de calibração. Depois do acerto, a leitura justifica: o Brier na janela vai de 0,09128 para 0,09092 porque o intercepto só mexe na parte de calibração do Brier, que era pequena (MCB 0,0024 num Brier de 0,0913, slide 25); a separação (DSC 0,0090) e a ordem ficam (AUC 0,7257). Não é regra: com a logística deslocada em +1,4, o mesmo ajuste leva o Brier de 0,12412 a 0,09092. A PD média antes (9,72%) cabe no IC de Wilson da janela e o teste de Jeffreys (unilateral, da PD média contra os defaults, com priori de Jeffreys, adotado pelo BCE) não rejeita (p = 0,12): a correção vem dos 3.000 casos da calibração, e a evidência de que ela melhora é a log loss esperada nas réplicas sintéticas da janela, de 0,3439 para 0,3419. Os marcadores ▲ (antes) e ▼ (depois) do gráfico são a média da janela inteira (737 propostas), não das 20 desenhadas. Feche com a pergunta que leva ao slide 29: e se a inclinação também estiver errada?",
     "leitura": "Linhas ligando a PD antes e depois para 20 propostas; tabela de iterações; indicadores no teste.",
     "pergunta": "Se a PD média de 9,72% já cabia no intervalo da janela, por que corrigir o nível?",
     "resposta": "Porque a janela, com 81 defaults, não tem poder para provar o desvio, mas a amostra de calibração, com 3.000 casos e 345 defaults, estima o nível com mais precisão; nas réplicas sintéticas da janela, a log loss esperada cai de 0,3439 para 0,3419. A mesma lógica vale para o boosting. O intercepto é o Platt com b = 1, o caso do slide 29.",
     "erros": [
+     {
+      "alt": "O Brier cai muito",
+      "confusao": "Superestima o erro de nível desta carteira: o intercepto só tira do Brier a parte de calibração.",
+      "intervencao": "Mostre a MCB de 0,0024 num Brier de 0,0913 (slide 25) e o contraexemplo da logística deslocada em +1,4: o mesmo ajuste leva o Brier de 0,12412 a 0,09092."
+     },
      {
       "alt": "Somar a diferença das médias em PD",
       "confusao": "Ignora que σ não é linear.",
@@ -865,7 +870,7 @@
    "guia": {
     "funcao": "Comparar isotônica e Platt e mostrar empates e ruído.",
     "pre": "Slide 29.",
-    "conducao": "A escada é a peça principal; os pares viram uma faixa fina embaixo. Com 3.000 casos, a isotônica reduz 727 PDs distintas a 16 degraus; o maior degrau (9,1%) junta 203 propostas e 16 × 187 = 2.992 empates; 8.061 empates novos (havia 2 sem calibrar), 8.063 no total, e a AUC cai de 0,6958 para 0,6911. Calibradores se comparam pela perda esperada, não pela janela: 0,3430 no Platt e 0,3446 na isotônica. Nos blocos de 300, a isotônica dá PD 0% a regiões inteiras: no bloco 2, a 151 propostas, 6 delas defaults; cada previsão que dá 0% ao que aconteceu é cortada em 10⁻¹⁵ e soma 34,5 à log loss, que vai a 0,5754 (esperada 0,6735 contra 0,3445 do Platt). Lição de crédito: com poucos dados, a isotônica exige piso de PD.",
+    "conducao": "A escada é a peça principal; os pares viram uma faixa fina embaixo. Com 3.000 casos, a isotônica reduz 727 PDs distintas a 16 degraus; o maior degrau (9,1%) junta 203 propostas e 16 × 187 = 2.992 empates; 8.061 empates novos (havia 2 sem calibrar), 8.063 no total, e a AUC cai de 0,6958 para 0,6911. O eixo vertical vai a 50%: onde a isotônica sai do quadro, a seta ▲ diz até onde ela sobe (75% com 3.000 casos). Calibradores se comparam pela perda esperada, não pela janela: 0,3430 no Platt e 0,3446 na isotônica. Nos blocos de 300, a isotônica dá PD 0% a regiões inteiras: no bloco 2, a 151 propostas, 6 delas defaults; cada previsão que dá 0% ao que aconteceu é cortada em 10⁻¹⁵ e soma 34,5 à log loss, que vai a 0,5754 (esperada 0,6735 contra 0,3445 do Platt). No bloco 8, ao contrário, nenhuma PD 0%: a isotônica dá 100% a 9 propostas e 8 adimplentes recebem probabilidade zero de pagar. Lição de crédito: com poucos dados, a isotônica exige piso e teto de PD.",
     "leitura": "Curvas das duas transformações e barras de pares certos, empatados e invertidos.",
     "pergunta": "Quando preferir a isotônica?",
     "resposta": "Com muitos dados e distorção que não é reta em log odds.",
@@ -948,13 +953,13 @@
     "ex": 1
    },
    "aprendizado": "Ler a variação de uma métrica por reamostragem pareada e delimitar o que ela cobre.",
-   "apoio": "Leia as 100 réplicas já sorteadas, complete as 1.000 e responda à previsão sobre as réplicas sintéticas da janela.",
+   "apoio": "Leia as 100 reamostragens já sorteadas, complete as 1.000 e responda à previsão sobre as réplicas sintéticas da janela.",
    "conexao": "Com incerteza declarada, a comparação entre modelos pode ser justa.",
    "guia": {
     "funcao": "Dar incerteza à AUC e à diferença entre modelos.",
     "pre": "Slide 6.",
-    "conducao": "O quadro abre com 100 réplicas pareadas (semente 20260501): diferença entre 0,0068 e 0,0579. Com 1.000: 0,0008 a 0,0587, 25 réplicas em zero ou abaixo; DeLong, 0,0001 a 0,0596. Antes de revelar as réplicas sintéticas da janela (os mesmos 737 proponentes com o desfecho sorteado de novo pela PD verdadeira; 300 sorteios, semente 20261033, só possível em base sintética), peça a previsão (as alternativas não trazem o número da resposta): a vantagem esperada nas 300 réplicas é 0,0067, perto de um quarto da observada (0,0299), e só 17 repetem a observada. O bootstrap herda a sorte da janela: p = 0,049 nesta janela não prova que a logística seja melhor em outra. Ponte: o slide 34 põe os dois modelos nos mesmos casos, com este intervalo.",
-    "leitura": "Histograma das réplicas com intervalo e linha do zero; indicadores e nota sobre o pareamento.",
+    "conducao": "O quadro abre com 100 reamostragens pareadas (semente 20260501): diferença entre 0,0068 e 0,0579. Com 1.000: 0,0008 a 0,0587, 25 reamostragens em zero ou abaixo; DeLong, 0,0001 a 0,0596. Antes de revelar as réplicas sintéticas da janela (os mesmos 737 proponentes com o desfecho sorteado de novo pela PD verdadeira; 300 sorteios, semente 20261033, só possível em base sintética), peça a previsão (as alternativas não trazem o número da resposta): a vantagem esperada nas 300 réplicas sintéticas da janela é 0,0067, perto de um quarto da observada (0,0299), e só 17 repetem a observada. O bootstrap (reamostragens da janela) herda a sorte da janela: p = 0,049 nesta janela não prova que a logística seja melhor em outra. Ponte: o slide 34 põe os dois modelos nos mesmos casos, com este intervalo.",
+    "leitura": "Histograma das reamostragens com intervalo e linha do zero; indicadores e nota sobre o pareamento.",
     "pergunta": "O limite inferior positivo prova que a logística é melhor?",
     "resposta": "Prova que nesta janela a diferença dificilmente é zero; as réplicas sintéticas da janela mostram que ela é menor do que parece.",
     "erros": [
@@ -964,7 +969,7 @@
       "intervencao": "Leia a correlação de 0,86."
      }
     ],
-    "interacao": "Sorteio progressivo a partir de 100 réplicas e previsão com Tentar outra antes da revelação sintética. Ao voltar, 100 réplicas e previsão aberta.",
+    "interacao": "Sorteio progressivo a partir de 100 reamostragens e previsão com Tentar outra antes da revelação sintética. Ao voltar, 100 reamostragens e previsão aberta.",
     "verificacao": "O aluno lê o intervalo e diz o que ele supõe.",
     "transicao": "No slide 34, a mesma diferença em cada amostra: comparação justa."
    }

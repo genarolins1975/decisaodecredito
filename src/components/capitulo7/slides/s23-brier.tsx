@@ -2,7 +2,7 @@
 import { useMemo, useState } from "react";
 import { Botao, caminho, Controle, Eixos, escala, Expandir, Formula, Grafico, Painel, Previsao, Quadro, Seg, margens, type Pagina } from "../base";
 import { D, N, PL, PREVALENCIA, PT, Y } from "@/lib/capitulo7/dados";
-import { Z95, brier, corp, media, perdaBrier1, transformar } from "@/lib/capitulo7/metricas";
+import { Z95, brier, brierConstante, corp, media, perdaBrier1, transformar } from "@/lib/capitulo7/metricas";
 import { num, pct } from "@/lib/capitulo7/formato";
 
 /**
@@ -21,6 +21,8 @@ const BS0 = brier(Y, PL);
 const REF_TREINO = brier(Y, REF_TREINO_P);
 const REF_JANELA = brier(Y, PL.map(() => D / N));
 const BS_PT = brier(Y, PT);
+/** π(1 − π) + (c − π)² com π a taxa da janela: a constante do treino paga o erro de nível; só c = π chega a π(1 − π). */
+const TAXA = D / N, BC_TREINO = brierConstante(PREVALENCIA.treino, TAXA), BC_MIN = brierConstante(TAXA, TAXA);
 /** Diferença de Brier pareada por proposta, com intervalo normal de 95%. */
 const pareada = (p: readonly number[], q: readonly number[]) => {
   const d = Y.map((y, i) => (p[i] - y) ** 2 - (q[i] - y) ** 2); const m = media(d)!;
@@ -30,7 +32,7 @@ const pareada = (p: readonly number[], q: readonly number[]) => {
 const OPS = [
   { texto: "Sim: está perto de zero, o mínimo", certa: false, retorno: <>Perto de zero não diz nada sozinho: com evento raro, até uma PD constante, que não separa ninguém, tem Brier pequeno. Confunde a escala absoluta com qualidade.</> },
   { texto: "Depende de uma referência na mesma amostra", certa: true, retorno: <>Isso: contra a constante honesta do treino ({num(REF_TREINO, 5)}), a logística é {pct(1 - BS0 / REF_TREINO, 1)} melhor.</> },
-  { texto: "Não: acima de 0,05 já é ruim", certa: false, retorno: <>Não existe limiar universal: o Brier de uma constante é π(1 − π) e muda com a prevalência da carteira. Confunde o Brier com uma nota absoluta.</> },
+  { texto: "Não: acima de 0,05 já é ruim", certa: false, retorno: <>Não existe limiar universal: uma constante c tem Brier π(1 − π) + (c − π)², com π a taxa da amostra. A do treino, {pct(PREVALENCIA.treino, 2)}, dá {num(BC_TREINO, 5)}; só c = π chega a π(1 − π) = {num(BC_MIN, 5)}, que muda com a prevalência. Confunde o Brier com uma nota absoluta.</> },
 ];
 
 export function S23Brier({ pagina }: { pagina?: Pagina }) {
@@ -86,7 +88,7 @@ export function S23Brier({ pagina }: { pagina?: Pagina }) {
               <div className="q7-s23v3-acoes">
             <Expandir resumo="Fórmula e leitura">
               <Formula f={String.raw`\mathrm{BS}=\frac{1}{n}\sum_{i=1}^{n}(p_i-y_i)^2`} simbolos={[["p_i", "PD da proposta i"], ["y_i", "1 se deu default, 0 se pagou"]]} />
-              <p className="q7-nota">Uma constante igual à prevalência π tem Brier π(1 − π), que depende da carteira: com evento raro, qualquer Brier parece pequeno.</p>
+              <p className="q7-nota">Uma constante c tem Brier π(1 − π) + (c − π)², com π a taxa da amostra; no melhor caso, c = π, vale π(1 − π), que depende da carteira: com evento raro, qualquer Brier parece pequeno.</p>
             </Expandir>
                 <Botao sec onClick={restaurar}>Restaurar</Botao>
               </div>

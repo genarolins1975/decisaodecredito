@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import ref from "./fixtures/capitulo7-referencia.json";
 import * as M from "@/lib/capitulo7/metricas";
-import { ANCORA, CAL, EAD, MINI_PD, MINI_Y, PG, PGR, PL, PT, Y, CENARIOS, D, N } from "@/lib/capitulo7/dados";
+import { ANCORA, CAL, EAD, MINI_PD, MINI_Y, PG, PGR, PL, PT, Y, CENARIOS, D, N, PREVALENCIA } from "@/lib/capitulo7/dados";
 import { aucEsperada, aucsEmJanelasNovas, calibradores, janelasNovas, llEmJanelasNovas, vantagemEmJanelasNovas, vitorias, type IdCalibrador } from "@/lib/capitulo7/janelas";
 
 /**
@@ -221,4 +221,14 @@ describe("capítulo 7: nível ancorado em safras anteriores (slides 27, 36 e 37)
     expect(ANCORA.soValidacao.oe).toBeLessThan(1); expect(ANCORA.sem.oe).toBeGreaterThan(1);
     expect(Math.abs(ANCORA.variasSafras.oe - 1)).toBeLessThan(Math.abs(ANCORA.soValidacao.oe - 1));
   });
+});
+
+describe("capítulo 7: Brier de uma PD constante (slide 23)", () => {
+  it("π(1 − π) + (c − π)² igual ao Brier calculado proposta a proposta, para a constante do treino e a da janela", () => {
+    const pi = D / N;
+    for (const c of [PREVALENCIA.treino, pi, 0, 0.5]) perto(M.brierConstante(c, pi), M.brier(Y, Y.map(() => c)), 1e-12);
+    perto(M.brierConstante(pi, pi), pi * (1 - pi), 1e-15);
+    expect(M.brierConstante(PREVALENCIA.treino, pi)).toBeGreaterThan(pi * (1 - pi));
+  });
+  it("conta à mão: π = 0,1 e c = 0,2 dá 0,09 + 0,01", () => perto(M.brierConstante(0.2, 0.1), 0.1, 1e-15));
 });

@@ -172,7 +172,7 @@ function MiniEscolha({ vistas, revelado }: { vistas: G[]; revelado: boolean }) {
   const x = lin([PIOR.auc_val - 0.003, BEST.auc_val + 0.003], [8, W - 8]);
   const pts = (revelado ? [...GRID] : vistas).sort((a, b) => a.auc_val - b.auc_val);
   let ult = -1e9, alt = 0;
-  const pos = pts.map((g) => { const px = x(g.auc_val); alt = px - ult < 6 ? 1 - alt : 0; ult = px; return { g, px, py: alt ? 17.5 : 23.5 }; });
+  const pos = pts.map((g) => { const px = x(g.auc_val); alt = px - ult < 6 ? 1 - alt : 0; ult = px; return { g, px, py: alt ? 16 : 23.5 }; });
   return (
     <Mini h={42} rotulo={revelado
       ? `AUC de validação das ${NCEL} células, de ${num(PIOR.auc_val, 4)} a ${num(BEST.auc_val, 4)}; ${N_1EP} de ${NCEL} a menos de um erro padrão (${num(EP, 3)}) da melhor, ${BEST.max_iter} árvores e ${BEST.max_leaf_nodes} folhas`
@@ -181,7 +181,7 @@ function MiniEscolha({ vistas, revelado }: { vistas: G[]; revelado: boolean }) {
       {revelado && <rect x={x(BEST.auc_val - EP)} y={12} width={x(BEST.auc_val) - x(BEST.auc_val - EP)} height={19} fill="var(--q7-val-s)" stroke="var(--q7-val)" strokeOpacity={0.35} />}
       {pos.map(({ g, px, py }) => g === BEST && revelado
         ? <circle key={`${g.max_iter}-${g.max_leaf_nodes}`} cx={px} cy={py} r={4.8} fill="var(--q7-val)" />
-        : <circle key={`${g.max_iter}-${g.max_leaf_nodes}`} cx={px} cy={py} r={3.4} fill="#fff" stroke="var(--q7-val)" strokeWidth={1.6} />)}
+        : <circle key={`${g.max_iter}-${g.max_leaf_nodes}`} cx={px} cy={py} r={3.2} fill="#fff" stroke="var(--q7-val)" strokeWidth={1.6} />)}
       {revelado ? <>
         <Txt x={x(BEST.auc_val) + 4} y={9.5} a="end" c="var(--q7-val)" b>{BEST.max_iter} × {BEST.max_leaf_nodes}: {num(BEST.auc_val, 4)}</Txt>
         <Txt x={x(PIOR.auc_val) - 4} y={9.5} c="var(--q7-mudo)">{num(PIOR.auc_val, 4)}</Txt>

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useId, useState, type ReactNode } from "react";
 import { Botao, caminho, Controle, Eixos, escala, Expandir, Grafico, Legenda, LinkSlide, Painel, Previsao, Quadro, Seg, margens, type Pagina } from "../base";
 import { CAL, CAL_PGR, D, N, PGR, PT, Y } from "@/lib/capitulo7/dados";
 import { ajustarIsotonica, ajustarPlatt, aplicarIsotonica, aucPorPares, EPS_LOG, eventosPorBloco, logit, logLoss, media, perdaEsperada, sigmoide, transformar, valoresDistintos } from "@/lib/capitulo7/metricas";
@@ -15,6 +15,9 @@ import { int, num, pct } from "@/lib/capitulo7/formato";
  * cortada no limite de 10⁻¹⁵ (logLoss conta as limitadas), e é isso que leva a log loss da isotônica a 0,5 ou mais: a
  * lição de crédito é o piso de PD. Calibradores se comparam pela perda esperada pela PD verdadeira (perdaEsperada), não
  * pela janela de 81 defaults (slide 27). Rodada 4: a leitura conta só os empates novos (depois menos antes).
+ * Rodada 5: o eixo vertical vai a 50% e as curvas são recortadas na borda (clipPath), não achatadas; onde uma curva sai
+ * do quadro, uma seta ▲ diz até onde ela vai (75% com 3.000 casos, 100% em vários blocos). A leitura dos blocos é
+ * montada por leituraBloco, que só cita PD 0% ou 100% quando elas existem (conferida por script em todos os blocos).
  */
 type Tam = "grande" | "pequena";
 function ajustes(ini: number, n: number) {
@@ -36,13 +39,33 @@ function ajustes(ini: number, n: number) {
 const NB = CAL.nPequena;
 const GRANDE = ajustes(0, CAL.n);
 /** Os dez blocos consecutivos de 300 da amostra de calibração; o primeiro é o mais extremo. */
-const BLOCOS = Array.from({ length: Math.floor(CAL.n / NB) }, (_, k) => ajustes(k * NB, NB));
+export const BLOCOS = Array.from({ length: Math.floor(CAL.n / NB) }, (_, k) => ajustes(k * NB, NB));
 const EVENTOS = eventosPorBloco(CAL.y, NB);
 const FAIXA_PLATT = [Math.min(...BLOCOS.map((b) => b.platt.media)), Math.max(...BLOCOS.map((b) => b.platt.media))];
 const BRUTO = { distintos: valoresDistintos(PGR), pares: aucPorPares(Y, PGR) };
 /** Com b > 0, o Platt mantém todos os pares: a barra de pares é a mesma de sem calibrar. */
 const MESMOS = (a: ReturnType<typeof ajustes>) => a.pc.b > 0 && a.platt.pares.corretos === BRUTO.pares.corretos && a.platt.pares.empates === BRUTO.pares.empates;
 
+/** Valor da isotônica (interpolação linear entre os pontos, constante fora deles) numa PD. */
+const isoEm = (f: { x: number[]; y: number[] }, q: number) => aplicarIsotonica(f, [q])[0];
+/** Primeira PD sem calibrar em que a curva passa de `teto`, buscada na grade de x; null se não passa até `xmax`. */
+function saidaDoQuadro(g: (q: number) => number, teto: number, xmax: number): number | null {
+  const passo = xmax / 2000; let ant = 0;
+  for (let k = 1; k <= 2000; k++) { const q = k * passo; if (g(q) > teto) { let lo = ant, hi = q; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (g(m) > teto) hi = m; else lo = m; } return hi; } ant = q; }
+  return null;
+}
+const nProp = (n: number) => `${int(n)} ${n === 1 ? "proposta" : "propostas"}`;
+/** Leitura de um bloco de 300: cita PD 0% e 100% só quando existem; piso se um default levou PD 0%, teto se um adimplente levou PD 100%. */
+export function leituraBloco(a: ReturnType<typeof ajustes>, bloco: number): ReactNode {
+  const I = a.isot;
+  if (I.limitadas > 0) {
+    const ext = I.zeros && I.uns ? <>PD 0% a {nProp(I.zeros)} da janela e 100% a {int(I.uns)}</> : I.zeros ? <>PD 0% a {nProp(I.zeros)} da janela</> : <>PD 100% a {nProp(I.uns)} da janela</>;
+    const limite = I.defZero && I.adiUm ? "piso e teto de PD" : I.defZero ? "piso de PD" : "teto de PD";
+    return <>Bloco {bloco} ({a.defaults} defaults em {NB}): a isotônica dá {ext}; {I.limitadas} {I.limitadas === 1 ? "previsão dá" : "previsões dão"} probabilidade zero ao que aconteceu, cortada em 10⁻¹⁵ (+{num(CUSTO_LIM, 1)} cada), e a log loss na janela vai a <b>{num(I.ll, 4)}</b>. <b>Com poucos dados, a isotônica exige {limite}.</b> Pela PD verdadeira, {num(I.esp, 4)} contra {num(a.platt.esp, 4)} do Platt.</>;
+  }
+  const melhor = a.platt.esp < I.esp ? "Platt" : "isotônica";
+  return <>Bloco {bloco} ({a.defaults} defaults em {NB}): PD média {pct(a.platt.media, 1)} (Platt) e {pct(I.media, 1)} (isotônica) contra {pct(D / N, 1)} observados. Nos dez blocos, a do Platt vai de {pct(FAIXA_PLATT[0], 1)} a {pct(FAIXA_PLATT[1], 1)}: <b>com {NB} casos, o nível segue a sorte do bloco</b>. Pela PD verdadeira, o {melhor} perde menos ({num(a.platt.esp, 4)} contra {num(I.esp, 4)}).</>;
+}
 /** Índice da alternativa certa da previsão: a comparação só abre depois dela; errar mostra o retorno e pede nova tentativa. */
 const CERTA = 1;
 /** −ln do limite de 10⁻¹⁵: o que cada previsão cortada soma à log loss. */
@@ -52,6 +75,7 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
   const [t, setT] = useState<Tam>("grande");
   const [bloco, setBloco] = useState(1);
   const [prev, setPrev] = useState<number | null>(null);
+  const clipId = useId().replace(/:/g, "");
   const a = t === "grande" ? GRANDE : BLOCOS[bloco - 1];
   const revelado = prev === CERTA;
   const barras = [
@@ -61,15 +85,13 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
   const ISO = barras.length - 1;
   const restaurar = () => { setT("grande"); setBloco(1); setPrev(null); };
   const I = a.isot, cortadas = I.limitadas > 0;
-  const melhor = a.platt.esp < I.esp ? "Platt" : "isotônica";
   const proxima = <>O <LinkSlide slug="c7p37">slide 31</LinkSlide> leva a recalibração à decisão.</>;
   return (
     <Quadro slug="c7p36" pagina={pagina} layout="gl"
       titulo={revelado ? undefined : "Isotônica: o que acontece com a fila?"} sub={revelado ? undefined : "Uma função que nunca desce, ajustada aos dados sem forma imposta."}
       conclusao={!revelado ? <>Primeiro a previsão: a isotônica também nunca inverte duas propostas.</>
         : t === "grande" ? <>Com {int(a.n)} casos, a isotônica reduz as {int(BRUTO.distintos)} PDs distintas da janela a <b>{I.distintos}</b> degraus: {int(I.pares.empates - BRUTO.pares.empates)} pares viram empates{BRUTO.pares.empates ? <> (havia {int(BRUTO.pares.empates)})</> : null} e a AUC cai de {num(BRUTO.pares.auc!, 4)} para <b>{num(I.pares.auc!, 4)}</b>. Pela PD verdadeira, a log loss esperada fica {num(a.platt.esp, 4)} no Platt e {num(I.esp, 4)} na isotônica; a janela, com {D} defaults, não separa os dois. {proxima}</>
-          : cortadas ? <>Bloco {bloco} ({a.defaults} defaults em {NB}): a isotônica dá PD 0% a {I.zeros} propostas da janela{I.uns ? <> e 100% a {I.uns}</> : null}; {I.limitadas} {I.limitadas === 1 ? "previsão dá" : "previsões dão"} probabilidade zero ao que aconteceu, cortada em 10⁻¹⁵ (+{num(CUSTO_LIM, 1)} cada), e a log loss na janela vai a <b>{num(I.ll, 4)}</b>. <b>Com poucos dados, a isotônica exige piso de PD.</b> Pela PD verdadeira, {num(I.esp, 4)} contra {num(a.platt.esp, 4)} do Platt.</>
-            : <>Bloco {bloco} ({a.defaults} defaults em {NB}): PD média {pct(a.platt.media, 1)} (Platt) e {pct(I.media, 1)} (isotônica) contra {pct(D / N, 1)} observados. Nos dez blocos, a do Platt vai de {pct(FAIXA_PLATT[0], 1)} a {pct(FAIXA_PLATT[1], 1)}: <b>com {NB} casos, o nível segue a sorte do bloco</b>. Pela PD verdadeira, o {melhor} perde menos ({num(a.platt.esp, 4)} contra {num(I.esp, 4)}).</>}
+          : leituraBloco(a, bloco)}
       fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults, ${int(BRUTO.pares.pares)} pares default × adimplente; empate conta meio par. Calibração sintética: sorteios dos proponentes da janela, desfecho da PD verdadeira (semente ${CAL.semente}); blocos de ${NB} consecutivos, com ${EVENTOS.join(", ")} defaults. Log loss com limite de 10⁻¹⁵; esperada: média exata pela PD verdadeira.`}>
       <Painel>
         <Grafico titulo="A transformação da isotônica e a de Platt" sub={`ajustadas em ${int(a.n)} casos; embaixo, os pares da janela`} rotulo={`Isotônica em ${a.iso.x.length} pontos, com ${I.distintos} PDs distintas na janela, e curva de Platt ajustadas em ${a.n} casos${revelado ? `; o degrau de ${pct(a.degrau.v, 1)} junta ${a.degrau.d + a.degrau.a} propostas da janela e ${int(a.degrau.empates)} empates` : ""}. Pares: ${barras.filter((b, i) => revelado || i < ISO).map((b) => `${b.nome}: ${b.c.corretos} certos, ${b.c.empates} empates, ${b.c.invertidos} invertidos`).join("; ")}${revelado ? "" : "; isotônica: aguardando a previsão"}`} arCelular="4 / 5">
@@ -79,7 +101,13 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
             const x = escala([0, 0.55], [mg.l, d.w - mg.r]), y = escala([0, 0.5], [faixaTopo - mg.b - fs * 0.3, mg.t]);
             const cl = (v: number) => Math.min(0.5, v);
             const qs = Array.from({ length: 120 }, (_, i) => 0.003 + (i / 119) * 0.547);
-            const isoPts = [{ x: 0, y: a.iso.y[0] }, ...a.iso.x.map((xx, i) => ({ x: xx, y: a.iso.y[i] })), { x: 0.55, y: a.iso.y[a.iso.y.length - 1] }].filter((q) => q.x <= 0.55);
+            const platt = (q: number) => sigmoide(a.pc.a + a.pc.b * logit(q));
+            const isoPts = [{ x: 0, y: isoEm(a.iso, 0) }, ...a.iso.x.map((xx, i) => ({ x: xx, y: a.iso.y[i] })).filter((q) => q.x > 0 && q.x < 0.55), { x: 0.55, y: isoEm(a.iso, 0.55) }];
+            // onde cada curva sai do quadro de 50% e até onde vai (no intervalo desenhado de PD sem calibrar, 0 a 55%)
+            const saidas = [
+              { nome: "isotônica", q: saidaDoQuadro((q) => isoEm(a.iso, q), 0.5, 0.55), max: Math.max(...isoPts.map((q) => q.y)), cor: "#00205B" },
+              { nome: "Platt", q: saidaDoQuadro(platt, 0.5, 0.55), max: Math.max(...qs.map(platt)), cor: "#176C73" },
+            ].filter((sx): sx is { nome: string; q: number; max: number; cor: string } => sx.q !== null).sort((u, v) => u.q - v.q);
             const g = a.degrau, gx0 = x(g.lo), gx1 = x(g.hi), gy = y(cl(g.v));
             // rótulo do degrau no canto de cima à esquerda, que a escada, a diagonal e o Platt nunca ocupam, ligado ao degrau por uma linha
             const rx = x(0.012), ry1 = y(0.47), ry2 = ry1 + fs * 1.15, mx = (gx0 + Math.max(gx1, gx0 + fs * 0.4)) / 2;
@@ -90,8 +118,17 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
                 <Eixos x={x} y={y} xt={[0, 0.1, 0.2, 0.3, 0.4, 0.5]} yt={[0, 0.1, 0.2, 0.3, 0.4, 0.5]} fx={(v) => pct(v, 0)} fy={(v) => pct(v, 0)} xTit="PD sem calibrar" yTit="PD calibrada" />
                 <line className="q7-diag" x1={x(0)} y1={y(0)} x2={x(0.5)} y2={y(0.5)} />
                 {a.x.map((q, i) => <line key={i} x1={x(q)} x2={x(q)} y1={y(0)} y2={y(0) - fs * 0.45} stroke="#5B6475" strokeOpacity={a.n > 1000 ? 0.1 : 0.3} />)}
-                <path className="q7-linha q7-linha--prob" d={caminho(qs.map((q) => ({ x: x(q), y: y(cl(sigmoide(a.pc.a + a.pc.b * logit(q)))) })))} />
-                <path className="q7-linha q7-linha--ink" d={caminho(isoPts.map((q) => ({ x: x(q.x), y: y(cl(q.y)) })))} />
+                <defs><clipPath id={clipId}><rect x={x(0) - fs} y={y(0.5)} width={x(0.55) - x(0) + fs * 2} height={y(0) - y(0.5) + fs} /></clipPath></defs>
+                <g clipPath={`url(#${clipId})`}>
+                  <path className="q7-linha q7-linha--prob" d={caminho(qs.map((q) => ({ x: x(q), y: y(platt(q)) })))} />
+                  <path className="q7-linha q7-linha--ink" d={caminho(isoPts.map((q) => ({ x: x(q.x), y: y(q.y) })))} />
+                </g>
+                {saidas.map((sx, k) => { const ax = x(sx.q), fim = ax > d.w - fs * 10; const ty = k === 0 ? y(0.5) - fs * 0.45 : y(0.5) + fs * 1.1; return (
+                  <g key={sx.nome}>
+                    <path d={`M${ax} ${y(0.5) - fs * 0.75}l${fs * 0.42} ${fs * 0.7}h${-fs * 0.84}z`} fill={sx.cor} />
+                    <text className="q7-rot q7-rot--peq q7-s30-lbl" x={ax + (fim ? -fs * 0.6 : fs * 0.6)} y={ty} textAnchor={fim ? "end" : "start"} style={{ fill: sx.cor, fontWeight: 700 }}>▲ {sx.nome} sobe até {pct(sx.max, 0)}, fora do eixo</text>
+                  </g>
+                ); })}
                 {revelado && <g>
                   <line x1={gx0} x2={Math.max(gx1, gx0 + fs * 0.4)} y1={gy} y2={gy} stroke="#5B6475" strokeWidth={fs * 0.55} strokeOpacity={0.45} strokeLinecap="round" />
                   <path d={`M${rx + fs * 1.2} ${ry2 + fs * 0.6}L${rx + fs * 1.2} ${gy - fs * 1.4}L${mx} ${gy - fs * 0.4}`} fill="none" stroke="#5B6475" strokeWidth={1.5} />
@@ -102,7 +139,7 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
                   {zerosDef.map((v, i) => <circle key={i} cx={x(cl(v))} cy={y(0) - fs * 0.05} r={fs * 0.3} className="q7-pt-def" />)}
                   <text className="q7-rot q7-rot--peq q7-s30-lbl" x={x(cl(Math.max(...zerosDef))) + fs * 0.6} y={y(0) - fs * 0.9} style={{ fill: "#8C2332", fontWeight: 700 }}>● {zerosDef.length} {zerosDef.length === 1 ? "default" : "defaults"} da janela com PD 0%</text>
                 </g>}
-                {revelado && I.uns > 0 && <text className="q7-rot q7-rot--peq q7-s30-lbl" x={x(0.55)} y={y(0.05)} textAnchor="end" style={{ fill: "#2A3342" }}>e {I.uns} {I.uns === 1 ? "proposta" : "propostas"} com PD 100%, no topo</text>}
+                {revelado && I.uns > 0 && <text className="q7-rot q7-rot--peq q7-s30-lbl" x={x(0.55)} y={y(0.05)} textAnchor="end" style={{ fill: "#2A3342" }}>e {nProp(I.uns)} da janela com PD 100% (▲ acima do eixo)</text>}
                 {barras.map((b, k) => {
                   const y0 = faixaTopo + k * (faixaH + faixaGap) + faixaGap;
                   const nome = <text className="q7-rot--peq" x={0} y={estreito ? y0 - fs * 0.45 : y0 + faixaH / 2} dy=".35em" style={{ fill: "#2A3342", fontWeight: 600 }}>{b.nome}{k === ISO && !revelado ? "" : <tspan style={{ fill: "#5B6475", fontWeight: 500 }}>: AUC {num(b.c.auc!, 4)}{b.c.empates > BRUTO.pares.empates ? ` · ${int(b.c.empates)} empates` : ""}</tspan>}</text>;
@@ -125,9 +162,9 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
         {!revelado ? (
           <Previsao pergunta="A isotônica nunca inverte a ordem de duas propostas. Na janela, a AUC depois dela..." escolha={prev} onEscolha={setPrev} recolher
             opcoes={[
-              { texto: "Fica igual, como em Platt", retorno: "Ela não inverte, mas junta: é não decrescente, não estritamente crescente. Propostas diferentes no mesmo degrau ficam empatadas, e empate conta meio par." },
+              { certa: false, texto: "Fica igual, como em Platt", retorno: "Ela não inverte, mas junta: é não decrescente, não estritamente crescente. Propostas diferentes no mesmo degrau ficam empatadas, e empate conta meio par." },
               { texto: "Pode cair, por causa de empates", certa: true, retorno: "Isso. Os degraus juntam propostas com PDs diferentes; pares que estavam certos viram empates e a AUC cai." },
-              { texto: "Sobe, porque a isotônica é mais flexível", retorno: "Flexibilidade melhora o ajuste do nível na amostra de calibração, não a ordenação. Uma função monotônica nunca cria pares certos novos." },
+              { certa: false, texto: "Sobe, porque a isotônica é mais flexível", retorno: "Flexibilidade melhora o ajuste do nível na amostra de calibração, não a ordenação. Uma função monotônica nunca cria pares certos novos." },
             ]} />
         ) : (
           <>

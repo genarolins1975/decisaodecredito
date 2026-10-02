@@ -13,7 +13,7 @@ import { num, pct } from "@/lib/capitulo7/formato";
  * apenas para isolar a propriedade). A decomposição CORP (Dimitriadis, Gneiting e Jordan, 2021) separa o Brier sem
  * faixas: BS = MCB − DSC + UNC, com a isotônica ajustada na própria amostra como referência. Essa MCB é viesada para
  * cima (nunca é zero, nem sob calibração perfeita); por isso cada MCB vem com a banda de consistência: a MCB de
- * REPLICAS desfechos simulados da própria PD (y ~ Bernoulli(PD), semente SEMENTE_BANDA), 5% a 95%. Em a = 0 a MCB da
+ * REPLICAS sorteios do desfecho pela PD do modelo (y ~ Bernoulli(PD), semente SEMENTE_BANDA), 5% a 95%. Em a = 0 a MCB da
  * logística cai dentro da banda (compatível com calibração, como nos slides 19 e 21). A previsão pergunta a partir de
  * que deslocamento B passa a ter o Brier menor (virada por bisseção sobre o Brier da biblioteca); a resposta certa
  * abre o controle no primeiro deslocamento da grade em que a MCB de A sai da banda e A ainda tem o Brier menor: o
@@ -28,7 +28,7 @@ const CB = corp(Y, PB), CL = corp(Y, PL), CG = corp(Y, PGR);
 const VIRADA = (() => { let lo = 0, hi = 3; for (let k = 0; k < 60; k++) { const m = (lo + hi) / 2; if (brier(Y, transformar(PL, m, 1)) < CB.bs) lo = m; else hi = m; } return (lo + hi) / 2; })();
 const A_MEIO = 0.4, A_ALTO = 1.4;
 const C_MEIO = corp(Y, transformar(PL, A_MEIO, 1)), C_ALTO = corp(Y, transformar(PL, A_ALTO, 1));
-/** Banda de consistência da MCB: desfechos simulados da própria PD (calibração perfeita), 5% a 95% das réplicas. */
+/** Banda de consistência da MCB: sorteios do desfecho pela PD do modelo (calibração perfeita), 5% a 95% dos sorteios. */
 const REPLICAS = 200, SEMENTE_BANDA = 20261025;
 type Banda = { lo: number; hi: number };
 const BANDAS = new Map<string, Banda>();
@@ -78,7 +78,7 @@ export function S25BrierCalibracao({ pagina }: { pagina?: Pagina }) {
         : vence && fora ? <>Com a = +{num(a, 1)}, a MCB de A ({num(CA.mcb, 5)}) <b>sai da banda da calibração perfeita</b> ({faixaTxt}): descalibração além do acaso. Ainda assim <b>A tem o Brier menor</b> ({num(CA.bs, 5)} contra {num(CB.bs, 5)} de B, calibrado por construção), pela separação. B só vence a partir de a = {num(VIRADA, 2)}.</>
         : vence ? <>Com a = +{num(a, 1)}: MCB de A {num(CA.mcb, 5)}, dentro da {faixaTxt}: compatível com calibração, como nos slides 19 e 21. A tem o Brier menor pela separação (DSC {num(CA.dsc, 5)}). Suba o nível até a MCB sair da banda.</>
         : <>Com a = +{num(a, 1)}, B passa a ter o Brier menor: a MCB de A ({num(CA.mcb, 5)}, banda até {num(BA.hi, 5)}) superou a separação (DSC {num(CA.dsc, 5)}). A fila não mudou; a PD média foi a {pct(gA.pdMedia!, 1)} contra {pct(TAXA, 1)} observados.</>}
-      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. A: σ(logit p + a) sobre a logística. B: PD constante de ${pct(TAXA, 2)}, a taxa da janela. MCB na própria amostra tem viés para cima; banda: 5% a 95% de ${REPLICAS} réplicas com desfechos sorteados da própria PD (semente ${SEMENTE_BANDA}). CORP: Dimitriadis, Gneiting e Jordan (2021).`}>
+      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. A: σ(logit p + a) sobre a logística. B: PD constante de ${pct(TAXA, 2)}, a taxa da janela. MCB na própria amostra tem viés para cima; banda: 5% a 95% de ${REPLICAS} sorteios do desfecho pela PD do modelo (semente ${SEMENTE_BANDA}). CORP: Dimitriadis, Gneiting e Jordan (2021).`}>
       <Painel>
         <div className="q7-g2-s25 q7-s25v3">
           <div className="q7-g2-quad"><Confiabilidade titulo={a === 0 ? "A: a logística" : "A: boa fila, nível deslocado"} sub={`AUC ${num(aucPorPares(Y, PA).auc!, 4)}`} rotulo={`Curva de confiabilidade do modelo A por decil; o modelo B é um único ponto em ${pct(TAXA, 1)}`} max={0.5} ticks={[0, 0.25, 0.5]} series={[{ faixas: FA, classe: "prob", linha: true, ic: true }]} anotar={false}
@@ -118,7 +118,7 @@ export function S25BrierCalibracao({ pagina }: { pagina?: Pagina }) {
         {revelado ? <Controle rotulo="Nível de A: a, em log odds" valor={a} min={0} max={1.4} passo={0.1} onChange={setA} mostrar={`+${num(a, 1)}`} escala={["0: a logística", "+1,4"]} /> : null}
         <div className="q7-s25v3-acoes">
           {revelado && <Expandir resumo="Como se calcula">
-            <Formula compacta f={String.raw`\mathrm{MCB}=\mathrm{BS}-\mathrm{BS}_{\mathrm{iso}},\quad \mathrm{DSC}=\mathrm{UNC}-\mathrm{BS}_{\mathrm{iso}}`} />
+            <Formula compacta f={String.raw`\begin{aligned}\mathrm{MCB}&=\mathrm{BS}-\mathrm{BS}_{\mathrm{iso}}\\ \mathrm{DSC}&=\mathrm{UNC}-\mathrm{BS}_{\mathrm{iso}}\end{aligned}`} />
             <p className="q7-nota">BS<sub>iso</sub>: o Brier da isotônica, diagnóstico na amostra, não calibrador. Entre a logística e o boosting sem recalibrar, o Brier difere {num(CG.bs - CL.bs, 5)}; a separação explica {num(CL.dsc - CG.dsc, 5)} e a calibração {num(CG.mcb - CL.mcb, 5)}. Por faixas (Murphy, 1973), a soma não fecha.</p>
           </Expandir>}
           <Botao sec onClick={() => { setA(0); setEsc(null); }}>Restaurar</Botao>

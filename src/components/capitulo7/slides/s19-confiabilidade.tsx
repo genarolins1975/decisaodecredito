@@ -80,10 +80,12 @@ function lugaresComIc(pts: { cx: number; cy: number; ylo: number; yhi: number; t
       [p.cx + g, p.cy - h * 0.6, "start"], [p.cx - g, p.cy - h * 0.6, "end"],
       [p.cx + g, p.cy + h * 1.3, "start"], [p.cx - g, p.cy + h * 1.3, "end"],
       [p.cx, p.yhi - h * 0.45, "middle"], [p.cx, p.ylo + h * 1.15, "middle"],
+      [p.cx + g * 0.6, p.yhi + h * 0.7, "start"], [p.cx - g * 0.6, p.yhi + h * 0.7, "end"],
+      [p.cx + g * 0.6, p.ylo - h * 0.1, "start"], [p.cx - g * 0.6, p.ylo - h * 0.1, "end"],
     ];
     for (const [x, y, anc] of cands) {
       const x0 = anc === "start" ? x : anc === "end" ? x - w : x - w / 2;
-      const c: Caixa = { x0: x0 - halo, x1: x0 + w + halo, y0: y - h * 0.8 - halo, y1: y + h * 0.22 + halo };
+      const c: Caixa = { x0: x0 - halo, x1: x0 + w + halo, y0: y - h * 0.95 - halo, y1: y + h * 0.25 + halo };
       if (c.x0 < area.x0 || c.x1 > area.x1 || c.y0 < area.y0 || c.y1 > area.y1) continue;
       if ([...barras, ...bolas, ...postos, ...fixos].some((b) => cruza(c, b))) continue;
       if (linhas.some(([a1, b1, a2, b2]) => segCruza(c, a1, b1, a2, b2))) continue;
@@ -114,7 +116,7 @@ function Curva({ k, ic, completa }: { k: number; ic: boolean; completa: boolean 
           { x0: x(XMAX) - lw("▼ abaixo: superestimado"), x1: x(XMAX), y0: y(ymax * 0.03) - hp, y1: y(ymax * 0.03) + hp * 0.3 },
         ];
         const lugIc = ic ? lugaresComIc(vis.map((f) => ({ cx: x(f.pdMedia!), cy: y(f.obs!), ylo: y(f.ic!.lo), yhi: y(f.ic!.hi), txt: `${f.d}/${f.n}` })), r, d.fs,
-          { x0: x(0), x1: d.w, y0: 0, y1: y(0) }, [x(0), y(0), x(XMAX), y(XMAX)], fixos, traco) : null;
+          { x0: x(0), x1: d.w, y0: 0, y1: y(0) + d.fs * 0.3 }, [x(0), y(0), x(XMAX), y(XMAX)], fixos, traco) : null;
         return (
           <g>
             <Eixos x={x} y={y} xt={[0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3]} yt={yt} fx={(v) => pct(v, 0)} fy={(v) => pct(v, 0)} xTit="PD média prevista na faixa" yTit="Default observado na faixa" />

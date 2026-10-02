@@ -268,6 +268,11 @@ export function slopeComIntervalo(y: Vetor, pd: Vetor) {
 export function interceptoComSlope1(y: Vetor, pd: Vetor) { return logisticaNewton(y, null, logits(pd)).a; }
 
 export const brier = (y: Vetor, pd: Vetor) => { let s = 0; for (let i = 0; i < y.length; i++) s += (pd[i] - y[i]) ** 2; return s / y.length; };
+/**
+ * Brier de uma PD constante c numa amostra com taxa de default π: π(1 − π) + (c − π)². Só com c = π ele vale
+ * π(1 − π); qualquer outra constante paga ainda o quadrado do erro de nível (slide 23).
+ */
+export const brierConstante = (c: number, taxa: number) => taxa * (1 - taxa) + (c - taxa) ** 2;
 /** Log loss em log natural. EPS_LOG só evita ln(0) na probabilidade dada ao que aconteceu; `limitadas` conta quantas previsões precisaram dele. */
 export function logLoss(y: Vetor, pd: Vetor): { valor: number; limitadas: number } {
   let s = 0, lim = 0;
