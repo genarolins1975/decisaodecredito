@@ -35,7 +35,7 @@ export function S16Transicao({ pagina }: { pagina?: Pagina }) {
   const M = [A, B];
   return (
     <Quadro slug="c7p28" pagina={pagina} layout="gl"
-      conclusao={<>Mesma fila (AUC {num(AUC, 4)} nos dois), e a perda esperada vai de <b>{reais(A.pe)}</b> a <b>{reais(B.pe)}</b>, contra {reais(REAL)} com os defaults observados (LGD hipotética; as hipóteses estão no slide 32). Provisão e preço partem dessa conta: <b>o nível importa</b>, e a AUC não o vê.</>}
+      conclusao={<>Mesma fila (AUC {num(AUC, 4)} nos dois), e a perda esperada vai de <b>{reais(A.pe)}</b> a <b>{reais(B.pe)}</b>, contra {reais(REAL)} com os defaults observados (LGD hipotética; hipóteses no slide 32). Provisão e preço partem dessa conta: <b>o nível importa</b>, e a AUC não o vê.</>}
       fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults. Perda = Σ PD (ou default) × 65% × EAD, LGD hipotética. Provisão por perda esperada desde 1/1/2025: Res. CMN 4.966/2021 e Res. BCB 352/2023.`}>
       <Painel titulo="Dois modelos com a mesma fila">
         <div className="q7-s16-mod">
@@ -49,7 +49,7 @@ export function S16Transicao({ pagina }: { pagina?: Pagina }) {
             </div>
           ))}
         </div>
-        <Grafico titulo="Defaults esperados e perda esperada" sub="barras: modelos · linha: com os defaults observados" rotulo={`Defaults esperados: A ${num(M[0].esp, 1)}, B ${num(M[1].esp, 1)}, observados ${D}. Perda esperada: A ${reais(M[0].pe)}, B ${reais(M[1].pe)}, com os defaults observados ${reais(REAL)}`} arCelular="16 / 9">
+        <Grafico titulo="Defaults esperados e perda esperada" sub="barras: modelos · linha: defaults observados" rotulo={`Defaults esperados: A ${num(M[0].esp, 1)}, B ${num(M[1].esp, 1)}, observados ${D}. Perda esperada: A ${reais(M[0].pe)}, B ${reais(M[1].pe)}, com os defaults observados ${reais(REAL)}`} arCelular="16 / 9">
           {(d) => {
             const meio = d.w / 2, alt = d.h - d.fs * 3.2, base = d.h - d.fs * 2;
             const bloco = (x0: number, w: number, vals: number[], real: number, fmt: (v: number) => string, tit: string) => {
@@ -66,7 +66,7 @@ export function S16Transicao({ pagina }: { pagina?: Pagina }) {
       </Painel>
       <Painel>
         <Controle rotulo="Nível do modelo B, em log odds" valor={delta} min={-1} max={1.5} passo={0.05} onChange={setDelta} mostrar={sinal(delta)} escala={["−1,0", "+1,5"]} />
-        <p className="q7-nota">A AUC não sai de {num(AUC, 4)}. Com +{num(AJUSTE, 2)}, B espera os {D} observados, mas o ajuste usou a própria janela (slide 27).</p>
+        <p className="q7-nota">Com +{num(AJUSTE, 2)}, B espera os {D} observados; o ajuste usou a própria janela (slide 27).</p>
         <Previsao rotulo="Escolha e justifique" pergunta="Qual PD você usaria para provisionar esta carteira?" opcoes={OPS} escolha={esc} onEscolha={setEsc} />
         <div className="q7-botoes"><Botao onClick={() => setDelta(AJUSTE)}>B no total observado</Botao><Botao sec onClick={() => { setDelta(INICIO); setEsc(null); }}>Restaurar</Botao></div>
       </Painel>

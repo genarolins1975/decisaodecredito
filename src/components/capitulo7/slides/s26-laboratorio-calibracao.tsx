@@ -11,7 +11,7 @@ import { num, pct, pp } from "@/lib/capitulo7/formato";
  * b > 0 (estritamente crescente). Curva de confiabilidade, Brier, log loss, PD média e a transformação desenhada; a AUC
  * fica parada enquanto b > 0. Os eixos das duas curvas crescem até o maior valor transformado (sem teto falso em 50%).
  * Controles e atalhos ficam travados até a resposta certa da previsão (quem piora mais, em proporção, com b = 2,2 e a
- * mesma PD média). O exemplo "melhor ajuste nesta janela" usa a própria janela para estimar a e b: referência visual,
+ * mesma PD média). O exemplo "melhor ajuste" (nesta janela) usa a própria janela para estimar a e b: referência visual,
  * não avaliação independente (slide 27). Nos atalhos de excesso e falta de confiança, a é escolhido por bisseção para
  * manter a PD média da logística: só a inclinação muda; o intervalo de a (±3) comporta esses valores.
  */
@@ -30,12 +30,12 @@ const PRESETS = [
   { r: "Erro de nível", a: 0.8, b: 1 },
   { r: "Excesso de confiança", ...EXCESSO },
   { r: "Falta de confiança", ...FALTA },
-  { r: "Melhor ajuste nesta janela", a: AJ.intercepto, b: AJ.slope },
+  { r: "Melhor ajuste", a: AJ.intercepto, b: AJ.slope },
 ];
 const OPS = [
   { texto: "A AUC cai, e o Brier junto", certa: false, retorno: <>Com b positivo ninguém troca de lugar: a fila e a AUC ficam. Confunde calibração com ordenação.</> },
   { texto: "A AUC fica; o Brier piora mais que a log loss", certa: false, retorno: <>É o contrário: o Brier tem teto e pesa pouco a confiança que falha; a log loss pune sem limite (slide 24). Confunde as duas escalas.</> },
-  { texto: "A AUC fica; a log loss piora mais, em proporção", certa: true, retorno: <>Isso: Brier {pp(D_BS, 1).replace(" pp", "%")}, log loss {pp(D_LL, 1).replace(" pp", "%")}; a AUC não percebe nada.</> },
+  { texto: "A AUC fica; a log loss piora mais, em proporção", certa: true, retorno: <>Isso: Brier {pp(D_BS, 1).replace(" pp", "%")}, log loss {pp(D_LL, 1).replace(" pp", "%")}, AUC parada.</> },
 ];
 /** Teto do eixo: 50% ou o próximo múltiplo de 25% acima do maior valor desenhado. */
 const teto = (v: number) => Math.min(1, Math.max(0.5, Math.ceil(v / 0.25 - 1e-9) * 0.25));
@@ -90,7 +90,7 @@ export function S26LaboratorioCalibracao({ pagina }: { pagina?: Pagina }) {
           <Kpi rotulo="Log loss" valor={num(ll, 4)} detalhe={ll > LL0 + 1e-12 ? `▲ pior: era ${num(LL0, 4)}` : ll < LL0 - 1e-12 ? `▼ melhor: era ${num(LL0, 4)}` : `original ${num(LL0, 4)}`} tam="mini" tom={ll < LL0 - 1e-12 ? "val" : undefined} />
         </div>
         <Previsao pergunta={`Com b = ${num(EXCESSO.b, 1)} e a mesma PD média, o que acontece?`} opcoes={OPS} escolha={esc} onEscolha={(i) => { setEsc(i); if (i !== null && OPS[i].certa) { setA(EXCESSO.a); setB(EXCESSO.b); } }} recolher />
-        <div className="q7-g2-grade2 q7-g2-atalhos" role="group" aria-label="Exemplos prontos">{PRESETS.map((pr) => <Botao key={pr.r} desab={!revelado} onClick={() => { setA(pr.a); setB(pr.b); }}>{pr.r}</Botao>)}</div>
+        {revelado && <div className="q7-g2-grade2 q7-g2-atalhos" role="group" aria-label="Exemplos prontos">{PRESETS.map((pr) => <Botao key={pr.r} onClick={() => { setA(pr.a); setB(pr.b); }}>{pr.r}</Botao>)}</div>}
       </Painel>
     </Quadro>
   );
