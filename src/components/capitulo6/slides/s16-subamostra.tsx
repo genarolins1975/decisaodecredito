@@ -1,119 +1,169 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Botao, caminho, Eixos, escala, Grafico, LinkSlide, Painel, Previsao, Quadro, Seg, margens, type Pagina } from "@/components/capitulo7/base";
+import { Botao, escala, Grafico, LinkSlide, Painel, Previsao, Quadro, Seg, type Dim, type Pagina } from "@/components/capitulo7/base";
 import { CFG_CARTEIRA, NA, NV, XV, YV, modelo } from "@/lib/capitulo6/dados";
-import { estagios, perdaLog } from "@/lib/capitulo6/gbm";
-import { int, num, pct } from "@/lib/capitulo7/formato";
+import { diferencaPerdaPareada, estagios, perdaLog } from "@/lib/capitulo6/gbm";
+import { Z95 } from "@/lib/capitulo7/metricas";
+import { int, num, pct, sinal } from "@/lib/capitulo7/formato";
 
 /**
  * 16 · c6p16 · Subamostra (boosting estocástico de Friedman, 2002): cada árvore é ajustada numa fração das 1.472
- * propostas, sorteada sem reposição com semente (opções subamostra e semente de gbm.ts). Perda de validação por árvore
- * para a carteira inteira (sem sorteio) e para dez sementes de cada fração, com a média. Até 200 árvores, o bastante
- * para ver o mínimo e a subida. As curvas das sementes são calculadas uma por vez, depois da pintura, para não travar o
- * quadro; ficam memorizadas. A pergunta é feita no ponto de parada (o mínimo de cada curva, marcado na figura), onde o
- * modelo seria usado: ali a diferença média entre sementes e a curva sem sorteio é comparada com a faixa entre
- * sementes, e o sinal (melhora ou piora) é dito. Com 200 árvores, longe da parada, o sorteio achata a subida. Toda
- * frase comparativa é calculada aqui. A previsão esconde as sementes até a resposta certa.
+ * propostas, sorteada sem reposição com semente (opções subamostra e semente de gbm.ts), dez sementes por fração.
+ * A peça principal é um gráfico de pontos do ganho de log loss de cada semente sobre o modelo sem sorteio, em dois
+ * pontos: na parada do modelo sem sorteio (o mínimo da curva do slide 15, um ponto fixo para todas as sementes) e com
+ * 200 árvores, longe dela. Duas réguas para o mesmo ganho:
+ *   entre sementes   média das dez com ±1,96 erro padrão da média (desvio padrão ÷ √10): o sorteio ajuda de forma
+ *                    consistente? (variação do ajuste);
+ *   da validação     faixa de ±1,96 erro padrão da diferença pareada de log loss, proposta a proposta, entre uma
+ *                    semente e o modelo sem sorteio (diferencaPerdaPareada de gbm.ts; mediana das dez sementes): o que
+ *                    631 propostas conseguem distinguir (variação da amostra).
+ * Depois da previsão, um seletor troca a parada fixa pelo mínimo de cada semente, escolhido na mesma validação, para
+ * mostrar o viés de seleção (o ganho cresce). A parada fixa também foi escolhida nesta validação, pelo modelo sem
+ * sorteio: favorece o sem sorteio. As sementes são calculadas uma por vez, depois da pintura, para não travar o
+ * quadro, e ficam memorizadas. Toda frase comparativa e a alternativa certa são calculadas aqui.
  */
 const T = 200, SEMENTES = Array.from({ length: 10 }, (_, k) => k + 1);
 const FRACS = [0.8, 0.5, 0.3];
 const DV = YV.reduce((s, v) => s + v, 0);
-let CHEIA: number[] | null = null;
-const cheia = () => (CHEIA ??= estagios(modelo(CFG_CARTEIRA), XV).slice(0, T + 1).map((F) => perdaLog(F, YV)));
-const CACHE = new Map<number, number[][]>();
-const curvaSemente = (f: number, s: number) => estagios(modelo({ ...CFG_CARTEIRA, arvores: T, subamostra: f, semente: s }), XV).map((F) => perdaLog(F, YV));
 const media = (v: number[]) => v.reduce((a, b) => a + b, 0) / v.length;
+const dp = (v: number[]) => { const m = media(v); return Math.sqrt(v.reduce((a, b) => a + (b - m) ** 2, 0) / (v.length - 1)); };
+const mediana = (v: number[]) => { const o = [...v].sort((a, b) => a - b), h = o.length / 2; return o.length % 2 ? o[Math.floor(h)] : (o[h - 1] + o[h]) / 2; };
 
-function Curvas({ c0, cs, revelado, f, ate }: { c0: number[]; cs: number[][]; revelado: boolean; f: number; ate: number }) {
-  const med = cs.length ? c0.map((_, k) => media(cs.map((c) => c[k]))) : null;
+type Sem = { Fk: number[]; FT: number[]; Fmin: number[]; Lk: number; LT: number; Lmin: number; kmin: number };
+let CHEIA: { E: number[][]; L: number[]; k0: number } | null = null;
+const cheia = () => {
+  if (CHEIA) return CHEIA;
+  const E = estagios(modelo(CFG_CARTEIRA), XV).slice(0, T + 1); const L = E.map((F) => perdaLog(F, YV));
+  const k0 = L.reduce((k, x, i) => (i >= 1 && x < L[k] ? i : k), 1);
+  return (CHEIA = { E, L, k0 });
+};
+const CACHE = new Map<number, Sem[]>();
+function semente(f: number, s: number): Sem {
+  const { k0 } = cheia();
+  const E = estagios(modelo({ ...CFG_CARTEIRA, arvores: T, subamostra: f, semente: s }), XV); const L = E.map((F) => perdaLog(F, YV));
+  const kmin = L.reduce((k, x, i) => (i >= 1 && x < L[k] ? i : k), 1);
+  return { Fk: E[k0], FT: E[T], Fmin: E[kmin], Lk: L[k0], LT: L[T], Lmin: L[kmin], kmin };
+}
+
+/** Uma fila do gráfico: ganho de cada semente, média com a régua entre sementes e a régua da validação. */
+type Fila = { tit: string; g: number[]; m: number; se: number; ev: number; abaixo: number };
+function fila(tit: string, ref: number, Fref: number[], ss: Sem[], L: (s: Sem) => number, F: (s: Sem) => number[]): Fila {
+  const g = ss.map((s) => ref - L(s));
+  return { tit, g, m: media(g), se: dp(g) / Math.sqrt(g.length), ev: mediana(ss.map((s) => diferencaPerdaPareada(Fref, F(s), YV).ep)), abaixo: g.filter((v) => v > 0).length };
+}
+
+function Pontos({ d, filas, revelado }: { d: Dim; filas: Fila[]; revelado: boolean }) {
+  const fs = d.fs, m = { l: fs * 0.6, r: fs * 0.8, t: fs * 0.2, b: fs * 3.1 };
+  const vals = filas.flatMap((f, i) => [Z95 * f.ev, -Z95 * f.ev, ...(revelado || i > 0 ? [...f.g, f.m + Z95 * f.se, f.m - Z95 * f.se] : [])]);
+  const lo0 = Math.min(...vals), hi0 = Math.max(...vals), pad = (hi0 - lo0) * 0.05;
+  const passo = hi0 - lo0 > 0.03 ? 0.01 : 0.005;
+  const x = escala([lo0 - pad, hi0 + pad], [m.l, d.w - m.r]);
+  const xt: number[] = []; for (let t = Math.ceil((lo0 - pad) / passo) * passo; t <= hi0 + pad + 1e-12; t += passo) xt.push(Math.round(t * 1000) / 1000);
+  const alt = (d.h - m.t - m.b) / filas.length, r = fs * 0.34, larg = (t: string, k = 1) => t.length * fs * 0.53 * k;
   return (
-    <Grafico titulo="Perda de validação" sub={revelado ? "cinza: sem sorteio · verde: sementes e média · ▼ ● mínimos" : "cinza: sem sorteio · ▼ mínimo"} rotulo={`Perda de validação sem sorteio${revelado ? ` e com subamostra de ${pct(f, 0)} em ${cs.length} sementes, com o mínimo de cada curva marcado` : ""}, até ${ate} árvores`} arCelular="4 / 3">
-      {(d) => {
-        const g = margens(d.fs, { l: 3.6, r: 7.4, t: 0.8, b: 2.7 });
-        const vis = (c: number[]) => c.slice(0, ate + 1);
-        const todos = [...vis(c0), ...(revelado ? cs.flatMap(vis) : [])];
-        const lo = Math.floor((Math.min(...todos) - 0.0015) * 200) / 200, hi = Math.ceil(Math.max(...todos) * 200) / 200;
-        const passo = hi - lo > 0.03 ? 0.01 : 0.005;
-        const yt: number[] = []; for (let v = Math.ceil(lo / passo - 1e-9) * passo; v <= hi + 1e-9; v += passo) yt.push(Math.round(v * 1000) / 1000);
-        const x = escala([0, ate], [g.l, d.w - g.r]), y = escala([lo, hi], [d.h - g.b, g.t]);
-        const pts = (c: number[]) => vis(c).map((v, k) => ({ x: x(k), y: y(v) }));
-        let y0 = y(c0[ate]), y1 = med ? y(med[ate]) : 0; if (revelado && med && Math.abs(y0 - y1) < d.fs * 2.3) { const s = y0 < y1 ? -1 : 1, mid = (y0 + y1) / 2; y0 = mid + s * d.fs * 1.15; y1 = mid - s * d.fs * 1.15; }
+    <g>
+      {xt.map((t) => <g key={t}><line className="q7-grade" x1={x(t)} x2={x(t)} y1={m.t} y2={d.h - m.b} /><text className="q7-tick" x={x(t)} y={d.h - m.b} dy="1.25em" textAnchor="middle" style={t === 0 ? { fontWeight: 700, fill: "#5B6475" } : undefined}>{t === 0 ? "0: sem sorteio" : sinal(t, 3)}</text></g>)}
+      <text className="q7-eixo-t" x={(m.l + d.w - m.r) / 2} y={d.h - m.b} dy="2.55em" textAnchor="middle">Ganho de log loss sobre o modelo sem sorteio (à direita, o sorteio ajuda)</text>
+      {filas.map((f, i) => {
+        const y0 = m.t + alt * i, ver = revelado || i > 0;
+        const topo = y0 + fs * 1.75, base = y0 + alt - fs * 0.4, cyM = base - fs * 0.85, cyD = (topo + cyM - fs * 0.8) / 2;
+        // pontos sem sobreposição: cada semente vai ao nível vertical mais próximo do centro em que não toca as vizinhas,
+        // dentro da faixa entre o título da fila e a barra da média; sem nível livre, fica no centro (a transparência mostra)
+        const nmax = Math.max(0, Math.floor((cyD - topo - r) / (r * 2.15)));
+        const ord = f.g.map((v, k) => ({ v, k })).sort((a, b) => a.v - b.v); const pos: { x: number; y: number }[] = [];
+        for (const o of ord) { const px = x(o.v); let py = cyD; for (let n = 0; n <= 2 * nmax; n++) { const nv = n === 0 ? 0 : (n % 2 ? -1 : 1) * Math.ceil(n / 2); const qy = cyD + nv * r * 2.15; if (pos.every((p) => Math.hypot(p.x - px, p.y - qy) > r * 2.1)) { py = qy; break; } } pos.push({ x: px, y: py }); }
+        const bx0 = x(-Z95 * f.ev), bx1 = x(Z95 * f.ev), xm = x(f.m), ws = Math.max(1.5, x(f.m + Z95 * f.se) - xm);
+        const rot = `média ${sinal(f.m, 4)}`, cabeDir = xm + ws + fs * 0.6 + larg(rot) < d.w - m.r;
         return (
-          <g>
-            <Eixos x={x} y={y} xt={ate < T ? [0, 10, 20, 30, 40, 50] : [0, 50, 100, 150, 200]} yt={yt} fx={(v) => int(v)} fy={(v) => num(v, passo < 0.01 ? 3 : 2)} xTit="número de árvores somadas" />
-            {revelado && cs.map((c, k) => <path key={k} className="q7-linha q7-linha--val" strokeWidth={1.6} strokeOpacity={0.4} d={caminho(pts(c))} />)}
-            <path className="q7-linha q7-linha--mudo" strokeDasharray="10 6" d={caminho(pts(c0))} />
-            {revelado && med && <path className="q7-linha q7-linha--val" strokeWidth={4.5} d={caminho(pts(med))} />}
-            {revelado && cs.map((c, k) => { const v = Math.min(...c), i = c.indexOf(v); return <circle key={k} cx={x(i)} cy={y(v)} r={d.fs * 0.28} fill="#2E6B4F" stroke="#fff" strokeWidth={1.5} />; })}
-            {(() => { const v = Math.min(...c0), i = c0.indexOf(v), r = d.fs * 0.42; return <path d={`M${x(i)} ${y(v) + r * 0.4}L${x(i) + r * 0.95} ${y(v) - r * 1.3}L${x(i) - r * 0.95} ${y(v) - r * 1.3}Z`} fill="#5B6475" stroke="#fff" strokeWidth={1.5} />; })()}
-            <text className="q7-rot--peq" x={d.w - g.r + d.fs * 0.4} y={y0 - d.fs * 0.15} style={{ fill: "#5B6475", fontWeight: 700 }}><tspan x={d.w - g.r + d.fs * 0.4}>sem sorteio</tspan><tspan x={d.w - g.r + d.fs * 0.4} dy="1.1em">{num(c0[ate], 4)}</tspan></text>
-            {revelado && med && <text className="q7-rot--peq" x={d.w - g.r + d.fs * 0.4} y={y1 - d.fs * 0.15} style={{ fill: "#2E6B4F", fontWeight: 700 }}><tspan x={d.w - g.r + d.fs * 0.4}>{`média, ${pct(f, 0)}`}</tspan><tspan x={d.w - g.r + d.fs * 0.4} dy="1.1em">{num(med[ate], 4)}</tspan></text>}
+          <g key={f.tit}>
+            {i > 0 && <line className="q7-eixo" x1={m.l} x2={d.w - m.r} y1={y0} y2={y0} />}
+            <rect x={bx0} y={topo} width={bx1 - bx0} height={base - topo} rx={fs * 0.3} fill="#9AA1AD" fillOpacity={0.2} />
+            <line x1={x(0)} x2={x(0)} y1={topo} y2={base} stroke="#5B6475" strokeWidth={2} strokeDasharray="6 4" />
+            <text className="q7-rot" x={m.l} y={y0} dy="1.2em" style={{ fill: "#00205B", fontWeight: 700 }}>{f.tit}<tspan style={{ fill: "#5B6475", fontWeight: 500 }}>{` · erro da validação ±${num(Z95 * f.ev, 4)}`}</tspan></text>
+            {!ver && <text className="q7-rot" x={x(0)} y={(topo + base) / 2} dy=".35em" textAnchor="middle" style={{ fill: "#2E6B4F", fontWeight: 700, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.35em", strokeLinejoin: "round" }}>sementes: abrem depois da previsão</text>}
+            {ver && <>
+              {pos.map((p, k) => <circle key={k} cx={p.x} cy={p.y} r={r} fill="#2E6B4F" fillOpacity={0.6} stroke="#fff" strokeWidth={1.2} />)}
+              <line x1={xm - ws} x2={xm + ws} y1={cyM} y2={cyM} stroke="#1F5A40" strokeWidth={Math.max(3, fs * 0.16)} />
+              {[xm - ws, xm + ws].map((xx, k) => <line key={k} x1={xx} x2={xx} y1={cyM - fs * 0.4} y2={cyM + fs * 0.4} stroke="#1F5A40" strokeWidth={2.5} />)}
+              <path d={`M${xm} ${cyM - fs * 0.6}l${fs * 0.5} ${fs * 0.6}l${-fs * 0.5} ${fs * 0.6}l${-fs * 0.5} ${-fs * 0.6}Z`} fill="#1F5A40" stroke="#fff" strokeWidth={1.5} />
+              <text className="q7-rot" x={cabeDir ? xm + ws + fs * 0.6 : xm - ws - fs * 0.6} y={cyM} dy=".35em" textAnchor={cabeDir ? "start" : "end"} style={{ fill: "#1F5A40", fontWeight: 700, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em", strokeLinejoin: "round" }}>{rot}</text>
+            </>}
           </g>
         );
-      }}
-    </Grafico>
+      })}
+    </g>
   );
 }
 
+type Modo = "fixa" | "minimo";
 export function S16Subamostra({ pagina }: { pagina?: Pagina }) {
   const [c0] = useState(cheia);
   const [f, setF] = useState(0.5);
-  const [ate, setAte] = useState(T);
+  const [modo, setModo] = useState<Modo>("fixa");
   const [esc, setEsc] = useState<number | null>(null);
   const [, setVersao] = useState(0);
-  const cs = CACHE.get(f) ?? [];
-  const pronto = cs.length === SEMENTES.length;
-  // uma semente por vez, depois da pintura: o quadro responde enquanto as curvas chegam
+  const ss = CACHE.get(f) ?? [];
+  const pronto = ss.length === SEMENTES.length;
+  // uma semente por vez, depois da pintura: o quadro responde enquanto as sementes chegam
   useEffect(() => {
     if (pronto) return;
-    const id = window.setTimeout(() => { const lista = CACHE.get(f) ?? []; if (lista.length < SEMENTES.length) { lista.push(curvaSemente(f, SEMENTES[lista.length])); CACHE.set(f, lista); } setVersao((v) => v + 1); }, 30);
+    const id = window.setTimeout(() => { const lista = CACHE.get(f) ?? []; if (lista.length < SEMENTES.length) { lista.push(semente(f, SEMENTES[lista.length])); CACHE.set(f, lista); } setVersao((v) => v + 1); }, 30);
     return () => window.clearTimeout(id);
-  }, [f, pronto, cs.length]);
-  const fim = cs.map((c) => c[T]), mins = cs.map((c) => Math.min(...c));
-  const min0 = Math.min(...c0), k0 = c0.indexOf(min0);
-  const todasAbaixo = pronto && fim.every((v) => v < c0[T]);
-  const mMin = pronto ? media(mins) : min0, ganhoMin = min0 - mMin;
-  const faixaMin = pronto ? Math.max(...mins) - Math.min(...mins) : 0;
-  const noRuido = pronto && Math.abs(ganhoMin) < faixaMin;
-  // a previsão é sempre sobre 50%; com f trocado depois, os números da previsão continuam os de 50%
-  const c50 = CACHE.get(0.5) ?? [], p50 = c50.length === SEMENTES.length;
-  const m50 = p50 ? media(c50.map((c) => Math.min(...c))) : null, f50 = p50 ? media(c50.map((c) => c[T])) : null;
-  const r50 = p50 ? Math.max(...c50.map((c) => Math.min(...c))) - Math.min(...c50.map((c) => Math.min(...c))) : null;
+  }, [f, pronto, ss.length]);
+  const { E, L, k0 } = c0;
+  const filasDe = (lista: Sem[], md: Modo): Fila[] => [
+    md === "fixa" ? fila(`Parado em ${k0} árvores, a parada sem sorteio`, L[k0], E[k0], lista, (s) => s.Lk, (s) => s.Fk)
+      : fila("No mínimo de cada semente", L[k0], E[k0], lista, (s) => s.Lmin, (s) => s.Fmin),
+    fila(`Com ${T} árvores, longe da parada`, L[T], E[T], lista, (s) => s.LT, (s) => s.FT),
+  ];
+  const filas = pronto ? filasDe(ss, modo) : null;
+  const fx = pronto && modo === "minimo" ? filasDe(ss, "fixa")[0] : null;
+  // a previsão é sempre sobre 50% na parada fixa; trocar a fração ou o modo depois não muda a alternativa certa
+  const s50 = CACHE.get(0.5) ?? [], p50 = s50.length === SEMENTES.length;
+  const F50 = p50 ? filasDe(s50, "fixa")[0] : null;
+  const folga = F50 ? F50.m > Z95 * F50.ev : false, consistente = F50 ? F50.m > Z95 * F50.se : true;
   const ops = [
-    { texto: "Melhora com folga: o sorteio regulariza", certa: false, retorno: <>Confunde longe da parada com a parada: com {T} árvores a média cai de {num(c0[T], 4)} para {f50 !== null ? num(f50, 4) : "…"}, mas no mínimo só de {num(min0, 4)} para {m50 !== null ? num(m50, 4) : "…"}.</> },
-    { texto: "Quase nada: a diferença cabe na variação entre sementes", certa: m50 === null || r50 === null || Math.abs(min0 - m50) < r50, retorno: <>Isso: no mínimo, {m50 !== null ? num(m50, 4) : "…"} contra {num(min0, 4)}.</> },
-    { texto: "Piora: cada árvore vê menos propostas", certa: false, retorno: <>Com {pct(0.5, 0)}, a média dos mínimos fica {m50 !== null ? num(m50, 4) : "…"}, abaixo de {num(min0, 4)}: são {T} árvores com sorteios diferentes. O sinal muda com a fração: depois, teste {pct(0.3, 0)}.</> },
+    { texto: "Melhora com folga: o sorteio regulariza", certa: folga, retorno: folga ? <>Isso: o ganho passa do que a validação distingue.</> : <>Confunde o que acontece longe da parada com a parada: com muitas árvores, o sorteio freia a decoreba (fila de baixo); na parada, o modelo ainda não decorou e sobra pouco para frear.</> },
+    { texto: "Melhora pouco: em quase toda semente, mas menos que o erro da validação", certa: !folga && consistente, retorno: !folga && consistente ? <>Isso: as sementes concordam no sinal, então o efeito médio existe; mas ele é menor que o erro amostral de uma validação deste tamanho, e outras propostas poderiam inverter a comparação.</> : <>Os números não sustentam as duas metades da frase ao mesmo tempo.</> },
+    { texto: "Nada: as sementes caem para os dois lados", certa: !folga && !consistente, retorno: !folga && !consistente ? <>Isso: a média das sementes não se afasta do zero mais que a variação entre elas.</> : <>Confunde a dispersão de cada semente com a incerteza do efeito médio: uma semente oscila, mas a média de dez tem erro bem menor e fica do lado do ganho.</> },
   ];
   const revelado = esc !== null && ops[esc].certa;
+  const a = filas?.[0], b = filas?.[1];
+  const consist = (q: Fila) => (q.m > Z95 * q.se ? "consistente" : q.m < -Z95 * q.se ? "piora consistente" : "sem sinal consistente");
+  const restaurar = () => { setF(0.5); setModo("fixa"); setEsc(null); };
   return (
     <Quadro slug="c6p16" pagina={pagina} layout="gl"
-      titulo={revelado ? undefined : "Cada árvore vê metade das propostas: parando no mínimo, a validação melhora?"}
-      sub={revelado ? undefined : `Cada árvore ajusta ${pct(0.5, 0)} das ${int(NA)} propostas, sorteadas. Preveja no ponto de parada.`}
+      titulo={revelado ? undefined : `Cada árvore vê metade das propostas: na parada, a validação melhora?`}
+      sub={revelado ? undefined : `Cada árvore ajusta ${pct(0.5, 0)} das ${int(NA)} propostas, sorteadas; dez sementes. Preveja na parada.`}
       conclusao={!revelado
-        ? <>Sem sorteio, a perda de validação desce até {num(min0, 4)} em {k0} árvores e sobe a {num(c0[T], 4)} com {T}, a curva do <LinkSlide slug="c6p15">slide 15</LinkSlide>. Sorteando {pct(0.5, 0)}, o que muda no mínimo?</>
-        : !pronto ? <>Sorteando: {cs.length} de {SEMENTES.length} sementes calculadas para a subamostra de {pct(f, 0)}.</>
-        : <>Subamostra de {pct(f, 0)}, no mínimo: {num(mMin, 4)} na média das sementes contra {num(min0, 4)}, <b>{ganhoMin >= 0 ? "melhora" : "piora"} de {num(Math.abs(ganhoMin), 4)}</b>, {noRuido ? "menor" : "maior"} que a faixa entre sementes ({num(Math.min(...mins), 4)} a {num(Math.max(...mins), 4)}). Com {T} árvores, {todasAbaixo ? <>todas abaixo de {num(c0[T], 4)}: o sorteio achata a subida depois da parada</> : <>a média fica em {num(media(fim), 4)} contra {num(c0[T], 4)}</>}. O <LinkSlide slug="c6p17">slide 17</LinkSlide> compara com a logística.</>}
-      fonte={`Validação sorteada: ${int(NV)} propostas, ${DV} defaults. η ${num(CFG_CARTEIRA.eta, 1)}, profundidade ${CFG_CARTEIRA.profundidade}, mínimo ${CFG_CARTEIRA.minFolha}; subamostra sem reposição por árvore, sementes 1 a ${SEMENTES.length} (gbm.ts). Mínimos escolhidos na mesma validação. Friedman (2002).`}>
+        ? <>Sem sorteio, a perda de validação desce até {num(L[k0], 4)} em {k0} árvores e sobe a {num(L[T], 4)} com {T} (<LinkSlide slug="c6p15">slide 15</LinkSlide>). Com {T} árvores, sortear {pct(0.5, 0)} baixa a perda {b && b.abaixo === SEMENTES.length ? "em todas as sementes" : b ? `em ${b.abaixo} de ${SEMENTES.length} sementes` : "nas sementes"}. E na parada?</>
+        : !a || !b ? <>Sorteando: {ss.length} de {SEMENTES.length} sementes calculadas para a subamostra de {pct(f, 0)}.</>
+        : <>Subamostra de {pct(f, 0)}, {modo === "fixa" ? `parada em ${k0}` : "mínimo de cada semente"}: ganho médio de <b>{sinal(a.m, 4)}</b>, {consist(a)} entre sementes ({a.abaixo} de {SEMENTES.length}), {Math.abs(a.m) > Z95 * a.ev ? "maior que" : "dentro do"} erro da validação. Com {T} árvores, {sinal(b.m, 4)}, {num(b.m / b.ev, 1)} {b.m / b.ev >= 2 ? "erros" : "erro"} da validação. {modo === "minimo" && fx ? <>Na parada fixa, {sinal(fx.m, 4)}: escolher o ponto na mesma validação {a.m > fx.m ? "infla" : "não infla"} o ganho. </> : ""}O <LinkSlide slug="c6p17">slide 17</LinkSlide> compara com a logística.</>}
+      fonte={`Validação sorteada: ${int(NV)} propostas, ${DV} defaults. η ${num(CFG_CARTEIRA.eta, 1)}, profundidade ${CFG_CARTEIRA.profundidade}, mínimo ${CFG_CARTEIRA.minFolha}; subamostra sem reposição por árvore, sementes 1 a ${SEMENTES.length}. Barra: ±1,96 erro padrão da média das sementes; faixa: ±1,96 erro padrão da diferença pareada por proposta (mediana das sementes). A parada em ${k0} foi escolhida nesta validação pelo modelo sem sorteio. Friedman (2002).`}>
       <Painel>
-        <Curvas c0={c0} cs={cs} revelado={revelado} f={f} ate={ate} />
+        {filas
+          ? <Grafico titulo={`Subamostra de ${pct(f, 0)}`} sub="● semente · ◆ média ± 1,96 erro entre sementes · cinza: ± 1,96 erro da validação" rotulo={`Ganho de log loss de dez sementes com subamostra de ${pct(f, 0)} sobre o modelo sem sorteio. ${filas.map((q, i) => `${q.tit}: ${revelado || i > 0 ? `média ${sinal(q.m, 4)}, erro entre sementes ${num(q.se, 4)}, ${q.abaixo} de ${SEMENTES.length} com ganho` : "oculto até a previsão"}; erro da validação ${num(q.ev, 4)}`).join(". ")}`} arCelular="4 / 3">
+            {(d) => <Pontos d={d} filas={filas} revelado={revelado} />}
+          </Grafico>
+          : <p className="q7-nota">Sorteando: {ss.length} de {SEMENTES.length} sementes calculadas.</p>}
         <div className="q6-s16-ctl">
           <div><p className="q7-k">Fração por árvore{revelado ? "" : ": depois da previsão"}</p><Seg rotulo="Fração sorteada por árvore" opcoes={FRACS.map((v) => ({ v, r: pct(v, 0) }))} valor={f} onChange={setF} cor desab={!revelado} /></div>
-          <div><p className="q7-k">Eixo das árvores</p><Seg rotulo="Eixo das árvores" opcoes={[{ v: 50, r: "0 a 50" }, { v: T, r: `0 a ${T}` }]} valor={ate} onChange={setAte} cor /></div>
-          <Botao sec onClick={() => { setF(0.5); setAte(T); setEsc(null); }}>Restaurar</Botao>
+          {revelado && <div><p className="q7-k">Ponto de comparação</p><Seg rotulo="Ponto de comparação" opcoes={[{ v: "fixa" as Modo, r: `parada em ${k0}` }, { v: "minimo" as Modo, r: "mínimo de cada semente" }]} valor={modo} onChange={setModo} cor /></div>}
+          <Botao sec onClick={restaurar}>Restaurar</Botao>
         </div>
       </Painel>
       <Painel>
-        <Previsao pergunta={`Parando no mínimo de cada curva, a subamostra de ${pct(0.5, 0)}...`} opcoes={ops} escolha={esc} onEscolha={(i) => { setEsc(i); if (i !== null && ops[i].certa) setAte(50); }} recolher />
-        {revelado && (
-          <table className="q7-tab">
-            <thead><tr><th className="q7-t-l">Perda de validação</th><th>No mínimo</th><th>Com {T} árvores</th></tr></thead>
+        <Previsao pergunta={`Parando na árvore ${k0}, a parada sem sorteio, a subamostra de ${pct(0.5, 0)}...`} opcoes={ops} escolha={esc} onEscolha={setEsc} recolher />
+        {revelado && a && <>
+          <p className="q7-k">Duas réguas para o ganho de {sinal(a.m, 4)}</p>
+          <table className="q7-tab q6-s16-tab">
+            <thead><tr><th className="q7-t-l">Erro padrão</th><th>Valor</th><th>O ganho</th></tr></thead>
             <tbody>
-              <tr><th>Sem sorteio</th><td>{num(min0, 4)}</td><td>{num(c0[T], 4)}</td></tr>
-              <tr data-on="1"><th>Média, {pct(f, 0)}</th><td>{pronto ? num(mMin, 4) : "·"}</td><td>{pronto ? num(media(fim), 4) : "·"}</td></tr>
-              <tr><th>Faixa das sementes</th><td>{pronto ? `${num(Math.min(...mins), 4)} a ${num(Math.max(...mins), 4)}` : "·"}</td><td>{pronto ? `${num(Math.min(...fim), 4)} a ${num(Math.max(...fim), 4)}` : "·"}</td></tr>
+              <tr><th>Entre sementes</th><td>{num(a.se, 4)}</td><td>{Math.abs(a.m) > Z95 * a.se ? "passa" : "cabe"}</td></tr>
+              <tr data-on="1"><th>Da validação ({int(NV)})</th><td>{num(a.ev, 4)}</td><td>{Math.abs(a.m) > Z95 * a.ev ? "passa" : "cabe"}</td></tr>
             </tbody>
           </table>
-        )}
+        </>}
       </Painel>
     </Quadro>
   );

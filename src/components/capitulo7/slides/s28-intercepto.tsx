@@ -14,6 +14,8 @@ import { int, num, pct } from "@/lib/capitulo7/formato";
  * A PD média antes já cabia no intervalo da janela (Jeffreys); a correção vem da amostra de calibração de 3.000 casos e
  * a evidência de que ela melhora vem da perda esperada em janelas novas (calibradores de janelas.ts), não da janela de
  * 81 defaults. A régua de baixo marca a PD média antes e depois e, revelada a previsão, a taxa observada com Wilson.
+ * Rodada 4: os marcadores de média dizem que são da janela (737), não das 20 propostas desenhadas; a leitura revelada
+ * justifica a previsão com o Brier da tabela; "janelas novas" viram réplicas sintéticas da janela.
  */
 type Mod = "logistica" | "boosting";
 const ALVO = CAL.y.reduce((s, v) => s + v, 0);
@@ -31,6 +33,8 @@ const NOME: Record<Mod, string> = { logistica: "logística", boosting: "boosting
 const DA: Record<Mod, string> = { logistica: "da", boosting: "do" };
 const OBS = wilson(D, N)!;
 const CERTA = 1;
+/** a variação do Brier é menor que 1% do valor: "quase não muda", a alternativa certa da previsão */
+const bsQuase = (r: { bs0: number; bs1: number }) => Math.abs(r.bs1 - r.bs0) < 0.01 * r.bs0;
 
 export function S28Intercepto({ pagina }: { pagina?: Pagina }) {
   const [prev, setPrev] = useState<number | null>(null);
@@ -40,7 +44,7 @@ export function S28Intercepto({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c7p12" pagina={pagina} layout="gl"
       conclusao={!aberto ? <>Na amostra de calibração ({int(CAL.n)} casos, {ALVO} defaults), Newton chega a <b>a = {num(r.A, 4)}</b> para a {NOME[mod]}. A diferença de logits das médias daria {num(r.ingenuo, 4)}, que não fecha a conta: esperaria {num(r.somaIngenuo, 1)} defaults, não {ALVO}. Agora a previsão.</>
-        : <>Na janela, a PD média {DA[mod]} {NOME[mod]} vai de {pct(r.pm0, 2)} para <b>{pct(r.pm1, 2)}</b>; observado {pct(OBS.p, 2)}. Os {pct(r.pm0, 2)} {r.pm0 >= OBS.lo && r.pm0 <= OBS.hi ? "cabem no IC de Wilson" : "ficam fora do IC de Wilson"} e o teste de Jeffreys {r.j0 >= 0.05 ? "não rejeita" : "rejeita"} (p = {num(r.j0, 2)}): a correção vem dos {int(CAL.n)} casos da calibração, não da janela, e em janelas novas a log loss esperada cai de {num(r.e0, 4)} para <b>{num(r.e1, 4)}</b>. {mod === "logistica" ? <>É a correção que o comitê pede no <LinkSlide slug="c7p38">slide 36</LinkSlide>.</> : <>A AUC fica em {num(r.auc1, 4)}: o intercepto não toca na ordem.</>} E se a inclinação também errar? <LinkSlide slug="c7p13">Slide 29</LinkSlide>.</>}
+        : <>{bsQuase(r) ? "Isso: o" : "O"} Brier na janela vai de {num(r.bs0, 5)} para <b>{num(r.bs1, 5)}</b>: o intercepto move só o nível, e a ordem fica (AUC {num(r.auc1, 4)}). A PD média {DA[mod]} {NOME[mod]} vai de {pct(r.pm0, 2)} para <b>{pct(r.pm1, 2)}</b>, observado {pct(OBS.p, 2)}; os {pct(r.pm0, 2)} {r.pm0 >= OBS.lo && r.pm0 <= OBS.hi ? "já cabiam no IC de Wilson" : "ficavam fora do IC de Wilson"} (Jeffreys p = {num(r.j0, 2)}): a correção vem dos {int(CAL.n)} casos da calibração, e nas réplicas a log loss esperada cai de {num(r.e0, 4)} para <b>{num(r.e1, 4)}</b>. E se a inclinação também errar? <LinkSlide slug="c7p13">Slide 29</LinkSlide>.</>}
       fonte={`Calibração sintética: ${int(CAL.n)} sorteios dos proponentes da janela, desfecho novo da PD verdadeira (semente ${CAL.semente}). Janela fora do tempo: ${N} propostas, ${D} defaults; IC de Wilson de 95%; Jeffreys unilateral para PD baixa. Esperada: média exata pela PD verdadeira.`}>
       <Painel titulo="Antes e depois, na mesma escala: 20 propostas da mini-base">
         <Grafico rotulo={`PD da ${NOME[mod]} antes e depois do ajuste de intercepto ${num(r.A, 3)} para 20 propostas; nenhuma linha se cruza; PD média da janela ${pct(r.pm0, 2)} antes e ${pct(r.pm1, 2)} depois${aberto ? `; observado ${pct(OBS.p, 1)}` : ""}`} arCelular="4 / 3">
@@ -49,8 +53,8 @@ export function S28Intercepto({ pagina }: { pagina?: Pagina }) {
             const antes = MINI.map((m) => r.antes[m.id]), dep = MINI.map((m) => r.depois[m.id]);
             return (
               <g>
-                <text className="q7-eixo-t" x={x(0)} y={yA - d.fs * 1.75}>PD antes<tspan dx="0.8em" style={{ fill: "#176C73" }}>▲ média {pct(r.pm0, 2)}</tspan></text>
-                <text className="q7-eixo-t" x={x(0)} y={yB + d.fs * 3.3}>PD depois do ajuste<tspan dx="0.8em" style={{ fill: "#176C73" }}>▲ média {pct(r.pm1, 2)}</tspan></text>
+                <text className="q7-eixo-t" x={x(0)} y={yA - d.fs * 1.75}>PD antes<tspan dx="0.8em" style={{ fill: "#176C73" }}>▲ média da janela (737): {pct(r.pm0, 2)}</tspan></text>
+                <text className="q7-eixo-t" x={x(0)} y={yB + d.fs * 3.3}>PD depois do ajuste<tspan dx="0.8em" style={{ fill: "#176C73" }}>▲ média da janela (737): {pct(r.pm1, 2)}</tspan></text>
                 {[yA, yB].map((yy, k) => <g key={k}><line className="q7-eixo" x1={x(0)} x2={x(0.4)} y1={yy} y2={yy} />{[0, 0.1, 0.2, 0.3, 0.4].map((t) => <text key={t} className="q7-tick" x={x(t)} y={yy} dy={k ? "1.2em" : "-.5em"} textAnchor="middle">{pct(t, 0)}</text>)}</g>)}
                 {MINI.map((m, i) => <line key={m.id} x1={x(antes[i])} y1={yA} x2={x(dep[i])} y2={yB} stroke={m.y ? "#8C2332" : "#9AA1AD"} strokeWidth={m.y ? 2.6 : 1.6} />)}
                 {MINI.map((m, i) => <g key={`c${m.id}`}><circle cx={x(antes[i])} cy={yA} r={d.fs * 0.3} className={m.y ? "q7-pt-def" : "q7-pt-adi"} /><circle cx={x(dep[i])} cy={yB} r={d.fs * 0.3} className={m.y ? "q7-pt-def" : "q7-pt-adi"} /></g>)}
@@ -81,7 +85,7 @@ export function S28Intercepto({ pagina }: { pagina?: Pagina }) {
                 <tr><th>AUC na janela</th><td>{num(r.auc0, 4)}</td><td>{num(r.auc1, 4)}</td></tr>
                 <tr><th>Brier na janela</th><td>{num(r.bs0, 5)}</td><td>{num(r.bs1, 5)}</td></tr>
                 <tr><th>Log loss na janela</th><td>{num(r.ll0, 4)}</td><td>{num(r.ll1, 4)}</td></tr>
-                <tr data-on="1"><th>Log loss esperada, janelas novas</th><td>{num(r.e0, 4)}</td><td>{num(r.e1, 4)}</td></tr>
+                <tr data-on="1"><th>Log loss esperada, réplicas</th><td>{num(r.e0, 4)}</td><td>{num(r.e1, 4)}</td></tr>
               </tbody>
             </table>
           </>
@@ -89,7 +93,7 @@ export function S28Intercepto({ pagina }: { pagina?: Pagina }) {
           <Previsao pergunta="Só o nível é corrigido. Na janela, o Brier..." escolha={prev} onEscolha={setPrev} recolher
             opcoes={[
               { certa: false, texto: "Cai muito: a PD média chega ao observado", retorno: "Confunde nível com qualidade total. O Brier é confiabilidade menos resolução mais incerteza; o intercepto só mexe na confiabilidade, e a ordem (AUC), de que depende a resolução, não muda." },
-              { texto: "Quase não muda", certa: true, retorno: "Isso." },
+              { texto: "Quase não muda", certa: true, retorno: "Isso: o intercepto só mexe no nível; a ordem, e com ela a resolução do Brier, fica onde estava." },
               { certa: false, texto: `Piora: a calibração teve ${pct(ALVO / CAL.n, 1)} de defaults, a janela não`, retorno: `Seria um risco se a calibração viesse de outra população. Aqui ela sai da mesma PD verdadeira, e ${pct(ALVO / CAL.n, 1)} cabe no intervalo da janela (${pct(OBS.lo, 1)} a ${pct(OBS.hi, 1)}): diferença de nível desse tamanho é ruído.` },
             ]} />
         )}

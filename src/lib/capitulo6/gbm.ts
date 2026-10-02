@@ -212,3 +212,18 @@ export function dependenciaParcialRapida(mod: Modelo, X: Matriz, v: number, grad
   const reps = [...rep.entries()]; const vals = dependenciaParcial(mod, X, v, reps.map(([, g]) => g));
   const por = new Map(reps.map(([k], i) => [k, vals[i]])); return grade.map((g) => por.get(chave(g))!);
 }
+
+/**
+ * Diferença pareada de log loss entre dois modelos avaliados nas mesmas propostas: a média, proposta a proposta, de
+ * (perda do modelo A − perda do modelo B), com o erro padrão da média (desvio padrão amostral ÷ √n) e o intervalo
+ * normal de 95%. Positiva: B perde menos. Mede o que a amostra de validação consegue distinguir entre os dois, com as
+ * propostas como unidades independentes; não inclui a variação do próprio ajuste (sementes, sorteio do ajuste).
+ */
+export function diferencaPerdaPareada(Fa: Vetor, Fb: Vetor, y: Vetor): { dif: number; ep: number; ic: [number, number]; n: number } {
+  const n = y.length; const d = new Array<number>(n);
+  const perda1 = (f: number, yi: number) => { const p = Math.min(1 - 1e-15, Math.max(1e-15, sigmoide(f))); return -(yi * Math.log(p) + (1 - yi) * Math.log(1 - p)); };
+  let s = 0; for (let i = 0; i < n; i++) { d[i] = perda1(Fa[i], y[i]) - perda1(Fb[i], y[i]); s += d[i]; }
+  const dif = s / n; let q = 0; for (let i = 0; i < n; i++) q += (d[i] - dif) ** 2;
+  const ep = Math.sqrt(q / (n - 1) / n), z = 1.959963984540054;
+  return { dif, ep, ic: [dif - z * ep, dif + z * ep], n };
+}

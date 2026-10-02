@@ -12,6 +12,8 @@ import { int, num, pct } from "@/lib/capitulo7/formato";
  * opostos. A logística é o segundo passo: O/E 1,13, com as duas metades abaixo do observado. O p de Jeffreys da
  * carteira (slide 21) diz se 81 contra 71,6 cabe no ruído. Cada barra de observado traz o intervalo de Wilson de 95%
  * do seu grupo, definido na legenda em uma frase (o slide 21 o apresenta). Título e subtítulo viram pergunta até a previsão: o do roteiro entrega a resposta.
+ * O seletor de modelo só abre com a resposta certa, e a leitura sempre fala do modelo que está na tela ("Tentar outra"
+ * volta ao comprimido).
  */
 type Mod = "comprimido" | "logistica";
 const TAXA = D / N;
@@ -45,7 +47,8 @@ export function S18Global({ pagina }: { pagina?: Pagina }) {
     <Quadro slug="c7p29" pagina={pagina} layout="gl"
       titulo={revelado ? undefined : "Média prevista igual à observada prova calibração?"}
       sub={revelado ? undefined : "O total bater garante que cada parte da carteira bate?"}
-      conclusao={!revelado ? <>O comprimido acerta o total: {num(g.esperados, 1)} esperados, {D} observados, <b>O/E = {num(g.razaoOE!, 2)}</b>. Isso prova calibração? Preveja antes de separar a fila em duas metades.</>
+      conclusao={!revelado ? (comp ? <>O comprimido acerta o total: {num(g.esperados, 1)} esperados, {D} observados, <b>O/E = {num(g.razaoOE!, 2)}</b>. Isso prova calibração? Preveja antes de separar a fila em duas metades.</>
+          : <>A logística espera {num(g.esperados, 1)} defaults e a janela teve {D}: <b>O/E = {num(g.razaoOE!, 2)}</b>, o total não bate. Volte ao comprimido e preveja antes de separar a fila em duas metades.</>)
         : comp ? <>Metade de baixo: prevê {pct(metades[0].pdMedia!, 1)}, observa {pct(metades[0].obs!, 1)}. De cima: prevê {pct(metades[1].pdMedia!, 1)}, observa {pct(metades[1].obs!, 1)}. <b>Erros de sinais opostos se compensam no total</b>: O/E = {num(g.razaoOE!, 2)} não demonstra calibração por faixa; o slide 19 olha faixa a faixa.</>
         : <>A logística espera {num(g.esperados, 1)} e a janela teve {D}: O/E = {num(g.razaoOE!, 2)}, e a PD fica abaixo do observado nas duas metades (O/E {num(metades[0].d / metades[0].somaPd, 2)} e {num(metades[1].d / metades[1].somaPd, 2)}). O p de Jeffreys, que mede se {D} defaults ainda são compatíveis com a PD média (slide 21), é {num(JEF, 2)}: <b>a diferença ainda cabe no ruído</b>.</>}
       fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults (taxa ${pct(TAXA, 2)}). O/E = observados ÷ soma das PDs; acima de 1, subestima. Comprimido: σ(${num(a, 2)} + ${num(b, 2)} · logit p), com a escolhido para O/E = 1; construído só para esta demonstração. Metades: posições da fila de PD.`}>
@@ -82,9 +85,9 @@ export function S18Global({ pagina }: { pagina?: Pagina }) {
         <ul className="q7-leg"><li><span className="q7-mk q7-mk--quad q7-mk--prob" />PD média prevista</li><li><span className="q7-mk q7-mk--circ q7-mk--def2" /><span>default observado; o traço é o intervalo de 95% (Wilson), a faixa de taxas compatíveis com o que se observou (<LinkSlide slug="c7p31" className="q7-s10-lk">slide 21</LinkSlide>)</span></li></ul>
       </Painel>
       <Painel>
-        <div className="q7-s21-l"><Seg rotulo="Modelo" opcoes={[{ v: "comprimido" as Mod, r: "Comprimido" }, { v: "logistica" as Mod, r: "Logística" }]} valor={mod} onChange={setMod} /><Botao sec onClick={() => { setMod("comprimido"); setB(B0); setEsc(null); }}>Restaurar</Botao></div>
+        <div className="q7-s21-l"><Seg rotulo="Modelo" opcoes={[{ v: "comprimido" as Mod, r: "Comprimido" }, { v: "logistica" as Mod, r: "Logística" }]} valor={mod} onChange={setMod} desab={!revelado} /><Botao sec onClick={() => { setMod("comprimido"); setB(B0); setEsc(null); }}>Restaurar</Botao></div>
         {comp && <Controle rotulo="Compressão b (a mantém O/E = 1)" valor={b} min={0.3} max={1} passo={0.05} onChange={setB} mostrar={num(b, 2)} escala={["0,3: comprime", "1: sem compressão"]} />}
-        <Previsao pergunta={`O total bate (O/E ${num(calibracaoGlobal(Y, transformar(PL, aParaTotal(B0), B0)).razaoOE!, 2)}). Nas duas metades da fila, o comprimido:`} opcoes={ops} escolha={esc} onEscolha={(i) => { setEsc(i); if (i !== null && OPS[i].certa) { setMod("comprimido"); setB(B0); } }} recolher />
+        <Previsao pergunta={`O total bate (O/E ${num(calibracaoGlobal(Y, transformar(PL, aParaTotal(B0), B0)).razaoOE!, 2)}). Nas duas metades da fila, o comprimido:`} opcoes={ops} escolha={esc} onEscolha={(i) => { setEsc(i); if (i === null || OPS[i].certa) { setMod("comprimido"); setB(B0); } }} recolher />
         {revelado && <table className="q7-tab">
           <thead><tr><th className="q7-t-l">Grupo</th><th>Esperados</th><th>Observados</th><th>O/E</th></tr></thead>
           <tbody>{grupos.slice(1).map((gr) => <tr key={gr.nome}><th>{gr.nome}</th><td>{num(gr.esp, 1)}</td><td>{gr.d}</td><td>{num(gr.d / gr.esp, 2)}</td></tr>)}</tbody>

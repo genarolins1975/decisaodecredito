@@ -87,3 +87,23 @@ describe("capítulo 6: exemplo didático e logística de referência", () => {
     perto(G.perdaLog(z(XV), base.validacao.y), r.logloss.validacao, 1e-9);
   });
 });
+
+describe("capítulo 6: diferença pareada de log loss", () => {
+  it("num exemplo feito à mão: média e erro padrão da média das diferenças por proposta", () => {
+    // p = 0,5 para A em todas; B com p = 0,8, 0,2, 0,5 e y = 1, 0, 1: perdas de A ln 2; de B −ln 0,8, −ln 0,8, ln 2
+    const Fa = [0, 0, 0], Fb = [Math.log(4), -Math.log(4), 0], y = [1, 0, 1];
+    const d = [Math.log(2) + Math.log(0.8), Math.log(2) + Math.log(0.8), 0];
+    const m = (d[0] + d[1] + d[2]) / 3, ep = Math.sqrt(d.reduce((s, v) => s + (v - m) ** 2, 0) / 2 / 3);
+    const r = G.diferencaPerdaPareada(Fa, Fb, y);
+    perto(r.dif, m, 1e-14); perto(r.ep, ep, 1e-14); perto(r.ic[1] - r.ic[0], 2 * 1.959963984540054 * ep, 1e-14); expect(r.n).toBe(3);
+  });
+  it("na validação: a média é a diferença das log loss e o erro padrão bate com a fórmula da soma dos quadrados", () => {
+    const mod = G.ajustar(XA, base.ajuste.y, { eta: 0.1, arvores: 40, profundidade: 2, minFolha: 40 });
+    const ev = G.estagios(mod, XV), y = base.validacao.y, n = y.length;
+    const r = G.diferencaPerdaPareada(ev[10], ev[40], y);
+    perto(r.dif, G.perdaLog(ev[10], y) - G.perdaLog(ev[40], y), 1e-12);
+    const l = (f: number, yi: number) => -(yi ? Math.log(G.sigmoide(f)) : Math.log(1 - G.sigmoide(f)));
+    let s = 0, s2 = 0; for (let i = 0; i < n; i++) { const d = l(ev[10][i], y[i]) - l(ev[40][i], y[i]); s += d; s2 += d * d; }
+    perto(r.ep, Math.sqrt((s2 - (s * s) / n) / (n - 1) / n), 1e-12);
+  });
+});

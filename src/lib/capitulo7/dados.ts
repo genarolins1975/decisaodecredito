@@ -5,7 +5,7 @@
  * seção 7, e os números são conferidos em tests/capitulo7-metricas.test.ts.
  */
 import base from "./base.json";
-import { arredondar, fila, mulberry32, transformar } from "./metricas";
+import { arredondar, fila, interceptoDasMedias, juntarAmostras, media, mulberry32, transformar } from "./metricas";
 
 export const META = base.meta;
 export const RES = base.res;
@@ -89,3 +89,27 @@ export const CAL_PGR = CAL.indices.map((i) => PGR[i]);
 
 export const FILA_PL = fila(PL);
 export const PL_4CASAS = arredondar(PL, 4);
+
+/**
+ * Ancorar o nível da logística em safras anteriores à janela (slides 27, 36 e 37). Numa carteira real, a amostra de
+ * calibração viria de safras maturadas antes da janela; a base mostra a deriva da taxa de default entre elas: treino
+ * (safras 2022-01 a 2023-02), validação (2023-03 a 2023-07) e janela (2023-08 a 2023-12). Treino e validação só
+ * existem agregados em RES (n, taxa observada, PD média da logística), sem PD por proposta, então o intercepto é a
+ * diferença de logits das médias (interceptoDasMedias), aproximação declarada na tela. Cada intercepto é somado ao log
+ * odds das PDs da janela, e a PD média resultante se compara com a taxa da janela (O/E = observado ÷ esperado).
+ */
+const taxaJanela = Y.reduce((a, b) => a + b, 0) / Y.length;
+function aplicar(a: number) { const pdMedia = media(transformar(PL, a, 1))!; return { a, pdMedia, oe: taxaJanela / pdMedia }; }
+const SAFRA_TREINO = { n: base.meta.nTreino, taxa: base.res.logit_treino.obs, pdMedia: base.res.logit_treino.pd_media };
+const SAFRA_VAL = { n: base.meta.nVal, taxa: base.res.logit_val.obs, pdMedia: base.res.logit_val.pd_media };
+const JUNTAS = juntarAmostras([SAFRA_TREINO, SAFRA_VAL]);
+export const ANCORA = {
+  taxaJanela,
+  treino: { ...SAFRA_TREINO, defaults: Math.round(SAFRA_TREINO.n * SAFRA_TREINO.taxa) },
+  validacao: { ...SAFRA_VAL, defaults: Math.round(SAFRA_VAL.n * SAFRA_VAL.taxa) },
+  sem: { pdMedia: media(PL)!, oe: taxaJanela / media(PL)! },
+  /** intercepto ajustado só na validação, a safra maturada mais recente antes da janela */
+  soValidacao: aplicar(interceptoDasMedias(SAFRA_VAL.taxa, SAFRA_VAL.pdMedia)),
+  /** treino e validação juntos: várias safras maturadas */
+  variasSafras: { n: JUNTAS.n, defaults: JUNTAS.defaults, taxa: JUNTAS.taxa!, pdMediaAmostra: JUNTAS.pdMedia!, ...aplicar(interceptoDasMedias(JUNTAS.taxa!, JUNTAS.pdMedia!)) },
+};

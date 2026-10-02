@@ -14,7 +14,7 @@ import { int, num, pct } from "@/lib/capitulo7/formato";
  * Nos blocos pequenos, a isotônica dá PD 0% (ou 100%) a regiões inteiras; defaults da janela com PD 0% têm a log loss
  * cortada no limite de 10⁻¹⁵ (logLoss conta as limitadas), e é isso que leva a log loss da isotônica a 0,5 ou mais: a
  * lição de crédito é o piso de PD. Calibradores se comparam pela perda esperada pela PD verdadeira (perdaEsperada), não
- * pela janela de 81 defaults (slide 27).
+ * pela janela de 81 defaults (slide 27). Rodada 4: a leitura conta só os empates novos (depois menos antes).
  */
 type Tam = "grande" | "pequena";
 function ajustes(ini: number, n: number) {
@@ -67,7 +67,7 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
     <Quadro slug="c7p36" pagina={pagina} layout="gl"
       titulo={revelado ? undefined : "Isotônica: o que acontece com a fila?"} sub={revelado ? undefined : "Uma função que nunca desce, ajustada aos dados sem forma imposta."}
       conclusao={!revelado ? <>Primeiro a previsão: a isotônica também nunca inverte duas propostas.</>
-        : t === "grande" ? <>Com {int(a.n)} casos, a isotônica reduz as {int(BRUTO.distintos)} PDs distintas da janela a <b>{I.distintos}</b> degraus: {int(I.pares.empates)} pares viram empates e a AUC cai de {num(BRUTO.pares.auc!, 4)} para <b>{num(I.pares.auc!, 4)}</b>. Pela PD verdadeira, a log loss esperada fica {num(a.platt.esp, 4)} no Platt e {num(I.esp, 4)} na isotônica; a janela, com {D} defaults, não separa os dois. {proxima}</>
+        : t === "grande" ? <>Com {int(a.n)} casos, a isotônica reduz as {int(BRUTO.distintos)} PDs distintas da janela a <b>{I.distintos}</b> degraus: {int(I.pares.empates - BRUTO.pares.empates)} pares viram empates{BRUTO.pares.empates ? <> (havia {int(BRUTO.pares.empates)})</> : null} e a AUC cai de {num(BRUTO.pares.auc!, 4)} para <b>{num(I.pares.auc!, 4)}</b>. Pela PD verdadeira, a log loss esperada fica {num(a.platt.esp, 4)} no Platt e {num(I.esp, 4)} na isotônica; a janela, com {D} defaults, não separa os dois. {proxima}</>
           : cortadas ? <>Bloco {bloco} ({a.defaults} defaults em {NB}): a isotônica dá PD 0% a {I.zeros} propostas da janela{I.uns ? <> e 100% a {I.uns}</> : null}; {I.limitadas} {I.limitadas === 1 ? "previsão dá" : "previsões dão"} probabilidade zero ao que aconteceu, cortada em 10⁻¹⁵ (+{num(CUSTO_LIM, 1)} cada), e a log loss na janela vai a <b>{num(I.ll, 4)}</b>. <b>Com poucos dados, a isotônica exige piso de PD.</b> Pela PD verdadeira, {num(I.esp, 4)} contra {num(a.platt.esp, 4)} do Platt.</>
             : <>Bloco {bloco} ({a.defaults} defaults em {NB}): PD média {pct(a.platt.media, 1)} (Platt) e {pct(I.media, 1)} (isotônica) contra {pct(D / N, 1)} observados. Nos dez blocos, a do Platt vai de {pct(FAIXA_PLATT[0], 1)} a {pct(FAIXA_PLATT[1], 1)}: <b>com {NB} casos, o nível segue a sorte do bloco</b>. Pela PD verdadeira, o {melhor} perde menos ({num(a.platt.esp, 4)} contra {num(I.esp, 4)}).</>}
       fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults, ${int(BRUTO.pares.pares)} pares default × adimplente; empate conta meio par. Calibração sintética: sorteios dos proponentes da janela, desfecho da PD verdadeira (semente ${CAL.semente}); blocos de ${NB} consecutivos, com ${EVENTOS.join(", ")} defaults. Log loss com limite de 10⁻¹⁵; esperada: média exata pela PD verdadeira.`}>

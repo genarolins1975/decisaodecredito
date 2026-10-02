@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "891499ed26f5eaf99a787e4b1227038c937dc38c316fffd765ccbc9cee2ed89b",
- "extractedAt": "2026-10-02T12:59:19.329Z",
+ "sourceSha256": "0d313c7a3303c79598e5a70bd22300537d724f889c7e63d639506e17e906e2a9",
+ "extractedAt": "2026-10-02T13:42:38.230Z",
  "meta": {
   "capitulos": [
    {
@@ -6580,7 +6580,7 @@
    "id": "c6p1",
    "cap": 6,
    "n": 1,
-   "titulo": "Do treino à validação, o boosting perdeu 0,17 de AUC",
+   "titulo": "Do treino à validação, o boosting perdeu 0,172 de AUC",
    "nivel": "essencial",
    "nivel120": "essencial",
    "min": 4,
@@ -6590,15 +6590,15 @@
    },
    "origem": "esq",
    "aprendizado": "Situar o capítulo: o candidato do comitê perde ordenação fora do treino, e o capítulo monta o boosting à mão, roda na carteira e mostra o que o comitê precisa conferir.",
-   "apoio": "Leia o gancho (AUC do candidato e da logística do gerador no treino e na validação temporal do gerador), as três escalas do caso e as quatro perguntas; os números de slide levam a cada trecho.",
+   "apoio": "Leia o gancho (AUC do candidato e da logística do gerador no treino e na validação temporal do gerador, com a queda do boosting dividida), as três escalas do caso e as quatro perguntas; os números de slide levam a cada trecho.",
    "conexao": "Antes de qualquer fórmula: três maneiras de juntar árvores, e só uma usa o erro da anterior.",
    "guia": {
     "funcao": "Abrir o capítulo com algo em jogo: um modelo que o comitê do capítulo 7 vai julgar e que ordena bem só no treino.",
     "pre": "Capítulo 5 (árvores de decisão) e capítulo 4 (logística e log odds).",
-    "conducao": "O candidato do comitê tem 7 variáveis, 60 árvores de até 8 folhas e taxa 0,05. No treino (2.103 propostas, safras 2022-01 a 2023-02) a AUC é 0,8196; na validação temporal do gerador (760 propostas, safras 2023-03 a 2023-07), 0,6476: 0,1720 a menos. A decoreba explica só parte da queda: a taxa de default sobe de 9,6% para 13,2% e a logística do gerador, que decora pouco, também perde 0,056 (0,6968 para 0,6408). Apresente as três escalas do caso: 16 propostas para fazer o algoritmo à mão (slides 2 a 10), 2.103 propostas do treino (1.472 de ajuste e 631 de validação sorteada, que é parte do treino) para rodá-lo na carteira (slides 11 a 20) e o candidato (slide 21). As quatro perguntas organizam o percurso. A janela fora do tempo só abre no capítulo 7.",
-    "leitura": "À esquerda, a AUC do candidato e da logística do gerador no treino (●) e na validação temporal do gerador (□), com a taxa de default de cada amostra; abaixo, as três escalas. À direita, as quatro perguntas com os slides de cada uma; tracejado é aprofundamento.",
-    "pergunta": "Se o treino tem AUC de 0,82, por que o comitê não aprova o modelo só com esse número? E a queda de 0,17 é toda decoreba?",
-    "resposta": "Porque o treino é a amostra em que o modelo foi ajustado: na validação temporal do gerador a AUC cai para 0,6476. A queda não é toda decoreba: a safra muda (default de 9,6% para 13,2%) e a logística também perde 0,056; o excesso do boosting é o que o capítulo explica.",
+    "conducao": "O candidato do comitê tem 7 variáveis, 60 árvores de até 8 folhas e taxa 0,05. No treino (2.103 propostas, safras 2022-01 a 2023-02) a AUC é 0,820; na validação temporal do gerador (760 propostas, safras 2023-03 a 2023-07), 0,648: 0,172 a menos. A logística do gerador, que decora pouco, perde 0,056 (0,697 para 0,641), 33% da queda do boosting: use essa queda como medida do que a troca de safra custa a qualquer modelo. Não use a alta da taxa de default (9,6% no treino, 13,2% na validação) como prova: a AUC não depende da prevalência. O resto, 0,116, é do boosting, e ainda é otimista: 0,648 é a mesma AUC usada para escolher os hiperparâmetros do candidato (slide 21), então a perda fora da amostra tende a ser maior. Apresente as três escalas do caso: 16 propostas para fazer o algoritmo à mão (slides 2 a 10), 2.103 propostas do treino (1.472 de ajuste e 631 de validação sorteada, que é parte do treino) para rodá-lo na carteira (slides 11 a 20) e o candidato (slide 21). As quatro perguntas organizam o percurso. A janela fora do tempo só abre no capítulo 7.",
+    "leitura": "Na peça principal, a AUC do candidato e da logística do gerador no treino (●) e na validação temporal do gerador (□); sob a seta do boosting, a queda dividida em 0,056 (como a logística) e 0,116 (a mais no boosting). À direita, compactas, as três escalas e as quatro perguntas com os números de slide de cada uma; número tracejado é aprofundamento.",
+    "pergunta": "Se o treino tem AUC de 0,820, por que o comitê não aprova o modelo só com esse número? E a queda de 0,172 é toda decoreba?",
+    "resposta": "Porque o treino é a amostra em que o modelo foi ajustado: na validação temporal do gerador a AUC cai para 0,648. A queda não é toda decoreba: a logística, que decora pouco, também perde 0,056, cerca de um terço. O excesso do boosting, 0,116, é o que o capítulo explica, e ainda é otimista, porque 0,648 foi a AUC usada para escolher os hiperparâmetros.",
     "erros": [
      {
       "alt": "Ler 0,8196 como a qualidade do modelo",
@@ -6606,9 +6606,14 @@
       "intervencao": "Aponte a seta que desce até a validação temporal e pergunte quantas propostas cada número usa."
      },
      {
-      "alt": "Atribuir toda a queda de 0,17 à decoreba",
-      "confusao": "Ignora a mudança de safra entre as duas amostras.",
-      "intervencao": "Compare com a seta da logística (−0,056) e com a taxa de default de cada amostra."
+      "alt": "Atribuir toda a queda de 0,172 à decoreba",
+      "confusao": "Ignora a mudança de safra entre as duas amostras, que a logística mede.",
+      "intervencao": "Compare com a seta da logística (−0,056) e com a chave sob a seta do boosting."
+     },
+     {
+      "alt": "Provar a mudança de safra com a alta da taxa de default",
+      "confusao": "A AUC não depende da prevalência: mais defaults não baixam a AUC por si.",
+      "intervencao": "Mostre que a medida usada é a queda da logística, não a taxa de default."
      },
      {
       "alt": "Achar que a queda prova que o boosting não serve",
@@ -6929,7 +6934,7 @@
    "id": "c6p7",
    "cap": 6,
    "n": 7,
-   "titulo": "Somar só um pedaço da correção: a taxa de aprendizagem",
+   "titulo": "Taxa de aprendizagem: a maior desce mais rápido no treino",
    "nivel": "essencial",
    "nivel120": "essencial",
    "min": 3,
@@ -6938,16 +6943,16 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Ler a taxa de aprendizagem como a fração do passo somada a cada árvore e saber que, no treino, a taxa alta desce mais rápido.",
-   "apoio": "Preveja a taxa de menor perda depois da primeira árvore; depois mova a taxa e compare as curvas com η = 0,1, η = 0,95 e η = 1.",
+   "aprendizado": "Ler a taxa de aprendizagem como a fração do passo somada a cada árvore e saber que, no treino, a taxa maior desce mais rápido: a taxa pequena não serve ao treino.",
+   "apoio": "Preveja que taxa faz a perda de treino descer mais rápido; depois mova a taxa e compare as curvas com η = 0,1, η = 0,95 e η = 1.",
    "conexao": "Com a taxa do curso, as quatro árvores uma a uma.",
    "guia": {
-    "funcao": "Separar o papel da taxa no ajuste (desce mais devagar) do papel fora da amostra (regulariza), que os slides 11 e 15 medem.",
+    "funcao": "Separar o papel da taxa no treino (a maior desce mais rápido) do papel fora da amostra (evitar que uma árvore pese sozinha), que os slides 14 e 15 medem.",
     "pre": "Slide 6 (o passo de Newton).",
-    "conducao": "Depois da primeira árvore, a log loss cai a cada aumento da taxa: 0,622 com η = 0,1, 0,452 com 0,4 e 0,268 com 1. Na árvore 2, a correção inteira passa do ponto: 0,195 com η = 1 contra 0,172 com η = 0,95. Depois de quatro árvores, a menor perda da grade é a de η = 0,95 (0,073); com η = 1, 0,102; com 0,4, 0,217. Use o dado para desmontar a ideia de que a correção inteira é sempre melhor no treino. Quantas árvores cada taxa pede fica para o slide 14. A PD da folha B depois da primeira árvore vai a σ(−2η): 31,0% com 0,4 e 11,9% com 1.",
-    "leitura": "Log loss de treino depois de cada árvore para a taxa escolhida, com η = 0,1, η = 0,95 e η = 1 como referência; o círculo marca a árvore em que η = 1 passa do ponto.",
-    "pergunta": "Se a taxa alta desce mais rápido, por que o curso usa 0,1 na carteira?",
-    "resposta": "Porque taxa e número de árvores se escolhem juntos: metade da taxa pede o dobro de árvores (slide 14), e o número de árvores sai da validação (slide 15).",
+    "conducao": "Depois da primeira árvore, a log loss cai a cada aumento da taxa: 0,622 com η = 0,1, 0,452 com 0,4 e 0,268 com 1. Depois de quatro árvores, cai a cada aumento da taxa até η = 0,95 (0,073); η = 1 fica em 0,102. Não diga que η = 1 passa do ponto: a primeira árvore é a mesma para todas as taxas, mas da segunda em diante cada taxa gera árvores diferentes (com η = 1, a árvore 2 corta primeiro no atraso; com 0,95, na utilização), e na árvore 2 de η = 1 a perda seria mínima com 1,07 vezes o passo: o passo inteiro ainda fica curto. A virada: somar só um pedaço não é para descer mais rápido no treino; é para que nenhuma árvore, ajustada a poucos casos (a primeira tem folhas de 2 e de 6 propostas), pese sozinha na soma. Se isso compensa, quem diz é a validação: taxa e número de árvores se escolhem juntos (slide 14), e o número de árvores sai da validação (slide 15).",
+    "leitura": "Log loss de treino depois de cada árvore para a taxa escolhida (●), com η = 0,1 (tracejada), η = 0,95 (pontilhada, ○) e η = 1 (contínua cinza, ■) como referência; ao lado, o múltiplo do passo que minimiza a perda na árvore 2 de η = 1.",
+    "pergunta": "Se a taxa alta desce mais rápido no treino, por que o curso usa 0,1 na carteira?",
+    "resposta": "Porque descer rápido no treino não é o objetivo: a taxa pequena evita que uma árvore ajustada a poucos casos pese sozinha na soma. Taxa e número de árvores se escolhem juntos (slide 14), e o número de árvores sai da validação (slide 15).",
     "erros": [
      {
       "alt": "η = 0,1: passos pequenos erram menos",
@@ -6958,6 +6963,11 @@
       "alt": "η = 0,4, a do curso: o meio-termo",
       "confusao": "Confunde convenção com ótimo.",
       "intervencao": "Lembre que, na carteira, taxa e número de árvores se escolhem juntos (slide 14)."
+     },
+     {
+      "alt": "Ler η = 1 acima de η = 0,95 como passo longo demais",
+      "confusao": "Atribui ao tamanho do passo uma diferença que vem de árvores diferentes.",
+      "intervencao": "Mostre o número ao lado: na árvore 2 de η = 1, a perda mínima fica em 1,07 vezes o passo."
      }
     ],
     "interacao": "Previsão com retorno; o controle da taxa e as curvas de referência abrem no acerto. Restaurar volta a η = 0,4 e à previsão em aberto.",
@@ -6985,7 +6995,7 @@
    "id": "c6p8",
    "cap": 6,
    "n": 8,
-   "titulo": "Árvore a árvore, a perda de treino cai",
+   "titulo": "Nas quatro árvores, a perda de treino cai",
    "nivel": "essencial",
    "nivel120": "assincrono",
    "min": 4,
@@ -6994,13 +7004,13 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Acompanhar a PD de uma proposta árvore a árvore e ver que a perda média cai mesmo quando a PD de um default recua.",
+   "aprendizado": "Acompanhar a PD de uma proposta árvore a árvore e ver que a perda média cai nas quatro árvores mesmo quando a PD de um default recua; a queda é o comum, não uma garantia.",
    "apoio": "Preveja se a PD de todo default sobe a cada árvore; depois avance as árvores e acompanhe uma proposta do palpite à quarta árvore.",
    "conexao": "A PD final como soma de parcelas rastreáveis.",
    "guia": {
     "funcao": "Fechar a mecânica nas 16 propostas: quatro árvores, a perda que cai e as PDs que se movem em grupo.",
     "pre": "Slide 7 (taxa) e slide 6 (valor da folha).",
-    "conducao": "Log loss de treino: 0,693 → 0,452 → 0,330 → 0,263 → 0,217. As propostas que caem nas mesmas folhas andam juntas: #3 a #8 vão de 50% a 8,8%; #9 e #11 a #14 a 92,1%; #1 e #2 ficam em 50% (a folha dos dois soma zero). #10, que deu default, recua nas árvores 2 e 3 (69,0% → 65,4% → 63,2%) porque divide a folha com #15, adimplente; termina em 74,1%. #16 recua na árvore 4 (75,9% → 72,4%). Na árvore 4, #10 cai numa folha de valor +1,27: soma 0,4 × esse valor às log odds.",
+    "conducao": "Log loss de treino: 0,693 → 0,452 → 0,330 → 0,263 → 0,217. As propostas que caem nas mesmas folhas andam juntas: #3 a #8 vão de 50% a 8,8%; #9 e #11 a #14 a 92,1%; #1 e #2 ficam em 50% (a folha dos dois soma zero). #10, que deu default, recua nas árvores 2 e 3 (69,0% → 65,4% → 63,2%) porque divide a folha com #15, adimplente; termina em 74,1%. #16 recua na árvore 4 (75,9% → 72,4%). Na árvore 4, #10 cai numa folha de valor +1,27: soma 0,4 × esse valor às log odds. Que a perda caia nas quatro árvores é constatação, não teorema: com valor de folha por Newton, o passo pode exagerar numa folha de p extremo (com p = 1% e metade de defaults, γ ≈ 49,5 e, com η = 0,4, a perda média da folha vai de 2,31 a 7,60); a taxa η reduz esse risco.",
     "leitura": "PD de cada grupo de propostas por estágio, com a proposta acompanhada em destaque e a log loss de treino abaixo do eixo.",
     "pergunta": "Se a perda média cai, por que a PD de #10 recua?",
     "resposta": "Porque a árvore corrige grupos: a folha de #10 inclui #15, adimplente, e a parcela da folha é negativa.",
@@ -7012,8 +7022,8 @@
      },
      {
       "alt": "Não se sabe: a log loss pode subir numa árvore",
-      "confusao": "Confunde o recuo de uma PD com a perda média.",
-      "intervencao": "Leia a linha da log loss abaixo do eixo."
+      "confusao": "Mistura as perguntas: a perda pode subir em tese, mas aqui cai nas quatro árvores; o que recua é a PD de uma proposta.",
+      "intervencao": "Leia a linha da log loss abaixo do eixo e o contraexemplo do retorno."
      }
     ],
     "interacao": "Previsão com retorno; as árvores 2 a 4, o seletor de estágio e o de proposta abrem no acerto. Restaurar volta à quarta árvore, à proposta #10 e à previsão em aberto.",
@@ -7197,12 +7207,12 @@
    },
    "origem": "esq",
    "aprendizado": "Reconhecer cada termo do algoritmo de Friedman (2001) para log loss como uma peça já vista e calcular um passo com números.",
-   "apoio": "Leia as cinco linhas e siga o link de cada uma para o slide em que ela apareceu. Calcule F₂ da proposta 10 antes de revelar a última linha; depois troque a árvore e a proposta.",
+   "apoio": "Leia as cinco linhas e siga o link de cada uma para o slide em que ela apareceu. A linha 5 fica oculta: calcule F₂ da proposta 10 antes de revelá-la; depois troque a árvore e a proposta.",
    "conexao": "Formaliza os slides 3 a 9 e abre a carteira do slide 11, onde o mesmo algoritmo roda 300 vezes em 1.472 propostas.",
    "guia": {
     "funcao": "Dar nome formal ao mecanismo depois da intuição: palpite, pseudo-resíduo, árvore, folha por Newton e soma com taxa.",
     "pre": "Slides 3 a 9: palpite em log odds, erro y − p, primeira árvore, passo de Newton, taxa, perda que cai e parcelas da PD.",
-    "conducao": "Percorra as linhas com a árvore 2 e a proposta 10: F₁ = 0,80, resíduo 1 − σ(0,80) = 0,31; a folha junta 2 propostas (10 e 15) e vale −0,41, negativa porque a 15 é adimplente com PD de 50%. Antes da linha 5, peça F₂.",
+    "conducao": "Percorra as linhas com a árvore 2 e a proposta 10: F₁ = 0,80, resíduo 1 − σ(0,80) = 0,31; a folha junta 2 propostas (10 e 15) e vale −0,41, negativa porque a 15 é adimplente com PD de 50%. A linha 5 fica oculta, fórmula e valor: peça F₂ e deixe a turma reconstruir a regra do slide 7. No rodapé, a perda costuma cair a cada m, sem garantia (slide 8).",
     "leitura": "F₂ = 0,80 + 0,4 × (−0,41) = 0,64: o acumulado entra inteiro e só a folha nova é multiplicada por η.",
     "pergunta": "Com F₁ = 0,80, η = 0,4 e γ = −0,41, quanto vale F₂ da proposta 10?",
     "resposta": "F₂ = 0,80 + 0,4 × (−0,41) = 0,64: cada árvore entra multiplicada pela taxa, em log odds.",
@@ -7257,9 +7267,9 @@
     "funcao": "Separar o que o ajuste mede (o que o modelo já viu) do que a validação mede (propostas que ele não viu).",
     "pre": "Slides 8 e 10: perda que cai nas 16 propostas e o algoritmo em cinco linhas.",
     "conducao": "Mostre o ajuste: perda de 0,313 a 0,234, caindo em 300 de 300 árvores; AUC de ajuste de 0,50 a 0,874. Peça a previsão para a validação antes de desenhá-la. Leia a nota: a validação é sorteada, não temporal.",
-    "leitura": "Eixo de árvores em escala log. Na validação sorteada, a perda desce até 0,296 com 16 árvores e termina em 0,329 com 300, acima do palpite (0,321, a linha pontilhada), que ela passa na árvore 169; os dois pontos estão marcados. A AUC de validação termina em 0,587, contra 0,874 no ajuste.",
+    "leitura": "Eixo de árvores em escala log. Na validação sorteada, a perda desce até 0,296 com 16 árvores e termina em 0,329 com 300, acima do palpite (0,321, a linha pontilhada), que ela passa na árvore 169; os dois pontos estão marcados. A AUC de validação também piora: 0,689 com 6 árvores, 0,655 com 16 e 0,587 com 300, contra 0,874 no ajuste.",
     "pergunta": "Com 300 árvores, o que acontece com a perda nas 631 propostas da validação sorteada?",
-    "resposta": "Melhora no começo, depois piora até ficar acima do palpite inicial: 0,329 contra 0,321. A AUC de validação ainda é 0,587, acima do acaso: o modelo ordena, mas as PDs pioraram. Isso vale com taxa 0,1 e sem subamostra.",
+    "resposta": "Melhora no começo, depois piora até ficar acima do palpite inicial: 0,329 contra 0,321. A ordenação também piora: a AUC de validação chega a 0,689 com 6 árvores, cai para 0,655 com 16 e para 0,587 com 300. Isso vale com taxa 0,1 e sem subamostra.",
     "erros": [
      {
       "alt": "Acompanha o ajuste: cai a cada árvore",
@@ -7610,7 +7620,7 @@
    "id": "c6p16",
    "cap": 6,
    "n": 16,
-   "titulo": "Sortear propostas regulariza longe da parada; perto dela, o efeito some no ruído",
+   "titulo": "Na parada, sortear propostas ganha menos que o erro da validação",
    "nivel": "complementar",
    "nivel120": "assincrono",
    "min": 3,

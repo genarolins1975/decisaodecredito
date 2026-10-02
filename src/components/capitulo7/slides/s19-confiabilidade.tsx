@@ -14,8 +14,9 @@ import { int, num, pct, pp } from "@/lib/capitulo7/formato";
  * previsão conceitual (em quantas faixas a PD cabe no intervalo de 95%?) abre o intervalo de Wilson, definido na tela
  * em uma frase (o slide 21 o apresenta). "6 de 10 acima" se compara com o acaso: supondo faixas independentes, cada
  * uma acima com probabilidade de cerca de 1/2, a cauda binomial sai da beta regularizada da biblioteca (aproximação).
- * A curva é a peça principal, larga (eixos em escalas próprias, diagonal rotulada), com defaults/n em cada ponto; à
- * direita ficam a régua das faixas e a conta da faixa corrente.
+ * A curva é a peça principal, larga (eixos em escalas próprias, diagonal rotulada no canto vazio de baixo, à direita,
+ * com uma amostra do traço), com defaults/n em cada ponto; à direita ficam a régua das faixas e a conta da faixa
+ * corrente.
  */
 const F = faixasQuantis(Y, PL, 10);
 const ACIMA = F.filter((f) => f.obs! > f.pdMedia!).length;
@@ -64,8 +65,12 @@ function Curva({ k, ic, completa }: { k: number; ic: boolean; completa: boolean 
           <g>
             <Eixos x={x} y={y} xt={[0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3]} yt={yt} fx={(v) => pct(v, 0)} fy={(v) => pct(v, 0)} xTit="PD média prevista na faixa" yTit="Default observado na faixa" />
             <line className="q7-diag" x1={x(0)} y1={y(0)} x2={x(XMAX)} y2={y(XMAX)} />
-            {(() => { const px = x(0.2), py = y(0.2), ang = (Math.atan2(y(0) - y(XMAX), x(XMAX) - x(0)) * 180) / Math.PI; return <text className="q7-rot--peq" x={px} y={py} dy="1.25em" textAnchor="middle" transform={`rotate(${-ang} ${px} ${py})`} style={{ fill: "#5B6475" }}>diagonal: previsto = observado</text>; })()}
             <text className="q7-rot--peq" x={x(0.006)} y={y(ymax * 0.93)} style={{ fill: "#5B6475" }}>▲ acima: risco subestimado</text>
+            {/* a diagonal se identifica no canto vazio de baixo, à direita (PD de 20% a 30%, longe dos pontos e dos intervalos) */}
+            {(() => { const yl = y(ymax * 0.03) - d.fs * 1.35, xf = x(XMAX); return <g>
+              <text className="q7-rot--peq" x={xf - d.fs * 2.3} y={yl} textAnchor="end" style={{ fill: "#5B6475" }}>diagonal: previsto = observado</text>
+              <line className="q7-diag" x1={xf - d.fs * 1.9} x2={xf} y1={yl - d.fs * 0.28} y2={yl - d.fs * 0.28} />
+            </g>; })()}
             <text className="q7-rot--peq" x={x(XMAX)} y={y(ymax * 0.03)} textAnchor="end" style={{ fill: "#5B6475" }}>▼ abaixo: superestimado</text>
             {vis.length > 1 && <path className="q7-linha q7-linha--fina q7-linha--prob" d={caminho(vis.map((f) => ({ x: x(f.pdMedia!), y: y(f.obs!) })))} />}
             {vis.map((f) => {
@@ -104,7 +109,7 @@ export function S19Confiabilidade({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c7p10" pagina={pagina} layout="um"
       conclusao={!f ? "Antes de cada faixa, preveja: o ponto fica acima ou abaixo da diagonal? Cada faixa vira um ponto."
-        : !completa ? <>Faixa {f.j}: {f.n} propostas com PD média de {pct(f.pdMedia!, 1)}; {f.d} deram default, <b>{pct(f.obs!, 1)}</b>. O ponto fica {lado} da diagonal: neste grupo a PD ficou {lado === "acima" ? "abaixo" : "acima"} da frequência observada{ruido ? ", por uma distância menor que o ruído da amostra" : ""}.</>
+        : !completa ? <>Faixa {f.j}: {f.n} propostas com PD média de {pct(f.pdMedia!, 1)}; {f.d} {f.d === 1 ? "deu" : "deram"} default, <b>{pct(f.obs!, 1)}</b>. O ponto fica {lado} da diagonal: neste grupo a PD ficou {lado === "acima" ? "abaixo" : "acima"} da frequência observada{ruido ? ", por uma distância menor que o ruído da amostra" : ""}.</>
         : ic ? <>A PD média cai dentro do intervalo de 95% em <b>{COMPATIVEIS} das 10 faixas</b>: nenhuma distância isolada prova descalibração. E {ACIMA} de 10 acima cabe no acaso (com faixas independentes e chance de ½ para cada lado, {ACIMA} ou mais acima teria probabilidade de cerca de {num(P_ACASO, 2)}); o que pesa é o total, que o slide 21 testa.</>
         : <>Dez pontos: a curva acompanha a diagonal e fica acima dela em {ACIMA} das 10 faixas, na direção do O/E de {num(OE, 2)}. Cada distância é padrão ou ruído? Preveja ao lado antes de ver o intervalo.</>}
       fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults; PD da logística. Faixas de mesmo tamanho pela posição na fila crescente de PD (73 ou 74 propostas). Intervalo: Wilson de 95% com o n de cada faixa.`}>

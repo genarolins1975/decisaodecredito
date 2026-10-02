@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Botao, Grafico, LinkSlide, Marca, Painel, Previsao, Quadro, Seg, caminho, escala, margens, type Opcao, type Pagina } from "@/components/capitulo7/base";
 import { CFG_DIDATICA, DIDATICA, XD, YD, modelo } from "@/lib/capitulo6/dados";
-import { estagios, perdaLog, sigmoide, valorArvore } from "@/lib/capitulo6/gbm";
+import { estagios, logit, perdaLog, sigmoide, valorArvore } from "@/lib/capitulo6/gbm";
 import { num, pct } from "@/lib/capitulo7/formato";
 import base from "@/lib/capitulo6/base.json";
 
@@ -11,7 +11,8 @@ import base from "@/lib/capitulo6/base.json";
  * biblioteca. A peça é a PD de cada proposta depois de cada árvore; propostas que caem sempre nas mesmas folhas andam
  * juntas e viram uma linha só, com os números ao fim. Abaixo do eixo, a log loss de treino de cada estágio. A turma prevê
  * se a PD de todo default sobe a cada árvore antes de ver as árvores 2 a 4; as frases sobre quem recua e sobre a perda
- * que cai em todas as árvores são calculadas aqui. Depois, o seletor de estágio e o de proposta acompanham uma proposta
+ * que cai em todas as árvores são calculadas aqui. Que a perda caia aqui não é regra: com o valor de folha por Newton, o
+ * passo pode exagerar numa folha de p extremo; o contraexemplo do retorno (EXC) é calculado com a biblioteca. Depois, o seletor de estágio e o de proposta acompanham uma proposta
  * do começo ao fim: a folha em que ela cai, η vezes o valor da folha e a PD antes e depois.
  */
 const SEMENTE_BASE = base.meta.seed; // semente do gerador do curso, que também gerou as 16 propostas didáticas
@@ -39,13 +40,23 @@ const nomeG = (g: number[]) => {
   return nm.join(", ");
 };
 const id = (i: number) => DIDATICA[i].id;
+/**
+ * Contraexemplo: uma folha em que o modelo dá p = 1% a todos e metade deu default. O valor de Newton (Σr ÷ Σp(1 − p)) é
+ * enorme e, mesmo multiplicado pela taxa do slide, a perda média da folha sobe.
+ */
+const EXC = (() => {
+  const p = 0.01, n = 100, y: number[] = Array.from({ length: n }, (_, i) => (i < n / 2 ? 1 : 0));
+  const F0 = logit(p), g = y.reduce((s, v) => s + (v - p), 0) / (n * p * (1 - p));
+  return { p, g, antes: perdaLog(y.map(() => F0), y), depois: perdaLog(y.map(() => F0 + ETA * g), y) };
+})();
+if (!(EXC.depois > EXC.antes)) throw new Error("o contraexemplo do slide 8 não vale");
 const sinal = (v: number, c = 2) => `${v > 1e-12 ? "+" : ""}${num(Math.abs(v) < 1e-12 ? 0 : v, c)}`;
 const rotProposta = (i: number) => `#${id(i)} · ${DIDATICA[i].y ? "default" : "adimplente"} · ${DIDATICA[i].util}%, ${DIDATICA[i].atraso} dias`;
 
 const OPCOES: Opcao[] = [
   { texto: "Sim: a PD de todo default sobe a cada árvore", retorno: <>A árvore corrige <b>grupos</b>, não propostas: a folha soma a mesma parcela a todos que caem nela. Se um default divide a folha com adimplentes, a parcela pode ser negativa.</> },
   { texto: "Não: a perda média cai, mas a PD de um default pode recuar", certa: true, retorno: <>Isso: {POR.map((q, j) => <span key={q.i}>{j ? " e " : ""}#{id(q.i)} recua {arvs(q.ks)}</span>)}, embora tenham dado default; a log loss {CAI_SEMPRE ? "cai em todas as árvores" : "nem sempre cai"}.</> },
-  { texto: "Não se sabe: a log loss pode subir numa árvore", retorno: <>Aqui a log loss {CAI_SEMPRE ? "cai nas quatro árvores" : "sobe em alguma árvore"}: {LOSS.map((v) => num(v, 3)).join(" → ")}. O que pode recuar é a PD de uma proposta, não a perda média.</> },
+  { texto: "Não se sabe: a log loss pode subir numa árvore", retorno: <>Aqui ela {CAI_SEMPRE ? "cai nas quatro" : "sobe em alguma"}: {LOSS.map((v) => num(v, 3)).join(" → ")}. Costuma cair; não é garantido: o passo de Newton pode exagerar em folha com p extremo (p = {pct(EXC.p, 0)} e metade de defaults: γ = {num(EXC.g, 1)}, e com η = {num(ETA, 1)} a perda da folha vai de {num(EXC.antes, 2)} a {num(EXC.depois, 2)}); a taxa η reduz esse risco. A pergunta era outra: o que recua é a PD de uma proposta.</> },
 ];
 
 export function S08PerdaCai({ pagina }: { pagina?: Pagina }) {
@@ -109,7 +120,7 @@ export function S08PerdaCai({ pagina }: { pagina?: Pagina }) {
         </Grafico>
       </Painel>
       <Painel>
-        <Previsao pergunta="A log loss de treino cai a cada árvore. E a PD de cada default?" opcoes={OPCOES} escolha={esc} onEscolha={(i) => { setEsc(i); setK(M); setFoco(FOCO0); }} recolher />
+        <Previsao pergunta="Nas quatro árvores, a log loss de treino cai. E a PD de cada default?" opcoes={OPCOES} escolha={esc} onEscolha={(i) => { setEsc(i); setK(M); setFoco(FOCO0); }} recolher />
         {rev && <>
           <Seg rotulo="Estágio" opcoes={Array.from({ length: M + 1 }, (_, s) => ({ v: s, r: s === 0 ? "F₀" : `Árvore ${s}` }))} valor={k} onChange={setK} />
           <label className="q6-s08-sel"><span>Acompanhar</span>

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import ref from "./fixtures/capitulo7-referencia.json";
 import * as M from "@/lib/capitulo7/metricas";
-import { CAL, EAD, MINI_PD, MINI_Y, PG, PGR, PL, PT, Y, CENARIOS, D, N } from "@/lib/capitulo7/dados";
+import { ANCORA, CAL, EAD, MINI_PD, MINI_Y, PG, PGR, PL, PT, Y, CENARIOS, D, N } from "@/lib/capitulo7/dados";
 import { aucEsperada, aucsEmJanelasNovas, calibradores, janelasNovas, llEmJanelasNovas, vantagemEmJanelasNovas, vitorias, type IdCalibrador } from "@/lib/capitulo7/janelas";
 
 /**
@@ -193,4 +193,32 @@ describe("capítulo 7: casos de borda definidos", () => {
     for (const [k, v] of Object.entries(ref.jeffreysCasos)) { const [d, n, p] = k.split("/").map(Number); perto(M.jeffreys(d, n, p), v, 1e-10); }
   });
   it("normal: Φ(1,96) e o p bilateral de z = 1,967 batem com scipy", () => { perto(M.normalCdf(M.Z95), 0.975, 2e-7); perto(2 * (1 - M.normalCdf(1.9667935304518058)), 0.049207018740550584, 2e-7); });
+});
+
+describe("capítulo 7: nível ancorado em safras anteriores (slides 27, 36 e 37)", () => {
+  const lg = (p: number) => Math.log(p) - Math.log(1 - p);
+  it("intercepto das médias: logit da taxa menos logit da PD média, conta à mão", () => {
+    perto(M.interceptoDasMedias(0.2, 0.1), Math.log(0.25) - Math.log(1 / 9), 1e-15);
+    expect(M.interceptoDasMedias(0.1, 0.1)).toBe(0);
+  });
+  it("intercepto das médias fica abaixo da raiz exata quando as PDs se espalham (amostra de calibração)", () => {
+    const pc = CAL.indices.map((i) => PL[i]);
+    const taxa = CAL.y.reduce((a, b) => a + b, 0) / CAL.n, pm = pc.reduce((a, b) => a + b, 0) / CAL.n;
+    expect(M.interceptoDasMedias(taxa, pm)).toBeLessThan(M.ajustarIntercepto(CAL.y, pc));
+  });
+  it("juntar amostras: defaults contados e médias ponderadas por n; sem casos, null", () => {
+    const j = M.juntarAmostras([{ n: 2103, taxa: 0.09558, pdMedia: 0.09557 }, { n: 760, taxa: 0.13158, pdMedia: 0.09723 }]);
+    expect(j.n).toBe(2863); expect(j.defaults).toBe(301); perto(j.taxa, 301 / 2863, 1e-15); perto(j.pdMedia, (2103 * 0.09557 + 760 * 0.09723) / 2863, 1e-15);
+    expect(M.juntarAmostras([]).taxa).toBeNull();
+  });
+  it("ANCORA: só a validação leva a PD média da janela acima do observado; treino e validação juntos ficam perto", () => {
+    const pmCom = (a: number) => PL.reduce((s, p) => s + 1 / (1 + Math.exp(-(lg(p) + a))), 0) / PL.length;
+    const aV = lg(0.13158) - lg(0.09723);
+    perto(ANCORA.soValidacao.a, aV, 1e-12); perto(ANCORA.soValidacao.pdMedia, pmCom(aV), 1e-12); perto(ANCORA.soValidacao.oe, (D / N) / pmCom(aV), 1e-12);
+    const aJ = lg(301 / 2863) - lg((2103 * 0.09557 + 760 * 0.09723) / 2863);
+    perto(ANCORA.variasSafras.a, aJ, 1e-12); perto(ANCORA.variasSafras.pdMedia, pmCom(aJ), 1e-12);
+    expect(ANCORA.validacao.defaults).toBe(100); expect(ANCORA.treino.defaults).toBe(201);
+    expect(ANCORA.soValidacao.oe).toBeLessThan(1); expect(ANCORA.sem.oe).toBeGreaterThan(1);
+    expect(Math.abs(ANCORA.variasSafras.oe - 1)).toBeLessThan(Math.abs(ANCORA.soValidacao.oe - 1));
+  });
 });

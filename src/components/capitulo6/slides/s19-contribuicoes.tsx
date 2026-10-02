@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Botao, Controle, escala, Grafico, LinkSlide, Painel, Previsao, Quadro, type Dim, type Pagina } from "@/components/capitulo7/base";
 import { CFG_CARTEIRA, modelo, NV, VARIAVEIS, XA, XV, YA, YV } from "@/lib/capitulo6/dados";
-import { contribuicoes, escore, estagios, importanciaGanho, perdaLog, sigmoide, type Modelo, type No, type Vetor } from "@/lib/capitulo6/gbm";
+import { contribuicoes, cortesDe, dependenciaParcialRapida, escore, estagios, importanciaGanho, perdaLog, sigmoide, type Modelo, type No, type Vetor } from "@/lib/capitulo6/gbm";
 import { int, num, pct, sinal } from "@/lib/capitulo7/formato";
 
 /**
@@ -12,8 +12,11 @@ import { int, num, pct, sinal } from "@/lib/capitulo7/formato";
  * + contribuições = escore é verificada na tela. A importância por ganho é a redução do erro quadrático do
  * pseudo-resíduo em cada corte, somada por variável e normalizada: a definição de feature_importances_ do
  * GradientBoostingClassifier; conferida fora da tela com o scikit-learn 1.9.1 (mesmos valores até 10⁻¹³) e calculada
- * aqui com os estágios da biblioteca. A proposta da previsão é escolhida por regra (a de maior utilização entre as que
- * têm 10 dias de atraso ou mais); a alternativa certa é a de maior contribuição positiva, calculada.
+ * aqui com os estágios da biblioteca. A proposta da previsão é escolhida por busca: aquela em que a variável que mais
+ * move a log odds (em valor absoluto) não é a de maior ganho, com a maior folga entre a primeira e a segunda
+ * contribuição; assim, quem responde pelo ganho erra. A alternativa certa é calculada. Quando a proposta exibida tem
+ * utilização acima do último corte e contribuição negativa dela, uma nota mostra a queda da dependência parcial nesse
+ * trecho (com quantas propostas de ajuste o sustentam) e leva ao slide 20.
  */
 function calcular() {
   const M0 = modelo(CFG_CARTEIRA);
@@ -25,28 +28,43 @@ function calcular() {
   const usa = (no: No, v: number): boolean => !no.folha && (no.variavel === v || usa(no.esq, v) || usa(no.dir, v));
   const SEM_ATRASO = !M.arvores.some((a) => usa(a, 1));
 
+  const ART0 = ["a utilização", "o atraso", "o score"], DE = ["da utilização", "do atraso", "do score"];
   const PDV = XV.map((x) => sigmoide(escore(M, x)));
   const idx = (f: (i: number) => number) => XV.reduce((b, _, i) => (f(i) > f(b) ? i : b), 0);
-  const I_PREV = idx((i) => (XV[i][1] >= 10 ? XV[i][0] : -1));
+  // proposta da previsão, por busca: a variável que mais move a log odds dela (em valor absoluto) não é a de maior
+  // ganho na carteira; entre essas, a de maior folga entre a primeira e a segunda contribuição; no empate, mais atraso
+  const J_GANHO = GANHO.reduce((b, v, j) => (v > GANHO[b] ? j : b), 0);
+  const PHI = XV.map((x) => contribuicoes(M, x).phi);
+  const topo = (p: number[]) => p.reduce((b, v, j) => (Math.abs(v) > Math.abs(p[b]) ? j : b), 0);
+  const folga = (p: number[]) => { const a = p.map(Math.abs).sort((u, v) => v - u); return a[0] - a[1]; };
+  const I_PREV = idx((i) => (topo(PHI[i]) !== J_GANHO ? folga(PHI[i]) * 1e3 + XV[i][1] * 1e-3 : -Infinity));
+  const I_UTIL = idx((i) => (XV[i][1] >= 10 ? XV[i][0] : -1));
   const PROPOSTAS = [
-    { r: "Utilização alta", i: I_PREV },
+    { r: "Caso da previsão", i: I_PREV },
+    { r: "Utilização alta", i: I_UTIL },
     { r: "Maior PD", i: idx((i) => PDV[i]) },
     { r: "Menor PD", i: idx((i) => -PDV[i]) },
     { r: "Default, PD baixa", i: idx((i) => (YV[i] ? -PDV[i] : -Infinity)) },
   ];
   const C_PREV = contribuicoes(M, XV[I_PREV]);
-  const J_MAX = C_PREV.phi.reduce((b, v, j) => (v > C_PREV.phi[b] ? j : b), 0);
+  const J_MAX = topo(C_PREV.phi);
+  const J_SEG = [0, 1, 2].filter((j) => j !== J_MAX).reduce((b, j) => (Math.abs(C_PREV.phi[j]) > Math.abs(C_PREV.phi[b]) ? j : b), J_MAX === 0 ? 1 : 0);
   const fmtX = (x: Vetor) => `utilização de ${num(x[0], 1)}%, atraso de ${int(x[1])} dias e score ${int(x[2])}`;
   const OPS = [0, 1, 2].map((j) => ({
     texto: VARIAVEIS[j],
     certa: j === J_MAX,
-    retorno: j === J_MAX ? <>Isso: {sinal(C_PREV.phi[j], 2)} na log odds, mais que as outras duas somadas ({sinal(C_PREV.phi.reduce((s, v, q) => s + (q === j ? 0 : v), 0), 2)}).</>
-      : j === 1 && SEM_ATRASO ? <>Nenhuma das {K_PARADA} árvores corta no atraso: a contribuição dele é zero em toda proposta, e o ganho também.</>
-        : <>Confunde valor alarmante com contribuição: a {VARIAVEIS[j].toLowerCase()} desta proposta soma {sinal(C_PREV.phi[j], 2)} na log odds. A contribuição mede o uso que o modelo faz do valor.</>,
+    retorno: j === J_MAX ? <>Isso: {sinal(C_PREV.phi[j], 2)} na log odds, {num(Math.abs(C_PREV.phi[j] / C_PREV.phi[J_SEG]), 1)} vezes o que {ART0[J_SEG]} move. A carteira corta mais no {VARIAVEIS[J_GANHO].toLowerCase()}; esta proposta depende mais {DE[j]}.</>
+      : j === 1 && SEM_ATRASO ? <>Confunde valor alarmante com contribuição: nenhuma das {K_PARADA} árvores corta no atraso, então {int(XV[I_PREV][1])} dias não movem esta PD nem nenhuma outra.</>
+        : j === J_GANHO ? <>Confunde importância na carteira com peso na proposta: o ganho soma cortes em todas as propostas, sem sinal; nesta, {ART0[j]} move menos que {ART0[J_MAX]}.</>
+          : <>Confunde valor alarmante com contribuição: a contribuição mede o uso que o modelo faz do valor desta proposta, não o valor em si.</>,
   }));
-  const ART = ["a utilização", "o atraso", "o score"];
+  // utilização acima do último corte: a dependência parcial cai ali, num trecho com poucas propostas (ligação com o slide 20)
+  const CORTE_U = Math.max(...cortesDe(M, 0));
+  const [PD_ANTES, PD_DEPOIS] = dependenciaParcialRapida(M, XA, 0, [CORTE_U - 0.05, CORTE_U + 0.05]);
+  const N_ACIMA = XA.filter((x) => Math.fround(x[0]) > CORTE_U).length;
+  const ART = ART0;
   const LIM = { u: [0, 100], a: [0, 60], s: [600, 970] } as const;
-  return { M0, LL_V, K_PARADA, M, GANHO, usa, SEM_ATRASO, PDV, idx, I_PREV, PROPOSTAS, C_PREV, J_MAX, fmtX, OPS, ART, LIM };
+  return { M0, LL_V, K_PARADA, M, GANHO, usa, SEM_ATRASO, PDV, idx, I_PREV, PROPOSTAS, C_PREV, J_MAX, fmtX, OPS, ART, LIM, CORTE_U, PD_ANTES, PD_DEPOIS, N_ACIMA };
 }
 let CACHE: ReturnType<typeof calcular> | null = null;
 /** Cálculo preguiçoso: só o slide visitado paga o ajuste dos modelos (o registro importa todos os quadros). */
@@ -94,7 +112,7 @@ function Cascata({ d, base, phi, ver }: { d: Dim; base: number; phi: number[]; v
 }
 
 export function S19Contribuicoes({ pagina }: { pagina?: Pagina }) {
-  const { K_PARADA, M, GANHO, I_PREV, PROPOSTAS, fmtX, OPS, ART, LIM } = dados();
+  const { K_PARADA, M, GANHO, I_PREV, PROPOSTAS, fmtX, OPS, ART, LIM, CORTE_U, PD_ANTES, PD_DEPOIS, N_ACIMA } = dados();
   const [esc, setEsc] = useState<number | null>(null);
   const [ip, setIp] = useState(0);
   const [x, setX] = useState<number[]>([...XV[I_PREV]]);
@@ -109,7 +127,7 @@ export function S19Contribuicoes({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c6p19" pagina={pagina} layout="gl"
       conclusao={!revelado
-        ? <>Proposta da validação com {fmtX(XV[I_PREV])}: PD de {pct(sigmoide(escore(M, XV[I_PREV])), 1)}. Qual variável mais empurra essa PD para cima? Preveja ao lado.</>
+        ? <>Proposta da validação com {fmtX(XV[I_PREV])}: PD de {pct(sigmoide(escore(M, XV[I_PREV])), 1)}. A tabela traz o ganho de cada variável na carteira. Qual delas mais move esta PD? Preveja ao lado.</>
         : <>Valor esperado {num(c.base, 2)} {c.phi.map((p, j) => <span key={j}>{p < 0 ? "− " : "+ "}{num(Math.abs(p), 2)} ({VARIAVEIS[j].toLowerCase()}) </span>)}= <b>{num(f, 2)}</b>, PD de {pct(sigmoide(f), 1)}; {dif < 1e-12 ? "a soma fecha exatamente" : `diferença de ${num(dif, 12)}`}. O ganho põe {ART[jg]} em {pct(GANHO[jg], 0)} para a carteira, sem sinal; nesta proposta, pesa mais {ART[jm]}. O <LinkSlide slug="c6p20">slide 20</LinkSlide> mostra o atraso entrando no modelo, e na direção errada.</>}
       fonte={`Validação sorteada: ${int(NV)} propostas. Boosting parado em ${K_PARADA} árvores (taxa 0,1, profundidade 2, mínimo de 40 por folha). Contribuições de Shapley pelo caminho das árvores, conferidas com o shap.TreeExplainer; ganho como no scikit-learn, nas ${int(XA.length)} propostas de ajuste.`}>
       <Painel titulo={`Da média do modelo à log odds da proposta${editada ? " (editada)" : ""}`}>
@@ -118,7 +136,7 @@ export function S19Contribuicoes({ pagina }: { pagina?: Pagina }) {
         </Grafico>
       </Painel>
       <Painel>
-        {!revelado && <Previsao rotulo="Antes de revelar" pergunta={`Com ${fmtX(XV[I_PREV])}, qual variável mais empurra a PD para cima?`} opcoes={OPS} escolha={esc} onEscolha={setEsc} />}
+        {!revelado && <Previsao rotulo="Antes de revelar" pergunta="Qual variável mais move esta PD, para cima ou para baixo?" opcoes={OPS} escolha={esc} onEscolha={setEsc} />}
         {revelado && <>
           <p className="q7-k">Escolha ou edite a proposta</p>
           <div className="q7-botoes q6-s19-props" role="group" aria-label="Propostas da validação">{PROPOSTAS.map((p, i) => <button key={p.r} type="button" className="q7-btn" aria-pressed={ip === i && !editada} onClick={() => escolher(i)}>{p.r}</button>)}<Botao sec onClick={restaurar}>Restaurar</Botao></div>
@@ -130,7 +148,9 @@ export function S19Contribuicoes({ pagina }: { pagina?: Pagina }) {
           <thead><tr><th className="q7-t-l">Variável</th><th>Ganho, carteira</th><th>Contribuição, proposta</th></tr></thead>
           <tbody>{VARIAVEIS.map((v, j) => <tr key={v} data-on={revelado && j === jm ? "1" : undefined}><th>{v}</th><td>{pct(GANHO[j], 0)}</td><td>{revelado ? `${c.phi[j] > 0 ? "▲" : c.phi[j] < 0 ? "▼" : ""} ${sinal(c.phi[j], 2)}` : "?"}</td></tr>)}</tbody>
         </table>
-        {revelado && <p className="q7-nota">Ganho: redução da perda no ajuste, somada na carteira, sem sinal. Contribuição: quanto o valor desta proposta move a log odds, com sinal. A sigmoide do valor esperado não é a PD média.</p>}
+        {revelado && (x[0] > CORTE_U && c.phi[0] < 0
+          ? <p className="q7-nota">A utilização de {num(x[0], 1)}% baixa a PD: acima de {num(CORTE_U, 1)}%, a PD média da carteira cai de {pct(PD_ANTES, 2)} para {pct(PD_DEPOIS, 2)}, num trecho com {int(N_ACIMA)} das {int(XA.length)} propostas de ajuste. Forma sem lógica de crédito: o <LinkSlide slug="c6p20">slide 20</LinkSlide> a proíbe com restrição monotônica.</p>
+          : <p className="q7-nota">Ganho: redução da perda no ajuste, somada na carteira, sem sinal. Contribuição: quanto o valor desta proposta move a log odds, com sinal. A sigmoide do valor esperado não é a PD média.</p>)}
       </Painel>
     </Quadro>
   );

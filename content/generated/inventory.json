@@ -1,7 +1,7 @@
 {
  "source": "content/original/apresentacao-curso-pd.html",
- "sha256": "891499ed26f5eaf99a787e4b1227038c937dc38c316fffd765ccbc9cee2ed89b",
- "extractedAt": "2026-10-02T12:59:19.329Z",
+ "sha256": "0d313c7a3303c79598e5a70bd22300537d724f889c7e63d639506e17e906e2a9",
+ "extractedAt": "2026-10-02T13:42:38.230Z",
  "edition": "2026",
  "units": [
   {
@@ -1768,7 +1768,7 @@
    "pageId": "ygawc3538ni70wnxp9yd0",
    "chapter": 6,
    "unit": 2,
-   "title": "Do treino à validação, o boosting perdeu 0,17 de AUC",
+   "title": "Do treino à validação, o boosting perdeu 0,172 de AUC",
    "level": "essencial",
    "minutes": 4,
    "origin": "esq",
@@ -1882,7 +1882,7 @@
    "pageId": "k6q8c02iwe2465dehmpz3",
    "chapter": 6,
    "unit": 2,
-   "title": "Somar só um pedaço da correção: a taxa de aprendizagem",
+   "title": "Taxa de aprendizagem: a maior desce mais rápido no treino",
    "level": "essencial",
    "minutes": 3,
    "origin": "rec",
@@ -1901,7 +1901,7 @@
    "pageId": "ecfy6tfs9s622qx5xnyx3",
    "chapter": 6,
    "unit": 2,
-   "title": "Árvore a árvore, a perda de treino cai",
+   "title": "Nas quatro árvores, a perda de treino cai",
    "level": "essencial",
    "minutes": 4,
    "origin": "rec",
@@ -2057,7 +2057,7 @@
    "pageId": "y36xy3srm0b4xnklhjvwf",
    "chapter": 6,
    "unit": 2,
-   "title": "Sortear propostas regulariza longe da parada; perto dela, o efeito some no ruído",
+   "title": "Na parada, sortear propostas ganha menos que o erro da validação",
    "level": "complementar",
    "minutes": 3,
    "origin": "rec",
@@ -4049,18 +4049,11 @@
  "resync": {
   "synced": [
    "c6p1",
-   "c6p2",
-   "c6p5",
    "c6p7",
+   "c6p8",
    "c6p10",
    "c6p11",
-   "c6p12",
-   "c6p15",
-   "c6p16",
-   "c6p18",
-   "c6p20",
-   "c6p21",
-   "c6p22"
+   "c6p16"
   ],
   "diverged": []
  }

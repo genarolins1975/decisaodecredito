@@ -380,6 +380,13 @@
 .q7-s22-m > .q7-graf { flex: 1; min-height: 0; }
 .q7-s22-t { font-size: 1.3cqw; font-weight: 700; color: var(--q7-ink); } .q7-s22-v { font-size: 1.25cqw; color: var(--q7-mudo); font-variant-numeric: tabular-nums; }
 @container q7 (max-width: 820px) { .q7-s22-g { display: flex; flex-direction: column; } .q7-s22-t { font-size: 14px; } .q7-s22-v { font-size: 12px; } .q7-s22-m .q7-gw { font-size: 11px; } }
+/* rótulos de acima e abaixo da diagonal fora da área dos dados, numa linha sob o gráfico ampliado */
+.q7-s22-cantos { flex: none; display: flex; justify-content: space-between; gap: .8cqw; flex-wrap: wrap; padding-left: 2.2cqw; }
+@container q7 (max-width: 820px) { .q7-s22-cantos { padding-left: 0; } }
+/* 23 · a fórmula do Brier abre como cartão flutuante sobre o gráfico, sem espremer a régua */
+.q7 .q7-slide .q7-s23v3-acoes .q7-exp { position: relative; }
+.q7 .q7-slide .q7-s23v3-acoes .q7-exp[open] > .q7-exp-c { position: absolute; z-index: 6; right: -1px; bottom: calc(100% - .5cqw); width: 34cqw; max-height: 24cqw; overflow-y: auto; background: #fff; border: 1px solid var(--q7-ink); border-radius: .7cqw .7cqw 0 .7cqw; padding-top: .7cqw; box-shadow: 0 .3cqw 1.2cqw rgba(0, 32, 91, .12); }
+@container q7 (max-width: 820px) { .q7 .q7-slide .q7-s23v3-acoes .q7-exp[open] > .q7-exp-c { position: static; width: auto; max-height: none; border: 0; box-shadow: none; padding-top: 0; } }
 /* 19 · confiabilidade */
 .q7-s19 { display: grid; grid-template-columns: minmax(0, 47fr) minmax(0, 53fr); grid-template-rows: auto minmax(0, 1fr); gap: 1.1cqw; min-height: 0; }
 .q7-s19-r { grid-column: 1; grid-row: 1; gap: .2cqw; } .q7-s19-r .q7-gw { height: 3.6cqw; flex: none; }

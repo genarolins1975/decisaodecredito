@@ -92,6 +92,10 @@ export function S18Nivel({ pagina }: { pagina?: Pagina }) {
   const restaurar = () => { setEsc(null); setIk(KS.indexOf(K_PARADA)); };
   const escolher = (i: number | null) => { setEsc(i); if (i !== null && OPS[i].certa) setIk(KS.indexOf(K_MAX)); };
   const parado = k === K_PARADA;
+  // sinais do modelo parado, calculados: média e slope no intervalo, faixas fora dele e a mais distante do intervalo
+  const MEDIA_OK = E0.g.pdMedia! >= TAXA.lo && E0.g.pdMedia! <= TAXA.hi, SLOPE_OK = E0.s.ic[0] <= 1 && E0.s.ic[1] >= 1;
+  const FORA = E0.F.filter((f) => !f.compativel), dist = (f: Faixa) => Math.max(f.ic!.lo - f.pdMedia!, f.pdMedia! - f.ic!.hi);
+  const LONGE = FORA.reduce((b, f) => (dist(f) > dist(b) ? f : b), FORA[0] ?? E0.F[0]);
   return (
     <Quadro slug="c6p18" pagina={pagina} layout="gl"
       titulo={revelado ? undefined : "A média das PDs bate com a taxa. E as faixas?"}
@@ -99,7 +103,7 @@ export function S18Nivel({ pagina }: { pagina?: Pagina }) {
       conclusao={!revelado
         ? <>A PD média do modelo parado, <b>{pct(E0.g.pdMedia!, 1)}</b>, cabe no intervalo da taxa observada ({DV} de {int(NV)}). E com {K_MAX} árvores? Preveja ao lado.</>
         : parado
-          ? <>Parado em {K_PARADA} árvores: PD média {pct(e.g.pdMedia!, 1)} contra {pct(TAXA.p, 1)}, PD no intervalo em {e.dentro} das {NF} faixas e slope <b>{num(e.s.slope, 2)}</b> (IC de {num(e.s.ic[0], 2)} a {num(e.s.ic[1], 2)}): {int(NV)} propostas não provam desvio, e não provar não é conferir. O <LinkSlide slug="c6p19">slide 19</LinkSlide> explica cada PD; o capítulo 7 mede na janela e recalibra.</>
+          ? <>Parado em {K_PARADA} árvores: PD média {pct(e.g.pdMedia!, 1)} contra {pct(TAXA.p, 1)}{MEDIA_OK ? ", no intervalo," : ""} e slope <b>{num(e.s.slope, 2)}</b> (IC de {num(e.s.ic[0], 2)} a {num(e.s.ic[1], 2)}{SLOPE_OK ? ", contém 1" : ""}){FORA.length ? <>, mas {FORA.length === 1 ? `a faixa ${FORA[0].j} fica` : `as faixas ${FORA.map((f) => f.j).join(" e ")} ficam`} fora do intervalo de Wilson (faixa {LONGE.j}: {pct(LONGE.pdMedia!, 1)} previstos contra {pct(LONGE.obs!, 1)} observados, intervalo de {pct(LONGE.ic!.lo, 1)} a {pct(LONGE.ic!.hi, 1)}): <b>sinais mistos</b>, que {int(NV)} propostas não resolvem</> : <>: {int(NV)} propostas não provam desvio, e não provar não é conferir</>}. O <LinkSlide slug="c6p19">slide 19</LinkSlide> explica cada PD; o capítulo 7 mede com mais casos e recalibra.</>
           : <>Com {k} árvores, a PD média fica em {pct(e.g.pdMedia!, 1)} (observado {pct(TAXA.p, 1)}), e a faixa 1 recebe {pct(e.F[0].pdMedia!, 1)} contra {pct(e.F[0].obs!, 1)} observados: slope <b>{num(e.s.slope, 2)}</b> (IC de {num(e.s.ic[0], 2)} a {num(e.s.ic[1], 2)}), {forma(e.s)}. Média certa não é PD certa; o <LinkSlide slug="c6p19">slide 19</LinkSlide> explica cada PD, e o capítulo 7 recalibra.</>}
       fonte={`Validação sorteada: ${int(NV)} propostas, ${DV} defaults. ${NF === 5 ? "Cinco" : NF} faixas pela fila de PD (${NMIN} ou ${NMAX}); Wilson de 95%; slope com IC de Wald.`}>
       <Painel>

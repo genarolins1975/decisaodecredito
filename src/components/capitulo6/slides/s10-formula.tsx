@@ -10,9 +10,9 @@ import base from "@/lib/capitulo6/base.json";
 /**
  * 10 · c6p10 · A fórmula depois da história: o algoritmo de Friedman (2001) para log loss em cinco linhas, cada termo
  * ligado ao slide em que apareceu, e a coluna "no exemplo" preenchida com a árvore m e a proposta escolhidas, nas 16
- * propostas sintéticas (CFG_DIDATICA, gbm.ts). A última linha (F_m) fica oculta até a previsão certa: com F_{m−1}, η e
- * γ na tela, quanto vale F_m? As alternativas erradas são as confusões de η (esquecido ou aplicado ao acumulado) e da
- * sigmoide aplicada a cada passo.
+ * propostas sintéticas (CFG_DIDATICA, gbm.ts). A última linha (F_m), fórmula e exemplo, fica oculta até a previsão
+ * certa: com F_{m−1}, η e γ na tela, quanto vale F_m? A regra de soma é a do slide 7, e a turma a reconstrói de memória.
+ * As alternativas erradas são as confusões de η (esquecido ou aplicado ao acumulado) e da sigmoide aplicada a cada passo.
  */
 const SEMENTE_BASE = base.meta.seed; // semente do gerador do curso, que também gerou as 16 propostas didáticas
 const MOD = modelo(CFG_DIDATICA, XD, YD);
@@ -51,10 +51,10 @@ const OPS = [
 
 function Linha({ n, f, oque, slide, rotulo, ex, oculto }: { n: string; f: string; oque: string; slide: string; rotulo: string; ex: ReactNode; oculto?: boolean }) {
   return (
-    <li className="q6-s10-l">
+    <li className="q6-s10-l" data-oculto={oculto ? "1" : undefined}>
       <span className="q6-s10-n">{n}</span>
-      <span className="q6-s10-f"><Tex f={f} /></span>
-      <span className="q6-s10-o">{oque} <LinkSlide slug={slide} className="q6-s10-ln" rotulo={`Ver o slide ${rotulo}`}>slide {rotulo}</LinkSlide></span>
+      <span className="q6-s10-f"><Tex f={oculto ? String.raw`F_m = \;?` : f} /></span>
+      <span className="q6-s10-o">{oque} {!oculto && <LinkSlide slug={slide} className="q6-s10-ln" rotulo={`Ver o slide ${rotulo}`}>slide {rotulo}</LinkSlide>}</span>
       <span className="q6-s10-e" data-oculto={oculto ? "1" : undefined}>{ex}</span>
     </li>
   );
@@ -83,12 +83,12 @@ export function S10Formula({ pagina }: { pagina?: Pagina }) {
           <Linha n="2" f={String.raw`r_i = y_i - \sigma\!\big(F_{m-1}(x_i)\big)`} oque="erro como alvo" slide="c6p4" rotulo="4" ex={<>{DIDATICA[sel].y} − σ({num(P.Fant, 2)}) = <b>{num(P.r, 2)}</b></>} />
           <Linha n="3" f={String.raw`\text{árvore}(r) \to \text{folhas } R_{jm}`} oque="agrupa erros parecidos" slide="c6p5" rotulo="5" ex={<>{P.regra}, <b>{P.n}{"\u00a0"}propostas</b></>} />
           <Linha n="4" f={String.raw`\gamma_{jm} = \dfrac{\sum r_i}{\sum p_i(1-p_i)}`} oque="folha por Newton" slide="c6p6" rotulo="6" ex={<>{num(P.sr, 2)} ÷ {num(P.sh, 2)} = <b>{num(P.gama, 2)}</b></>} />
-          <Linha n="5" f={String.raw`F_m = F_{m-1} + \eta\,\gamma_{jm}`} oque="só uma fração η" slide="c6p7" rotulo="7" oculto={!revelado}
-            ex={revelado ? <>{num(P.Fant, 2)} + {num(ETA, 1)} × {par(P.gama)} = <b>{num(P.Fm, 2)}</b></> : <>depois da previsão</>} />
+          <Linha n="5" f={String.raw`F_m = F_{m-1} + \eta\,\gamma_{jm}`} oque={revelado ? "só uma fração η" : "como F muda: depois da previsão"} slide="c6p7" rotulo="7" oculto={!revelado}
+            ex={revelado ? <>{num(P.Fant, 2)} + {num(ETA, 1)} × {par(P.gama)} = <b>{num(P.Fm, 2)}</b></> : <>F{sb(m)} = ?</>} />
             </ol>
           </li>
         </ol>
-        <p className="q6-s10-fim">A perda cai a cada m (<LinkSlide slug="c6p8">slide 8</LinkSlide>); no fim, PD = σ(F<sub>M</sub>) (<LinkSlide slug="c6p9">slide 9</LinkSlide>).</p>
+        <p className="q6-s10-fim">A perda costuma cair a cada m, sem garantia (<LinkSlide slug="c6p8">slide 8</LinkSlide>); no fim, PD = σ(F<sub>M</sub>) (<LinkSlide slug="c6p9">slide 9</LinkSlide>).</p>
       </Painel>
       <Painel>
         <p className="q7-k">Árvore m e proposta{revelado ? "" : " · depois da previsão"}</p>

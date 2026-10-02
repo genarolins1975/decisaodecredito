@@ -3,9 +3,9 @@ import { useState } from "react";
 import { Grafico, LinkSlide, Painel, Previsao, Quadro, Seg, escala, type Pagina } from "../base";
 import { SLIDE } from "@/lib/capitulo7/roteiro";
 import { Roc } from "../graficos";
-import { CENARIOS, MINI, PL, PT, Y } from "@/lib/capitulo7/dados";
+import { CENARIOS, MINI, N, PL, PT, Y } from "@/lib/capitulo7/dados";
 import { aucPorPares, curvaRoc, transformar } from "@/lib/capitulo7/metricas";
-import { num, pct } from "@/lib/capitulo7/formato";
+import { int, num, pct } from "@/lib/capitulo7/formato";
 import { aucEsperada, aucsEmJanelasNovas, N_JANELAS, SEMENTE_JANELAS } from "@/lib/capitulo7/janelas";
 
 /**
@@ -13,7 +13,10 @@ import { aucEsperada, aucsEmJanelasNovas, N_JANELAS, SEMENTE_JANELAS } from "@/l
  * à PD do cenário: numa transformação estritamente crescente nenhuma linha se cruza e a ROC da janela é a mesma; na
  * fila embaralhada as linhas se cruzam e a AUC cai para perto de 0,5; na orientação invertida tudo se cruza e a AUC
  * vira 1 − AUC. Até a turma escolher a frase, o subtítulo é pergunta e a leitura só dá a instrução; o que a AUC não
- * informa aparece depois da escolha. Pontos que se sobrepõem na ponte ganham um deslocamento vertical determinístico.
+ * informa aparece depois da escolha. Na ponte, cada linha vai da posição exata no eixo de cima à posição exata no de
+ * baixo, então duas linhas só se cruzam quando o par troca de ordem (conferido por script: zero cruzamentos desenhados
+ * na transformação crescente); marcas que se sobrepõem se empilham para fora da faixa entre os eixos, presas ao eixo por
+ * uma haste.
  * Na ROC, a logística fica em cinza largo por baixo; na transformação crescente o cenário vem tracejado por cima, e o
  * cinza aparecendo entre os traços mostra que as duas curvas coincidem.
  */
@@ -46,14 +49,14 @@ const OPS = [
 ];
 
 /**
- * Cenário PD verdadeira: a AUC de uma janela é uma realização ruidosa. A AUC esperada em janelas novas (os mesmos
- * proponentes, desfecho sorteado de novo da PD verdadeira) separa o teto em média da sorte desta janela.
+ * Cenário PD verdadeira: a AUC de uma janela é uma realização ruidosa. A AUC média nas réplicas sintéticas da janela
+ * (os mesmos proponentes, desfecho sorteado de novo pela PD verdadeira) separa o teto em média da sorte desta janela.
  */
 function VerdadeiraLeitura({ auc }: { auc: number }) {
   const eT = aucEsperada(PT), eL = aucEsperada(PL);
   const aT = aucsEmJanelasNovas(PT), aL = aucsEmJanelasNovas(PL);
   const passa = aT.reduce((k, v, i) => k + (aL[i] > v ? 1 : 0), 0);
-  return <>Em {N_JANELAS} janelas novas, a PD verdadeira tem <b>AUC média {num(eT, 4)}</b> contra {num(eL, 4)} da logística; nesta janela, {num(auc, 4)} contra {num(AUC0, 4)}. Em média nenhum modelo passa da verdadeira; numa janela isolada pode (aqui, em {passa} de {N_JANELAS}). Nenhum chega a 1.</>;
+  return <>Em {N_JANELAS} réplicas sintéticas da janela (os mesmos {int(N)} proponentes com o desfecho sorteado de novo pela PD verdadeira), ela tem <b>AUC média {num(eT, 4)}</b> contra {num(eL, 4)} da logística; nesta janela, {num(auc, 4)} contra {num(AUC0, 4)}. Em média nenhum modelo passa da verdadeira; numa réplica isolada pode (aqui, em {passa} de {N_JANELAS}). Nenhum chega a 1.</>;
 }
 
 export function S10LimitesAuc({ pagina }: { pagina?: Pagina }) {
@@ -64,27 +67,33 @@ export function S10LimitesAuc({ pagina }: { pagina?: Pagina }) {
   const cruz = (() => { let k = 0; for (let i = 0; i < orig.length; i++) for (let j = i + 1; j < orig.length; j++) if ((orig[i] - orig[j]) * (novo[i] - novo[j]) < 0) k++; return k; })();
   return (
     <Quadro slug="c7p24" pagina={pagina} layout="glx" sub={esc === null ? `Um número como ${num(AUC0, 4)} mede exatamente o quê? Escolha uma frase e teste nos cenários.` : undefined}
-      conclusao={esc === null ? "Escolha uma frase ao lado e depois teste nos quatro cenários." : cen === "crescente" ? <>A PD mudou de nível e <b>nenhuma linha se cruzou</b>: a AUC continua {num(auc, 4)}. A AUC só lê a ordem.</>
+      conclusao={esc === null ? "Escolha uma frase ao lado e depois teste nos quatro cenários." : cen === "crescente" ? <>A PD mudou de nível e <b>{cruz === 0 ? "nenhuma linha se cruzou" : `${cruz} pares se cruzaram`}</b>: a AUC continua {num(auc, 4)}. A AUC só lê a ordem.</>
         : cen === "invertida" ? <>Tudo se cruza: a AUC vira 1 − {num(AUC0, 4)} = {num(auc, 4)}. Abaixo de 0,5 quase sempre é sentido trocado do escore, não um modelo &ldquo;pior que o acaso&rdquo;.</>
         : cen === "embaralhada" ? <>{cruz} cruzamentos entre {PARES} pares de propostas: a AUC cai para {num(auc, 4)}, perto do sorteio, com a mesma média de PD.</>
         : <VerdadeiraLeitura auc={auc} />}
-      fonte={`Ponte: as 20 propostas da mini-base com a PD da logística em precisão plena. ROC e AUC: janela fora do tempo, 737 propostas e 81 defaults. Transformação estritamente crescente: σ(1 + 0,5 · logit p). Janelas novas: ${N_JANELAS} sorteios do desfecho pela PD verdadeira, semente ${SEMENTE_JANELAS}.`}>
+      fonte={`Ponte: as 20 propostas da mini-base com a PD da logística em precisão plena. ROC e AUC: janela fora do tempo, 737 propostas e 81 defaults. Transformação estritamente crescente: σ(1 + 0,5 · logit p). Réplicas sintéticas da janela: os mesmos ${int(N)} proponentes com o desfecho sorteado de novo pela PD verdadeira; ${N_JANELAS} sorteios, semente ${SEMENTE_JANELAS}, só possível em base sintética.`}>
       <Painel>
         <Seg rotulo="Cenário" opcoes={(Object.keys(CEN) as Cen[]).map((k) => ({ v: k, r: CEN[k].nome }))} valor={cen} onChange={setCen} />
         <div className="q7-s10-g">
           <Grafico titulo="A mesma proposta, duas PDs" sub={c.texto} rotulo={`Ponte entre a PD original e a do cenário para 20 propostas; ${cruz} cruzamentos`} arCelular="4 / 3">
             {(d) => {
               const dom = Math.ceil(Math.max(0.2, ...novo, ...orig) * 5) / 5; const tk = Array.from({ length: Math.round(dom / 0.2) + 1 }, (_, i) => i * 0.2);
-              const x = escala([0, dom], [d.fs * 1.4, d.w - d.fs * 1.2]); const yA = d.fs * 3.3, yB = d.h - d.fs * 3.6;
-              const r = d.fs * 0.3, passo = r * 1.9;
+              const x = escala([0, dom], [d.fs * 1.4, d.w - d.fs * 1.2]);
+              const r = d.fs * 0.3, passo = r * 2.15;
               const nA = niveis(orig.map((v) => x(v)), r * 2.1), nB = niveis(novo.map((v) => x(v)), r * 2.1);
-              const ya = (i: number) => yA + nA[i] * passo, yb = (i: number) => yB - nB[i] * passo; // empilha para dentro, longe dos rótulos
+              // cada linha nasce e morre na posição exata do eixo; as marcas próximas se empilham para fora da faixa entre
+              // os eixos (acima do eixo de cima, abaixo do de baixo), e os rótulos dos eixos ficam além das pilhas
+              const yA = d.fs * 2.95 + r + Math.max(0, ...nA) * passo, yB = d.h - d.fs * 2.8 - r - Math.max(0, ...nB) * passo;
+              const ya = (i: number) => yA - nA[i] * passo, yb = (i: number) => yB + nB[i] * passo;
+              const cor = (def: number) => ({ stroke: def ? "#8C2332" : "#9AA1AD", strokeWidth: def ? 2.6 : 1.6, strokeOpacity: def ? 0.95 : 0.7 });
               return (
                 <g>
-                  <text className="q7-eixo-t" x={x(0)} y={yA - d.fs * 1.75}>PD original (logística)</text>
-                  <text className="q7-eixo-t" x={x(0)} y={yB + d.fs * 2.9}>PD no cenário</text>
-                  {[yA, yB].map((yy, k) => <g key={k}><line className="q7-eixo" x1={x(0)} x2={x(dom)} y1={yy} y2={yy} />{tk.map((t) => <text key={t} className="q7-tick" x={x(t)} y={yy} dy={k ? "1.45em" : "-.55em"} textAnchor="middle">{pct(t, 0)}</text>)}</g>)}
-                  {MINI.map((m, i) => <line key={m.id} x1={x(orig[i])} y1={ya(i)} x2={x(novo[i])} y2={yb(i)} stroke={m.y ? "#8C2332" : "#9AA1AD"} strokeWidth={m.y ? 2.6 : 1.6} strokeOpacity={m.y ? 0.95 : 0.7} />)}
+                  <text className="q7-eixo-t" x={x(0)} y={d.fs * 1.05}>PD original (logística)</text>
+                  <text className="q7-eixo-t" x={x(0)} y={d.h - d.fs * 0.35}>PD no cenário</text>
+                  {tk.map((t) => <g key={t}><text className="q7-tick" x={x(t)} y={d.fs * 2.4} textAnchor="middle">{pct(t, 0)}</text><text className="q7-tick" x={x(t)} y={d.h - d.fs * 1.75} textAnchor="middle">{pct(t, 0)}</text></g>)}
+                  {[yA, yB].map((yy, k) => <line key={k} className="q7-eixo" x1={x(0)} x2={x(dom)} y1={yy} y2={yy} />)}
+                  <g className="q7-s10-ponte">{MINI.map((m, i) => <line key={m.id} x1={x(orig[i])} y1={yA} x2={x(novo[i])} y2={yB} {...cor(m.y)} />)}</g>
+                  {MINI.map((m, i) => <g key={`h${m.id}`}>{nA[i] > 0 && <line x1={x(orig[i])} x2={x(orig[i])} y1={ya(i)} y2={yA} {...cor(m.y)} />}{nB[i] > 0 && <line x1={x(novo[i])} x2={x(novo[i])} y1={yB} y2={yb(i)} {...cor(m.y)} />}</g>)}
                   {MINI.map((m, i) => <g key={`p${m.id}`}><circle cx={x(orig[i])} cy={ya(i)} r={r} className={m.y ? "q7-pt-def" : "q7-pt-adi"} /><circle cx={x(novo[i])} cy={yb(i)} r={r} className={m.y ? "q7-pt-def" : "q7-pt-adi"} /></g>)}
                 </g>
               );

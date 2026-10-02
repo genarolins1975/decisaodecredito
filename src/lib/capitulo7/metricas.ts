@@ -319,6 +319,18 @@ export function decomposicaoBrier(y: Vetor, pd: Vetor, faixas: Faixa[]) {
 export const transformar = (pd: Vetor, a: number, b: number) => pd.map((p) => sigmoide(a + b * logit(p)));
 /** Ajuste de intercepto estimado numa amostra de calibração (máxima verossimilhança, slope fixado em 1). */
 export const ajustarIntercepto = (yCal: Vetor, pdCal: Vetor) => interceptoComSlope1(yCal, pdCal);
+/**
+ * Intercepto pela diferença de logits das médias: logit(taxa observada) − logit(PD média). É a aproximação possível
+ * quando a amostra só existe agregada (n, taxa, PD média), sem PD por proposta para resolver Σ σ(logit pᵢ + a) = Σ yᵢ;
+ * com PDs espalhadas, fica abaixo da raiz exata (slide 28).
+ */
+export const interceptoDasMedias = (taxa: number, pdMedia: number) => logit(taxa) - logit(pdMedia);
+/** Amostras agregadas somadas numa só: defaults contados (n · taxa, arredondado), taxa e PD média ponderadas por n. */
+export function juntarAmostras(amostras: { n: number; taxa: number; pdMedia: number }[]) {
+  let n = 0, defaults = 0, somaPd = 0;
+  for (const a of amostras) { n += a.n; defaults += Math.round(a.n * a.taxa); somaPd += a.n * a.pdMedia; }
+  return { n, defaults, taxa: n ? defaults / n : null, pdMedia: n ? somaPd / n : null };
+}
 /** Platt sobre o escore s = logit(PD): regressão logística de y em s, por máxima verossimilhança, sem suavizar os alvos. */
 export function ajustarPlatt(yCal: Vetor, pdCal: Vetor) { const r = logisticaNewton(yCal, logits(pdCal), pdCal.map(() => 0)); return { a: r.a, b: r.b }; }
 

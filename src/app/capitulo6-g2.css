@@ -82,3 +82,4 @@
 .q6-s16-ctl > .q7-btn { margin-left: auto; }
 .q6-s16-ctl > div { display: grid; gap: .25cqw; }
 .q7 .q7-slide .q6-s12-tab th, .q7 .q7-slide .q6-s12-tab td { white-space: nowrap; }
+.q7 .q7-slide .q6-s16-tab th, .q7 .q7-slide .q6-s16-tab td { white-space: nowrap; }

@@ -100,10 +100,12 @@ export function S11Carteira({ pagina }: { pagina?: Pagina }) {
   const quedas = c.pa.slice(1).filter((v, k) => v < c.pa[k]).length;
   const passa = c.pv.findIndex((v, k) => k > 0 && v > c.pv[0] && c.pv.slice(k).every((w) => w > c.pv[0]));
   const vmin = Math.min(...c.pv), kmin = c.pv.indexOf(vmin);
+  const aucMax = Math.max(...c.av.slice(1)), kauc = c.av.indexOf(aucMax); // maior AUC de validação: a ordenação também piora depois dela
+  if (!(kauc < kmin && c.av[kmin] < aucMax && c.av[MAXA] < c.av[kmin])) throw new Error("a frase sobre a AUC de validação do slide 11 não vale nos dados");
   const ops = [
     { texto: "Acompanha o ajuste: cai a cada árvore", certa: false, retorno: <>Confunde ajuste com generalização: o ajuste mede o que o modelo já viu. Na validação, a perda termina em {num(c.pv[MAXA], 3)}, acima do palpite ({num(c.pv[0], 3)}).</> },
     { texto: "Melhora mais devagar, mas sempre melhora", certa: false, retorno: <>Melhora só nas primeiras árvores (até {num(vmin, 3)}); depois sobe e, com {MAXA}, fica em {num(c.pv[MAXA], 3)}, pior que o palpite ({num(c.pv[0], 3)}).</> },
-    { texto: "Melhora no começo, depois piora até passar do palpite inicial", certa: true, retorno: <>Isso: desce até {num(vmin, 3)} com {kmin} árvores e passa do palpite ({num(c.pv[0], 3)}) na {passa}. Com {MAXA}, a AUC de validação ainda é {num(c.av[MAXA], 3)}, acima do acaso: ordena, mas as PDs pioraram.</> },
+    { texto: "Melhora no começo, depois piora até passar do palpite inicial", certa: true, retorno: <>Isso: desce até {num(vmin, 3)} com {kmin} árvores e passa do palpite ({num(c.pv[0], 3)}) na {passa}. A ordenação também piora: a AUC de validação chega a {num(c.av[kauc], 3)} com {kauc} árvores, cai para {num(c.av[kmin], 3)} com {kmin} e para {num(c.av[MAXA], 3)} com {MAXA}.</> },
   ];
   const revelado = esc !== null && ops[esc].certa;
   const kv = (v: number, cc: number) => (revelado ? num(v, cc) : "·");

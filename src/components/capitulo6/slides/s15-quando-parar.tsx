@@ -69,13 +69,15 @@ export function S15QuandoParar({ pagina }: { pagina?: Pagina }) {
   const [ate, setAte] = useState(MAXA);
   const [esc, setEsc] = useState<number | null>(null);
   const vmin = Math.min(...c.pv), imin = c.pv.indexOf(vmin);
-  const perto = c.pv.map((v, k) => (v <= vmin + TOL ? k : -1)).filter((k) => k >= 0);
-  const faixa: [number, number] = [perto[0], perto[perto.length - 1]];
+  // faixa contínua em torno do mínimo: árvores vizinhas a menos de TOL dele (depois do fim, nenhuma volta à faixa)
+  let fa = imin, fb = imin; while (fa > 1 && c.pv[fa - 1] <= vmin + TOL) fa--; while (fb < MAXA && c.pv[fb + 1] <= vmin + TOL) fb++;
+  const faixa: [number, number] = [fa, fb];
+  const volta = c.pv.some((v, k) => k > fb && v <= vmin + TOL);
   const teto = Math.ceil((imin + 1) / 10) * 10;
   const ops = [
     { texto: `Todas as ${MAXA}: cada uma reduziu a perda de ajuste`, certa: false, retorno: <>O ajuste não sabe parar. Com {MAXA} árvores, a perda de validação é {num(c.pv[MAXA], 4)}, contra {num(vmin, 4)} no mínimo.</> },
     { texto: "Cerca de 100: corta só o fim da curva", certa: false, retorno: <>Supõe que o dano está no fim, mas depois de {faixa[1]} árvores a validação já passa de {num(TOL, 3)} acima do mínimo; com 100, {num(c.pv[100], 4)} contra {num(vmin, 4)}.</> },
-    { texto: `Menos de ${teto}`, certa: true, retorno: <>Isso: mínimo em {imin} árvores; as outras {MAXA - imin} decoram o ajuste.</> },
+    { texto: `Menos de ${teto}`, certa: true, retorno: <>Isso: mínimo em {imin} árvores. Até a {faixa[1]}, a perda fica a menos de {num(TOL, 3)} dele, o que equivale; depois da {faixa[1]}, passa da faixa{volta ? "" : " e não volta"}: as árvores seguintes só decoram o ajuste.</> },
   ];
   const revelado = esc !== null && ops[esc].certa;
   const escolher = (i: number | null) => { setEsc(i); if (i !== null && ops[i].certa) { setM(imin); setAte(60); } };
@@ -113,7 +115,7 @@ export function S15QuandoParar({ pagina }: { pagina?: Pagina }) {
                 <tr data-on="1"><th>Guarda a</th>{pacs.map((p) => <td key={p.k}>{p.guarda === imin ? <b>{p.guarda}</b> : p.guarda}</td>)}</tr>
               </tbody>
             </table>
-            {pacs[0].guarda !== imin && <p className="q7-nota">Com k = {pacs[0].k}, o mínimo local da árvore {pacs[0].guarda} engana.</p>}
+            {pacs[0].guarda !== imin && <p className="q7-nota">Com k = {pacs[0].k}, guarda a árvore {pacs[0].guarda}, {num(c.pv[pacs[0].guarda] - vmin, 4)} acima do mínimo: {c.pv[pacs[0].guarda] <= vmin + TOL ? `equivalente, dentro da faixa de ${num(TOL, 3)}` : "fora da faixa, um mínimo local que engana"}.</p>}
           </div>
         )}
       </Painel>
