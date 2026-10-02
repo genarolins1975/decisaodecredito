@@ -7,6 +7,7 @@ O revisor é um subagente em contexto limpo: não recebe a conversa de construç
 1. Medidas rodadas (SKILL.md, "Medidas automáticas"), servidor local de pé.
 2. Capturas de cada slide em estado inicial e com a interação principal acionada: `node scripts/capitulo7/varredura.mjs tmp/shots/revisao "1920x1080:palco,1920x1080:palco+abrir"` (troque o capítulo no script se necessário).
 3. Para revisão parcial (só slides alterados), passe a lista de slugs e o caminho do `avaliacao.json` anterior; o revisor reescreve só esses slides e os itens do storytelling afetados.
+4. Em capítulos longos, divida: três revisores de slides (cerca de 13 cada) e um de storytelling, em paralelo, cada um gravando um JSON parcial em `tmp/revisao/`. Junte com `node .claude/skills/quadro-capitulo/scripts/juntar.mjs N tmp/revisao/parte-*.json tmp/revisao/story.json`. Para a revisão depois de uma correção, passe só o parcial novo: os slides dele substituem os anteriores.
 
 ## Prompt (copie e preencha N, a pasta de capturas e, se parcial, os slugs)
 

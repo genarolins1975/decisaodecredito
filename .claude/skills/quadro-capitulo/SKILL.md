@@ -23,7 +23,7 @@ Um capítulo é uma sequência de quadros nativos, um por slide, lidos de um rot
 3. **Quadros.** Use o kit de `src/components/capitulo7/base.tsx` (Quadro, Painel, Grafico, Kpi, Controle, Seg, Previsao, Expandir, Formula, Legenda, LinkSlide) e o CSS `src/app/capitulo7.css`. Padrões obrigatórios em `references/padroes.md`.
 4. **Origem e conteúdo.** Guia do professor completo por página, questões avaliadas com diagnóstico por alternativa, textos da apostila; injete na camada de origem e importe.
 5. **Medir.** Rode as medidas automáticas (abaixo). Corrija até não haver corte, rolagem, erro de console nem violação de acessibilidade.
-6. **Revisar.** Dispare o revisor em contexto limpo com `references/rubrica.md` e o prompt de `references/revisor.md`. Ele grava `docs/capituloN/avaliacao.json`.
+6. **Revisar.** Dispare o revisor em contexto limpo com `references/rubrica.md` e o prompt de `references/revisor.md` (em capítulo longo, três revisores de slides e um de storytelling em paralelo, juntados por `scripts/juntar.mjs`). O resultado é `docs/capituloN/avaliacao.json`.
 7. **Portão.** `node .claude/skills/quadro-capitulo/scripts/avaliar.mjs N`. Sai com código 1 se qualquer item ficar abaixo de 9 ou sem evidência, e escreve `docs/capituloN/AVALIACAO.md`. Corrija o slide, meça de novo, peça nova revisão só dos itens afetados, repita até passar.
 
 ## Medidas automáticas (servidor local com a base semeada)
@@ -45,4 +45,5 @@ Layout, legibilidade e acessibilidade são calculados pelo portão a partir dess
 - `references/rubrica.md`: os sete itens por slide e os seis do storytelling, com o que dá 10, 9, 8 e abaixo.
 - `references/padroes.md`: padrões de quadro que já passaram (previsão antes de revelar, estado inicial, restauração, expansões, tipografia mínima, cores por papel).
 - `references/estado-da-arte.md`: como montar e pontuar o checklist do estado da arte; versão preenchida para avaliação e calibração de modelos de PD.
-- `references/revisor.md`: o prompt do revisor independente e o formato de `avaliacao.json`.
+- `references/revisor.md`: o prompt do revisor independente, a divisão em paralelo e o formato de `avaliacao.json`.
+- `scripts/slugs.mjs`, `scripts/juntar.mjs`, `scripts/avaliar.mjs`: slugs na ordem do roteiro, junção das revisões parciais e portão.
