@@ -3,7 +3,7 @@ import { Grafico, LinkSlide, Quadro, escala, margens, type Pagina } from "@/comp
 import { CURTO, PERGUNTAS, ROTEIRO } from "@/lib/capitulo6/roteiro";
 import { DIDATICA, HP_CANDIDATO, NA, NV, RES } from "@/lib/capitulo6/dados";
 import base from "@/lib/capitulo6/base.json";
-import { int, num, pct } from "@/lib/capitulo7/formato";
+import { int, num } from "@/lib/capitulo7/formato";
 
 /**
  * 01 · c6p1 · Mapa e gancho. A peça principal é o gancho: o candidato do comitê (o boosting de sete variáveis que o
@@ -27,7 +27,6 @@ const MODELOS = [
 ];
 const TREINO = RES.gbm_treino.auc, VAL = RES.gbm_val.auc;
 const QUEDA = TREINO - VAL, QUEDA_LOG = RES.logit_treino.auc - RES.logit_val.auc, EXCESSO = QUEDA - QUEDA_LOG;
-const FRACAO = QUEDA_LOG / QUEDA; // parte da queda do boosting que a logística também sofre
 const META = base.meta as { seed: number; n_treino: number; n_val: number; treino: string; validacao: string; features: string[] };
 const NVARS = META.features.length;
 const slides = (p: P) => ROTEIRO.filter((s) => s.pergunta === p);
@@ -115,8 +114,8 @@ const ESCALAS = [
 export function S01Mapa({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c6p1" pagina={pagina} layout="um"
-      conclusao={<>O candidato cai <b>{num(QUEDA, CASAS)}</b>; a logística, que decora pouco, <b>{num(QUEDA_LOG, CASAS)}</b> ({pct(FRACAO, 0)} disso). Se a troca de safra custa ao boosting o mesmo que à logística, cerca de <b>{num(EXCESSO, CASAS)}</b> é excesso do boosting: estimativa, não medida. E {num(VAL, CASAS)} é otimista: é a AUC que escolheu os hiperparâmetros (<LinkSlide slug="c6p21">slide 21</LinkSlide>). Mecanismo: <LinkSlide slug="c6p2">slide 2</LinkSlide>.</>}
-      fonte={`Base sintética (semente ${META.seed}). Candidato: ${HP_CANDIDATO.max_iter} árvores de até ${HP_CANDIDATO.max_leaf_nodes} folhas, taxa ${num(HP_CANDIDATO.learning_rate, 2)}, mínimo de ${HP_CANDIDATO.min_samples_leaf} propostas por folha, regularização l2 = ${num(HP_CANDIDATO.l2_regularization, 0)}, escolhido pela AUC na validação temporal. Logística do gerador: as mesmas ${NVARS} variáveis, sem interações. Número tracejado: aprofundamento.`}>
+      conclusao={<>O candidato cai <b>{num(QUEDA, CASAS)}</b>; a logística, que decora pouco, <b>{num(QUEDA_LOG, CASAS)}</b>. Se a safra custa ao boosting o mesmo que à logística, cerca de <b>{num(EXCESSO, CASAS)}</b> é excesso do boosting (estimativa); {num(VAL, CASAS)} é otimista: escolheu os hiperparâmetros (<LinkSlide slug="c6p21">slide 21</LinkSlide>). Mecanismo: <LinkSlide slug="c6p2">slide 2</LinkSlide>.</>}
+      fonte={`Base sintética (semente ${META.seed}). Candidato: ${HP_CANDIDATO.max_iter} árvores de até ${HP_CANDIDATO.max_leaf_nodes} folhas, taxa ${num(HP_CANDIDATO.learning_rate, 2)}, mínimo ${HP_CANDIDATO.min_samples_leaf} por folha, regularização l2 = ${num(HP_CANDIDATO.l2_regularization, 0)}, escolhido na validação; logística com as mesmas ${NVARS} variáveis. Tracejado: aprofundamento.`}>
       <div className="q6-s01">
         <div className="q6-s01-g"><Gancho /></div>
         <div className="q6-s01-dir">

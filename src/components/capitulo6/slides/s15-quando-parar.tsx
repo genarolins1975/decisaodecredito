@@ -33,7 +33,7 @@ function Graficos({ c, m, revelado, ate, imin, faixa }: { c: Curvas; m: number; 
   const vis = (s: number[]) => s.slice(0, ate + 1);
   return (
     <div className="q6-s15-g">
-      <Grafico titulo="Perda (log loss) por número de árvores" sub={revelado ? `▲ validação · ● ajuste · verde: a ${num(TOL, 3)} do mínimo` : "● ajuste; a validação abre depois da previsão"} rotulo={`Log loss de ajuste${revelado ? ` e de validação; mínimo da validação em ${imin} árvores, ${num(c.pv[imin], 4)}` : ""}, de 0 a ${ate} árvores`} arCelular="4 / 3">
+      <Grafico titulo="Perda (log loss) por número de árvores" sub={revelado ? `▲ validação · ● ajuste · verde: trecho contínuo a ${num(TOL, 3)} do mínimo` : "● ajuste; a validação abre depois da previsão"} rotulo={`Log loss de ajuste${revelado ? ` e de validação; mínimo da validação em ${imin} árvores, ${num(c.pv[imin], 4)}` : ""}, de 0 a ${ate} árvores`} arCelular="4 / 3">
         {(d) => {
           const g = margens(d.fs, { l: 3.4, r: 1, t: 1.2, b: 2.7 });
           const todos = [...vis(c.pa), ...(revelado ? vis(c.pv) : [])];
@@ -76,8 +76,8 @@ export function S15QuandoParar({ pagina }: { pagina?: Pagina }) {
   const teto = Math.ceil((imin + 1) / 10) * 10;
   const ops = [
     { texto: `Todas as ${MAXA}: cada uma reduziu a perda de ajuste`, certa: false, retorno: <>O ajuste não sabe parar. Com {MAXA} árvores, a perda de validação é {num(c.pv[MAXA], 4)}, contra {num(vmin, 4)} no mínimo.</> },
-    { texto: "Cerca de 100: corta só o fim da curva", certa: false, retorno: <>Supõe que o dano está no fim, mas depois de {faixa[1]} árvores a validação já passa de {num(TOL, 3)} acima do mínimo; com 100, {num(c.pv[100], 4)} contra {num(vmin, 4)}.</> },
-    { texto: `Menos de ${teto}`, certa: true, retorno: <>Isso: mínimo em {imin}; até a {faixa[1]}, equivale (a menos de {num(TOL, 3)}). Depois, passa da faixa{volta ? "" : " e não volta"}.</> },
+    { texto: "Cerca de 100: corta só o fim da curva", certa: false, retorno: <>Supõe que o dano está no fim, mas a perda de validação {c.pv[50] < c.pv[100] ? "já sobe antes de 100" : "não cai depois de 50"}: {num(c.pv[50], 4)} com 50 árvores, {num(c.pv[100], 4)} com 100 e {num(c.pv[MAXA], 4)} com {MAXA}.</> },
+    { texto: `Menos de ${teto}: as primeiras já pegam o padrão`, certa: true, retorno: <>Isso: mínimo em {imin}; até a {faixa[1]}, equivale (a menos de {num(TOL, 3)}). Depois, passa da faixa{volta ? "" : " e não volta"}.</> },
   ];
   const revelado = esc !== null && ops[esc].certa;
   const escolher = (i: number | null) => { setEsc(i); if (i !== null && ops[i].certa) { setM(imin); setAte(60); } };
@@ -87,7 +87,7 @@ export function S15QuandoParar({ pagina }: { pagina?: Pagina }) {
       titulo={revelado ? undefined : `Das ${MAXA} árvores, quantas a validação manda manter?`}
       sub={revelado ? undefined : "A perda de ajuste cai até a última. Preveja antes de ver a validação."}
       conclusao={revelado
-        ? <>Parando em {m}: perda de validação {num(c.pv[m], 4)}{m === imin ? ", o mínimo" : ` (${num(c.pv[m] - vmin, 4)} acima do mínimo)`}; a AUC de ajuste segue até <b>{num(c.aa[MAXA], 3)}</b> em {MAXA}. <b>Só a validação diz onde parar</b>, e de {faixa[0]} a {faixa[1]} tanto faz; escolhido nesta amostra, o ponto não se mede sem viés. <LinkSlide slug="c6p17">Slide 17</LinkSlide>: contra a logística.</>
+        ? <>Parando em {m}: perda de validação {num(c.pv[m], 4)}{m === imin ? ", o mínimo" : ""}; a AUC de ajuste segue até <b>{num(c.aa[MAXA], 3)}</b> em {MAXA}. <b>Só a validação diz onde parar</b>, e de {faixa[0]} a {faixa[1]} tanto faz; escolhido nesta amostra, o ponto não se mede sem viés. <LinkSlide slug="c6p17">Slide 17</LinkSlide>: contra a logística.</>
         : <>No ajuste, a perda cai de {num(c.pa[0], 3)} a {num(c.pa[MAXA], 3)} e a AUC sobe de {num(c.aa[0], 2)} a {num(c.aa[MAXA], 3)} nas {MAXA} árvores do <LinkSlide slug="c6p11">slide 11</LinkSlide>: nenhuma das duas avisa quando parar.</>}
       fonte={`Ajuste: ${int(NA)} propostas, ${DA} defaults; validação sorteada: ${int(NV)}, ${DV} defaults. η ${num(CFG_CARTEIRA.eta, 1)}, profundidade ${CFG_CARTEIRA.profundidade}, mínimo ${CFG_CARTEIRA.minFolha}, até ${MAXA} árvores (gbm.ts).`}>
       <Painel>
@@ -100,7 +100,7 @@ export function S15QuandoParar({ pagina }: { pagina?: Pagina }) {
       </Painel>
       <Painel>
         <div className="q7-kpis q7-kpis--3">
-          <Kpi rotulo="Perda" valor={revelado ? num(c.pv[m], 4) : "·"} detalhe="validação" tom="val" tam="mini" />
+          <Kpi rotulo="Perda" valor={revelado ? num(c.pv[m], 4) : "·"} detalhe={revelado && m !== imin ? `validação, +${num(c.pv[m] - vmin, 4)}` : "validação"} tom="val" tam="mini" />
           <Kpi rotulo="AUC" valor={num(c.aa[m], 3)} detalhe="ajuste" tam="mini" />
           <Kpi rotulo="AUC" valor={revelado ? num(c.av[m], 3) : "·"} detalhe="validação" tom="val" tam="mini" />
         </div>

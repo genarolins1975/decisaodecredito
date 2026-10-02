@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "2d9cb3c4be399d700d96e654d6c86e930d2470d5e0f52ec96ba0f4da0c53d316",
- "extractedAt": "2026-10-02T14:03:57.885Z",
+ "sourceSha256": "b758de3330e01aeafbbc9c30832ec824fa0e49453a06cb6df431d363ef118e1b",
+ "extractedAt": "2026-10-02T14:27:57.828Z",
  "meta": {
   "capitulos": [
    {
@@ -6934,7 +6934,7 @@
    "id": "c6p7",
    "cap": 6,
    "n": 7,
-   "titulo": "Taxa de aprendizagem: a maior desce mais rápido no treino",
+   "titulo": "Taxa de aprendizagem: no treino, taxas perto de 1 descem mais rápido",
    "nivel": "essencial",
    "nivel120": "essencial",
    "min": 3,
@@ -7251,7 +7251,7 @@
    "id": "c6p11",
    "cap": 6,
    "n": 11,
-   "titulo": "O mesmo algoritmo em 1.472 propostas: o treino sempre melhora",
+   "titulo": "Em 1.472 propostas, o ajuste melhora em todas as 300 árvores",
    "nivel": "essencial",
    "nivel120": "assincrono",
    "min": 4,
@@ -7574,10 +7574,10 @@
      {
       "alt": "Cerca de 100",
       "confusao": "Supõe que o dano está só no fim da curva.",
-      "intervencao": "Depois de 22 árvores a validação já passa de 0,001 acima do mínimo; com 100, 0,3096."
+      "intervencao": "Com 50 árvores a perda de validação é 0,3039; com 100, 0,3096; com 300, 0,3289: o dano começa antes de 100."
      }
     ],
-    "interacao": "Controle do ponto de parada, seletor do eixo (0 a 60 ou 0 a 300) e Restaurar abaixo da curva; previsão ao lado. A curva de validação e a tabela da regra de paciência (para na árvore, guarda a, distância ao mínimo) aparecem depois do acerto.",
+    "interacao": "Controle do ponto de parada, seletor do eixo (0 a 60 ou 0 a 300) e Restaurar abaixo da curva; previsão ao lado. A curva de validação e a tabela da regra de paciência (para na árvore, guarda a, distância ao mínimo) aparecem depois do acerto; fora do mínimo, o número da perda traz a distância a ele.",
     "verificacao": "Regra de paciência: com 10 árvores sem melhorar, para na 26 e guarda a 16; com 3, para na 14 e guarda a 11, a 0,0003 do mínimo, dentro da faixa de 0,001: equivalente, não um erro. A turma lê na última linha da tabela a distância de cada escolha ao mínimo.",
     "transicao": "Parar cedo é um freio; o slide 16 mostra outro, sortear propostas a cada árvore. Depois, o slide 17 põe o modelo parado contra a logística."
    },
@@ -7620,7 +7620,7 @@
    "id": "c6p16",
    "cap": 6,
    "n": 16,
-   "titulo": "Na parada, sortear propostas ganha menos que o erro da validação",
+   "titulo": "Longe da parada, o sorteio regulariza; na parada, o ganho cabe no erro da validação",
    "nivel": "complementar",
    "nivel120": "assincrono",
    "min": 3,
@@ -7629,30 +7629,30 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Entender a subamostra (boosting estocástico de Friedman, 2002) como regularização e medir o ganho com duas réguas: a variação entre sementes (o efeito é consistente?) e o erro amostral da validação (631 propostas distinguem o ganho?).",
-   "apoio": "Antes de cada árvore, sorteia-se uma fração das 1.472 propostas de ajuste, com dez sementes. O gráfico mostra o ganho de log loss de cada semente sobre o modelo sem sorteio em dois pontos fixos: a parada sem sorteio (16 árvores) e 200 árvores. A barra da média é ±1,96 erro padrão entre sementes; a faixa cinza é ±1,96 erro padrão da diferença pareada, proposta a proposta, na validação. Com 50%, na parada: ganho médio de 0,0010, erro de 0,0004 entre sementes (8 de 10 com ganho), mas erro de 0,0028 da validação. Com 200 árvores: 0,0109, 1,8 erro da validação, todas as sementes com ganho. Medir no mínimo de cada semente infla o ganho para 0,0021.",
+   "aprendizado": "Ver que a subamostra (boosting estocástico; o método é de Friedman, 2002) regulariza longe da parada e que, na parada, o ganho desta amostra cabe no erro da validação; distinguir a faixa de 95% entre sementes da faixa de 95% da validação.",
+   "apoio": "Antes de cada árvore, sorteia-se uma fração das 1.472 propostas de ajuste, com dez sementes. O gráfico mostra o ganho de log loss de cada semente sobre o modelo sem sorteio em dois pontos fixos: a parada sem sorteio (16 árvores) e 200 árvores. A barra da média é a faixa de 95% entre sementes (t de 9 graus, 2,262, vezes o erro padrão da média de dez); a faixa cinza é a faixa de 95% da validação (t de 630 graus, 1,964, vezes o erro padrão da diferença, proposta a proposta, entre a perda sem sorteio e a média das perdas das dez sementes). Com 50%, na parada: ganho médio de 0,0010, 8 de 10 sementes com ganho, z = ganho ÷ erro padrão = 0,37: cabe na faixa da validação. Com 200 árvores: 0,0109, 10 de 10, z = 1,92: cabe, no limite, na faixa da validação.",
    "conexao": "Completa os controles dos slides 12 a 15 e prepara a comparação com a logística do slide 17.",
    "guia": {
-    "funcao": "Separar onde o sorteio regulariza (longe da parada) de onde o modelo seria usado (na parada), e distinguir a variação entre sementes do erro amostral da validação.",
+    "funcao": "Separar onde o sorteio regulariza (longe da parada) de onde o modelo seria usado (na parada), com uma só régua da validação nas duas filas.",
     "pre": "Slides 13 e 15: os quatro controles e a parada pela validação.",
-    "conducao": "Mostre a fila de baixo, aberta: com 200 árvores, todas as sementes ganham do modelo sem sorteio. Peça a previsão para a parada (16 árvores) com 50%. Depois do acerto, leia as duas réguas: a barra da média (entre sementes) não toca o zero; a faixa cinza (erro da validação) engole o ganho. Troque para o mínimo de cada semente e mostre o ganho dobrar só porque o ponto foi escolhido na mesma validação. Por fim, troque para 30%.",
-    "leitura": "50%, parada em 16: ganho médio de 0,0010 (perda 0,2946 contra 0,2955), erro padrão de 0,0004 entre sementes, 8 de 10 com ganho: consistente; erro padrão pareado da validação 0,0028 (mediana das sementes): o ganho cabe nele. 200 árvores: 0,0109, erro de 0,0009 entre sementes e 0,0061 da validação (1,8 erro). No mínimo de cada semente: 0,0021, 10 de 10, viés de seleção. 30%, parada em 16: perda de 0,0030 (1 de 10 com ganho). 80%: 0,0007, sem sinal consistente.",
+    "conducao": "Mostre a fila de baixo, aberta: com 200 árvores, todas as sementes ganham do modelo sem sorteio. Peça a previsão para a parada (16 árvores) com 50%. Depois do acerto, leia a tabela, que usa a mesma régua nas duas filas: na parada, z = 0,37, o ganho cabe com folga na faixa cinza; com 200 árvores, z = 1,92, consistente entre sementes mas ainda dentro da faixa (1,964). Por fim, troque para 30% e 80%.",
+    "leitura": "50%, parada em 16: ganho médio de 0,0010 (perda 0,2946 contra 0,2955), faixa de 95% entre sementes ±0,0009 (8 de 10 com ganho: consistente, por pouco); erro padrão da validação 0,0026, faixa ±0,0051, z = 0,37: cabe. 200 árvores: 0,0109, ±0,0021 entre sementes, 10 de 10; erro padrão da validação 0,0057, faixa ±0,0111, z = 1,92: cabe, no limite; 631 propostas ainda não distinguem o ganho do zero. 30%, parada: −0,0030 (1 de 10, piora consistente entre sementes, z = −0,92). 80%, parada: 0,0007 (6 de 10, sem sinal consistente, z = 0,71). O resultado pequeno é desta amostra (três variáveis, 631 propostas de validação); Friedman (2002) é a origem do método, e o artigo relata melhora com subamostra.",
     "pergunta": "Parando na árvore 16, a subamostra de 50% melhora a perda de validação?",
-    "resposta": "Melhora pouco: as sementes concordam no sinal (o efeito médio existe), mas o ganho de 0,0010 é menor que o erro amostral de 631 propostas, 0,0028. Longe da parada, com 200 árvores, o ganho é dez vezes maior.",
+    "resposta": "Melhora pouco: 8 de 10 sementes ganham e a faixa de 95% entre sementes não toca o zero, mas z = 0,37: o ganho de 0,0010 cabe na faixa de 95% da validação (±0,0051). Longe da parada, com 200 árvores, o ganho é dez vezes maior e aparece em 10 de 10 sementes, mas z = 1,92 ainda cabe na faixa (1,964).",
     "erros": [
      {
-      "alt": "Melhora com folga: o sorteio regulariza",
+      "alt": "Melhora com folga: o ganho passa da faixa da validação",
       "confusao": "Confunde o efeito longe da parada com o efeito na parada.",
-      "intervencao": "Compare as duas filas: 0,0109 com 200 árvores, 0,0010 na parada, dentro da faixa cinza."
+      "intervencao": "Compare as duas filas na tabela: z = 1,92 com 200 árvores, z = 0,37 na parada; nenhum dos dois passa de 1,964."
      },
      {
       "alt": "Nada: as sementes caem para os dois lados",
       "confusao": "Confunde a dispersão de cada semente com a incerteza do efeito médio.",
-      "intervencao": "Aponte a barra da média: erro de 0,0004, contra um ganho de 0,0010; 8 das 10 sementes ganham."
+      "intervencao": "Aponte a barra da média: faixa de 95% entre sementes de ±0,0009 em torno de 0,0010, sem tocar o zero; 8 das 10 sementes ganham."
      }
     ],
-    "interacao": "Previsão com retorno; depois, fração sorteada (80%, 50%, 30%) com dez sementes calculadas uma a uma e ponto de comparação (parada fixa em 16 ou mínimo de cada semente); tabela das duas réguas ao lado. Restaurar volta a 50%, parada fixa e limpa a previsão.",
-    "verificacao": "A turma diz, com a tabela das duas réguas, por que o ganho é consistente e ainda assim não provado pela validação, e por que o mínimo de cada semente exagera o ganho.",
+    "interacao": "Previsão com retorno; depois, fração sorteada (80%, 50%, 30%) com dez sementes calculadas uma a uma; a tabela ao lado usa a mesma régua nas duas filas (ganho médio, sementes com ganho, z, cabe ou passa na faixa da validação). Restaurar volta a 50% e limpa a previsão.",
+    "verificacao": "A turma diz, com a tabela, por que o ganho com 200 árvores é consistente entre sementes e ainda assim não provado pela validação, e por que na parada ele cabe com folga.",
     "transicao": "Com os freios na mão, o slide 17 compara o boosting parado na validação com a logística das mesmas três variáveis."
    },
    "html": "<div class=\"palcoflex\" data-colunas=\"dados\"><div class=\"esq\" style=\"flex: 0.52 1 0px;\"><div class=\"rolax\" data-exploravel=\"tabela\" data-aberta=\"true\"><table>\n   <thead><tr><th><span class=\"letra-grega\">η</span></th><th>Árvores até perda de treino 0,50</th><th><span class=\"letra-grega\">η</span> × árvores</th>\n    <th>Perda de treino com 60 árvores</th></tr></thead><tbody>\n   <tr>\n    <th scope=\"row\">0,10</th><td class=\"num\">14</td>\n    <td class=\"num\">1,40</td>\n    <td class=\"num\">0,28394</td></tr><tr>\n    <th scope=\"row\">0,15</th><td class=\"num\">10</td>\n    <td class=\"num\">1,50</td>\n    <td class=\"num\">0,23680</td></tr><tr>\n    <th scope=\"row\">0,20</th><td class=\"num\">7</td>\n    <td class=\"num\">1,40</td>\n    <td class=\"num\">0,20965</td></tr><tr>\n    <th scope=\"row\">0,30</th><td class=\"num\">5</td>\n    <td class=\"num\">1,50</td>\n    <td class=\"num\">0,16621</td></tr><tr style=\"background:#FBF3DE\">\n    <th scope=\"row\">0,40</th><td class=\"num\">4</td>\n    <td class=\"num\">1,60</td>\n    <td class=\"num\">0,13711</td></tr><tr>\n    <th scope=\"row\">0,50</th><td class=\"num\">3</td>\n    <td class=\"num\">1,50</td>\n    <td class=\"num\">0,11702</td></tr><tr>\n    <th scope=\"row\">0,60</th><td class=\"num\">3</td>\n    <td class=\"num\">1,80</td>\n    <td class=\"num\">0,10227</td></tr><tr>\n    <th scope=\"row\">0,80</th><td class=\"num\">2</td>\n    <td class=\"num\">1,60</td>\n    <td class=\"num\">0,08165</td></tr><tr>\n    <th scope=\"row\">1,00</th><td class=\"num\">2</td>\n    <td class=\"num\">2,00</td>\n    <td class=\"num\">0,06800</td></tr>\n   </tbody></table></div>\n   <p class=\"nota\" style=\"margin-top:8px\">A terceira coluna é quase constante. Reduzir η pela metade exige\n   aproximadamente dobrar M para chegar ao mesmo ponto. <span class=\"selo s-rec\">Recalculado aqui</span></p>\n   <p class=\"nota\" style=\"margin-top:7px\">As duas colunas de perda são de treino. A última coluna desce\n   sem parar conforme η cresce: com dezesseis propostas e sessenta árvores, 0,06800\n   é memorização, não desempenho. É por isso que a pergunta “qual η dá a menor perda” não se\n   responde nesta tabela.</p>\n   </div><div class=\"dir\" style=\"flex: 0.48 1 0px;\"><div class=\"svgfit\" data-exploravel=\"grafico\"><svg viewBox=\"0 0 600 340\" role=\"img\" aria-label=\"árvores até a perda alvo por taxa de aprendizagem η\" style=\"font-family:system-ui,sans-serif\"><line x1=\"62\" y1=\"294.0\" x2=\"582\" y2=\"294.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"298.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0</text><line x1=\"62\" y1=\"130.0\" x2=\"582\" y2=\"130.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"134.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">10</text><line x1=\"62\" y1=\"-34.0\" x2=\"582\" y2=\"-34.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"-30.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">20</text><line x1=\"62\" y1=\"-197.9\" x2=\"582\" y2=\"-197.9\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"-193.9\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">30</text><line x1=\"62\" y1=\"-361.9\" x2=\"582\" y2=\"-361.9\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"-357.9\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">40</text><line x1=\"62\" y1=\"30\" x2=\"62\" y2=\"294\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <line x1=\"62\" y1=\"294\" x2=\"582\" y2=\"294\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <text transform=\"translate(12,162) rotate(-90)\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">árvores até a perda alvo</text>\n   <text x=\"322\" y=\"335\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">taxa de aprendizagem η</text><text x=\"88.0\" y=\"310\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">0,10</text><text x=\"166.0\" y=\"310\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">0,25</text><text x=\"296.0\" y=\"310\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">0,50</text><text x=\"426.0\" y=\"310\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">0,75</text><text x=\"556.0\" y=\"310\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">1,00</text><line x1=\"66\" y1=\"15\" x2=\"82\" y2=\"15\" stroke=\"#00205B\" stroke-width=\"2.5\"></line>\n      <text x=\"87\" y=\"18\" font-size=\"11.5\" fill=\"#333\">árvores necessárias</text><path d=\"M88.0 64.4L114.0 130.0L140.0 179.2L192.0 212.0L244.0 228.4L296.0 244.8L348.0 244.8L452.0 261.2L556.0 261.2\" fill=\"none\" stroke=\"#00205B\" stroke-width=\"2.6\" stroke-linejoin=\"round\"></path><circle cx=\"88.0\" cy=\"64.4\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"114.0\" cy=\"130.0\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"140.0\" cy=\"179.2\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"192.0\" cy=\"212.0\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"244.0\" cy=\"228.4\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"296.0\" cy=\"244.8\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"348.0\" cy=\"244.8\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"452.0\" cy=\"261.2\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"556.0\" cy=\"261.2\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle></svg></div>\n   <div class=\"revelacao\" style=\"margin-top:10px\"><h4>Chegando à mesma perda alvo, por que preferir η pequeno?</h4>\n   Porque o caminho não é idêntico. Com η pequeno, o modelo passa por muitos estágios intermediários, e a\n   validação pode interromper em qualquer um deles. Com η grande, os saltos são grossos e o melhor ponto\n   pode ficar entre duas iterações. A granularidade do controle é a vantagem.</div>\n   <div class=\"revelacao ruim\" style=\"margin-top:10px\"><h4>O custo</h4>\n   Tempo. η de 0,01 com dez mil árvores custa cem vezes mais que η de 1 com cem. Em produção, a escolha\n   típica fica entre 0,01 e 0,1 com parada antecipada monitorada em validação, e não em uma grade fixa.</div></div></div>",
@@ -7687,7 +7687,7 @@
     "conducao": "Abra com o título provisório e mostre só as curvas de ajuste: o boosting passa a logística com 4 árvores. Peça a previsão antes de revelar a validação. Depois da resposta, arraste o controle de 1 a 300 árvores e leia a tabela: nenhuma posição põe o boosting acima da logística na validação. Termine com o IC de DeLong.",
     "leitura": "Logística: AUC de validação 0,7006 e log loss 0,2932. Boosting parado em 16 árvores: 0,6553 e 0,2955. O pico de AUC do boosting na validação é 0,6893, com 6 árvores, ainda abaixo. Diferença de 0,045 com IC de 0,020 a 0,070.",
     "pergunta": "Se o boosting ganha no ajuste com 4 árvores, por que não ganha na validação?",
-    "resposta": "Porque as três variáveis não trazem interação nem forma que a reta perca: os degraus do boosting acrescentam variância estimada com 139 defaults, e o ganho de ajuste não se repete em propostas novas.",
+    "resposta": "Porque as três variáveis não trazem interação nem forma que a reta perca: os degraus do boosting acrescentam variância estimada com 139 defaults, e o ganho de ajuste não se repete em propostas novas. O mecanismo pelo qual árvores ganhariam (interação e forma curva) é o de Friedman (2001); o resultado empírico de que conjuntos de modelos superam a logística na média de várias bases de crédito é de benchmark (Lessmann et al., 2015).",
     "erros": [
      {
       "alt": "Sim, com árvores suficientes",
@@ -7804,7 +7804,7 @@
       "intervencao": "A PD média vai de 9,3% a 8,9%: o que muda é a inclinação."
      }
     ],
-    "interacao": "Previsão com título provisório; controle de árvores com nove posições (1 a 300); a curva larga mostra o modelo escolhido com o intervalo de Wilson por faixa, e o modelo parado fica como referência em quadrados cinza; Restaurar volta ao modelo parado.",
+    "interacao": "Previsão com título provisório; controle de árvores com nove posições (1 a 300); a curva larga mostra o modelo escolhido com o intervalo de Wilson por faixa, e o modelo parado fica como referência em quadrados cinza; o número do slope traz a regra de leitura desde o início (abaixo de 1, PDs extremas; acima, tímidas); Restaurar volta ao modelo parado.",
     "verificacao": "A turma explica por que slope abaixo de 1 significa PDs extremas demais, com os números da faixa 1 e da faixa 5.",
     "transicao": "Média certa não diz por que cada proposta recebeu a sua PD. O slide 19 decompõe uma PD em contribuições."
    },
@@ -7856,10 +7856,10 @@
    "guia": {
     "funcao": "Dar ao aluno a explicação por proposta que o validador e o cliente recusado podem pedir.",
     "pre": "Slide 9 (a PD como soma de parcelas em log odds) e slide 18 (o boosting parado e o nível das PDs).",
-    "conducao": "Apresente a tabela de ganho, que está visível (score com 89%), e a proposta: utilização de 0,3%, atraso de 9 dias, score 830. Peça a previsão: qual variável mais move esta PD, para cima ou para baixo? Revele a cascata e leia a soma. Depois troque para Utilização alta (75,8%) e leia a nota: a utilização baixa a PD porque, acima de 59,6%, a dependência parcial cai; ligue ao slide 20. Mova o atraso e mostre que nada muda.",
-    "leitura": "Caso da previsão: valor esperado −2,38, utilização −0,15, atraso 0,00, score +0,08, escore −2,45, PD 7,9%; a soma fecha exatamente. O ganho põe o score em 89% e a utilização em 11%, mas nesta proposta a utilização move quase o dobro do score. Utilização alta (75,8%, 10 dias, score 756): −0,04, 0,00 e +0,20; acima de 59,6% de utilização a PD média da carteira cai de 9,33% para 8,99%, num trecho com 90 das 1.472 propostas de ajuste.",
+    "conducao": "Apresente a tabela de ganho, que está visível (score com 89%), e a proposta: utilização de 0,3%, atraso de 9 dias, score 830. Peça a previsão: qual variável mais move esta PD, para cima ou para baixo? Revele a cascata e leia a soma. Depois troque para Utilização alta (75,8%) e leia a nota: a utilização baixa a PD porque, acima de 59,6%, a dependência parcial (PD média com a utilização fixada) cai; ligue ao slide 20. Mova o atraso e mostre que nada muda.",
+    "leitura": "Caso da previsão: valor esperado −2,38, utilização −0,15, atraso 0,00, score +0,08, escore −2,45, PD 7,9%; a soma fecha exatamente. O ganho põe o score em 89% e a utilização em 11%, mas nesta proposta a utilização move quase o dobro do score. Utilização alta (75,8%, 10 dias, score 756): −0,04, 0,00 e +0,20; acima de 59,6% de utilização a dependência parcial (PD média da carteira com a utilização fixada) cai de 9,33% para 8,99%, num trecho com 90 das 1.472 propostas de ajuste.",
     "pergunta": "Por que a utilização, com só 11% do ganho, é a variável que mais move esta PD?",
-    "resposta": "Porque o ganho soma, sem sinal, os cortes em todas as propostas, e a contribuição mede o que o valor desta proposta faz com a log odds: um cartão quase sem uso (0,3%) tira 0,15, e o score acrescenta só 0,08.",
+    "resposta": "Porque o ganho soma, sem sinal, a redução de perda (erro quadrático dos pseudo-resíduos) nos cortes que usam a variável, em todas as propostas, normalizada (o feature_importances_ do scikit-learn); a contribuição mede o que o valor desta proposta faz com a log odds: um cartão quase sem uso (0,3%) tira 0,15, e o score acrescenta só 0,08. Em só 9 das 631 propostas da validação a maior contribuição não é a do score.",
     "erros": [
      {
       "alt": "Score",

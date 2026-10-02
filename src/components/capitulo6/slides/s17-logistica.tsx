@@ -118,7 +118,7 @@ export function S17Logistica({ pagina }: { pagina?: Pagina }) {
       conclusao={!revelado
         ? <>No ajuste, o boosting passa a AUC da logística ({num(LOG.aucA, 4)}) já com {K_PASSA} árvores e chega a {num(AUC_A[K_MAX], 4)} com {K_MAX}. E na validação? Preveja ao lado.</>
         : <>Validação: logística com AUC <b>{num(LOG.aucV, 4)}</b> e log loss <b>{num(LOG.llV, 4)}</b>; boosting parado em {K_PARADA} árvores, {num(AUC_V[K_PARADA], 4)} e {num(LL_V[K_PARADA], 4)}. A diferença de AUC, {num(DL.dif, 3)} (IC de 95% de {num(DL.ic[0], 3)} a {num(DL.ic[1], 3)}), {DL.ic[0] > 0 ? "não é ruído" : "cabe no ruído"}. Com {DA} defaults no ajuste, a amostra não mostra interação nem forma que o boosting aproveite, e a referência linear vence; o <LinkSlide slug="c6p18">slide 18</LinkSlide> confere o nível das PDs do boosting.</>}
-      fonte={`Ajuste: ${int(NA)} propostas, ${DA} defaults; validação sorteada: ${int(NV)}, ${DV}. Boosting: taxa 0,1, profundidade 2, mínimo de 40 por folha. IC de DeLong pareado.`}>
+      fonte={`Ajuste: ${int(NA)} propostas, ${DA} defaults; validação sorteada: ${int(NV)}, ${DV} defaults. Boosting: taxa ${num(CFG_CARTEIRA.eta, 1)}, profundidade ${CFG_CARTEIRA.profundidade}, mínimo de ${CFG_CARTEIRA.minFolha} por folha; parada em ${K_PARADA} escolhida nesta validação. IC de DeLong pareado.`}>
       <Painel titulo="AUC e log loss por número de árvores; a logística é uma reta">
         <Grafico rotulo={`AUC e log loss do boosting por número de árvores, no ajuste e na validação, contra a logística. Logística na validação: AUC ${num(LOG.aucV, 4)}, log loss ${num(LOG.llV, 4)}; boosting parado em ${K_PARADA} árvores: ${num(AUC_V[K_PARADA], 4)} e ${num(LL_V[K_PARADA], 4)}`} arCelular="4 / 5">
           {(d) => <Painel2 d={d} k={k} revelado={revelado} />}
@@ -138,7 +138,7 @@ export function S17Logistica({ pagina }: { pagina?: Pagina }) {
           <Botao sec onClick={restaurar}>Restaurar</Botao>
         </div>
         {revelado && <Expandir resumo="Quando o boosting ganharia">
-          <p className="q7-nota">Quando o risco tem interação (o efeito do atraso depende do score) ou forma curva que a reta na log odds não captura (Lessmann et al., 2015). Aqui, parado em {K_PARADA} árvores, ele {USA_ATRASO ? "corta pouco no atraso" : "nem corta no atraso"}: só troca a reta por degraus estimados com {DA} defaults.</p>
+          <p className="q7-nota">Quando o risco tem interação (o efeito do atraso depende do score) ou forma curva que a reta na log odds não captura: as árvores aprendem essas formas por construção (Friedman, 2001). Como resultado empírico, num benchmark com várias bases de crédito, conjuntos de modelos, entre eles os de árvores, superaram a logística na média (Lessmann et al., 2015). Aqui, parado em {K_PARADA} árvores, ele {USA_ATRASO ? "corta pouco no atraso" : "nem corta no atraso"}: só troca a reta por degraus estimados com {DA} defaults.</p>
         </Expandir>}
       </Painel>
     </Quadro>

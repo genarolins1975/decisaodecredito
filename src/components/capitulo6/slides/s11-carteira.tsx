@@ -57,7 +57,7 @@ function Painel2({ c, m, revelado, kmin, passa, kauc }: { c: Curvas; m: number; 
     const passo = tipo === "perda" ? 0.04 : 0.1; const yt: number[] = [];
     for (let v = tipo === "perda" ? lo : Math.ceil(lo * 10) / 10; v <= hi0 + 1e-9; v += passo) yt.push(Math.round(v * 1000) / 1000);
     return (
-      <Grafico titulo={tipo === "perda" ? "Perda (log loss): menor é melhor" : "AUC: maior é melhor"} rotulo={`${tipo === "perda" ? "Log loss" : "AUC"} por número de árvores, em escala log, no ajuste${revelado ? " e na validação sorteada" : ""}; com ${m} árvores, ajuste ${num(sa[m], 3)}${revelado ? ` e validação ${num(sv[m], 3)}` : ""}${revelado && tipo === "perda" ? `; mínimo da validação ${num(c.pv[kmin], 3)} com ${kmin} árvores; cruza o palpite ${num(c.pv[0], 3)} na árvore ${passa}` : ""}${revelado && tipo === "auc" ? `; maior AUC de validação ${num(c.av[kauc], 3)} com ${kauc} árvores` : ""}`} arCelular={tipo === "perda" ? "4 / 3" : "16 / 9"}>
+      <Grafico titulo={tipo === "perda" ? "Perda (log loss): menor é melhor" : "AUC: maior é melhor"} sub={<>com {int(m)} {m === 1 ? "árvore" : "árvores"}: <b className="q6-s11-va">● {num(sa[m], 3)}</b>{revelado && <> · <b className="q6-s11-vv">▲ {num(sv[m], 3)}</b></>}{tipo === "auc" && m === 0 ? ", PD igual para todas" : ""}</>} rotulo={`${tipo === "perda" ? "Log loss" : "AUC"} por número de árvores, em escala log, no ajuste${revelado ? " e na validação sorteada" : ""}; com ${m} árvores, ajuste ${num(sa[m], 3)}${revelado ? ` e validação ${num(sv[m], 3)}` : ""}${revelado && tipo === "perda" ? `; mínimo da validação ${num(c.pv[kmin], 3)} com ${kmin} árvores; cruza o palpite ${num(c.pv[0], 3)} na árvore ${passa}` : ""}${revelado && tipo === "auc" ? `; maior AUC de validação ${num(c.av[kauc], 3)} com ${kauc} árvores` : ""}`} arCelular={tipo === "perda" ? "4 / 3" : "16 / 9"}>
         {(d) => {
           const g = margens(d.fs, { l: 3.2, r: 6.4, t: tipo === "auc" ? 0.6 : 0.8, b: tipo === "auc" ? 2.7 : 1.5 });
           // folga acima das curvas para as anotações do mínimo e do cruzamento (maior no celular, onde o gráfico é estreito)
@@ -90,21 +90,11 @@ function Painel2({ c, m, revelado, kmin, passa, kauc }: { c: Curvas; m: number; 
                 <circle cx={x(kauc)} cy={y(c.av[kauc])} r={r * 1.7} fill="none" stroke="#2E6B4F" strokeWidth={2} />
                 <text className="q7-rot--peq" x={x(kauc) + r * 1.7} y={y(c.av[kauc]) + r * 1.7} dy="1.1em" textAnchor="end" style={{ fill: "#2E6B4F", fontWeight: 700, ...halo }}>pico {num(c.av[kauc], 3)} em {kauc}</text>
               </g>}
-              {tipo === "auc" && fora && <text className="q7-rot--peq" x={x(0) + d.fs * 0.5} y={d.h - g.b - d.fs * 0.5} style={{ fill: "#5B6475", ...halo }}>0 árvores: PD igual para todas, AUC {num(sa[0], 2)}</text>}
               <line x1={x(m)} x2={x(m)} y1={g.t} y2={d.h - g.b} stroke="#5B6475" strokeWidth={1.8} strokeDasharray="3 4" />
               <path className="q7-linha q7-linha--ink" d={caminho(pts(sa))} />
               {revelado && <path className="q7-linha q7-linha--val" strokeDasharray="9 6" d={caminho(pts(sv))} />}
               {!fora && <circle cx={x(m)} cy={y(sa[m])} r={r} fill="#00205B" stroke="#fff" strokeWidth={2} />}
               {revelado && !fora && <path d={tri(x(m), y(sv[m]), r * 1.2)} fill="#2E6B4F" stroke="#fff" strokeWidth={1.5} />}
-              {!fora && (() => {
-                // valores no cursor, rotulados na própria série: do lado com mais espaço, a série de cima acima e a de baixo abaixo
-                const lado = x(m) > (g.l + d.w - g.r) / 2 ? -1 : 1;
-                const vs = [{ v: sa[m], cor: "#00205B", k: "a" }, ...(revelado && !(tipo === "auc" && m === kauc) ? [{ v: sv[m], cor: "#2E6B4F", k: "v" }] : [])];
-                const cima = vs.length > 1 && y(vs[1].v) < y(vs[0].v) ? "v" : "a";
-                // a de baixo sobe para cima do ponto quando o rótulo sairia pela base do gráfico
-                const baixo = (v: number) => y(v) + d.fs * 1.4 < d.h - g.b;
-                return vs.map((q) => <text key={q.k} className="q7-rot" x={x(m) + lado * r * 1.8} y={y(q.v)} dy={q.k === cima || vs.length === 1 || !baixo(q.v) ? "-.55em" : "1.2em"} textAnchor={lado < 0 ? "end" : "start"} style={{ fill: q.cor, fontWeight: 700, ...halo }}>{num(q.v, 3)}</text>);
-              })()}
               <text className="q7-rot" x={d.w - g.r + d.fs * 0.4} y={ya + d.fs * 0.34} style={{ fill: "#00205B" }}>● ajuste</text>
               {revelado && <text className="q7-rot" x={d.w - g.r + d.fs * 0.4} y={yv + d.fs * 0.34} style={{ fill: "#2E6B4F" }}>▲ validação</text>}
             </g>

@@ -46,6 +46,7 @@
 /* 11 · perda e AUC por número de árvores */
 .q6-s11-g { flex: 1; min-height: 0; display: grid; grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); gap: .5cqw; }
 .q6-s11-g > .q7-graf { min-height: 0; }
+.q6-s11-va { color: var(--q7-ink); font-variant-numeric: tabular-nums; } .q6-s11-vv { color: var(--q7-val); font-variant-numeric: tabular-nums; }
 @container q7 (max-width: 820px) { .q6-s11-g { display: flex; flex-direction: column; gap: 12px; } }
 .q6-s11-topo { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; column-gap: 1.2cqw; flex: none; }
 @container q7 (max-width: 820px) { .q6-s11-topo { column-gap: 10px; } }

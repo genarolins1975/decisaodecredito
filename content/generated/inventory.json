@@ -1,7 +1,7 @@
 {
  "source": "content/original/apresentacao-curso-pd.html",
- "sha256": "2d9cb3c4be399d700d96e654d6c86e930d2470d5e0f52ec96ba0f4da0c53d316",
- "extractedAt": "2026-10-02T14:03:57.885Z",
+ "sha256": "b758de3330e01aeafbbc9c30832ec824fa0e49453a06cb6df431d363ef118e1b",
+ "extractedAt": "2026-10-02T14:27:57.828Z",
  "edition": "2026",
  "units": [
   {
@@ -1882,7 +1882,7 @@
    "pageId": "k6q8c02iwe2465dehmpz3",
    "chapter": 6,
    "unit": 2,
-   "title": "Taxa de aprendizagem: a maior desce mais rápido no treino",
+   "title": "Taxa de aprendizagem: no treino, taxas perto de 1 descem mais rápido",
    "level": "essencial",
    "minutes": 3,
    "origin": "rec",
@@ -1960,7 +1960,7 @@
    "pageId": "9p51uzq5vih4iwu8gy2cu",
    "chapter": 6,
    "unit": 2,
-   "title": "O mesmo algoritmo em 1.472 propostas: o treino sempre melhora",
+   "title": "Em 1.472 propostas, o ajuste melhora em todas as 300 árvores",
    "level": "essencial",
    "minutes": 4,
    "origin": "esq",
@@ -2057,7 +2057,7 @@
    "pageId": "y36xy3srm0b4xnklhjvwf",
    "chapter": 6,
    "unit": 2,
-   "title": "Na parada, sortear propostas ganha menos que o erro da validação",
+   "title": "Longe da parada, o sorteio regulariza; na parada, o ganho cabe no erro da validação",
    "level": "complementar",
    "minutes": 3,
    "origin": "rec",
@@ -4047,7 +4047,15 @@
   "native": 21
  },
  "resync": {
-  "synced": [],
+  "synced": [
+   "c6p7",
+   "c6p11",
+   "c6p15",
+   "c6p16",
+   "c6p17",
+   "c6p18",
+   "c6p19"
+  ],
   "diverged": []
  }
 }

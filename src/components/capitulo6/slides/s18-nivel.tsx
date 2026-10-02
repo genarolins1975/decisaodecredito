@@ -53,10 +53,10 @@ const dados = () => (CACHE ??= calcular());
 /** Curva de confiabilidade larga: PD média prevista contra default observado por faixa, com o intervalo de Wilson. */
 function Curva({ F, ref, max, k }: { F: Faixa[]; ref: Faixa[] | null; max: number; k: number }) {
   const ticks: number[] = []; for (let t = 0; t <= max + 1e-9; t += 0.05) ticks.push(Math.round(t * 100) / 100);
-  const tab = <table><caption>Curva de confiabilidade com {k} árvores</caption><thead><tr><th>Faixa</th><th>n</th><th>Defaults</th><th>PD média</th><th>Observado</th><th>Intervalo de 95%</th></tr></thead>
+  const tab = <table><caption>Curva de confiabilidade com {k} {k === 1 ? "árvore" : "árvores"}</caption><thead><tr><th>Faixa</th><th>n</th><th>Defaults</th><th>PD média</th><th>Observado</th><th>Intervalo de 95%</th></tr></thead>
     <tbody>{F.map((f) => <tr key={f.j}><td>{f.j}</td><td>{f.n}</td><td>{f.d}</td><td>{pct(f.pdMedia!, 1)}</td><td>{pct(f.obs!, 1)}</td><td>{pct(f.ic!.lo, 1)} a {pct(f.ic!.hi, 1)}</td></tr>)}</tbody></table>;
   return (
-    <Grafico titulo="PD prevista contra default observado, por faixa de PD" sub={ref ? "● com as árvores escolhidas · □ cinza: parado na validação" : "● parado na validação · barra: IC de 95%"} rotulo={`Curva de confiabilidade do boosting com ${k} árvores na validação sorteada: ${F.map((f) => `faixa ${f.j}, ${pct(f.pdMedia!, 1)} previstos e ${pct(f.obs!, 1)} observados`).join("; ")}`} tabela={tab} arCelular="5 / 4">
+    <Grafico titulo="PD prevista contra default observado, por faixa de PD" sub={ref ? "● com as árvores escolhidas · □ cinza: parado na validação" : "● parado na validação · barra: IC de 95%"} rotulo={`Curva de confiabilidade do boosting com ${k} ${k === 1 ? "árvore" : "árvores"} na validação sorteada: ${F.map((f) => `faixa ${f.j}, ${pct(f.pdMedia!, 1)} previstos e ${pct(f.obs!, 1)} observados`).join("; ")}`} tabela={tab} arCelular="5 / 4">
       {(d) => {
         const m = margens(d.fs, { l: 3.4, r: 1.2, t: 1, b: 2.9 });
         const x = escala([0, max], [m.l, d.w - m.r]), y = escala([0, max], [d.h - m.b, m.t]); const r = d.fs * 0.45;
@@ -104,7 +104,7 @@ export function S18Nivel({ pagina }: { pagina?: Pagina }) {
         ? <>A PD média do modelo parado, <b>{pct(E0.g.pdMedia!, 1)}</b>, cabe no intervalo da taxa observada ({DV} de {int(NV)}). E com {K_MAX} árvores? Preveja ao lado.</>
         : parado
           ? <>Parado em {K_PARADA} árvores: PD média {pct(e.g.pdMedia!, 1)} contra {pct(TAXA.p, 1)}{MEDIA_OK ? ", no intervalo," : ""} e slope <b>{num(e.s.slope, 2)}</b> (IC de {num(e.s.ic[0], 2)} a {num(e.s.ic[1], 2)}{SLOPE_OK ? ", contém 1" : ""}){FORA.length ? <>, mas {FORA.length === 1 ? `a faixa ${FORA[0].j} fica` : `as faixas ${FORA.map((f) => f.j).join(" e ")} ficam`} fora do intervalo de Wilson (faixa {LONGE.j}: {pct(LONGE.pdMedia!, 1)} previstos contra {pct(LONGE.obs!, 1)} observados, intervalo de {pct(LONGE.ic!.lo, 1)} a {pct(LONGE.ic!.hi, 1)}): <b>sinais mistos</b>, que {int(NV)} propostas não resolvem</> : <>: {int(NV)} propostas não provam desvio, e não provar não é conferir</>}. O <LinkSlide slug="c6p19">slide 19</LinkSlide> explica cada PD; o capítulo 7 mede com mais casos e recalibra.</>
-          : <>Com {k} árvores, a PD média fica em {pct(e.g.pdMedia!, 1)} (observado {pct(TAXA.p, 1)}), e a faixa 1 recebe {pct(e.F[0].pdMedia!, 1)} contra {pct(e.F[0].obs!, 1)} observados: slope <b>{num(e.s.slope, 2)}</b> (IC de {num(e.s.ic[0], 2)} a {num(e.s.ic[1], 2)}), {forma(e.s)}. Média certa não é PD certa; o <LinkSlide slug="c6p19">slide 19</LinkSlide> explica cada PD, e o capítulo 7 recalibra.</>}
+          : <>Com {k} {k === 1 ? "árvore" : "árvores"}, a PD média fica em {pct(e.g.pdMedia!, 1)} (observado {pct(TAXA.p, 1)}), e a faixa 1 recebe {pct(e.F[0].pdMedia!, 1)} contra {pct(e.F[0].obs!, 1)} observados: slope <b>{num(e.s.slope, 2)}</b> (IC de {num(e.s.ic[0], 2)} a {num(e.s.ic[1], 2)}), {forma(e.s)}. Média certa não é PD certa; o <LinkSlide slug="c6p19">slide 19</LinkSlide> explica cada PD, e o capítulo 7 recalibra.</>}
       fonte={`Validação sorteada: ${int(NV)} propostas, ${DV} defaults. ${NF === 5 ? "Cinco" : NF} faixas pela fila de PD (${NMIN} ou ${NMAX}); Wilson de 95%; slope com IC de Wald.`}>
       <Painel>
         <Curva F={e.F} ref={parado ? null : E0.F} max={MAX} k={k} />
@@ -118,9 +118,8 @@ export function S18Nivel({ pagina }: { pagina?: Pagina }) {
         <div className="q6-s18-kpis">
           <Kpi tam="mini" tom="prob" rotulo="PD média" valor={pct(e.g.pdMedia!, 1)} detalhe={`taxa ${pct(TAXA.p, 1)} (${pct(TAXA.lo, 1)} a ${pct(TAXA.hi, 1)})`} />
           <Kpi tam="mini" tom="prob" rotulo="Faixas no intervalo" valor={`${e.dentro} de ${NF}`} detalhe="Wilson" />
-          <Kpi tam="mini" tom="prob" rotulo="Slope" valor={num(e.s.slope, 2)} detalhe={`IC ${num(e.s.ic[0], 2)} a ${num(e.s.ic[1], 2)}`} />
+          <Kpi tam="mini" tom="prob" rotulo="Slope" valor={num(e.s.slope, 2)} detalhe={<>IC {num(e.s.ic[0], 2)} a {num(e.s.ic[1], 2)}<br />&lt; 1 extremas, &gt; 1 tímidas</>} />
         </div>
-        {revelado && <p className="q7-nota">Slope abaixo de 1: PDs extremas demais; acima de 1, tímidas demais.</p>}
       </Painel>
     </Quadro>
   );

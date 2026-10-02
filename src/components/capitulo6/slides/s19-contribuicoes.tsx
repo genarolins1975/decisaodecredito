@@ -37,6 +37,7 @@ function calcular() {
   const PHI = XV.map((x) => contribuicoes(M, x).phi);
   const topo = (p: number[]) => p.reduce((b, v, j) => (Math.abs(v) > Math.abs(p[b]) ? j : b), 0);
   const folga = (p: number[]) => { const a = p.map(Math.abs).sort((u, v) => v - u); return a[0] - a[1]; };
+  const N_RARO = PHI.filter((p) => topo(p) !== J_GANHO).length;
   const I_PREV = idx((i) => (topo(PHI[i]) !== J_GANHO ? folga(PHI[i]) * 1e3 + XV[i][1] * 1e-3 : -Infinity));
   const I_UTIL = idx((i) => (XV[i][1] >= 10 ? XV[i][0] : -1));
   const PROPOSTAS = [
@@ -49,13 +50,14 @@ function calcular() {
   const C_PREV = contribuicoes(M, XV[I_PREV]);
   const J_MAX = topo(C_PREV.phi);
   const J_SEG = [0, 1, 2].filter((j) => j !== J_MAX).reduce((b, j) => (Math.abs(C_PREV.phi[j]) > Math.abs(C_PREV.phi[b]) ? j : b), J_MAX === 0 ? 1 : 0);
+  const fmtV = (j: number, v: number) => (j === 0 ? `${num(v, 1)}%` : j === 1 ? `${int(v)} dias` : int(v));
   const fmtX = (x: Vetor) => `utilização de ${num(x[0], 1)}%, atraso de ${int(x[1])} dias e score ${int(x[2])}`;
   const OPS = [0, 1, 2].map((j) => ({
     texto: VARIAVEIS[j],
     certa: j === J_MAX,
     retorno: j === J_MAX ? <>Isso: {sinal(C_PREV.phi[j], 2)} na log odds, {num(Math.abs(C_PREV.phi[j] / C_PREV.phi[J_SEG]), 1)} vezes o que {ART0[J_SEG]} move. A carteira corta mais no {VARIAVEIS[J_GANHO].toLowerCase()}; esta proposta depende mais {DE[j]}.</>
       : j === 1 && SEM_ATRASO ? <>Confunde valor alarmante com contribuição: nenhuma das {K_PARADA} árvores corta no atraso, então {int(XV[I_PREV][1])} dias não movem esta PD nem nenhuma outra.</>
-        : j === J_GANHO ? <>Confunde importância na carteira com peso na proposta: o ganho soma cortes em todas as propostas, sem sinal; nesta, {ART0[j]} move menos que {ART0[J_MAX]}.</>
+        : j === J_GANHO ? <>Confunde importância na carteira com peso na proposta: o ganho soma cortes em todas as propostas, sem sinal; o que conta aqui é onde caem os valores desta proposta, como {ART0[j]} de {fmtV(j, XV[I_PREV][j])}, nos cortes das árvores.</>
           : <>Confunde valor alarmante com contribuição: a contribuição mede o uso que o modelo faz do valor desta proposta, não o valor em si.</>,
   }));
   // utilização acima do último corte: a dependência parcial cai ali, num trecho com poucas propostas (ligação com o slide 20)
@@ -64,7 +66,7 @@ function calcular() {
   const N_ACIMA = XA.filter((x) => Math.fround(x[0]) > CORTE_U).length;
   const ART = ART0;
   const LIM = { u: [0, 100], a: [0, 60], s: [600, 970] } as const;
-  return { M0, LL_V, K_PARADA, M, GANHO, usa, SEM_ATRASO, PDV, idx, I_PREV, PROPOSTAS, C_PREV, J_MAX, fmtX, OPS, ART, LIM, CORTE_U, PD_ANTES, PD_DEPOIS, N_ACIMA };
+  return { M0, LL_V, K_PARADA, M, GANHO, N_RARO, J_GANHO, DE, usa, SEM_ATRASO, PDV, idx, I_PREV, PROPOSTAS, C_PREV, J_MAX, fmtX, OPS, ART, LIM, CORTE_U, PD_ANTES, PD_DEPOIS, N_ACIMA };
 }
 let CACHE: ReturnType<typeof calcular> | null = null;
 /** Cálculo preguiçoso: só o slide visitado paga o ajuste dos modelos (o registro importa todos os quadros). */
@@ -112,7 +114,7 @@ function Cascata({ d, base, phi, ver }: { d: Dim; base: number; phi: number[]; v
 }
 
 export function S19Contribuicoes({ pagina }: { pagina?: Pagina }) {
-  const { K_PARADA, M, GANHO, I_PREV, PROPOSTAS, fmtX, OPS, ART, LIM, CORTE_U, PD_ANTES, PD_DEPOIS, N_ACIMA } = dados();
+  const { K_PARADA, M, GANHO, N_RARO, J_GANHO, DE, I_PREV, PROPOSTAS, fmtX, OPS, ART, LIM, CORTE_U, PD_ANTES, PD_DEPOIS, N_ACIMA } = dados();
   const [esc, setEsc] = useState<number | null>(null);
   const [ip, setIp] = useState(0);
   const [x, setX] = useState<number[]>([...XV[I_PREV]]);
@@ -128,8 +130,8 @@ export function S19Contribuicoes({ pagina }: { pagina?: Pagina }) {
     <Quadro slug="c6p19" pagina={pagina} layout="gl"
       conclusao={!revelado
         ? <>Proposta da validação com {fmtX(XV[I_PREV])}: PD de {pct(sigmoide(escore(M, XV[I_PREV])), 1)}. A tabela traz o ganho de cada variável na carteira. Qual delas mais move esta PD? Preveja ao lado.</>
-        : <>Valor esperado {num(c.base, 2)} {c.phi.map((p, j) => <span key={j}>{p < 0 ? "− " : "+ "}{num(Math.abs(p), 2)} ({VARIAVEIS[j].toLowerCase()}) </span>)}= <b>{num(f, 2)}</b>, PD de {pct(sigmoide(f), 1)}; {dif < 1e-12 ? "a soma fecha exatamente" : `diferença de ${num(dif, 12)}`}. O ganho põe {ART[jg]} em {pct(GANHO[jg], 0)} para a carteira, sem sinal; nesta proposta, pesa mais {ART[jm]}. O <LinkSlide slug="c6p20">slide 20</LinkSlide> mostra o atraso entrando no modelo, e na direção errada.</>}
-      fonte={`Validação sorteada: ${int(NV)} propostas. Boosting parado em ${K_PARADA} árvores (taxa 0,1, profundidade 2, mínimo de 40 por folha). Contribuições de Shapley pelo caminho das árvores, conferidas com o shap.TreeExplainer; ganho como no scikit-learn, nas ${int(XA.length)} propostas de ajuste.`}>
+        : <>Valor esperado {num(c.base, 2)} {c.phi.map((p, j) => <span key={j}>{p < 0 ? "− " : "+ "}{num(Math.abs(p), 2)} ({VARIAVEIS[j].toLowerCase()}) </span>)}= <b>{num(f, 2)}</b>, PD de {pct(sigmoide(f), 1)}; {dif < 1e-12 ? "a soma fecha exatamente" : `diferença de ${num(dif, 12)}`}. O ganho põe {ART[jg]} em {pct(GANHO[jg], 0)} para a carteira, sem sinal; nesta proposta, pesa mais {ART[jm]}{ip === 0 && !editada ? ` (caso raro: só em ${N_RARO} das ${int(NV)} propostas a maior contribuição não é a ${DE[J_GANHO]})` : ""}. O <LinkSlide slug="c6p20">slide 20</LinkSlide> mostra o atraso entrando no modelo, e na direção errada.</>}
+      fonte={`Validação sorteada: ${int(NV)} propostas. Boosting parado em ${K_PARADA} árvores (taxa ${num(CFG_CARTEIRA.eta, 1)}, profundidade ${CFG_CARTEIRA.profundidade}, mínimo de ${CFG_CARTEIRA.minFolha} por folha). Contribuições de Shapley pelo caminho das árvores, conferidas com o shap.TreeExplainer; ganho como no scikit-learn, nas ${int(XA.length)} propostas de ajuste.`}>
       <Painel titulo={`Da média do modelo à log odds da proposta${editada ? " (editada)" : ""}`}>
         <Grafico rotulo={`Cascata das contribuições: valor esperado ${num(c.base, 2)}; ${c.phi.map((p, j) => `${VARIAVEIS[j]} ${revelado ? sinal(p, 2) : "oculta"}`).join("; ")}; escore ${num(f, 2)}, PD ${pct(sigmoide(f), 1)}`} arCelular="5 / 4">
           {(d) => <Cascata d={d} base={c.base} phi={c.phi} ver={revelado} />}
@@ -149,8 +151,8 @@ export function S19Contribuicoes({ pagina }: { pagina?: Pagina }) {
           <tbody>{VARIAVEIS.map((v, j) => <tr key={v} data-on={revelado && j === jm ? "1" : undefined}><th>{v}</th><td>{pct(GANHO[j], 0)}</td><td>{revelado ? `${c.phi[j] > 0 ? "▲" : c.phi[j] < 0 ? "▼" : ""} ${sinal(c.phi[j], 2)}` : "?"}</td></tr>)}</tbody>
         </table>
         {revelado && (x[0] > CORTE_U && c.phi[0] < 0
-          ? <p className="q7-nota">A utilização de {num(x[0], 1)}% baixa a PD: acima de {num(CORTE_U, 1)}%, a PD média da carteira cai de {pct(PD_ANTES, 2)} para {pct(PD_DEPOIS, 2)}, num trecho com {int(N_ACIMA)} das {int(XA.length)} propostas de ajuste. Forma sem lógica de crédito: o <LinkSlide slug="c6p20">slide 20</LinkSlide> a proíbe com restrição monotônica.</p>
-          : <p className="q7-nota">Ganho: redução da perda no ajuste, somada na carteira, sem sinal. Contribuição: quanto o valor desta proposta move a log odds, com sinal. A sigmoide do valor esperado não é a PD média.</p>)}
+          ? <p className="q7-nota">A utilização de {num(x[0], 1)}% baixa a PD: acima de {num(CORTE_U, 1)}%, a dependência parcial (PD média da carteira com a utilização fixada) cai de {pct(PD_ANTES, 2)} para {pct(PD_DEPOIS, 2)}, num trecho com {int(N_ACIMA)} das {int(XA.length)} propostas de ajuste. Forma sem lógica de crédito: o <LinkSlide slug="c6p20">slide 20</LinkSlide> a proíbe com restrição monotônica.</p>
+          : <p className="q7-nota">Ganho: soma da redução de perda (erro quadrático dos pseudo-resíduos) nos cortes que usam a variável, normalizada para 100%, sem sinal; é o feature_importances_ do scikit-learn. Contribuição: quanto o valor desta proposta move a log odds, com sinal.</p>)}
       </Painel>
     </Quadro>
   );
