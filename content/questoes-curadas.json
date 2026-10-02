@@ -292,7 +292,7 @@
     "Numa reamostragem dos dados originais, sorteada com reposição"
    ],
    "certa": 1,
-   "porqueCerta": "É essa troca de alvo que separa boosting de tudo o que veio antes. A primeira árvore prevê y; a segunda prevê o erro da primeira; a terceira prevê o erro que sobrou depois das duas. As correções são sequenciais e dependentes: cada árvore só existe em função do que a anterior deixou por fazer.",
+   "porqueCerta": "É essa troca de alvo que separa corrigir de escolher e de votar. A primeira árvore mira o erro do palpite inicial; a segunda, o erro que sobrou depois da primeira; e assim por diante. No quadro, a proposta #3, adimplente, tem alvo −0,50 na árvore 1 e −0,31 na árvore 2, enquanto em votar o alvo dela é sempre y = 0. As correções são sequenciais e dependentes: cada árvore só existe em função do que as anteriores deixaram por fazer.",
    "erros": [
     {
      "confusao": "Boosting foi confundido com média de modelos treinados em paralelo.",
@@ -302,178 +302,178 @@
     },
     null,
     {
-     "confusao": "Boosting foi confundido com bagging, que é a outra forma de combinar árvores.",
-     "conceito": "Bagging sorteia amostras com reposição e faz a média, para estabilizar um modelo de alta variância. Boosting não sorteia nada nesta construção: usa a base inteira e troca o alvo a cada passo. Bagging pergunta como estabilizar vários modelos independentes; boosting pergunta o que o próximo modelo precisa corrigir",
+     "confusao": "Corrigir foi confundido com votar, a combinação de árvores ajustadas em amostras sorteadas com reposição (bagging).",
+     "conceito": "Votar sorteia amostras com reposição e faz a média: estabiliza um modelo de alta variância, mas todas as árvores miram o mesmo y e repetem o mesmo erro, e por isso a log loss de votar para de cair. Corrigir usa as 16 propostas inteiras e troca o alvo a cada passo. Votar pergunta como estabilizar vários modelos independentes; corrigir pergunta o que o próximo modelo precisa corrigir",
      "seu": "A segunda árvore veria uma reamostragem",
-     "adequado": "A segunda árvore vê a base inteira, com o resíduo no lugar de y"
+     "adequado": "A segunda árvore vê as 16 propostas, com o erro que sobrou no lugar de y"
     }
    ]
   },
   {
    "pagina": "c6p5",
    "slug": "c6p5q",
-   "rot": "Soma zero é ruído?",
-   "pergunta": "Depois de F₀ = 6,50, a soma dos oito resíduos é exatamente zero. Ainda há o que aprender?",
+   "rot": "O erro que sobra no segundo nível",
+   "pergunta": "Com o segundo nível, a primeira árvore leva o erro quadrático dos resíduos de 4,00 a 1,00, e não a zero. De onde vem o 1,00 que sobra?",
    "alt": [
-    "Não: soma zero significa que o modelo já acertou na média, e o que sobra é ruído",
-    "Sim: a soma é zero por construção, porque F₀ é a média, mas os quatro primeiros resíduos são negativos e os quatro últimos positivos, e isso é padrão",
-    "Não, porque o resíduo é o erro final do modelo e ele já foi minimizado"
+    "Das folhas B e C, cujas médias, −0,50 e +0,50, ainda estão longe de zero",
+    "Das folhas A (#1 e #2) e D (#15 e #16): cada uma junta um default e um adimplente, com erros +0,50 e −0,50 que a média 0 não explica",
+    "Do lado direito, onde a árvore ficou com utilização ≤ 87,5%; com atraso ≤ 2,5 dias, o erro cairia a zero"
    ],
    "certa": 1,
-   "porqueCerta": "Média nula não é ausência de padrão. Os resíduos vão de −4,5 a +5,5 e crescem com x, de forma ordenada: quem tem x pequeno está sistematicamente acima do palpite e quem tem x grande, abaixo. Sobra estrutura, e é ela que a próxima árvore vai procurar. Se os resíduos fossem ruído, nenhum corte em x reduziria o erro quadrático.",
+   "porqueCerta": "O erro quadrático é medido em torno da média de cada folha. Em B (#3 a #8) os seis erros são −0,50 e em C (#9 a #14) os seis são +0,50: a média descreve cada um exatamente e não sobra nada. Em A e em D, um default (+0,50) e um adimplente (−0,50) dão média 0 e deixam 0,25 + 0,25 = 0,50 cada; somadas, 1,00. Com profundidade 2 e mínimo de 2 por folha, esta árvore não tem como separar os dois; o que sobra passa à árvore seguinte como erro a corrigir.",
    "erros": [
     {
-     "confusao": "Média nula foi lida como ausência de padrão.",
-     "conceito": "A soma ser zero é consequência aritmética de F₀ ser a média, e valeria igualmente para resíduos perfeitamente ordenados ou completamente aleatórios. O que distingue os dois casos é a forma, não a soma. Olhe o gráfico: quatro negativos seguidos e quatro positivos seguidos não é o que ruído produz",
-     "seu": "Soma zero seria evidência de ruído",
-     "adequado": "Soma zero é consequência de F₀ ser a média; o padrão está na forma dos resíduos"
+     "confusao": "A média da folha foi lida como o erro que sobra nela.",
+     "conceito": "A média é o que a folha devolve como correção; o que sobra é a dispersão dos erros em torno dela. Em B, os seis erros são todos −0,50: a média −0,50 os descreve exatamente, e o erro quadrático da folha é zero. Média longe de zero é correção grande, não erro restante",
+     "seu": "As folhas de média longe de zero guardariam o erro restante",
+     "adequado": "O erro restante está nas folhas cujos erros se espalham em torno da média"
     },
     null,
     {
-     "confusao": "Resíduo foi confundido com o erro final do modelo.",
-     "conceito": "Resíduo é sempre relativo ao modelo do momento e muda a cada árvore acrescentada. Para o caso x = 8, ele vale +5,50 agora, com uma única previsão na mesa, e cai para 1,14 depois das quatro árvores. Nada aqui foi minimizado ainda: F₀ é o melhor constante possível, e o método existe justamente porque constante não basta",
-     "seu": "O resíduo seria o erro final daquele caso",
-     "adequado": "O resíduo é o que falta agora e muda a cada árvore"
+     "confusao": "O empate do lado direito foi lido como uma escolha que custou erro.",
+     "conceito": "À direita, utilização ≤ 87,5% e atraso ≤ 2,5 dias deixam o mesmo erro quadrático, 0,50 cada; a biblioteca fica com a primeira variável na ordem, como o scikit-learn com semente 0. Com o corte em atraso, #10 (default) e #15 (adimplente), as duas com atraso zero, cairiam juntas na mesma folha, e o total continuaria 1,00",
+     "seu": "Trocar a variável do corte à direita zeraria o erro",
+     "adequado": "Os dois cortes empatam em 0,50; o erro que sobra não depende dessa escolha"
     }
    ]
   },
   {
    "pagina": "c6p6",
    "slug": "c6p6q",
-   "rot": "O que a árvore prevê",
-   "pergunta": "Na primeira árvore de correção, com resíduos de −2,875 de um lado e +2,875 do outro, o que a árvore devolve para um caso com x maior que 4,5?",
+   "rot": "Por que o passo é finito",
+   "pergunta": "Na folha B, só de adimplentes, o passo de Newton soma −2,00 às log odds: a PD das seis vai a 11,9% e a perda da folha cai de 4,16 para 0,76. A curva exata da perda continua descendo à esquerda de −2,00. Por que a folha soma −2,00, e não um valor mais negativo?",
    "alt": [
-    "A previsão de y para aquele caso, que substitui o palpite anterior",
-    "A correção a somar ao palpite anterior",
-    "O erro que o modelo final ainda terá naquele caso"
+    "Porque à esquerda de −2,00 a perda da folha volta a subir",
+    "Porque −2,00 é o mínimo da parábola de segunda ordem em torno de zero, um passo finito; o mínimo exato da perda numa folha pura foge para menos infinito",
+    "Porque a taxa de aprendizagem limita o passo de cada folha a −2,00"
    ],
    "certa": 1,
-   "porqueCerta": "A árvore do boosting é ajustada aos resíduos, então o que ela devolve é quanto o palpite atual deveria subir ou descer, e não o valor de y. Para x = 8, somar a correção inteira leva o palpite de 6,50 para 9,375, contra 12,00 observado: a direção está certa e a soma continua sendo uma soma, não uma substituição.",
+   "porqueCerta": "O passo de Newton troca a perda exata da folha pela sua aproximação de segunda ordem em torno de zero, a parábola do gráfico, e fica com o mínimo dela: Σ r ÷ Σ p(1 − p) = −3,0 ÷ 1,5 = −2,00. Numa folha só de adimplentes, a perda exata cai sempre que o valor somado desce, e o mínimo dela estaria em menos infinito, com PD 0%. O passo de Newton é finito por construção, e é o valor que o GradientBoostingClassifier do scikit-learn usa.",
    "erros": [
     {
-     "confusao": "A árvore de correção foi lida como se fosse a árvore do capítulo anterior, que prevê o desfecho direto.",
-     "conceito": "No boosting cada árvore responde a uma pergunta diferente: não é quanto vale y, e sim quanto falta para o modelo atual acertar. O alvo dela é o resíduo, por isso a folha guarda −2,875 ou +2,875, que são distâncias, não previsões",
-     "seu": "A árvore substituiria o palpite por 2,875",
-     "adequado": "A árvore soma 2,875 ao palpite de 6,50, que passa a 9,375"
+     "confusao": "A parábola foi lida como se fosse a perda exata da folha.",
+     "conceito": "O gráfico traz duas curvas: a perda exata, que numa folha pura desce sempre que o valor somado desce, e a parábola de segunda ordem, que tem mínimo em −2,00. Quem volta a subir à esquerda de −2,00 é a parábola; a perda exata segue caindo e só chegaria a zero com PD 0%",
+     "seu": "A perda da folha teria mínimo em −2,00",
+     "adequado": "A parábola tem mínimo em −2,00; a perda exata da folha pura segue caindo"
     },
     null,
     {
-     "confusao": "O resíduo do momento foi confundido com o erro final do modelo pronto.",
-     "conceito": "A folha guarda o que falta agora, com uma árvore na mesa, e esse número muda assim que a próxima correção entra. Para x = 8 o resíduo começa em +5,50 e termina em 1,14 depois de quatro árvores. Nenhuma árvore pode prever o erro do modelo final, porque esse modelo ainda não existe quando ela é ajustada",
-     "seu": "A folha diria quanto o modelo pronto ainda erraria",
-     "adequado": "A folha diz o que falta agora, e esse valor muda a cada árvore acrescentada"
+     "confusao": "O passo de Newton foi confundido com a taxa de aprendizagem.",
+     "conceito": "Neste quadro o valor da folha entra inteiro: −2,00 sai só de Σ r ÷ Σ p(1 − p), sem taxa nenhuma. A taxa vem depois (slide 7) e encolhe o passo, não o limita: com η = 0,4, a folha B soma 0,4 × (−2,00) = −0,80 às log odds",
+     "seu": "A taxa de aprendizagem definiria o valor da folha",
+     "adequado": "A folha vale o passo de Newton; a taxa multiplica esse valor depois"
     }
    ]
   },
   {
    "pagina": "c6p7",
    "slug": "c6p7q",
-   "rot": "Escolher a taxa com M fixo",
-   "pergunta": "Com quatro árvores fixas, η = 0,7 produz o menor erro de treino da página, 0,14, e η = 0,1 ainda está em 5,48, mais da metade do erro inicial de 10,19. Isso estabelece que η = 0,7 é a melhor escolha?",
+   "rot": "Por que η = 1 termina acima",
+   "pergunta": "Depois de quatro árvores nas 16 propostas, η = 0,95 termina com log loss de treino de 0,073 e η = 1 com 0,102. O que explica η = 1 ficar acima?",
    "alt": [
-    "Sim, porque foi o valor que produziu o menor erro",
-    "Não: η e M são acoplados, e comparar η com M fixo em quatro árvores não responde à pergunta. E o erro medido é de treino",
-    "Não, porque η menor é sempre mais seguro contra sobreajuste"
+    "O passo inteiro passa do ponto: somar toda a correção faz a perda subir",
+    "Da segunda árvore em diante, cada taxa gera árvores diferentes; na árvore 2 de η = 1, a perda seria mínima com 1,07 vezes o passo, então o passo inteiro ainda fica curto",
+    "η = 0,95 regulariza: o pedaço do passo que fica de fora protege contra o sobreajuste e baixa a perda"
    ],
    "certa": 1,
-   "porqueCerta": "Reduzir η pela metade exige aproximadamente dobrar M para chegar ao mesmo ajuste, e por isso varrer um com o outro parado mede a combinação, não o parâmetro. Some a isso que a curva é de treino, e desce com qualquer complexidade acrescentada. A escolha honesta varre os dois juntos e é medida fora da amostra, que é a página 16 seguida da 17.",
+   "porqueCerta": "A primeira árvore é a mesma para todas as taxas, porque todas partem do mesmo palpite. Da segunda em diante, cada taxa deixa erros diferentes e gera árvores diferentes: com η = 1, a árvore 2 corta primeiro no atraso (≤ 15 dias); com η = 0,95, na utilização (≤ 57,5%). Na árvore 2 de η = 1, a perda seria mínima com 1,07 vezes o passo: o passo inteiro ainda fica curto, não longo. Comparar taxas pela perda depois de quatro árvores mistura o tamanho do passo com as árvores que cada caminho produziu.",
    "erros": [
     {
-     "confusao": "Um hiperparâmetro foi otimizado com o outro fixo, sendo os dois acoplados.",
-     "conceito": "Com M preso em quatro, vence o η que chega mais perto dos dados em tão poucos passos: aqui, 0,7. Dê a cada η o número de árvores de que ele precisa e os resultados se aproximam: a tabela da página 16 mostra o produto η vezes M quase constante",
-     "seu": "η seria escolhido com M parado",
-     "adequado": "η e M se escolhem juntos, porque o que importa é o produto dos dois"
+     "confusao": "Uma diferença que vem de árvores diferentes foi atribuída ao tamanho do passo.",
+     "conceito": "Se o passo inteiro passasse do ponto, a perda seria mínima com menos de 1 vez o passo. Na árvore 2 de η = 1 é o contrário: o mínimo fica em 1,07 vezes o passo. A diferença entre 0,073 e 0,102 vem do caminho: cada taxa deixa erros diferentes, e as árvores seguintes cortam em lugares diferentes",
+     "seu": "η = 1 perderia por somar correção demais",
+     "adequado": "η = 1 perde por gerar outras árvores; o passo inteiro ainda é curto"
     },
     null,
     {
-     "confusao": "η pequeno foi tomado como seguro em qualquer circunstância.",
-     "conceito": "η pequeno com M pequeno não sobreajusta e também não ajusta: o modelo fica parado perto do palpite inicial, que é subajuste. Com η de 0,1 e quatro árvores, o erro para em 5,48, mais da metade do inicial. A segurança vem da combinação, não de um dos dois isoladamente",
-     "seu": "η menor seria sempre mais seguro",
-     "adequado": "η pequeno com M pequeno subajusta; a segurança vem da combinação dos dois"
+     "confusao": "Regularização foi confundida com ajuste no treino.",
+     "conceito": "Somar só um pedaço do passo não serve para descer mais no treino: as taxas pequenas descem mais devagar, e η = 0,1 termina as quatro árvores em 0,470. O papel da taxa pequena é evitar que uma árvore de poucos casos pese sozinha na soma, e esse efeito só aparece fora da amostra, na validação dos slides 14 e 15",
+     "seu": "A taxa menor protegeria do sobreajuste e baixaria a perda de treino",
+     "adequado": "No treino, a perda mede o ajuste; o efeito de regularizar se mede na validação"
     }
    ]
   },
   {
    "pagina": "c6p10",
    "slug": "c6p10q",
-   "rot": "O que a taxa multiplica",
-   "pergunta": "Na fórmula Fₘ(x) = Fₘ₋₁(x) + η × hₘ(x), o que exatamente η multiplica?",
+   "rot": "Uma folha para duas propostas",
+   "pergunta": "Na árvore 2, a proposta 10, default, tem erro 1 − σ(0,80) = +0,31, mas a folha em que ela cai vale γ = −0,41 e puxa a log odds dela para baixo. Por que a correção vai contra o erro da proposta?",
    "alt": [
-    "Só a nova correção hₘ. O palpite inicial e as correções já somadas entram inteiros em Fₘ₋₁",
-    "Toda a expressão, inclusive o palpite inicial F₀",
-    "A nova correção, com um valor diferente a cada árvore, conforme a qualidade dela"
+    "Porque a árvore 2 passa a prever o default, e a proposta 10 foi lida como adimplente",
+    "Porque a folha junta a 10 e a 15, adimplente com PD de 50% e erro −0,50, e o valor é da folha: (0,31 − 0,50) ÷ 0,46 = −0,41",
+    "Porque F₁ = 0,80 já passou do alvo da proposta 10, e a folha corrige o excesso"
    ],
-   "certa": 0,
-   "porqueCerta": "A fórmula diz tudo: η multiplica hₘ e nada mais. F₀ entra inteiro, e cada correção já somada entrou no seu momento também multiplicada por η, mas uma única vez. Para x = 8, 6,50 + 0,5 × 2,875 = 7,94: o 6,50 não encolheu.",
+   "certa": 1,
+   "porqueCerta": "A linha 4 calcula um valor por folha, não por proposta: Σ r ÷ Σ p(1 − p) sobre todas as que caem nela. A folha da 10 (utilização acima de 57,5% e atraso ≤ 2,5 dias) junta a 10 e a 15; a 15 é adimplente, ainda com PD de 50%, e o erro dela, −0,50, pesa mais que o +0,31 da 10. Σ r = −0,19 e Σ p(1 − p) = 0,46 dão γ = −0,41. Com mínimo de 2 por folha, não há folha só para a 10: nesta árvore, ela paga pela vizinha.",
    "erros": [
+    {
+     "confusao": "A árvore de correção foi lida como uma árvore que prevê o default.",
+     "conceito": "No boosting, toda árvore depois do palpite é ajustada ao erro y − p, não a y. A folha não diz se a proposta é default ou adimplente: devolve quanto somar às log odds de todas as que caem nela. A 10 continua default, e o erro dela, +0,31, continua pedindo PD maior",
+     "seu": "A folha negativa diria que a proposta 10 foi classificada como adimplente",
+     "adequado": "A folha negativa diz que, somados, os erros da folha pedem PD menor"
+    },
     null,
     {
-     "confusao": "A fórmula foi lida sem atenção ao que está dentro e fora da multiplicação.",
-     "conceito": "Se η multiplicasse Fₘ₋₁, o palpite inicial encolheria a cada iteração e o modelo convergiria para zero em vez de convergir para os dados. Escreva a conta de x = 8 nas duas leituras: a correta dá 7,94, a outra daria 3,25 mais 1,44. Só a correção é encolhida",
-     "seu": "η encolheria também o palpite anterior",
-     "adequado": "F₀ e o acumulado entram inteiros; só a nova correção é multiplicada"
-    },
-    {
-     "confusao": "η foi entendido como um peso que o algoritmo atribui a cada árvore conforme ela é boa.",
-     "conceito": "η não é nota de qualidade: é um único número, igual para as M árvores, escolhido antes de treinar e mantido fixo durante todo o ajuste. O que muda de árvore para árvore é hₘ, que reflete o resíduo daquele momento. Quem quiser dar pesos diferentes por árvore está descrevendo outro algoritmo",
-     "seu": "η variaria conforme a qualidade de cada árvore",
-     "adequado": "η é o mesmo fator nas M árvores, escolhido antes do treino"
+     "confusao": "Uma log odds positiva foi lida como previsão acima do alvo.",
+     "conceito": "F₁ = 0,80 é PD de 69%, e o alvo de um default é 100%: o erro +0,31 é positivo justamente porque a PD ainda está abaixo do desfecho. Em log loss, o erro y − p de um default nunca fica negativo; quem puxa a folha para baixo é a 15, não um excesso da 10",
+     "seu": "A proposta 10 teria passado do alvo com F₁ = 0,80",
+     "adequado": "Com PD de 69%, a proposta 10 ainda está abaixo do alvo; quem puxa a folha para baixo é a 15"
     }
    ]
   },
   {
    "pagina": "c6p13",
    "slug": "c6p13q",
-   "rot": "Quatro árvores contra a logística",
-   "pergunta": "Quatro árvores levam a log loss de treino de 0,6931 a 0,4748, e a regressão logística do capítulo 4 atinge 0,43282 na mesma base. O boosting é pior?",
+   "rot": "Taxa maior no ajuste e na validação",
+   "pergunta": "Na carteira, com profundidade 2 e mínimo de 40 por folha, trocar a taxa de 0,1 para 0,5 baixa a perda de ajuste com 300 árvores de 0,234 para 0,142. O que acontece com a perda de validação nessas 300 árvores?",
    "alt": [
-    "Sim, a logística venceu nesta base",
-    "A comparação não decide nada: as duas perdas são de treino, e o número de árvores não foi escolhido por nenhum critério",
-    "Não, basta acrescentar árvores até a perda passar de 0,43282"
+    "Cai também: o que melhora o ajuste melhora a validação",
+    "Cai, só que menos que a de ajuste",
+    "Sobe, de 0,329 para 0,388: a taxa maior acelera a complexidade, e as árvores além do ponto de parada só decoram o ajuste"
    ],
-   "certa": 1,
-   "porqueCerta": "São duas coisas erradas ao mesmo tempo. A amostra é a de treino, onde qualquer complexidade acrescentada faz a perda descer, e o M de quatro é arbitrário, escolhido para caber na página e não por validação. A comparação correta fixa o protocolo antes, usa o mesmo conjunto de informação e mede fora da amostra, que é o capítulo 7.",
+   "certa": 2,
+   "porqueCerta": "Taxa maior soma mais de cada folha e acelera o ajuste; com 300 árvores, isso já é decorar. Com η = 0,5, a AUC de ajuste chega a 0,978 e a de validação fica em 0,575. A melhor validação dessa combinação, 0,296, vem com só 4 árvores (escolhida na própria validação, portanto otimista), e as 296 seguintes só baixam o ajuste; a referência chega ao mesmo 0,296 com 16. Por isso cada controle se lê no ajuste e na validação ao mesmo tempo, e taxa e árvores se escolhem juntas (slides 14 e 15).",
    "erros": [
     {
-     "confusao": "Um número de iterações arbitrário e uma amostra de treino foram tratados como comparação válida.",
-     "conceito": "Com M escolhido por validação e medição fora do tempo, o resultado pode se inverter ou não, e é isso que a página 17 investiga. Aqui, as quatro árvores existem para tornar o mecanismo visível, não para competir. Declarar vencedor com esses dois números é o erro que o capítulo 2 já tinha nomeado",
-     "seu": "0,4748 contra 0,43282 decidiria entre as famílias",
-     "adequado": "Nenhum dos dois números foi produzido em condições que permitam comparar"
+     "confusao": "A perda de ajuste foi tomada como medida do que o modelo aprendeu de útil.",
+     "conceito": "O ajuste agradece qualquer complexidade, porque a perda é medida nas mesmas propostas que as árvores usaram. A validação, 631 propostas que o modelo não viu, mostra o contrário: com η = 0,5 e 300 árvores ela vai a 0,388, acima dos 0,329 da referência",
+     "seu": "Ajuste melhor implicaria validação melhor",
+     "adequado": "A complexidade que baixa o ajuste pode subir a validação; cada controle se mede nas duas"
     },
-    null,
     {
-     "confusao": "A perda de treino foi adotada como critério de parada.",
-     "conceito": "Essa curva desce monotonicamente com M e nunca indica onde parar: leve M ao máximo e ela continua caindo. Perseguir um alvo nela leva direto ao sobreajuste, porque o que se está minimizando é a memorização da base. Quem diz onde parar é a amostra de validação, e é ela que escolhe M",
-     "seu": "Acrescentar árvores até bater a logística resolveria",
-     "adequado": "A perda de treino não tem informação sobre onde parar; quem diz é a validação"
-    }
+     "confusao": "Supôs que a validação acompanha o ajuste na mesma direção, só mais devagar.",
+     "conceito": "A distância entre as duas curvas não é um atraso da validação: passado o ponto de parada, elas andam em sentidos opostos. Com η = 0,5, a validação tem o mínimo, 0,296, com 4 árvores e termina em 0,388 com 300, enquanto o ajuste segue caindo até 0,142",
+     "seu": "A validação cairia também, só que menos",
+     "adequado": "Depois do ponto de parada, a validação piora enquanto o ajuste melhora"
+    },
+    null
    ]
   },
   {
    "pagina": "c6p20",
    "slug": "c6p20q",
-   "rot": "Onde os três modelos discordam",
-   "pergunta": "Em qual destas propostas os três modelos mais discordam?",
+   "rot": "Monotonia não é calibração",
+   "pergunta": "Com 300 árvores e mínimo de 10 por folha, o modelo monotônico dá PD média de 20,4% acima de 30 dias de atraso, onde a amostra de ajuste tem 0 defaults em 11 propostas. O que a restrição monotônica garante?",
    "alt": [
-    "#10: utilização de 65%, sem atraso, deu default",
-    "#12: utilização de 75%, atraso de 40 dias, deu default",
-    "#3: utilização de 30%, atraso de 5 dias, pagou"
+    "Que a PD está calibrada, porque passou a seguir a lógica de crédito",
+    "Só a direção: a PD não cai quando o atraso sobe (nenhum trecho de queda, contra 10 no modelo livre); o nível precisa ser conferido à parte",
+    "Nada de útil, porque 20,4% contra 0 de 11 mostra que a restrição distorceu o modelo"
    ],
-   "certa": 0,
-   "porqueCerta": "Na #10 a logística estima 30,5%, a árvore 100% e o boosting 58,3%: 69,5 pontos entre o menor e o maior, a maior distância das 16, e com modelos dos dois lados de 50%. A reta lê atraso zero e utilização média e fica baixa; a árvore põe a #10 na folha pura de seis defaults; o boosting, com quatro árvores, está no meio do caminho entre as duas leituras.",
+   "certa": 1,
+   "porqueCerta": "A restrição impõe o sinal de cada variável (utilização +1, atraso +1, score −1) e mais nada: com ela, a dependência parcial no atraso não cai em nenhum trecho, contra 10 trechos de queda no modelo livre, e a AUC na validação sorteada sobe de 0,5979 para 0,6756. O nível é outra pergunta. Acima de 30 dias, 0 em 11 cabe numa taxa de até 25,9% (Wilson), então 20,4% não é refutado por esses dados, mas também não é confirmado: o nível se confere à parte, como no slide 18 e no capítulo 7.",
    "erros": [
+    {
+     "confusao": "Monotonia foi confundida com calibração.",
+     "conceito": "Monotonia é uma restrição de forma: garante que a PD não desce quando o atraso sobe. Calibração é uma pergunta de nível: se, entre propostas com PD de 20%, cerca de 20% dão default. Um modelo pode respeitar a direção em todos os trechos e errar o nível em todos eles; a nota do quadro diz isso: monotonia não é calibração",
+     "seu": "Respeitar a direção do risco garantiria o nível da PD",
+     "adequado": "A monotonia garante a direção; o nível se confere à parte, na calibração"
+    },
     null,
     {
-     "confusao": "Confundiu risco alto com discordância.",
-     "conceito": "A #12 tem PD alta nos três modelos: 99,6% na logística, 100% na árvore e 66,8% no boosting. Os três dizem risco alto; os 33 pontos de distância vêm do boosting, que parou em quatro árvores ainda perto dos 50% de onde partiu",
-     "seu": "A proposta de maior risco seria a mais disputada",
-     "adequado": "Discordância é distância entre as PDs, sobretudo quando elas caem em lados opostos de 50%"
-    },
-    {
-     "confusao": "Leu a distância entre 0% e 33,4% como leitura oposta do caso.",
-     "conceito": "Na #3 a logística dá 6,1%, a árvore 0% e o boosting 33,4%. Os três dizem baixo risco; a distância vem do boosting ainda perto de 50%, não de uma leitura diferente da proposta",
-     "seu": "Qualquer distância grande entre as PDs seria discordância sobre o caso",
-     "adequado": "Os modelos discordam de fato quando um põe o caso abaixo de 50% e outro acima, como na #10 e na #5"
+     "confusao": "Zero defaults em 11 propostas foi lido como taxa exata de 0%.",
+     "conceito": "Com 11 propostas, 0 defaults é compatível com uma taxa de até 25,9% pelo intervalo de Wilson de 95%, e 20,4% cabe nele. A restrição também não distorceu a ordenação: na validação sorteada, a AUC sobe de 0,5979 no modelo livre para 0,6756 no monotônico, com intervalo da diferença de 0,035 a 0,121",
+     "seu": "20,4% contra 0 de 11 provaria um erro do modelo monotônico",
+     "adequado": "0 de 11 cabe numa taxa de até 25,9%; com 11 casos, o nível não se decide"
     }
    ]
   },
@@ -572,7 +572,7 @@
     "11,9%, a média dos dois, para equilibrar estatística e economia"
    ],
    "certa": 1,
-   "porqueCerta": "O KS mede separação sem saber quanto custa cada erro; o corte econômico pesa perda, receita e custos. A política sai da conta econômica, com as hipóteses à vista, e muda quando elas mudam. O KS continua útil para descrever a ordenação.",
+   "porqueCerta": "O KS mede separação sem saber quanto custa cada erro; o corte econômico pesa perda, receita e custos. A política sai da conta econômica, com as hipóteses à vista, e muda quando elas mudam ou quando o nível da PD muda: recalibrada a logística (PD média de 9,7% para 12,0%), o mesmo motor refaz o corte a 13,5% (slide 36). O KS continua útil para descrever a ordenação.",
    "erros": [
     {
      "confusao": "O ponto de maior separação foi tomado como corte de decisão.",
@@ -623,25 +623,25 @@
    "rot": "Calibração no agregado",
    "pergunta": "A logística prevê 71,6 defaults na janela e ocorreram 81: observado dividido por esperado de 1,13. O que isso permite concluir?",
    "alt": [
-    "Que o nível médio está baixo; a calibração por faixa ainda precisa ser vista",
+    "Que a PD fica abaixo do observado, mas a janela sozinha não rejeita o nível (Jeffreys p = 0,12); e um O/E igual a 1 também não provaria calibração por faixa",
     "Que o modelo está calibrado, porque 1,13 é próximo de 1",
-    "Que o modelo ordena mal os clientes"
+    "Que o nível está errado e a janela basta para recalibrar o nível, porque 81 é bem mais que 71,6"
    ],
    "certa": 0,
-   "porqueCerta": "Esperar 71,6 e observar 81 indica risco subestimado em 13% no agregado. Mas a média pode esconder erros de sinais opostos entre faixas: só a curva por faixa mostra se o erro é de nível, de inclinação ou de ambos.",
+   "porqueCerta": "Esperar 71,6 e observar 81 põe a PD abaixo do observado no agregado, e a tela mostra o mesmo lado nas duas metades da fila (O/E 1,04 e 1,16). Mas, com 81 defaults, o p de Jeffreys é 0,12: a diferença ainda cabe no ruído, e a janela sozinha não rejeita o nível. E mesmo um total exato não provaria calibração: no modelo comprimido do quadro, O/E = 1 esconde erros de sinais opostos nas duas metades. A evidência contra o nível vem da validação (O/E 1,35, Jeffreys p = 0,001); por isso, encerrada a prova, o nível é recalibrado em validação e janela, de 9,7% para 12,0% de PD média (slide 36).",
    "erros": [
     null,
     {
-     "confusao": "Proximidade da média foi lida como calibração.",
-     "conceito": "Uma média certa pode resultar de superestimar uns e subestimar outros. E 13% de risco a mais no agregado já pesa na provisão",
-     "seu": "Razão perto de 1 prova calibração",
-     "adequado": "Razão perto de 1 é condição necessária, não suficiente"
+     "confusao": "Proximidade do total foi lida como prova de calibração.",
+     "conceito": "Não rejeitar o nível não é provar que ele está certo, e o total bater não garante cada faixa: uma média certa pode somar superestimação de uns e subestimação de outros, como no modelo comprimido do quadro, com O/E = 1 e metades erradas para lados opostos. Aqui, além disso, as duas metades ficam abaixo do observado",
+     "seu": "Razão perto de 1 provaria calibração",
+     "adequado": "Razão perto de 1 é condição necessária, não suficiente; a curva por faixa decide"
     },
     {
-     "confusao": "Erro de nível foi lido como erro de ordem.",
-     "conceito": "O total de defaults esperados depende do nível das PDs, não da ordem entre elas. Somar uma constante em log odds mudaria a razão sem mexer na AUC",
-     "seu": "Nível errado significa ordenação ruim",
-     "adequado": "Nível e ordem são perguntas diferentes"
+     "confusao": "A diferença numa janela de 81 defaults foi lida como prova de nível errado.",
+     "conceito": "Com 81 defaults, observar 81 quando se esperam 71,6 ainda é compatível com a PD média (Jeffreys p = 0,12). Quem rejeita o nível é a validação (O/E 1,35, p = 0,001). A janela prova a ordenação; o nível se recalibra depois da prova, com validação e janela juntas, as safras maturadas fora do treino",
+     "seu": "A janela sozinha provaria o erro de nível e bastaria para recalibrar",
+     "adequado": "A janela sozinha não rejeita o nível; a recalibração vem depois da prova, em validação e janela"
     }
    ]
   },
@@ -656,7 +656,7 @@
     "Medido onde deve, o Platt piora a log loss (0,3167 contra 0,3149), então a logística não se recalibra"
    ],
    "certa": 1,
-   "porqueCerta": "O 0,3136 foi medido nos mesmos dados em que o calibrador foi ajustado: é otimista por construção. Medido fora da amostra de ajuste, o Platt fica 0,0018 acima de sem calibrar, diferença que uma janela de 81 defaults não distingue de ruído. Nas réplicas sintéticas da janela, pela PD verdadeira, o Platt é o melhor dos três (0,3409, contra 0,3419 do intercepto e 0,3439 sem calibrar) e vence sem calibrar em 249 de 300. A janela não escolhe entre calibradores; o nível da logística é recalibrado depois da prova, pela regra do contrato (slides 2 e 36), porque a validação já rejeitava o nível.",
+   "porqueCerta": "O 0,3136 foi medido nos mesmos dados em que o calibrador foi ajustado: é otimista por construção. Medido fora da amostra de ajuste, o Platt fica 0,0018 acima de sem calibrar, diferença que uma janela de 81 defaults não distingue de ruído. Nas réplicas sintéticas da janela, pela PD verdadeira, o Platt é o melhor dos três (0,3409, contra 0,3419 do intercepto e 0,3439 sem calibrar) e vence sem calibrar em 249 das 300. A janela não escolhe entre calibradores. O nível da logística é recalibrado depois da prova, em validação e janela, as safras maturadas fora do treino, pela regra do contrato (slides 2 e 36), porque a validação já rejeitava o nível.",
    "erros": [
     {
      "confusao": "O ajuste foi avaliado na amostra em que foi estimado.",
@@ -667,9 +667,9 @@
     null,
     {
      "confusao": "Uma diferença de 0,0018 numa janela de 81 defaults foi lida como sinal.",
-     "conceito": "Tamanho importa, mas medido no lugar certo: a diferença se compara com a variação de uma janela para outra. Nas réplicas sintéticas, o Platt vence sem calibrar em 249 de 300 janelas, embora nesta fique 0,0018 acima",
+     "conceito": "Tamanho importa, mas medido no lugar certo: a diferença se compara com a variação de uma janela para outra. Nas réplicas sintéticas da janela, o Platt vence sem calibrar em 249 das 300, embora nesta janela fique 0,0018 acima",
      "seu": "O Platt piora a log loss na janela, então não se recalibra",
-     "adequado": "0,0018 com 81 defaults é ruído; a recalibração do nível vem da validação, que já rejeitava o nível, e é feita depois da prova"
+     "adequado": "0,0018 com 81 defaults é ruído; o nível é recalibrado depois da prova, em validação e janela, porque a validação já o rejeitava"
     }
    ]
   },
@@ -677,14 +677,14 @@
    "pagina": "c7p12",
    "slug": "c7p12q",
    "rot": "O que o intercepto muda",
-   "pergunta": "Um ajuste de intercepto soma a mesma constante positiva ao log odds de todas as PDs do boosting. O que acontece na janela?",
+   "pergunta": "Um ajuste de intercepto soma a mesma constante positiva ao log odds de todas as PDs do boosting sem recalibrar. O que acontece na janela?",
    "alt": [
     "A AUC sobe, porque as PDs ficam mais corretas",
     "A PD média sobe e a AUC fica igual, porque a ordem é preservada",
     "Só as PDs altas mudam, porque a sigmoide é mais inclinada nos extremos"
    ],
    "certa": 1,
-   "porqueCerta": "Somar uma constante em log odds é estritamente crescente: ninguém troca de lugar e a AUC é a mesma. As PDs todas sobem, e em pontos percentuais sobem mais as que estão perto de 50%, onde a sigmoide é mais inclinada. Na janela, a média vai de 9,77% para 11,40%.",
+   "porqueCerta": "Somar uma constante em log odds é estritamente crescente: ninguém troca de lugar e a AUC é a mesma. As PDs todas sobem, e em pontos percentuais sobem mais as que estão perto de 50%, onde a sigmoide é mais inclinada. Com a = 0,1829, estimado na amostra de calibração, a PD média do boosting sem recalibrar vai de 9,77% para 11,40% na janela.",
    "erros": [
     {
      "confusao": "Calibração foi confundida com ordenação.",
@@ -736,22 +736,22 @@
    "pergunta": "Uma equipe testou dez variações do modelo olhando a janela final e reporta a melhor, com AUC de 0,7286 nela. Qual leitura é defensável?",
    "alt": [
     "0,7286 é a estimativa do desempenho futuro, porque foi medida fora do tempo",
-    "0,7286 é otimista: a janela virou validação, e o desempenho precisa ser medido numa janela nova",
+    "0,7286 é otimista: escolher olhando a janela a transformou em validação, e a prova exige uma amostra fora do tempo ainda intocada",
     "0,7286 é conservador, porque a melhor das dez tende a ser estável"
    ],
    "certa": 1,
-   "porqueCerta": "Escolher o máximo entre dez candidatos na mesma amostra seleciona também a sorte da amostra. Na simulação do capítulo, o escolhido teria AUC esperada de 0,6588 em janelas novas, abaixo dos 0,6697 da logística. Uma janela usada para escolher precisa de outra, intocada, para provar.",
+   "porqueCerta": "Escolher o máximo entre dez candidatos na mesma amostra seleciona também a sorte dela. No quadro, depois de dez reaberturas, o escolhido marca 0,7286 na janela, mas nas réplicas sintéticas da janela (300 sorteios do desfecho pela PD verdadeira, só possíveis na base sintética) teria AUC esperada de 0,6565, abaixo dos 0,6673 da logística. A própria logística, aberta uma vez, já tinha 0,0584 de sorte da janela (0,7257 contra 0,6673); o escolhido soma 0,0721, 0,0138 além dessa sorte. Uma janela usada para escolher deixa de ser prova; a prova pede outra amostra, intocada.",
    "erros": [
     {
      "confusao": "Fora do tempo foi tratado como garantia de independência.",
-     "conceito": "A janela só é independente enquanto nenhuma escolha foi feita olhando para ela. Escolher a melhor de dez usa a janela como validação",
+     "conceito": "A janela só é independente enquanto nenhuma escolha foi feita olhando para ela. Escolher a melhor de dez usa a janela como validação, e o número que sai dela deixa de ser prova",
      "seu": "Medida fora do tempo vale sempre",
      "adequado": "Vale só se nada foi escolhido olhando a janela"
     },
     null,
     {
      "confusao": "Seleção pelo máximo foi lida como estabilidade.",
-     "conceito": "O máximo de vários números ruidosos tende a ser alto por acaso; na janela seguinte, ele regride",
+     "conceito": "O máximo de vários números ruidosos tende a ser alto por acaso e regride em outra amostra. Nas réplicas sintéticas da janela, o escolhido fica em 0,6565, abaixo dos 0,6673 da logística, embora marque 0,7286 na janela",
      "seu": "O melhor de dez candidatos é estável",
      "adequado": "O melhor de dez candidatos é otimista"
     }

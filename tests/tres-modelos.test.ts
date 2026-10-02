@@ -6,8 +6,7 @@ import { boostingClassificacao } from "@/lib/visuais/boosting";
 import did from "@/lib/visuais/did.json";
 import type { Proposta } from "@/lib/visuais/logistica";
 
-/** O fecho da Aula 2 cita números em três lugares: o texto da página (material de origem), a pergunta curada e as
-    notas do professor. Todos precisam ser os que as funções dos capítulos produzem, e os que as páginas anteriores
+/** O fecho da Aula 2 cita números em dois lugares: o texto da página (material de origem) e as notas do professor. Todos precisam ser os que as funções dos capítulos produzem, e os que as páginas anteriores
     já mostraram (c5p18 para as perdas, c6p13 e c6p14 para o boosting). */
 const { linhas, perda } = tresModelos();
 const pd = (id: number) => linhas.find((l) => l.id === id)!.pd;
@@ -52,14 +51,13 @@ describe("fecho da aula 2: três modelos nas mesmas 16 propostas", () => {
     expect(leituraDaProposta(linhas.find((l) => l.id === 10)!)).toBe("Árvore e boosting acima de 50%; logística abaixo.");
   });
 
-  it("o texto da página, a pergunta e as notas citam exatamente esses números", () => {
+  it("o texto da página e as notas citam exatamente esses números", () => {
     const ex = JSON.parse(fs.readFileSync(path.join(process.cwd(), "content/generated/extract.json"), "utf8"));
     const pagina = ex.pages.find((p: { id: string }) => p.id === "c6p20");
     expect(pagina).toBeTruthy();
     const texto = JSON.stringify(pagina);
     for (const n of ["0,43282", "0,18844", "0,47481", "0,15503", "0,05444", "52,6%", "30,5%"]) expect(texto).toContain(n);
-    const curadas = JSON.parse(fs.readFileSync(path.join(process.cwd(), "content/questoes-curadas.json"), "utf8"));
-    const q = curadas.questoes.find((x: { slug: string }) => x.slug === "c6p20q");
-    for (const n of ["30,5%", "100%", "58,3%", "69,5", "99,6%", "66,8%", "6,1%", "33,4%"]) expect(JSON.stringify(q)).toContain(n);
+    // a questão curada c6p20q era a pergunta deste fecho; com o capítulo 6 reconstruído, c6p20 é o quadro da monotonia,
+    // e a questão confere os números dele (tests/questoes-curadas-numeros.test.ts)
   });
 });
