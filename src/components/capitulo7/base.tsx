@@ -15,14 +15,15 @@ const ORDEM: Pergunta[] = ["ordenacao", "probabilidade", "decisao", "validacao"]
 const dois = (n: number) => String(n).padStart(2, "0");
 
 /**
- * Declaração da base em toda fonte: os números do capítulo saem da base sintética do curso. A fonte que já declara a
- * base fica como está; a que começa por "Janela fora do tempo:" ganha semente e safras no lugar; as outras recebem a
- * declaração antes do texto.
+ * Declaração da base em toda fonte: os números do capítulo saem da base sintética do curso. A que começa por "Janela
+ * fora do tempo:" ganha semente e safras no lugar; a que já traz a semente da base, ou declara estar fora dela, fica
+ * como está; as outras recebem a declaração antes do texto.
  */
 const BASE_CURSO = "Base sintética (semente 20260501), safras 2023-08 a 2023-12";
 export function declararBase(fonte: ReactNode, base = BASE_CURSO): ReactNode {
-  if (typeof fonte !== "string" || /sint[ée]tic/i.test(fonte)) return fonte;
+  if (typeof fonte !== "string") return fonte;
   if (/^Janela fora do tempo:/.test(fonte)) return fonte.replace(/^Janela fora do tempo:/, `${base}, janela fora do tempo:`);
+  if (/20260501|fora da base/.test(fonte)) return fonte;
   return `${base}. ${fonte}`;
 }
 
