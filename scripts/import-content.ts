@@ -268,6 +268,7 @@ async function main() {
     .map((r) => r.id).filter((x): x is string => Boolean(x)));
   const curadas = new Set(Object.values(CURADAS).flat().map((q) => q.slug as string));
   const questoesSincronizadas: string[] = [];
+  const reposicionadas: string[] = [];
   for (let i = 0; i < ex.pages.length; i++) {
     const p = ex.pages[i];
     const chapterId = chapterIds.get(p.cap)!;
@@ -305,6 +306,11 @@ async function main() {
       if (metaDoProfessor.has(pg.id)) metaPreservada++;
       await db.update(schema.pages).set({ publishedVersionId: vid, updatedAt: new Date(), ...meta }).where(eq(schema.pages.id, pg.id));
       if (publicada) sincronizadas.push(p.id);
+    } else if (!metaDoProfessor.has(pg.id) && (pg.position !== i || pg.number !== p.n)) {
+      /* Página sem mudança de conteúdo cuja posição mudou porque outras entraram ou saíram antes dela (capítulo 6
+         reconstruído, outubro de 2026): sem isto, a ordem do palco e da navegação ficava com a posição antiga. */
+      await db.update(schema.pages).set({ position: i, number: p.n, updatedAt: new Date() }).where(eq(schema.pages.id, pg.id));
+      reposicionadas.push(p.id);
     }
     for (const q of questionRecords(p)) {
       let [qq] = await db.select().from(schema.questions).where(and(eq(schema.questions.editionId, edition.id), eq(schema.questions.slug, q.slug)));
@@ -332,6 +338,7 @@ async function main() {
   inventory.questions = qCount;
   inventory.rendering = stats;
   inventory.resync = { synced: sincronizadas, diverged: divergentes };
+  if (reposicionadas.length) console.log(`posição atualizada em ${reposicionadas.length} página(s) sem mudança de conteúdo: ${reposicionadas.slice(0, 12).join(", ")}${reposicionadas.length > 12 ? " e mais" : ""}`);
   if (sincronizadas.length) {
     const lista = sincronizadas.length > 12 ? `${sincronizadas.slice(0, 12).join(", ")} e mais ${sincronizadas.length - 12}` : sincronizadas.join(", ");
     console.log(`conteúdo de origem atualizado em ${sincronizadas.length} página(s): ${lista}`);
