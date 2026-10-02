@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
-import { Botao, Controle, escala, Grafico, Painel, Previsao, Quadro, Seg, type Pagina } from "../base";
+import { Botao, Controle, escala, Grafico, LinkSlide, Painel, Previsao, Quadro, Seg, type Pagina } from "../base";
 import { D, N, PL, Y } from "@/lib/capitulo7/dados";
 import { calibracaoGlobal, faixasQuantis, jeffreys, logit, sigmoide, transformar, wilson } from "@/lib/capitulo7/metricas";
 import { int, num, pct } from "@/lib/capitulo7/formato";
@@ -11,7 +11,7 @@ import { int, num, pct } from "@/lib/capitulo7/formato";
  * observados (O/E = 1). No total ele acerta; as duas metades da fila só aparecem depois da previsão, e erram para lados
  * opostos. A logística é o segundo passo: O/E 1,13, com as duas metades abaixo do observado. O p de Jeffreys da
  * carteira (slide 21) diz se 81 contra 71,6 cabe no ruído. Cada barra de observado traz o intervalo de Wilson de 95%
- * do seu grupo. Título e subtítulo viram pergunta até a previsão: o do roteiro entrega a resposta.
+ * do seu grupo, definido na legenda em uma frase (o slide 21 o apresenta). Título e subtítulo viram pergunta até a previsão: o do roteiro entrega a resposta.
  */
 type Mod = "comprimido" | "logistica";
 const TAXA = D / N;
@@ -39,6 +39,8 @@ export function S18Global({ pagina }: { pagina?: Pagina }) {
     ...metades.map((f, i) => ({ nome: i ? "Metade de cima" : "Metade de baixo", prev: f.pdMedia!, obs: f.obs!, n: f.n, d: f.d, esp: f.somaPd, oculto: !revelado, ic: f.ic! })),
   ];
   const comp = mod === "comprimido";
+  // o retorno certo fala do comprimido; na logística ele não pode continuar dizendo que os erros se anulam
+  const ops = comp ? OPS : OPS.map((o) => (o.certa ? { ...o, retorno: <>Isso, no comprimido os erros se anulam. A logística é outro caso: as duas metades ficam abaixo do observado.</> } : o));
   return (
     <Quadro slug="c7p29" pagina={pagina} layout="gl"
       titulo={revelado ? undefined : "Média prevista igual à observada prova calibração?"}
@@ -77,12 +79,12 @@ export function S18Global({ pagina }: { pagina?: Pagina }) {
             );
           }}
         </Grafico>
-        <ul className="q7-leg"><li><span className="q7-mk q7-mk--quad q7-mk--prob" />PD média prevista</li><li><span className="q7-mk q7-mk--circ q7-mk--def2" />default observado, com intervalo de 95% (Wilson)</li></ul>
+        <ul className="q7-leg"><li><span className="q7-mk q7-mk--quad q7-mk--prob" />PD média prevista</li><li><span className="q7-mk q7-mk--circ q7-mk--def2" /><span>default observado; o traço é o intervalo de 95% (Wilson), a faixa de taxas compatíveis com o que se observou (<LinkSlide slug="c7p31" className="q7-s10-lk">slide 21</LinkSlide>)</span></li></ul>
       </Painel>
       <Painel>
         <div className="q7-s21-l"><Seg rotulo="Modelo" opcoes={[{ v: "comprimido" as Mod, r: "Comprimido" }, { v: "logistica" as Mod, r: "Logística" }]} valor={mod} onChange={setMod} /><Botao sec onClick={() => { setMod("comprimido"); setB(B0); setEsc(null); }}>Restaurar</Botao></div>
         {comp && <Controle rotulo="Compressão b (a mantém O/E = 1)" valor={b} min={0.3} max={1} passo={0.05} onChange={setB} mostrar={num(b, 2)} escala={["0,3: comprime", "1: sem compressão"]} />}
-        <Previsao pergunta={`O total bate (O/E ${num(calibracaoGlobal(Y, transformar(PL, aParaTotal(B0), B0)).razaoOE!, 2)}). Nas duas metades da fila, o comprimido:`} opcoes={OPS} escolha={esc} onEscolha={(i) => { setEsc(i); if (i !== null && OPS[i].certa) { setMod("comprimido"); setB(B0); } }} recolher />
+        <Previsao pergunta={`O total bate (O/E ${num(calibracaoGlobal(Y, transformar(PL, aParaTotal(B0), B0)).razaoOE!, 2)}). Nas duas metades da fila, o comprimido:`} opcoes={ops} escolha={esc} onEscolha={(i) => { setEsc(i); if (i !== null && OPS[i].certa) { setMod("comprimido"); setB(B0); } }} recolher />
         {revelado && <table className="q7-tab">
           <thead><tr><th className="q7-t-l">Grupo</th><th>Esperados</th><th>Observados</th><th>O/E</th></tr></thead>
           <tbody>{grupos.slice(1).map((gr) => <tr key={gr.nome}><th>{gr.nome}</th><td>{num(gr.esp, 1)}</td><td>{gr.d}</td><td>{num(gr.d / gr.esp, 2)}</td></tr>)}</tbody>

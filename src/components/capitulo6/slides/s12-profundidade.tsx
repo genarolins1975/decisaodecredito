@@ -1,83 +1,69 @@
 "use client";
 import { useMemo, useState } from "react";
-import { Botao, caminho, Eixos, escala, Expandir, Grafico, LinkSlide, Painel, Previsao, Quadro, Seg, margens, type Pagina } from "@/components/capitulo7/base";
-import { CFG_CARTEIRA, NA, NV, XV, YV, modelo } from "@/lib/capitulo6/dados";
-import { escore, estagios, perdaLog, sigmoide } from "@/lib/capitulo6/gbm";
-import { int, num, pct } from "@/lib/capitulo7/formato";
+import { Botao, caminho, Eixos, escala, Grafico, LinkSlide, Painel, Previsao, Quadro, Seg, margens, type Pagina } from "@/components/capitulo7/base";
+import { CFG_CARTEIRA, NA, NV, XA, XV, YV, modelo } from "@/lib/capitulo6/dados";
+import { escore, estagios, perdaLog } from "@/lib/capitulo6/gbm";
+import { int, num } from "@/lib/capitulo7/formato";
 
 /**
- * 12 · c6p12 · Profundidade como ordem de interação. Três modelos da carteira com a referência do slide 11 (η = 0,1,
- * mínimo 40, 300 árvores), mudando só a profundidade (1, 2, 3). À esquerda, a superfície de PD em utilização × score
- * com o atraso fixo; à direita, as log odds ao longo da utilização em três scores. Com tocos (profundidade 1) cada
- * árvore usa uma variável e o modelo é uma soma de funções de uma variável: as três curvas são paralelas, e o ganho de
- * 0% a 60% de utilização é o mesmo em qualquer score (calculado, não suposto). Com profundidade 2, as folhas combinam
- * duas variáveis e as curvas se afastam. A faixa dos eixos vai dos percentis 5 a 95 do ajuste (utilização até 61%,
- * score de 712 a 927). A previsão (o que acontece com tocos) trava a troca de profundidade até a resposta certa.
+ * 12 · c6p12 · Profundidade como ordem de interação. Modelos da carteira com a referência do slide 11 (η = 0,1,
+ * mínimo 40), mudando só a profundidade (1, 2, 3), cada um parado no mínimo da log loss da validação sorteada (o mesmo
+ * critério do slide 15); o seletor de árvores mostra também o modelo de 300 árvores, para ver a "interação" de
+ * decoreba. A peça é a log odds ao longo da utilização em três scores, com o atraso fixo em 0 dias. O efeito da utilização é a
+ * média da log odds de 50% a 60% menos a de 0% a 10% (uma média por faixa, não um ponto da curva). Os eixos vão até o
+ * percentil 95 da utilização no ajuste, e os três scores ficam entre os percentis 5 e 95 do score (calculados aqui e
+ * conferidos na tela). Com tocos, cada árvore usa uma variável: as curvas são paralelas e o efeito é o mesmo em
+ * qualquer score (calculado, não suposto). A previsão (o que acontece com tocos) trava os seletores até a resposta.
  */
 const PROFS = [1, 2, 3] as const;
-const ATRASOS = [0, 5, 15];
-const SCORES = [700, 800, 900];
-const U_MAX = 65, U_DELTA = 60, S_MIN = 700, S_MAX = 940;
-const NU = 52, NS = 24;
-const mod = (p: number) => modelo({ ...CFG_CARTEIRA, profundidade: p });
-/** Ganho em log odds de 0% a 60% de utilização, para cada score, com o atraso fixo. */
-const delta = (p: number, atr: number) => SCORES.map((s) => escore(mod(p), [U_DELTA, atr, s]) - escore(mod(p), [0, atr, s]));
-const cacheV = new Map<number, { min: number; em: number }>();
-/** Melhor perda de validação ao longo das 300 árvores, por profundidade (para a pergunta "a interação paga?"). */
-function melhorVal(p: number) {
-  let r = cacheV.get(p); if (!r) { const pv = estagios(mod(p), XV).map((F) => perdaLog(F, YV)); const min = Math.min(...pv); r = { min, em: pv.indexOf(min) }; cacheV.set(p, r); } return r;
+const SCORES = [750, 820, 900];
+const quantil = (v: number[], p: number) => { const s = [...v].sort((a, b) => a - b); const h = (s.length - 1) * p; const l = Math.floor(h); return s[l] + (s[Math.ceil(h)] - s[l]) * (h - l); };
+const U95 = quantil(XA.map((x) => x[0]), 0.95), S05 = quantil(XA.map((x) => x[2]), 0.05), S95 = quantil(XA.map((x) => x[2]), 0.95);
+const BAIXA: [number, number] = [0, 10], ALTA: [number, number] = [50, 60];
+const DV = YV.reduce((s, v) => s + v, 0);
+type Arv = "parada" | 300;
+
+function calcular() {
+  return PROFS.map((p) => {
+    const m300 = modelo({ ...CFG_CARTEIRA, profundidade: p });
+    const pv = estagios(m300, XV).map((F) => perdaLog(F, YV));
+    const k = pv.reduce((b, v, i) => (i >= 1 && v < pv[b] ? i : b), 1);
+    return { p, k, min: pv[k], fim: pv[CFG_CARTEIRA.arvores], m300, mk: modelo({ ...CFG_CARTEIRA, profundidade: p, arvores: k }) };
+  });
 }
-const tons = ["#F2F7F7", "#C7E1E1", "#8CC2C3", "#4A9A9C", "#176C73", "#0B474D"];
-function cor(v: number) { const t = Math.max(0, Math.min(1, v)) * (tons.length - 1); const i = Math.min(tons.length - 2, Math.floor(t)); const f = t - i; const h = (c: string) => [1, 3, 5].map((k) => parseInt(c.slice(k, k + 2), 16)); const a = h(tons[i]), b = h(tons[i + 1]); return `rgb(${a.map((x, k) => Math.round(x + (b[k] - x) * f)).join(",")})`; }
+let CACHE: ReturnType<typeof calcular> | null = null;
+/** Cálculo preguiçoso: só o slide visitado paga os ajustes (o registro importa todos os quadros). */
+const dados = () => (CACHE ??= calcular());
+
+type Mod = ReturnType<typeof calcular>[number]["mk"];
+/** Média da log odds numa faixa de utilização, de meio em meio ponto. */
+const mediaFaixa = (m: Mod, [a, b]: [number, number], atr: number, s: number) => { let t = 0, n = 0; for (let u = a; u <= b + 1e-9; u += 0.5) { t += escore(m, [u, atr, s]); n++; } return t / n; };
+/** Efeito da utilização (faixa alta menos faixa baixa), em log odds, para cada score. */
+const efeito = (m: Mod, atr: number) => SCORES.map((s) => mediaFaixa(m, ALTA, atr, s) - mediaFaixa(m, BAIXA, atr, s));
 const TRACOS = ["", "10 6", "3 5"];
+const sn = (v: number) => `${v >= 0 ? "+" : "−"}${num(Math.abs(v), 2)}`;
 
-function Superficie({ p, atr }: { p: number; atr: number }) {
-  const grade = useMemo(() => { const m = mod(p); return Array.from({ length: NS }, (_, j) => Array.from({ length: NU }, (_, i) => sigmoide(escore(m, [((i + 0.5) / NU) * U_MAX, atr, S_MIN + ((j + 0.5) / NS) * (S_MAX - S_MIN)])))); }, [p, atr]);
-  const pmax = Math.max(0.1, Math.ceil(Math.max(...grade.flat()) * 10) / 10);
-  return (
-    <Grafico titulo="PD por utilização e score" sub={`atraso ${atr} dias`} rotulo={`Mapa de PD com profundidade ${p}, atraso fixo em ${atr} dias: utilização de 0% a ${U_MAX}% e score de ${S_MIN} a ${S_MAX}; PD de ${pct(Math.min(...grade.flat()), 1)} a ${pct(Math.max(...grade.flat()), 1)}`} arCelular="1 / 1">
-      {(d) => {
-        const g = margens(d.fs, { l: 3, r: 0.6, t: 1.4, b: 4.6 });
-        const x = escala([0, U_MAX], [g.l, d.w - g.r]), y = escala([S_MIN, S_MAX], [d.h - g.b, g.t]);
-        const cw = (x(U_MAX) - x(0)) / NU, ch = (y(S_MIN) - y(S_MAX)) / NS;
-        const lx = g.l, lw = Math.min(d.w - g.l - g.r, d.fs * 14), ly = d.h - d.fs * 1.5;
-        return (
-          <g>
-            {grade.map((lin, j) => lin.map((v, i) => <rect key={`${i}-${j}`} x={x(0) + i * cw} y={y(S_MIN) - (j + 1) * ch} width={cw + 0.6} height={ch + 0.6} fill={cor(Math.sqrt(v / pmax))} />))}
-            {SCORES.map((s, k) => <g key={s}><line x1={x(0)} x2={x(U_MAX)} y1={y(s)} y2={y(s)} stroke="#fff" strokeWidth={3} strokeDasharray={TRACOS[k] || undefined} /><line x1={x(0)} x2={x(U_MAX)} y1={y(s)} y2={y(s)} stroke="#00205B" strokeWidth={1.5} strokeDasharray={TRACOS[k] || undefined} /></g>)}
-            <Eixos x={x} y={y} xt={[0, 20, 40, 60]} yt={[700, 800, 900]} fx={(v) => `${v}%`} fy={(v) => int(v)} xTit="utilização do limite" yTit="score" grade={false} />
-            <defs><linearGradient id="q6s12g">{tons.map((c, k) => <stop key={k} offset={k / (tons.length - 1)} stopColor={c} />)}</linearGradient></defs>
-            <rect x={lx} y={ly - d.fs * 0.45} width={lw} height={d.fs * 0.55} fill="url(#q6s12g)" stroke="#C9CDD5" />
-            <text className="q7-tick" x={lx} y={ly + d.fs * 0.95}>PD 0%</text>
-            <text className="q7-tick" x={lx + lw / 2} y={ly + d.fs * 0.95} textAnchor="middle">{pct(pmax / 4, 1)}</text>
-            <text className="q7-tick" x={lx + lw} y={ly + d.fs * 0.95} textAnchor="end">{pct(pmax, 0)}</text>
-          </g>
-        );
-      }}
-    </Grafico>
-  );
-}
-
-function Cortes({ p, atr, ds }: { p: number; atr: number; ds: number[] }) {
-  const cur = useMemo(() => { const m = mod(p); return SCORES.map((s) => Array.from({ length: 131 }, (_, i) => (i / 130) * U_MAX).map((u) => ({ u, f: escore(m, [u, atr, s]) }))); }, [p, atr]);
+function Curvas({ m, atr, ds, p, k }: { m: Mod; atr: number; ds: number[]; p: number; k: number }) {
+  const cur = useMemo(() => SCORES.map((s) => Array.from({ length: 123 }, (_, i) => (i / 122) * U95).map((u) => ({ u, f: escore(m, [u, atr, s]) }))), [m, atr]);
   const todos = cur.flat().map((c) => c.f);
-  const lo = Math.floor(Math.min(...todos)), hi = Math.ceil(Math.max(...todos));
+  const c0 = Math.min(...todos), c1 = Math.max(...todos), meio = (c0 + c1) / 2, span = Math.max(1, c1 - c0);
+  const lo = Math.floor((meio - span * 0.6) * 2) / 2, hi = Math.ceil((meio + span * 0.6) * 2) / 2;
   return (
-    <Grafico titulo="Log odds" sub={`rótulo: de 0% a ${U_DELTA}%`} rotulo={`Log odds por utilização com profundidade ${p}, atraso ${atr} dias, para scores ${SCORES.join(", ")}`} arCelular="1 / 1">
+    <Grafico titulo="Log odds por utilização, em três scores" sub={`profundidade ${p}, ${k} árvores, atraso ${atr} dias`} rotulo={`Log odds por utilização com profundidade ${p} e ${k} árvores, atraso ${atr} dias; efeito da faixa de ${BAIXA[0]}% a ${BAIXA[1]}% à de ${ALTA[0]}% a ${ALTA[1]}%: ${SCORES.map((s, i) => `score ${s} ${sn(ds[i])}`).join(", ")}`} arCelular="4 / 3">
       {(d) => {
-        const g = margens(d.fs, { l: 2.6, r: 4.8, t: 1.4, b: 2.7 });
-        const x = escala([0, U_MAX], [g.l, d.w - g.r]), y = escala([lo, hi], [d.h - g.b, g.t]);
-        const yt = Array.from({ length: hi - lo + 1 }, (_, k) => lo + k);
+        const g = margens(d.fs, { l: 3.2, r: 5.6, t: 1, b: 2.8 });
+        const x = escala([0, U95], [g.l, d.w - g.r]), y = escala([lo, hi], [d.h - g.b, g.t]);
+        const yt: number[] = []; const passo = hi - lo > 3 ? 1 : 0.5; for (let v = Math.ceil(lo / passo) * passo; v <= hi + 1e-9; v += passo) yt.push(v);
         // rótulos na ponta, afastados quando encostam
-        const fim = cur.map((c) => y(c[c.length - 1].f)); const ord = fim.map((v, k) => [v, k]).sort((a, b) => a[0] - b[0]);
-        for (let k = 1; k < ord.length; k++) if (ord[k][0] - ord[k - 1][0] < d.fs * 2.1) ord[k][0] = ord[k - 1][0] + d.fs * 2.1;
-        const pos = new Array(3); ord.forEach(([v, k]) => (pos[k] = v));
+        const fim = cur.map((c) => y(c[c.length - 1].f)); const ord = fim.map((v, i) => [v, i]).sort((a, b) => a[0] - b[0]);
+        for (let i = 1; i < ord.length; i++) if (ord[i][0] - ord[i - 1][0] < d.fs * 2.2) ord[i][0] = ord[i - 1][0] + d.fs * 2.2;
+        const pos = new Array(3); ord.forEach(([v, i]) => (pos[i] = v));
         return (
           <g>
-            <Eixos x={x} y={y} xt={[0, 20, 40, 60]} yt={yt} fx={(v) => `${v}%`} fy={(v) => num(v, 0)} xTit="utilização do limite" yTit="log odds" />
-            <line x1={x(U_DELTA)} x2={x(U_DELTA)} y1={g.t} y2={d.h - g.b} stroke="#C9CDD5" strokeWidth={1.5} strokeDasharray="4 5" />
-            {cur.map((c, k) => <path key={k} className="q7-linha q7-linha--prob" strokeWidth={3.2} strokeDasharray={TRACOS[k] || undefined} d={caminho(c.map((q) => ({ x: x(q.u), y: y(q.f) })))} />)}
-            {cur.map((_, k) => <text key={k} className="q7-rot--peq" x={x(U_MAX) + d.fs * 0.35} y={pos[k] - d.fs * 0.2} style={{ fill: "#176C73", fontWeight: 700 }}><tspan x={x(U_MAX) + d.fs * 0.35}>{`score ${SCORES[k]}`}</tspan><tspan x={x(U_MAX) + d.fs * 0.35} dy="1.1em">{`${ds[k] >= 0 ? "+" : "−"}${num(Math.abs(ds[k]), 2)}`}</tspan></text>)}
+            {[BAIXA, ALTA].map(([a, b]) => <rect key={a} x={x(a)} y={g.t} width={x(b) - x(a)} height={d.h - g.b - g.t} fill="#EEF0F3" />)}
+            <Eixos x={x} y={y} xt={[0, 10, 20, 30, 40, 50, 60]} yt={yt} fx={(v) => `${v}%`} fy={(v) => num(v, 1)} xTit="utilização do limite" yTit="log odds" />
+            {cur.map((c, i) => <path key={i} className="q7-linha q7-linha--prob" strokeWidth={3.4} strokeDasharray={TRACOS[i] || undefined} d={caminho(c.map((q) => ({ x: x(q.u), y: y(q.f) })))} />)}
+            {cur.map((_, i) => <text key={i} className="q7-rot--peq" x={x(U95) + d.fs * 0.4} y={pos[i] - d.fs * 0.2} style={{ fill: "#176C73", fontWeight: 700 }}><tspan x={x(U95) + d.fs * 0.4}>{`score ${SCORES[i]}`}</tspan><tspan x={x(U95) + d.fs * 0.4} dy="1.1em">{sn(ds[i])}</tspan></text>)}
           </g>
         );
       }}
@@ -86,52 +72,53 @@ function Cortes({ p, atr, ds }: { p: number; atr: number; ds: number[] }) {
 }
 
 export function S12Profundidade({ pagina }: { pagina?: Pagina }) {
+  const D = dados();
   const [p, setP] = useState(2);
-  const [atr, setAtr] = useState(0);
+  const [arv, setArv] = useState<Arv>("parada");
+  const atr = 0;
   const [esc, setEsc] = useState<number | null>(null);
-  const ds = useMemo(() => delta(p, atr), [p, atr]);
-  const d1 = useMemo(() => delta(1, 0), []);
+  const R = D[p - 1], m = arv === "parada" ? R.mk : R.m300, k = arv === "parada" ? R.k : CFG_CARTEIRA.arvores;
+  const ds = efeito(m, atr);
+  const d1 = efeito(D[0].mk, 0);
   const iguais = Math.max(...ds) - Math.min(...ds) < 1e-9;
-  const sn = (v: number) => `${v >= 0 ? "+" : "−"}${num(Math.abs(v), 2)}`;
+  const melhor = D.reduce((b, r) => (r.min < b.min ? r : b), D[0]);
   const ops = [
-    { texto: "Ficam paralelas: a utilização soma o mesmo em qualquer score", certa: true, retorno: <>Isso: com tocos, de 0% a {U_DELTA}% a utilização soma {sn(d1[0])} em log odds nos três scores.</> },
-    { texto: "Continuam a se afastar, como com profundidade 2", certa: false, retorno: <>Um toco corta uma variável só; nenhuma folha sabe o score e a utilização ao mesmo tempo. Sem folha conjunta, não há como o efeito de uma mudar com a outra.</> },
+    { texto: "Ficam paralelas: mesmo efeito em todo score", certa: true, retorno: <>Isso: tocos parados em {D[0].k} árvores somam {sn(d1[0])} nos três scores.</> },
+    { texto: "Continuam a se afastar", certa: false, retorno: <>Um toco corta uma variável só; nenhuma folha sabe o score e a utilização ao mesmo tempo. Sem folha conjunta, o efeito de uma não muda com a outra.</> },
     { texto: "Viram retas, como na logística", certa: false, retorno: <>Tocos dão degraus, não retas: cada árvore soma um valor de cada lado de um corte. O que eles têm da logística é a soma sem interação.</> },
   ];
   const revelado = esc !== null && ops[esc].certa;
-  const escolher = (i: number | null) => { setEsc(i); if (i !== null && ops[i].certa) setP(1); };
-  const [vals, setVals] = useState<{ p: number; min: number; em: number }[] | null>(null);
+  const escolher = (i: number | null) => { setEsc(i); if (i !== null && ops[i].certa) { setP(1); setArv("parada"); } };
+  const restaurar = () => { setP(2); setArv("parada"); setEsc(null); };
+  const efeitoTxt = <>da faixa de {BAIXA[0]}% a {BAIXA[1]}% de utilização à de {ALTA[0]}% a {ALTA[1]}%, a log odds muda <b>{sn(ds[0])}</b> com score {SCORES[0]} e <b>{sn(ds[2])}</b> com {SCORES[2]}</>;
   return (
     <Quadro slug="c6p12" pagina={pagina} layout="gl"
-      sub={revelado ? undefined : "Mesma carteira e mesma taxa; só muda a profundidade das árvores. O que ela muda na forma da PD?"}
+      sub={revelado ? undefined : "Cada modelo parado pela validação sorteada; só muda a profundidade."}
       conclusao={!revelado
-        ? <>Profundidade 2: de 0% a {U_DELTA}% de utilização, as log odds mudam {sn(ds[0])} com score {SCORES[0]} e {sn(ds[2])} com score {SCORES[2]}. E com tocos, de profundidade 1?</>
-        : iguais
-          ? <>Profundidade {p}: de 0% a {U_DELTA}% de utilização soma <b>{sn(ds[0])}</b> em log odds com score {SCORES[0]}, {SCORES[1]} ou {SCORES[2]}. Curvas paralelas: o modelo é uma soma de uma função por variável, como na logística, só que em degraus.</>
-          : <>Profundidade {p}: a mesma utilização soma <b>{sn(ds[0])}</b> com score {SCORES[0]} e <b>{sn(ds[2])}</b> com score {SCORES[2]}: o efeito de uma variável depende da outra. Mais profundidade, mais complexidade: o <LinkSlide slug="c6p13">slide 13</LinkSlide> junta os quatro controles.</>}
-      fonte={`Ajuste: ${int(NA)} propostas. η ${num(CFG_CARTEIRA.eta, 1)}, mínimo ${CFG_CARTEIRA.minFolha}, ${CFG_CARTEIRA.arvores} árvores, profundidade 1, 2 ou 3 (gbm.ts). Eixos nos percentis 5 a 95; atraso fixo.`}>
+        ? <>Profundidade 2, parada em {R.k} árvores: {efeitoTxt}. E com tocos, de profundidade 1?</>
+        : <>Profundidade {p}, {k} árvores: {efeitoTxt}{iguais ? ": curvas paralelas, modelo aditivo." : ": o efeito de uma variável depende da outra."} {arv === 300
+          ? <>Sem parada, a validação piora de {num(R.min, 4)} para {num(R.fim, 4)}: interação de decoreba.</>
+          : <>Interação só vale se validar: aqui a melhor perda é a da profundidade {melhor.p} ({num(melhor.min, 4)}).</>} O <LinkSlide slug="c6p13">slide 13</LinkSlide> junta os quatro controles.</>}
+      fonte={`Ajuste: ${int(NA)} propostas; validação sorteada: ${int(NV)}, ${DV} defaults. η ${num(CFG_CARTEIRA.eta, 1)}, mínimo ${CFG_CARTEIRA.minFolha} (gbm.ts). Eixo até o percentil 95 da utilização (${num(U95, 1)}%); scores entre os percentis 5 e 95 (${int(S05)} e ${int(S95)}). Efeito: média nas faixas cinza, a alta menos a baixa.`}>
       <Painel>
-        <div className="q6-s12-g">
-          <Superficie p={p} atr={atr} />
-          <Cortes p={p} atr={atr} ds={ds} />
-        </div>
+        <Curvas m={m} atr={atr} ds={ds} p={p} k={k} />
       </Painel>
       <Painel>
         <div className="q6-s12-ctl">
           <div><p className="q7-k">Profundidade{revelado ? "" : ": depois da previsão"}</p><Seg rotulo="Profundidade das árvores" opcoes={PROFS.map((v) => ({ v, r: v === 1 ? "1: tocos" : String(v) }))} valor={p} onChange={setP} cor desab={!revelado} /></div>
-          <div><p className="q7-k">Atraso fixo</p><Seg rotulo="Atraso fixo, em dias" opcoes={ATRASOS.map((v) => ({ v, r: `${v} dias` }))} valor={atr} onChange={setAtr} cor /></div>
+          <div><p className="q7-k">Árvores</p><Seg rotulo="Número de árvores" opcoes={[{ v: "parada" as Arv, r: `parada (${R.k})` }, { v: 300 as Arv, r: "300" }]} valor={arv} onChange={setArv} cor desab={!revelado} /></div>
         </div>
         <Previsao pergunta="Com tocos (profundidade 1), as três curvas de log odds..." opcoes={ops} escolha={esc} onEscolha={escolher} recolher />
         {revelado && (
-          <Expandir resumo="A interação paga na validação?">
-            {vals ? <>
-              <table className="q7-tab"><thead><tr><th className="q7-t-l">Profundidade</th><th>Melhor perda de validação</th><th>Com</th></tr></thead>
-                <tbody>{vals.map((v) => <tr key={v.p}><th>{v.p}</th><td>{num(v.min, 4)}</td><td>{v.em} árvores</td></tr>)}</tbody></table>
-              <p className="q7-nota">{vals[0].min < vals[1].min ? "Aqui não: nesta carteira, os tocos validam melhor que as árvores mais fundas." : "Aqui a profundidade 2 valida melhor que os tocos."} Com {int(NV)} propostas e {YV.reduce((a, b) => a + b, 0)} defaults, diferenças na terceira casa pedem cautela.</p>
-            </> : <Botao onClick={() => setVals(PROFS.map((q) => ({ p: q, ...melhorVal(q) })))}>Calcular nas {int(NV)} de validação</Botao>}
-          </Expandir>
+          <table className="q7-tab q6-s12-tab">
+            <thead><tr><th className="q7-t-l">Validação sorteada</th>{D.map((r) => <th key={r.p}>{r.p === 1 ? "Tocos" : `Prof. ${r.p}`}</th>)}</tr></thead>
+            <tbody>
+              <tr><th>Parada, árvores</th>{D.map((r) => <td key={r.p}>{r.k}</td>)}</tr>
+              <tr data-on="1"><th>Perda mínima</th>{D.map((r) => <td key={r.p}>{r === melhor ? <b>{num(r.min, 4)}</b> : num(r.min, 4)}</td>)}</tr>
+            </tbody>
+          </table>
         )}
-        <div className="q7-botoes q6-fim"><Botao sec onClick={() => { setP(2); setAtr(0); setEsc(null); setVals(null); }}>Restaurar</Botao></div>
+        <div className="q7-botoes q6-fim"><Botao sec onClick={restaurar}>Restaurar</Botao></div>
       </Painel>
     </Quadro>
   );

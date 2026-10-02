@@ -1,7 +1,7 @@
 {
  "source": "content/original/apresentacao-curso-pd.html",
- "sha256": "c50f37c06c98d6aff359104e05204c1ff92b5a379b21fe31259db28cb2463bf1",
- "extractedAt": "2026-10-02T11:50:19.890Z",
+ "sha256": "b7e719d41a8017ec5b233de0745677e7c32c6e0b6b576bbf48ab4a9250d2ffc3",
+ "extractedAt": "2026-10-02T12:45:52.896Z",
  "edition": "2026",
  "units": [
   {
@@ -2460,7 +2460,7 @@
    "pageId": "4chy05peaoezfx8013hqb",
    "chapter": 7,
    "unit": 3,
-   "title": "Só a ordem move AUC, KS, ganho e lift, e todos juntos",
+   "title": "Só a ordem move AUC, KS, ganho e lift",
    "level": "complementar",
    "minutes": 5,
    "origin": "rec",
@@ -4047,7 +4047,30 @@
   "native": 21
  },
  "resync": {
-  "synced": [],
+  "synced": [
+   "c7p1",
+   "c7p21",
+   "c7p22",
+   "c7p24",
+   "c7p26",
+   "c7p27",
+   "c7p29",
+   "c7p10",
+   "c7p30",
+   "c7p31",
+   "c7p32",
+   "c7p33",
+   "c7p11",
+   "c7p16",
+   "c7p12",
+   "c7p13",
+   "c7p36",
+   "c7p37",
+   "c7p15",
+   "c7p17",
+   "c7p38",
+   "c7p19"
+  ],
   "diverged": []
  }
 }

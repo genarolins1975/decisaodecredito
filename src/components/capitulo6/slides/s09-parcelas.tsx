@@ -4,6 +4,7 @@ import { Botao, caminho, Eixos, escala, Grafico, LinkSlide, Painel, Previsao, Qu
 import { CFG_DIDATICA, DIDATICA, XD, YD, modelo } from "@/lib/capitulo6/dados";
 import { sigmoide, valorArvore, type No, type Vetor } from "@/lib/capitulo6/gbm";
 import { num, pct } from "@/lib/capitulo7/formato";
+import base from "@/lib/capitulo6/base.json";
 
 /**
  * 09 · c6p9 · A PD de uma das 16 propostas decomposta: F₀ mais η vezes a folha de cada uma das quatro árvores, tudo em
@@ -13,6 +14,7 @@ import { num, pct } from "@/lib/capitulo7/formato";
  * A previsão compara duas propostas que caem na mesma folha da última árvore: a mesma parcela em log odds vale pontos de
  * PD diferentes, conforme o ponto da curva. As PDs ficam ocultas até a resposta certa.
  */
+const SEMENTE_BASE = base.meta.seed; // semente do gerador do curso, que também gerou as 16 propostas didáticas
 const MOD = modelo(CFG_DIDATICA, XD, YD);
 const ETA = MOD.eta, M = MOD.arvores.length;
 const NOMES = ["util.", "atraso"];
@@ -62,7 +64,7 @@ function Cascata({ i, revelado }: { i: number; revelado: boolean }) {
       {(d) => {
         const fs = d.fs; const estreito = d.w < fs * 34; const m = margens(fs, { l: estreito ? 5.6 : 11.2, r: 1.2, t: 0.4, b: 2.7 });
         const x = escala([-LIM, LIM], [m.l, d.w - m.r]);
-        const altoC = (d.h - m.t - m.b) * 0.56; const rh = altoC / rotulos.length; const bh = Math.min(rh * 0.58, fs * 1.25);
+        const altoC = (d.h - m.t - m.b) * 0.6; const rh = altoC / rotulos.length; const bh = Math.min(rh * 0.58, fs * 1.25);
         const yc = (k: number) => m.t + rh * (k + 0.5);
         const topoS = m.t + altoC + fs * 1.6; const y = escala([0, 1], [d.h - m.b, topoS]);
         const ticks = Array.from({ length: 2 * LIM + 1 }, (_, k) => k - LIM);
@@ -74,9 +76,9 @@ function Cascata({ i, revelado }: { i: number; revelado: boolean }) {
             <line x1={x(0)} x2={x(0)} y1={m.t} y2={d.h - m.b} stroke="#C9CDD5" strokeWidth={1.5} strokeDasharray="4 5" />
             {rotulos.map((r, k) => (
               <g key={k}>
-                <text className="q7-rot" x={m.l - fs * 0.6} y={yc(k) + (estreito || k > M ? fs * 0.34 : -fs * 0.12)} textAnchor="end" style={{ fill: "#00205B", fontWeight: 700 }}>{estreito ? curtos[k] : r}</text>
-                {!estreito && k > 0 && k <= M && <text className="q7-rot--peq" x={m.l - fs * 0.6} y={yc(k) + fs * 0.82} textAnchor="end" style={{ fill: "#5B6475", fontSize: "0.74em" }}>{dc.regras[k - 1]}</text>}
-                {!estreito && k === 0 && <text className="q7-rot--peq" x={m.l - fs * 0.6} y={yc(k) + fs * 0.82} textAnchor="end" style={{ fill: "#5B6475", fontSize: "0.74em" }}>{`log(${NDEF} ÷ ${YD.length - NDEF})`}</text>}
+                <text className="q7-rot" x={m.l - fs * 0.6} y={yc(k) + (estreito || k > M ? fs * 0.34 : -fs * 0.2)} textAnchor="end" style={{ fill: "#00205B", fontWeight: 700 }}>{estreito ? curtos[k] : r}</text>
+                {!estreito && k > 0 && k <= M && <text className="q7-rot--peq" x={m.l - fs * 0.6} y={yc(k) + fs * 0.72} textAnchor="end" style={{ fill: "#5B6475", fontSize: "0.74em" }}>{dc.regras[k - 1]}</text>}
+                {!estreito && k === 0 && <text className="q7-rot--peq" x={m.l - fs * 0.6} y={yc(k) + fs * 0.72} textAnchor="end" style={{ fill: "#5B6475", fontSize: "0.74em" }}>{`ln(${NDEF} ÷ ${YD.length - NDEF})`}</text>}
               </g>
             ))}
             {/* palpite */}
@@ -85,7 +87,7 @@ function Cascata({ i, revelado }: { i: number; revelado: boolean }) {
             {dc.parcelas.map((p, k) => {
               const a = dc.acum[k], b = dc.acum[k + 1]; const x0 = x(Math.min(a, b)), x1 = x(Math.max(a, b)); const cy = yc(k + 1);
               const txt = estreito ? sinal(p) : `${sinal(p)}  (${num(ETA, 1)} × ${num(dc.folhas[k], 2)})`;
-              const direita = p >= 0 ? x1 + fs * 0.4 + larg(txt) < d.w - m.r * 0.2 : x0 - fs * 0.4 - larg(txt) < m.l;
+              const direita = x1 + fs * 0.4 + larg(txt) < d.w - m.r * 0.2; // à direita da barra, longe da linha do zero; à esquerda só se não couber
               return (
                 <g key={k}>
                   <line x1={x(a)} x2={x(a)} y1={yc(k) + bh / 2} y2={cy - bh / 2} stroke="#9AA1AD" strokeWidth={1.4} strokeDasharray="2 3" />
@@ -112,8 +114,6 @@ function Cascata({ i, revelado }: { i: number; revelado: boolean }) {
                 <line x1={x(dc.acum[M])} x2={x(dc.acum[M])} y1={yc(M + 1) + bh / 2} y2={y(pdF)} stroke="#00205B" strokeWidth={2} strokeDasharray="6 4" />
                 <line x1={m.l} x2={x(dc.acum[M])} y1={y(pdF)} y2={y(pdF)} stroke="#00205B" strokeWidth={2} strokeDasharray="6 4" />
                 {dc.acum.slice(0, M).map((a, k) => <circle key={k} cx={x(a)} cy={y(sigmoide(a))} r={fs * 0.24} fill="#fff" stroke="#176C73" strokeWidth={2} />)}
-                {/* o ganho da última árvore em PD, no eixo */}
-                <line x1={m.l + fs * 0.45} x2={m.l + fs * 0.45} y1={y(sigmoide(dc.acum[M - 1]))} y2={y(pdF)} stroke="#176C73" strokeWidth={fs * 0.32} />
                 <circle cx={x(dc.acum[M])} cy={y(pdF)} r={fs * 0.36} fill="#176C73" stroke="#fff" strokeWidth={2} />
                 {(() => { const y0 = pdF > 0.7 ? y(pdF) + fs * 1.15 : y(0.93) + fs * 0.4; const x0 = dc.acum[M] < 0 ? Math.max(m.l + fs * 1.2, x(dc.acum[M]) + fs * 0.8) : m.l + fs * 1.2; return (
                   <text x={x0} y={y0} style={{ paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em" }}>
@@ -145,7 +145,7 @@ export function S09Parcelas({ pagina }: { pagina?: Pagina }) {
       conclusao={revelado
         ? <>Proposta {p.id}: {soma} em log odds, e PD = σ({num(dc.acum[M], 2)}) = <b>{pct(sigmoide(dc.acum[M]), 1)}</b>. {MESMA ? <>A mesma folha de {sinal(P4)} vale {sinal(G10 * 100, 1)} pp na {id10} e {sinal(G9 * 100, 1)} pp na {id9}: só as log odds somam.</> : null} O <LinkSlide slug="c6p10">slide 10</LinkSlide> escreve esta soma como a fórmula de Friedman.</>
         : <>Proposta {p.id}: {soma} em log odds. Cada parcela é η = {num(ETA, 1)} vezes a folha em que a proposta cai, as quatro árvores do <LinkSlide slug="c6p8">slide 8</LinkSlide>. Responda à previsão para ver a PD.</>}
-      fonte={`${YD.length} propostas sintéticas dos capítulos 4 e 5, ${NDEF} defaults; η = ${num(ETA, 1)}, ${M} árvores de profundidade ${CFG_DIDATICA.profundidade}, mínimo de ${CFG_DIDATICA.minFolha} por folha; folha por passo de Newton (gbm.ts, conferida contra o scikit-learn).`}>
+      fonte={`${YD.length} propostas sintéticas dos capítulos 4 e 5 (gerador do curso, semente ${SEMENTE_BASE}; ${NDEF} defaults). η = ${num(ETA, 1)}; ${M} árvores, profundidade ${CFG_DIDATICA.profundidade}, mínimo ${CFG_DIDATICA.minFolha} por folha; folha por Newton; gbm.ts, conferida contra o scikit-learn.`}>
       <Painel>
         <Cascata i={sel} revelado={revelado} />
       </Painel>

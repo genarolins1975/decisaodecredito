@@ -4,6 +4,7 @@ import { Botao, Controle, Eixos, Grafico, LinkSlide, Painel, Previsao, Quadro, c
 import { CFG_DIDATICA, DIDATICA, XD, YD, modelo } from "@/lib/capitulo6/dados";
 import { ajustar, estagios, logit, perdaLog, sigmoide, type No } from "@/lib/capitulo6/gbm";
 import { int, num, pct } from "@/lib/capitulo7/formato";
+import base from "@/lib/capitulo6/base.json";
 
 /**
  * 02 · c6p2 · Escolher, votar ou corrigir. As três maneiras de combinar árvores de profundidade 2 (mínimo de 2 por folha)
@@ -16,6 +17,7 @@ import { int, num, pct } from "@/lib/capitulo7/formato";
  * limite" em vez de usar o piso numérico. A turma prevê o comportamento com 20 árvores antes de ver as curvas; só no
  * acerto o controle de árvores aparece. A lista do painel mostra o alvo da árvore k para a proposta #3 nos dois métodos.
  */
+const SEMENTE_BASE = base.meta.seed; // semente do gerador do curso, que também gerou as 16 propostas didáticas
 const KMAX = 20, SEMENTE = 20260502, FOCO = 3; // proposta acompanhada: #3, adimplente
 function mulberry32(seed: number) {
   let t = seed >>> 0;
@@ -43,10 +45,22 @@ const R_COR = EST.map((F) => YD[iF] - sigmoide(F[iF])); // alvo da árvore k + 1
 const VEZES = AMOSTRAS.map((ids) => ids.filter((i) => i === iF).length);
 const P1 = sigmoide(EST[KMAX][0]), P2 = sigmoide(EST[KMAX][1]);
 const fmtL = (v: number | null) => (v === null ? "sem limite" : num(v, 3));
+const DEFS = [
+  "┄ Escolher: uma árvore no default; PD = taxa de default da folha",
+  "■ Votar: média de árvores no default, cada uma numa amostra sorteada",
+  "● Corrigir: cada árvore no erro que as anteriores deixaram",
+];
+
+/** Votar para de cair: a menor perda de votar fica numa árvore intermediária e, dali até KMAX, oscila acima dela. */
+const VALIDOS = L_VOT.map((v, i) => [v, i + 1] as const).filter((q): q is readonly [number, number] => q[0] !== null);
+const [VMIN, KVMIN] = VALIDOS.reduce((a, q) => (q[0] < a[0] ? q : a));
+const VMAX_DEPOIS = Math.max(...VALIDOS.filter(([, k]) => k >= KVMIN).map(([v]) => v));
+const COR_CAI = L_COR.every((v, k) => k === 0 || v < L_COR[k - 1]);
+if (!(KVMIN < KMAX && COR_CAI && L_VOT[KMAX - 1]! > VMIN)) throw new Error("as frases de votar e corrigir não valem nos dados");
 
 const OPCOES: Opcao[] = [
-  { texto: "Cai nas duas: mais árvores, menos erro", retorno: <>Confunde <b>votar com corrigir</b>. Árvores que olham o mesmo y, em amostras parecidas, repetem o mesmo erro; a média delas não o corrige.</> },
-  { texto: "Votar estaciona; corrigir continua caindo", certa: true, retorno: <>Isso. Com {KMAX} árvores, votar fica em <b>{fmtL(L_VOT[KMAX - 1])}</b> e corrigir vai a <b>{num(L_COR[KMAX], 3)}</b>: já é decorar (#1 e #2, vizinhas, terminam com {pct(P1, 0)} e {pct(P2, 0)}).</> },
+  { texto: `As duas continuam caindo a cada árvore até a ${KMAX}`, retorno: <>Votar cai nas primeiras árvores ({fmtL(L_VOT[1])} com 2, {num(VMIN, 3)} com {KVMIN}) e depois oscila entre {num(VMIN, 3)} e {num(VMAX_DEPOIS, 3)}: a média de árvores no mesmo y reduz a <b>variância</b> e estaciona no erro que todas cometem. Só corrigir mira o erro que sobrou.</> },
+  { texto: "Votar para de cair e oscila; corrigir cai a cada árvore", certa: true, retorno: <>Isso. Com {KMAX} árvores, votar fica em <b>{fmtL(L_VOT[KMAX - 1])}</b> (a menor foi {num(VMIN, 3)}, na árvore {KVMIN}) e corrigir vai a <b>{num(L_COR[KMAX], 3)}</b>: já é decorar (#1 e #2, vizinhas, terminam com {pct(P1, 0)} e {pct(P2, 0)}).</> },
   { texto: "Votar cai mais, porque cada árvore vê outra amostra", retorno: <>Sortear amostras deixa as árvores diferentes e a média mais estável: reduz a <b>variância</b>, não o erro que todas cometem juntas.</> },
 ];
 
@@ -58,8 +72,8 @@ export function S02TresEstrategias({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c6p2" pagina={pagina} layout="gl"
       conclusao={!rev ? <>Com uma árvore: escolher tem log loss <b>{num(L_ESC, 3)}</b>, corrigir {num(L_COR[1], 3)}, e votar não tem limite (a amostra sorteada deu PD 0% a um default). E com {KMAX} árvores?</>
-        : <>Com {k} árvore{k > 1 ? "s" : ""}: votar {fmtL(L_VOT[k - 1])}, corrigir <b>{num(L_COR[k], 3)}</b>. Até {KMAX}, votar estaciona perto de {fmtL(L_VOT[KMAX - 1])} e corrigir segue caindo: cada árvore mira o erro que sobrou. A sequência parte de um palpite único: <LinkSlide slug="c6p3">slide 3</LinkSlide>.</>}
-      fonte={`${DIDATICA.length} propostas didáticas sintéticas dos capítulos 4 e 5 (utilização e atraso; ${int(YD.reduce((s, v) => s + v, 0))} defaults). Árvores de profundidade ${CFG_DIDATICA.profundidade}, mínimo de ${CFG_DIDATICA.minFolha} por folha. Votar: amostras com reposição (semente ${SEMENTE}). Corrigir: taxa ${num(CFG_DIDATICA.eta, 1)} (slide 7). Log loss média, log natural.`}>
+        : <>Com {k} árvore{k > 1 ? "s" : ""}: votar {fmtL(L_VOT[k - 1])}, corrigir <b>{num(L_COR[k], 3)}</b>. Votar para de cair na árvore {KVMIN} ({num(VMIN, 3)}); corrigir cai em todas: cada árvore mira o erro que sobrou. A sequência parte de um palpite único: <LinkSlide slug="c6p3">slide 3</LinkSlide>.</>}
+      fonte={`${DIDATICA.length} propostas didáticas sintéticas dos capítulos 4 e 5 (gerador do curso, semente ${SEMENTE_BASE}; utilização e atraso; ${int(YD.reduce((s, v) => s + v, 0))} defaults). Árvores de profundidade ${CFG_DIDATICA.profundidade}, mínimo de ${CFG_DIDATICA.minFolha} por folha. Votar: amostras com reposição (semente ${SEMENTE}). Corrigir: taxa ${num(CFG_DIDATICA.eta, 1)} (slide 7). Log loss média, log natural.`}>
       <Painel>
         <Grafico titulo="Log loss de treino nas 16 propostas" sub="conforme as árvores se somam" rotulo={rev ? `Log loss com ${k} árvores: votar ${fmtL(L_VOT[k - 1])}, corrigir ${num(L_COR[k], 3)}; escolher, uma árvore, ${num(L_ESC, 3)}` : `Com uma árvore: escolher ${num(L_ESC, 3)}, corrigir ${num(L_COR[1], 3)}, votar sem limite; o resto oculto até a previsão`} arCelular="4 / 3">
           {(d) => {
@@ -84,9 +98,11 @@ export function S02TresEstrategias({ pagina }: { pagina?: Pagina }) {
                 {rev && ate > 1 && L_VOT[ate - 1] !== null && <text className="q7-rot" x={ult(vot).x} y={ult(vot).y} dx=".8em" dy="-.4em" style={{ fill: "#5B6475", ...halo }}>■ votar {fmtL(L_VOT[ate - 1])}</text>}
                 <text className="q7-rot" x={ult(cor).x} y={ult(cor).y} dx=".8em" dy=".9em" style={{ fill: "#00205B", ...halo }}>● corrigir {num(L_COR[ate], 3)}</text>
                 {!rev && <g>
-                  <rect x={x(6)} y={y(0.62)} width={x(KMAX) - x(6)} height={y(0.05) - y(0.62)} rx={8} fill="none" stroke="#9AA1AD" strokeWidth={2} strokeDasharray="7 6" />
-                  <text className="q7-rot" x={(x(6) + x(KMAX)) / 2} y={(y(0.62) + y(0.05)) / 2} textAnchor="middle" style={{ fill: "#5B6475" }}>de 2 a {KMAX}: preveja antes</text>
+                  <rect x={x(6)} y={y(0.5)} width={x(KMAX) - x(6)} height={y(0.05) - y(0.5)} rx={8} fill="none" stroke="#9AA1AD" strokeWidth={2} strokeDasharray="7 6" />
+                  <text className="q7-rot" x={(x(6) + x(KMAX)) / 2} y={(y(0.5) + y(0.05)) / 2} textAnchor="middle" style={{ fill: "#5B6475" }}>de 2 a {KMAX}: preveja antes</text>
                 </g>}
+                {/* as três estratégias, definidas no próprio gráfico */}
+                {DEFS.map((t, j) => <text key={j} className="q7-rot--peq" x={d.w - m.r} y={y(0.7)} dy={`${2.2 + j * 1.3}em`} textAnchor="end" style={{ fill: j === 2 ? "#00205B" : "#5B6475", fontWeight: 600, ...halo }}>{t}</text>)}
               </g>
             );
           }}
@@ -94,7 +110,7 @@ export function S02TresEstrategias({ pagina }: { pagina?: Pagina }) {
         {rev && <Controle rotulo="Número de árvores" valor={k} min={1} max={KMAX} passo={1} onChange={setK} mostrar={int(k)} />}
       </Painel>
       <Painel>
-        <Previsao pergunta={`De 1 para ${KMAX} árvores, o que acontece com a log loss de treino?`} opcoes={OPCOES} escolha={esc} onEscolha={(i) => { setEsc(i); setK(KMAX); }} recolher />
+        <Previsao pergunta={`De 1 a ${KMAX} árvores, como anda a log loss de treino de votar e de corrigir?`} opcoes={OPCOES} escolha={esc} onEscolha={(i) => { setEsc(i); setK(KMAX); }} recolher />
         <p className="q7-k">Alvo da árvore {kv} na proposta #{FOCO}, adimplente</p>
         <dl className="q7-lista">
           <div><dt>■ Votar: o default y{VEZES[kv - 1] ? `, sorteada ${VEZES[kv - 1]}×` : ", fora da amostra"}</dt><dd>y = 0</dd></div>

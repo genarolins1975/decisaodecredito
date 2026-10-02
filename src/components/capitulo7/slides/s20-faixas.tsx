@@ -31,7 +31,7 @@ const VAZ_EX = F_EX.filter((f) => f.n === 0).length, PEQ_EX = F_EX.filter((f) =>
 const OPS = [
   { texto: "Nenhuma: toda faixa tem alguém", certa: false, retorno: <>Largura igual não é ocupação igual: há poucas PDs acima de 35%, e as faixas de cima ficam sem casos. Confunde largura com tamanho da amostra.</> },
   { texto: `${VAZ_EX} vazias, e muitas quase vazias`, certa: true, retorno: <>Isso: {VAZ_EX} vazias e {PEQ_EX} com menos de 30 casos. Faixa vazia não tem ponto; faixa pequena dá ponto que pula.</> },
-  { texto: "Mais da metade", certa: false, retorno: <>São {VAZ_EX} vazias, não {K_EX / 2} ou mais. Confunde faixa pequena com faixa vazia: as {PEQ_EX} com menos de 30 casos têm ponto, só que instável.</> },
+  { texto: "Mais da metade", certa: false, retorno: <>Confunde faixa pequena com faixa vazia: muitas faixas de cima têm poucos casos, e ainda assim têm ponto, só que instável. Vazia é só a que não tem nenhum caso.</> },
 ];
 
 export function S20Faixas({ pagina }: { pagina?: Pagina }) {
@@ -64,15 +64,20 @@ export function S20Faixas({ pagina }: { pagina?: Pagina }) {
           <div className="q7-g2-s20-lado">
             <Grafico titulo="Ocupação" sub={tipo === "corp" ? "propostas em cada degrau" : "propostas em cada faixa"} rotulo={`Ocupação ${tipo === "corp" ? "dos degraus" : "das faixas"}: ${F.map((f) => f.n).join(", ")}`} arCelular="5 / 2">
               {(d) => {
-                const x = escala([0, F.length], [d.fs * 0.4, d.w - d.fs * 0.2]); const y = escala([0, nmax], [d.h - d.fs * 1.2, d.fs * 1.1]); const bw = (x(1) - x(0)) * 0.78;
-                return <g>{F.map((f, i) => <g key={f.j}><rect x={x(i) + 1} y={y(f.n)} width={bw} height={Math.max(0, y(0) - y(f.n))} fill={f.n === 0 ? "none" : f.n < 30 ? "#E7E4DC" : "#9FC7C9"} stroke={f.n === 0 ? "#9AA1AD" : f.n < 30 ? "#5B6475" : "none"} strokeDasharray={f.n === 0 ? "3 3" : undefined} strokeWidth={1.5} />{(F.length <= 14 || f.n < 30) && <text className="q7-rot--peq" x={x(i) + bw / 2} y={y(f.n) - 4 - (F.length > 14 && i % 2 ? d.fs * 0.8 : 0)} textAnchor="middle" style={{ fill: "#2A3342", fontSize: F.length > 14 ? "0.8em" : undefined }}>{f.n}</text>}</g>)}<line className="q7-eixo" x1={x(0)} x2={x(F.length)} y1={y(0)} y2={y(0)} /><text className="q7-tick" x={x(0)} y={y(0)} dy="1.1em">PD menor</text><text className="q7-tick" x={x(F.length)} y={y(0)} dy="1.1em" textAnchor="end">PD maior</text></g>;
+                const x = escala([0, F.length], [d.fs * 0.4, d.w - d.fs * 0.2]); const y = escala([0, nmax], [d.h - d.fs * (F.length > 14 ? 3.4 : 1.2), d.fs * 1.1]); const bw = (x(1) - x(0)) * 0.78;
+                // com muitas faixas, só as vazias e as pequenas ganham número, numa linha abaixo das barras (duas alturas
+                // alternadas quando vizinhas); com poucas, o número fica sobre cada barra
+                const muitas = F.length > 14; let alt = 0;
+                const rot = F.map((f, i) => { if (!muitas) return null; if (f.n >= 30) { alt = 0; return null; } const lin = alt; alt = 1 - alt; return { i, lin }; });
+                return <g>
+                  {F.map((f, i) => <g key={f.j}><rect x={x(i) + 1} y={y(f.n)} width={bw} height={Math.max(0, y(0) - y(f.n))} fill={f.n === 0 ? "none" : f.n < 30 ? "#E7E4DC" : "#9FC7C9"} stroke={f.n === 0 ? "#9AA1AD" : f.n < 30 ? "#5B6475" : "none"} strokeDasharray={f.n === 0 ? "3 3" : undefined} strokeWidth={1.5} />{!muitas && <text className="q7-rot--peq" x={x(i) + bw / 2} y={y(f.n) - 4} textAnchor="middle" style={{ fill: "#2A3342" }}>{f.n}</text>}</g>)}
+                  <line className="q7-eixo" x1={x(0)} x2={x(F.length)} y1={y(0)} y2={y(0)} />
+                  {rot.map((r) => r && <text key={r.i} className="q7-rot--peq" x={x(r.i) + bw / 2} y={y(0)} dy={`${1.05 + r.lin * 1}em`} textAnchor="middle" style={{ fill: F[r.i].n === 0 ? "#5B6475" : "#2A3342", fontWeight: F[r.i].n === 0 ? 700 : 500 }}>{F[r.i].n}</text>)}
+                  <text className="q7-tick" x={x(0)} y={y(0)} dy={muitas ? "3.2em" : "1.1em"}>PD menor</text><text className="q7-tick" x={x(F.length)} y={y(0)} dy={muitas ? "3.2em" : "1.1em"} textAnchor="end">PD maior</text>
+                </g>;
               }}
             </Grafico>
-            <table className="q7-tab">
-              <thead><tr><th className="q7-t-l">{tipo === "corp" ? "Degrau" : "Faixa"}</th><th>Bordas de PD</th><th>n</th><th>Obs.</th></tr></thead>
-              <tbody>{F.slice(-4).map((f) => <tr key={f.j}><th>{tipo === "corp" ? "D" : "F"}{f.j}</th><td>{pct(f.de, 1)} a {pct(f.ate, 1)}</td><td>{f.n}</td><td>{f.obs === null ? "vazia" : pct(f.obs, 1)}</td></tr>)}</tbody>
-            </table>
-            <p className="q7-nota">As quatro {tipo === "corp" ? "degraus" : "faixas"} de maior PD. Na ocupação, contorno escuro: menos de 30 casos; tracejado: vazia.{nFora > 0 ? " Na curva, ▲: frequência acima de 50%, fora do eixo." : ""}</p>
+            <p className="q7-nota">Contorno escuro: menos de 30 casos; tracejado: vazia{F.length > 14 ? "; abaixo das barras, o n das faixas pequenas" : ""}.{nFora > 0 ? " Na curva, ▲: frequência acima de 50%, fora do eixo." : ""}</p>
           </div>
         </div>
       </Painel>

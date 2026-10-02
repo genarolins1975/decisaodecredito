@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
 import { Botao, Controle, escala, Grafico, LinkSlide, Painel, Quadro, Seg, type Pagina } from "../base";
-import { D, EAD, N, PG, PGR, PLATT, Y } from "@/lib/capitulo7/dados";
+import { D, EAD, N, PG, PGR, PLATT, PT, RES, Y } from "@/lib/capitulo7/dados";
 import { aucPorPares, ks, media } from "@/lib/capitulo7/metricas";
-import { fmtReais, PARAMETROS, parcelas, realizado } from "@/lib/visuais/economia";
+import { esperado, fmtReais, PARAMETROS, parcelas, realizado } from "@/lib/visuais/economia";
 import { int, num, pct } from "@/lib/capitulo7/formato";
 
 /**
@@ -12,7 +12,9 @@ import { int, num, pct } from "@/lib/capitulo7/formato";
  * fração recusada (o corte transportado pela própria transformação), as decisões são idênticas. O resultado esperado
  * vem do motor econômico (src/lib/visuais/economia) com a PD de cada versão; o realizado usa o desfecho da janela e
  * só existe depois dela. Rodada 2: os rótulos dos cortes ficam fora do feixe, a leitura conclui o erro da promessa de
- * cada versão (esperado menos realizado) e aponta o slide 32; a fonte lista as cinco hipóteses do motor.
+ * cada versão (esperado menos realizado) e aponta o slide 32; a fonte lista as cinco hipóteses do motor. Rodada 3: o
+ * quadro "Muda" acompanha a regra (com a mesma fração, as decisões não mudam) e a tabela traz o resultado dos
+ * aprovados pela PD verdadeira, o que cada versão entrega em média, sem a sorte dos 81 defaults da janela.
  */
 type Modo = "fixo" | "fracao";
 const sig = (z: number) => 1 / (1 + Math.exp(-z));
@@ -25,7 +27,8 @@ const erro = (e: number, r: number) => `${fmtReais(Math.abs(e - r))} ${e > r ? "
 function lado(p: readonly number[], c: number) {
   const pc = parcelas(p as number[], EAD as number[], c); let real = 0, def = 0;
   for (let i = 0; i < N; i++) if (p[i] < c) { real += realizado(Y[i], EAD[i]); def += Y[i]; }
-  return { aprovados: pc.aprovados, esperado: pc.total, realizado: real, defaults: def };
+  let verdadeiro = 0; for (let i = 0; i < N; i++) if (p[i] < c) verdadeiro += esperado(PT[i], EAD[i]);
+  return { aprovados: pc.aprovados, esperado: pc.total, realizado: real, verdadeiro, defaults: def };
 }
 
 export function S31DepoisDeRecalibrar({ pagina }: { pagina?: Pagina }) {
@@ -39,13 +42,14 @@ export function S31DepoisDeRecalibrar({ pagina }: { pagina?: Pagina }) {
     { r: "Defaults aprovados", a: `${antes.defaults} (${pct(antes.defaults / Math.max(1, antes.aprovados), 1)})`, d: `${depois.defaults} (${pct(depois.defaults / Math.max(1, depois.aprovados), 1)})` },
     { r: "Esperado pela PD", a: fmtReais(antes.esperado), d: fmtReais(depois.esperado) },
     { r: "Realizado na janela", a: fmtReais(antes.realizado), d: fmtReais(depois.realizado) },
+    { r: "Pela PD verdadeira", a: fmtReais(antes.verdadeiro), d: fmtReais(depois.verdadeiro), on: true },
   ];
   return (
     <Quadro slug="c7p37" pagina={pagina} layout="gl"
       conclusao={modo === "fixo"
-        ? <>Mesmo corte de {pct(c, 1)} nas duas escalas: <b>{mudam} decisões mudam</b> sem que a fila mude. A PD entra no resultado esperado: sem calibrar, a promessa fica {erro(antes.esperado, antes.realizado)} do que a janela entrega; com o Platt do curso, cuja PD média é {pct(PM, 1)} contra {pct(OBS, 1)} observados, <b>{erro(depois.esperado, depois.realizado)}</b>. Qual corte, então? <LinkSlide slug="c7p18">Slide 32</LinkSlide>.</>
-        : <>Recusando a mesma fração, o corte de {pct(c, 1)} vira <b>{pct(c2, 2)}</b> na escala do Platt e {mudam === 0 ? "nenhuma decisão muda" : `${mudam} decisões mudam`}: só trocou a régua. Muda a promessa à diretoria: {fmtReais(antes.esperado)} contra {fmtReais(depois.esperado)}, para os mesmos {int(antes.aprovados)} aprovados. O <LinkSlide slug="c7p18">slide 32</LinkSlide> escolhe o corte pela conta.</>}
-      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. Platt do curso (a = ${num(PLATT.a, 4)}, b = ${num(PLATT.b, 4)}), estimado antes da janela. Motor: receita ${pct(P.receita, 0)}, perda ${pct(P.lgd, 0)}, funding ${pct(P.funding, 0)} e capital ${pct(P.capital, 0)} da exposição; custo R$ ${P.operacao}. Realizado com ${D} defaults: ruidoso.`}>
+        ? <>Mesmo corte de {pct(c, 1)}: <b>{mudam} decisões mudam</b> sem que a fila mude. O Platt do curso, estimado na validação ({pct(RES.gbm_val.obs, 1)} de default), leva a PD média a {pct(PM, 1)} contra {pct(OBS, 1)} observados e promete <b>{erro(depois.esperado, depois.realizado)}</b> do realizado. Pela PD verdadeira, os aprovados valem {fmtReais(antes.verdadeiro)} e {fmtReais(depois.verdadeiro)}. Qual corte? <LinkSlide slug="c7p18">Slide 32</LinkSlide>.</>
+        : <>Recusando a mesma fração, o corte de {pct(c, 1)} vira <b>{pct(c2, 2)}</b> na escala do Platt e {mudam === 0 ? "nenhuma decisão muda" : `${mudam} decisões mudam`}: só trocou a régua. Muda a promessa: {fmtReais(antes.esperado)} contra {fmtReais(depois.esperado)}, para os mesmos {int(antes.aprovados)} aprovados que, pela PD verdadeira, valem {fmtReais(depois.verdadeiro)}. O <LinkSlide slug="c7p18">slide 32</LinkSlide> escolhe o corte pela conta.</>}
+      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. Platt do curso: a = ${num(PLATT.a, 4)}, b = ${num(PLATT.b, 4)}. Motor: receita ${pct(P.receita, 0)}, perda ${pct(P.lgd, 0)}, funding ${pct(P.funding, 0)} e capital ${pct(P.capital, 0)} da exposição; custo R$ ${P.operacao}. Realizado com ${D} defaults: ruidoso; PD verdadeira só em base sintética.`}>
       <Painel titulo="Cada proposta, antes e depois do Platt">
         <Grafico rotulo={`${N} propostas ligadas da PD sem calibrar à PD com Platt; ${mudam} mudam de decisão no corte`} arCelular="4 / 3">
           {(d) => {
@@ -74,11 +78,11 @@ export function S31DepoisDeRecalibrar({ pagina }: { pagina?: Pagina }) {
         <p className="q7-k">Âmbar: {mudam} propostas que mudam de decisão</p>
         <table className="q7-tab">
           <thead><tr><th className="q7-t-l">Na janela</th><th>Sem calibrar</th><th>Com Platt</th></tr></thead>
-          <tbody>{lin.map((l) => <tr key={l.r}><th>{l.r}</th><td>{l.a}</td><td>{l.d}</td></tr>)}</tbody>
+          <tbody>{lin.map((l) => <tr key={l.r} data-on={"on" in l ? "1" : undefined}><th>{l.r}</th><td>{l.a}</td><td>{l.d}</td></tr>)}</tbody>
         </table>
         <div className="q7-s31-dois">
           <div><p className="q7-k">Não muda</p><p className="q7-p">AUC {num(AUC, 4)}, KS {num(KS, 4)}, ganho e lift.</p></div>
-          <div><p className="q7-k">Muda</p><p className="q7-p">PD média ({pct(media(PGR)!, 1)} para {pct(PM, 1)}), Brier, log loss e decisões.</p></div>
+          <div><p className="q7-k">Muda</p><p className="q7-p">{modo === "fixo" ? <>PD média ({pct(media(PGR)!, 1)} para {pct(PM, 1)}), Brier, log loss e {mudam} decisões.</> : <>PD média, Brier, log loss e a promessa; decisões, só com corte fixo de PD.</>}</p></div>
         </div>
         <div className="q7-botoes"><Botao onClick={() => setModo(modo === "fixo" ? "fracao" : "fixo")}>{modo === "fixo" ? "Ver com a mesma fração" : "Ver com o mesmo corte"}</Botao><Botao sec onClick={() => { setModo("fixo"); setC(0.14); }}>Restaurar</Botao></div>
       </Painel>

@@ -2,9 +2,10 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { Botao, LinkSlide, Painel, Previsao, Quadro, Seg, type Pagina } from "@/components/capitulo7/base";
 import { Tex } from "@/components/visuais/tex";
-import { CFG_DIDATICA, DIDATICA, XD, YD, modelo } from "@/lib/capitulo6/dados";
+import { CFG_DIDATICA, DIDATICA, NA, XD, YD, modelo } from "@/lib/capitulo6/dados";
 import { estagios, sigmoide, valorArvore, type No, type Vetor } from "@/lib/capitulo6/gbm";
-import { num, pct } from "@/lib/capitulo7/formato";
+import { int, num, pct } from "@/lib/capitulo7/formato";
+import base from "@/lib/capitulo6/base.json";
 
 /**
  * 10 · c6p10 · A fórmula depois da história: o algoritmo de Friedman (2001) para log loss em cinco linhas, cada termo
@@ -13,6 +14,7 @@ import { num, pct } from "@/lib/capitulo7/formato";
  * γ na tela, quanto vale F_m? As alternativas erradas são as confusões de η (esquecido ou aplicado ao acumulado) e da
  * sigmoide aplicada a cada passo.
  */
+const SEMENTE_BASE = base.meta.seed; // semente do gerador do curso, que também gerou as 16 propostas didáticas
 const MOD = modelo(CFG_DIDATICA, XD, YD);
 const ETA = MOD.eta, M = MOD.arvores.length;
 const EST = estagios(MOD, XD);
@@ -44,7 +46,7 @@ const OPS = [
   { texto: `${num(P0.Fant, 2)} ${P0.gama < 0 ? "−" : "+"} ${num(Math.abs(P0.gama), 2)} = ${num(P0.Fant + P0.gama, 2)}`, certa: false, retorno: <>Soma a correção inteira. A taxa do <LinkSlide slug="c6p7">slide 7</LinkSlide> multiplica só a folha: {num(ETA, 1)} × {par(P0.gama)}.</> },
   { texto: `${num(P0.Fant, 2)} + ${num(ETA, 1)} × ${par(P0.gama)} = ${num(P0.Fm, 2)}`, certa: true, retorno: <>Isso: o acumulado fica inteiro e só a correção nova entra pela fração η.</> },
   { texto: `${num(ETA, 1)} × (${num(P0.Fant, 2)} ${P0.gama < 0 ? "−" : "+"} ${num(Math.abs(P0.gama), 2)}) = ${num(ETA * (P0.Fant + P0.gama), 2)}`, certa: false, retorno: <>A taxa não encolhe o que já foi aprendido: F{sb(INI_M - 1)} entra inteiro; η vale só para a árvore nova.</> },
-  { texto: `σ(${num(P0.Fant, 2)} ${P0.gama < 0 ? "−" : "+"} ${num(ETA * Math.abs(P0.gama), 2)}) = ${pct(sigmoide(P0.Fm), 1)}`, certa: false, retorno: <>A sigmoide entra só no fim (<LinkSlide slug="c6p9">slide 9</LinkSlide>): F soma em log odds a cada árvore.</> },
+  { texto: `σ(${num(P0.Fant, 2)} ${P0.gama < 0 ? "−" : "+"} ${num(ETA * Math.abs(P0.gama), 2)}) = ${pct(sigmoide(P0.Fm), 1)}`, certa: false, retorno: <>Confunde as escalas. F soma em log odds; a sigmoide só converte F em PD, para o resíduo de cada passo (linha 2) e para a PD final (<LinkSlide slug="c6p9">slide 9</LinkSlide>). PDs nunca se somam.</> },
 ];
 
 function Linha({ n, f, oque, slide, rotulo, ex, oculto }: { n: string; f: string; oque: string; slide: string; rotulo: string; ex: ReactNode; oculto?: boolean }) {
@@ -68,18 +70,18 @@ export function S10Formula({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c6p10" pagina={pagina} layout="gl"
       conclusao={revelado
-        ? <>Árvore {m}, proposta {id}: F{sb(m)} = {num(P.Fant, 2)} + {num(ETA, 1)} × {par(P.gama)} = <b>{num(P.Fm, 2)}</b>. Repetida {M} vezes, a linha 5 dá a soma do <LinkSlide slug="c6p9">slide 9</LinkSlide>. Agora o mesmo algoritmo em 1.472 propostas de verdade, no <LinkSlide slug="c6p11">slide 11</LinkSlide>.</>
+        ? <>Árvore {m}, proposta {id}: F{sb(m)} = {num(P.Fant, 2)} + {num(ETA, 1)} × {par(P.gama)} = <b>{num(P.Fm, 2)}</b>. Repetida {M} vezes, a linha 5 dá a soma do <LinkSlide slug="c6p9">slide 9</LinkSlide>. Agora o mesmo algoritmo nas {int(NA)} propostas do ajuste, no <LinkSlide slug="c6p11">slide 11</LinkSlide>.</>
         : <>Árvore {m}, proposta {id}: F{sb(m - 1)} = {num(P.Fant, 2)}, η = {num(ETA, 1)} e a folha γ = {num(P.gama, 2)}. Antes de ver a linha 5, calcule F{sb(m)}.</>}
-      fonte={`${YD.length} propostas sintéticas (capítulos 4 e 5), ${NDEF} defaults; η ${num(ETA, 1)}, ${M} árvores, profundidade ${CFG_DIDATICA.profundidade}, mínimo ${CFG_DIDATICA.minFolha} por folha; gbm.ts, conferida contra o scikit-learn. Friedman (2001), Annals of Statistics 29(5).`}>
+      fonte={`${YD.length} propostas sintéticas dos capítulos 4 e 5 (gerador do curso, semente ${SEMENTE_BASE}), ${NDEF} defaults; η ${num(ETA, 1)}, ${M} árvores, profundidade ${CFG_DIDATICA.profundidade}, mínimo ${CFG_DIDATICA.minFolha} por folha; gbm.ts, conferida contra o scikit-learn. Friedman (2001), Annals of Statistics 29(5).`}>
       <Painel>
         <p className="q7-k">Gradient boosting em log loss · Friedman (2001)</p>
         <ol className="q6-s10">
-          <Linha n="1" f={String.raw`F_0 = \log\dfrac{\bar p}{1-\bar p}`} oque="palpite: log odds da carteira" slide="c6p3" rotulo="3" ex={<>{NDEF} de {YD.length}: F₀ = <b>{num(MOD.f0, 2)}</b></>} />
+          <Linha n="1" f={String.raw`F_0 = \ln\dfrac{\bar p}{1-\bar p}`} oque="palpite: log odds da carteira" slide="c6p3" rotulo="3" ex={<>{NDEF} de {YD.length}: F₀ = <b>{num(MOD.f0, 2)}</b></>} />
           <li className="q6-s10-laco">
             <p className="q6-s10-para"><Tex f={String.raw`\text{para } m = 1, \dots, M = ${M}`} /><span>proposta {id}, árvore {m}</span></p>
             <ol className="q6-s10">
           <Linha n="2" f={String.raw`r_i = y_i - \sigma\!\big(F_{m-1}(x_i)\big)`} oque="erro como alvo" slide="c6p4" rotulo="4" ex={<>{DIDATICA[sel].y} − σ({num(P.Fant, 2)}) = <b>{num(P.r, 2)}</b></>} />
-          <Linha n="3" f={String.raw`\text{árvore}(r) \to \text{folhas } R_{jm}`} oque="agrupa erros parecidos" slide="c6p5" rotulo="5" ex={<>{P.regra}, <b>{P.n} propostas</b></>} />
+          <Linha n="3" f={String.raw`\text{árvore}(r) \to \text{folhas } R_{jm}`} oque="agrupa erros parecidos" slide="c6p5" rotulo="5" ex={<>{P.regra}, <b>{P.n}{"\u00a0"}propostas</b></>} />
           <Linha n="4" f={String.raw`\gamma_{jm} = \dfrac{\sum r_i}{\sum p_i(1-p_i)}`} oque="folha por Newton" slide="c6p6" rotulo="6" ex={<>{num(P.sr, 2)} ÷ {num(P.sh, 2)} = <b>{num(P.gama, 2)}</b></>} />
           <Linha n="5" f={String.raw`F_m = F_{m-1} + \eta\,\gamma_{jm}`} oque="só uma fração η" slide="c6p7" rotulo="7" oculto={!revelado}
             ex={revelado ? <>{num(P.Fant, 2)} + {num(ETA, 1)} × {par(P.gama)} = <b>{num(P.Fm, 2)}</b></> : <>depois da previsão</>} />

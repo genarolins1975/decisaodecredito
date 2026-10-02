@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Botao, caminho, Eixos, escala, Grafico, Kpi, Legenda, Painel, Previsao, Quadro, margens, type Opcao, type Pagina } from "../base";
+import { Botao, caminho, Eixos, escala, Grafico, Kpi, Legenda, LinkSlide, Painel, Previsao, Quadro, margens, type Opcao, type Pagina } from "../base";
 import { D, META, N, PL, Y } from "@/lib/capitulo7/dados";
 import { aucPorPares, logit, mulberry32, sigmoide } from "@/lib/capitulo7/metricas";
 import { aucEsperada, N_JANELAS, SEMENTE_JANELAS } from "@/lib/capitulo7/janelas";
@@ -13,6 +13,8 @@ import { num } from "@/lib/capitulo7/formato";
  * slides 33 e 36 (semente 20261033), só possíveis porque a base é sintética. O quadro abre com uma reabertura feita e a
  * linha da logística em janelas novas desenhada; as próximas só depois da previsão. Os 20 candidatos são calculados
  * uma vez, ao abrir o slide (não no carregamento do módulo), e a leitura só fala em otimismo somado quando a tela mostra.
+ * Rodada 3: a AUC na janela do escolhido vai na cor de ordenação (o verde de validação fica só na esperada); as
+ * escolhas congeladas viram uma linha; o KPI separa a parte do otimismo que vem da seleção da que é sorte da janela.
  */
 const MAX = 20, SIGMA = 0.3, SEM_CAND = 20261035;
 const AUC_LOG = aucPorPares(Y, PL).auc!;
@@ -49,7 +51,7 @@ export function S35OotCongelado({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c7p17" pagina={pagina} layout="gl"
       conclusao={k === 1 ? <>Com tudo congelado, a janela abre uma vez: logística com AUC <b>{num(AUC_LOG, 4)}</b>, contra {num(t.logNova, 4)} esperada em janelas novas (a janela já era favorável). Uma reabertura testou um ajuste: {num(u.oot, 4)} na janela. Antes de reabrir mais, a previsão.</>
-        : <>Depois de {k} reaberturas, o escolhido marca <b>{num(u.oot, 4)}</b> na janela{u.oot > AUC_LOG ? ", acima da logística" : ""}; em janelas novas esperaria {num(u.nova, 4)}{u.nova < t.logNova ? <>, abaixo dos {num(t.logNova, 4)} dela</> : null}. {otimEsc > otimLog ? <>Escolher olhando para a janela somou otimismo ({num(otimEsc, 4)} contra {num(otimLog, 4)} da logística): <b>o número dela deixou de ser prova</b>.</> : <>Até aqui, o otimismo do escolhido ({num(otimEsc, 4)}) não passa o da logística ({num(otimLog, 4)}).</>}</>}
+        : <>Depois de {k} reaberturas, o escolhido marca <b>{num(u.oot, 4)}</b> na janela{u.oot > AUC_LOG ? ", acima da logística" : ""}; em janelas novas esperaria {num(u.nova, 4)}{u.nova < t.logNova ? <>, abaixo dos {num(t.logNova, 4)} dela</> : null}. {otimEsc > otimLog ? <>Escolher olhando para a janela somou otimismo ({num(otimEsc, 4)} contra {num(otimLog, 4)} da logística): <b>o número dela deixou de ser prova</b>. O <LinkSlide slug="c7p38">slide 36</LinkSlide> leva tudo ao comitê.</> : <>Até aqui, o otimismo do escolhido ({num(otimEsc, 4)}) não passa o da logística ({num(otimLog, 4)}).</>}</>}
       fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults; base fechada em ${META.dataReferencia.split("-").reverse().join("/")}. Candidatos: logística com ruído normal de desvio ${num(SIGMA, 1)} no log odds (semente ${SEM_CAND}). Janelas novas: ${N_JANELAS} sorteios do desfecho pela PD verdadeira para os mesmos proponentes (semente ${SEMENTE_JANELAS}), as mesmas dos slides 33 e 36; só possível em base sintética.`}>
       <Painel titulo="Reabrir a janela para escolher">
         <Grafico rotulo={`Após ${k} aberturas: AUC na janela ${num(u.oot, 4)}, esperada em janelas novas ${num(u.nova, 4)}; logística ${num(AUC_LOG, 4)} na janela e ${num(t.logNova, 4)} em janelas novas`} arCelular="4 / 3">
@@ -60,18 +62,18 @@ export function S35OotCongelado({ pagina }: { pagina?: Pagina }) {
             return (
               <g>
                 <Eixos x={x} y={y} xt={[0, 5, 10, 15, 20]} yt={[0.64, 0.66, 0.68, 0.7, 0.72, 0.74]} fx={(v) => String(v)} fy={(v) => num(v, 2)} xTit="Aberturas da janela" yTit="AUC" />
-                <line x1={x(0)} x2={x(MAX)} y1={y(AUC_LOG)} y2={y(AUC_LOG)} stroke="#00205B" strokeWidth={2} strokeOpacity={0.7} />
-                <text className="q7-rot q7-rot--peq" x={x(0) + d.fs * 0.5} y={y(AUC_LOG) - d.fs * 0.4} style={{ fill: "#00205B" }}>logística, na janela {num(AUC_LOG, 4)}</text>
-                <line x1={x(0)} x2={x(MAX)} y1={y(t.logNova)} y2={y(t.logNova)} stroke="#00205B" strokeWidth={2} strokeDasharray="6 5" strokeOpacity={0.7} />
-                <text className="q7-rot q7-rot--peq" x={x(MAX)} y={y(t.logNova) - d.fs * 0.4} textAnchor="end" style={{ fill: "#00205B" }}>logística, em janelas novas {num(t.logNova, 4)}</text>
-                <path className="q7-linha q7-linha--prob" d={deg("oot")} />
+                <line x1={x(0)} x2={x(MAX)} y1={y(AUC_LOG)} y2={y(AUC_LOG)} stroke="#5B6475" strokeWidth={2} />
+                <text className="q7-rot q7-rot--peq" x={x(0) + d.fs * 0.5} y={y(AUC_LOG) - d.fs * 0.4} style={{ fill: "#2A3342" }}>logística, na janela {num(AUC_LOG, 4)}</text>
+                <line x1={x(0)} x2={x(MAX)} y1={y(t.logNova)} y2={y(t.logNova)} stroke="#5B6475" strokeWidth={2} strokeDasharray="6 5" />
+                <text className="q7-rot q7-rot--peq" x={x(MAX)} y={y(t.logNova) - d.fs * 0.4} textAnchor="end" style={{ fill: "#2A3342" }}>logística, em janelas novas {num(t.logNova, 4)}</text>
+                <path className="q7-linha q7-linha--ord" d={deg("oot")} />
                 <path className="q7-linha q7-linha--val" strokeDasharray="7 5" d={deg("nova")} />
                 {tr.map((p) => <circle key={p.k} cx={x(p.k)} cy={y(t.oot[p.k - 1])} r={d.fs * 0.22} fill="#9AA1AD" />)}
               </g>
             );
           }}
         </Grafico>
-        <Legenda itens={[{ mk: "linha prob", r: "escolhido, AUC na janela" }, { mk: "trac val", r: "escolhido, esperada em janelas novas" }, { mk: "", r: "pontos: cada candidato" }]} />
+        <Legenda itens={[{ mk: "linha ord", r: "escolhido, AUC na janela" }, { mk: "trac val", r: "escolhido, esperada em janelas novas" }, { mk: "", r: "pontos: cada candidato" }]} />
         <div className="q7-botoes">
           <Botao prim={certa && k < MAX} onClick={() => ir(k + 1)} desab={!certa || k >= MAX}>Reabrir e testar mais um</Botao>
           <Botao onClick={() => ir(k + 5)} desab={!certa || k >= MAX}>Mais 5</Botao>
@@ -82,14 +84,13 @@ export function S35OotCongelado({ pagina }: { pagina?: Pagina }) {
         {certa ? (
           <>
             <p className="q7-retorno" data-tom="certa">Isso: o escolhido sobe na janela porque foi escolhido nela; em janelas novas, fica abaixo da logística. Reabra e confira.</p>
-            <p className="q7-k">Congelado antes de abrir a janela</p>
-            <ul className="q7-s35-chips">{CONGELA.map((c) => <li key={c}><span aria-hidden="true">■</span>{c}</li>)}</ul>
+            <p className="q7-s35-cong"><b>Congelado antes de abrir:</b> {CONGELA.map((c) => c.toLowerCase()).join(", ").replace(/, ([^,]+)$/, " e $1")}.</p>
           </>
         ) : (
           <Previsao pergunta={`Depois de ${MAX} reaberturas, ficando sempre com o maior da janela, o escolhido estará, comparado com a logística...`} escolha={prev} onEscolha={setPrev} recolher opcoes={opcoes} />
         )}
         <div className="q7-kpis q7-kpis--2">
-          <Kpi rotulo="Otimismo do escolhido" valor={num(otimEsc, 4)} detalhe={`janela − janelas novas, ${k} ${k === 1 ? "reabertura" : "reaberturas"}`} tam="mini" />
+          <Kpi rotulo="Otimismo do escolhido" valor={num(otimEsc, 4)} detalhe={`janela − janelas novas, ${k} ${k === 1 ? "reabertura" : "reaberturas"}; ${num(otimEsc - otimLog, 4)} além da sorte`} tam="mini" />
           <Kpi rotulo="Otimismo da logística" valor={num(otimLog, 4)} detalhe="sem reabrir: sorte da janela" tam="mini" />
         </div>
       </Painel>

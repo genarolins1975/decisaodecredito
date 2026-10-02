@@ -4,6 +4,7 @@ import { Botao, Controle, Expandir, Formula, Grafico, LinkSlide, Marca, Painel, 
 import { CFG_DIDATICA, DIDATICA, NA, XD, YA, YD, modelo } from "@/lib/capitulo6/dados";
 import { logit, sigmoide } from "@/lib/capitulo6/gbm";
 import { int, num, pct } from "@/lib/capitulo7/formato";
+import base from "@/lib/capitulo6/base.json";
 
 /**
  * 04 · c6p4 · O pseudo-resíduo. Em cima, a perda de uma proposta em função das log odds F: ℓ = ln(1 + e^−F) para um
@@ -14,6 +15,7 @@ import { int, num, pct } from "@/lib/capitulo7/formato";
  * ao F₀ do ajuste do slide 3 (−2,26). A derivação fica na expansão. A inclinação numérica (diferença central da perda)
  * confere a fórmula na tela.
  */
+const SEMENTE_BASE = base.meta.seed; // semente do gerador do curso, que também gerou as 16 propostas didáticas
 const F_DID = modelo(CFG_DIDATICA, XD, YD).f0;
 const F_AJ = logit(YA.reduce((s, v) => s + v, 0) / NA);
 const perda1 = (y: number, F: number) => (y === 1 ? Math.log1p(Math.exp(-F)) : Math.log1p(Math.exp(F)));
@@ -38,8 +40,8 @@ export function S04ErroAlvo({ pagina }: { pagina?: Pagina }) {
     <Quadro slug="c6p4" pagina={pagina} layout="gl"
       sub={rev ? undefined : "Em log loss, quanto vale o erro de cada proposta no palpite F₀ = 0?"}
       conclusao={!rev ? <>Palpite do slide 3: F₀ = {num(F_DID, 2)}, PD de {pct(p, 0)} para as 16. Que número cada proposta passa à próxima árvore? Responda ao lado.</>
-        : <>No palpite F = {num(F, 2)} (PD {pct(p, 1)}), cada default tem erro y − p = <b>{sinal(1 - p)}</b> e cada adimplente <b>{sinal(-p)}</b>: a inclinação da perda com sinal trocado. A próxima árvore ajusta esses 16 números: <LinkSlide slug="c6p5">slide 5</LinkSlide>.</>}
-      fonte={`${DIDATICA.length} propostas didáticas sintéticas dos capítulos 4 e 5 (y = 1 para default). Perda de uma proposta: log loss, log natural, com p = σ(F). F₀ do ajuste: ${int(NA)} propostas sorteadas da base sintética do curso (slide 3).`}>
+        : <>No palpite F = {num(F, 2)} (PD {pct(p, 1)}), cada default tem erro y − p = <b>{sinal(1 - p)}</b> e cada adimplente <b>{sinal(-p)}</b>: a inclinação da perda com sinal trocado. {Math.abs(F - F_AJ) < 1e-9 ? <> No F₀ do ajuste, o default pesa {num((1 - p) / p, 1)} vezes o adimplente: a próxima árvore vai atrás dos defaults.</> : null} A próxima árvore ajusta esses 16 números: <LinkSlide slug="c6p5">slide 5</LinkSlide>.</>}
+      fonte={`${DIDATICA.length} propostas didáticas sintéticas dos capítulos 4 e 5 (gerador do curso, semente ${SEMENTE_BASE}; y = 1 para default). Perda de uma proposta: log loss, log natural, com p = σ(F). F₀ do ajuste: ${int(NA)} propostas sorteadas (semente ${base.meta.sementeDivisao}) do treino da mesma base, ${base.meta.treino} (slide 3).`}>
       <Painel>
         <Grafico titulo="A perda de uma proposta e o erro de cada uma" sub={`no palpite F = ${num(F, 2)}`} rotulo={rev ? `No palpite ${num(F, 2)}, PD ${pct(p, 1)}: inclinação da perda ${num(p - 1, 2)} num default e ${num(p, 2)} num adimplente; resíduos ${sinal(1 - p)} e ${sinal(-p)}` : "Perda de um default e de um adimplente em função das log odds; os resíduos estão ocultos até a previsão"}
           tabela={rev ? <table><thead><tr><th>Proposta</th><th>y</th><th>y − p</th></tr></thead><tbody>{DIDATICA.map((q, i) => <tr key={q.id}><td>{q.id}</td><td>{q.y}</td><td>{num(R[i], 3)}</td></tr>)}</tbody></table> : undefined} arCelular="3 / 4">
@@ -50,7 +52,7 @@ export function S04ErroAlvo({ pagina }: { pagina?: Pagina }) {
             const fs = Array.from({ length: 161 }, (_, i) => -4 + i * 0.05);
             const halo = { paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em", strokeLinejoin: "round" } as const;
             const tang = (yy: number) => { const s = p - yy, l0 = perda1(yy, F), w = 0.9; return `M${x(F - w)} ${y(l0 - s * w)}L${x(F + w)} ${y(l0 + s * w)}`; };
-            const base = m.t + hSup + d.fs * 1.4, r0 = d.h - d.fs * 2.6, mid = (base + r0) / 2, ry = escala([-1, 1], [r0, base]);
+            const base = m.t + hSup + d.fs * 2.1, r0 = d.h - d.fs * 2.6, mid = (base + r0) / 2, ry = escala([-1, 1], [r0, base]);
             const passo = (d.w - m.l - m.r) / DIDATICA.length;
             return (
               <g>
@@ -62,16 +64,18 @@ export function S04ErroAlvo({ pagina }: { pagina?: Pagina }) {
                 <text className="q7-eixo-t" x={m.l} y={m.t} dy="-.45em">perda ℓ</text>
                 <path className="q7-linha q7-linha--fina" stroke="#5B6475" d={caminho(fs.map((v) => ({ x: x(v), y: y(perda1(1, v)) })))} />
                 <path className="q7-linha q7-linha--fina q7-linha--mudo" strokeDasharray="10 6" d={caminho(fs.map((v) => ({ x: x(v), y: y(perda1(0, v)) })))} />
-                <text className="q7-rot--peq" x={x(-2.7)} y={y(perda1(1, -2.7))} dx=".7em" dy="-.2em" style={{ fill: "#5B6475", ...halo }}>● default: ln(1 + e^−F)</text>
-                <text className="q7-rot--peq" x={x(3.9)} y={y(perda1(0, 3.9))} dx="-.4em" dy="-.6em" textAnchor="end" style={{ fill: "#5B6475", ...halo }}>○ adimplente: ln(1 + e^F)</text>
+                <text className="q7-rot--peq" x={x(-0.35)} y={y(4.05)} textAnchor="end" style={{ fill: "#5B6475", ...halo }}>● default: ln(1 + e<tspan dy="-.45em" fontSize=".75em">−F</tspan><tspan dy=".45em">)</tspan></text>
+                <text className="q7-rot--peq" x={x(0.35)} y={y(4.05)} textAnchor="start" style={{ fill: "#5B6475", ...halo }}>○ adimplente: ln(1 + e<tspan dy="-.45em" fontSize=".75em">F</tspan><tspan dy=".45em">)</tspan></text>
                 <line x1={x(F)} x2={x(F)} y1={y(0)} y2={y(4.2)} stroke="#176C73" strokeWidth={2} strokeDasharray="5 5" />
                 {rev && <>
                   <path d={tang(1)} stroke="#3D5A8A" strokeWidth={5} strokeLinecap="round" />
                   <path d={tang(0)} stroke="#3D5A8A" strokeWidth={5} strokeLinecap="round" />
-                  <text className="q7-rot" x={x(0.3)} y={y(3.2)} textAnchor="middle" style={{ fill: "#3D5A8A", ...halo }}>inclinação em F: ● {num(p - 1, 2)} · ○ {num(p, 2)}</text>
+                  {/* rótulo de cada inclinação na ponta alta da sua tangente */}
+                  <text className="q7-rot--peq" x={Math.max(x(-4), x(F - 0.95))} y={y(perda1(1, F) + (1 - p) * 0.9)} dy="-.5em" textAnchor="middle" style={{ fill: "#3D5A8A", fontWeight: 700, ...halo }}>● inclinação {num(p - 1, 2)}</text>
+                  <text className="q7-rot--peq" x={Math.min(x(4), x(F + 0.95))} y={y(perda1(0, F) + p * 0.9)} dy="-.5em" textAnchor="middle" style={{ fill: "#3D5A8A", fontWeight: 700, ...halo }}>○ inclinação {num(p, 2)}</text>
                 </>}
                 {/* resíduos das 16 */}
-                <text className="q7-eixo-t" x={m.l} y={base} dy="-.5em">erro de cada proposta, y − p</text>
+                <text className="q7-eixo-t" x={m.l} y={base} dy="-.95em">erro de cada proposta, y − p</text>
                 <line className="q7-eixo" x1={m.l} x2={d.w - m.r} y1={mid} y2={mid} />
                 {[-1, 0, 1].map((v) => <text key={v} className="q7-tick" x={m.l} dx="-.45em" y={ry(v)} dy=".34em" textAnchor="end">{sinal(v).replace(",00", "")}</text>)}
                 {DIDATICA.map((q, i) => {

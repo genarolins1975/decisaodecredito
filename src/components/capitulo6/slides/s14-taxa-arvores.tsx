@@ -29,7 +29,7 @@ function Grafico2({ par, alinhado, revelado }: { par: readonly [number, number];
   const [e1, e2] = par; const c1 = curva(e1), c2 = curva(e2); const i1 = argmin(c1), i2 = argmin(c2);
   const n1 = Math.round(PASSO / e1);
   return (
-    <Grafico titulo="Perda de validação" sub={alinhado ? "● η maior · △ metade da taxa · eixo: η × árvores, o passo total" : revelado ? "● η maior · △ metade da taxa · eixo: árvores" : "eixo: número de árvores"} rotulo={`Perda de validação para η ${fe(e1)}${revelado ? ` e η ${fe(e2)}` : ""}; mínimos em ${i1}${revelado ? ` e ${i2}` : ""} árvores${alinhado ? ", no eixo η vezes árvores" : ""}`} arCelular="4 / 3">
+    <Grafico titulo="Perda de validação" sub={alinhado ? "contínua e ●: η maior · tracejada e △: metade · eixo: η × árvores" : revelado ? "contínua e ●: η maior · tracejada e △: metade da taxa" : "eixo: número de árvores"} rotulo={`Perda de validação para η ${fe(e1)}${revelado ? ` e η ${fe(e2)}` : ""}; mínimos em ${i1}${revelado ? ` e ${i2}` : ""} árvores${alinhado ? ", no eixo η vezes árvores" : ""}`} arCelular="4 / 3">
       {(d) => {
         const g = margens(d.fs, { l: 3.6, r: 1.2, t: 1.2, b: 2.8 });
         const xmax = alinhado ? PASSO : n1;
@@ -86,9 +86,9 @@ export function S14TaxaArvores({ pagina }: { pagina?: Pagina }) {
       titulo={revelado ? undefined : "Com metade da taxa, onde fica o mínimo da validação?"}
       sub={revelado ? undefined : `Com η ${f(P0[0])}, a perda de validação é mínima em ${a1} árvores. E com η ${f(P0[1])}?`}
       conclusao={revelado
-        ? <>η {f(e1)}: mínimo em {i1} árvores ({num(c1[i1], 4)}); η {f(e2)}: em <b>{i2}</b> ({num(c2[i2], 4)}), {num(i2 / i1, 1)} vezes mais árvores. No eixo η × árvores as curvas quase coincidem (maior distância {num(dmax, 4)}): conta o passo total. Fixe a taxa e ache as árvores na validação, como no <LinkSlide slug="c6p15">slide 15</LinkSlide>.</>
+        ? <>η {f(e1)}: mínimo em {i1} árvores ({num(c1[i1], 4)}); η {f(e2)}: em <b>{i2}</b> ({num(c2[i2], 4)}), cerca do dobro ({num(i2 / i1, 1)} vezes; o ponto exato do mínimo é ruidoso). No eixo η × árvores as curvas quase coincidem (maior distância {num(dmax, 4)}): com taxas pequenas, conta o passo total. Fixe a taxa e ache as árvores na validação, como no <LinkSlide slug="c6p15">slide 15</LinkSlide>.</>
         : <>Referência do <LinkSlide slug="c6p13">slide 13</LinkSlide>: com η {f(P0[0])}, a validação desce até {num(curva(P0[0])[a1], 4)} em {a1} árvores e depois sobe.</>}
-      fonte={`Validação: ${int(NV)} propostas, ${YV.reduce((s, v) => s + v, 0)} defaults. Profundidade ${CFG_CARTEIRA.profundidade}, mínimo ${CFG_CARTEIRA.minFolha}; cada taxa até ${PASSO} ÷ η árvores (gbm.ts). Distância: M árvores com η contra 2M com η ÷ 2.`}>
+      fonte={`Validação sorteada: ${int(NV)} propostas, ${YV.reduce((s, v) => s + v, 0)} defaults. Profundidade ${CFG_CARTEIRA.profundidade}, mínimo ${CFG_CARTEIRA.minFolha}; cada taxa até ${PASSO} ÷ η árvores (gbm.ts). Distância: M árvores com η contra 2M com η ÷ 2.`}>
       <Painel>
         <Grafico2 par={par} alinhado={alinhado && revelado} revelado={revelado} />
         <div className="q6-s14-ctl">

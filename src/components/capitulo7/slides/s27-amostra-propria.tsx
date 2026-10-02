@@ -116,31 +116,34 @@ export function S27AmostraPropria({ pagina }: { pagina?: Pagina }) {
   const escolher = (i: number | null) => { setPrev(i); setModo(i === CERTA ? "atalho" : "certo"); };
   return (
     <Quadro slug="c7p16" pagina={pagina} layout="gl"
-      conclusao={!atalho ? <>Protocolo: Platt ajustado na calibração e medido na janela, log loss {num(LL_CERTO, 4)} contra {num(LL_SEM, 4)} sem calibrar. A diferença de {num(DIF, 4)}, com {D} defaults, é ruído: em janelas novas da mesma população, o Platt da calibração é <b>o melhor dos três ({num(C.platt!.esperada.logLoss, 4)})</b> e vence sem calibrar em {VENCE} de {N_JANELAS}. O <LinkSlide slug="c7p12">slide 28</LinkSlide> começa pela correção mais simples, só o nível.</>
+      conclusao={!atalho ? <>Protocolo: Platt ajustado na calibração e medido na janela, log loss {num(LL_CERTO, 4)} contra {num(LL_SEM, 4)} sem calibrar. Com {D} defaults, a diferença de {num(DIF, 4)} é ruído: em janelas novas, o Platt é <b>o melhor dos três ({num(C.platt!.esperada.logLoss, 4)})</b> e vence sem calibrar em {VENCE} de {N_JANELAS}. O <LinkSlide slug="c7p12">slide 28</LinkSlide> começa pelo intercepto.</>
         : <>Ajustado e medido na mesma janela: <b>{num(LL_ATALHO, 4)}</b>, menor que o protocolo ({num(LL_CERTO, 4)}) por construção. Em janelas novas, o atalho entrega {num(C.atalho!.esperada.logLoss, 4)}, pior que o protocolo ({num(C.platt!.esperada.logLoss, 4)}): aprendeu a sorte da janela. <b>Nunca reporte um calibrador na amostra em que ele foi ajustado.</b></>}
-      fonte={`Base do curso: treino, validação e janela fora do tempo (${int(META.nOot)} propostas, ${D} defaults), desfecho em 12 meses. Calibração sintética: ${int(CAL.n)} sorteios com reposição dos mesmos proponentes da janela (${int(DISTINTOS)} distintos), desfecho novo da PD verdadeira (semente ${CAL.semente}). Esperada: média exata pela PD verdadeira, só possível em base sintética.`}>
+      fonte={`Janela fora do tempo: ${int(META.nOot)} propostas, ${D} defaults, desfecho em 12 meses. Calibração sintética: ${int(CAL.n)} sorteios dos ${int(DISTINTOS)} proponentes distintos da janela, desfecho novo da PD verdadeira (semente ${CAL.semente}). Mesma população, sem deriva: o ganho é um teto; numa carteira real, a calibração viria de safras anteriores à janela. Esperada: média exata pela PD verdadeira.`}>
       <Painel titulo="Onde o calibrador aprende e onde é medido">
         <Linha atalho={atalho} />
       </Painel>
       <Painel>
+        <dl className="q7-s27-def" aria-label="Os dois calibradores da tabela">
+          <div><dt>Intercepto</dt><dd>soma a ao log odds: só o nível (<LinkSlide slug="c7p12">slide 28</LinkSlide>).</dd></div>
+          <div><dt>Platt</dt><dd>σ(a + b · logit p): nível e inclinação (<LinkSlide slug="c7p13">slide 29</LinkSlide>).</dd></div>
+        </dl>
         {aberto ? (
           <div className="q7-linha-ctl"><Seg rotulo="Procedimento" opcoes={[{ v: "certo" as Modo, r: "Protocolo" }, { v: "atalho" as Modo, r: "Atalho" }]} valor={modo} onChange={setModo} cor /><Botao sec onClick={() => escolher(null)}>Restaurar</Botao></div>
         ) : (
-          <Previsao recolher pergunta={<>Atalho: ajustar o Platt na própria janela e medir nela. A log loss do atalho, comparada com {num(LL_CERTO, 4)}, será...</>} escolha={prev} onEscolha={escolher}
+          <Previsao recolher pergunta={<>Atalho: Platt ajustado e medido na janela. Contra {num(LL_CERTO, 4)}, a log loss dele será...</>} escolha={prev} onEscolha={escolher}
             opcoes={[
-              { certa: false, texto: "Maior, porque ajustar na prova é arriscado", retorno: "Confunde o risco com o número medido: nos casos em que foi ajustado, o Platt escolhe a e b que minimizam essa log loss, então ela só pode cair. O risco aparece em outra amostra." },
+              { certa: false, texto: "Maior, porque ajustar na prova é arriscado", retorno: "Confunde o risco com o número medido: ajustado nesses casos, o Platt minimiza essa log loss, que só pode cair. O risco aparece em outra amostra." },
               { certa: false, texto: "Igual, porque o procedimento é o mesmo", retorno: "O procedimento é o mesmo; os dados, não. Ajustado na janela, ele persegue as respostas da janela; ficar igual seria coincidência." },
               { texto: "Menor", certa: true, retorno: "Isso." },
             ]} />
         )}
-        {aberto && <p className="q7-retorno" data-tom="certa">Isso: nos mesmos casos, o Platt minimiza a perda que vai reportar. Ler o número menor como calibrador melhor confunde ajuste com prova.</p>}
-        <table className="q7-tab q7-s27-t">
+        {aberto && <p className="q7-retorno" data-tom="certa">Isso: nos mesmos casos, o atalho escolhe a&nbsp;=&nbsp;{num(PLATT_OOT.a, 3)} e b&nbsp;=&nbsp;{num(PLATT_OOT.b, 3)} (protocolo: {num(PLATT_CAL.a, 3)} e {num(PLATT_CAL.b, 3)}) para minimizar a perda que vai reportar. Ler o número menor como calibrador melhor confunde ajuste com prova.</p>}
+        <table className="q7-tab q7-tab--comp q7-s27-t">
           <thead><tr><th className="q7-t-l">Log loss da logística</th><th>Na janela</th><th>Esperada</th></tr></thead>
           <tbody>{LINHAS.filter((l) => aberto || l.id !== "atalho").map((l) => { const c = C[l.id]!; return (
             <tr key={l.id} data-on={(atalho ? l.id === "atalho" : l.id === "platt") ? "1" : undefined}><th>{l.r}</th><td>{num(c.janela.logLoss, 4)}</td><td>{num(c.esperada.logLoss, 4)}</td></tr>
           ); })}</tbody>
         </table>
-        <p className="q7-nota">Esperada: média em janelas novas da mesma população. {atalho ? <>Atalho: a = {num(PLATT_OOT.a, 3)}, b = {num(PLATT_OOT.b, 3)}.</> : <>Platt: a = {num(PLATT_CAL.a, 3)}, b = {num(PLATT_CAL.b, 3)}.</>}</p>
       </Painel>
     </Quadro>
   );

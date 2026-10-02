@@ -6,6 +6,7 @@ import { Roc } from "../graficos";
 import { CENARIOS, MINI, PL, PT, Y } from "@/lib/capitulo7/dados";
 import { aucPorPares, curvaRoc, transformar } from "@/lib/capitulo7/metricas";
 import { num, pct } from "@/lib/capitulo7/formato";
+import { aucEsperada, aucsEmJanelasNovas, N_JANELAS, SEMENTE_JANELAS } from "@/lib/capitulo7/janelas";
 
 /**
  * 10 · c7p24 · O que a AUC responde e o que deixa em aberto. A ponte liga a PD original de cada proposta da mini-base
@@ -44,6 +45,17 @@ const OPS = [
   { texto: `O melhor corte para recusar é PD de ${P0}`, certa: false, retorno: <>Não. A AUC é uma área, não um ponto da régua de PD. O corte depende de perda, receita e custo (slide {SLIDE.c7p18.n}).</> },
 ];
 
+/**
+ * Cenário PD verdadeira: a AUC de uma janela é uma realização ruidosa. A AUC esperada em janelas novas (os mesmos
+ * proponentes, desfecho sorteado de novo da PD verdadeira) separa o teto em média da sorte desta janela.
+ */
+function VerdadeiraLeitura({ auc }: { auc: number }) {
+  const eT = aucEsperada(PT), eL = aucEsperada(PL);
+  const aT = aucsEmJanelasNovas(PT), aL = aucsEmJanelasNovas(PL);
+  const passa = aT.reduce((k, v, i) => k + (aL[i] > v ? 1 : 0), 0);
+  return <>Em {N_JANELAS} janelas novas, a PD verdadeira tem <b>AUC média {num(eT, 4)}</b> contra {num(eL, 4)} da logística; nesta janela, {num(auc, 4)} contra {num(AUC0, 4)}. Em média nenhum modelo passa da verdadeira; numa janela isolada pode (aqui, em {passa} de {N_JANELAS}). Nenhum chega a 1.</>;
+}
+
 export function S10LimitesAuc({ pagina }: { pagina?: Pagina }) {
   const [cen, setCen] = useState<Cen>("crescente");
   const [esc, setEsc] = useState<number | null>(null);
@@ -52,11 +64,11 @@ export function S10LimitesAuc({ pagina }: { pagina?: Pagina }) {
   const cruz = (() => { let k = 0; for (let i = 0; i < orig.length; i++) for (let j = i + 1; j < orig.length; j++) if ((orig[i] - orig[j]) * (novo[i] - novo[j]) < 0) k++; return k; })();
   return (
     <Quadro slug="c7p24" pagina={pagina} layout="glx" sub={esc === null ? `Um número como ${num(AUC0, 4)} mede exatamente o quê? Escolha uma frase e teste nos cenários.` : undefined}
-      conclusao={esc === null ? "Escolha uma frase ao lado e depois teste nos quatro cenários." : cen === "crescente" ? <>A PD mudou de nível e <b>nenhuma linha se cruzou</b>: a AUC continua {num(auc, 4)}. A AUC só lê a ordem; e não existe um valor universal de &ldquo;bom modelo&rdquo;.</>
+      conclusao={esc === null ? "Escolha uma frase ao lado e depois teste nos quatro cenários." : cen === "crescente" ? <>A PD mudou de nível e <b>nenhuma linha se cruzou</b>: a AUC continua {num(auc, 4)}. A AUC só lê a ordem.</>
         : cen === "invertida" ? <>Tudo se cruza: a AUC vira 1 − {num(AUC0, 4)} = {num(auc, 4)}. Abaixo de 0,5 quase sempre é sentido trocado do escore, não um modelo &ldquo;pior que o acaso&rdquo;.</>
         : cen === "embaralhada" ? <>{cruz} cruzamentos entre {PARES} pares de propostas: a AUC cai para {num(auc, 4)}, perto do sorteio, com a mesma média de PD.</>
-        : <>Até a PD verdadeira do gerador tem AUC {num(auc, 4)}, só {num(auc - AUC0, 3)} acima da logística: propostas com as mesmas características podem terminar diferente. Nesta janela, esse é o teto prático; nenhum modelo chega a 1.</>}
-      fonte="Ponte: as 20 propostas da mini-base com a PD da logística em precisão plena. ROC e AUC: janela fora do tempo, 737 propostas e 81 defaults. Transformação estritamente crescente: σ(1 + 0,5 · logit p).">
+        : <VerdadeiraLeitura auc={auc} />}
+      fonte={`Ponte: as 20 propostas da mini-base com a PD da logística em precisão plena. ROC e AUC: janela fora do tempo, 737 propostas e 81 defaults. Transformação estritamente crescente: σ(1 + 0,5 · logit p). Janelas novas: ${N_JANELAS} sorteios do desfecho pela PD verdadeira, semente ${SEMENTE_JANELAS}.`}>
       <Painel>
         <Seg rotulo="Cenário" opcoes={(Object.keys(CEN) as Cen[]).map((k) => ({ v: k, r: CEN[k].nome }))} valor={cen} onChange={setCen} />
         <div className="q7-s10-g">

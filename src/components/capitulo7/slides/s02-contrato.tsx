@@ -21,13 +21,20 @@ const PARTES = [
   { nome: "Janela fora do tempo", de: mes(2023, 8), ate: mes(2023, 12), n: META.nOot, cor: "#2E6B4F" },
 ];
 const REF = mes(2025, 1) + 30 / 31;
+/**
+ * O gerador publica só as taxas de default da população inteira e das recusadas, não a contagem de recusadas. A
+ * contagem sai das taxas: (D + t_r · R) ÷ (N + R) = t_p, logo R = (t_p · N − D) ÷ (t_r − t_p). É aproximação, porque
+ * as taxas vêm arredondadas; na tela aparece como "cerca de".
+ */
+const REC = Math.round((PREVALENCIA.populacao * N - D) / (PREVALENCIA.rejeitados - PREVALENCIA.populacao));
+const REC_D = Math.round(PREVALENCIA.rejeitados * REC);
 /** O contrato acompanha o seletor: com os recusados, muda a população e o que se sabe deles. */
 const contrato = (pop: Pop): [string, string][] => [
   ["Evento", "atraso de 90 dias ou mais"],
   ["Horizonte", "12 meses, um único período"],
   ["População", pop === "aprovados" ? "só propostas aprovadas" : "aprovadas e recusadas"],
   ["Unidade", "uma proposta por cliente"],
-  ["Janela fora do tempo", pop === "aprovados" ? `${int(N)} propostas, ${D} defaults` : `${int(N)} aprovadas + recusadas`],
+  ["Janela fora do tempo", pop === "aprovados" ? `${int(N)} propostas, ${D} defaults` : `${int(N)} aprovadas + cerca de ${int(REC)} recusadas ≈ ${int(N + REC)}`],
   ["Recusadas", pop === "aprovados" ? "sem desfecho observado" : "desfecho só no gerador"],
 ];
 
@@ -39,7 +46,7 @@ export function S02Contrato({ pagina }: { pagina?: Pagina }) {
     <Quadro slug="c7p21" pagina={pagina} layout="gl" sub={prev === null ? "Um número de outro banco serve de régua para o nosso?" : undefined}
       conclusao={pop === "aprovados" ? <>A pergunta deste capítulo: entre propostas <b>aprovadas</b>, quem atrasa 90 dias ou mais em 12 meses? Na janela, {pct(D / N, 1)} atrasaram ({D} de {int(N)}) e a logística tem AUC {num(r.auc, 4)}. Com a pergunta fixa, o slide {SLIDE.c7p2.n} mostra a primeira armadilha: a acurácia.</>
         : <>Mesma logística, outra pergunta: com os recusados (desfecho que só existe na base sintética), a taxa de default vai a {pct(r.obs, 1)} e a AUC a <b>{num(r.auc, 4)}</b>. Números de perguntas diferentes não se comparam.</>}
-      fonte={`Base sintética do curso, semente ${META.seed}; data de referência ${META.dataReferencia.split("-").reverse().join("/")}. Aprovação no gerador, todas as safras: ${pct(PREVALENCIA.taxaAprovacao, 0)}. População inteira: taxas do gerador, sem a contagem de recusados.`}>
+      fonte={`Base sintética do curso, semente ${META.seed}; data de referência ${META.dataReferencia.split("-").reverse().join("/")}. Recusadas: o gerador publica só taxas (${pct(PREVALENCIA.populacao, 1)} no total, ${pct(PREVALENCIA.rejeitados, 1)} nelas); cerca de ${int(REC)} recusadas e aprovação perto de ${pct(N / (N + REC), 0)} na janela são aproximação calculada dessas taxas.`}>
       <Painel titulo="Cada safra precisa de 12 meses para ter desfecho">
         <Grafico rotulo="Linha do tempo: safras de treino, validação e janela fora do tempo, cada uma seguida de 12 meses de observação; data de referência em 31 de janeiro de 2025" arCelular="16 / 9">
           {(d) => {
@@ -68,7 +75,7 @@ export function S02Contrato({ pagina }: { pagina?: Pagina }) {
       <Painel>
         <Seg rotulo="População avaliada" opcoes={[{ v: "aprovados" as Pop, r: "Só aprovados" }, { v: "todos" as Pop, r: "Aprovados e recusados" }]} valor={pop} onChange={setPop} cor desab={prev === null} />
         <div className="q7-kpis q7-kpis--2">
-          <Kpi rotulo="Taxa de default" valor={pct(r.obs, 1)} detalhe={pop === "aprovados" ? `${D} de ${int(N)}` : `aprovados ${D} de ${int(N)}; recusados ${pct(PREVALENCIA.rejeitados, 1)}`} tom="def" tam="mini" />
+          <Kpi rotulo="Taxa de default" valor={pct(r.obs, 1)} detalhe={pop === "aprovados" ? `${D} de ${int(N)}` : `recusados: cerca de ${int(REC_D)} de ${int(REC)} (${pct(PREVALENCIA.rejeitados, 1)})`} tom="def" tam="mini" />
           <Kpi rotulo="AUC da logística" valor={num(r.auc, 4)} detalhe={pop === "aprovados" ? "a pergunta do capítulo" : "outra pergunta"} tam="mini" />
         </div>
         <Previsao rotulo="Antes de seguir" pergunta="Outro banco reporta AUC de 0,80 para o seu modelo de cartão. O nosso, com 0,73, é pior?" escolha={prev} onEscolha={setPrev} recolher

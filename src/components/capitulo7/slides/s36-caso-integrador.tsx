@@ -1,9 +1,9 @@
 "use client";
 import { useState, type ReactNode } from "react";
 import { Botao, caminho, escala, Grafico, LinkSlide, Painel, Previsao, Quadro, type Dim, type Pagina } from "../base";
-import { D, EAD, N, PG, PL, RES, Y } from "@/lib/capitulo7/dados";
+import { D, EAD, N, PG, PL, PT, RES, Y } from "@/lib/capitulo7/dados";
 import { calibracaoGlobal, delong, faixasQuantis, jeffreys, slopeComIntervalo, Z95 } from "@/lib/capitulo7/metricas";
-import { curva, fmtReais, GRADE_CORTES, otimo, realizado } from "@/lib/visuais/economia";
+import { curva, esperado, fmtReais, GRADE_CORTES, otimo, realizado } from "@/lib/visuais/economia";
 import { num, pct } from "@/lib/capitulo7/formato";
 import { calibradores, N_JANELAS, vantagemEmJanelasNovas } from "@/lib/capitulo7/janelas";
 
@@ -18,12 +18,17 @@ import { calibradores, N_JANELAS, vantagemEmJanelasNovas } from "@/lib/capitulo7
  * mesmas dos slides 33 e 35. Rodada 2: a decisão certa é manter a logística, recalibrar o nível em amostra própria e
  * confirmar numa janela nova; a evidência é a perda esperada dos calibradores (calibradores de janelas.ts): intercepto e
  * Platt melhoram em expectativa e a janela de 81 defaults não escolhe entre eles. Na miniatura de decisão, os dois
- * realizados ficam lado a lado no corte, com rótulo direto.
+ * realizados ficam lado a lado no corte, com rótulo direto. Rodada 3: os rótulos das miniaturas Decisão e
+ * Probabilidade saem de cima das curvas e vão para uma coluna ao lado; slope e ICs vão para a leitura do cartão; a
+ * decisão compara os modelos também pela PD verdadeira (o realizado de 81 defaults é ruidoso, slide 32); as quatro
+ * alternativas têm o mesmo tamanho, para a certa não se denunciar pelo comprimento.
  */
 type P = "ord" | "prob" | "dec" | "val";
 const DL = delong(Y, PL, PG);
 const CAL_L = calibracaoGlobal(Y, PL), CAL_G = calibracaoGlobal(Y, PG);
 const SL_L = slopeComIntervalo(Y, PL), SL_G = slopeComIntervalo(Y, PG);
+/** os intervalos de Wald dos dois slopes contêm 1? (com 81 defaults, a inclinação não se distingue) */
+const COM1 = [SL_L, SL_G].every((q) => q.ic[0] <= 1 && q.ic[1] >= 1);
 const J_L = jeffreys(D, N, CAL_L.pdMedia!), J_G = 1 - jeffreys(D, N, CAL_G.pdMedia!);
 const F_L = faixasQuantis(Y, PL, 10), F_G = faixasQuantis(Y, PG, 10);
 const real = (p: readonly number[], c: number) => { let s = 0; for (let i = 0; i < N; i++) if (p[i] < c) s += realizado(Y[i], EAD[i]); return s; };
@@ -31,6 +36,9 @@ const CORTES = GRADE_CORTES.filter((c) => c <= 0.4);
 const CV_L = curva(PL as number[], EAD as number[], CORTES), CV_G = curva(PG as number[], EAD as number[], CORTES);
 const OT_L = otimo(CV_L), OT_G = otimo(CV_G);
 const R_L = real(PL, OT_L.corte), R_G = real(PG, OT_G.corte);
+/** O que os aprovados de cada modelo valem em média, pela PD verdadeira: sem a sorte dos 81 defaults da janela. */
+const verd = (p: readonly number[], c: number) => { let s = 0; for (let i = 0; i < N; i++) if (p[i] < c) s += esperado(PT[i], EAD[i]); return s; };
+const V_L = verd(PL, OT_L.corte), V_G = verd(PG, OT_G.corte);
 const OBS = D / N;
 const AUCS = { l: [RES.logit_treino.auc, RES.logit_val.auc, DL.auc1], g: [RES.gbm_treino.auc, RES.gbm_val.auc, DL.auc2] };
 const CL = calibradores("pl");
@@ -57,10 +65,10 @@ function MiniOrd({ d }: { d: Dim }) {
   );
 }
 function MiniProb({ d }: { d: Dim }) {
-  const fs = d.fs, lado = Math.min(d.h - fs * 1.6, d.w * 0.48), x0 = fs * 2.2, max = 0.3;
+  const fs = d.fs, lado = Math.min(d.h - fs * 0.9, d.w * 0.56), x0 = fs * 2.2, max = 0.3;
   const x = escala([0, max], [x0, x0 + lado]), y = escala([0, max], [fs * 0.4 + lado, fs * 0.4]);
   const pts = (f: typeof F_L) => f.filter((q) => q.pdMedia !== null && q.obs !== null).map((q) => ({ x: x(Math.min(max, q.pdMedia!)), y: y(Math.min(max, q.obs!)) }));
-  const tx = x0 + lado + fs * 0.8;
+  const tx = x0 + lado + fs * 0.9;
   return (
     <g>
       <rect x={x(0)} y={y(max)} width={lado} height={lado} fill="#FBFAF7" stroke="#E2DFD6" />
@@ -72,35 +80,37 @@ function MiniProb({ d }: { d: Dim }) {
       {pts(F_L).map((p, i) => <circle key={`l${i}`} cx={p.x} cy={p.y} r={fs * 0.22} fill={COR.prob} />)}
       {pts(F_G).map((p, i) => <rect key={`g${i}`} x={p.x - fs * 0.2} y={p.y - fs * 0.2} width={fs * 0.4} height={fs * 0.4} fill="#fff" stroke={COR.prob} strokeWidth={2} />)}
       {tx + fs * 6 < d.w && <>
-        <text className="q7-rot--peq" x={tx} y={fs * 1.1} style={{ fill: "#2A3342" }}>PD média, obs. {pct(OBS, 1)}</text>
-        <text className="q7-rot--peq" x={tx} y={fs * 2.3} style={{ fill: COR.prob, fontWeight: 700 }}>● logística {pct(CAL_L.pdMedia!, 1)}</text>
-        <text className="q7-rot--peq" x={tx} y={fs * 3.4} style={{ fill: COR.prob, fontWeight: 700 }}>□ candidato {pct(CAL_G.pdMedia!, 1)}</text>
-        {d.h > fs * 5.2 && <text className="q7-rot--peq" x={tx} y={fs * 4.7} style={{ fill: "#2A3342" }}>slope {num(SL_L.slope, 2)} (●) e {num(SL_G.slope, 2)} (□)</text>}
-        {d.h > fs * 6.3 && <text className="q7-rot--peq" x={tx} y={fs * 5.8} style={{ fill: "#2A3342" }}>ICs {num(SL_L.ic[0], 2)} a {num(SL_L.ic[1], 2)} e {num(SL_G.ic[0], 2)} a {num(SL_G.ic[1], 2)}</text>}
+        <text className="q7-rot--peq" x={tx} y={fs * 1.3} style={{ fill: "#2A3342" }}>PD média</text>
+        <text className="q7-rot--peq" x={tx} y={fs * 2.6} style={{ fill: COR.prob, fontWeight: 700 }}>● logística {pct(CAL_L.pdMedia!, 1)}</text>
+        <text className="q7-rot--peq" x={tx} y={fs * 3.8} style={{ fill: COR.prob, fontWeight: 700 }}>□ candidato {pct(CAL_G.pdMedia!, 1)}</text>
+        <text className="q7-rot--peq" x={tx} y={fs * 5.1} style={{ fill: "#2A3342" }}>observado {pct(OBS, 1)}</text>
       </>}
     </g>
   );
 }
 function MiniDec({ d }: { d: Dim }) {
   const fs = d.fs; const vals = [...CV_L, ...CV_G].map((q) => q.parcelas.total); const lo = Math.min(0, ...vals), hi = Math.max(...vals, R_L, R_G);
-  const x = escala([0, 0.4], [fs * 3.4, d.w - fs * 0.6]), y = escala([lo, hi * 1.1], [d.h - fs * 1.6, fs * 0.5]);
-  const c = OT_L.corte;
+  // a curva fica à esquerda; os números do corte, numa coluna à direita, longe das linhas
+  const largo = d.w > fs * 22, xR = largo ? d.w - fs * 10.2 : d.w - fs * 0.6;
+  const x = escala([0, 0.4], [fs * 3.4, xR]), y = escala([lo, hi * 1.08], [d.h - fs * 1.6, fs * 0.5]);
+  const c = OT_L.corte, tx = xR + fs * 0.9;
+  const mil = (v: number) => fmtReais(v).replace("R$ ", "").replace(" mil", "");
   return (
     <g>
       <line className="q7-eixo" x1={x(0)} x2={x(0.4)} y1={y(lo)} y2={y(lo)} />
       {[0, 0.2, 0.4].map((t) => <text key={t} className="q7-tick" x={x(t)} y={y(lo)} dy="1em" textAnchor="middle">{pct(t, 0)}</text>)}
-      {[3e5, 6e5].filter((v) => v >= lo && v <= hi * 1.1).map((v) => <text key={v} className="q7-tick" x={x(0)} y={y(v)} dx="-.3em" dy=".35em" textAnchor="end">{fmtReais(v).replace("R$ ", "")}</text>)}
+      {[3e5, 6e5].filter((v) => v >= lo && v <= hi * 1.08).map((v) => <text key={v} className="q7-tick" x={x(0)} y={y(v)} dx="-.3em" dy=".35em" textAnchor="end">{fmtReais(v).replace("R$ ", "")}</text>)}
       <path className="q7-linha q7-linha--fina q7-linha--prob" d={caminho(CV_L.map((q) => ({ x: x(q.corte), y: y(q.parcelas.total) })))} />
       <path className="q7-linha q7-linha--fina q7-linha--prob" strokeDasharray="6 4" d={caminho(CV_G.map((q) => ({ x: x(q.corte), y: y(q.parcelas.total) })))} />
       <line className="q7-corte" x1={x(c)} x2={x(c)} y1={y(lo)} y2={fs * 0.3} />
-      <text className="q7-corte-t" x={x(c) + fs * 0.35} y={y(lo) - fs * 0.4}>corte {pct(c, 1)}</text>
       {[{ v: R_L, l: true }, { v: R_G, l: false }].map((r) => { const cx = x(c) + (r.l ? -fs * 0.5 : fs * 0.5); return (
-        <g key={String(r.l)}>
-          <path d={`M${cx} ${y(r.v) - fs * 0.38}l${fs * 0.38} ${fs * 0.38}l${-fs * 0.38} ${fs * 0.38}l${-fs * 0.38} ${-fs * 0.38}z`} fill={r.l ? "#00205B" : "#fff"} stroke="#00205B" strokeWidth={2} />
-          <text className="q7-rot--peq" x={cx + (r.l ? -fs * 0.6 : fs * 0.6)} y={y(r.v)} dy={r.l ? "-.1em" : ".8em"} textAnchor={r.l ? "end" : "start"} style={{ fill: "#00205B", fontWeight: 700, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em" }}>{r.l ? "realizado L" : "C"} {fmtReais(r.v).replace("R$ ", "").replace(" mil", "")}</text>
-        </g>
+        <path key={String(r.l)} d={`M${cx} ${y(r.v) - fs * 0.38}l${fs * 0.38} ${fs * 0.38}l${-fs * 0.38} ${fs * 0.38}l${-fs * 0.38} ${-fs * 0.38}z`} fill={r.l ? "#00205B" : "#fff"} stroke="#00205B" strokeWidth={2} />
       ); })}
-      <text className="q7-rot--peq" x={x(0.4)} y={y(CV_L[CV_L.length - 1].parcelas.total) - fs * 0.5} textAnchor="end" style={{ fill: COR.prob }}>esperado pela PD</text>
+      {largo && <>
+        <text className="q7-rot--peq" x={tx} y={fs * 1.1} style={{ fill: COR.dec, fontWeight: 700 }}>corte {pct(c, 1)}, mil R$</text>
+        <text className="q7-rot--peq" x={tx} y={fs * 2.4} style={{ fill: COR.prob, fontWeight: 700 }}>esperado: ● {mil(OT_L.parcelas.total)}, □ {mil(OT_G.parcelas.total)}</text>
+        <text className="q7-rot--peq" x={tx} y={fs * 3.7} style={{ fill: "#00205B", fontWeight: 700 }}>realizado: ◆ {mil(R_L)}, ◇ {mil(R_G)}</text>
+      </>}
     </g>
   );
 }
@@ -138,14 +148,14 @@ export function S36CasoIntegrador({ pagina }: { pagina?: Pagina }) {
   const consultar = (k: P) => { if (!vistos.includes(k)) setVistos([...vistos, k]); };
   const leitura: Record<P, ReactNode> = {
     ord: <>Logística melhor nesta janela (p = {num(DL.p, 3)}); em {N_JANELAS} janelas novas, a vantagem cai a {num(jn.vantagem, 4)}.</>,
-    prob: <>Candidato alto: O/E {num(CAL_G.razaoOE!, 3)}, Jeffreys na cauda oposta 1 − p = {num(J_G, 3)}. Logística: p = {num(J_L, 2)}, sem prova.</>,
-    dec: <>Corte {pct(OT_L.corte, 1)}: candidato promete {fmtReais(OT_G.parcelas.total)} e realiza {fmtReais(R_G)}; logística, {fmtReais(OT_L.parcelas.total).replace(" mil", "")} e {fmtReais(R_L)}.</>,
+    prob: <>Candidato: O/E {num(CAL_G.razaoOE!, 3)} (Jeffreys 1 − p = {num(J_G, 3)}). Logística: p = {num(J_L, 2)}. Slopes {num(SL_L.slope, 2)} e {num(SL_G.slope, 2)}, {COM1 ? "ICs com 1" : "IC sem o 1"}.</>,
+    dec: <>Corte {pct(OT_L.corte, 1)}, pela PD verdadeira: □ {fmtReais(V_G)}, ● {fmtReais(V_L)}. O □ prometia {fmtReais(OT_G.parcelas.total)}.</>,
     val: <>Treino {num(AUCS.g[0], 4)}, janela {num(AUCS.g[2], 4)}: sobreajuste e safra (a logística sobe a {num(AUCS.l[2], 4)}); Platt na validação gasta.</>,
   };
   return (
     <Quadro slug="c7p38" pagina={pagina} layout="gl"
       conclusao={esc === null ? <>O comitê recebe o boosting com Platt para substituir a logística. Leia as quatro miniaturas e consulte pelo menos três cartões antes de decidir. {vistos.length ? `Consultados: ${vistos.length} de 4.` : ""}</>
-        : esc === 2 ? <>AUC {num(DL.auc2, 4)} contra {num(DL.auc1, 4)} (p = {num(DL.p, 3)}); O/E {num(CAL_G.razaoOE!, 3)} no candidato; no corte de {pct(OT_L.corte, 1)}, {fmtReais(R_G)} contra {fmtReais(R_L)}; Platt na validação já usada. <b>Manter a logística, recalibrar o nível em amostra própria e confirmar numa janela nova</b>: intercepto e Platt melhoram a log loss esperada ({num(E_SEM, 4)} para {num(E_INT, 4)} e {num(E_PLATT, 4)}); a janela não escolhe entre eles (<LinkSlide slug="c7p12">slides 28</LinkSlide> e <LinkSlide slug="c7p13">29</LinkSlide>).</>
+        : esc === 2 ? <>AUC {num(DL.auc2, 4)} contra {num(DL.auc1, 4)} (p = {num(DL.p, 3)}); O/E {num(CAL_G.razaoOE!, 3)} no candidato; no corte de {pct(OT_L.corte, 1)}, {fmtReais(V_G)} contra {fmtReais(V_L)} pela PD verdadeira; Platt na validação já usada. <b>Manter a logística, recalibrar o nível em amostra própria e confirmar numa janela nova</b>: intercepto e Platt melhoram a log loss esperada ({num(E_SEM, 4)} para {num(E_INT, 4)} e {num(E_PLATT, 4)}); a janela não escolhe entre eles (<LinkSlide slug="c7p12">slides 28</LinkSlide> e <LinkSlide slug="c7p13">29</LinkSlide>).</>
           : <>Revise a evidência: a decisão escolhida ignora pelo menos uma das quatro perguntas. Tente outra.</>}
       fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. IC de DeLong; Jeffreys com a PD média da carteira (o do BCE testa subestimação; a cauda oposta, para o candidato, é adaptação); slope com IC de Wald. Motor econômico do slide 32. Janelas novas: ${N_JANELAS} sorteios do desfecho pela PD verdadeira; log loss esperada: média exata por ela; só em base sintética.`}>
       <Painel titulo="Dossiê: logística (● cheio) contra candidato (□ vazado)">
@@ -170,8 +180,8 @@ export function S36CasoIntegrador({ pagina }: { pagina?: Pagina }) {
             opcoes={[
               { certa: false, texto: "Aprovar o boosting com Platt", retorno: <>Confunde modelo novo com modelo melhor: AUC {num(DL.auc2, 4)} contra {num(DL.auc1, 4)} e PD média {pct(CAL_G.pdMedia!, 1)} contra {pct(OBS, 1)} observados.</> },
               { certa: false, texto: "Recalibrar o boosting na janela e aprovar", retorno: <>Usa a prova para ajustar (<LinkSlide slug="c7p16">slide 27</LinkSlide>): depois, a janela não mede mais nada. E recalibrar não tira a AUC de {num(DL.auc2, 4)}.</> },
-              { texto: "Manter a logística, recalibrar o nível em amostra própria e confirmar numa janela nova", certa: true, retorno: "Isso: o candidato não ganha na ordem e erra o nível; a logística recalibrada melhora em expectativa." },
-              { certa: false, texto: "Trocar, porque a diferença de AUC é pequena", retorno: <>Diferença pequena não prova equivalência, e o ônus é de quem substitui; em janelas novas, a vantagem esperada ({num(jn.vantagem, 4)}) ainda é da logística.</> },
+              { texto: "Manter a logística e recalibrar o nível", certa: true, retorno: "Isso: o candidato não ganha na ordem e erra o nível; a logística, recalibrada em amostra própria, melhora em expectativa." },
+              { certa: false, texto: "Trocar: a diferença de AUC é pequena", retorno: <>Diferença pequena não prova equivalência, e o ônus é de quem substitui; em janelas novas, a vantagem esperada ({num(jn.vantagem, 4)}) ainda é da logística.</> },
             ]} />
         ) : (
           <div className="q7-s36-trava">

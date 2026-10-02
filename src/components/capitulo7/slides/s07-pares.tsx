@@ -8,7 +8,8 @@ import { num, pct } from "@/lib/capitulo7/formato";
 /**
  * 07 · c7p22 · AUC exata na mini-base: a matriz dos 5 × 15 = 75 pares, cada célula valendo 1, ½ ou 0. Com a PD
  * arredondada a pontos inteiros há um empate (#179 e #64, ambos 17%); em precisão plena ele vira inversão (16,74%
- * contra 17,19%) e a AUC cai de 0,8067 para 0,8000; a turma aposta antes de ver. A linha do #85 já vem preenchida
+ * contra 17,19%) e a AUC cai de 0,8067 para 0,8000. A previsão só abre depois de "Todos os pares" mostrar o ½ e
+ * pergunta o que se deduz da tela: quanto a AUC pode mudar (½ ÷ 75, nos dois sentidos); só a resposta certa troca a PD. A linha do #85 já vem preenchida
  * como exemplo. A AUC destes 20 casos não é a da janela (slide 6): a diferença é a variação de uma amostra de 20.
  * Nenhum par é "observação independente": cada proposta aparece em vários pares.
  */
@@ -22,19 +23,21 @@ const AUC_I = aucPorPares(MINI.map((m) => m.y), MINI.map((m) => m.pd)).auc!, AUC
 // o par que empata em pontos inteiros: um default e um adimplente com a mesma PD arredondada
 const EMP = (() => { for (const d of DS) for (const a of AS) if (d.pd === a.pd) return { d, a }; return null; })();
 const fp2 = (m: (typeof MINI)[number]) => pct(m.pdPlena, 2);
-const SENT = AUC_P < AUC_I ? 1 : AUC_P > AUC_I ? 0 : 2; // índice da alternativa certa: sobe, cai, fica igual
-const PAR = EMP ? <>#{EMP.d.id} ({fp2(EMP.d)}) contra #{EMP.a.id} ({fp2(EMP.a)})</> : null;
+const PASSO = 0.5 / (DS.length * AS.length); // um empate desfeito: ½ ponto sobre 75 pares
+const SENT = AUC_P < AUC_I ? "caiu" : AUC_P > AUC_I ? "subiu" : "ficou";
+const PAR = EMP ? <>#{EMP.d.id} ({fp2(EMP.d)}) fica {EMP.d.pdPlena < EMP.a.pdPlena ? "abaixo" : "acima"} de #{EMP.a.id} ({fp2(EMP.a)})</> : null;
+// a pergunta é dedutível da tela: o ½ só pode virar 1 ou 0, e cada par pesa 1/75
 const OPCOES: Opcao[] = [
-  { texto: "A AUC sobe", certa: SENT === 0, retorno: <>Confunde precisão com acerto: mais casas não melhoram a ordem. Em precisão plena, {PAR}: o empate vira inversão.</> },
-  { texto: "A AUC cai", certa: SENT === 1, retorno: <>Isso. Em precisão plena, {PAR}: o empate (½) vira 0.</> },
-  { texto: "Fica igual", certa: SENT === 2, retorno: <>O arredondamento parecia inofensivo, mas criou um empate. Em precisão plena, {PAR}: o ½ vira 0.</> },
+  { texto: <>Sobe {num(PASSO, 4)}: mais casas, mais acerto</>, retorno: <>Confunde precisão com acerto. Em precisão plena cada empate vira 1 ou 0; a direção depende do par, não do número de casas.</> },
+  { texto: <>Até {num(PASSO, 4)} (½ ÷ {DS.length * AS.length}), nos dois sentidos</>, certa: true, retorno: <>Isso: o ½ vira 1 ou 0. Aqui {PAR}: o ½ vira {EMP && EMP.d.pdPlena > EMP.a.pdPlena ? "1" : "0"} e a AUC {SENT} de {num(AUC_I, 4)} para {num(AUC_P, 4)}.</> },
+  { texto: "Nada: a ordem não muda", retorno: <>O arredondamento criou um empate que a precisão plena desfaz: um par de {DS.length * AS.length} deixa de valer ½, e a AUC anda {num(PASSO, 4)} num sentido ou no outro.</> },
 ];
 
 export function S07Pares({ pagina }: { pagina?: Pagina }) {
   const [modo, setModo] = useState<Modo>("um");
   const [sel, setSel] = useState<[number, number] | null>(null);
   const [esc, setEsc] = useState<number | null>(null);
-  const plena = esc !== null;
+  const plena = esc !== null && !!OPCOES[esc].certa; // só a resposta certa troca a PD
   const pdv = (m: (typeof MINI)[number]) => (plena ? m.pdPlena : m.pd);
   const c = aucPorPares(MINI.map((m) => m.y), MINI.map(pdv));
   const somaLinha = DS.map((d) => AS.reduce((s, a) => s + valor(pdv(d), pdv(a)), 0));
@@ -63,14 +66,16 @@ export function S07Pares({ pagina }: { pagina?: Pagina }) {
       </Painel>
       <Painel titulo="A conta exata" className="q7-s07-lat">
         <div className="q7-s07-topo"><Seg rotulo="Modo" opcoes={[{ v: "um" as Modo, r: "Um par" }, { v: "todos" as Modo, r: "Todos os pares" }]} valor={plena ? "todos" : modo} onChange={setModo} /><Botao sec onClick={() => { setModo("um"); setSel(null); setEsc(null); }}>Restaurar</Botao></div>
-        <dl className="q7-lista q7-s07-l">
+        <dl className="q7-lista q7-s07-l q7-s07v3-l">
           <div><dt>C: valem 1</dt><dd>{modo === "todos" || plena ? c.corretos : "?"}</dd></div>
           <div data-tom="mudo"><dt>E: empates</dt><dd>{modo === "todos" || plena ? c.empates : "?"}</dd></div>
           <div><dt>Valem 0</dt><dd>{modo === "todos" || plena ? c.invertidos : "?"}</dd></div>
           <div><dt>AUC</dt><dd>{modo === "todos" || plena ? num(c.auc!, 4) : "?"}</dd></div>
         </dl>
-        <Formula compacta f={String.raw`\mathrm{AUC}=\frac{C+\tfrac12\,E}{n_D\times n_A}=\frac{C+\tfrac12\,E}{${DS.length}\times ${AS.length}}`} />
-        <Previsao rotulo="Antes de mudar a PD" pergunta="Com a PD em precisão plena, sem arredondar:" opcoes={OPCOES} escolha={esc} onEscolha={setEsc} recolher />
+        {(modo === "um" && esc === null) || (esc !== null && OPCOES[esc].certa) ? <Formula compacta f={String.raw`\mathrm{AUC}=\frac{C+\tfrac12\,E}{n_D\times n_A}=\frac{C+\tfrac12\,E}{${DS.length}\times ${AS.length}}`} /> : null}
+        {modo === "todos" || esc !== null
+          ? <Previsao rotulo="Antes de mudar a PD" pergunta={EMP ? <>O par #{EMP.d.id} × #{EMP.a.id} vale ½. Com a PD sem arredondar, quanto a AUC pode mudar?</> : "Em precisão plena, quanto a AUC pode mudar?"} opcoes={OPCOES} escolha={esc} onEscolha={setEsc} recolher />
+          : <p className="q7-nota">Abra “Todos os pares” para ver o empate e a pergunta seguinte.</p>}
       </Painel>
     </Quadro>
   );

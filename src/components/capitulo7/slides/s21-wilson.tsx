@@ -34,7 +34,7 @@ export function S21Wilson({ pagina }: { pagina?: Pagina }) {
   const [i, setI] = useState(0);
   const [nivel, setNivel] = useState<Nivel>("95");
   const [esc, setEsc] = useState<number | null>(null);
-  const liberado = esc !== null;
+  const liberado = esc !== null && !!OPS[esc].certa; // só a resposta certa revela a linha e libera o controle
   const n = NS[i], d = Math.round(0.05 * n), z = Z[nivel];
   const w = wilson(d, n, z)!, wa = wald(d, n, z)!;
   const linhas = [{ rot: `${d} em ${int(n)} (controle)`, n, d, on: true, oculto: false }, { rot: "5 em 100", n: 100, d: 5, oculto: !liberado }, { rot: "50 em 1.000", n: 1000, d: 50, oculto: false }];
@@ -78,11 +78,11 @@ export function S21Wilson({ pagina }: { pagina?: Pagina }) {
         <dl className="q7-lista q7-g2-s21-l">
           <div><dt>F8: {F8.d} em {F8.n} = {pct(F8.obs!, 1)}</dt><dd>{pct(F8.ic!.lo, 1)} a {pct(F8.ic!.hi, 1)}</dd></div>
           <div><dt>F9: {F9.d} em {F9.n} = {pct(F9.obs!, 1)}</dt><dd>{pct(F9.ic!.lo, 1)} a {pct(F9.ic!.hi, 1)}</dd></div>
-          <div data-tom={DIF.ic[0] < 0 && DIF.ic[1] > 0 ? "mudo" : undefined}><dt>Diferença F8 − F9: {pp(DIF.dif, 1)}; {DIF.ic[0] < 0 && DIF.ic[1] > 0 ? "contém o zero, a inversão é ruído" : "não contém o zero"}</dt><dd>{pp(DIF.ic[0], 1)} a {pp(DIF.ic[1], 1)}</dd></div>
+          <div data-tom={DIF.ic[0] < 0 && DIF.ic[1] > 0 ? "mudo" : undefined}><dt>Diferença F8 − F9: {pp(DIF.dif, 1)}; {DIF.ic[0] < 0 && DIF.ic[1] > 0 ? "contém o zero: a inversão é compatível com ruído" : "não contém o zero"}</dt><dd>{pp(DIF.ic[0], 1)} a {pp(DIF.ic[1], 1)}</dd></div>
         </dl>
       </Painel>
       <Painel>
-        <Previsao pergunta="Com 5 defaults em 100 casos, o intervalo de 95% para a frequência vai:" opcoes={OPS} escolha={esc} onEscolha={(k) => { setEsc(k); if (k !== null) setNivel("95"); }} recolher />
+        <Previsao pergunta="Com 5 defaults em 100 casos, o intervalo de 95% para a frequência vai:" opcoes={OPS} escolha={esc} onEscolha={(k) => { setEsc(k); setNivel("95"); if (k === null || !OPS[k].certa) setI(0); }} recolher />
         {liberado && <Controle rotulo="Número de casos" valor={i} min={0} max={NS.length - 1} passo={1} onChange={setI} mostrar={`${int(n)} (${d} default${d === 1 ? "" : "s"})`} />}
         <div className="q7-s21-l"><Seg rotulo="Nível de confiança" opcoes={(Object.keys(Z) as Nivel[]).map((k) => ({ v: k, r: `${k}%` }))} valor={nivel} onChange={setNivel} /><Botao sec onClick={() => { setI(0); setNivel("95"); setEsc(null); }}>Restaurar</Botao></div>
         <Expandir resumo="Fórmula e o que o intervalo cobre">

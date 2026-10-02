@@ -109,3 +109,51 @@
 /* 14 · lista do corte mais justa, para a expansão caber em 1366 × 768 */
 .q7[data-q7="c7p26"] .q7-lista { gap: .2cqw; }
 .q7[data-q7="c7p26"] .q7-lista > div { padding-bottom: .15cqw; }
+
+/* rodada 3 · 15 · c7p27: as quatro medidas antes (logística) e depois (cenário), em grade 2 × 2 */
+.q7-g2-s15-ad { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: .4cqw 1.2cqw; }
+.q7-g2-s15-ad > div { border-bottom: 1px solid var(--q7-borda); padding-bottom: .2cqw; }
+.q7-g2-s15-ad dt { font-size: 1.3cqw; color: var(--q7-mudo); font-weight: 600; }
+.q7-g2-s15-ad dd { margin: 0; font-size: 1.45cqw; font-variant-numeric: tabular-nums; color: var(--q7-mudo); white-space: nowrap; }
+.q7-g2-s15-ad dd b { color: var(--q7-ord); }
+@container q7 (max-width: 820px) { .q7-g2-s15-ad dt { font-size: 12px; } .q7-g2-s15-ad dd { font-size: 15px; } }
+
+/* rodada 3 · 19 · c7p10: a curva larga é a peça principal (60%); régua, controles e a conta da faixa corrente ao lado */
+.q7-g2-s19.q7-s19v3 { grid-template-columns: minmax(0, 60fr) minmax(0, 40fr); flex: 1; }
+.q7-s19v3-g { min-height: 0; }
+.q7-s19v3-g > .q7-graf { flex: 1; min-height: 0; }
+.q7-s19v3 .q7-g2-s19-r { gap: .6cqw; }
+@container q7 (max-width: 820px) { .q7-s19v3-g > .q7-graf { flex: none; } }
+.q7-s19v3-pq { flex-basis: 100%; }
+.q7-s19v3 .q7-g2-s19-t { gap: .5cqw; }
+
+/* rodada 3 · 22 · c7p32: miniaturas largas, que ocupam o cartão; slope e intercepto numa linha abaixo */
+.q7-s22v3 .q7-s22-m > .q7-graf { flex: 1; min-height: 0; }
+.q7-s22v3-v { display: flex; gap: 1.2cqw; align-items: baseline; font-size: 1.25cqw; color: var(--q7-mudo); font-variant-numeric: tabular-nums; }
+.q7-s22v3-v b { font-size: 1.5cqw; color: var(--q7-prob); }
+@container q7 (max-width: 820px) { .q7-s22v3-v { font-size: 12.5px; gap: 10px; flex-wrap: wrap; } .q7-s22v3-v b { font-size: 15px; } }
+
+/* rodada 3 · 23 · c7p33: a carteira domina; o cliente é uma inserção pequena no painel lateral */
+.q7-s23v3-g { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.q7-s23v3-g > .q7-flex1 { gap: .6cqw; }
+.q7-s23v3-g > .q7-flex1 > .q7-graf { flex: 1; min-height: 0; }
+.q7-s23v3-lado { gap: .7cqw; }
+.q7-s23v3-cli { display: flex; flex-direction: column; gap: .3cqw; border-top: 1px solid var(--q7-borda); padding-top: .5cqw; flex: none; }
+.q7-s23v3-cli > .q7-graf { flex: none; } .q7-s23v3-cli > .q7-graf .q7-gw { height: 8.5cqw; flex: none; }
+.q7-s23v3-cli > .q7-ctl { flex: none; }
+.q7-s23v3-cli .q7-gw { font-size: 1.15cqw; }
+@container q7 (max-width: 820px) { .q7-s23v3-cli .q7-gw { font-size: 12px; } .q7-s23v3-cli > .q7-graf .q7-gw { height: auto; } }
+.q7-s23v3-acoes { display: flex; gap: .6cqw; align-items: flex-end; }
+.q7-s23v3-cli > .q7-s21-l { flex-wrap: nowrap; }
+.q7 .q7-slide .q7-s23v3-cli > .q7-graf .q7-gw { height: 7cqw; }
+
+/* rodada 3 · 25 · c7p11: curva e barras com a banda da MCB; as definições ficam sob as barras, na tela */
+.q7-s25v3-dir { display: flex; flex-direction: column; gap: .6cqw; min-width: 0; min-height: 0; }
+.q7-s25v3-dir > .q7-graf { flex: 1; min-height: 0; }
+.q7-g2-s25.q7-s25v3 { grid-template-columns: auto minmax(0, 1fr); }
+.q7-s25v3-def { margin: 0; display: grid; gap: .3cqw; font-size: 1.3cqw; line-height: 1.28; color: var(--q7-texto); flex: none; border-top: 1px solid var(--q7-borda); padding-top: .45cqw; }
+.q7-s25v3-def > div { display: grid; grid-template-columns: 5.6cqw minmax(0, 1fr); gap: .4cqw; }
+.q7-s25v3-def dt { font-weight: 700; color: var(--q7-ink); } .q7-s25v3-def dd { margin: 0; }
+.q7-s25v3-acoes { display: flex; gap: .6cqw; align-items: flex-start; justify-content: space-between; }
+.q7-s25v3-acoes > details { flex: 1; min-width: 0; }
+@container q7 (max-width: 820px) { .q7-s25v3-def { font-size: 13px; gap: 4px; } .q7-s25v3-def > div { grid-template-columns: 64px minmax(0, 1fr); gap: 6px; } }

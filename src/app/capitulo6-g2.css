@@ -44,16 +44,18 @@
 }
 
 /* 11 · perda e AUC por número de árvores */
-.q6-s11-g { flex: 1; min-height: 0; display: grid; grid-template-rows: minmax(0, 11fr) minmax(0, 9fr); gap: .5cqw; }
+.q6-s11-g { flex: 1; min-height: 0; display: grid; grid-template-rows: minmax(0, 3fr) minmax(0, 2fr); gap: .5cqw; }
 .q6-s11-g > .q7-graf { min-height: 0; }
 @container q7 (max-width: 820px) { .q6-s11-g { display: flex; flex-direction: column; gap: 12px; } }
 .q6-s11-rod { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 1.4cqw; align-items: center; flex: none; }
 @container q7 (max-width: 820px) { .q6-s11-rod { grid-template-columns: minmax(0, 1fr); gap: 10px; } }
 
 /* 15 · quando parar */
-.q6-s15-g { flex: 1; min-height: 0; display: grid; grid-template-rows: minmax(0, 2.4fr) minmax(0, 1fr); gap: .4cqw; }
+.q6-s15-g { flex: 1; min-height: 0; display: grid; grid-template-rows: minmax(0, 1fr); }
+.q6-s15-pac { display: grid; gap: .3cqw; }
+.q7 .q7-slide .q6-s15-tab th, .q7 .q7-slide .q6-s15-tab td { white-space: nowrap; }
 .q6-s15-g > .q7-graf { min-height: 0; }
-.q6-s15-rod { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1.6cqw; align-items: end; flex: none; }
+.q6-s15-rod { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 1.6cqw; align-items: end; flex: none; }
 @container q7 (max-width: 820px) { .q6-s15-g { display: flex; flex-direction: column; gap: 12px; } .q6-s15-rod { grid-template-columns: minmax(0, 1fr); gap: 10px; } }
 
 /* 13 · laboratório dos quatro controles */
@@ -69,10 +71,14 @@
 .q6-s12-g { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.2cqw; }
 .q6-s12-g > .q7-graf { min-height: 0; }
 @container q7 (max-width: 820px) { .q6-s12-g { display: flex; flex-direction: column; gap: 12px; } }
-.q6-s12-ctl { display: grid; gap: .6cqw; }
+.q6-s12-ctl { display: grid; grid-template-columns: auto auto; justify-content: start; gap: .6cqw 1.6cqw; align-items: end; }
+.q6-s12-ctl > .q7-btn { justify-self: start; }
+@container q7 (max-width: 820px) { .q6-s12-ctl { grid-template-columns: minmax(0, 1fr); gap: 10px; } }
 .q6-s12-ctl > div { display: grid; gap: .25cqw; }
 .q6-s12-ctl > div > .q7-seg, .q6-s13-ctl > div > .q7-seg, .q6-s14-ctl > div > .q7-seg, .q6-s16-ctl > div > .q7-seg { justify-self: start; }
 
 /* 16 · subamostra */
-.q6-s16-ctl { display: flex; justify-content: space-between; align-items: flex-end; gap: 1cqw; flex-wrap: wrap; }
+.q6-s16-ctl { display: flex; align-items: flex-end; gap: 1cqw 2cqw; flex-wrap: wrap; flex: none; }
+.q6-s16-ctl > .q7-btn { margin-left: auto; }
 .q6-s16-ctl > div { display: grid; gap: .25cqw; }
+.q7 .q7-slide .q6-s12-tab th, .q7 .q7-slide .q6-s12-tab td { white-space: nowrap; }

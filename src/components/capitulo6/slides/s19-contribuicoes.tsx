@@ -111,7 +111,7 @@ export function S19Contribuicoes({ pagina }: { pagina?: Pagina }) {
       conclusao={!revelado
         ? <>Proposta da validação com {fmtX(XV[I_PREV])}: PD de {pct(sigmoide(escore(M, XV[I_PREV])), 1)}. Qual variável mais empurra essa PD para cima? Preveja ao lado.</>
         : <>Valor esperado {num(c.base, 2)} {c.phi.map((p, j) => <span key={j}>{p < 0 ? "− " : "+ "}{num(Math.abs(p), 2)} ({VARIAVEIS[j].toLowerCase()}) </span>)}= <b>{num(f, 2)}</b>, PD de {pct(sigmoide(f), 1)}; {dif < 1e-12 ? "a soma fecha exatamente" : `diferença de ${num(dif, 12)}`}. O ganho põe {ART[jg]} em {pct(GANHO[jg], 0)} para a carteira, sem sinal; nesta proposta, pesa mais {ART[jm]}. O <LinkSlide slug="c6p20">slide 20</LinkSlide> mostra o atraso entrando no modelo, e na direção errada.</>}
-      fonte={`Validação: ${int(NV)} propostas. Boosting parado em ${K_PARADA} árvores (taxa 0,1, profundidade 2, mínimo de 40 por folha). Contribuições de Shapley pelo caminho das árvores, conferidas com o shap.TreeExplainer; ganho como no scikit-learn, nas ${int(XA.length)} propostas de ajuste.`}>
+      fonte={`Validação sorteada: ${int(NV)} propostas. Boosting parado em ${K_PARADA} árvores (taxa 0,1, profundidade 2, mínimo de 40 por folha). Contribuições de Shapley pelo caminho das árvores, conferidas com o shap.TreeExplainer; ganho como no scikit-learn, nas ${int(XA.length)} propostas de ajuste.`}>
       <Painel titulo={`Da média do modelo à log odds da proposta${editada ? " (editada)" : ""}`}>
         <Grafico rotulo={`Cascata das contribuições: valor esperado ${num(c.base, 2)}; ${c.phi.map((p, j) => `${VARIAVEIS[j]} ${revelado ? sinal(p, 2) : "oculta"}`).join("; ")}; escore ${num(f, 2)}, PD ${pct(sigmoide(f), 1)}`} arCelular="5 / 4">
           {(d) => <Cascata d={d} base={c.base} phi={c.phi} ver={revelado} />}
@@ -130,7 +130,7 @@ export function S19Contribuicoes({ pagina }: { pagina?: Pagina }) {
           <thead><tr><th className="q7-t-l">Variável</th><th>Ganho, carteira</th><th>Contribuição, proposta</th></tr></thead>
           <tbody>{VARIAVEIS.map((v, j) => <tr key={v} data-on={revelado && j === jm ? "1" : undefined}><th>{v}</th><td>{pct(GANHO[j], 0)}</td><td>{revelado ? `${c.phi[j] > 0 ? "▲" : c.phi[j] < 0 ? "▼" : ""} ${sinal(c.phi[j], 2)}` : "?"}</td></tr>)}</tbody>
         </table>
-        {revelado && <p className="q7-nota">Ganho: quanto cada variável reduziu a perda no ajuste, somado na carteira e sem sinal. Contribuição: quanto o valor desta proposta move a log odds, com sinal; as três somam o escore.</p>}
+        {revelado && <p className="q7-nota">Ganho: redução da perda no ajuste, somada na carteira, sem sinal. Contribuição: quanto o valor desta proposta move a log odds, com sinal. A sigmoide do valor esperado não é a PD média.</p>}
       </Painel>
     </Quadro>
   );

@@ -1,10 +1,10 @@
 "use client";
 import { useMemo, useState } from "react";
-import { Botao, Controle, Expandir, Formula, Painel, Previsao, Quadro, Seg, type Pagina } from "../base";
+import { Botao, caminho, Controle, Eixos, escala, Expandir, Formula, Grafico, margens, Painel, Previsao, Quadro, Seg, type Pagina } from "../base";
 import { Confiabilidade } from "../graficos";
 import { D, N, PT, Y } from "@/lib/capitulo7/dados";
-import { faixasQuantis, interceptoComSlope1, interceptoESlope, logit, slopeComIntervalo, transformar, type Faixa } from "@/lib/capitulo7/metricas";
-import { int, num } from "@/lib/capitulo7/formato";
+import { faixasQuantis, interceptoComSlope1, interceptoESlope, logit, media, slopeComIntervalo, transformar, type Faixa } from "@/lib/capitulo7/metricas";
+import { int, num, pct } from "@/lib/capitulo7/formato";
 
 /**
  * 22 · c7p32 · Assinaturas de erro. Ponto de partida: a PD verdadeira do gerador (só existe porque a base é sintética),
@@ -13,7 +13,9 @@ import { int, num } from "@/lib/capitulo7/formato";
  * ruído de amostra: erro de nível dá slope 1 e intercepto −a; erro de inclinação dá slope 1/b), e a observada nos 81
  * defaults da janela, com o ruído da amostra (nela a própria PD verdadeira tem slope 1,14). Intercepto com slope fixado em
  * 1 e o par (intercepto, slope) da regressão de y em logit(PD), por máxima verossimilhança; na observada, o intervalo
- * de Wald de 95% do slope. No quadro ampliado, a e b viram controles: o aluno cria a própria assinatura.
+ * de Wald de 95% do slope. No quadro ampliado, a e b viram controles: o aluno cria a própria assinatura, e a leitura
+ * dela compõe nível (intercepto com slope 1 e PD média) e inclinação (slope), não olha só b. As miniaturas são largas
+ * (mesma escala de 0% a 55% nas quatro), com slope e intercepto numa linha abaixo.
  */
 type Freq = "esperada" | "observada";
 const C = logit(0.11);
@@ -32,8 +34,46 @@ const medir = (a: number, b: number) => {
   const e = calc(PT);
   return { esperada: { ...e, faixas: arred(e.faixas) }, observada: { ...calc(Y), ic: slopeComIntervalo(Y, p).ic } };
 };
-const leituraDe = (a: number, b: number) => Math.abs(b - 1) < 0.025 ? (a < 0 ? "o modelo prevê menos risco do que acontece; corrige-se com o nível" : "o modelo prevê mais risco do que acontece; corrige-se com o nível")
-  : b > 1 ? "excesso de confiança: slope abaixo de 1" : "falta de confiança: slope acima de 1";
+const PD_VERD = media(PT)!;
+type Medida = ReturnType<typeof medir>["esperada"];
+/**
+ * Leitura de uma distorção qualquer (a do aluno): compõe nível e inclinação a partir da frequência esperada, sem ruído.
+ * Nível pelo intercepto com slope 1 (positivo: o modelo prevê menos risco que o verdadeiro) e pela PD média; inclinação
+ * pelo slope (abaixo de 1: PDs extremas demais; acima: comprimidas). "Deitada" e "em pé" valem na escala de log odds.
+ */
+const leituraComposta = (a: number, b: number, e: Medida) => {
+  const pm = media(transformar(PT, a, b))!;
+  const nivel = Math.abs(e.i1) < 0.1 ? null : `de nível (PD média ${pct(pm, 1)} contra ${pct(PD_VERD, 1)} da verdadeira: risco ${e.i1 > 0 ? "subestimado" : "superestimado"})`;
+  const incl = Math.abs(e.slope - 1) < 0.05 ? null : e.slope < 1 ? "de inclinação (PDs extremas demais, excesso de confiança)" : "de inclinação (PDs comprimidas, falta de confiança)";
+  if (!nivel && !incl) return `nível e inclinação perto do ideal (PD média ${pct(pm, 1)} contra ${pct(PD_VERD, 1)})`;
+  return `erro ${[nivel, incl].filter(Boolean).join(" e ")}; corrige-se ${nivel && incl ? "o intercepto e b" : nivel ? "o intercepto" : "b"}`;
+};
+const assinaturaDe = (e: Medida) => {
+  const partes: string[] = [];
+  if (Math.abs(e.i1) >= 0.1) partes.push(`pontos ${e.acima >= 5 ? "acima" : "abaixo"} da diagonal em ${Math.max(e.acima, 10 - e.acima)} das 10 faixas`);
+  if (Math.abs(e.slope - 1) >= 0.05) partes.push(`em log odds, curva mais ${e.slope < 1 ? "deitada" : "em pé"} que a diagonal`);
+  return partes.length ? partes.join(" e, ") : "curva sobre a diagonal";
+};
+/** Miniatura larga: a curva ocupa o cartão; mesma escala (0% a 55%) nos quatro. */
+function Mini({ faixas, nome }: { faixas: Faixa[]; nome: string }) {
+  return (
+    <Grafico rotulo={`Curva de confiabilidade: ${nome}`} arCelular="16 / 9">
+      {(d) => {
+        const m = margens(d.fs, { l: 2.6, b: 1.5, t: 0.5, r: 0.6 });
+        const x = escala([0, 0.55], [m.l, d.w - m.r]), y = escala([0, 0.55], [d.h - m.b, m.t]);
+        const pts = faixas.filter((f) => f.obs !== null).map((f) => ({ x: x(Math.min(0.55, f.pdMedia!)), y: y(Math.min(0.55, f.obs!)) }));
+        return (
+          <g>
+            <Eixos x={x} y={y} xt={[0, 0.25, 0.5]} yt={[0, 0.25, 0.5]} fx={(v) => pct(v, 0)} fy={(v) => pct(v, 0)} />
+            <line className="q7-diag" x1={x(0)} y1={y(0)} x2={x(0.55)} y2={y(0.55)} />
+            <path className="q7-linha q7-linha--fina q7-linha--prob" d={caminho(pts)} />
+            {pts.map((p, i) => <circle key={i} cx={p.x} cy={p.y} r={d.fs * 0.32} className="q7-ptc q7-ptc--prob" />)}
+          </g>
+        );
+      }}
+    </Grafico>
+  );
+}
 const CASOS = BASE.map((c) => ({ ...c, ...medir(c.a, c.b) }));
 const REF = interceptoESlope(Y, PT);
 const IDX = { sub: 0, extremas: 2, comprimidas: 3 };
@@ -51,9 +91,9 @@ export function S22NivelInclinacao({ pagina }: { pagina?: Pagina }) {
   const [aj, setAj] = useState<{ a: number; b: number } | null>(null);
   const revelado = esc !== null && OPS[esc].certa;
   const base = CASOS.find((x) => x.id === (foco ?? sel))!;
-  const proprio = useMemo(() => (aj ? { id: "sua", nome: "Sua distorção", a: aj.a, b: aj.b, leitura: leituraDe(aj.a, aj.b), ...medir(aj.a, aj.b) } : null), [aj]);
+  const proprio = useMemo(() => { if (!aj) return null; const r = medir(aj.a, aj.b); return { id: "sua", nome: "Sua distorção", a: aj.a, b: aj.b, leitura: leituraComposta(aj.a, aj.b, r.esperada), ...r }; }, [aj]);
   const c = foco && proprio ? proprio : base; const m = c[freq];
-  const assinatura = Math.abs(c.b - 1) < 0.025 ? `pontos ${m.acima >= 5 ? "acima" : "abaixo"} da diagonal em ${Math.max(m.acima, 10 - m.acima)} das 10 faixas` : c.b > 1 ? "curva mais deitada que a diagonal" : "curva mais em pé que a diagonal";
+  const assinatura = c.id === "sua" ? assinaturaDe(c.esperada) : Math.abs(c.b - 1) < 0.025 ? `pontos ${m.acima >= 5 ? "acima" : "abaixo"} da diagonal em ${Math.max(m.acima, 10 - m.acima)} das 10 faixas` : c.b > 1 ? "em log odds, curva mais deitada que a diagonal" : "em log odds, curva mais em pé que a diagonal";
   const abrir = (id: string) => { setSel(id); setFoco(id); setAj(null); };
   return (
     <Quadro slug="c7p32" pagina={pagina} layout="gl"
@@ -76,14 +116,12 @@ export function S22NivelInclinacao({ pagina }: { pagina?: Pagina }) {
               <Controle rotulo="b: inclinação" valor={c.b} min={0.3} max={2.5} passo={0.05} onChange={(v) => setAj({ a: c.a, b: v })} mostrar={num(c.b, 2)} />
             </div>}</div></div>
         ) : (
-          <div className="q7-s22-g q7-g2-s22">
+          <div className="q7-s22-g q7-g2-s22 q7-s22v3">
             {CASOS.map((x) => (
               <div key={x.id} role="button" tabIndex={0} className="q7-s22-m q7-g2-s22-m" data-on={sel === x.id ? "1" : "0"} onClick={() => abrir(x.id)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); abrir(x.id); } }} aria-label={`Ampliar: ${x.nome}`}>
                 <span className="q7-s22-t">{x.nome}</span>
-                <div className="q7-g2-s22-c">
-                  <div className="q7-g2-quad"><Confiabilidade rotulo={`Curva de confiabilidade: ${x.nome}`} max={0.55} anotar={false} ticks={[0, 0.25, 0.5]} semTitulos series={[{ faixas: x[freq].faixas, classe: "prob", linha: true }]} /></div>
-                  <span className="q7-g2-s22-v"><b>slope {revelado ? num(x[freq].slope, 2) : "?"}</b><span>intercepto com slope 1: {num(x[freq].i1, 2)}</span></span>
-                </div>
+                <Mini faixas={x[freq].faixas} nome={x.nome} />
+                <span className="q7-s22v3-v"><b>slope {revelado ? num(x[freq].slope, 2) : "?"}</b><span>intercepto com slope 1: {num(x[freq].i1, 2)}</span></span>
               </div>
             ))}
           </div>

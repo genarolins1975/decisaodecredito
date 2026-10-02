@@ -1,95 +1,70 @@
 "use client";
 import { useState } from "react";
 import { Botao, escala, Grafico, LinkSlide, Painel, Quadro, Seg, type Dim, type Pagina } from "@/components/capitulo7/base";
-import { CFG_CARTEIRA, GRID, HP_CANDIDATO, LOGISTICA, modelo, XV, YV } from "@/lib/capitulo6/dados";
-import { auc, contribuicoes, escore, estagios, perdaLog, sigmoide } from "@/lib/capitulo6/gbm";
-import { escoreLogistica } from "@/lib/capitulo6/logistica";
-import { calibracaoGlobal } from "@/lib/capitulo7/metricas";
+import { GRID, HP_CANDIDATO, RES } from "@/lib/capitulo6/dados";
+import { wilson } from "@/lib/capitulo7/metricas";
 import { int, num, pct } from "@/lib/capitulo7/formato";
 import base from "@/lib/capitulo6/base.json";
 
 /**
- * 21 · c6p21 · O candidato do comitê: o boosting completo do gerador do curso, com sete variáveis. A grade (GRID de
- * dados.ts) traz a AUC de treino e de validação para cada número de árvores e de folhas; só treino e validação
- * aparecem (a janela fora do tempo é do capítulo 7). A turma escolhe a combinação antes de ver a validação; a regra
- * certa (maior AUC de validação) é calculada e confere com HP_CANDIDATO. À direita, a lista de adoção que o validador
- * independente confere (Resolução CMN 4.557/2017; EBA, 2023), cada item com a prova que o capítulo produziu na carteira
- * de três variáveis, recalculada aqui com a biblioteca (os mesmos números dos slides 17 a 20).
+ * 21 · c6p21 · O fecho: o candidato do comitê é o boosting completo do gerador do curso, com sete variáveis, e a lista
+ * que o validador independente confere usa os números dele, na validação temporal do gerador (760 propostas, safras
+ * 2023-03 a 2023-07; RES de dados.ts): AUC contra a logística de sete variáveis nas mesmas propostas, PD média contra a
+ * taxa observada com o intervalo de Wilson (defaults = taxa × n, inteiro). Cada item tem um estado calculado ou
+ * declarado: cumprido, não cumprido ou a provar (monotonia e explicação não se verificam no candidato porque o gerador
+ * não publica as árvores; a janela fora do tempo fica congelada para o capítulo 7). As provas de método dos slides 15 a
+ * 20 vêm da validação sorteada, com três variáveis, e são as ligações de cada item.
+ * A escolha de hiperparâmetros fica separada, à direita: a grade (GRID) mostra a AUC de treino e esconde a de
+ * validação até o envio; a regra certa (maior AUC de validação) é calculada e confere com HP_CANDIDATO. O ótimo cai na
+ * borda da grade (o menor número de árvores testado): item a provar. A diferença para a célula seguinte é comparada com
+ * o erro padrão aproximado de uma AUC (Hanley e McNeil, 1982), calculado aqui com os defaults e adimplentes da amostra.
  */
 type G = (typeof GRID)[number];
 const ARVS = [...new Set(GRID.map((g) => g.max_iter))].sort((a, b) => a - b);
 const FOLHAS = [...new Set(GRID.map((g) => g.max_leaf_nodes))].sort((a, b) => a - b);
 const cel = (a: number, f: number) => GRID.find((g) => g.max_iter === a && g.max_leaf_nodes === f)!;
-const BEST = GRID.reduce((b, g) => (g.auc_val > b.auc_val ? g : b), GRID[0]);
+const ORD_V = [...GRID].sort((a, b) => b.auc_val - a.auc_val);
+const BEST = ORD_V[0], SEGUNDA = ORD_V[1];
 const TOP_T = GRID.reduce((b, g) => (g.auc_treino > b.auc_treino ? g : b), GRID[0]);
-const PIOR_V = GRID.reduce((b, g) => (g.auc_val < b.auc_val ? g : b), GRID[0]);
 const CONFERE = BEST.max_iter === HP_CANDIDATO.max_iter && BEST.max_leaf_nodes === HP_CANDIDATO.max_leaf_nodes && BEST.auc_val === HP_CANDIDATO.auc_val;
+const NA_BORDA = BEST.max_iter === ARVS[0];
 const META = base.meta;
-const MIN_T = Math.min(...GRID.map((g) => g.auc_treino)), MAX_T = TOP_T.auc_treino;
-const MIN_V = PIOR_V.auc_val, MAX_V = BEST.auc_val;
-/** No treino, a AUC sobe sempre que se acrescentam árvores ou folhas? (frase do rodapé, conferida na grade) */
-const SEMPRE = GRID.every((g) => GRID.every((h) => !(h.max_iter >= g.max_iter && h.max_leaf_nodes >= g.max_leaf_nodes && h !== g) || h.auc_treino > g.auc_treino));
+const NV = META.n_val, DV = Math.round(RES.gbm_val.obs * NV), AV = NV - DV;
+const TAXA = wilson(DV, NV)!;
+const NIVEL_OK = RES.gbm_val.pd_media >= TAXA.lo && RES.gbm_val.pd_media <= TAXA.hi;
+/** Erro padrão aproximado de uma AUC (Hanley e McNeil, 1982), com os defaults e adimplentes da validação temporal. */
+const epAuc = (A: number) => { const q1 = A / (2 - A), q2 = (2 * A * A) / (1 + A); return Math.sqrt((A * (1 - A) + (DV - 1) * (q1 - A * A) + (AV - 1) * (q2 - A * A)) / (DV * AV)); };
+const EP = epAuc(BEST.auc_val), DIF2 = BEST.auc_val - SEGUNDA.auc_val;
+const DIF_LOG = RES.gbm_val.auc - RES.logit_val.auc;
+const EMPATA = Math.abs(DIF_LOG) < 1.96 * EP;
 
-function calcular() {
-  /* provas da carteira de três variáveis (as mesmas dos slides 15 a 20) */
-  const M = modelo(CFG_CARTEIRA); const EV = estagios(M, XV); const LLV = EV.map((F) => perdaLog(F, YV));
-  const K = LLV.reduce((b, v, i) => (i >= 1 && v < LLV[b] ? i : b), 1);
-  const AUC_B = auc(YV, EV[K]), AUC_L = auc(YV, XV.map((x) => escoreLogistica(LOGISTICA, x)));
-  const MM = modelo({ ...CFG_CARTEIRA, monotonia: [1, 1, -1] }); const EVM = estagios(MM, XV); const LLM = EVM.map((F) => perdaLog(F, YV));
-  const KM = LLM.reduce((b, v, i) => (i >= 1 && v < LLM[b] ? i : b), 1); const AUC_M = auc(YV, EVM[KM]);
-  const CAL = calibracaoGlobal(YV, EV[K].map(sigmoide));
-  const M16 = modelo({ ...CFG_CARTEIRA, arvores: K });
-  const SOMA_MAX = Math.max(...XV.slice(0, 50).map((x) => { const c = contribuicoes(M16, x); return Math.abs(c.base + c.phi.reduce((a, b) => a + b, 0) - escore(M16, x)); }));
+type Estado = "ok" | "nao" | "provar";
+const SELO: Record<Estado, { s: string; r: string }> = { ok: { s: "✓", r: "cumprido" }, nao: { s: "✗", r: "não cumprido" }, provar: { s: "?", r: "a provar" } };
 
-  const LISTA: { t: string; p: string; s: string }[] = [
-    { t: "Referência linear", p: `logística ${num(AUC_L, 4)} contra ${num(AUC_B, 4)}`, s: "c6p17" },
-    { t: "Parada pela validação", p: `${K} árvores na carteira; ${HP_CANDIDATO.max_iter} e ${HP_CANDIDATO.max_leaf_nodes} folhas aqui`, s: "c6p15" },
-    { t: "Monotonia", p: `AUC ${num(AUC_M, 4)} com, ${num(AUC_B, 4)} sem`, s: "c6p20" },
-    { t: "Nível conferido", p: `PD média ${pct(CAL.pdMedia!, 1)}, taxa ${pct(CAL.taxa!, 1)}`, s: "c6p18" },
-    { t: "Explicação por proposta", p: SOMA_MAX < 1e-12 ? "contribuições somam o escore" : `soma com erro de ${num(SOMA_MAX, 12)}`, s: "c6p19" },
-  ];
-  return { M, K, AUC_B, AUC_L, MM, KM, CAL, M16, SOMA_MAX, LISTA };
-}
-let CACHE: ReturnType<typeof calcular> | null = null;
-/** Cálculo preguiçoso: só o slide visitado paga o ajuste dos modelos (o registro importa todos os quadros). */
-const dados = () => (CACHE ??= calcular());
-
-function Mapas({ d, sel, ver }: { d: Dim; sel: G; ver: boolean }) {
-  const fs = d.fs, gap = fs * 2.2, topo = fs * 2.6, esq = fs * 5.2, baixo = fs * 2.4;
-  const pilha = d.w < fs * 36;
-  const w = pilha ? d.w - esq : (d.w - esq - gap) / 2, h = pilha ? (d.h - 2 * topo - baixo) / 2 : d.h - topo - baixo;
-  const cw = w / ARVS.length, ch = h / FOLHAS.length;
-  const tT = escala([MIN_T, MAX_T], [0, 1]), tV = escala([MIN_V, MAX_V], [0, 1]);
-  const mapas = [
-    { t: `Treino: ${int(META.n_treino)} propostas`, x0: esq, y0: topo, v: (g: G) => g.auc_treino, cor: (g: G) => `rgba(91,100,117,${0.12 + 0.6 * tT(g.auc_treino)})`, branco: (g: G) => tT(g.auc_treino) > 0.62, mostra: true },
-    { t: `Validação: ${int(META.n_val)} propostas`, x0: pilha ? esq : esq + w + gap, y0: pilha ? 2 * topo + h : topo, v: (g: G) => g.auc_val, cor: (g: G) => (ver ? `rgba(46,107,79,${0.12 + 0.7 * tV(g.auc_val)})` : "#FBFAF7"), branco: (g: G) => ver && tV(g.auc_val) > 0.62, mostra: ver },
-  ];
+function Mapa({ d, sel, ver }: { d: Dim; sel: G; ver: boolean }) {
+  const fs = d.fs, esq = fs * 4.6, topo = fs * 1.6, baixo = fs * 0.4;
+  const cw = (d.w - esq) / ARVS.length, ch = (d.h - topo - baixo) / FOLHAS.length;
+  const tV = escala([ORD_V[ORD_V.length - 1].auc_val, BEST.auc_val], [0, 1]);
   return (
     <g>
-      {mapas.map((mp) => (
-        <g key={mp.t}>
-          <text className="q7-eixo-t" x={mp.x0} y={mp.y0} dy="-1.25em">{mp.t}</text>
-          {ARVS.map((a, i) => <text key={a} className="q7-tick" x={mp.x0 + cw * (i + 0.5)} y={mp.y0} dy="-.35em" textAnchor="middle">{a}</text>)}
-          {FOLHAS.map((f, j) => ARVS.map((a, i) => {
-            const g = cel(a, f), on = g === sel, x = mp.x0 + cw * i, y = mp.y0 + ch * j;
-            return (
-              <g key={`${a}-${f}`}>
-                <rect x={x + 2} y={y + 2} width={cw - 4} height={ch - 4} rx={6} fill={mp.cor(g)} stroke={on ? "#00205B" : mp.mostra ? "none" : "#C9CDD5"} strokeWidth={on ? 4 : 1.2} strokeDasharray={!on && !mp.mostra ? "5 4" : undefined} />
-                <text className="q7-rot" x={x + cw / 2} y={y + ch / 2} dy=".35em" textAnchor="middle" style={{ fill: mp.branco(g) ? "#fff" : mp.mostra ? "#00205B" : "#5B6475" }}>{mp.mostra ? num(mp.v(g), 4) : "?"}</text>
-                {ver && mp.mostra && mp.x0 > esq && g === BEST && <text className="q7-rot--peq" x={x + cw / 2} y={y + ch / 2} dy="1.6em" textAnchor="middle" style={{ fill: "#fff", fontWeight: 700 }}>maior</text>}
-              </g>
-            );
-          }))}
-        </g>
-      ))}
-      {(pilha ? [topo, 2 * topo + h] : [topo]).map((y0) => FOLHAS.map((f, j) => <text key={`${y0}-${f}`} className="q7-tick" x={esq - fs * 0.5} y={y0 + ch * (j + 0.5)} dy=".35em" textAnchor="end">{f} folhas</text>))}
-      <text className="q7-eixo-t" x={pilha ? esq + w / 2 : esq + w + gap / 2} y={d.h} dy="-.4em" textAnchor="middle">{pilha ? "Colunas: árvores; linhas: folhas" : "Número de árvores (colunas) e folhas por árvore (linhas); AUC em cada célula"}</text>
+      <text className="q7-tick" x={esq - fs * 0.4} y={topo} dy="-.45em" textAnchor="end">árvores</text>
+      {ARVS.map((a, i) => <text key={a} className="q7-tick" x={esq + cw * (i + 0.5)} y={topo} dy="-.45em" textAnchor="middle">{a}</text>)}
+      {FOLHAS.map((f, j) => <text key={f} className="q7-tick" x={esq - fs * 0.4} y={topo + ch * (j + 0.5)} dy=".35em" textAnchor="end">{f} folhas</text>)}
+      {FOLHAS.map((f, j) => ARVS.map((a, i) => {
+        const g = cel(a, f), on = g === sel, x = esq + cw * i, y = topo + ch * j, escuro = ver && tV(g.auc_val) > 0.6;
+        return (
+          <g key={`${a}-${f}`}>
+            <rect x={x + 2} y={y + 2} width={cw - 4} height={ch - 4} rx={6} fill={ver ? `rgba(46,107,79,${0.1 + 0.75 * tV(g.auc_val)})` : "#FBFAF7"} stroke={on ? "#00205B" : "#C9CDD5"} strokeWidth={on ? 4 : 1.2} strokeDasharray={!on && !ver ? "5 4" : undefined} />
+            <text className="q7-rot" x={x + cw / 2} y={y + ch / 2} dy="-.15em" textAnchor="middle" style={{ fill: escuro ? "#fff" : ver ? "#1F5A40" : "#5B6475" }}>{ver ? num(g.auc_val, 4) : "?"}</text>
+            <text className="q7-rot--peq" x={x + cw / 2} y={y + ch / 2} dy="1.25em" textAnchor="middle" style={{ fill: escuro ? "#fff" : "#5B6475" }}>{`treino ${num(g.auc_treino, 2)}`}</text>
+          </g>
+        );
+      }))}
     </g>
   );
 }
 
 export function S21Candidato({ pagina }: { pagina?: Pagina }) {
-  const { LISTA } = dados();
   const [a, setA] = useState(ARVS[0]);
   const [f, setF] = useState(FOLHAS[0]);
   const [enviado, setEnviado] = useState<G | null>(null);
@@ -97,35 +72,52 @@ export function S21Candidato({ pagina }: { pagina?: Pagina }) {
   const ver = enviado !== null;
   const certo = enviado === BEST;
   const retorno = !enviado ? null
-    : certo ? <>Isso: a maior AUC de validação, {num(BEST.auc_val, 4)}{CONFERE ? ", que é o candidato do gerador" : ""}. O treino ({num(BEST.auc_treino, 4)}) não decide.</>
-      : enviado === TOP_T ? <>Confunde ajuste com generalização: a maior AUC de treino, {num(TOP_T.auc_treino, 4)}, tem {enviado === PIOR_V ? "a pior validação," : "validação de"} {num(enviado.auc_val, 4)}.</>
-        : <>Validação de {num(enviado.auc_val, 4)}, {num(BEST.auc_val - enviado.auc_val, 4)} abaixo da melhor. A regra é a maior AUC de validação, não o meio da grade.</>;
+    : certo ? <>Isso: a maior validação{CONFERE ? ", a do candidato" : ""}.</>
+      : enviado === TOP_T ? <>Confunde ajuste com generalização: o maior treino, {num(TOP_T.auc_treino, 4)}, valida {num(enviado.auc_val, 4)}.</>
+        : <>Validação de {num(enviado.auc_val, 4)}, {num(BEST.auc_val - enviado.auc_val, 4)} abaixo da maior: a regra é a maior AUC de validação.</>;
   const restaurar = () => { setA(ARVS[0]); setF(FOLHAS[0]); setEnviado(null); };
+  const LISTA: { t: string; s: string; e: Estado; p: React.ReactNode }[] = [
+    { t: "Referência linear", s: "c6p17", e: EMPATA || DIF_LOG <= 0 ? "nao" : "ok", p: <>{num(RES.gbm_val.auc, 4)} contra {num(RES.logit_val.auc, 4)} da logística de sete variáveis: {EMPATA ? "empata" : DIF_LOG > 0 ? "supera" : "perde"}</> },
+    { t: "Nível da PD", s: "c6p18", e: NIVEL_OK ? "ok" : "nao", p: <>PD média {pct(RES.gbm_val.pd_media, 2)}; observados {pct(TAXA.p, 2)} ({pct(TAXA.lo, 1)} a {pct(TAXA.hi, 1)})</> },
+    { t: "Complexidade pela validação", s: "c6p15", e: certo && !NA_BORDA ? "ok" : "provar", p: !certo ? <>escolha ao lado</> : NA_BORDA
+      ? <>{BEST.max_iter} e {BEST.max_leaf_nodes}, na borda da grade; {num(DIF2, 4)} acima da vizinha, com erro padrão de {num(EP, 3)}</>
+      : <>{BEST.max_iter} e {BEST.max_leaf_nodes}, no interior da grade</> },
+    { t: "Monotonia e explicação", s: "c6p20", e: "provar", p: <>o gerador não publica as árvores</> },
+    { t: "Janela fora do tempo", s: "c7p1", e: "provar", p: <>{int(META.n_oot)} propostas, {META.oot.replace("safras ", "")}, congelada</> },
+  ];
   return (
     <Quadro slug="c6p21" pagina={pagina} layout="gl"
-      sub={certo ? undefined : <>Sete variáveis, {GRID.length} combinações: qual vai ao comitê, e com que provas?</>}
       conclusao={!certo
-        ? <>No treino, mais árvores e mais folhas {SEMPRE ? "sempre sobem" : "tendem a subir"} a AUC, de {num(MIN_T, 4)} a {num(MAX_T, 4)}. Que combinação vai ao comitê? Escolha e envie antes de ver a validação.</>
-        : <>Pela validação: <b>{BEST.max_iter} árvores e {BEST.max_leaf_nodes} folhas</b>, AUC {num(BEST.auc_val, 4)} contra {num(BEST.auc_treino, 4)} no treino, a queda do <LinkSlide slug="c6p1">slide 1</LinkSlide>. Com a lista conferida, o boosting vai ao comitê como desafiante da logística; o <LinkSlide slug="c7p1">capítulo 7</LinkSlide> abre a janela fora do tempo e julga.</>}
-      fonte={`Base sintética do curso: boosting do gerador com sete variáveis, semente ${META.seed}; treino de ${int(META.n_treino)} propostas (${META.treino.replace("safras ", "")}), validação de ${int(META.n_val)} (${META.validacao.replace("safras ", "")}); taxa ${num(HP_CANDIDATO.learning_rate, 2)}. Provas da lista: carteira de três variáveis.`}>
-      <Painel titulo="Boosting do gerador: AUC por árvores e folhas">
-        <Grafico rotulo={`Grade de hiperparâmetros: AUC de treino de ${num(MIN_T, 4)} a ${num(MAX_T, 4)}; ${ver ? `validação de ${num(MIN_V, 4)} a ${num(MAX_V, 4)}, maior em ${BEST.max_iter} árvores e ${BEST.max_leaf_nodes} folhas` : "validação oculta até a escolha"}`} arCelular="3 / 4">
-          {(d) => <Mapas d={d} sel={sel} ver={ver} />}
+        ? <>No treino, a AUC vai de {num(Math.min(...GRID.map((g) => g.auc_treino)), 4)} a {num(TOP_T.auc_treino, 4)}. Qual combinação vai ao comitê? Envie antes de ver a validação.</>
+        : <><b>Mecanismo:</b> {BEST.max_iter} árvores de {BEST.max_leaf_nodes} folhas, treino {num(BEST.auc_treino, 4)}. <b>Probabilidade:</b> PD média de {pct(RES.gbm_val.pd_media, 2)} contra {pct(TAXA.p, 2)}. <b>Controle:</b> escolha pela validação, na borda. <b>Prova:</b> {num(RES.gbm_val.auc, 4)} contra {num(RES.logit_val.auc, 4)} da logística. Vai ao comitê como desafiante, com a logística de referência. A base sintética permite guardar a janela futura e conhecer a PD verdadeira: <LinkSlide slug="c7p1">capítulo 7</LinkSlide>.</>}
+      fonte={`Candidato: boosting do gerador, sete variáveis, taxa ${num(HP_CANDIDATO.learning_rate, 2)}; validação temporal do gerador: ${int(NV)} propostas, ${DV} defaults, ${META.validacao.replace("safras ", "")}. Wilson de 95%; erro padrão da AUC: Hanley e McNeil (1982).`}>
+      <Painel titulo={`Lista do validador · validação temporal (${int(NV)})`}>
+        <ol className="q6-s21-lista">
+          {LISTA.map((it) => (
+            <li key={it.t} data-estado={it.e}>
+              <span className="q6-s21-m" aria-hidden="true">{SELO[it.e].s}</span>
+              <span className="q6-s21-t"><LinkSlide slug={it.s}>{it.t}</LinkSlide></span>
+              <span className="q6-s21-e">{SELO[it.e].r}</span>
+              <span className="q6-s21-p">{it.p}</span>
+            </li>
+          ))}
+        </ol>
+      </Painel>
+      <Painel titulo="Escolha na grade">
+        <Grafico rotulo={`Grade de hiperparâmetros do candidato: AUC de treino de cada combinação; ${ver ? `validação maior em ${BEST.max_iter} árvores e ${BEST.max_leaf_nodes} folhas, ${num(BEST.auc_val, 4)}` : "validação oculta até o envio"}`} arCelular="4 / 3">
+          {(d) => <Mapa d={d} sel={sel} ver={ver} />}
         </Grafico>
         <div className="q6-s21-ctl">
-          <Seg rotulo="Número de árvores" opcoes={ARVS.map((v) => ({ v, r: String(v) }))} valor={a} onChange={(v) => { setA(v); }} desab={ver} />
-          <Seg rotulo="Folhas por árvore" opcoes={FOLHAS.map((v) => ({ v, r: `${v} folhas` }))} valor={f} onChange={(v) => { setF(v); }} desab={ver} />
+          <span className="q7-k">Árvores</span>
+          <Seg rotulo="Número de árvores" opcoes={ARVS.map((v) => ({ v, r: String(v) }))} valor={a} onChange={setA} desab={ver} />
+          <span className="q7-k">Folhas</span>
+          <Seg rotulo="Folhas por árvore" opcoes={FOLHAS.map((v) => ({ v, r: String(v) }))} valor={f} onChange={setF} desab={ver} />
+          <div className="q6-s21-bot">
           {!ver ? <Botao prim onClick={() => setEnviado(sel)}>Mandar ao comitê</Botao> : <Botao sec onClick={() => setEnviado(null)}>Tentar outra</Botao>}
           <Botao sec onClick={restaurar}>Restaurar</Botao>
+          </div>
         </div>
         {retorno && <p className="q7-retorno" data-tom={certo ? "certa" : "errada"} aria-live="polite">{retorno}</p>}
-      </Painel>
-      <Painel titulo="Lista do validador independente">
-        <ol className="q6-s21-lista">
-          {LISTA.map((it) => <li key={it.t}><span className="q6-s21-m" aria-hidden="true">✓</span><div><LinkSlide slug={it.s} className="q6-s21-t">{it.t}</LinkSlide><span className="q6-s21-p">{it.p}</span></div></li>)}
-          <li data-fechado="1"><span className="q6-s21-m" aria-hidden="true">■</span><div><span className="q6-s21-t">Janela fora do tempo congelada</span><span className="q6-s21-p">{int(META.n_oot)} propostas, {META.oot.replace("safras ", "")}</span></div></li>
-        </ol>
-        <p className="q7-nota">Validação independente e backtesting: Resolução CMN 4.557/2017; EBA (2023).</p>
       </Painel>
     </Quadro>
   );

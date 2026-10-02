@@ -73,7 +73,8 @@ let CACHE: ReturnType<typeof calcular> | null = null;
 const dados = () => (CACHE ??= calcular());
 
 function Curvas({ d, e, ver }: { d: Dim; e: ReturnType<typeof estado>; ver: boolean }) {
-  const m = margens(d.fs, { l: 3.4, r: 6.8, t: 1.4, b: 2.9 });
+  const estreito = d.w < d.fs * 32;
+  const m = margens(d.fs, { l: 3.4, r: 6.8, t: 1.4, b: estreito ? 5.4 : 4.3 });
   const ymax = Math.ceil(Math.max(...OBS.map((o) => o.ic!.hi), ...(ver ? [...e.livre.dp, ...e.mono.dp] : [])) * 20) / 20;
   const x = escala([0, 60], [m.l, d.w - m.r]), y = escala([0, ymax], [d.h - m.b, m.t]);
   const yt: number[] = []; for (let t = 0; t <= ymax + 1e-9; t += ymax > 0.3 ? 0.1 : 0.05) yt.push(Math.round(t * 100) / 100);
@@ -83,7 +84,9 @@ function Curvas({ d, e, ver }: { d: Dim; e: ReturnType<typeof estado>; ver: bool
     <g>
       <rect x={x(30.5)} y={m.t} width={x(60) - x(30.5)} height={d.h - m.b - m.t} fill="#F5F4F0" />
       <text className="q7-rot--peq" x={x(45)} y={m.t} dy="1.1em" textAnchor="middle" style={{ fill: "#5B6475" }}>31 a 60 dias: {ALTA.n} propostas no ajuste</text>
-      <Eixos x={x} y={y} xt={[0, 10, 20, 30, 40, 50, 60]} yt={yt} fx={(v) => String(v)} fy={(v) => pct(v, 0)} xTit="Atraso máximo em 6 meses (dias)" yTit="PD (dependência parcial) e default observado" />
+      <Eixos x={x} y={y} xt={[0, 10, 20, 30, 40, 50, 60]} yt={yt} fx={(v) => String(v)} fy={(v) => pct(v, 0)} yTit="PD (dependência parcial) e default observado" />
+      {OBS.map((o, i) => <text key={o.a} className="q7-rot--peq" x={estreito && o.a === 0 ? x(0) + d.fs * 0.9 : x((o.a + o.b) / 2)} y={d.h - m.b} dy={estreito && i % 2 ? "3.7em" : "2.55em"} textAnchor={o.a === 0 ? (estreito ? "end" : "start") : "middle"} style={{ fill: "#8C2332", fontWeight: o.a === ALTA.a ? 700 : 500 }}>{o.d}/{o.n}</text>)}
+      <text className="q7-eixo-t" x={(m.l + d.w - m.r) / 2} y={d.h - m.b} dy={estreito ? "4.9em" : "3.85em"} textAnchor="middle">{estreito ? "Atraso (dias); ■ defaults/propostas" : "Atraso máximo em 6 meses (dias); ■ defaults/propostas no ajuste"}</text>
       {OBS.map((o) => {
         const cx = x((o.a + o.b) / 2), w = Math.max(d.fs * 0.6, x(o.b + 0.5) - x(o.a - 0.5));
         return (
@@ -91,11 +94,9 @@ function Curvas({ d, e, ver }: { d: Dim; e: ReturnType<typeof estado>; ver: bool
             <line x1={cx} x2={cx} y1={y(o.ic!.lo)} y2={y(o.ic!.hi)} stroke="#8C2332" strokeOpacity={0.55} strokeWidth={Math.max(2, d.fs * 0.14)} />
             <line x1={cx - w / 2} x2={cx + w / 2} y1={y(o.d / o.n)} y2={y(o.d / o.n)} stroke="#8C2332" strokeWidth={2} strokeOpacity={0.5} />
             <rect x={cx - d.fs * 0.3} y={y(o.d / o.n) - d.fs * 0.3} width={d.fs * 0.6} height={d.fs * 0.6} fill="#8C2332" />
-            <text className="q7-rot--peq" x={o.a === ALTA.a || o.a === 0 ? cx + d.fs * 0.45 : cx} y={o.a === ALTA.a ? y(0) : y(o.ic!.hi)} dy={o.a === ALTA.a ? "-.5em" : "-.45em"} textAnchor={o.a === ALTA.a || o.a === 0 ? "start" : "middle"} style={{ fill: "#8C2332", fontWeight: o.a === ALTA.a ? 700 : 500, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em", strokeLinejoin: "round" }}>{o.d}/{o.n}</text>
           </g>
         );
       })}
-      <text className="q7-rot--peq" x={x(ALTA.a + 1)} y={y(ALTA.ic!.hi)} dy="-.45em" style={{ fill: "#8C2332" }}>■ observado, IC até {pct(ALTA.ic!.hi, 1)}</text>
       {ver ? <>
         <path d={degraus(e.livre.dp)} fill="none" stroke="#176C73" strokeWidth={3} strokeDasharray="9 6" />
         <path d={degraus(e.mono.dp)} fill="none" stroke="#176C73" strokeWidth={4.5} />
@@ -115,6 +116,7 @@ export function S20Monotonia({ pagina }: { pagina?: Pagina }) {
   const e = revelado ? estado(mf, arv) : E0;
   const ql = quedas(e.livre.dp), qm = quedas(e.mono.dp);
   const custo = e.mono.auc - e.livre.auc;
+  const altaM = GRADE.filter((g) => g >= ALTA.a).reduce((t, g) => t + e.mono.dp[g], 0) / GRADE.filter((g) => g >= ALTA.a).length;
   const restaurar = () => { setEsc(null); setMf(MF0); setArv(ARV0); };
   return (
     <Quadro slug="c6p20" pagina={pagina} layout="gl"
@@ -123,8 +125,8 @@ export function S20Monotonia({ pagina }: { pagina?: Pagina }) {
       conclusao={!revelado
         ? <>Zero default em {ALTA.n} propostas não prova risco baixo: o intervalo de Wilson vai até <b>{pct(ALTA.ic!.hi, 1)}</b>. Com {ARV0} árvores e mínimo de {MF0} por folha, o que a PD do modelo livre faz acima de 30 dias? Preveja ao lado.</>
         : <>{e.livre.k} árvores, mínimo de {mf}: a PD livre cai em <b>{ql} {ql === 1 ? "trecho" : "trechos"}</b>; com monotonia, em {qm}. Na validação, AUC {num(e.livre.auc, 4)} livre e {num(e.mono.auc, 4)} monotônico (diferença {num(custo, 3)}, IC de {num(e.dl.ic[0], 3)} a {num(e.dl.ic[1], 3)}): {e.dl.ic[0] > 0 ? "com monotonia a ordenação melhora, e o IC exclui zero" : e.dl.ic[1] < 0 ? "a monotonia custa ordenação, e o IC exclui zero" : custo >= 0 ? "a diferença cabe no ruído, e a restrição sai sem custo medido" : "o custo cabe no ruído"}. O <LinkSlide slug="c6p21">slide 21</LinkSlide> leva isso à lista do comitê.</>}
-      fonte={`Ajuste: ${int(NA)} propostas, ${DA} defaults; validação: ${int(NV)}, ${DV}. Boosting: taxa 0,1, profundidade 2; monotonia: utilização +1, atraso +1, score −1. Wilson de 95%; IC de DeLong pareado.`}>
-      <Painel titulo="PD por atraso, com as outras variáveis da carteira mantidas">
+      fonte={`Ajuste: ${int(NA)} propostas, ${DA} defaults; validação sorteada: ${int(NV)}, ${DV}. Taxa 0,1, profundidade 2; monotonia: utilização +1, atraso +1, score −1. Parada de cada modelo na mesma validação. Wilson de 95%; DeLong pareado.`}>
+      <Painel titulo="PD por atraso, outras variáveis mantidas · ■ observado e IC de 95%">
         <Grafico rotulo={`PD por atraso pela dependência parcial. Observado no ajuste: ${OBS.map((o) => `${o.a} a ${o.b} dias, ${o.d} de ${o.n}`).join("; ")}. ${revelado ? `Modelo livre com ${ql} trechos de queda; monotônico com ${qm}.` : "Modelo livre oculto até a previsão."}`} arCelular="5 / 4">
           {(d) => <Curvas d={d} e={e} ver={revelado} />}
         </Grafico>
@@ -140,12 +142,13 @@ export function S20Monotonia({ pagina }: { pagina?: Pagina }) {
             <Botao sec onClick={restaurar}>Restaurar</Botao>
           </div>
           <table className="q7-tab q6-s20-tab">
-            <thead><tr><th className="q7-t-l">Validação</th><th>Árvores</th><th>AUC</th><th>Log loss</th></tr></thead>
+            <thead><tr><th className="q7-t-l">Validação</th><th>Árvores</th><th>Quedas</th><th>AUC</th><th>Log loss</th></tr></thead>
             <tbody>
-              <tr><th>╌ Livre</th><td>{e.livre.k}</td><td className="q6-val">{num(e.livre.auc, 4)}</td><td className="q6-val">{num(e.livre.ll, 4)}</td></tr>
-              <tr><th>━ Monotônico</th><td>{e.mono.k}</td><td className="q6-val">{num(e.mono.auc, 4)}</td><td className="q6-val">{num(e.mono.ll, 4)}</td></tr>
+              <tr><th>╌ Livre</th><td>{e.livre.k}</td><td><b>{ql}</b></td><td className="q6-val">{num(e.livre.auc, 4)}</td><td className="q6-val">{num(e.livre.ll, 4)}</td></tr>
+              <tr><th>━ Monotônico</th><td>{e.mono.k}</td><td><b>{qm}</b></td><td className="q6-val">{num(e.mono.auc, 4)}</td><td className="q6-val">{num(e.mono.ll, 4)}</td></tr>
             </tbody>
           </table>
+          <p className="q7-nota">Monotonia não é calibração: acima de 30 dias, o monotônico dá {pct(altaM, 1)} de PD média; observados, {ALTA.d} de {ALTA.n}.</p>
         </>}
       </Painel>
     </Quadro>

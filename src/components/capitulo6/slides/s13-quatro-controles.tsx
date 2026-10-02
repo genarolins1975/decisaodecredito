@@ -42,7 +42,7 @@ function Curva({ cfg, m, revelado }: { cfg: Cfg; m: number; revelado: boolean })
   const P = perdas(cfg), R = perdas(REF);
   const xs = Array.from({ length: MAXA + 1 }, (_, k) => k);
   return (
-    <Grafico titulo="Perda (log loss) por número de árvores" sub="● ajuste · ▲ validação · cinza: validação da referência" rotulo={`Perda de ajuste e de validação por número de árvores com η ${num(cfg.eta, 2)}, profundidade ${cfg.prof} e mínimo ${cfg.min} por folha; com ${m} árvores, ajuste ${num(P.pa[m], 3)} e validação ${num(P.pv[m], 3)}`} arCelular="4 / 3">
+    <Grafico titulo="Perda (log loss) por número de árvores" sub={revelado ? "● ajuste · ▲ validação · cinza: validação da referência" : "● ajuste · ▲ validação"} rotulo={`Perda de ajuste e de validação por número de árvores com η ${num(cfg.eta, 2)}, profundidade ${cfg.prof} e mínimo ${cfg.min} por folha; com ${m} árvores, ajuste ${num(P.pa[m], 3)} e validação ${num(P.pv[m], 3)}`} arCelular="4 / 3">
       {(d) => {
         const g = margens(d.fs, { l: 3.4, r: 1, t: 0.8, b: 2.7 });
         const todos = [...P.pa, ...P.pv, ...(revelado ? R.pv : [])];
@@ -85,8 +85,8 @@ export function S13QuatroControles({ pagina }: { pagina?: Pagina }) {
       sub={revelado ? undefined : "Taxa, número de árvores, profundidade e mínimo por folha: preveja antes de mexer."}
       conclusao={!revelado
         ? <>Referência do <LinkSlide slug="c6p11">slide 11</LinkSlide>: com {MAXA} árvores, perda de ajuste {num(P.pa[MAXA], 3)} e de validação {num(P.pv[MAXA], 3)}. Responda à previsão para liberar os controles.</>
-        : <>{ref ? "Referência" : <>η {num(cfg.eta, 2)}, profundidade {cfg.prof}, mínimo {cfg.min}</>} com {m} árvores: ajuste {num(P.pa[m], 3)}, validação <b>{num(P.pv[m], 3)}</b>. A melhor validação desta combinação é {num(vmin, 3)}, com {imin} {imin === 1 ? "árvore" : "árvores"}{m > imin ? <>; as {m - imin} seguintes só baixam o ajuste</> : ""}. Taxa e árvores se compensam: <LinkSlide slug="c6p14">slide 14</LinkSlide>.</>}
-      fonte={`Ajuste: ${int(NA)} propostas, ${DA} defaults; validação: ${int(NV)}, ${DV} defaults. Cada combinação ajustada ao vivo (gbm.ts), até ${MAXA} árvores; referência: η ${num(REF.eta, 1)}, profundidade ${REF.prof}, mínimo ${REF.min}.`}>
+        : <>{ref ? "Referência" : <>η {num(cfg.eta, 2)}, profundidade {cfg.prof}, mínimo {cfg.min}</>} com {m} árvores: ajuste {num(P.pa[m], 3)}, validação <b>{num(P.pv[m], 3)}</b>. A melhor validação desta combinação, escolhida na própria validação e por isso otimista, é {num(vmin, 3)}, com {imin} {imin === 1 ? "árvore" : "árvores"}{m > imin ? <>; as {m - imin} seguintes só baixam o ajuste</> : ""}. Taxa e árvores se compensam: <LinkSlide slug="c6p14">slide 14</LinkSlide>.</>}
+      fonte={`Ajuste: ${int(NA)} propostas, ${DA} defaults; validação sorteada: ${int(NV)}, ${DV} defaults. Cada combinação ajustada ao vivo (gbm.ts), até ${MAXA} árvores; referência: η ${num(REF.eta, 1)}, profundidade ${REF.prof}, mínimo ${REF.min}.`}>
       <Painel>
         <Curva cfg={cfg} m={m} revelado={revelado} />
         <div className="q6-s13-ctl">
@@ -103,7 +103,7 @@ export function S13QuatroControles({ pagina }: { pagina?: Pagina }) {
           <Kpi rotulo="AUC de ajuste" valor={num(aa, 3)} tam="mini" />
           <Kpi rotulo="AUC de validação" valor={num(av, 3)} tam="mini" tom="val" />
         </div>
-        <Previsao pergunta="Três deles aumentam a complexidade quando sobem. Qual freia?" opcoes={ops} escolha={esc} onEscolha={setEsc} recolher />
+        <Previsao pergunta="Qual dos quatro, quando aumenta, freia a complexidade?" opcoes={ops} escolha={esc} onEscolha={setEsc} recolher />
         <div className="q7-botoes q6-fim"><Botao sec onClick={() => { setCfg(REF); setM(MAXA); setEsc(null); }}>Restaurar</Botao></div>
       </Painel>
     </Quadro>

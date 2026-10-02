@@ -2,9 +2,9 @@
 import { useState } from "react";
 import { Botao, caminho, escala, Formula, Legenda, LinkSlide, Painel, Previsao, Quadro, Seg, type Pagina } from "../base";
 import { Confiabilidade } from "../graficos";
-import { CAL, CAL_PGR, D, N, PG, PGR, PLATT, Y } from "@/lib/capitulo7/dados";
+import { CAL, CAL_PGR, D, N, PG, PGR, PLATT, PT, Y } from "@/lib/capitulo7/dados";
 import { calibradores } from "@/lib/capitulo7/janelas";
-import { ajustarPlatt, ajustarPlattSuavizado, aucPorPares, brier, faixasQuantis, logit, logLoss, media, sigmoide, slopeComIntervalo, transformar } from "@/lib/capitulo7/metricas";
+import { ajustarPlatt, ajustarPlattSuavizado, aucPorPares, brier, faixasQuantis, interceptoESlope, logit, logLoss, media, sigmoide, slopeComIntervalo, transformar } from "@/lib/capitulo7/metricas";
 import { int, num, pct } from "@/lib/capitulo7/formato";
 
 /**
@@ -31,7 +31,7 @@ const VERS: Record<V, { nome: string; a: number | null; b: number | null; p: rea
 const ORDEM: V[] = ["bruto", "curso", "cal"];
 const CB = calibradores("pgr");
 const ESP: Record<V, number> = { bruto: CB.sem!.esperada.logLoss, curso: CB.curso!.esperada.logLoss, cal: CB.platt!.esperada.logLoss };
-const MET = Object.fromEntries(ORDEM.map((k) => { const p = VERS[k].p; return [k, { media: media(p)!, auc: aucPorPares(Y, p).auc!, brier: brier(Y, p), ll: logLoss(Y, p).valor, sl: slopeComIntervalo(Y, p), esp: ESP[k] }]; })) as Record<V, { media: number; auc: number; brier: number; ll: number; sl: ReturnType<typeof slopeComIntervalo>; esp: number }>;
+const MET = Object.fromEntries(ORDEM.map((k) => { const p = VERS[k].p; return [k, { media: media(p)!, auc: aucPorPares(Y, p).auc!, brier: brier(Y, p), ll: logLoss(Y, p).valor, sl: slopeComIntervalo(Y, p), slV: interceptoESlope(PT, p).slope, esp: ESP[k] }]; })) as Record<V, { media: number; auc: number; brier: number; ll: number; sl: ReturnType<typeof slopeComIntervalo>; slV: number; esp: number }>;
 const FAIXAS = Object.fromEntries(ORDEM.map((k) => [k, faixasQuantis(Y, VERS[k].p, 10)])) as Record<V, ReturnType<typeof faixasQuantis>>;
 const ic = (k: V) => `${num(MET[k].sl.ic[0], 2)} a ${num(MET[k].sl.ic[1], 2)}`;
 
@@ -46,10 +46,11 @@ export function S29Platt({ pagina }: { pagina?: Pagina }) {
   const revelado = prev === CERTA;
   return (
     <Quadro slug="c7p13" pagina={pagina} layout="gl"
+      titulo={revelado ? undefined : "Platt muda a fila?"} sub={revelado ? undefined : "Dois parâmetros sobre o log odds do modelo: σ(a + b · logit p)."}
       conclusao={!revelado ? <>Antes de comparar as três versões: o que Platt faz com a ordenação?</>
-        : v === "bruto" ? <>O boosting sem calibrar tem PD média {pct(m.media, 2)} contra {pct(D / N, 2)} observados e slope de calibração {num(m.sl.slope, 2)} na janela, com IC de {ic("bruto")}: compatível com 1, com {D} defaults. Escolha um calibrador e veja a curva se mover sem que a AUC mude.</>
-          : <>{VERS[v].nome} (a = {num(VERS[v].a!, 3)}, b = {num(VERS[v].b!, 3)}): na janela, log loss {num(m.ll, 4)} contra {num(MET.bruto.ll, 4)} e slope {num(m.sl.slope, 2)} (IC {ic(v)}); com {D} defaults, <b>a janela não mostra a correção</b>. Em janelas novas, a log loss esperada cai de {num(MET.bruto.esp, 4)} para <b>{num(m.esp, 4)}</b>, e a AUC continua {num(m.auc, 4)}. O <LinkSlide slug="c7p12">slide 28</LinkSlide> era este caso com b = 1.</>}
-      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults, decis da PD. Calibração sintética: ${int(CAL.n)} sorteios dos proponentes da janela, desfecho da PD verdadeira (semente ${CAL.semente}). Platt do curso: capítulo 6, estimado na validação. Slope: coeficiente de logit p numa logística de y na janela, IC de Wald de 95%. Esperada: média exata pela PD verdadeira.`}>
+        : v === "bruto" ? <>O boosting sem calibrar tem PD média {pct(m.media, 2)} contra {pct(D / N, 2)} observados e slope de calibração {num(m.sl.slope, 2)} na janela, com IC de {ic("bruto")}: compatível com 1, com {D} defaults, mas pela PD verdadeira ele é <b>{num(m.slV, 2)}</b>. Escolha um calibrador e veja a curva se mover sem que a AUC mude.</>
+          : <>{VERS[v].nome} (a = {num(VERS[v].a!, 3)}, b = {num(VERS[v].b!, 3)}): na janela, log loss {num(m.ll, 4)} contra {num(MET.bruto.ll, 4)} e slope {num(m.sl.slope, 2)} (IC {ic(v)}); com {D} defaults, <b>a janela não mostra a correção</b>. Pela PD verdadeira, o slope vai de {num(MET.bruto.slV, 2)} para <b>{num(m.slV, 2)}</b> e a log loss esperada cai de {num(MET.bruto.esp, 4)} para <b>{num(m.esp, 4)}</b>; a AUC continua {num(m.auc, 4)}. O <LinkSlide slug="c7p12">slide 28</LinkSlide> era este caso com b = 1.</>}
+      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults, decis da PD. Calibração sintética: ${int(CAL.n)} sorteios dos proponentes da janela, desfecho da PD verdadeira (semente ${CAL.semente}). Platt do curso: capítulo 6, estimado na validação. Slope: coeficiente de logit p numa logística de y na janela, IC de Wald de 95%; pela PD verdadeira, a mesma logística com o desfecho trocado pela PD verdadeira. Esperada: média exata por ela.`}>
       <Painel>
         <Confiabilidade titulo="Confiabilidade na janela" sub="decis da PD; ao lado, a transformação" rotulo={`Curva de confiabilidade por decis: sem calibrar${v === "bruto" ? "" : ` e ${VERS[v].nome}`}${revelado ? `; AUC ${num(m.auc, 4)} nas três versões` : ""}`} max={0.3} ticks={[0, 0.1, 0.2, 0.3]} anotar={false} arCelular="4 / 3"
           series={[{ faixas: FAIXAS.bruto, classe: "mudo", linha: true }, ...(v === "bruto" ? [] : [{ faixas: FAIXAS[v], classe: VERS[v].classe, linha: true }])]}
@@ -96,12 +97,12 @@ export function S29Platt({ pagina }: { pagina?: Pagina }) {
               <thead><tr><th className="q7-t-l">Medida</th><th>Sem</th><th>Curso</th><th>Calibração</th></tr></thead>
               <tbody>
                 <tr><th>a ; b</th><td>·</td><td>{num(PLATT.a, 2)} ; {num(PLATT.b, 2)}</td><td>{num(PC.a, 2)} ; {num(PC.b, 2)}</td></tr>
-                {([["PD média", (k: V) => pct(MET[k].media, 2)], ["AUC", (k: V) => num(MET[k].auc, 4)], ["Brier", (k: V) => num(MET[k].brier, 5)], ["Log loss", (k: V) => num(MET[k].ll, 4)], ["Slope", (k: V) => num(MET[k].sl.slope, 2)], ["IC 95% do slope", ic], ["Esperada", (k: V) => num(MET[k].esp, 4)]] as const).map(([r, f]) => (
+                {([["PD média", (k: V) => pct(MET[k].media, 2)], ["AUC", (k: V) => num(MET[k].auc, 4)], ["Brier", (k: V) => num(MET[k].brier, 5)], ["Log loss", (k: V) => num(MET[k].ll, 4)], ["Slope", (k: V) => num(MET[k].sl.slope, 2)], ["IC 95% do slope", ic], ["Slope, PD verdadeira", (k: V) => num(MET[k].slV, 2)], ["Log loss esperada", (k: V) => num(MET[k].esp, 4)]] as const).map(([r, f]) => (
                   <tr key={r}><th>{r}</th>{ORDEM.map((k) => <td key={k} data-on={k === v ? "1" : undefined}>{f(k)}</td>)}</tr>
                 ))}
               </tbody>
             </table>
-            <p className="q7-nota">Observado: {pct(D / N, 2)}; nenhuma versão foi ajustada na janela. Esperada: log loss em janelas novas.</p>
+            <p className="q7-nota">Observado: {pct(D / N, 2)}; nenhuma versão foi ajustada na janela.</p>
           </>
         )}
         <div className="q7-botoes"><Botao onClick={() => setFormula(!formula)}>{formula ? "Voltar" : "A fórmula e o scikit-learn"}</Botao><Botao sec onClick={() => { setV("bruto"); setPrev(null); setFormula(false); }}>Restaurar</Botao></div>

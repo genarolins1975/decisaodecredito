@@ -78,6 +78,8 @@ export function S15LaboratorioDiscriminacao({ pagina }: { pagina?: Pagina }) {
   const s: Serie = { roc: useMemo(() => curvaRoc(Y, pd), [pd]), cg: useMemo(() => curvaGanho(Y, pd, ord), [pd, ord]) };
   const liftMax = Math.ceil(Math.max(...[s, BASE].flatMap((v) => v.cg.filter((p) => p.x >= 0.02).map((p) => p.y / p.x))) + 0.05);
   const liberado = esc !== null && OPS[esc].certa;
+  const ksAbs = Math.max(...s.roc.map((p) => Math.abs(p.tpr - p.fpr)));
+  const g0 = ganho(Y, PL, 0.1), k0 = ks(Y, PL);
   const pdm = media(pd)!, pdm0 = media(base)!;
   const medidas = <>AUC {num(auc, 3)}, KS {num(k.ks, 3)}, {g10.capturados} de {D} defaults nos 10% piores (lift {vezes(g10.lift!, 1)})</>;
   const restaurar = () => { setEsc(null); setCen("boa"); setSigma(1); setNivel(0); };
@@ -87,7 +89,7 @@ export function S15LaboratorioDiscriminacao({ pagina }: { pagina?: Pagina }) {
         : nivel !== 0 ? <>Nível {nivel > 0 ? "+" : "−"}{num(Math.abs(nivel), 1)} em log odds: a PD média vai de {pct(pdm0, 1)} a <b>{pct(pdm, 1)}</b>, e {medidas} ficam onde estavam. <b>Só a ordem move as quatro</b>; o que o nível muda, a perda esperada, é o slide 16.</>
         : cen === "boa" ? <>Fila da logística: {medidas}. Todas acima do acaso: aqui as quatro andam juntas porque leem a mesma fila. Entre modelos cujas ROC se cruzam, AUC e KS podem discordar.</>
         : cen === "aleatoria" ? <>Fila aleatória: AUC {num(auc, 3)}, dentro da faixa do acaso ({num(ACASO.lo, 2)} a {num(ACASO.hi, 2)}); ganho e lift no nível do acaso. A média das PDs é a mesma da logística: <b>média certa não ordena</b>.</>
-        : cen === "invertida" ? <>Invertida: AUC {num(auc, 4)} = 1 − {num(AUC0, 4)}; o KS por máximo de TPR − FPR fica perto de zero e a separação aparece com sinal trocado.</>
+        : cen === "invertida" ? <>Invertida: AUC {num(auc, 4)} = 1 − {num(AUC0, 4)}. O KS cai a {num(k.ks, 3)} só pela convenção (maior TPR − FPR); com o módulo seria {num(ksAbs, 3)}. A fila continua informativa, ao contrário: o número do KS não tem valor absoluto.</>
         : <>Ruído σ = {num(sigma, 1)}: {medidas}. Mais ruído, mais pares trocados, <b>as quatro caem juntas</b>.</>}
       fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults. Embaralhamento com semente ${SEMENTE_EMBARALHAR}; faixa do acaso: 95% central de ${N_ACASO} embaralhamentos (sementes 1 a ${N_ACASO}); ruído normal com semente 20261015 somado em log odds. KS: maior TPR − FPR. Lift a partir de 2% da carteira.`}>
       <Painel>
@@ -106,6 +108,9 @@ export function S15LaboratorioDiscriminacao({ pagina }: { pagina?: Pagina }) {
         <Previsao pergunta={`Se a fila for invertida (o mais arriscado vai para o fim), o que acontece com a AUC de ${num(AUC0, 2)}?`} opcoes={OPS} escolha={esc} onEscolha={setEsc} recolher={liberado} />
         <div className="q7-s21-l"><p className="q7-k">Cenário{liberado ? "" : ": liberado depois da previsão"}</p><Botao sec onClick={restaurar}>Restaurar</Botao></div>
         <div className="q7-g2-grade2"><Seg rotulo="Cenário" opcoes={(Object.keys(NOMES) as Cen[]).map((c) => ({ v: c, r: NOMES[c] }))} valor={cen} onChange={setCen} desab={!liberado} /></div>
+        {liberado && <dl className="q7-g2-s15-ad" aria-label="As quatro medidas: logística, seta, cenário">
+          {([["AUC", num(AUC0, 3), num(auc, 3)], ["KS", num(k0.ks, 3), num(k.ks, 3)], [`10% piores, de ${D}`, String(g0.capturados), String(g10.capturados)], ["Lift nos 10%", vezes(g0.lift!, 1), vezes(g10.lift!, 1)]] as const).map(([r, v0, v1]) => <div key={r}><dt>{r}</dt><dd><span>{v0}</span> → <b>{v1}</b></dd></div>)}
+        </dl>}
         {liberado && cen === "perturbada" && <Controle rotulo="Ruído σ em log odds" valor={sigma} min={0} max={3} passo={0.1} onChange={setSigma} mostrar={num(sigma, 1)} escala={["0: a logística", "3: quase acaso"]} />}
       </Painel>
     </Quadro>

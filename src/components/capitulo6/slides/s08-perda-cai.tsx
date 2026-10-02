@@ -4,6 +4,7 @@ import { Botao, Grafico, LinkSlide, Marca, Painel, Previsao, Quadro, Seg, caminh
 import { CFG_DIDATICA, DIDATICA, XD, YD, modelo } from "@/lib/capitulo6/dados";
 import { estagios, perdaLog, sigmoide, valorArvore } from "@/lib/capitulo6/gbm";
 import { num, pct } from "@/lib/capitulo7/formato";
+import base from "@/lib/capitulo6/base.json";
 
 /**
  * 08 · c6p8 · Quatro árvores nas 16 propostas (CFG_DIDATICA: taxa 0,4, profundidade 2, mínimo 2 por folha), do boosting da
@@ -13,6 +14,7 @@ import { num, pct } from "@/lib/capitulo7/formato";
  * que cai em todas as árvores são calculadas aqui. Depois, o seletor de estágio e o de proposta acompanham uma proposta
  * do começo ao fim: a folha em que ela cai, η vezes o valor da folha e a PD antes e depois.
  */
+const SEMENTE_BASE = base.meta.seed; // semente do gerador do curso, que também gerou as 16 propostas didáticas
 const MOD = modelo(CFG_DIDATICA, XD, YD);
 const M = MOD.arvores.length, ETA = MOD.eta;
 const EST = estagios(MOD, XD);
@@ -59,7 +61,7 @@ export function S08PerdaCai({ pagina }: { pagina?: Pagina }) {
       conclusao={!rev ? <>Árvore 1: a log loss vai de {num(LOSS[0], 3)} a {num(LOSS[1], 3)}, e cada proposta sai de {pct(PD[0][0], 0)} para a PD da sua folha. Antes das árvores 2 a 4: a PD de todo default sobe sempre?</>
         : k === 0 ? <>No palpite, PD de {pct(PD[0][foco], 0)} para todas e log loss {num(LOSS[0], 3)}. Avance as árvores e acompanhe #{id(foco)}.</>
           : <>Árvore {k}: log loss de {num(LOSS[k - 1], 3)} a <b>{num(LOSS[k], 3)}</b>. #{id(foco)} cai numa folha de valor {sinal(v)}: soma {num(ETA, 1)} × {sinal(v)} = {sinal(ETA * v)} às log odds, e a PD vai de {pct(PD[k - 1][foco], 1)} a <b>{pct(PD[k][foco], 1)}</b>. A PD como soma de parcelas: <LinkSlide slug="c6p9">slide 9</LinkSlide>.</>}
-      fonte={`${DIDATICA.length} propostas didáticas sintéticas dos capítulos 4 e 5 (8 defaults). Boosting da biblioteca: palpite F₀ = ${num(MOD.f0, 2)}, taxa ${num(ETA, 1)}, ${M} árvores de profundidade ${CFG_DIDATICA.profundidade}, mínimo de ${CFG_DIDATICA.minFolha} por folha, valor da folha por Newton. Log loss média de treino, log natural.`}>
+      fonte={`${DIDATICA.length} propostas didáticas sintéticas dos capítulos 4 e 5 (gerador do curso, semente ${SEMENTE_BASE}; ${YD.reduce((s, v) => s + v, 0)} defaults). Boosting da biblioteca: palpite F₀ = ${num(MOD.f0, 2)}, taxa ${num(ETA, 1)}, ${M} árvores de profundidade ${CFG_DIDATICA.profundidade}, mínimo de ${CFG_DIDATICA.minFolha} por folha, valor da folha por Newton. Log loss média de treino, log natural.`}>
       <Painel>
         <Grafico titulo="PD de cada proposta, árvore a árvore" sub="propostas nas mesmas folhas andam juntas" rotulo={`PD por estágio; ${GRUPOS.map((g) => `${nomeG(g)}: ${PD.slice(0, ate + 1).map((P) => pct(P[g[0]], 1)).join(", ")}`).join("; ")}; log loss ${LOSS.slice(0, ate + 1).map((x) => num(x, 3)).join(", ")}`} arCelular="4 / 3">
           {(d) => {

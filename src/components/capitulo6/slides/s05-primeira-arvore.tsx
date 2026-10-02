@@ -4,6 +4,7 @@ import { Botao, Controle, Grafico, LinkSlide, Marca, Painel, Previsao, Quadro, S
 import { CFG_DIDATICA, DIDATICA, XD, YD, modelo } from "@/lib/capitulo6/dados";
 import { sigmoide, type No } from "@/lib/capitulo6/gbm";
 import { num } from "@/lib/capitulo7/formato";
+import base from "@/lib/capitulo6/base.json";
 
 /**
  * 05 · c6p5 · A primeira árvore, ajustada nos resíduos do palpite (y − p com p = 50%: ±0,5). Os cortes candidatos são os
@@ -15,6 +16,7 @@ import { num } from "@/lib/capitulo7/formato";
  * com as quatro regiões, quem cai em cada folha e a média do erro de cada uma. O melhor corte calculado aqui é conferido
  * contra a raiz da biblioteca.
  */
+const SEMENTE_BASE = base.meta.seed; // semente do gerador do curso, que também gerou as 16 propostas didáticas
 const VAR = ["Utilização", "Atraso"] as const;
 type V = 0 | 1;
 const MOD = modelo(CFG_DIDATICA, XD, YD);
@@ -49,7 +51,23 @@ function folhasDe(no: No, u: [number, number], a: [number, number], membros: num
   else { folhasDe(no.esq, u, [a[0], no.corte], e, out); folhasDe(no.dir, u, [no.corte, a[1]], d, out); }
   return out;
 }
-const U: [number, number] = [10, 100], A: [number, number] = [-4, 44];
+const U: [number, number] = [10, 100], A: [number, number] = [-4, 50];
+/** Melhor corte de cada variável dentro de um nó (mesmo critério: menor erro quadrático, mínimo por folha). */
+function melhorNo(membros: number[], v: V) {
+  const vals = [...new Set(membros.map((i) => XD[i][v]))].sort((a, b) => a - b); let best: { c: number; sse: number } | null = null;
+  for (let k = 0; k < vals.length - 1; k++) {
+    const c = (vals[k] + vals[k + 1]) / 2, e = membros.filter((i) => XD[i][v] <= c), d = membros.filter((i) => XD[i][v] > c);
+    if (e.length >= CFG_DIDATICA.minFolha && d.length >= CFG_DIDATICA.minFolha && (!best || sse(e) + sse(d) < best.sse - 1e-12)) best = { c, sse: sse(e) + sse(d) };
+  }
+  return best;
+}
+/** O nó do segundo nível em que as duas variáveis empatam: a biblioteca (e o scikit-learn, random_state 0) fica com a primeira na ordem. */
+const EMPATE = ([RAIZ.esq, RAIZ.dir] as No[]).map((no, lado) => {
+  const membros = ids.filter((i) => (lado === 0 ? XD[i][0] <= RAIZ.corte : XD[i][0] > RAIZ.corte));
+  const [bu, ba] = [melhorNo(membros, 0), melhorNo(membros, 1)];
+  return bu && ba && Math.abs(bu.sse - ba.sse) < 1e-12 && !no.folha ? { lado, u: bu, a: ba, venceu: no.variavel } : null;
+}).find(Boolean);
+if (EMPATE && EMPATE.venceu !== 0) throw new Error("o desempate do segundo nível não é a primeira variável");
 const FOLHAS = folhasDe(RAIZ, U, A, ids, []);
 const SSE2 = FOLHAS.reduce((s, f) => s + sse(f.membros), 0);
 const sinal = (v: number) => `${v > 1e-12 ? "+" : ""}${num(Math.abs(v) < 1e-12 ? 0 : v, 2)}`;
@@ -73,11 +91,11 @@ export function S05PrimeiraArvore({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c6p5" pagina={pagina} layout="gl"
       conclusao={!rev ? <>No palpite, cada default erra +0,50 e cada adimplente −0,50 (<LinkSlide slug="c6p4">slide 4</LinkSlide>). Erro quadrático total: {num(SSE0, 2)}. Onde a árvore corta primeiro?</>
-        : cresceu ? <>Quatro folhas: {FOLHAS.map((f, i) => <span key={f.nome}>{i ? "; " : ""}{f.nome} com média {sinal(media(f.membros))}</span>)}. O erro quadrático vai a <b>{num(SSE2, 2)}</b>. A folha guarda a média do erro; o valor somado às log odds é outro: <LinkSlide slug="c6p6">slide 6</LinkSlide>.</>
-        : <>Com {rotC(corte)}: {corte.e.length} propostas de um lado (média {sinal(media(corte.e))}) e {corte.d.length} do outro ({sinal(media(corte.d))}); o erro quadrático cai de {num(SSE0, 2)} para <b>{num(corte.sse, 2)}</b>. O melhor: {rotC(MELHOR[0])}.</>}
-      fonte={`${DIDATICA.length} propostas didáticas sintéticas dos capítulos 4 e 5. Árvore de regressão nos resíduos do palpite F₀ = ${num(MOD.f0, 2)}: profundidade ${CFG_DIDATICA.profundidade}, mínimo de ${CFG_DIDATICA.minFolha} por folha, cortes nos pontos médios entre valores distintos; erro quadrático em torno da média de cada lado. Árvore 1 do boosting da biblioteca.`}>
+        : cresceu ? <>Quatro folhas, erro quadrático <b>{num(SSE2, 2)}</b>.{EMPATE ? <> À direita, {rotC({ v: 0, c: EMPATE.u.c } as Corte)} empata com {rotC({ v: 1, c: EMPATE.a.c } as Corte)} ({num(EMPATE.u.sse, 2)} cada): vence a primeira variável na ordem, como no scikit-learn com semente 0.</> : null} O valor que a folha soma às log odds: <LinkSlide slug="c6p6">slide 6</LinkSlide>.</>
+        : <>Com {rotC(corte)}: médias {sinal(media(corte.e))} e {sinal(media(corte.d))}; o erro quadrático cai de {num(SSE0, 2)} para <b>{num(corte.sse, 2)}</b>.{corte === MELHOR[0] ? null : <> O melhor: {rotC(MELHOR[0])}.</>} Como y{"\u00a0−\u00a0"}p̄ é o default menos {num(P0, 2)}, é o corte de uma árvore no default; a diferença vem da segunda árvore (<LinkSlide slug="c6p8">slide 8</LinkSlide>).</>}
+      fonte={`${DIDATICA.length} propostas didáticas sintéticas dos capítulos 4 e 5 (gerador do curso, semente ${SEMENTE_BASE}). Árvore de regressão nos resíduos do palpite F₀ = ${num(MOD.f0, 2)}: profundidade ${CFG_DIDATICA.profundidade}, mínimo de ${CFG_DIDATICA.minFolha} por folha, cortes nos pontos médios entre valores distintos; erro quadrático em torno da média de cada lado; em empate, a primeira variável na ordem (utilização). Árvore 1 do boosting da biblioteca.`}>
       <Painel>
-        <Grafico titulo="Os erros no plano das 16 propostas" sub={cresceu ? "as quatro folhas da primeira árvore" : rev ? rotC(corte) : "y − p de cada uma no palpite"} rotulo={cresceu ? `Quatro folhas: ${FOLHAS.map((f) => `${f.nome}, ${lista(f.membros)}, média ${sinal(media(f.membros))}`).join("; ")}` : rev ? `Corte ${rotC(corte)}: erro quadrático de ${num(SSE0, 2)} para ${num(corte.sse, 2)}` : "As 16 propostas no plano utilização por atraso, com o erro de cada uma"} arCelular="1 / 1">
+        <Grafico titulo="Os erros no plano das 16 propostas" sub={cresceu ? "as quatro folhas da primeira árvore" : `erro no palpite: ● default ${sinal(R[YD.indexOf(1)])} · ○ adimplente ${sinal(R[YD.indexOf(0)])}`} rotulo={cresceu ? `Quatro folhas: ${FOLHAS.map((f) => `${f.nome}, ${lista(f.membros)}, média ${sinal(media(f.membros))}`).join("; ")}` : rev ? `Corte ${rotC(corte)}: erro quadrático de ${num(SSE0, 2)} para ${num(corte.sse, 2)}` : "As 16 propostas no plano utilização por atraso, com o erro de cada uma"} arCelular="1 / 1">
           {(d) => {
             const m = margens(d.fs, { l: 3, r: 1, t: cresceu ? 2.6 : 1.2, b: 2.9 });
             const x = escala(U, [m.l, d.w - m.r]), y = escala(A, [d.h - m.b, m.t]);
@@ -99,14 +117,13 @@ export function S05PrimeiraArvore({ pagina }: { pagina?: Pagina }) {
                 {[20, 40, 60, 80, 100].map((u) => <text key={u} className="q7-tick" x={x(u)} y={d.h - m.b} dy="1.25em" textAnchor="middle">{u}%</text>)}
                 <line className="q7-eixo" x1={m.l} x2={d.w - m.r} y1={d.h - m.b} y2={d.h - m.b} />
                 <text className="q7-eixo-t" x={(m.l + d.w - m.r) / 2} y={d.h - m.b} dy="2.6em" textAnchor="middle">Utilização do limite</text>
-                {!cresceu && <text className="q7-eixo-t" x={m.l} y={m.t} dy="-.4em">Atraso, dias</text>}
+                <text className="q7-eixo-t" x={m.l} y={y(A[1])} dx=".4em" dy="1.2em" style={halo}>Atraso, dias</text>
                 {cresceu ? FOLHAS.slice(1).map((f, i) => (f.u[0] > U[0] ? <line key={i} x1={x(f.u[0])} x2={x(f.u[0])} y1={y(A[0])} y2={y(A[1])} stroke="#3D5A8A" strokeWidth={i === 1 ? 4 : 2.5} strokeDasharray={i === 1 ? undefined : "8 5"} /> : null))
                   : rev && (corte.v === 0 ? <line x1={x(corte.c)} x2={x(corte.c)} y1={y(A[0])} y2={y(A[1])} stroke="#3D5A8A" strokeWidth={4} /> : <line x1={x(U[0])} x2={x(U[1])} y1={y(corte.c)} y2={y(corte.c)} stroke="#3D5A8A" strokeWidth={4} />)}
-                {DIDATICA.map((p, i) => (
+                {DIDATICA.map((p) => (
                   <g key={p.id}>
                     <Marca x={x(p.util)} y={y(p.atraso)} r={d.fs * 0.68} def={p.y === 1} />
                     <text className="q7-rot--peq" x={x(p.util)} y={y(p.atraso)} dy=".35em" textAnchor="middle" style={{ fill: p.y ? "#fff" : "#2A3342", fontSize: ".74em", fontWeight: 700 }}>{p.id}</text>
-                    <text className="q7-rot--peq" x={x(p.util)} y={y(p.atraso)} dy="-1.2em" textAnchor="middle" style={{ fill: "#00205B", fontSize: ".78em", ...halo }}>{sinal(R[i])}</text>
                   </g>
                 ))}
               </g>
