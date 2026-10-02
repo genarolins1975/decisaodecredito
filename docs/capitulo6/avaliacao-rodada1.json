@@ -1,0 +1,694 @@
+{
+ "capitulo": 6,
+ "data": "2026-10-02",
+ "revisor": "subagentes em contexto limpo",
+ "slides": {
+  "c6p1": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Captura 01-c6p1-1920x1080-palco.png: o gráfico que prova o título (AUC 0,8196 no treino, 0,6476 na validação, −0,1720) ocupa cerca de um quarto do corpo, enquanto os quatro cartões de perguntas ocupam o lado direito inteiro e pesam mais que ele; nos cartões Probabilidade, Controle e Prova sobra um vão de uns 110 px entre a pergunta e os links. Peça concorrente com a principal.",
+    "corrigir": "Dar ao gancho o papel dominante (gráfico maior, à esquerda, com as três escalas logo abaixo) e reduzir os cartões a uma lista compacta de perguntas e links, sem o vão interno; ou, se o mapa é a peça principal, trocar o título por um que o mapa prove."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Título afirmativo com número (0,17 de AUC), leitura com 0,8196 e 0,6476 e link explícito para o slide 2; as três escalas (16, 2.103 = 1.472 + 631, 7) ligam o caso aos trechos do capítulo; slide de consulta, sem previsão a fazer.",
+    "corrigir": "Para 10: mostrar no próprio gancho a logística na mesma validação (AUC 0,6968 no treino e 0,6408 na validação, RES.logit_treino e RES.logit_val), para o aluno ver que parte da queda é do período, não só do modelo."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Slide de consulta: cada número do mapa e cada escala é LinkSlide no mesmo modo (s01-mapa.tsx, Cartao e ESCALAS); a navegação é útil e não há estado a restaurar.",
+    "corrigir": "Para 10: um seletor no gancho que alterne boosting e logística (RES já traz as duas), fazendo do mapa também o primeiro experimento."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Dois conjuntos diferentes levam o mesmo nome no mesmo slide: o gráfico diz \"validação 760 propostas\" (s01-mapa.tsx linha 45; meta.n_val = 760, safras 2023-03 a 2023-07, temporal) e a escala logo abaixo diz \"1.472 ajuste + 631 validação\" (linha 67; sorteio dentro do treino). Além disso, o subtítulo atribui a queda à decoreba, mas a validação de 760 é posterior e tem taxa de default de 13,2% contra 9,6% no treino (RES.gbm_val.obs 0,13158; gbm_treino.obs 0,09558), e a logística também cai 0,056 de AUC: a queda mistura sobreajuste e mudança de período. Números conferidos: 0,8196 − 0,6476 = 0,1720; candidato 60 árvores, 8 folhas, taxa 0,05 (HP_CANDIDATO).",
+    "corrigir": "Nomear os dois conjuntos: \"validação temporal (760, safras 2023-03 a 2023-07)\" no gráfico e \"631 de validação sorteada\" na escala; acrescentar à leitura que a validação temporal tem taxa de 13,2% contra 9,6% e que a logística perde 0,056 no mesmo trajeto, de modo que a decoreba explica só parte dos 0,17."
+   }
+  },
+  "c6p2": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Capturas 02-c6p2 palco e estado revelado (p2-B): uma peça domina, as duas séries com símbolo além da cor (■ votar cinza, ● corrigir navy), referência tracejada \"escolher 0,173\", rótulos na ponta direita sem sobreposição; caixa \"de 2 a 20: preveja antes\" bem resolvida.",
+    "corrigir": "Para 10: marcar no gráfico onde corrigir passa a ser decorar (as PDs de #1 e #2, vizinhas, a 7% e 93% com 20 árvores), para que a forma da curva mostre o custo e não só o ganho."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "A pergunta \"De 1 para 20 árvores, o que acontece com a log loss de treino?\" tem a alternativa A (\"Cai nas duas\") literalmente verdadeira pelos próprios dados: votar sai de sem limite com 1 árvore, passa por cerca de 0,345 com 2 e termina em 0,237 com 20; a certa (B) depende de ler \"estaciona\" a partir da árvore 4. \"Escolher\" nunca é definido na tela (só a linha \"escolher 0,173\"), e votar não é ligado ao nome que o aluno conhece do capítulo 5 (bagging, floresta).",
+    "corrigir": "Reformular a pergunta para \"Da árvore 5 à 20\" ou trocar A por \"As duas continuam caindo até a árvore 20\"; definir na legenda \"escolher: uma árvore no default\" e \"votar: média de árvores em amostras sorteadas, como a floresta do capítulo 5\"."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Depois do acerto, o controle Número de árvores (1 a 20) redesenha as duas curvas e o painel Alvo da árvore k na proposta #3 (y = 0 contra y − p = −0,31 na árvore 2, −0,01 na 20); Restaurar e Tentar outra presentes; sorteio com semente 20260502.",
+    "corrigir": "Para 10: permitir trocar a proposta acompanhada (hoje fixa em #3) para o aluno ver um default cujo alvo no corrigir é positivo enquanto no votar é sempre 1."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Números conferidos: corrigir 0,452 com 1 árvore e 0,030 com 20 (scikit-learn, GradientBoostingClassifier, taxa 0,4, profundidade 2, mínimo 2: 0,4516 e 0,0297); escolher = 4 × ln 2 ÷ 16 = 0,173. Mas o retorno da alternativa A (s02-tres-estrategias.tsx linha 48) afirma que \"a média delas não o corrige\", e a curva mostra votar caindo de 0,345 para 0,237 entre 2 e 20 árvores: a frase contradiz o dado na tela.",
+    "corrigir": "Trocar o retorno de A por algo como \"Votar cai nas primeiras árvores (0,345 com 2, 0,237 com 20) e para de cair: a média de árvores no mesmo y reduz a variância e estaciona no erro comum; só corrigir mira o erro que sobrou\"."
+   }
+  },
+  "c6p3": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Capturas 03-c6p3 palco, p3-B e p3-aj: a curva da log loss domina e prova o título, mínimo marcado (\"taxa 50% · F₀ = 0,00\"; no ajuste \"taxa 9,44% · F₀ = −2,26\"), ponto móvel com valor (0,780; 0,437); faixa das 16 com a mesma barra de PD reforça \"um número para todas\".",
+    "corrigir": "Para 10: na visão do ajuste, a faixa superior vira uma frase solta numa área vazia de uns 120 px; substituir por um histograma mínimo das 1.472 com a barra única de PD, mantendo a mesma gramática da visão das 16."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Título provisório em pergunta antes da previsão (\"Qual número único dar a todas as propostas?\"); cada errada nomeia a confusão (probabilidade com log odds, com σ(0,5) = 62,2% contra 50% observados; chance com log odds); leitura com os números da tela e link para o slide 4.",
+    "corrigir": "Para 10: a base de 8 em 16 dá F₀ = 0 e torna chance e log odds triviais de separar; abrir a previsão já com a pergunta sobre as 1.472 (139 defaults, F₀ = −2,26) ou mostrar na tela a PD de 62,2% que o erro de escala daria."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "O controle PD única move o ponto sobre a curva e a leitura (\"Em PD 30%, a perda é 0,780\"; no ajuste, 0,437) e o seletor de carteira desloca o mínimo de 50% para 9,44%: o aluno muda a causa (o palpite) e vê o efeito que o título afirma; Restaurar zera tudo.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Números conferidos com a biblioteca e o scikit-learn: F₀ = ln(139 ÷ 1.333) = −2,2607, perda de partida 0,3127; 0,780 e 0,437 batem com a log loss de PD 30%. Mas a fonte (s03-palpite.tsx linha 49) contém \"sintéticas\", então o Quadro não acrescenta BASE_C6 (base.tsx, declararBase pula fontes que já dizem sintética): a visão das 1.472 sai sem período (safras 2022-01 a 2023-02) e sem a semente da base (20260501).",
+    "corrigir": "Acrescentar à fonte \"treino das safras 2022-01 a 2023-02 da base sintética do curso (semente 20260501), sorteado em ajuste e validação (semente 20260601)\", ou ajustar declararBase para acrescentar BASE_C6 sempre que a fonte citar o ajuste."
+   }
+  },
+  "c6p4": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Captura p4-A (estado revelado): o rótulo \"inclinação em F: ● −0,91 · ○ 0,09\" encosta no rótulo \"● default: ln(1 + e^−F)\" e a tangente e a linha tracejada de F passam sobre ele; as posições são fixas (s04-erro-alvo.tsx linha 71, x(0,3), y(3,2)), então a colisão ocorre em qualquer palpite. O \"+0,91\" da barra #2 também encosta no título \"erro de cada proposta, y − p\". A notação \"e^−F\" em texto corrido destoa do resto.",
+    "corrigir": "Ancorar o rótulo da inclinação ao lado de cada tangente (ou num canto livre do quadrante direito) e afastar o rótulo da curva do default; subir o título das barras ou baixar o eixo +1; escrever e<sup>−F</sup> em vez de e^−F."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Subtítulo provisório em pergunta; as erradas nomeiam a confusão (o próprio y = o votar do slide 2; a perda ln 2 no lugar da inclinação); leitura com números (no F₀ do ajuste, +0,91 e −0,09) e link para o slide 5; derivação na expansão.",
+    "corrigir": "Para 10: com o atalho F₀ do ajuste, dizer na leitura o que o aluno deve ver: os 7 defaults pesam +0,91 cada e os adimplentes só −0,09, então a próxima árvore vai atrás dos defaults."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Controle Palpite comum F (−3 a 3) move tangentes, barras e leitura; atalhos F₀ do ajuste (−2,26) e F₀ das 16 (0); Restaurar; derivação em Expandir.",
+    "corrigir": "Para 10: ligar o controle à consequência que o título afirma, por exemplo mostrando ao lado o primeiro corte que a árvore faria nesses resíduos."
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "−∂ℓ/∂F = y − p está certo e a expansão deriva passo a passo; σ(−2,2607) = 0,0944 dá +0,91 e −0,09, como na tela; o código confere a fórmula por diferença central (linha 20). Terminologia: \"pseudo-resíduo, o gradiente negativo\" (Friedman, 2001).",
+    "corrigir": "Para 10: a fonte do F₀ do ajuste remete ao slide 3, que também não traz período nem semente da base; incluir \"safras 2022-01 a 2023-02, semente 20260501\"."
+   }
+  },
+  "c6p5": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Capturas p5-A e p5-C: o \"+0,50\" de #9 fica sobre a linha do corte de 57,5%; no segundo nível, os \"−0,50\" de #3 e #15 e o \"+0,50\" de #14 são cortados pelas linhas tracejadas de 27,5% e 87,5%, e o \"+0,50\" de #12 quase toca \"média +0,50\" da folha C. Os 16 rótulos ±0,50 repetem o que a forma do ponto já diz.",
+    "corrigir": "Tirar os rótulos ±0,50 dos pontos (a legenda diz \"default +0,50, adimplente −0,50\" uma vez) ou deslocá-los para o lado oposto à linha de corte mais próxima; dar respiro entre o rótulo de #12 e o cabeçalho das folhas."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Previsão do primeiro corte antes de revelar, com retornos que nomeiam a confusão (atraso como intuição de crédito, 3,43 de 4,00; corte em 27,5% que isola erros opostos, 4,00); leituras com números; link para o slide 4 antes e para o slide 6 depois de crescer.",
+    "corrigir": "Para 10: no estado revelado sem crescer, a leitura não aponta o slide seguinte; acrescentar o link. E mostrar o empate do segundo nível (abaixo)."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "O controle Corte percorre os 18 cortes possíveis e mostra o erro quadrático restante (de 4,00 para 1,75 no melhor); o seletor de variável leva aos cortes de atraso; \"Crescer o segundo nível\" e \"Voltar ao primeiro corte\"; Restaurar. O aluno muda o corte e vê o efeito que o título afirma.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Números conferidos com a biblioteca: erro quadrático 4,00 → 1,75 em utilização ≤ 57,5%, 18 cortes com mínimo 2, atraso ≤ 15 deixa 3,429, corte de 27,5% deixa 4,00, quatro folhas com 1,00. Mas o subtítulo \"Ela não prevê default: prevê o erro\" é falso para a primeira árvore: com palpite único, y − p̄ é o default deslocado de 0,5, e os cortes são os mesmos de uma árvore no default (o próprio s02 diz \"o corte sobre y − p̄ é o corte sobre y\"). Também há empate no segundo nível do ramo direito: utilização ≤ 87,5 e atraso ≤ 2,5 têm a mesma melhoria (3,0); a biblioteca fica com a primeira variável e o scikit-learn sorteia (com random_state=0 coincidem), sem aviso na tela.",
+    "corrigir": "Reescrever o subtítulo: \"Na primeira árvore, como todas têm o mesmo palpite, prever o erro é prever o default; a diferença aparece da segunda árvore em diante (slide 8)\"; registrar na fonte o empate do segundo nível e a regra de desempate."
+   }
+  },
+  "c6p6": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Captura p6-B: a parábola tracejada e a perda exata no mesmo eixo, losango no mínimo de Newton (−2,00, perda 1,16), X na média (−0,50) e ponto móvel; legenda no canto livre; tabela das quatro folhas no painel lateral sem competir.",
+    "corrigir": "Para 10: a tabela repete o que o seletor de folha já mostra; reduzi-la à linha da folha escolhida e usar o espaço para ampliar a peça."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Título provisório em pergunta; retornos que nomeiam a confusão (média em escala de probabilidade, que leva a PD só a 37,8%; mínimo exato que foge para menos infinito); leitura com números (PD 50% → 11,9%, perda 4,16 → 0,76) e link para o slide 7.",
+    "corrigir": "Para 10: o controle mostra a perda da folha caindo além do passo de Newton (0,11 em γ = −4) e nada explica por que o algoritmo para em −2; dizer que Friedman pede o mínimo exato, que em log loss não tem fórmula e numa folha pura é infinito (PD 0%, perda infinita no primeiro default futuro), e que o passo de Newton é a aproximação finita do scikit-learn. Mostrar também uma folha mista da árvore 2 (a de #10 e #15, Σr = −0,19, Σp(1 − p) = 0,46), onde Newton não é só a média vezes 4."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Controle γ (−4 a 4) move o ponto e a leitura (PD e perda da folha); seletor de folha A a D; Restaurar; expansão com a aproximação de segunda ordem.",
+    "corrigir": "Para 10: o experimento hoje não sustenta o título (a perda exata segue caindo além de Newton); acrescentar um alternador \"um passo de Newton\" contra \"mínimo exato\" numa folha mista, em que os dois são finitos e diferentes."
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Σr ÷ Σp(1 − p) = −3,0 ÷ 1,5 = −2,00 é o valor da folha no scikit-learn (o código confere contra valorArvore, linha 31); σ(−0,5) = 37,8%, σ(−2) = 11,9%, perda 6 ln 2 = 4,16 e 6 ln(1 + e^−2) = 0,76 batem; a nota do XGBoost (λ no denominador, Chen e Guestrin, 2016) está correta.",
+    "corrigir": "Para 10: dizer que o passo de Newton é a aproximação de Friedman (2001) para a busca exata por folha, que é a limitação que explica o γ finito."
+   }
+  },
+  "c6p7": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Capturas 07-c6p7 e p7-B: a curva da taxa escolhida domina, η = 0,1 tracejada e η = 1 contínua cinza como referência, rótulos na ponta direita, fórmula da atualização no painel; o rótulo \"0,452\" toca a própria linha, mas o halo mantém a leitura.",
+    "corrigir": "Para 10: afastar o rótulo 0,452 da linha e marcar na curva de η = 1 a árvore 2, em que a correção inteira passa do ponto (0,195 contra 0,172 de η = 0,95)."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Previsão antes das outras curvas, retornos que nomeiam a confusão (regularização com ajuste, 0,622 com η = 0,1; convenção com ótimo); leitura calculada com o ranking após 4 árvores; ligação com os slides seguintes.",
+    "corrigir": "Para 10: aproveitar o próprio dado, que mostra η = 0,95 abaixo de η = 1 depois de 4 árvores, para desmontar a ideia de que a correção inteira é sempre melhor no treino."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "O controle de η (0,05 a 1) redesenha a curva, a leitura e a PD da folha B após a árvore 1 (50% → 31,0% com η = 0,4): o aluno muda a causa (a taxa) e vê o efeito que o título descreve; Restaurar.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Números conferidos (biblioteca e scikit-learn): 0,268 após a árvore 1 com η = 1, 0,622 com η = 0,1, 0,102 e 0,470 após 4. Mas o subtítulo (roteiro.ts linha 33) diz \"No ajuste, a correção inteira desce mais rápido\", e a leitura da própria tela mostra que após 4 árvores a menor perda é a de η = 0,95 (0,073) e não a de η = 1 (0,102); \"a taxa pequena paga na validação\" afirma algo que o slide não mostra e é ambíguo (paga o preço ou se paga?). A leitura remete a afirmação aos slides 11 e 15 (s07-taxa.tsx linha 48), que usam só η = 0,1 e não comparam taxas.",
+    "corrigir": "Trocar o subtítulo por \"No ajuste, a taxa alta desce mais rápido na primeira árvore; depois a correção inteira passa do ponto\" e retirar a frase sobre validação, ou trocar o link para o slide 14, que compara η e η/2 na validação."
+   }
+  },
+  "c6p8": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Capturas 08-c6p8 e p8-B: o leque de trajetórias de PD é a peça e prova a leitura (propostas nas mesmas folhas viram uma linha), proposta acompanhada em destaque, faixa da árvore corrente, rótulos finais afastados (#10 74,1%, #16 72%), log loss por estágio sob o eixo; símbolo de classe nos rótulos finais.",
+    "corrigir": "Para 10: distinguir defaults e adimplentes ao longo das linhas (hoje só no fim), para que o recuo de um default salte aos olhos sem ler rótulos."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Previsão sobre a PD de cada default antes das árvores 2 a 4, retornos que nomeiam a confusão (a árvore corrige grupos, não propostas); leitura dinâmica com η × folha e a PD antes e depois; link para o slide 9.",
+    "corrigir": "Para 10: o enunciado já afirma que a log loss cai a cada árvore, o que elimina a alternativa C de saída; trocar C por uma confusão plausível (por exemplo, \"a PD de todo adimplente cai a cada árvore\", falso para #15 na árvore 1)."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Seletor de estágio (F₀ a árvore 4) e de proposta acompanhada mudam linha destacada, faixa e leitura com números (folha +1,27, 0,4 × 1,27 = +0,51, PD 63,2% → 74,1%); Restaurar.",
+    "corrigir": "Para 10: um controle de η aqui mostraria se o recuo de #10 persiste com outra taxa, fazendo da navegação um experimento."
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Trajetórias conferidas com a biblioteca e o scikit-learn (random_state=0): #10 50 → 69,0 → 65,4 → 63,2 → 74,1%, #16 recua na árvore 4 (75,9 → 72,4%); log loss 0,693, 0,452, 0,330, 0,263, 0,217.",
+    "corrigir": "Para 10: avisar que o recuo de #10 nas árvores 2 e 3 depende do desempate do slide 5 (com o outro corte, equivalente, #10 e #16 trocam de papel), e que a queda da perda a cada árvore não é garantida em geral (taxa alta ou subamostra)."
+   }
+  },
+  "c6p9": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Captura p9-B: na cascata, os sublabels das regras (\"log(8 ÷ 8)\", \"57,5 < util. ≤ 87,5\") encostam no título da linha seguinte, sem respiro; a linha tracejada do zero atravessa \"0,4 × −0,41\" e \"0,4 × −0,24\"; a barrinha que marca o ganho em PD junto ao eixo vertical da sigmoide não tem rótulo próprio e se lê como ruído.",
+    "corrigir": "Dar mais altura às linhas da cascata (ou reduzir para uma linha de regra) e deslocar os textos das parcelas negativas para fora da linha do zero; rotular a barrinha do eixo (\"+10,9 pp\") ou retirá-la."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Subtítulo provisório em pergunta, previsão com quatro alternativas e retornos que nomeiam a confusão (log odds lidas como pontos de PD; PD como soma das parcelas); leitura com a soma 0,00 + 0,80 − 0,16 − 0,10 + 0,51 = 1,05 e PD 74,1%; links para os slides 8 e 10.",
+    "corrigir": "Para 10: o título diz que a PD se decompõe em parcelas, e a lição do slide é que só as log odds se decompõem; um título como \"As log odds somam parcelas rastreáveis; a PD vem só no fim\" alinharia título e dado."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Os 16 botões de proposta redesenham cascata, sigmoide e leitura; a previsão revela a PD; Restaurar.",
+    "corrigir": "Para 10: um controle que desloque o ponto de partida (o acumulado até a árvore 3) e mostre quantos pontos de PD a mesma parcela de +0,51 rende, que é o experimento do argumento."
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Conferido na biblioteca: #10 tem F₃ = 0,541 (PD 63,2%) e F₄ = 1,0505 (PD 74,1%), ganho de 10,9 pp; #9 vai de 87,5% a 92,1%, 4,6 pp; as duas caem na mesma folha da árvore 4 (conferido no código, MESMA). Fonte com amostra, defaults e configuração.",
+    "corrigir": "Para 10: uniformizar a notação (aqui \"log(8 ÷ 8)\", no slide 3 \"ln\") e dizer que a decomposição é exata para esta proposta, mas a contribuição de cada árvore em PD depende da ordem em que se soma."
+   }
+  },
+  "c6p10": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Capturas 10-c6p10 e p10-B: algoritmo em cinco linhas numeradas, cada uma com fórmula, papel, link e o número do exemplo; laço visualmente agrupado; linha 5 oculta até a previsão. No exemplo da linha 3, \"2 propostas\" quebra deixando o número no fim da linha anterior.",
+    "corrigir": "Para 10: evitar a quebra órfã da linha 3 e ocupar o vão do painel direito depois da previsão com a árvore m desenhada, de modo que a peça não seja só texto."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "O título \"A fórmula depois da história\" é um rótulo, não afirmação nem pergunta; a afirmação está só no subtítulo. A previsão (F₂ da proposta 10) e os retornos estão bons (η esquecido, η aplicado ao acumulado, sigmoide a cada passo), com leitura numérica e links para 9 e 11.",
+    "corrigir": "Trocar o título por uma afirmação, por exemplo \"Cada linha do algoritmo de Friedman é um slide já visto\"."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Seletores de árvore m e de proposta (liberados depois do acerto) refazem a coluna \"no exemplo\" com números da biblioteca (−0,19 ÷ 0,46 = −0,41; 0,80 + 0,4 × (−0,41) = 0,64); Restaurar.",
+    "corrigir": "Para 10: deixar o aluno mudar η e ver a linha 5 e as linhas 2 a 4 da árvore seguinte responderem."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Números conferidos: na árvore 2, a folha de #10 tem #10 e #15, Σr = 0,31 − 0,50 = −0,19, Σp(1 − p) = 0,214 + 0,25 = 0,46, γ = −0,41, F₂ = 0,636. Mas o retorno da alternativa D (s10-formula.tsx linha 47) diz \"A sigmoide entra só no fim\", logo abaixo da linha 2, que aplica σ(F_{m−1}) em toda iteração para obter o resíduo: a frase é imprecisa diante da fórmula na tela.",
+    "corrigir": "Trocar por \"F soma em log odds; a sigmoide só converte F em PD (para o resíduo de cada passo e para a PD final), nunca se somam PDs\"; padronizar ln no lugar de log na linha 1."
+   }
+  },
+  "c6p11": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Capturas 11-c6p11, p11-B e p11-C: o mínimo da validação (0,296 na árvore 16) e o cruzamento do palpite (árvore 169) são os fatos da leitura e não aparecem marcados: não há linha de referência em 0,321 e o mínimo fica espremido nos primeiros 5% do eixo; o gráfico de AUC tem só uns 70 px de altura; o cursor pontilhado atravessa o rótulo \"palpite inicial F₀\" (p11-C, m = 40).",
+    "corrigir": "Traçar a linha horizontal \"palpite 0,321\" na validação, marcar o mínimo (16; 0,296) e o cruzamento (169), ou usar eixo x em escala log; ancorar o rótulo do palpite numa marca no ponto k = 0 e dar mais altura ao gráfico de AUC ou passá-lo para o painel lateral."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Previsão do comportamento da validação antes de desenhá-la, com retornos que nomeiam a confusão (ajuste por generalização; melhora lenta) e números (0,296, 0,321, 0,329, árvore 169); leitura com perda e AUC nos dois conjuntos e links para os slides 10 e 15; aviso de validação sorteada.",
+    "corrigir": "Para 10: usar o próprio dado para separar AUC de log loss: com 300 árvores a AUC de validação ainda é 0,587, acima do acaso, enquanto a log loss (0,329) já é pior que a do palpite (0,321)."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "O controle Árvores somadas (0 a 300) move cursores, os quatro KPIs e a leitura (com 40 árvores: perda 0,274 e 0,301, AUC 0,765 e 0,658): o aluno muda a complexidade e vê o treino melhorar e a validação piorar; Restaurar.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Conferido com o scikit-learn (taxa 0,1, profundidade 2, mínimo 40, 300 árvores): perda de ajuste 0,234, de validação 0,329, palpite 0,321, mínimo 0,2955 na árvore 16, cruzamento a partir da 169, AUC 0,874 e 0,587, 300 quedas em 300. Denominadores na fonte (1.472 com 139 defaults; 631 com 62), base, safras e sementes declaradas, e a limitação da validação sorteada na tela.",
+    "corrigir": "Para 10: o título diz \"o treino sempre melhora\"; qualificar (\"com taxa 0,1 e sem subamostra\"), já que o slide 16 mostra árvores que veem só parte do ajuste."
+   }
+  },
+  "c6p12": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Captura 12 palco: duas peças de mesmo peso lado a lado (mapa de calor e curvas de log odds), nenhuma domina. O mapa em profundidade 2 com 300 árvores é um listrado de ruído (faixas verticais e horizontais sem padrão legível) e não prova o título; as curvas da direita são serrilhadas, com picos isolados perto de 60%.",
+    "corrigir": "Fazer das curvas de log odds a peça principal (largura maior) e reduzir o mapa a um complemento menor, ou trocá-lo por um quadro de três números (efeito de 0% a 60% por score). Com o modelo parado (ver rigor), as curvas deixam de ser serrilhadas e o mapa passa a ter forma legível."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "Previsão antes de revelar, retornos que nomeiam a confusão (B: 'nenhuma folha sabe o score e a utilização ao mesmo tempo'; C: 'tocos dão degraus, não retas') e leitura com números (+2,73 com score 700, -0,16 com 900). Mas o que o aluno vê como 'interação' é ruído de sobreajuste: com 300 árvores e profundidade 2, a utilização reduz a PD no score 900 e o efeito muda de sinal conforme o ponto final (a 55%: +2,87, +0,44, -1,32). O slide ensina a ler variância como interação, e a expansão diz que os tocos validam melhor (0,2936 contra 0,2955), o que disputa a ideia principal sem ser integrado à leitura.",
+    "corrigir": "Mostrar a comparação de profundidades no número de árvores escolhido pela validação (20 para tocos, 16 para profundidade 2), ou num exemplo didático com interação verdadeira, e dizer na leitura que a interação capturada só vale se validar; o achado da expansão (tocos validam melhor) deve entrar no rodapé revelado."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Seletor de profundidade travado até a previsão certa, seletor de atraso, Restaurar (p=2, atraso 0), botão que calcula a validação sob demanda. Mudar a profundidade muda a leitura (deltas iguais com tocos, +0,99 nos três scores; diferentes com 2 e 3).",
+    "corrigir": "Para 10: acrescentar o número de árvores como controle (16, 50, 300) para o aluno ver a 'interação' encolher ao parar pela validação, que é o experimento que separa interação real de decoreba."
+   },
+   "rigor": {
+    "nota": 7,
+    "evidencia": "Conferido com gbm.ts: deltas de 0% a 60% em profundidade 2 são +2,73, +1,60 e -0,16 (iguais à tela), mas valem +2,48, +1,27, -0,49 a 50% e +2,87, +0,44, -1,32 a 55%: o número central depende de um ponto de uma curva serrilhada. No modelo parado em 16 árvores os mesmos deltas são +0,26, +0,11, +0,02. A leitura revelada afirma 'o efeito de uma variável depende da outra' a partir de ruído do modelo de 300 árvores. A fonte diz 'Eixos nos percentis 5 a 95', mas o código usa score de 700 a 940 e utilização até 65% (linhas 18 e 19), e os percentis do ajuste são 711,6 a 926,8 e 0 a 60,7%: a curva de score 700, a de maior efeito, está fora do P5.",
+    "corrigir": "Calcular a superfície e os deltas no modelo parado pela validação (ou mostrar os dois), medir o efeito como média num intervalo de utilização em vez de um ponto, usar os scores 750, 820 e 900 dentro do P5 a P95 e corrigir a fonte para dizer a faixa real dos eixos."
+   }
+  },
+  "c6p13": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Captura 13 palco e s13-rev: curva de perda domina; ajuste em azul com círculo, validação em verde tracejado com triângulo, referência em cinza; KPIs secundários; hierarquia título, subtítulo, peça, leitura, fonte limpa.",
+    "corrigir": "Para 10: a legenda 'cinza: validação da referência' aparece antes de a curva cinza existir (só surge depois da previsão); mostrar a legenda só quando a curva aparece."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Pergunta útil no título provisório ('Qual dos quatro controles freia a complexidade?'), previsão antes de liberar os controles, retornos com números que nomeiam o erro ('Acelera, não freia': perda de ajuste 0,276 com profundidade 1 contra 0,175 com 4), leitura revelada com números e ponte ao slide 14.",
+    "corrigir": "Para 10: a pergunta já entrega metade da resposta ('Três deles aumentam a complexidade quando sobem'); perguntar sem a dica e mostrar no retorno de 'taxa' o que acontece com a validação, não só com o ajuste."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Quatro controles reais (taxa, profundidade, mínimo, árvores) recalculam o modelo ao vivo e respondem em perda e AUC de ajuste e validação; Restaurar volta à referência. Defeito: antes da previsão, o controle deslizante 'Árvores' aparece ativo (laranja, captura 13 palco) mas ignora o movimento (onChange só age com revelado), enquanto os seletores aparecem desabilitados.",
+    "corrigir": "Desabilitar visualmente o deslizante de árvores antes da previsão, como os seletores; com isso o experimento do conceito justifica 10."
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Conferido com gbm.ts: referência com 300 árvores dá perda de ajuste 0,234, validação 0,329, AUC 0,874 e 0,587 (iguais à tela); mínimo 5 contra 160: 0,197 e 0,259; profundidade 1 contra 4: 0,276 e 0,175. Denominadores na fonte (1.472 com 139 defaults; 631 com 62).",
+    "corrigir": "Para 10: dizer na leitura que a melhor validação de cada combinação foi escolhida na própria validação e, portanto, é otimista; ou mostrar a faixa a menos de 0,001 do mínimo como no slide 15."
+   }
+  },
+  "c6p14": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Captura s14-al: a curva de validação domina; no eixo η vezes árvores as duas curvas se sobrepõem, o que é o argumento; KPIs e o passo total (1,60 e 1,70) secundários.",
+    "corrigir": "Para 10: as duas curvas têm a mesma cor e a legenda descreve só os marcadores do mínimo (● e △), não os traços; o círculo do mínimo fica escondido sob o triângulo. Dizer 'contínua: η maior; tracejada: metade' e afastar os marcadores."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Título provisório em pergunta, previsão com três alternativas, retornos que nomeiam a confusão ('taxa menor anda menos por árvore e chega depois'), leitura com números (16 e 34 árvores, maior distância 0,0023) e ponte ao slide 15.",
+    "corrigir": "Para 10: deixar a turma ver a confusão acontecer, por exemplo mostrando primeiro as duas curvas no eixo de árvores (mínimos separados) e só então a troca de eixo que as funde."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Par de taxas e eixo horizontal travados até a previsão, Restaurar, KPIs que respondem. A troca de eixo é o experimento visual do conceito.",
+    "corrigir": "Para 10: deixar o aluno escolher qualquer taxa (0,2; 0,1; 0,05; 0,025) e ver o mínimo acompanhar 1,6 dividido por η, em vez de dois pares prontos."
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Conferido com gbm.ts: mínimos em 16 (0,2955), 34 (0,2955) e 73 (0,2959) árvores, iguais à tela. Fonte com 631 propostas e 62 defaults, configuração e regra da distância.",
+    "corrigir": "Para 10: a razão '2,1 vezes' tem precisão maior que o dado (no slide 15 a perda fica a menos de 0,001 do mínimo de 9 a 22 árvores); dizer que a regra vale para taxas pequenas e que o ponto exato do mínimo é ruidoso."
+   }
+  },
+  "c6p15": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Capturas 15 palco e s15-rev: o gráfico de AUC tem cerca de 60 px para a faixa de 0,50 a 0,90, e a subida de 0,743 para 0,874 que a leitura cita não se lê na figura; o subtítulo do gráfico de perda quebra em duas linhas ('... do / mínimo'). Ao abrir a paciência (s15-rev2), o cartão sobe sobre os KPIs e corta 'validação; mín.'.",
+    "corrigir": "Dar altura ao painel de AUC (ou trocá-lo por dois números no KPI) para que a perda domine sem disputar; encurtar o subtítulo ('faixa: a 0,001 do mínimo')."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Pergunta no título provisório, curva de validação escondida até a previsão, retornos com número ('O ajuste não sabe parar': 0,3289 com 300 contra 0,2955), leitura revelada com a faixa de 9 a 22 árvores e ponte ao slide 17.",
+    "corrigir": "Para 10: o retorno da alternativa B só dá o número; nomear a confusão (cortar 'o fim da curva' supõe que o dano está no fim, mas a validação já piora a partir de 22)."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "Deslizante 'Parar em M árvores' muda perda de validação, AUC de ajuste e de validação e a leitura (s15-rev2: em 40, 0,3011, 0,0056 acima do mínimo); zoom 0 a 60; Restaurar; tabela de paciência calculada na mesma curva. O aluno muda a causa (onde parar) e vê o efeito do título.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Conferido com gbm.ts: mínimo em 16 árvores com 0,2955; 0,3096 com 100; 0,3289 com 300; AUC de ajuste 0,743 em 16 e 0,874 em 300; faixa a menos de 0,001 de 9 a 22, iguais à tela. Fonte declara validação sorteada, não temporal.",
+    "corrigir": "Para 10: dizer que a perda de validação no ponto escolhido fica otimista porque a mesma amostra escolheu o ponto, e que é por isso que a janela fora do tempo segue fechada."
+   }
+  },
+  "c6p16": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Captura s16-rev: a curva grossa da média domina sobre as dez sementes em verde translúcido e a curva sem sorteio em cinza tracejado; rótulos na ponta sem sobreposição; tabela secundária.",
+    "corrigir": "Para 10: marcar na figura o mínimo de cada curva (onde o modelo seria parado), que é onde a comparação importa."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "A previsão é feita em 200 árvores, depois de o slide 15 ensinar a parar em 16. A alternativa certa ('Melhora, em todas as sementes') vale em 200 árvores, mas no mínimo, onde o modelo seria usado, a diferença cabe na faixa entre sementes, e com 30% a média piora (0,2966 contra 0,2955). A alternativa C ('Não muda'), marcada errada, é a que mais se aproxima do que acontece no ponto de parada.",
+    "corrigir": "Perguntar no ponto de parada ('parando pela validação, a perda melhora?') ou separar as duas perguntas: em 200 árvores o sorteio atrasa a decoreba; no mínimo, o ganho não se distingue do sorteio nesta amostra. Ajustar o retorno de C."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Seletor de fração (80%, 50%, 30%) travado até a previsão, dez sementes fixas (1 a 10), cálculo progressivo, Restaurar; a tabela e a leitura respondem a cada fração.",
+    "corrigir": "Para 10: acrescentar um controle de número de árvores (ou ler no mínimo) para o aluno ver que o ganho do sorteio depende de onde se para."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido com gbm.ts: sem sorteio 0,3228 em 200 e mínimo 0,2955; 50%: média 0,3119 em 200, mínimo médio 0,2935; 30%: mínimo médio 0,2966, pior que 0,2955. A leitura escreve 'diferença de {Math.abs(ganhoMin)}' (linha 79), então com 30% diz 'diferença de 0,0011' sem dizer que é piora. O título 'também regulariza' se apoia em 200 árvores, ponto que nenhum modelo parado usaria.",
+    "corrigir": "Mostrar o sinal da diferença no mínimo ('pior em 0,0011'), e restringir o título ou a leitura ao que o dado mostra: o sorteio achata a subida depois do mínimo; no mínimo, a diferença não se separa da variação entre sementes."
+   }
+  },
+  "c6p17": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Captura c6p17 certa: dois painéis empilhados com o mesmo eixo logarítmico, logística como reta tracejada, validação em verde e ajuste em cinza, marcador da parada; tabela e deslizante secundários.",
+    "corrigir": "Para 10: no estado inicial a linha vertical da parada atravessa o texto 'validação: abre depois da previsão' nos dois painéis, e os rótulos 'logística, validação' e 'logística, ajuste' encostam; afastar o texto da linha e os rótulos entre si."
+   },
+   "didatica": {
+    "nota": 10,
+    "evidencia": "É a virada: no ajuste o boosting passa a logística com 4 árvores e chega a 0,8740; a previsão pergunta pela validação e os retornos nomeiam cada confusão ('Confunde ajuste com validação': 0,5869 com 300 contra 0,7006; 'O melhor boosting não é o melhor modelo'). O aluno vê o erro acontecer no gráfico (ajuste sobe, validação cai abaixo da reta). Leitura com números e ponte ao slide 18.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Deslizante de árvores move o marcador e a tabela (AUC e log loss de validação respondem), previsão com 'Tentar outra', Restaurar ao modelo parado.",
+    "corrigir": "Para 10: dar ao aluno uma causa para mudar (por exemplo, incluir na base um termo de interação ou uma variável com forma curva) e ver o boosting passar a logística, que é a condição que o subtítulo afirma."
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Conferido com gbm.ts, logistica.ts e metricas.ts: logística AUC 0,7006 e log loss 0,2932; boosting em 16 árvores 0,6553 e 0,2955; pico de AUC 0,6893 em 6; DeLong pareado 0,045 (IC 0,020 a 0,070), iguais à tela. Escolher a parada na mesma validação favorece o boosting, e ainda assim ele perde, o que torna a conclusão conservadora.",
+    "corrigir": "Para 10: 'Sem interação nem forma a capturar' afirma mais do que o dado mostra; trocar por 'a amostra não mostra interação nem forma que o boosting consiga aproveitar com 139 defaults' e citar a dependência do tamanho da amostra."
+   }
+  },
+  "c6p18": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Capturas 18 palco e c6p18-certa300 (nova): a curva de confiabilidade, peça que prova o título, ocupa cerca de um terço da largura, enquanto o painel da previsão ao lado fica com metade vazia no estado inicial; no estado com 300 árvores o rótulo 'parado em 16' é atravessado pelo bigode do intervalo da faixa 5.",
+    "corrigir": "Dar à curva a maior largura (perto de 60%), empilhar previsão e KPIs à direita sem área morta e mover o rótulo 'parado em 16' para fora dos intervalos."
+   },
+   "didatica": {
+    "nota": 10,
+    "evidencia": "Desmonta o erro mais comum com o próprio dado: a PD média quase não muda (9,3% para 8,9%) enquanto o slope cai de 1,19 para 0,42; o retorno de A diz 'Confunde média com calibração' e o de C 'Confunde dispersão com nível'. Leitura revelada com números, ressalva 'não provar não é conferir' e ponte ao slide 19 e ao capítulo 7.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "Deslizante sobre 1, 5, 10, 16, 30, 50, 100, 200 e 300 árvores redesenha a curva, os KPIs e a leitura, com a curva parada como referência vazada; Restaurar volta a 16; previsão com 'Tentar outra'. É o experimento do título: o aluno muda o número de árvores e vê as PDs se abrirem.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 10,
+    "evidencia": "Conferido com metricas.ts: em 16 árvores PD média 9,3%, taxa 9,8% (Wilson 7,7% a 12,4%), slope 1,19 (IC 0,80 a 1,58), 3 de 5 faixas; em 300, 8,9%, slope 0,42 (IC 0,18 a 0,66), 1 de 5, faixa 1 com 1,4% contra 7,9% e faixa 5 com 22,9% contra 15,1%, iguais à tela. Mostra a incerteza que muda a conclusão (IC do slope, 'não provar não é conferir') e evita chamar média de calibração.",
+    "corrigir": "Detalhe: no modelo parado duas faixas ficam fora do intervalo (4,9% contra 8,7% e 5,7% contra 1,6%); a leitura poderia dizê-lo ao lado do slope."
+   }
+  },
+  "c6p19": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Capturas c6p19 certa e default (novas): cascata do valor esperado ao escore domina, barras cheias para alta e vazadas para queda com ▲ e ▼, rótulo '0,00: sem corte' para o atraso; tabela de ganho contra contribuição secundária.",
+    "corrigir": "Para 10: a área acima de -2,2 fica vazia no estado inicial; ajustar a escala vertical à faixa da cascata."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Previsão antes de revelar; retorno de 'Utilização' nomeia a confusão ('Confunde valor alarmante com contribuição': utilização de 75,8% soma -0,04); tabela opõe ganho global (score 89%) a contribuição local; leitura com a soma que fecha e ponte ao slide 20.",
+    "corrigir": "Para 10: dizer por que 75,8% de utilização baixa a PD neste modelo (a correlação com o score faz o caminho das árvores atribuir o efeito ao score), e ligar isso à restrição monotônica do slide 20, que também restringe a utilização; hoje a ponte fala só do atraso, que neste modelo tem contribuição zero."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "Quatro propostas prontas e três deslizantes editam a proposta; a cascata, a tabela e a leitura recalculam e a soma é verificada na tela; Restaurar volta à proposta da previsão. O aluno muda o valor e vê a contribuição mudar.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Conferido com gbm.ts: proposta (75,8%; 10 dias; 756,4) com valor esperado -2,376, contribuições -0,041, 0,000 e +0,196, escore -2,221 e PD 9,8%; ganho 10,6%, 0% e 89,4%, iguais à tela. Contribuições conferidas com o shap no teste (21 testes passam).",
+    "corrigir": "Para 10: o valor esperado aparece como '-2,38 (8,5%)', mas 8,5% é a sigmoide da log odds média, não a PD média da carteira (9,3% na validação, 9,4% no ajuste); dizer isso para o aluno não tomar 8,5% por PD média."
+   }
+  },
+  "c6p20": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Captura c6p20 certa (nova): a curva livre tracejada atravessa os rótulos '3/31' e '89/958' (rótulos sobrepostos); o painel direito tem área vazia abaixo da tabela.",
+    "corrigir": "Levar as contagens para uma faixa sob o eixo ou dar halo branco e deslocá-las para fora das curvas; ocupar o espaço livre à direita com a contagem de quedas."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Título provisório com o fato (11 propostas, nenhuma em default), Wilson até 25,9%, previsão com retornos que nomeiam a confusão ('O modelo não conhece a lógica de crédito, só os dados'), leitura com números (10 trechos de queda contra 0; AUC 0,5979 contra 0,6756) e ponte ao slide 21.",
+    "corrigir": "Para 10: no estado 'Parada' a leitura diz que a PD livre cai em 0 trechos e, na mesma frase, que 'com monotonia a ordenação melhora'; explicar que o ganho vem das restrições de utilização e score, e que com 300 árvores o modelo monotônico põe 20% de PD em 31 a 60 dias (0 de 11 observados): monotonia não é calibração."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "Seletores de árvores (parada, 100, 300) e de mínimo por folha (10, 40) recalculam dependência parcial, quedas contadas, AUC, log loss e IC de DeLong; Restaurar. O aluno muda a complexidade e vê a PD contrariar ou não a lógica.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Conferido com gbm.ts e metricas.ts: 31/305, 89/958, 16/167, 3/31 e 0/11 no ajuste, Wilson até 25,9%; PD livre 14,6% em 30 dias e 3,4% em 60, pico 28,9% em 27; 10 quedas contra 0; AUC 0,5979 contra 0,6756 (IC 0,035 a 0,121), iguais à tela.",
+    "corrigir": "Para 10: dizer que nesta base a taxa observada é plana de 0 a 30 dias (10,2%, 9,3%, 9,6%, 9,7%), ou seja, a monotonia impõe um conhecimento prévio que os dados não contradizem nem confirmam; e que cada modelo escolheu a parada na mesma validação em que é comparado."
+   }
+  },
+  "c6p21": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Captura 21 palco e c6p21 certa (nova): duas peças disputam o título, a grade dupla de AUC e a lista do validador, com pesos próximos; a grade é uma tabela de números coloridos.",
+    "corrigir": "Escolher a peça principal: a grade com a escolha (e a lista como fecho compacto abaixo ou ao lado, menor), ou a lista com as provas e a grade reduzida a uma linha."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "Previsão com envio, retorno que nomeia a confusão para a maior AUC de treino ('Confunde ajuste com generalização') e leitura com números e ponte ao capítulo 7. Mas duas ideias disputam (escolha de hiperparâmetros e lista de governança), e o retorno das outras células ensina a escolher pela maior AUC mesmo quando a diferença é 0,0076 com 760 propostas, sem dizer que isso cabe no ruído.",
+    "corrigir": "Separar a escolha da lista (ou fazer a lista ser o objeto da previsão) e incluir no retorno que diferenças de centésimos entre células vizinhas não se distinguem nesta amostra."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Seletores de árvores e folhas, 'Mandar ao comitê', 'Tentar outra', Restaurar; links da lista levam aos slides 15, 17 a 20.",
+    "corrigir": "Para 10: depois do primeiro envio a grade de validação fica toda aberta e as novas escolhas só trocam o retorno; mostrar a cada escolha também a AUC fora do tempo escondida até o capítulo 7, ou a diferença com IC contra a melhor."
+   },
+   "rigor": {
+    "nota": 7,
+    "evidencia": "A lista marca com ✓ verde 'Referência linear: logística 0,7006 contra 0,6553', comparação que o boosting perde com IC de DeLong de 0,020 a 0,070 (slide 17); um validador não daria esse item por cumprido. 'Nível conferido: PD média 9,3%, taxa 9,8%' contradiz a lição do slide 18 ('não provar não é conferir', média não é calibração). As provas são da carteira de três variáveis e os ✓ aparecem ao lado do candidato de sete (a fonte avisa, a tela não). O melhor da grade (60 árvores e 8 folhas, AUC 0,6476, conferido em base.json) está na borda da grade (60 é o menor número de árvores testado), e a regra 'maior AUC de validação' é aplicada a diferenças de 0,0076.",
+    "corrigir": "Trocar os ✓ por um estado por item (cumprido, não cumprido, a provar no capítulo 7): referência linear 'não cumprido na carteira'; nível 'média confere, slope a medir'; dizer que as provas são da carteira de três variáveis. Estender a grade abaixo de 60 árvores ou declarar que o ótimo está na borda, e mostrar a incerteza da AUC de validação."
+   }
+  },
+  "c6p22": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Capturas c6p22 (novas): a aba Fórmulas preenche o painel, mas Fronteira, Referências: método e Referências: validação deixam cerca de 45% inferior do painel vazio (área morta grande).",
+    "corrigir": "Ajustar a altura do painel ao conteúdo de cada aba ou distribuir as referências em duas colunas com DOI, e a fronteira com uma linha 'quando usar' mais visível."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Apêndice de consulta declarado ('a aula termina no slide 21'); cada fórmula leva ao slide em que aparece; a fronteira diz o que cada método resolve e quando usar; nota que as contribuições somam F(x) menos E[F].",
+    "corrigir": "Para 10: as fórmulas não trazem a tradução dos símbolos (o componente aceita 'simbolos', não usado), e n significa número de variáveis no Shapley e número de propostas na log loss e na dependência parcial; usar p para variáveis e legendar."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Cinco abas de navegação (Fórmulas, Fronteira, Referências: método, Referências: validação, Reprodução) e links de cada fórmula para o slide correspondente; a aba inicial funciona como volta ao início.",
+    "corrigir": "Para 10: links também nas referências (DOI) e nos itens da fronteira para os slides em que o tema aparece."
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Referências conferidas: Friedman (2001) Annals of Statistics 29(5); Friedman, Hastie e Tibshirani (2000) Annals 28(2); Friedman (2002) CSDA 38(4); ESL 2ª ed. cap. 10; Chen e Guestrin (2016) KDD; Ke et al. (2017) NeurIPS; Prokhorenkova et al. (2018) NeurIPS; Lou et al. (2013) KDD; Nori et al. (2019) arXiv:1909.09223; Grinsztajn et al. (2022) NeurIPS; BCBS (2005) WP 14; Niculescu-Mizil e Caruana (2005) ICML; Lessmann et al. (2015) EJOR 247(1); Lundberg et al. (2020) NMI 2(1); Shapley (1953); Wachter et al. (2018) Harvard JOLT 31(2); Wilson (1927) JASA 22(158); DeLong et al. (1988) Biometrics 44(3); CMN 4.557/2017; EBA (2023): todos com autores, anos e veículos corretos. Reprodução com versões e sementes.",
+    "corrigir": "Para 10: no XGBoost, 'a folha vira Σg ÷ (Σh + λ)' omite o sinal (o peso ótimo é menos Σg sobre Σh mais λ, com g o gradiente); a monotonia cita só documentação, sem referência primária."
+   }
+  }
+ },
+ "storytelling": {
+  "coerencia": {
+   "nota": 8,
+   "evidencia": "O fio declarado em c6p1 (gancho do candidato com AUC 0,8196 no treino e 0,6476 na validação, três escalas do caso e quatro perguntas) volta em todos os 21 slides de aula pela trilha Mecanismo, Probabilidade, Controle, Prova; quase toda leitura termina com o link do slide seguinte; F, F₀, y − p, η, log odds e passo de Newton mantêm o nome do começo ao fim; c6p21 fecha citando 'a queda do slide 1'. Três rupturas verificáveis: (1) a palavra validação designa duas amostras diferentes na mesma tela de c6p1: no gráfico do gancho são 760 propostas das safras 2023-03 a 2023-07, e logo abaixo '2.103 = 1.472 ajuste + 631 validação', em que as 631 fazem parte do próprio treino de 2.103; c6p11 a c6p20 usam as 631 sorteadas e c6p21 volta às 760 temporais sem aviso. (2) c6p7 promete 'A taxa pequena só se paga fora da amostra: slides 11 e 15', e o guia de c6p7 repete ('passos pequenos decoram menos, slides 11, 14 e 15'), mas c6p11 e c6p15 usam uma taxa só, e c6p14 mostra o contrário: recalculei com gbm.ts o mínimo da perda de validação em 0,2955 com η 0,1, 0,2955 com 0,05, 0,2959 com 0,025 e 0,2954 com 0,3. (3) a regra que o capítulo ensina na questão Q_C6P17Q ('o boosting só entra se superar a referência na validação') é contrariada pela decisão de c6p21 ('vai ao comitê como desafiante da logística'), tomada com a logística vencendo no item Referência linear da própria lista (0,7006 contra 0,6553). Menor: no ramo dos tocos, a leitura de c6p12 não aponta o slide seguinte.",
+   "corrigir": "Para 9: dar nomes distintos às duas amostras e usá-los em todas as telas, por exemplo 'validação sorteada (631)' em c6p11 a c6p20 e 'validação temporal (760, safras 2023-03 a 2023-07)' em c6p1 e c6p21, e corrigir em c6p1 a escala do meio para não chamar de validação uma parte do treino; reescrever a leitura de c6p7 e o guia de c6p7 para o que os dados mostram (nesta carteira, taxa abaixo de 0,3 muda o mínimo só na quarta casa; o que η pequeno compra é uma curva mais plana perto do mínimo, medida pela faixa a menos de 0,001 do mínimo em c6p15), ou mostrar em c6p14 o par η 1 contra η 0,1 (0,2967 contra 0,2955); alinhar Q_C6P17Q com c6p21 (o desafiante vai ao comitê para ser julgado, não por ter vencido) ou mudar a decisão. Para 10: a leitura do ramo dos tocos em c6p12 também termina com a pergunta que o c6p13 responde."
+  },
+  "arco": {
+   "nota": 9,
+   "evidencia": "Gancho no primeiro slide com algo em jogo: o modelo que o comitê do capítulo 7 vai julgar perde 0,1720 de AUC do treino à validação (c6p1). A tensão cresce por dúvidas que se resolvem e abrem outra: votar estaciona e corrigir decora (c6p2, log loss 0,030 com 20 árvores); a média do erro não serve como folha (c6p6); a perda de ajuste cai em 300 de 300 árvores e a de validação passa do palpite na árvore 169 (c6p11, conferido: mínimo 0,2955 em 16 árvores, 0,3289 com 300 contra 0,3213 do palpite). A virada vem do dado e é prevista antes de revelada: com as mesmas três variáveis a logística valida melhor, AUC 0,7006 contra 0,6553 e log loss 0,2932 contra 0,2955, diferença de AUC 0,045 com IC de DeLong de 0,020 a 0,070 (c6p17, recalculado). O fecho volta ao gancho com os mesmos números (c6p21: 60 árvores e 8 folhas, 0,6476 contra 0,8196, 'a queda do slide 1') e decide: o boosting vai ao comitê como desafiante.",
+   "corrigir": "Para 10: tornar o gancho tão honesto quanto a virada. A pergunta de c6p1 ('onde o ganho virou decoreba?') atribui toda a queda de 0,172 à decoreba, mas a logística do curso, nas mesmas janelas, cai de 0,6968 para 0,6408 (res.logit_treino e res.logit_val em src/lib/capitulo6/base.json) e a taxa de default sobe de 9,6% para 13,2%: cerca de 0,056 da queda é mudança de safra, comum aos dois modelos, e cerca de 0,116 é do boosting. Mostrar essa decomposição em c6p21 responde ao gancho com dado e torna a virada surpreendente de verdade: no candidato, boosting e logística empatam na validação temporal (0,6476 contra 0,6408; log loss 0,38293 contra 0,38298)."
+  },
+  "exemplo": {
+   "nota": 8,
+   "evidencia": "Um caso de crédito atravessa o capítulo em três escalas ligadas na tela: as 16 propostas dos capítulos 4 e 5 (utilização e atraso, #10 e #15 herdadas de c5p18 e c5p19, seguidas em c6p8, c6p9 e c6p10), as 2.103 propostas do treino (1.472 de ajuste com 139 defaults e 631 de validação com 62), com o atalho entre escalas em c6p3 e c6p4 (F₀ = −2,26), e o candidato de sete variáveis (c6p1, c6p21). O modelo parado em 16 árvores é o mesmo em c6p15, c6p17, c6p18, c6p19 e c6p21; tamanho e taxa de default plausíveis; a base sintética e as sementes estão em toda fonte. Falham dois requisitos do 9: nenhuma tela diz o que a base sintética permite que dados reais não permitiriam (a base tem a PD verdadeira do gerador, base.oot.pt, e c6p17 afirma 'sem interação nem forma a capturar' sem conferir no gerador); e a decisão final não usa o caso: a lista de c6p21 marca com ✓ provas tiradas da carteira de três variáveis ('Provas da lista: carteira de três variáveis'), enquanto o candidato que vai ao comitê tem, na sua validação temporal de 760 propostas, PD média de 9,7% contra 13,2% observados, fora do intervalo de Wilson de 10,9% a 15,7% (res.gbm_val), e nenhuma comparação com a logística de sete variáveis aparece. Nenhuma consequência econômica é medida.",
+   "corrigir": "Para 9: declarar em c6p1 ou c6p11 o que o sintético permite (processo gerador conhecido; em c6p17, conferir na PD verdadeira se há interação a capturar; repetição com semente; janela futura sem sigilo bancário); refazer a lista de c6p21 com os números do próprio candidato na validação temporal: referência linear 0,6476 contra 0,6408 da logística de sete variáveis, nível com PD média 9,7% contra 13,2% (item reprovado, não ✓), e deixar as provas da carteira de três variáveis rotuladas como prova do método. Para 10: dar consequência mensurável, por exemplo, com a mesma taxa de aprovação nas 760 propostas, quantos defaults aprovados mudam entre logística e boosting, e quanto a subestimação de 3,5 pontos de PD representa de perda esperada e provisão sob a Resolução CMN 4.966/2021."
+  },
+  "progressao": {
+   "nota": 9,
+   "evidencia": "Do intuitivo ao formal: três estratégias antes de qualquer fórmula (c6p2), algoritmo à mão nas 16 propostas (c6p3 a c6p9) e a fórmula de Friedman só em c6p10 ('A fórmula depois da história'), com cada termo ligado ao slide em que nasceu. Vários conceitos nascem de uma limitação mostrada: a média do erro anda pouco na escala de log odds e pede o passo de Newton (c6p6, média −0,50 leva a PD a 37,8%, Newton −2,00 a 11,9%); a validação que sobe em c6p11 pede os controles de c6p12 a c6p16; a contribuição zero do atraso em c6p19 abre a monotonia de c6p20. Níveis marcados no mapa de c6p1 (tracejado) e no roteiro. Tempo: o percurso essencial do capítulo soma 57 minutos e, com os 49 essenciais do capítulo 5, a Aula 2 fica em 106 minutos para cerca de 165 úteis; com os aprofundamentos, 121.",
+   "corrigir": "Para 10: fazer a taxa de aprendizagem nascer de uma limitação mostrada, que hoje não aparece (c6p7 mostra η 1 vencendo no ajuste e remete a slides que não comparam taxas); por exemplo, em c6p14, η 1 contra η 0,1 na validação. Ligar o percurso essencial sem passar por aprofundamentos: c6p8 só aponta para c6p9 e c6p11 abre com 'o algoritmo do slide 10'. Explicar em uma linha o IC de DeLong usado em c6p17 e c6p20, que o capítulo 7 só apresenta em c7p15."
+  },
+  "estadoDaArte": {
+   "nota": 9,
+   "evidencia": "Pelo checklist do capítulo 6: os onze essenciais aparecem em slide com os dados do caso. E1, E2 e E3 nas 16 propostas, com a derivação de y − p na tela (c6p4) e a folha de Newton conferida contra a biblioteca que reproduz o scikit-learn (c6p6); E4 em c6p14 (metade da taxa, 34 árvores contra 16) e c6p15 (parada e regra de paciência); E5 em c6p12, c6p13 e c6p16 (Friedman, 2002, na fonte); E8 em c6p17 com DeLong e Lessmann et al. (2015); E9 em c6p19 com contribuições conferidas com o shap.TreeExplainer e o contraste com a importância por ganho; E10 em c6p20 com o custo medido na validação (AUC 0,6574 livre contra 0,6796 monotônico parado, IC de 0,003 a 0,041); E11 em c6p21 com Resolução CMN 4.557/2017 e EBA (2023). Os seis de fronteira estão no apêndice (c6p22, aba Fronteira) com referência primária, o que resolve e quando usar. Dois essenciais estão cobertos só em parte: E6, porque o laboratório de c6p11 a c6p20 usa validação sorteada (dito na tela) e a escolha em safras futuras só acontece na grade do candidato em c6p21; E7, porque a distorção é medida (slope 1,19 com IC de 0,80 a 1,58 parado em 16 árvores e 0,42 com IC de 0,18 a 0,66 com 300, recalculado), mas a recalibração fica para c7p12, c7p13 e c7p16 e Niculescu-Mizil e Caruana (2005) só está no apêndice.",
+   "corrigir": "Para 10: fechar os dois essenciais parciais e um detalhe de rigor. E7: em c6p18, citar Niculescu-Mizil e Caruana (2005) na tela e mostrar a recalibração funcionando nas 631 propostas (Platt no modelo de 300 árvores, slope de volta perto de 1), ou ligar ao c7p13 com o número. E6: mostrar no candidato a queda da logística na mesma janela temporal, para separar complexidade de mudança de safra. E9: mostrar um limite concreto da importância por ganho (por exemplo, a ordem global por ganho contra a média de |φ| nas 631 propostas). Corrigir o sinal da folha do XGBoost no apêndice: com g = p − y, a folha é −Σg ÷ (Σh + λ)."
+  },
+  "fechamento": {
+   "nota": 8,
+   "evidencia": "c6p21 tem a forma certa: volta ao gancho com os números do candidato (60 árvores e 8 folhas, AUC 0,6476 contra 0,8196), a turma escolhe a célula antes de ver a validação, diz o que falta (janela fora do tempo congelada, 737 propostas, 2023-08 a 2023-12) e termina numa ação, a lista do validador independente, cada item com link para a prova. Guias de página e as três questões reescritas acompanham a tela na maior parte. Defeitos verificáveis: a lista mostra cinco ✓ antes de qualquer escolha, com provas de outro modelo, inclusive um ✓ em Referência linear onde a logística vence (0,7006 contra 0,6553); o candidato real reprova o nível na sua validação (PD média 9,7% contra 13,2%, fora do IC de Wilson de 10,9% a 15,7%) e isso não aparece; a melhor célula da grade está na borda (60 árvores, o menor valor testado), o que contraria a lição de c6p15 de achar o mínimo da curva; Q_C6P17Q ensina que o boosting só entra se superar a referência, e c6p21 o manda ao comitê; o guia de c6p7 afirma um ganho da taxa pequena que nenhuma tela mostra. A conclusão não responde às quatro perguntas de c6p1 uma a uma.",
+   "corrigir": "Para 9: trocar o ✓ por um estado por item (passou, reprovado, pendente) calculado com o candidato na validação temporal: referência linear 0,6476 contra 0,6408 (empate), parada (estender a grade abaixo de 60 árvores ou usar parada antecipada, como em c6p15), nível reprovado (9,7% contra 13,2%), monotonia e explicação pendentes no candidato; escrever a leitura final como resposta às quatro perguntas de c6p1, com um número do caso para cada; alinhar Q_C6P17Q e o guia de c6p7 ao que a tela mostra. Para 10: entregar a lista como ficha aplicável a uma carteira real, com limiares (por exemplo, diferença de AUC contra a logística com IC, slope com IC contendo 1, PD média dentro do Wilson da taxa observada, nenhum trecho de queda nas variáveis com sinal de negócio)."
+  }
+ },
+ "estadoDaArte": [
+  {
+   "id": "E1",
+   "tema": "Modelo aditivo construído em etapas: palpite inicial mais correções",
+   "classe": "essencial",
+   "slides": [
+    "c6p2",
+    "c6p3",
+    "c6p8",
+    "c6p9",
+    "c6p10",
+    "c6p11"
+   ],
+   "fonte": "Friedman (2001), Annals of Statistics 29(5), citado na fonte de c6p10. Coberto com o caso: palpite F₀ e quatro correções nas 16 propostas, PD decomposta em parcelas, o mesmo algoritmo 300 vezes nas 1.472."
+  },
+  {
+   "id": "E2",
+   "tema": "Pseudo-resíduo como gradiente negativo da perda; em log loss, y − p na escala de log odds",
+   "classe": "essencial",
+   "slides": [
+    "c6p4",
+    "c6p10"
+   ],
+   "fonte": "Friedman (2001) na expansão de c6p4; Friedman, Hastie e Tibshirani (2000) no apêndice. Coberto: derivação de −∂ℓ/∂F = y − p na tela, conferida por diferença numérica, resíduos das 16 e do ajuste (+0,91 e −0,09)."
+  },
+  {
+   "id": "E3",
+   "tema": "Valor da folha por passo de Newton (soma dos gradientes sobre soma das curvaturas)",
+   "classe": "essencial",
+   "slides": [
+    "c6p6"
+   ],
+   "fonte": "Friedman (2001) na fonte; Chen e Guestrin (2016) na expansão (λ no denominador). Coberto: folha B com −3,0 ÷ (6 × 0,25) = −2,00, conferida contra a biblioteca que reproduz o GradientBoostingClassifier."
+  },
+  {
+   "id": "E4",
+   "tema": "Taxa de aprendizagem e número de árvores acoplados; parada antecipada por validação",
+   "classe": "essencial",
+   "slides": [
+    "c6p7",
+    "c6p14",
+    "c6p15"
+   ],
+   "fonte": "Friedman (2001); Hastie, Tibshirani e Friedman (2009) no apêndice. Coberto: metade da taxa pede 34 árvores contra 16, curvas alinhadas em η × M, parada no mínimo e regra de paciência. Ressalva: o ganho de generalização da taxa pequena é afirmado e não aparece (mínimos de 0,2954 a 0,2959 entre η 0,3 e 0,025)."
+  },
+  {
+   "id": "E5",
+   "tema": "Profundidade (ordem de interação), mínimo por folha e subamostragem como controles",
+   "classe": "essencial",
+   "slides": [
+    "c6p12",
+    "c6p13",
+    "c6p16"
+   ],
+   "fonte": "Friedman (2002), Computational Statistics & Data Analysis 38(4), na fonte de c6p16. Coberto: curvas paralelas com tocos, laboratório dos quatro controles, dez sementes de subamostra de 50%."
+  },
+  {
+   "id": "E6",
+   "tema": "Validação fora do tempo: treino sempre melhora, janela futura decide a complexidade",
+   "classe": "essencial",
+   "slides": [
+    "c6p1",
+    "c6p11",
+    "c6p15",
+    "c6p21"
+   ],
+   "fonte": "BCBS (2005), WP 14, só no apêndice. Coberto em parte: o treino sempre melhora (c6p11, c6p15) com validação sorteada, declarada na tela; a escolha em safras futuras (2023-03 a 2023-07) só aparece na grade do candidato (c6p21); a janela fora do tempo fica para c7p17 por desenho do curso."
+  },
+  {
+   "id": "E7",
+   "tema": "Probabilidades do boosting distorcidas e recalibração",
+   "classe": "essencial",
+   "slides": [
+    "c6p18"
+   ],
+   "fonte": "Niculescu-Mizil e Caruana (2005), ICML, só no apêndice. Coberto em parte: distorção medida com o caso (slope 1,19, IC de 0,80 a 1,58, parado; 0,42, IC de 0,18 a 0,66, com 300 árvores); recalibração remetida a c7p12, c7p13 e c7p16."
+  },
+  {
+   "id": "E8",
+   "tema": "Comparação com a logística como referência em crédito",
+   "classe": "essencial",
+   "slides": [
+    "c6p17"
+   ],
+   "fonte": "Lessmann, Baesens, Seow e Thomas (2015), EJOR 247(1), na expansão de c6p17. Coberto: AUC 0,7006 contra 0,6553 e log loss 0,2932 contra 0,2955 na validação, IC de DeLong de 0,020 a 0,070."
+  },
+  {
+   "id": "E9",
+   "tema": "Explicação por contribuições aditivas (TreeSHAP) e limites da importância por ganho",
+   "classe": "essencial",
+   "slides": [
+    "c6p19"
+   ],
+   "fonte": "Lundberg et al. (2020), Nature Machine Intelligence 2(1), no apêndice; contribuições conferidas com o shap.TreeExplainer. Coberto: cascata que fecha exatamente a log odds, quatro propostas e edição de valores, ganho global sem sinal contra contribuição com sinal. Limite do ganho mostrado só pela falta de sinal."
+  },
+  {
+   "id": "E10",
+   "tema": "Restrições monotônicas para respeitar a lógica de negócio",
+   "classe": "essencial",
+   "slides": [
+    "c6p20",
+    "c6p21"
+   ],
+   "fonte": "Documentação do scikit-learn (monotonic_cst), XGBoost e LightGBM, no apêndice. Coberto: 0 default em 11 propostas acima de 30 dias, PD livre caindo em 10 trechos, monotônico em 0, custo medido com DeLong."
+  },
+  {
+   "id": "E11",
+   "tema": "Governança: validação independente e backtesting de modelos",
+   "classe": "essencial",
+   "slides": [
+    "c6p21"
+   ],
+   "fonte": "Resolução CMN 4.557/2017; EBA (2023), na nota de c6p21 e no apêndice. Coberto: lista do validador independente e janela congelada; backtesting só nomeado."
+  },
+  {
+   "id": "F1",
+   "tema": "Objetivo regularizado de segunda ordem",
+   "classe": "fronteira",
+   "slides": [
+    "apendice"
+   ],
+   "fonte": "Chen e Guestrin (2016), KDD. Apêndice com o que resolve e quando usar; também uma frase na expansão de c6p6. O sinal da folha no apêndice está trocado (Σg ÷ (Σh + λ) em vez de −Σg ÷ (Σh + λ))."
+  },
+  {
+   "id": "F2",
+   "tema": "Histogramas e amostragem por gradiente",
+   "classe": "fronteira",
+   "slides": [
+    "apendice"
+   ],
+   "fonte": "Ke et al. (2017), LightGBM, NeurIPS. Apêndice: o que resolve (bases de milhões de linhas) e quando usar."
+  },
+  {
+   "id": "F3",
+   "tema": "Vazamento de alvo em variáveis categóricas e boosting ordenado",
+   "classe": "fronteira",
+   "slides": [
+    "apendice"
+   ],
+   "fonte": "Prokhorenkova et al. (2018), CatBoost, NeurIPS. Apêndice: codificação ordenada sem vazamento; usar com CEP, CNAE ou loja."
+  },
+  {
+   "id": "F4",
+   "tema": "Modelos aditivos explicáveis com interações (GA2M, EBM)",
+   "classe": "fronteira",
+   "slides": [
+    "apendice"
+   ],
+   "fonte": "Lou, Caruana, Gehrke e Hooker (2013), KDD; Nori et al. (2019). Apêndice: usar quando o validador audita a forma."
+  },
+  {
+   "id": "F5",
+   "tema": "Árvores ainda à frente de redes profundas em dados tabulares",
+   "classe": "fronteira",
+   "slides": [
+    "apendice"
+   ],
+   "fonte": "Grinsztajn, Oyallon e Varoquaux (2022), NeurIPS. Apêndice: boosting e florestas à frente em tabulares médios; redes para texto, imagem e sequências."
+  },
+  {
+   "id": "F6",
+   "tema": "Explicações contrafactuais para decisões adversas",
+   "classe": "fronteira",
+   "slides": [
+    "apendice"
+   ],
+   "fonte": "Wachter, Mittelstadt e Russell (2018), Harvard JOLT 31(2). Apêndice: menor mudança que troca a decisão, para motivo de recusa, ligada à monotonia de c6p20."
+  }
+ ],
+ "excecoesVarredura": [],
+ "leitura": "Coerente como um todo, quase: o capítulo tem um fio único, do candidato que perde 0,17 de AUC (c6p1) ao mesmo candidato enviado ao comitê (c6p21), com trilha, títulos e leituras encadeadas, mas três costuras abrem diante de um público sênior: validação significa 631 propostas sorteadas num slide e 760 de safras futuras no outro, inclusive na mesma tela de c6p1; c6p7 promete um ganho da taxa pequena que nenhum slide mostra e que os dados não confirmam; e c6p21 manda ao comitê um modelo que, pela regra da questão Q_C6P17Q, não deveria entrar. Há um exemplo de crédito que atravessa o capítulo, e ele é bom no meio: as 16 propostas herdadas dos capítulos 4 e 5 viram as 1.472 do ajuste com atalhos na tela, e o modelo parado em 16 árvores é o mesmo de c6p15 a c6p21. O que falta é a decisão final usar o próprio caso: a lista do validador marca com ✓ provas de outro modelo, enquanto o candidato real subestima a PD na validação temporal (9,7% contra 13,2%) e empata com a logística (0,6476 contra 0,6408); também falta dizer o que a base sintética permite e medir alguma consequência econômica. Entrega o estado da arte com folga em relação ao capítulo antigo: os onze essenciais aparecem com os dados do caso (Newton, TreeSHAP conferido com o shap, monotonia com custo medido, logística com DeLong, governança) e os seis de fronteira estão no apêndice com referência e quando usar; o que impede o 10 é a recalibração que fica para o capítulo 7, a validação temporal que só aparece na grade do candidato e um sinal trocado na folha do XGBoost."
+}
