@@ -18,7 +18,9 @@ import { int, num, pct } from "@/lib/capitulo7/formato";
  * o quadro abre com uma previsão (quantas decisões mudam com o mesmo corte de 14%); antes dela, as linhas que mudam não
  * se destacam, a tabela e os controles ficam fechados e o subtítulo pergunta em vez de afirmar. A alternativa certa sai
  * da contagem. A leitura fecha com o veredito: no mesmo corte, quanto o Platt vale pela PD verdadeira e quanto erra a
- * promessa; com a mesma fração, a decisão não muda e só a promessa muda.
+ * promessa; com a mesma fração, a decisão não muda e só a promessa muda. Rodada 5: o veredito diz as duas promessas
+ * (sem calibrar, acima do que os aprovados valem pela PD verdadeira; com o Platt, abaixo), e a fonte traz a conta do
+ * resultado esperado, com os parâmetros do motor que o slide 32 apresenta.
  */
 type Modo = "fixo" | "fracao";
 const sig = (z: number) => 1 / (1 + Math.exp(-z));
@@ -74,9 +76,9 @@ export function S31DepoisDeRecalibrar({ pagina }: { pagina?: Pagina }) {
       sub={revelado ? undefined : <>A fila fica e o nível muda. E a decisão, com o mesmo corte de PD?</>}
       conclusao={!revelado ? <>O Platt do curso muda o nível do boosting sem mexer na fila (AUC {num(AUC, 4)}). Antes de contar as decisões, a previsão.</>
         : modo === "fixo"
-        ? <>Mesmo corte de {pct(c, 1)}: <b>{mudam} decisões mudam</b> sem que a fila mude; {direcao}. Pela PD verdadeira, os aprovados valem {fmtReais(depois.verdadeiro)} com Platt e {fmtReais(antes.verdadeiro)} sem ({vale >= 0 ? "+" : "−"}{fmtReais(Math.abs(vale))}), mas o Platt promete {fmtReais(depois.esperado)}, {erro(depois.esperado, depois.verdadeiro)} do que entrega. <b>Veredito: com corte fixo, recalibrar muda a política; o nível estimado na validação ({pct(RES.gbm_val.obs, 1)} de default) erra a promessa.</b> Qual corte? <LinkSlide slug="c7p18">Slide 32</LinkSlide>.</>
+        ? <>Mesmo corte de {pct(c, 1)}: <b>{mudam} decisões mudam</b> sem que a fila mude; {direcao}. Pela PD verdadeira, os aprovados valem {fmtReais(depois.verdadeiro)} com Platt e {fmtReais(antes.verdadeiro)} sem ({vale >= 0 ? "+" : "−"}{fmtReais(Math.abs(vale))}). <b>Veredito: com corte fixo, recalibrar muda a política, e as duas promessas erram: sem calibrar, {erro(antes.esperado, antes.verdadeiro)} do que os aprovados valem; com o Platt (nível da validação, {pct(RES.gbm_val.obs, 1)} de default), {erro(depois.esperado, depois.verdadeiro)}.</b> Qual corte? <LinkSlide slug="c7p18">Slide 32</LinkSlide>.</>
         : <>Recusando a mesma fração, o corte de {pct(c, 1)} vira <b>{pct(c2, 2)}</b> na escala do Platt e {mudam === 0 ? "nenhuma decisão muda" : `${mudam} decisões mudam`}: só trocou a régua. Muda a promessa: {fmtReais(antes.esperado)} contra {fmtReais(depois.esperado)}, para os mesmos {int(antes.aprovados)} aprovados que, pela PD verdadeira, valem {fmtReais(depois.verdadeiro)}. <b>Veredito: recalibrar muda decisões só com corte fixo de PD; a promessa muda sempre.</b> <LinkSlide slug="c7p18">Slide 32</LinkSlide>.</>}
-      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. Platt do curso: a = ${num(PLATT.a, 4)}, b = ${num(PLATT.b, 4)}, estimado na validação. Motor: receita ${pct(P.receita, 0)}, perda ${pct(P.lgd, 0)}, funding ${pct(P.funding, 0)} e capital ${pct(P.capital, 0)} da exposição; custo R$ ${P.operacao}. Realizado com ${D} defaults: ruidoso; PD verdadeira só em base sintética.`}>
+      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. Platt do curso: a = ${num(PLATT.a, 4)}, b = ${num(PLATT.b, 4)}, estimado na validação. Esperado (motor do slide 32): soma, nos aprovados, de ${pct(P.receita, 0)} × EAD × (1 − PD) − ${pct(P.lgd, 0)} × EAD × PD − (${pct(P.funding, 0)} + ${pct(P.capital, 0)}) × EAD − R$ ${P.operacao}: receita, perda, funding, capital e custo. Realizado com ${D} defaults: ruidoso; PD verdadeira só em base sintética.`}>
       <Painel titulo="Cada proposta, antes e depois do Platt">
         <Grafico rotulo={`${N} propostas ligadas da PD sem calibrar à PD com Platt${revelado ? `; ${mudam} mudam de decisão no corte` : ""}`} arCelular="4 / 3">
           {(d) => {
@@ -108,7 +110,7 @@ export function S31DepoisDeRecalibrar({ pagina }: { pagina?: Pagina }) {
         ) : (
           <>
             <p className="q7-k">Âmbar: {mudam} propostas que mudam de decisão</p>
-            <table className="q7-tab">
+            <table className="q7-tab q7-tab--comp">
               <thead><tr><th className="q7-t-l">Na janela</th><th>Sem calibrar</th><th>Com Platt</th></tr></thead>
               <tbody>{lin.map((l) => <tr key={l.r} data-on={"on" in l ? "1" : undefined}><th>{l.r}</th><td>{l.a}</td><td>{l.d}</td></tr>)}</tbody>
             </table>

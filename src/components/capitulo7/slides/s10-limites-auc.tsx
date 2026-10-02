@@ -56,7 +56,7 @@ function VerdadeiraLeitura({ auc, cruz }: { auc: number; cruz: number }) {
   const eT = aucEsperada(PT), eL = aucEsperada(PL);
   const aT = aucsEmJanelasNovas(PT), aL = aucsEmJanelasNovas(PL);
   const passa = aT.reduce((k, v, i) => k + (aL[i] > v ? 1 : 0), 0);
-  return <>Na ponte, a verdadeira troca <b>{cruz} dos {PARES} pares</b> da logística: outra fila, não só outro nível. Em {N_JANELAS} réplicas sintéticas da janela (os mesmos {int(N)} proponentes com o desfecho sorteado de novo pela PD verdadeira), ela tem <b>AUC média {num(eT, 4)}</b> contra {num(eL, 4)} da logística; nesta janela, {num(auc, 4)} contra {num(AUC0, 4)}. Em média nenhum modelo passa da verdadeira; numa réplica isolada pode (aqui, em {passa} de {N_JANELAS}). Nenhum chega a 1.</>;
+  return <>A verdadeira troca <b>{cruz} dos {PARES} pares</b> da logística e {eT > eL ? "ainda ordena melhor" : "ordena pior"}: em {N_JANELAS} réplicas sintéticas da janela (os mesmos {int(N)} proponentes, desfecho sorteado de novo pela PD verdadeira), <b>AUC média {num(eT, 4)}</b> contra {num(eL, 4)}; nesta janela, {num(auc, 4)} contra {num(AUC0, 4)}. Numa réplica isolada a logística pode passar ({passa} de {N_JANELAS}); nenhuma chega a 1.</>;
 }
 
 export function S10LimitesAuc({ pagina }: { pagina?: Pagina }) {

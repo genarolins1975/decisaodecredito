@@ -1,7 +1,7 @@
 {
  "source": "content/original/apresentacao-curso-pd.html",
- "sha256": "80732fd4bbeca70b1d0e79e8743a4bbcb15d79354516d01fe8c77ee6e6905493",
- "extractedAt": "2026-10-02T14:53:41.066Z",
+ "sha256": "db4727b59c9b49c81821ad93f8f67f40c720ac7cd49dfc3fedde98fb81c82d93",
+ "extractedAt": "2026-10-02T15:07:58.529Z",
  "edition": "2026",
  "units": [
   {
@@ -4047,7 +4047,9 @@
   "native": 21
  },
  "resync": {
-  "synced": [],
+  "synced": [
+   "c7p10"
+  ],
   "diverged": []
  }
 }
