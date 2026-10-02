@@ -265,7 +265,31 @@ export function slopeComIntervalo(y: Vetor, pd: Vetor) {
   return { intercepto: r.a, slope: r.b, epIntercepto: epA, epSlope: epB, ic: [r.b - Z95 * epB, r.b + Z95 * epB] as [number, number] };
 }
 /** Intercepto com slope fixado em 1 (calibração no agregado): o a que faz Σ σ(a + logit PD) = Σ y. Ideal: 0. */
-export function interceptoComSlope1(y: Vetor, pd: Vetor) { return logisticaNewton(y, null, logits(pd)).a; }
+/**
+ * Intercepto com slope fixo em 1: a raiz de Σ [yᵢ − σ(a + logit pᵢ)] = 0, que é decrescente em a e tem raiz única
+ * quando há default e adimplente. Newton puro a partir de zero diverge quando as PDs são extremas (passo enorme com
+ * Σ p(1 − p) quase nulo); aqui o Newton parte de logit(ȳ) − logit(p̄) e fica dentro de um intervalo que contém a
+ * raiz, caindo para a bisseção quando o passo sai dele.
+ */
+export function interceptoComSlope1(y: Vetor, pd: Vetor) {
+  const o = logits(pd); let ym = 0, pm = 0; for (let i = 0; i < y.length; i++) { ym += y[i]; pm += pd[i]; }
+  ym /= y.length; pm /= y.length;
+  if (!(ym > 0 && ym < 1)) return Number.NaN;
+  const g = (a: number) => { let s = 0, h = 0; for (let i = 0; i < y.length; i++) { const p = sigmoide(a + o[i]); s += y[i] - p; h += p * (1 - p); } return { s, h }; };
+  let a = logit(ym) - logit(Math.min(Math.max(pm, 1e-12), 1 - 1e-12));
+  let lo = a - 1, hi = a + 1;
+  for (let k = 0; g(lo).s < 0 && k < 60; k++) lo -= 2 ** (k + 1);
+  for (let k = 0; g(hi).s > 0 && k < 60; k++) hi += 2 ** (k + 1);
+  for (let k = 0; k < 200; k++) {
+    const { s, h } = g(a);
+    if (s > 0) lo = a; else hi = a;
+    let an = h > 0 ? a + s / h : Number.NaN;
+    if (!(an > lo && an < hi)) an = (lo + hi) / 2;
+    if (Math.abs(an - a) < 1e-12) return an;
+    a = an;
+  }
+  return a;
+}
 
 export const brier = (y: Vetor, pd: Vetor) => { let s = 0; for (let i = 0; i < y.length; i++) s += (pd[i] - y[i]) ** 2; return s / y.length; };
 /**

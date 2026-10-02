@@ -272,3 +272,19 @@ describe("capítulo 7: âncora do nível pela PD verdadeira e regra de controle 
     expect(Math.abs(n / T - 0.0025)).toBeLessThan(0.0004);
   });
 });
+
+describe("intercepto com slope 1 em PDs extremas", () => {
+  it("converge em toda a grade de controles do slide 22 (a de −2 a 2, b de 0,3 a 2,5) e zera a equação de escore", () => {
+    let piorResiduo = 0, casos = 0;
+    for (let ia = 0; ia <= 80; ia++) for (let ib = 0; ib <= 44; ib++) {
+      const a = -2 + ia * 0.05, b = 0.3 + ib * 0.05;
+      const p = M.transformar(PT, a, b);
+      const c = M.interceptoComSlope1(Y, p);
+      expect(Number.isFinite(c)).toBe(true);
+      let s = 0; for (let i = 0; i < Y.length; i++) s += Y[i] - M.sigmoide(c + M.logit(p[i]));
+      piorResiduo = Math.max(piorResiduo, Math.abs(s)); casos++;
+    }
+    expect(casos).toBe(81 * 45);
+    expect(piorResiduo).toBeLessThan(1e-6);
+  });
+});
