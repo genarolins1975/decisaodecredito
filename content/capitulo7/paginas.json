@@ -555,7 +555,7 @@
       "intervencao": "Leia os títulos dos eixos: PD prevista contra frequência observada."
      }
     ],
-    "interacao": "Botões de previsão (acima, abaixo) que calculam a próxima faixa, Todas e Restaurar; com as dez prontas, a previsão conceitual, e o intervalo de Wilson abre com a resposta certa: o eixo vertical vai a 45% para caber o intervalo de F10, e cada rótulo defaults/n vai para o lado do próprio intervalo, sem cruzar traço nem diagonal. Ao voltar, nenhuma faixa.",
+    "interacao": "Botões de previsão (acima, abaixo) que calculam a próxima faixa, Todas e Restaurar; com as dez prontas, a previsão conceitual, e o intervalo de Wilson abre com a resposta certa: o eixo vertical vai a 45% para caber o intervalo de F10, e os rótulos defaults/n saem do desenho (não cabem entre os traços das faixas de PD baixa sem cruzá-los) e ficam na dica de cada ponto e na tabela acessível. Sem os intervalos, cada rótulo fica num lugar que não toca a diagonal, a curva nem outro rótulo. Ao voltar, nenhuma faixa.",
     "verificacao": "O aluno lê duas faixas e diz em qual o modelo subestima.",
     "transicao": "A escolha das faixas também muda a leitura."
    }

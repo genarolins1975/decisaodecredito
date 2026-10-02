@@ -1,8 +1,8 @@
 "use client";
 import { useState, type ReactNode } from "react";
 import { Botao, caminho, escala, Grafico, LinkSlide, Painel, Quadro, Seg, type Dim, type Pagina } from "../base";
-import { ANCORA, D, EAD, N, PGR, PL, Y } from "@/lib/capitulo7/dados";
-import { calibracaoGlobal, delong, ganho, jeffreys, ks, slopeComIntervalo, wilson, Z95 } from "@/lib/capitulo7/metricas";
+import { D, EAD, N, PGR, PL, Y } from "@/lib/capitulo7/dados";
+import { calibracaoGlobal, delong, falsoAlarmeSeguidas, ganho, jeffreys, ks, slopeComIntervalo, wilson, Z95 } from "@/lib/capitulo7/metricas";
 import { N_JANELAS, SEMENTE_JANELAS, vantagemEmJanelasNovas } from "@/lib/capitulo7/janelas";
 import { CURTO } from "@/lib/capitulo7/roteiro";
 import { curva, fmtReais, GRADE_CORTES, otimo } from "@/lib/visuais/economia";
@@ -19,13 +19,18 @@ import { int, num, pct } from "@/lib/capitulo7/formato";
  * amostra própria, confirmar numa janela nova); o rótulo do KS sai de baixo da curva. Rodada 4: a síntese segue a nova
  * decisão do slide 36 (nível ancorado em várias safras maturadas, ANCORA de dados.ts, monitorado por safra com Jeffreys
  * e confirmado nas safras de 2024); o procedimento ganha os passos de recalibrar (com o critério de quando) e de
- * segmentos; as janelas novas viram réplicas sintéticas da janela.
+ * segmentos; as janelas novas viram réplicas sintéticas da janela. Rodada 5: a síntese diz a finalidade (que escolhe a
+ * amostra do nível antes da janela) e o critério de troca; o procedimento começa pela pré-condição (congelar as
+ * escolhas), usa "Jeffreys por faixa" e deriva o gatilho de duas rejeições seguidas como regra de controle contra
+ * ruído, com a probabilidade de falso alarme calculada (falsoAlarmeSeguidas). A caixa do procedimento tem a altura do
+ * conteúdo.
  */
 type Sint = "auc" | "cal" | "dec" | "oot";
 const DL = delong(Y, PL, PGR), KS_ = ks(Y, PL), G10 = ganho(Y, PL, 0.1), G = calibracaoGlobal(Y, PL), SL = slopeComIntervalo(Y, PL);
 const JC = jeffreys(D, N, G.pdMedia!), OBS = wilson(D, N)!;
 const CV = curva(PL as number[], EAD as number[], GRADE_CORTES.filter((c) => c <= 0.4)); const OT = otimo(CV);
-const AN = ANCORA;
+/** gatilho de recalibração: duas rejeições seguidas no mesmo sentido, teste unilateral a 5%, safras independentes */
+const ALFA = 0.05, FALSO = falsoAlarmeSeguidas(ALFA, 2);
 const COR = { ord: "#3D5A8A", prob: "#176C73", dec: "#A85A0C", val: "#2E6B4F" };
 
 function MiniOrd({ d, esperada }: { d: Dim; esperada: number }) {
@@ -37,7 +42,7 @@ function MiniOrd({ d, esperada }: { d: Dim; esperada: number }) {
       <line x1={x(lo)} x2={x(hi)} y1={cy} y2={cy} stroke={COR.ord} strokeWidth={4} strokeLinecap="round" />
       <circle cx={x(DL.auc1)} cy={cy} r={fs * 0.45} fill={COR.ord} stroke="#fff" strokeWidth={2} />
       <text className="q7-rot--peq" x={x(DL.auc1)} y={cy - fs * 0.8} textAnchor="middle" style={{ fill: COR.ord, fontWeight: 700 }}>AUC {num(DL.auc1, 4)}, IC {num(lo, 3)} a {num(hi, 3)}</text>
-      <text className="q7-rot--peq" x={x(0.6)} y={cy + fs * 3.1} style={{ fill: "#2A3342" }}>nas {N_JANELAS} réplicas: {num(esperada, 4)}</text>
+      <text className="q7-rot--peq" x={x(0.6)} y={cy + fs * 3.1} style={{ fill: "#2A3342" }}>nas {N_JANELAS} réplicas sintéticas da janela: {num(esperada, 4)}</text>
     </g>
   );
 }
@@ -82,24 +87,24 @@ function MiniVal({ d, novas }: { d: Dim; novas: number }) {
       <line x1={x(DL.ic[0])} x2={x(DL.ic[1])} y1={cy} y2={cy} stroke={COR.val} strokeWidth={4} strokeLinecap="round" />
       <rect x={x(DL.dif) - fs * 0.38} y={cy - fs * 0.38} width={fs * 0.76} height={fs * 0.76} fill={COR.val} stroke="#fff" strokeWidth={2} />
       <text className="q7-rot--peq" x={x(DL.dif)} y={cy - fs * 0.8} textAnchor="middle" style={{ fill: COR.val, fontWeight: 700 }}>■ {num(DL.dif, 4)}, IC {num(DL.ic[0], 4)} a {num(DL.ic[1], 4)}</text>
-      <text className="q7-rot--peq" x={x(-0.01)} y={cy + fs * 3.1} style={{ fill: "#2A3342" }}>nas {N_JANELAS} réplicas: {num(novas, 4)}</text>
+      <text className="q7-rot--peq" x={x(-0.01)} y={cy + fs * 3.1} style={{ fill: "#2A3342" }}>nas {N_JANELAS} réplicas sintéticas da janela: {num(novas, 4)}</text>
     </g>
   );
 }
 
 const SINTOMAS: Record<Sint, { r: string; diag: string; voltar: string[] }> = {
   auc: { r: "AUC baixa", diag: "Problema de ordenação: as variáveis ou a forma do modelo não separam. Recalibrar não resolve; volte à modelagem.", voltar: ["c7p5", "c7p6", "c7p27"] },
-  cal: { r: "AUC boa, curva fora da diagonal", diag: "Problema de probabilidade: nível ou inclinação. Corrija com intercepto ou Platt ajustados em várias safras maturadas e confira na safra seguinte.", voltar: ["c7p10", "c7p32", "c7p16", "c7p12"] },
+  cal: { r: "AUC boa, curva fora da diagonal", diag: "Problema de probabilidade: nível ou inclinação. Corrija com intercepto ou Platt, ajustados na amostra que a finalidade pede (safra maturada recente para provisão, várias para capital), e confira na safra seguinte.", voltar: ["c7p10", "c7p32", "c7p16", "c7p12"] },
   dec: { r: "PD boa, resultado ruim", diag: "Problema de decisão: corte, perda ou receita mal especificados. A PD não escolhe a política sozinha.", voltar: ["c7p37", "c7p18"] },
   oot: { r: "Bom na validação, ruim na janela", diag: "Problema de validação: sobreajuste, seleção feita olhando a janela ou mudança de população. Congele e use uma janela nova.", voltar: ["c7p15", "c7p17", "c7p14"] },
 };
 const PASSOS: [string, string][] = [
+  ["Antes", "congelar escolhas e amostras; a janela só mede"],
   ["Ordenação", "AUC com IC pareado"],
-  ["Probabilidade", "O/E, Jeffreys por grau, slope"],
-  ["Recalibrar", "intercepto em várias safras maturadas, medido na seguinte; refazer se Jeffreys rejeitar em duas seguidas"],
-  ["Segmentos", "curva de calibração e O/E por segmento"],
+  ["Probabilidade", "O/E, Jeffreys por faixa, slope"],
+  ["Nível", `amostra pela finalidade; recalibrar se Jeffreys rejeitar em duas safras seguidas, no mesmo sentido (regra contra ruído: por acaso, ${pct(FALSO, 2)})`],
+  ["Segmentos", "O/E e curva por segmento"],
   ["Decisão", "corte pela conta"],
-  ["Validação", "escolhas congeladas antes"],
 ];
 
 export function S37Conclusao({ pagina }: { pagina?: Pagina }) {
@@ -107,15 +112,15 @@ export function S37Conclusao({ pagina }: { pagina?: Pagina }) {
   const [jn] = useState(() => vantagemEmJanelasNovas());
   const x = s ? SINTOMAS[s] : null;
   const RESPOSTAS: { p: keyof typeof COR; s: string; t: string; r: string; mini: (d: Dim) => ReactNode; rot: string; falta: ReactNode }[] = [
-    { p: "ord", s: "●", t: "Ordena?", r: "Sim, moderadamente.", mini: (d) => <MiniOrd d={d} esperada={jn.l} />, rot: `AUC ${num(DL.auc1, 4)} com IC de DeLong; esperada nas réplicas ${num(jn.l, 4)}; 10% piores com ${pct(G10.ganho!, 0)} dos defaults`, falta: "estabilidade por segmento e tempo." },
-    { p: "prob", s: "▲", t: "Prevê bem a probabilidade?", r: "Nível baixo, ainda sem prova.", mini: (d) => <MiniProb d={d} />, rot: `PD média ${pct(G.pdMedia!, 1)} contra ${pct(OBS.p, 1)} observados, IC ${pct(OBS.lo, 1)} a ${pct(OBS.hi, 1)}; Jeffreys p = ${num(JC, 2)}`, falta: <>ancorar o nível em safras (<LinkSlide slug="c7p16">slide 27</LinkSlide>).</> },
+    { p: "ord", s: "●", t: "Ordena?", r: "Sim, moderadamente.", mini: (d) => <MiniOrd d={d} esperada={jn.l} />, rot: `AUC ${num(DL.auc1, 4)} com IC de DeLong; esperada nas réplicas sintéticas da janela ${num(jn.l, 4)}; 10% piores com ${pct(G10.ganho!, 0)} dos defaults`, falta: "estabilidade por segmento e tempo." },
+    { p: "prob", s: "▲", t: "Prevê bem a probabilidade?", r: "Nível baixo, ainda sem prova.", mini: (d) => <MiniProb d={d} />, rot: `PD média ${pct(G.pdMedia!, 1)} contra ${pct(OBS.p, 1)} observados, IC ${pct(OBS.lo, 1)} a ${pct(OBS.hi, 1)}; Jeffreys p = ${num(JC, 2)}`, falta: <>conferir o nível safra a safra (<LinkSlide slug="c7p16">slide 27</LinkSlide>).</> },
     { p: "dec", s: "◆", t: "Sustenta a decisão?", r: "Com hipóteses explícitas.", mini: (d) => <MiniDec d={d} />, rot: `Corte econômico ${pct(OT.corte, 1)}, KS ${pct(KS_.limiar, 1)}`, falta: "sensibilidade de perda e receita." },
-    { p: "val", s: "■", t: "Prova fora da amostra?", r: "Uma vez, com margem estreita.", mini: (d) => <MiniVal d={d} novas={jn.vantagem} />, rot: `Diferença para o boosting ${num(DL.dif, 4)}, IC ${num(DL.ic[0], 4)} a ${num(DL.ic[1], 4)}; ${num(jn.vantagem, 4)} nas réplicas`, falta: "janela nova, as safras de 2024." },
+    { p: "val", s: "■", t: "Prova fora da amostra?", r: "Uma vez, com margem estreita.", mini: (d) => <MiniVal d={d} novas={jn.vantagem} />, rot: `Diferença para o boosting ${num(DL.dif, 4)}, IC ${num(DL.ic[0], 4)} a ${num(DL.ic[1], 4)}; ${num(jn.vantagem, 4)} nas réplicas sintéticas da janela`, falta: "janela nova, as safras de 2024." },
   ];
   return (
     <Quadro slug="c7p20" pagina={pagina} layout="gl" rotuloConclusao="Síntese"
-      conclusao={<><b>A logística fica, com o nível ancorado em várias safras maturadas ({pct(AN.variasSafras.taxa, 1)}, não os {pct(AN.validacao.taxa, 1)} da última)</b>, monitorado por safra com Jeffreys e confirmado nas safras de 2024.</>}
-      fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults. DeLong, Wilson, Jeffreys; motor do slide 32; réplicas: ${N_JANELAS} sorteios (semente ${SEMENTE_JANELAS}). Nível: logits de treino e validação.`}>
+      conclusao={<><b>A logística fica.</b> O nível vem da amostra que a finalidade pede, fixada antes da janela (provisão: safra maturada recente; capital: várias safras); é vigiado por safra com Jeffreys e <b>recalibrado se o teste rejeitar em duas seguidas</b>; confirmação nas safras de 2024.</>}
+      fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults. DeLong, Wilson, Jeffreys; motor do slide 32; réplicas sintéticas da janela: ${N_JANELAS} sorteios (semente ${SEMENTE_JANELAS}). Gatilho: com teste unilateral a ${pct(ALFA, 0)} e safras independentes, duas rejeições seguidas por acaso têm probabilidade ${pct(ALFA, 0)}² = ${pct(FALSO, 2)}.`}>
       <Painel titulo="As quatro respostas, para a logística da janela">
         <div className="q7-s37-r">
           {RESPOSTAS.map((r) => (
