@@ -67,7 +67,7 @@ export function S05Fila({ pagina }: { pagina?: Pagina }) {
         : rev === 0 ? "Revele os desfechos de cima para baixo, uma posição por vez."
         : rev < itens.length ? `Revele de cima para baixo: ${vistos} default${vistos === 1 ? "" : "s"} em ${rev} posições até aqui.`
         : <>Nas {NDEF} primeiras posições há <b>{TOPO} dos {NDEF}</b> defaults; a fila perfeita teria {NDEF} e uma ordem ao acaso, {num(ACASO, 2)} em média. A discriminação está na <b>relação entre a ordem e os desfechos</b>.</>}
-      fonte={`Mini-base: ${int(MINI.length)} propostas reais da janela fora do tempo, ${NDEF} defaults, sorteadas com semente 3; PD da logística em pontos inteiros. Denominadores próprios: não somar com os da janela (737).`}>
+      fonte={`Mini-base: ${int(MINI.length)} propostas da janela fora do tempo, ${NDEF} defaults, sorteadas com semente 3; PD da logística em pontos inteiros. Denominadores próprios: não somar com os da janela (737).`}>
       <Painel titulo={ordenada ? "Do maior risco estimado para o menor →" : "Na ordem em que as propostas chegaram"} className="q7-s05-p">
         <FilaS05 itens={itens} ordenada={ordenada} rev={rev} />
         <Legenda itens={[{ mk: "def", r: "deu default em 12 meses" }, { mk: "adi", r: "pagou" }, { mk: "", r: "? desfecho oculto" }]} />

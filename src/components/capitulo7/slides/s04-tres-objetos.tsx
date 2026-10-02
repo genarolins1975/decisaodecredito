@@ -36,7 +36,7 @@ export function S04TresObjetos({ pagina }: { pagina?: Pagina }) {
         : mudouPd && !mudouNivel ? <>As PDs andaram {delta > 0 ? "para cima" : "para baixo"} e a fila ficou igual: <b>uma boa ordenação não garante o nível certo</b>.</>
         : mudouPd ? <>Mesma fila, PDs em outro nível: no corte de {pct(corte, 0)}, só o nível mudou a decisão de {ids(pelaPd)}. <b>O nível importa quando o corte é em PD</b>.</>
         : <>As PDs são as mesmas; só o corte andou{mudouCorte ? `, e mudou a decisão de ${ids(peloCorte)}` : ""}. Decidir é uma escolha separada de ordenar e de prever.</>}
-      fonte="Quatro propostas reais da janela fora do tempo, que voltam na fila do slide 5; PD da logística em pontos inteiros. Nível alterado por δ em log odds: p' = σ(logit p + δ). Recusa quando PD ≥ corte.">
+      fonte="Quatro propostas da janela fora do tempo, que voltam na fila do slide 5; PD da logística em pontos inteiros. Nível alterado por δ em log odds: p' = σ(logit p + δ). Recusa quando PD ≥ corte.">
       <Painel titulo="Os mesmos quatro clientes, três tarefas">
         <div className="q7-s04">
           <p className="q7-s04-l"><span>1</span>Ordenar</p>
