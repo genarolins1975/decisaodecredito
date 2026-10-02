@@ -7,7 +7,7 @@
  *   gancho    o boosting que o comitê julga no capítulo 7 ordenou o treino com AUC 0,8196 e a validação com 0,6476;
  *   pergunta  como somar árvores pequenas, cada uma corrigindo o erro das anteriores, produz uma PD?
  *   tensão    cada árvore costuma reduzir a perda de treino; taxa, profundidade e número de árvores aceleram o ganho;
- *   virada    na validação, a perda volta a subir depois de poucas árvores, e com três variáveis a logística valida melhor;
+ *   virada    na validação, a perda volta a subir depois de poucas árvores, e com três variáveis a logística ordena melhor;
  *   decisão   complexidade escolhida na validação, monotonia, nível conferido e PD explicada: o boosting vai ao comitê
  *             como desafiante, com essas provas.
  * Caso: as propostas do curso em três escalas, ligadas na tela: 16 propostas para fazer o algoritmo à mão (as mesmas dos
@@ -48,8 +48,8 @@ export const ROTEIRO: Slide[] = [
   { slug: "c6p13", n: 13, pergunta: "decisao", titulo: "Quatro controles mexem na mesma complexidade", sub: "Taxa, número de árvores, profundidade e mínimo por folha, medidos no ajuste e na validação.", nivel: "essencial", min: 4 },
   { slug: "c6p14", n: 14, pergunta: "decisao", titulo: "Metade da taxa pede o dobro de árvores", sub: "Taxa e número de árvores andam juntos: escolher um sem o outro não faz sentido.", nivel: "aprofundamento", min: 3 },
   { slug: "c6p15", n: 15, pergunta: "validacao", titulo: "A validação diz quando parar", sub: "A perda de validação desce e volta a subir; o ponto mais baixo escolhe o número de árvores.", nivel: "essencial", min: 4 },
-  { slug: "c6p16", n: 16, pergunta: "decisao", titulo: "Na parada, o ganho do sorteio cabe no erro da validação", sub: "Método de Friedman (2002). Nesta amostra, de três variáveis, o sorteio regulariza longe da parada.", nivel: "aprofundamento", min: 3 },
-  { slug: "c6p17", n: 17, pergunta: "validacao", titulo: "Com três variáveis, a logística valida melhor", sub: "O boosting só ganha quando há interação ou forma que a logística não captura.", nivel: "essencial", min: 3 },
+  { slug: "c6p16", n: 16, pergunta: "decisao", titulo: "Sortear metade: ganho consistente, dentro do erro da validação", sub: "Longe da parada, o ganho é bem maior e chega ao limite da faixa. Método de Friedman (2002); resultado desta amostra.", nivel: "aprofundamento", min: 3 },
+  { slug: "c6p17", n: 17, pergunta: "validacao", titulo: "Com três variáveis, a logística ordena melhor na validação", sub: "Na AUC, a logística vence fora do ruído; na log loss, os dois empatam.", nivel: "essencial", min: 3 },
   { slug: "c6p18", n: 18, pergunta: "probabilidade", titulo: "Árvores demais distorcem as PDs, mesmo com a média certa", sub: "Parado pela validação, os sinais são mistos; com mais árvores, as PDs exageram. O capítulo 7 mede e corrige.", nivel: "essencial", min: 3 },
   { slug: "c6p19", n: 19, pergunta: "probabilidade", titulo: "Por que esta PD? A contribuição de cada variável", sub: "Contribuições de Shapley pelo caminho das árvores somam exatamente a log odds da proposta.", nivel: "essencial", min: 4 },
   { slug: "c6p20", n: 20, pergunta: "decisao", titulo: "PD que cai quando o atraso sobe? Restrição monotônica", sub: "O modelo livre pode contrariar a lógica de crédito em trechos com poucos dados.", nivel: "essencial", min: 3 },

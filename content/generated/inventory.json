@@ -1,7 +1,7 @@
 {
  "source": "content/original/apresentacao-curso-pd.html",
- "sha256": "db4727b59c9b49c81821ad93f8f67f40c720ac7cd49dfc3fedde98fb81c82d93",
- "extractedAt": "2026-10-02T15:07:58.529Z",
+ "sha256": "7a0ad4b090bf75a5128d0447156a528fe791c872e48c4ed7ef360bfc4f967540",
+ "extractedAt": "2026-10-02T15:30:06.469Z",
  "edition": "2026",
  "units": [
   {
@@ -2057,7 +2057,7 @@
    "pageId": "y36xy3srm0b4xnklhjvwf",
    "chapter": 6,
    "unit": 2,
-   "title": "Na parada, o ganho do sorteio cabe no erro da validação",
+   "title": "Sortear metade: ganho consistente, dentro do erro da validação",
    "level": "complementar",
    "minutes": 3,
    "origin": "rec",
@@ -2076,7 +2076,7 @@
    "pageId": "ye13rhcrfiducug8znf2j",
    "chapter": 6,
    "unit": 2,
-   "title": "Com três variáveis, a logística valida melhor",
+   "title": "Com três variáveis, a logística ordena melhor na validação",
    "level": "essencial",
    "minutes": 3,
    "origin": "obs",
@@ -4047,9 +4047,7 @@
   "native": 21
  },
  "resync": {
-  "synced": [
-   "c7p10"
-  ],
+  "synced": [],
   "diverged": []
  }
 }

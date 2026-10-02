@@ -31,15 +31,17 @@ function Histograma({ v, dom, passo, ic, ref0, d, real, xt, novas }: { v: number
     <g>
       <Eixos x={x} y={y} xt={xt} yt={[0, passoY, passoY * 2]} fx={(t) => num(t, 2)} fy={(t) => int(t)} xTit={ref0 ? "AUC logística − AUC boosting" : "AUC da logística"} yTit="Reamostragens" />
       {ic && <rect x={x(ic[0])} y={m.t} width={x(ic[1]) - x(ic[0])} height={d.h - m.b - m.t} fill="#2E6B4F" fillOpacity={0.1} />}
-      {ic && <text className="q7-rot--peq" x={x(ic[1]) + d.fs * 0.3} y={m.t + d.fs * 2} style={{ fill: "#2E6B4F", fontWeight: 700 }}>IC percentil 95%</text>}
+      {ic && (() => { const fim = x(ic[1]) + d.fs * (0.3 + 16 * 0.86 * 0.55) > d.w; return <text className="q7-rot--peq" x={x(ic[1]) + (fim ? -d.fs * 0.3 : d.fs * 0.3)} y={m.t + d.fs * 2} textAnchor={fim ? "end" : "start"} style={{ fill: "#2E6B4F", fontWeight: 700, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em" }}>IC percentil 95%</text>; })()}
       {cont.map((c, k) => c ? <rect key={k} x={x(dom[0] + k * passo) + 1} y={y(c)} width={Math.max(1, x(dom[0] + (k + 1) * passo) - x(dom[0] + k * passo) - 2)} height={y(0) - y(c)} fill="#3D5A8A" /> : null)}
       {ref0 && <><line x1={x(0)} x2={x(0)} y1={m.t} y2={y(0)} stroke="#5B6475" strokeWidth={2.5} /><text className="q7-rot q7-rot--peq" x={x(0) - d.fs * 0.4} y={m.t + d.fs * 0.6} textAnchor="end" style={{ fill: "#5B6475", fontWeight: 700 }}>diferença zero</text></>}
       <line x1={x(real)} x2={x(real)} y1={m.t - d.fs * 0.6} y2={y(0)} stroke="#00205B" strokeWidth={2.5} strokeDasharray="6 4" />
-      <text className="q7-rot--peq" x={x(real)} y={m.t - d.fs * 0.8} textAnchor="middle" style={{ fill: "#00205B", fontWeight: 700 }}>na janela {num(real, 4)}</text>
+      <text className="q7-rot--peq" x={d.w < 600 ? x(real) + d.fs * 0.3 : x(real)} y={m.t - d.fs * 0.8} textAnchor={d.w < 600 ? "start" : "middle"} style={{ fill: "#00205B", fontWeight: 700 }}>na janela {num(real, 4)}</text>
       {novas !== null && (() => {
         // rótulo com fundo branco: passa sobre a linha tracejada da janela sem ser cortado por ela (largura estimada pela letra)
-        const txt = `▲ média nas réplicas sintéticas da janela ${num(novas, 4)}`, lw = txt.length * d.fs * 0.86 * 0.54, lx = x(novas) + d.fs * 0.35, ly = m.t + d.fs * 0.9;
-        return <><line x1={x(novas)} x2={x(novas)} y1={m.t} y2={y(0)} stroke="#2E6B4F" strokeWidth={3} /><rect x={lx - d.fs * 0.2} y={ly - d.fs * 0.85} width={lw + d.fs * 0.4} height={d.fs * 1.15} rx={d.fs * 0.2} fill="#fff" fillOpacity={0.94} /><text className="q7-rot--peq" x={lx} y={ly} textAnchor="start" style={{ fill: "#2E6B4F", fontWeight: 700 }}>{txt}</text></>;
+        // em tela estreita, duas linhas
+        const linhas = d.w < 600 ? ["▲ média nas réplicas", `sintéticas da janela ${num(novas, 4)}`] : [`▲ média nas réplicas sintéticas da janela ${num(novas, 4)}`];
+        const lw = Math.max(...linhas.map((l) => l.length)) * d.fs * 0.86 * 0.54, lx = x(novas) + d.fs * 0.35, ly = m.t + d.fs * 0.9, lh = d.fs * 1.05;
+        return <><line x1={x(novas)} x2={x(novas)} y1={m.t} y2={y(0)} stroke="#2E6B4F" strokeWidth={3} /><rect x={lx - d.fs * 0.2} y={ly - d.fs * 0.85} width={lw + d.fs * 0.4} height={d.fs * 1.15 + lh * (linhas.length - 1)} rx={d.fs * 0.2} fill="#fff" fillOpacity={0.94} />{linhas.map((l, i) => <text key={i} className="q7-rot--peq" x={lx} y={ly + i * lh} textAnchor="start" style={{ fill: "#2E6B4F", fontWeight: 700 }}>{l}</text>)}</>;
       })()}
     </g>
   );

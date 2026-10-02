@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
-import { Botao, caminho, Controle, escala, Expandir, Grafico, LinkSlide, Painel, Previsao, Quadro, type Dim, type Pagina } from "@/components/capitulo7/base";
+import { Botao, caminho, Controle, escala, Grafico, LinkSlide, Painel, Previsao, Quadro, type Dim, type Pagina } from "@/components/capitulo7/base";
 import { CFG_CARTEIRA, LOGISTICA, modelo, NA, NV, XA, XV, YA, YV } from "@/lib/capitulo6/dados";
-import { auc, estagios, perdaLog, type No } from "@/lib/capitulo6/gbm";
+import { auc, diferencaPerdaPareada, estagios, perdaLog, type No } from "@/lib/capitulo6/gbm";
 import { escoreLogistica } from "@/lib/capitulo6/logistica";
 import { delong } from "@/lib/capitulo7/metricas";
 import { int, num } from "@/lib/capitulo7/formato";
@@ -29,6 +29,9 @@ function calcular() {
   const ZA = XA.map((x) => escoreLogistica(LOGISTICA, x)), ZV = XV.map((x) => escoreLogistica(LOGISTICA, x));
   const LOG = { aucA: auc(YA, ZA), aucV: auc(YV, ZV), llA: perdaLog(ZA, YA), llV: perdaLog(ZV, YV) };
   const DL = delong(YV, ZV, EV[K_PARADA]);
+  // log loss pareada por proposta (boosting − logística): positivo, o boosting perde; o IC diz se a amostra distingue
+  const DP = diferencaPerdaPareada(EV[K_PARADA], ZV, YV);
+  const EMPATE_LL = DP.ic[0] < 0 && DP.ic[1] > 0, SEPARA_AUC = DL.ic[0] > 0 || DL.ic[1] < 0;
   const NUNCA = AUC_V[K_PICO] < LOG.aucV && LL_V[K_PARADA] > LOG.llV;
   const K_PASSA = AUC_A.findIndex((a, i) => i > 0 && a > LOG.aucA);
   const DA = YA.reduce((s, v) => s + v, 0), DV = YV.reduce((s, v) => s + v, 0);
@@ -37,10 +40,10 @@ function calcular() {
 
   const OPS = [
     { texto: "Sim, com árvores suficientes", certa: false, retorno: <>Confunde ajuste com validação: com {K_MAX} árvores, a AUC de validação do boosting cai a {num(AUC_V[K_MAX], 4)}, contra {num(LOG.aucV, 4)} da logística.</> },
-    { texto: `Sim, parado em ${K_PARADA} árvores`, certa: false, retorno: <>O melhor boosting não é o melhor modelo: parado em {K_PARADA} árvores, AUC {num(AUC_V[K_PARADA], 4)} e log loss {num(LL_V[K_PARADA], 4)}, as duas piores que as da logística.</> },
-    { texto: NUNCA ? "Não, em nenhum número de árvores" : "Só em parte das métricas", certa: true, retorno: <>Isso: o pico de AUC do boosting na validação é {num(AUC_V[K_PICO], 4)} ({K_PICO} árvores) e a menor log loss, {num(LL_V[K_PARADA], 4)} ({K_PARADA}).</> },
+    { texto: `Sim, parado em ${K_PARADA} árvores`, certa: false, retorno: <>O melhor boosting não é o melhor modelo: parado em {K_PARADA} árvores, AUC {num(AUC_V[K_PARADA], 4)} contra {num(LOG.aucV, 4)} da logística{SEPARA_AUC ? ", fora do ruído" : ""}; na log loss, {num(LL_V[K_PARADA], 4)} contra {num(LOG.llV, 4)}, {EMPATE_LL ? "empate dentro do ruído" : "a logística também ganha"}.</> },
+    { texto: NUNCA ? "Não, em nenhum número de árvores" : "Só em parte das métricas", certa: true, retorno: <>Isso: na validação, o pico de AUC é {num(AUC_V[K_PICO], 4)} ({K_PICO} árvores); a menor log loss, {num(LL_V[K_PARADA], 4)} ({K_PARADA}), {EMPATE_LL ? "só empata com a logística" : "fica acima da logística"}.</> },
   ];
-  return { M, EA, EV, K_MAX, AUC_A, AUC_V, LL_A, LL_V, argmin, argmax, K_PARADA, K_PICO, ZA, ZV, LOG, DL, NUNCA, K_PASSA, DA, DV, usa, USA_ATRASO, OPS };
+  return { M, EA, EV, K_MAX, AUC_A, AUC_V, LL_A, LL_V, argmin, argmax, K_PARADA, K_PICO, ZA, ZV, LOG, DL, DP, EMPATE_LL, SEPARA_AUC, NUNCA, K_PASSA, DA, DV, usa, USA_ATRASO, OPS };
 }
 let CACHE: ReturnType<typeof calcular> | null = null;
 /** Cálculo preguiçoso: só o slide visitado paga o ajuste dos modelos (o registro importa todos os quadros). */
@@ -49,7 +52,7 @@ const dados = () => (CACHE ??= calcular());
 const lk = (k: number) => Math.log(k);
 function Painel2({ d, k, revelado }: { d: Dim; k: number; revelado: boolean }) {
   const { K_MAX, AUC_A, AUC_V, LL_A, LL_V, K_PARADA, LOG } = dados();
-  const fs = d.fs, m = { l: fs * 3.6, r: fs * 9.2, t: fs * 1.3, b: fs * 2.7 }, gap = fs * 2.2;
+  const fs = d.fs, m = { l: fs * 3.6, r: fs * 9.5, t: fs * 1.3, b: fs * 2.7 }, gap = fs * 2.2;
   const hh = (d.h - m.t - m.b - gap) / 2;
   const x = escala([lk(1), lk(K_MAX)], [m.l, d.w - m.r]);
   const ks = Array.from({ length: K_MAX }, (_, i) => i + 1);
@@ -69,7 +72,7 @@ function Painel2({ d, k, revelado }: { d: Dim; k: number; revelado: boolean }) {
         const passo = (hi - lo) > 0.2 ? 0.1 : 0.02;
         const yt: number[] = []; for (let t = Math.ceil((lo - pad) / passo) * passo; t <= hi + pad; t += passo) yt.push(Math.round(t * 1000) / 1000);
         const pa = ks.map((kk) => ({ x: x(lk(kk)), y: y(b.a[kk]) })), pv = ks.map((kk) => ({ x: x(lk(kk)), y: y(b.v[kk]) }));
-        const xe = d.w - m.r + fs * 0.4;
+        const xe = d.w - m.r + fs * 0.75;
         const rot = [
           { y: y(b.a[K_MAX]), t: "boosting, ajuste", c: "#5B6475" },
           { y: y(b.la), t: "logística, ajuste", c: "#5B6475" },
@@ -106,7 +109,7 @@ function Painel2({ d, k, revelado }: { d: Dim; k: number; revelado: boolean }) {
 }
 
 export function S17Logistica({ pagina }: { pagina?: Pagina }) {
-  const { K_MAX, AUC_A, AUC_V, LL_V, K_PARADA, LOG, DL, K_PASSA, DA, DV, USA_ATRASO, OPS } = dados();
+  const { K_MAX, AUC_A, AUC_V, LL_V, K_PARADA, LOG, DL, DP, EMPATE_LL, SEPARA_AUC, K_PASSA, DA, DV, USA_ATRASO, OPS } = dados();
   const [esc, setEsc] = useState<number | null>(null);
   const [k, setK] = useState(K_PARADA);
   const revelado = esc !== null && OPS[esc].certa === true;
@@ -114,11 +117,11 @@ export function S17Logistica({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c6p17" pagina={pagina} layout="gl"
       titulo={revelado ? undefined : "Com três variáveis, quem valida melhor: a logística ou o boosting?"}
-      sub={revelado ? undefined : <>Os dois modelos com as mesmas {int(NA)} propostas de ajuste e {int(NV)} de validação.</>}
+      sub={revelado ? <>Árvores ganhariam com interação ou forma curva (Friedman, 2001); parado em {K_PARADA}, o boosting {USA_ATRASO ? "corta pouco" : "nem corta"} no atraso.</> : <>Os dois modelos com as mesmas {int(NA)} propostas de ajuste e {int(NV)} de validação.</>}
       conclusao={!revelado
         ? <>No ajuste, o boosting passa a AUC da logística ({num(LOG.aucA, 4)}) já com {K_PASSA} árvores e chega a {num(AUC_A[K_MAX], 4)} com {K_MAX}. E na validação? Preveja ao lado.</>
-        : <>Validação: logística com AUC <b>{num(LOG.aucV, 4)}</b> e log loss <b>{num(LOG.llV, 4)}</b>; boosting parado em {K_PARADA} árvores, {num(AUC_V[K_PARADA], 4)} e {num(LL_V[K_PARADA], 4)}. A diferença de AUC, {num(DL.dif, 3)} (IC de 95% de {num(DL.ic[0], 3)} a {num(DL.ic[1], 3)}), {DL.ic[0] > 0 ? "não é ruído" : "cabe no ruído"}. Com {DA} defaults no ajuste, a amostra não mostra interação nem forma que o boosting aproveite, e a referência linear vence; o <LinkSlide slug="c6p18">slide 18</LinkSlide> confere o nível das PDs do boosting.</>}
-      fonte={`Ajuste: ${int(NA)} propostas, ${DA} defaults; validação sorteada: ${int(NV)}, ${DV} defaults. Boosting: taxa ${num(CFG_CARTEIRA.eta, 1)}, profundidade ${CFG_CARTEIRA.profundidade}, mínimo de ${CFG_CARTEIRA.minFolha} por folha; parada em ${K_PARADA} escolhida nesta validação. IC de DeLong pareado.`}>
+        : <>Validação: logística com AUC <b>{num(LOG.aucV, 4)}</b> e log loss <b>{num(LOG.llV, 4)}</b>; boosting parado em {K_PARADA}, {num(AUC_V[K_PARADA], 4)} e {num(LL_V[K_PARADA], 4)}. Na AUC, diferença de {num(DL.dif, 3)} (IC de 95% de {num(DL.ic[0], 3)} a {num(DL.ic[1], 3)}): {SEPARA_AUC ? "não é ruído" : "cabe no ruído"}; na log loss, {num(DP.dif, 4)} (IC de {num(DP.ic[0], 4)} a {num(DP.ic[1], 4)}): {EMPATE_LL ? "empate" : "a amostra separa os dois"}. <b>{SEPARA_AUC && EMPATE_LL ? "Só a AUC separa os modelos" : SEPARA_AUC ? "AUC e log loss separam os modelos" : "Nenhuma das duas separa os modelos"}</b>: com {DA} defaults no ajuste, nada que o boosting aproveite. <LinkSlide slug="c6p18">Slide 18</LinkSlide>: o nível das PDs.</>}
+      fonte={`Ajuste: ${int(NA)} propostas, ${DA} defaults; validação sorteada: ${int(NV)}, ${DV} defaults. Boosting: taxa ${num(CFG_CARTEIRA.eta, 1)}, profundidade ${CFG_CARTEIRA.profundidade}, mínimo de ${CFG_CARTEIRA.minFolha} por folha; parada em ${K_PARADA} escolhida nesta validação. IC de DeLong pareado na AUC; na log loss, IC pareado por proposta. Em várias bases de crédito, conjuntos de modelos superam a logística na média (Lessmann et al., 2015).`}>
       <Painel titulo="AUC e log loss por número de árvores; a logística é uma reta">
         <Grafico rotulo={`AUC e log loss do boosting por número de árvores, no ajuste e na validação, contra a logística. Logística na validação: AUC ${num(LOG.aucV, 4)}, log loss ${num(LOG.llV, 4)}; boosting parado em ${K_PARADA} árvores: ${num(AUC_V[K_PARADA], 4)} e ${num(LL_V[K_PARADA], 4)}`} arCelular="4 / 5">
           {(d) => <Painel2 d={d} k={k} revelado={revelado} />}
@@ -137,9 +140,6 @@ export function S17Logistica({ pagina }: { pagina?: Pagina }) {
           <Controle rotulo="Árvores do boosting" valor={k} min={1} max={K_MAX} passo={1} onChange={setK} mostrar={`${k}`} />
           <Botao sec onClick={restaurar}>Restaurar</Botao>
         </div>
-        {revelado && <Expandir resumo="Quando o boosting ganharia">
-          <p className="q7-nota">Quando o risco tem interação (o efeito do atraso depende do score) ou forma curva que a reta na log odds não captura: as árvores aprendem essas formas por construção (Friedman, 2001). Como resultado empírico, num benchmark com várias bases de crédito, conjuntos de modelos, entre eles os de árvores, superaram a logística na média (Lessmann et al., 2015). Aqui, parado em {K_PARADA} árvores, ele {USA_ATRASO ? "corta pouco no atraso" : "nem corta no atraso"}: só troca a reta por degraus estimados com {DA} defaults.</p>
-        </Expandir>}
       </Painel>
     </Quadro>
   );

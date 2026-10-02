@@ -102,7 +102,7 @@ const PASSOS: [string, string][] = [
   ["Antes", "congelar escolhas e amostras"],
   ["Ordenação", "AUC com IC pareado"],
   ["Probabilidade", "O/E, Jeffreys por faixa, slope"],
-  ["Nível", `amostra pela finalidade; recalibrar se Jeffreys rejeitar em duas safras seguidas no mesmo sentido (regra contra ruído: por acaso, ${pct(FALSO, 2)})`],
+  ["Nível", `amostra pela finalidade; recalibrar após duas rejeições seguidas no mesmo sentido (contra ruído; por acaso, ${pct(FALSO, 2)})`],
   ["Segmentos", "O/E e curva por segmento"],
   ["Decisão", "corte pela conta"],
 ];
@@ -113,15 +113,15 @@ export function S37Conclusao({ pagina }: { pagina?: Pagina }) {
   const x = s ? SINTOMAS[s] : null;
   const RESPOSTAS: { p: keyof typeof COR; s: string; t: string; r: string; mini: (d: Dim) => ReactNode; rot: string; falta: ReactNode }[] = [
     { p: "ord", s: "●", t: "Ordena?", r: "Sim, moderadamente.", mini: (d) => <MiniOrd d={d} esperada={jn.l} />, rot: `AUC ${num(DL.auc1, 4)} com IC de DeLong; esperada nas réplicas sintéticas da janela ${num(jn.l, 4)}; 10% piores com ${pct(G10.ganho!, 0)} dos defaults`, falta: "estabilidade por segmento e tempo." },
-    { p: "prob", s: "▲", t: "Prevê bem a probabilidade?", r: "Nível baixo, ainda sem prova.", mini: (d) => <MiniProb d={d} />, rot: `PD média ${pct(G.pdMedia!, 1)} contra ${pct(OBS.p, 1)} observados, IC ${pct(OBS.lo, 1)} a ${pct(OBS.hi, 1)}; Jeffreys p = ${num(JC, 2)}`, falta: <>conferir o nível safra a safra (<LinkSlide slug="c7p16">slide 27</LinkSlide>).</> },
+    { p: "prob", s: "▲", t: "Prevê bem a probabilidade?", r: "Nível baixo, ainda sem prova.", mini: (d) => <MiniProb d={d} />, rot: `PD média ${pct(G.pdMedia!, 1)} contra ${pct(OBS.p, 1)} observados, IC ${pct(OBS.lo, 1)} a ${pct(OBS.hi, 1)}; Jeffreys p = ${num(JC, 2)}`, falta: <>o nível, safra a safra (<LinkSlide slug="c7p16">slide 27</LinkSlide>).</> },
     { p: "dec", s: "◆", t: "Sustenta a decisão?", r: "Com hipóteses explícitas.", mini: (d) => <MiniDec d={d} />, rot: `Corte econômico ${pct(OT.corte, 1)}, KS ${pct(KS_.limiar, 1)}`, falta: "sensibilidade de perda e receita." },
     { p: "val", s: "■", t: "Prova fora da amostra?", r: "Uma vez, com margem estreita.", mini: (d) => <MiniVal d={d} novas={jn.vantagem} />, rot: `Diferença para o boosting ${num(DL.dif, 4)}, IC ${num(DL.ic[0], 4)} a ${num(DL.ic[1], 4)}; ${num(jn.vantagem, 4)} nas réplicas sintéticas da janela`, falta: "janela nova, as safras de 2024." },
   ];
   return (
     <Quadro slug="c7p20" pagina={pagina} layout="gl" rotuloConclusao="Síntese"
-      conclusao={<><b>A logística fica.</b> O nível vem da amostra que a finalidade pede, fixada antes da janela, e é vigiado por safra com Jeffreys: <b>recalibrar se o teste rejeitar em duas safras seguidas</b>; confirmar nas safras de 2024.</>}
-      fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults. DeLong, Wilson, Jeffreys; motor do slide 32; réplicas sintéticas da janela: ${N_JANELAS} sorteios (semente ${SEMENTE_JANELAS}). Gatilho: com teste unilateral a ${pct(ALFA, 0)} e safras independentes, duas rejeições seguidas por acaso têm probabilidade ${pct(ALFA, 0)}² = ${pct(FALSO, 2)}.`}>
-      <Painel titulo="As quatro respostas, para a logística da janela">
+      conclusao={<><b>A logística fica.</b> A finalidade escolhe a amostra do nível antes da janela; Jeffreys vigia cada safra, <b>recalibrar após duas rejeições seguidas</b>; confirmar nas safras de 2024.</>}
+      fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults. Motor do slide 32; réplicas sintéticas da janela: semente ${SEMENTE_JANELAS}. Gatilho por acaso: ${pct(ALFA, 0)}² = ${pct(FALSO, 2)} (unilateral, safras independentes).`}>
+      <Painel titulo="As quatro respostas da logística">
         <div className="q7-s37-r">
           {RESPOSTAS.map((r) => (
             <section key={r.p} className="q7-s37-c q7-s37-c--m" data-p={({ ord: "ordenacao", prob: "probabilidade", dec: "decisao", val: "validacao" } as const)[r.p]}>

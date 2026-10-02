@@ -22,7 +22,7 @@ const REF_TREINO = brier(Y, REF_TREINO_P);
 const REF_JANELA = brier(Y, PL.map(() => D / N));
 const BS_PT = brier(Y, PT);
 /** π(1 − π) + (c − π)² com π a taxa da janela: a constante do treino paga o erro de nível; só c = π chega a π(1 − π). */
-const TAXA = D / N, BC_TREINO = brierConstante(PREVALENCIA.treino, TAXA), BC_MIN = brierConstante(TAXA, TAXA);
+const TAXA = D / N, BC_TREINO = brierConstante(PREVALENCIA.treino, TAXA);
 /** Diferença de Brier pareada por proposta, com intervalo normal de 95%. */
 const pareada = (p: readonly number[], q: readonly number[]) => {
   const d = Y.map((y, i) => (p[i] - y) ** 2 - (q[i] - y) ** 2); const m = media(d)!;
@@ -32,7 +32,7 @@ const pareada = (p: readonly number[], q: readonly number[]) => {
 const OPS = [
   { texto: "Sim: está perto de zero, o mínimo", certa: false, retorno: <>Perto de zero não diz nada sozinho: com evento raro, até uma PD constante, que não separa ninguém, tem Brier pequeno. Confunde a escala absoluta com qualidade.</> },
   { texto: "Depende de uma referência na mesma amostra", certa: true, retorno: <>Isso: contra a constante honesta do treino ({num(REF_TREINO, 5)}), a logística é {pct(1 - BS0 / REF_TREINO, 1)} melhor.</> },
-  { texto: "Não: acima de 0,05 já é ruim", certa: false, retorno: <>Não existe limiar universal: uma constante c tem Brier π(1 − π) + (c − π)², com π a taxa da amostra. A do treino, {pct(PREVALENCIA.treino, 2)}, dá {num(BC_TREINO, 5)}; só c = π chega a π(1 − π) = {num(BC_MIN, 5)}, que muda com a prevalência. Confunde o Brier com uma nota absoluta.</> },
+  { texto: "Não: acima de 0,05 já é ruim", certa: false, retorno: <>Não há limiar universal: uma constante c tem Brier <span style={{ whiteSpace: "nowrap" }}>π(1 − π) + (c − π)²</span>, com π a taxa da amostra (a do treino dá {num(BC_TREINO, 5)}). Confunde o Brier com uma nota absoluta.</> },
 ];
 
 export function S23Brier({ pagina }: { pagina?: Pagina }) {

@@ -185,11 +185,12 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
                 <tr><th>AUC</th><td>{num(a.platt.pares.auc!, 4)}</td><td>{num(I.pares.auc!, 4)}</td></tr>
                 <tr><th>PD média</th><td>{pct(a.platt.media, 2)}</td><td>{pct(I.media, 2)}</td></tr>
                 <tr data-on={I.zeros + I.uns > 0 ? "1" : undefined}><th>PD de 0% ou 100%</th><td>{a.platt.zeros + a.platt.uns}</td><td>{I.zeros + I.uns}</td></tr>
-                <tr><th>Log loss na janela</th><td>{num(a.platt.ll, 4)}{a.platt.limitadas ? ` (${a.platt.limitadas})` : ""}</td><td>{num(I.ll, 4)}{I.limitadas ? ` (${I.limitadas})` : ""}</td></tr>
+                <tr><th>Log loss na janela</th><td>{num(a.platt.ll, 4)}{a.platt.limitadas ? ` (${a.platt.limitadas})` : ""}</td><td>{num(I.ll, 4)}{I.limitadas ? ` (${I.limitadas} cortadas)` : ""}</td></tr>
                 <tr><th>Log loss esperada</th><td>{num(a.platt.esp, 4)}</td><td>{num(I.esp, 4)}</td></tr>
               </tbody>
             </table>
-            <p className="q7-nota">{cortadas ? <>Entre parênteses: previsões cortadas em 10⁻¹⁵.</> : <>Esperada: pela PD verdadeira (<LinkSlide slug="c7p16">slide 27</LinkSlide>).</>}</p>
+            {/* nos blocos a nota sai: a leitura já conta as previsões cortadas (o número entre parênteses) e diz que a esperada é pela PD verdadeira */}
+            {t === "grande" && <p className="q7-nota">Esperada: pela PD verdadeira. A janela tem {D} defaults e não separa calibradores (<LinkSlide slug="c7p16">slide 27</LinkSlide>).</p>}
           </>
         )}
         <Expandir resumo="Quando cada uma">

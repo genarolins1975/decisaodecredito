@@ -60,12 +60,14 @@ export function S28Intercepto({ pagina }: { pagina?: Pagina }) {
       <Painel titulo="Antes e depois, na mesma escala: 20 propostas da mini-base">
         <Grafico rotulo={`PD da ${NOME[mod]} antes e depois do ajuste de intercepto ${num(r.A, 3)} para 20 propostas; nenhuma linha se cruza; PD média da janela ${pct(r.pm0, 2)} antes e ${pct(r.pm1, 2)} depois${aberto ? `; observado ${pct(OBS.p, 1)}` : ""}`} arCelular="4 / 3">
           {(d) => {
-            const x = escala([0, 0.4], [d.fs * 1.2, d.w - d.fs * 1.2]); const yA = d.fs * 3.2, yB = d.h - d.fs * 3.6;
+            // em tela estreita, o rótulo da média vai para uma segunda linha e os eixos se afastam das bordas para caber nela
+            const estreito = d.w < 560, l2 = estreito ? d.fs * 1.15 : 0;
+            const x = escala([0, 0.4], [d.fs * 1.2, d.w - d.fs * 1.2]); const yA = d.fs * 3.2 + l2, yB = d.h - d.fs * 3.6 - l2;
             const antes = MINI.map((m) => r.antes[m.id]), dep = MINI.map((m) => r.depois[m.id]);
             return (
               <g>
-                <text className="q7-eixo-t" x={x(0)} y={yA - d.fs * 1.75}>PD antes<tspan dx="0.8em" style={{ fill: "#176C73" }}>▲ média da janela (737): {pct(r.pm0, 2)}</tspan></text>
-                <text className="q7-eixo-t" x={x(0)} y={yB + d.fs * 3.3}>PD depois do ajuste<tspan dx="0.8em" style={{ fill: "#176C73" }}>▼ média da janela (737): {pct(r.pm1, 2)}</tspan></text>
+                <text className="q7-eixo-t" x={x(0)} y={yA - d.fs * 1.75 - l2}>PD antes<tspan {...(estreito ? { x: x(0), dy: "1.15em" } : { dx: "0.8em" })} style={{ fill: "#176C73" }}>▲ média da janela (737): {pct(r.pm0, 2)}</tspan></text>
+                <text className="q7-eixo-t" x={x(0)} y={yB + d.fs * 3.3}>PD depois do ajuste<tspan {...(estreito ? { x: x(0), dy: "1.15em" } : { dx: "0.8em" })} style={{ fill: "#176C73" }}>▼ média da janela (737): {pct(r.pm1, 2)}</tspan></text>
                 {[yA, yB].map((yy, k) => <g key={k}><line className="q7-eixo" x1={x(0)} x2={x(0.4)} y1={yy} y2={yy} />{[0, 0.1, 0.2, 0.3, 0.4].map((t) => <text key={t} className="q7-tick" x={x(t)} y={yy} dy={k ? "1.2em" : "-.5em"} textAnchor="middle">{pct(t, 0)}</text>)}</g>)}
                 {MINI.map((m, i) => <line key={m.id} x1={x(antes[i])} y1={yA} x2={x(dep[i])} y2={yB} stroke={m.y ? "#8C2332" : "#9AA1AD"} strokeWidth={m.y ? 2.6 : 1.6} />)}
                 {MINI.map((m, i) => <g key={`c${m.id}`}><circle cx={x(antes[i])} cy={yA} r={d.fs * 0.3} className={m.y ? "q7-pt-def" : "q7-pt-adi"} /><circle cx={x(dep[i])} cy={yB} r={d.fs * 0.3} className={m.y ? "q7-pt-def" : "q7-pt-adi"} /></g>)}

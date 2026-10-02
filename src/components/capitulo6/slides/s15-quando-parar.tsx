@@ -25,6 +25,15 @@ const DA = YA.reduce((s, v) => s + v, 0), DV = YV.reduce((s, v) => s + v, 0);
 /** Paciência k: treina enquanto a validação melhorou nas últimas k árvores; para e guarda a melhor até ali. */
 function paciencia(pv: number[], k: number) { let best = 0; for (let i = 1; i < pv.length; i++) { if (pv[i] < pv[best]) best = i; if (i - best >= k) return { para: i, guarda: best }; } return { para: pv.length - 1, guarda: best }; }
 const PACS = [3, 5, 10, 20];
+/** Algum trecho de uma das curvas (lista de pontos) entra no retângulo? Amostra cada segmento em passos curtos. */
+function cruza(curvas: { x: number; y: number }[][], q: { x0: number; y0: number; x1: number; y1: number }) {
+  const dentro = (x: number, y: number) => x >= q.x0 && x <= q.x1 && y >= q.y0 && y <= q.y1;
+  for (const c of curvas) for (let i = 1; i < c.length; i++) {
+    const a = c[i - 1], b = c[i], n = Math.max(1, Math.ceil(Math.hypot(b.x - a.x, b.y - a.y) / 2));
+    for (let t = 0; t <= n; t++) if (dentro(a.x + ((b.x - a.x) * t) / n, a.y + ((b.y - a.y) * t) / n)) return true;
+  }
+  return false;
+}
 const tri = (cx: number, cy: number, r: number, baixo = false) => baixo ? `M${cx} ${cy + r}L${cx + r * 0.95} ${cy - r * 0.7}L${cx - r * 0.95} ${cy - r * 0.7}Z` : `M${cx} ${cy - r}L${cx + r * 0.95} ${cy + r * 0.7}L${cx - r * 0.95} ${cy + r * 0.7}Z`;
 
 function Graficos({ c, m, revelado, ate, imin, faixa }: { c: Curvas; m: number; revelado: boolean; ate: number; imin: number; faixa: [number, number] }) {
@@ -53,7 +62,24 @@ function Graficos({ c, m, revelado, ate, imin, faixa }: { c: Curvas; m: number; 
                 <path className="q7-linha q7-linha--val" strokeDasharray="9 6" d={caminho(pts(c.pv))} />
                 {m <= ate && <path d={tri(x(m), y(c.pv[m]), r * 1.25)} fill="#2E6B4F" stroke="#fff" strokeWidth={1.5} />}
                 <path d={tri(x(imin), y(c.pv[imin]) - r * 2.6, r * 1.25, true)} fill="#2E6B4F" />
-                <text className="q7-rot" x={x(imin)} y={y(c.pv[imin]) - r * 2.6 - d.fs * 0.9} textAnchor={x(imin) - g.l < d.fs * 6 ? "start" : "middle"} style={{ fill: "#2E6B4F", paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em" }}>{`mínimo: ${imin} árvores, ${num(c.pv[imin], 4)}`}</text>
+                {(() => {
+                  // rótulo do mínimo na área livre: procura, perto do marcador, a primeira caixa que não cruza nenhuma das
+                  // duas curvas nem sai da área do gráfico; longe do marcador, uma linha de chamada liga os dois
+                  const t = `mínimo: ${imin} árvores, ${num(c.pv[imin], 4)}`, fs = d.fs, w = t.length * fs * 0.56, h = fs * 1.25, folga = fs * 0.3;
+                  const mx = x(imin), my = y(c.pv[imin]) - r * 2.6;
+                  const curvasPx = [pts(c.pa), pts(c.pv)];
+                  const cands: { x0: number; yb: number }[] = [];
+                  for (const dy of [-1.2, 1.6, 2.6, 3.6, 4.8, -2.6, 6, 7.5]) for (const dx of [-0.5, 1.2, 2.5, 4, 6, 8, 11]) cands.push({ x0: mx + (dx === -0.5 ? -w / 2 : dx * fs), yb: my + dy * fs });
+                  const caixa = (k: { x0: number; yb: number }) => ({ x0: k.x0 - folga, x1: k.x0 + w + folga, y0: k.yb - h * 0.82 - folga, y1: k.yb + h * 0.25 + folga });
+                  const livre = (k: { x0: number; yb: number }) => { const q = caixa(k); return q.x0 >= g.l && q.x1 <= d.w - g.r && q.y0 >= g.t - fs * 0.6 && q.y1 <= d.h - g.b && !(mx >= q.x0 - r * 1.3 && mx <= q.x1 + r * 1.3 && my >= q.y0 - r * 1.3 && my <= q.y1 + r * 1.3) && !cruza(curvasPx, q); };
+                  const k = cands.find(livre) ?? { x0: Math.max(g.l, mx - w / 2), yb: my - fs * 1.2 };
+                  const q = caixa(k), longe = q.y0 > my + r * 1.3 || q.x0 > mx + r * 2.5;
+                  const ax = Math.min(Math.max(mx, q.x0 + folga), q.x1 - folga), ay = q.y0 > my ? q.y0 + folga * 0.5 : q.y1 - folga * 0.5;
+                  return <g data-rotulo-minimo="1">
+                    {longe && <line x1={mx} y1={my + r * 1.25} x2={ax} y2={ay} stroke="#2E6B4F" strokeWidth={1.4} />}
+                    <text className="q7-rot" x={k.x0} y={k.yb} style={{ fill: "#2E6B4F", paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em", strokeLinejoin: "round" }}>{t}</text>
+                  </g>;
+                })()}
               </>}
             </g>
           );
@@ -100,9 +126,9 @@ export function S15QuandoParar({ pagina }: { pagina?: Pagina }) {
       </Painel>
       <Painel>
         <div className="q7-kpis q7-kpis--3">
-          <Kpi rotulo="Perda" valor={revelado ? num(c.pv[m], 4) : "·"} detalhe="validação" tom="val" tam="mini" />
+          <Kpi rotulo="Perda" valor={revelado ? num(c.pv[m], 4) : "?"} detalhe="validação" tom="val" tam="mini" />
           <Kpi rotulo="AUC" valor={num(c.aa[m], 3)} detalhe="ajuste" tam="mini" />
-          <Kpi rotulo="AUC" valor={revelado ? num(c.av[m], 3) : "·"} detalhe="validação" tom="val" tam="mini" />
+          <Kpi rotulo="AUC" valor={revelado ? num(c.av[m], 3) : "?"} detalhe="validação" tom="val" tam="mini" />
         </div>
         <Previsao pergunta={`Quantas das ${MAXA} árvores do slide 11 ficam?`} opcoes={ops} escolha={esc} onEscolha={escolher} recolher />
         {revelado && (

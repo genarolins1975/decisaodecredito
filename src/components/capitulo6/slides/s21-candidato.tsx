@@ -1,10 +1,9 @@
 "use client";
 import { useState, type ReactNode } from "react";
 import { Botao, LinkSlide, Painel, Quadro, Seg, type Pagina } from "@/components/capitulo7/base";
-import { CFG_CARTEIRA, GRID, HP_CANDIDATO, LOGISTICA, RES, XV, YV, modelo } from "@/lib/capitulo6/dados";
-import { estagios, logit, perdaLog } from "@/lib/capitulo6/gbm";
-import { escoreLogistica } from "@/lib/capitulo6/logistica";
-import { delong, wilson, Z95 } from "@/lib/capitulo7/metricas";
+import { GRID, HP_CANDIDATO, RES } from "@/lib/capitulo6/dados";
+import { logit } from "@/lib/capitulo6/gbm";
+import { wilson, Z95 } from "@/lib/capitulo7/metricas";
 import { int, num, pct } from "@/lib/capitulo7/formato";
 import base from "@/lib/capitulo6/base.json";
 
@@ -16,13 +15,18 @@ import base from "@/lib/capitulo6/base.json";
  *   referência linear  dois pontos (as duas AUC) e a barra de ±1,96 erro padrão aproximado de uma AUC isolada (Hanley e
  *                      McNeil, 1982); a régua exibida é a que decide (EMPATA). O gerador não publica as previsões do
  *                      candidato nas 760 (base.json só as traz na janela fora do tempo, congelada para o capítulo 7):
- *                      o DeLong pareado (correlação de 0,95 no slide 17) fica para o validador;
+ *                      o DeLong pareado fica para o validador. A correlação das duas AUC nas 760 não é conhecida (a
+ *                      do slide 17 é de outro par de modelos, de três variáveis, nas 631 sorteadas): a tela não a usa;
  *   nível              PD média dos dois contra a faixa de Wilson da taxa observada: os dois erram a safra;
  *   escolha            as 12 AUC da grade com a faixa de um erro padrão da melhor (quantas cabem nela, calculado); a
- *                      melhor só aparece depois do acerto ou da terceira tentativa;
- *   monotonia          as sete variáveis do candidato (meta.features), sem o score de bureau dos slides 11 a 20;
+ *                      melhor só aparece depois do acerto ou da terceira tentativa. Antes disso, só as células enviadas,
+ *                      no eixo inteiro da AUC (0,5 a 1, que não entrega onde fica a maior), com o rótulo da célula ao
+ *                      lado de cada ponto e afastamento horizontal quando dois pontos se tocariam;
+ *   monotonia          as sete variáveis do candidato (meta.features); o score de bureau dos slides 11 a 20 aparece
+ *                      riscado, com a legenda visível "fora do candidato";
  *   janela             a linha das safras (meta.treino, validacao, oot); a janela fora do tempo traz a PD verdadeira
- *                      de cada proposta (base.oot.pt), o que só a base sintética permite.
+ *                      de cada proposta (base.oot.pt), que só a base sintética dá (uma carteira real também pode
+ *                      guardar uma janela intocada; a PD verdadeira, não).
  * A grade (GRID) começa sem célula escolhida e com o envio desabilitado. Envio errado abre só a célula enviada, sem tom,
  * e diz a direção da maior validação (menos árvores, menos folhas), com o retorno da região da grade; a melhor abre com
  * o acerto, com a célula mais simples dentro de um erro padrão (regra de um erro padrão, não é erro) ou na terceira
@@ -86,15 +90,6 @@ const JAN = [
   { k: "oot", r: "fora do tempo", n: META.n_oot, m: meses(META.oot) },
 ];
 const periodo = (s: string) => s.replace("safras ", "");
-
-/** Correlação das duas AUC (logística e boosting parado, nas mesmas propostas) no slide 17, pelo DeLong. */
-let CORR: number | null = null;
-function correlacaoS17() {
-  if (CORR !== null) return CORR;
-  const EV = estagios(modelo(CFG_CARTEIRA), XV); const LL = EV.map((F) => perdaLog(F, YV));
-  const k = LL.reduce((b, x, i) => (i >= 1 && x < LL[b] ? i : b), 1);
-  return (CORR = delong(YV, XV.map((x) => escoreLogistica(LOGISTICA, x)), EV[k]).correlacao);
-}
 
 /** Direção da célula enviada até a maior validação. */
 function direcao(g: G) {
@@ -169,42 +164,80 @@ function MiniNivel() {
 
 /** Escolha: as 12 AUC de validação e a faixa de um erro padrão da melhor; antes do acerto, só as células enviadas. */
 function MiniEscolha({ vistas, revelado }: { vistas: G[]; revelado: boolean }) {
+  if (!revelado) return <MiniEnviadas vistas={vistas} />;
   const x = lin([PIOR.auc_val - 0.003, BEST.auc_val + 0.003], [8, W - 8]);
-  const pts = (revelado ? [...GRID] : vistas).sort((a, b) => a.auc_val - b.auc_val);
+  const pts = [...GRID].sort((a, b) => a.auc_val - b.auc_val);
   let ult = -1e9, alt = 0;
   const pos = pts.map((g) => { const px = x(g.auc_val); alt = px - ult < 6 ? 1 - alt : 0; ult = px; return { g, px, py: alt ? 16 : 23.5 }; });
   return (
-    <Mini h={42} rotulo={revelado
-      ? `AUC de validação das ${NCEL} células, de ${num(PIOR.auc_val, 4)} a ${num(BEST.auc_val, 4)}; ${N_1EP} de ${NCEL} a menos de um erro padrão (${num(EP, 3)}) da melhor, ${BEST.max_iter} árvores e ${BEST.max_leaf_nodes} folhas`
-      : `AUC de validação das células já enviadas; a maior abre com o acerto`}>
+    <Mini h={42} rotulo={`AUC de validação das ${NCEL} células, de ${num(PIOR.auc_val, 4)} a ${num(BEST.auc_val, 4)}; ${N_1EP} de ${NCEL} a menos de um erro padrão (${num(EP, 3)}) da melhor, ${BEST.max_iter} árvores e ${BEST.max_leaf_nodes} folhas`}>
       <line x1={8} x2={W - 8} y1={31} y2={31} stroke="var(--q7-borda)" strokeWidth={1.5} />
-      {revelado && <rect x={x(BEST.auc_val - EP)} y={12} width={x(BEST.auc_val) - x(BEST.auc_val - EP)} height={19} fill="var(--q7-val-s)" stroke="var(--q7-val)" strokeOpacity={0.35} />}
-      {pos.map(({ g, px, py }) => g === BEST && revelado
+      <rect x={x(BEST.auc_val - EP)} y={12} width={x(BEST.auc_val) - x(BEST.auc_val - EP)} height={19} fill="var(--q7-val-s)" stroke="var(--q7-val)" strokeOpacity={0.35} />
+      {pos.map(({ g, px, py }) => g === BEST
         ? <circle key={`${g.max_iter}-${g.max_leaf_nodes}`} cx={px} cy={py} r={4.8} fill="var(--q7-val)" />
         : <circle key={`${g.max_iter}-${g.max_leaf_nodes}`} cx={px} cy={py} r={3.2} fill="#fff" stroke="var(--q7-val)" strokeWidth={1.6} />)}
-      {revelado ? <>
-        <Txt x={x(BEST.auc_val) + 4} y={9.5} a="end" c="var(--q7-val)" b>{BEST.max_iter} × {BEST.max_leaf_nodes}: {num(BEST.auc_val, 4)}</Txt>
-        <Txt x={x(PIOR.auc_val) - 4} y={9.5} c="var(--q7-mudo)">{num(PIOR.auc_val, 4)}</Txt>
-        <Txt x={x(BEST.auc_val) + 4} y={41} a="end" c="var(--q7-val)">um erro padrão: {N_1EP} de {NCEL}</Txt>
-      </> : <Txt x={W / 2} y={41} a="middle" c="var(--q7-mudo)">a maior abre com o acerto</Txt>}
+      <Txt x={x(BEST.auc_val) + 4} y={9.5} a="end" c="var(--q7-val)" b>{BEST.max_iter} × {BEST.max_leaf_nodes}: {num(BEST.auc_val, 4)}</Txt>
+      <Txt x={x(PIOR.auc_val) - 4} y={9.5} c="var(--q7-mudo)">{num(PIOR.auc_val, 4)}</Txt>
+      <Txt x={x(BEST.auc_val) + 4} y={41} a="end" c="var(--q7-val)">um erro padrão: {N_1EP} de {NCEL}</Txt>
+    </Mini>
+  );
+}
+
+/** Eixo inteiro da AUC (do acaso ao perfeito): não entrega onde fica a maior da grade. */
+const AUC_ACASO = 0.5, AUC_MAX = 1;
+/** Largura aproximada de um texto do mini (unidades do viewBox), por classe de letra; conferida no Chromium com getComputedTextLength. */
+const largTxt = (t: string, fs = FS) => [...t].reduce((s, c) => s + ("ilj.,:;|".includes(c) ? 2.5 : "ftr".includes(c) ? 3.4 : "mw".includes(c) ? 8.6 : c === " " ? 2.9 : 5.7), 0) * (fs / 10.5);
+/** Antes do acerto: as células enviadas no eixo da AUC, cada uma com o seu rótulo; pontos que se tocariam se afastam na horizontal. */
+function MiniEnviadas({ vistas }: { vistas: G[] }) {
+  const x0 = 47, x1 = W - 10, y = 25, r = 2.9;
+  const x = lin([AUC_ACASO, AUC_MAX], [x0, x1]);
+  const ord = [...vistas].sort((a, b) => a.auc_val - b.auc_val);
+  // pontos: posição verdadeira; se dois ficam a menos de 2r + 6, afastam simetricamente até essa distância
+  const px = ord.map((g) => x(g.auc_val));
+  for (let i = 1; i < px.length; i++) { const d = px[i] - px[i - 1], min = 2 * r + 6; if (d < min) { const m = (px[i] + px[i - 1]) / 2; px[i - 1] = Math.min(px[i - 1], m - min / 2); px[i] = Math.max(px[i], m + min / 2); } }
+  // rótulos: centrados no ponto, empurrados para a direita sem sobrepor e de volta para dentro do quadro
+  const rot = ord.map((g) => `${g.max_iter} × ${g.max_leaf_nodes}: ${num(g.auc_val, 4)}`);
+  const lw = rot.map((t) => largTxt(t));
+  const lx = px.map((p, i) => p - lw[i] / 2);
+  for (let i = 0; i < lx.length; i++) lx[i] = Math.max(lx[i], i ? lx[i - 1] + lw[i - 1] + 14 : 0);
+  const sobra = lx.length ? lx[lx.length - 1] + lw[lw.length - 1] - (W - 1) : 0;
+  if (sobra > 0) for (let i = 0; i < lx.length; i++) lx[i] = Math.max(0, lx[i] - sobra);
+  return (
+    <Mini h={42} rotulo={vistas.length
+      ? `AUC de validação das células já enviadas: ${ord.map((g) => `${g.max_iter} árvores e ${g.max_leaf_nodes} folhas, ${num(g.auc_val, 4)}`).join("; ")}; a maior abre com o acerto`
+      : `Nenhuma célula enviada; a maior AUC de validação abre com o acerto`}>
+      <line x1={x0} x2={x1} y1={y} y2={y} stroke="var(--q7-borda)" strokeWidth={1.5} />
+      {[x0, x1].map((v) => <line key={v} x1={v} x2={v} y1={y - 3} y2={y + 3} stroke="var(--q7-mudo)" strokeWidth={1.2} />)}
+      <Txt x={x0 - 4} y={y + 3.8} a="end" c="var(--q7-mudo)">AUC {num(AUC_ACASO, 1)}</Txt>
+      <Txt x={W} y={y + 3.8} a="end" c="var(--q7-mudo)">{num(AUC_MAX, 0)}</Txt>
+      {ord.map((g, i) => (
+        <g key={`${g.max_iter}-${g.max_leaf_nodes}`}>
+          <line x1={lx[i] + lw[i] / 2} x2={px[i]} y1={12.5} y2={y - r} stroke="var(--q7-val)" strokeOpacity={0.6} strokeWidth={1} />
+          <circle cx={px[i]} cy={y} r={r} fill="var(--q7-val)" stroke="#fff" strokeWidth={0.8} />
+          <Txt x={lx[i] + lw[i] / 2} y={9.5} a="middle" c="var(--q7-val)" b>{rot[i]}</Txt>
+        </g>
+      ))}
+      <Txt x={W / 2} y={41} a="middle" c="var(--q7-mudo)">a maior abre com o acerto</Txt>
     </Mini>
   );
 }
 
 /** Variáveis do candidato (meta.features), sem o score de bureau dos slides 11 a 20. */
 function MiniVars() {
+  const FORA = "fora do candidato";
   const tags = [...META.features.map((v) => ({ r: nome(v).curto, fora: false })), ...(TEM_SCORE ? [] : [{ r: "score", fora: true }])];
-  const larg = (t: string) => t.length * 5.5 + 9;
+  const larg = (t: string) => largTxt(t, 10.5) + 9;
   const linhas: { r: string; fora: boolean; x: number; w: number; l: number }[] = [];
   let lx = 0, li = 0;
-  for (const t of tags) { const w = larg(t.r); if (lx + w > W && lx > 0) { li++; lx = 0; } linhas.push({ ...t, x: lx, w, l: li }); lx += w + 4; }
+  // a pílula riscada leva a legenda ao lado, na mesma linha
+  for (const t of tags) { const w = larg(t.r), ocupa = w + (t.fora ? 4 + largTxt(FORA, 10.5) : 0); if (lx + ocupa > W && lx > 0) { li++; lx = 0; } linhas.push({ ...t, x: lx, w, l: li }); lx += w + 4; }
   return (
-    <Mini h={li * 14 + 14} rotulo={`As ${META.features.length} variáveis do candidato: ${VARS}${TEM_SCORE ? "" : "; sem o score de bureau dos slides 11 a 20"}`}>
+    <Mini h={li * 14 + 14} rotulo={`As ${META.features.length} variáveis do candidato: ${VARS}${TEM_SCORE ? "" : "; o score de bureau dos slides 11 a 20 fica fora do candidato"}`}>
       {linhas.map((t) => (
         <g key={t.r} transform={`translate(${t.x} ${t.l * 14})`} fontSize={10.5}>
           <rect x={0.5} y={0.75} width={t.w} height={12.5} rx={6.25} fill={t.fora ? "#fff" : "var(--q7-papel2)"} stroke={t.fora ? "var(--q7-mudo)" : "var(--q7-borda)"} strokeDasharray={t.fora ? "3 2" : undefined} />
           <Txt x={t.w / 2 + 0.5} y={10.6} a="middle" c={t.fora ? "var(--q7-mudo)" : "var(--q7-texto)"}>{t.r}</Txt>
-          {t.fora && <line x1={4} x2={t.w - 3} y1={7} y2={7} stroke="var(--q7-mudo)" strokeWidth={1.2} />}
+          {t.fora && <><line x1={4} x2={t.w - 3} y1={7} y2={7} stroke="var(--q7-mudo)" strokeWidth={1.2} /><Txt x={t.w + 4} y={10.6} c="var(--q7-mudo)">{FORA}</Txt></>}
         </g>
       ))}
     </Mini>
@@ -235,7 +268,6 @@ function MiniJanela() {
 }
 
 export function S21Candidato({ pagina }: { pagina?: Pagina }) {
-  const [corr] = useState(correlacaoS17);
   const [sel, setSel] = useState<G | null>(null);
   const [enviado, setEnviado] = useState<G | null>(null);
   const [envios, setEnvios] = useState<G[]>([]);
@@ -257,8 +289,8 @@ export function S21Candidato({ pagina }: { pagina?: Pagina }) {
   const dois = !NIVEL_OK && !LOGIT_OK;
   const LISTA: { t: string; s: string; e: Estado; g: ReactNode; tem: ReactNode; pede: ReactNode }[] = [
     { t: "Referência linear", s: "c6p17", e: !EMPATA && DIF_LOG > 0 ? "ok" : "provar", g: <MiniRef />,
-      tem: <>diferença {num(DIF_LOG, 4)}, {EMPATA ? "menor" : "maior"} que {num(Z95, 2)} × {num(EP, 3)} = {num(REGUA, 3)}: {EMPATA ? "empate" : DIF_LOG > 0 ? "supera" : "perde"}</>,
-      pede: <>DeLong pareado (correlação {num(corr, 2)}): IC acima de zero</> },
+      tem: <>diferença {num(DIF_LOG, 4)}, {EMPATA ? "menor" : "maior"} que {num(Z95, 2)} × {num(EP, 3)} = {num(REGUA, 3)}: {EMPATA ? "empate" : DIF_LOG > 0 ? "supera" : "perde"} na régua aproximada</>,
+      pede: <>DeLong pareado nas {int(NV)}: IC da diferença acima de zero</> },
     { t: "Nível da PD", s: "c6p18", e: NIVEL_OK ? "ok" : "nao", g: <MiniNivel />,
       tem: <>só a média: {dois ? "os dois erram" : NIVEL_OK ? "no Wilson" : "o boosting erra"}</>,
       pede: <>recalibrar {dois ? "os dois" : "o boosting"}; slope com IC contendo 1</> },
@@ -282,7 +314,7 @@ export function S21Candidato({ pagina }: { pagina?: Pagina }) {
       <Painel>
         <div className="q6-s21-cab">
           <p className="q6-s21-sint">
-            <b>Base sintética:</b> PD verdadeira de cada proposta e janela futura intocada, que o capítulo 7 usa e nenhuma carteira real dá; sem as previsões do candidato nas {int(NV)}, o DeLong pareado fica com o validador.
+            <b>Base sintética:</b> PD verdadeira de cada proposta, que nenhuma carteira real dá, e janela futura intocada; o capítulo 7 usa as duas. Sem as previsões do candidato nas {int(NV)}, o DeLong pareado fica com o validador.
           </p>
           <Seg rotulo="O que a lista do validador mostra" opcoes={[{ v: "tem" as Modo, r: "Evidência" }, { v: "pede" as Modo, r: "O que pedir" }]} valor={modo} onChange={setModo} cor />
         </div>

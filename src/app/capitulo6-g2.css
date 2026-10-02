@@ -102,4 +102,5 @@
 .q6-s16-ctl > div { display: grid; gap: .25cqw; }
 .q7 .q7-slide .q6-s12-tab th, .q7 .q7-slide .q6-s12-tab td { white-space: nowrap; }
 .q7 .q7-slide .q6-s16-tab th, .q7 .q7-slide .q6-s16-tab td { white-space: nowrap; }
+.q7 .q7-slide .q6-s16-tab th, .q7 .q7-slide .q6-s16-tab td { padding-top: .12cqw; padding-bottom: .12cqw; }
 @container q7 (max-width: 820px) { .q7 .q7-slide .q6-s16-tab thead th { white-space: normal; padding-left: 12px; } }

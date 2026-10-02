@@ -11,7 +11,8 @@ import { int, num, pct, pp } from "@/lib/capitulo7/formato";
  * intervalo de 5 em 100; as alternativas erradas são o intervalo de 50 em 1.000 e o da aproximação normal. O intervalo
  * de Wilson encolhe com √n e nunca sai de [0, 1]; a aproximação normal (Wald), com poucos casos, dá limite inferior
  * negativo. O nível de confiança é escolhido no quadro (z de 1,645, 1,960 ou 2,576), travado em 95% até a resposta certa,
- * como o controle de casos; a leitura usa o z e o nível escolhidos. Abaixo do gráfico, a ponte com
+ * como o controle de casos; a leitura usa o z e o nível escolhidos. O eixo se estende quando um limite passa de 25%
+ * (1 em 20 a 99% vai a 31,8%) ou quando a normal desce abaixo da faixa negativa: nenhuma linha é cortada na borda. Abaixo do gráfico, a ponte com
  * o slide 19: as faixas vizinhas F8 e F9 da logística, com o intervalo de cada uma e o da diferença (e não a
  * sobreposição dos dois intervalos). Na expansão, o teste de Jeffreys que o BCE pede no backtesting de PD.
  */
@@ -46,29 +47,55 @@ export function S21Wilson({ pagina }: { pagina?: Pagina }) {
       <Painel titulo="A mesma frequência observada, 5%, com números de casos diferentes">
         <Grafico rotulo={linhas.map((l) => { const ww = wilson(l.d, l.n, z)!; return l.oculto ? `${l.rot}: oculto até a previsão` : `${l.rot}: ${pct(ww.lo, 1)} a ${pct(ww.hi, 1)}`; }).join("; ")} arCelular="4 / 3">
           {(dm) => {
-            const x = escala([-0.05, 0.25], [dm.fs * 0.6, dm.w - dm.fs * 0.6]);
+            // eixo até 25% ou, se algum limite superior (Wilson ou normal) passar disso no nível escolhido, até o próximo
+            // múltiplo de 5% acima dele: nenhuma linha sai do gráfico
+            const vis = linhas.filter((l) => !l.oculto);
+            const xmax = Math.max(0.25, Math.ceil(Math.max(...vis.flatMap((l) => [wilson(l.d, l.n, z)!.hi, wald(l.d, l.n, z)!.hi])) / 0.05 - 1e-9) * 0.05);
+            // a faixa abaixo de 0% guarda a proporção do gráfico (um quinto do lado positivo) e cabe o limite normal mais negativo
+            const xmin = -Math.ceil(Math.max(xmax / 5, 0.01 - Math.min(...vis.map((l) => wald(l.d, l.n, z)!.lo))) * 100 - 1e-9) / 100;
+            // larguras estimadas dos textos (rótulo pequeno a 0,86 em; nome da linha em negrito a 1 em)
+            const larg = (t: string) => t.length * dm.fs * 0.86 * 0.56, largNome = (t: string) => t.length * dm.fs * 0.6;
+            const x = escala([xmin, xmax], [dm.fs * 0.6, dm.w - dm.fs * 0.6]);
+            const marcas = Array.from({ length: Math.round(xmax / 0.05) + 1 }, (_, k) => Math.round(k * 5) / 100);
             // cada linha precisa do rótulo acima e da aproximação normal abaixo; a última fica acima dos rótulos do eixo
             const topo = dm.fs * 2.7, fundo = dm.h - dm.fs * 4.1; const passo = (fundo - topo) / (linhas.length - 1);
             return (
               <g>
-                <rect x={x(-0.05)} y={0} width={x(0) - x(-0.05)} height={dm.h - dm.fs * 2.4} fill="#EEF0F3" />
-                <text className="q7-rot--peq" x={x(-0.025)} y={dm.h - dm.fs * 2.4} dy="1.35em" textAnchor="middle" style={{ fill: "#5B6475" }}>abaixo de 0%</text>
-                {[0, 0.05, 0.1, 0.15, 0.2, 0.25].map((v) => <g key={v}><line className="q7-grade" x1={x(v)} x2={x(v)} y1={0} y2={dm.h - dm.fs * 2.4} /><text className="q7-tick" x={x(v)} y={dm.h - dm.fs * 2.4} dy="1.2em" textAnchor="middle">{pct(v, 0)}</text></g>)}
+                <rect x={x(xmin)} y={0} width={x(0) - x(xmin)} height={dm.h - dm.fs * 2.4} fill="#EEF0F3" />
+                {(() => {
+                  // nome da faixa impossível, centrado no espaço que sobra à esquerda do rótulo "0%" do eixo; em tela estreita, abreviado
+                  const livre = x(0) - x(xmin) - dm.fs * 1.1, txt = livre >= larg("abaixo de 0%") ? "abaixo de 0%" : livre >= larg("< 0%") ? "< 0%" : null;
+                  return txt && <text className="q7-rot--peq" x={(x(xmin) + x(0) - dm.fs * 1.1) / 2} y={dm.h - dm.fs * 2.4} dy="1.35em" textAnchor="middle" style={{ fill: "#5B6475" }}>{txt}</text>;
+                })()}
+                {marcas.map((v) => <g key={v}><line className="q7-grade" x1={x(v)} x2={x(v)} y1={0} y2={dm.h - dm.fs * 2.4} /><text className="q7-tick" x={x(v)} y={dm.h - dm.fs * 2.4} dy="1.2em" textAnchor="middle">{pct(v, 0)}</text></g>)}
                 <line x1={x(0.05)} x2={x(0.05)} y1={0} y2={dm.h - dm.fs * 2.4} stroke="#176C73" strokeWidth={2} strokeDasharray="6 5" />
                 {linhas.map((l, k) => { const ww = wilson(l.d, l.n, z)!, wd = wald(l.d, l.n, z)!; const cy = topo + passo * k; return l.oculto ? (
                   <g key={l.rot}>
-                    <text className="q7-rot" x={x(-0.05)} y={cy - dm.fs * 0.9}>{l.rot}</text>
+                    <text className="q7-rot" x={x(xmin)} y={cy - dm.fs * 0.9}>{l.rot}</text>
                     <rect x={x(0)} y={cy - dm.fs * 0.5} width={x(0.2) - x(0)} height={dm.fs * 1.9} rx={6} fill="none" stroke="#9AA1AD" strokeWidth={2} strokeDasharray="6 5" />
                     <text className="q7-rot" x={x(0.1)} y={cy + dm.fs * 0.45} dy=".35em" textAnchor="middle" style={{ fill: "#5B6475" }}>? preveja ao lado</text>
                   </g>
                 ) : (
                   <g key={l.rot}>
-                    <text className="q7-rot" x={x(-0.05)} y={cy - dm.fs * 0.9} style={{ fill: l.on ? "#00205B" : "#2A3342" }}>{l.rot}</text>
+                    <text className="q7-rot" x={x(xmin)} y={cy - dm.fs * 0.9} style={{ fill: l.on ? "#00205B" : "#2A3342" }}>{l.rot}</text>
                     <line x1={x(ww.lo)} x2={x(ww.hi)} y1={cy} y2={cy} stroke="#176C73" strokeWidth={dm.fs * 0.55} strokeLinecap="round" />
                     <circle cx={x(l.d / l.n)} cy={cy} r={dm.fs * 0.42} fill="#fff" stroke="#00205B" strokeWidth={3} />
-                    {ww.hi > 0.17 ? <text className="q7-rot--peq" x={x(ww.hi)} y={cy - dm.fs * 0.75} textAnchor="end">Wilson {pct(ww.lo, 1)} a {pct(ww.hi, 1)}</text> : <text className="q7-rot--peq" x={x(ww.hi) + dm.fs * 0.6} y={cy} dy=".35em">Wilson {pct(ww.lo, 1)} a {pct(ww.hi, 1)}</text>}
-                    <line x1={x(Math.max(-0.05, wd.lo))} x2={x(wd.hi)} y1={cy + dm.fs * 1.05} y2={cy + dm.fs * 1.05} stroke="#9AA1AD" strokeWidth={dm.fs * 0.22} strokeDasharray="6 4" />
-                    <text className="q7-rot--peq" x={x(wd.hi) + dm.fs * 0.6} y={cy + dm.fs * 1.05} dy=".35em" style={{ fill: "#5B6475" }}>normal {pct(wd.lo, 1)} a {pct(wd.hi, 1)}</text>
+                    {(() => {
+                      // rótulo de Wilson: à direita da barra se couber; senão acima, terminando na ponta da barra, ou logo
+                      // depois do nome da linha quando a barra começa embaixo dele (tela estreita)
+                      const txt = `Wilson ${pct(ww.lo, 1)} a ${pct(ww.hi, 1)}`, w = larg(txt), xr = x(ww.hi) + dm.fs * 0.6;
+                      if (xr + w <= dm.w - 2) return <text className="q7-rot--peq" x={xr} y={cy} dy=".35em">{txt}</text>;
+                      const fimNome = x(xmin) + largNome(l.rot) + dm.fs * 0.8, xe = Math.min(x(ww.hi), dm.w - 2);
+                      return xe - w >= fimNome ? <text className="q7-rot--peq" x={xe} y={cy - dm.fs * 0.75} textAnchor="end">{txt}</text>
+                        : <text className="q7-rot--peq" x={Math.min(fimNome, dm.w - 2 - w)} y={cy - dm.fs * 0.9}>{txt}</text>;
+                    })()}
+                    <line x1={x(Math.max(xmin, wd.lo))} x2={x(wd.hi)} y1={cy + dm.fs * 1.05} y2={cy + dm.fs * 1.05} stroke="#9AA1AD" strokeWidth={dm.fs * 0.22} strokeDasharray="6 4" />
+                    {(() => {
+                      // rótulo da normal: à direita da linha tracejada se couber; senão logo abaixo dela
+                      const txt = `normal ${pct(wd.lo, 1)} a ${pct(wd.hi, 1)}`, w = larg(txt), xr = x(wd.hi) + dm.fs * 0.6;
+                      return xr + w <= dm.w - 2 ? <text className="q7-rot--peq" x={xr} y={cy + dm.fs * 1.05} dy=".35em" style={{ fill: "#5B6475" }}>{txt}</text>
+                        : <text className="q7-rot--peq" x={Math.min(x(Math.max(xmin, wd.lo)), dm.w - 2 - w)} y={cy + dm.fs * 2.2} style={{ fill: "#5B6475" }}>{txt}</text>;
+                    })()}
                   </g>
                 ); })}
               </g>
