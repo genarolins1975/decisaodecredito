@@ -54,6 +54,7 @@ const entreSementes = (q: Fila) => (q.m - TS * q.se > 0 ? "consistente entre sem
 const cabe = (q: Fila) => Math.abs(q.z) < TV;
 /** Veredito da validação, pela mesma faixa de 95%: |z| abaixo do t cabe; perto dele (90% ou mais), no limite. */
 const naValidacao = (q: Fila) => (cabe(q) ? (Math.abs(q.z) >= 0.9 * TV ? "cabe, no limite, na faixa de 95% da validação" : "cabe na faixa de 95% da validação") : "passa da faixa de 95% da validação");
+const curto = (q: Fila) => (cabe(q) ? (Math.abs(q.z) >= 0.9 * TV ? "cabe, no limite" : "cabe") : "passa");
 
 function Pontos({ d, filas, revelado }: { d: Dim; filas: Fila[]; revelado: boolean }) {
   const fs = d.fs, m = { l: fs * 0.6, r: fs * 0.8, t: fs * 0.2, b: fs * 3.1 };
@@ -126,7 +127,7 @@ export function S16Subamostra({ pagina }: { pagina?: Pagina }) {
   const folga = F50 ? !cabe(F50) && F50.m > 0 : false, consistente = F50 ? F50.m - TS * F50.se > 0 : true;
   const ops = [
     { texto: "Melhora com folga: o ganho passa da faixa da validação", certa: folga, retorno: folga ? <>Isso: z = ganho ÷ erro padrão passa de {num(TV, 2)}, a faixa de 95% da validação.</> : <>Confunde o que acontece longe da parada com a parada: com muitas árvores, o modelo sem sorteio já decorou, e o sorteio tem o que frear (fila de baixo); na parada, ainda não decorou.</> },
-    { texto: "Melhora pouco: a média de dez sementes fica acima de zero, mas dentro da faixa da validação", certa: !folga && consistente, retorno: !folga && consistente && F50 ? <>Isso: {F50.ganham} de {NS} sementes ganham e a faixa de 95% entre sementes ({sinal(F50.m, 4)} ± {num(TS * F50.se, 4)}) não toca o zero; mas z = ganho ÷ erro padrão = {num(F50.z, 2)}, abaixo de {num(TV, 2)}: o ganho cabe na faixa da validação, e outras propostas poderiam inverter a comparação.</> : folga ? <>Subestima: o ganho passa da faixa de 95% da validação.</> : <>Confunde ganho em várias sementes com efeito consistente: a faixa de 95% entre sementes toca o zero.</> },
+    { texto: "Melhora pouco: a média de dez sementes fica acima de zero, mas dentro da faixa da validação", certa: !folga && consistente, retorno: !folga && consistente && F50 ? <>Isso: {F50.ganham} de {NS} sementes ganham e a faixa entre sementes não toca o zero, mas z = {num(F50.z, 2)}: o ganho cabe na faixa da validação.</> : folga ? <>Subestima: o ganho passa da faixa de 95% da validação.</> : <>Confunde ganho em várias sementes com efeito consistente: a faixa de 95% entre sementes toca o zero.</> },
     { texto: "Nada: as sementes caem para os dois lados", certa: !folga && !consistente, retorno: !folga && !consistente ? <>Isso: a faixa de 95% entre sementes toca o zero.</> : <>Confunde a dispersão de cada semente com a incerteza do efeito médio: uma semente oscila, mas a média de dez tem faixa estreita (t de {NS - 1} graus) e fica do lado do ganho.</> },
   ];
   const revelado = esc !== null && ops[esc].certa;
@@ -135,15 +136,15 @@ export function S16Subamostra({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c6p16" pagina={pagina} layout="gl"
       titulo={revelado ? undefined : `Cada árvore vê metade das propostas: na parada, a validação melhora?`}
-      sub={revelado ? undefined : `Cada árvore ajusta ${pct(0.5, 0)} das ${int(NA)} propostas, sorteadas. Preveja na parada.`}
+      sub={revelado ? `Método de Friedman (2002). Nesta amostra, de ${int(NV)} propostas e três variáveis, o sorteio regulariza longe da parada.` : `Cada árvore ajusta ${pct(0.5, 0)} das ${int(NA)} propostas, sorteadas. Preveja na parada.`}
       conclusao={!revelado
         ? <>Sem sorteio, a perda de validação desce até {num(L[k0], 4)} em {k0} árvores e sobe a {num(L[T], 4)} com {T} (<LinkSlide slug="c6p15">slide 15</LinkSlide>). Com {T} árvores, sortear {pct(0.5, 0)} baixa a perda {P ? (P[1].ganham === NS ? "em todas as sementes" : `em ${P[1].ganham} de ${NS} sementes`) : "nas sementes"}. E na parada?</>
         : !a || !b ? <>Sorteando: {ss.length} de {NS} sementes calculadas para a subamostra de {pct(f, 0)}.</>
-        : <>Subamostra de {pct(f, 0)}. Com {T} árvores, ganho médio de <b>{sinal(b.m, 4)}</b>, {b.ganham} de {NS} sementes com ganho, {entreSementes(b)}; z = {num(b.z, 2)} {naValidacao(b)}{cabe(b) ? `: ${int(NV)} propostas ainda não o distinguem do zero` : ""}. Na parada em {k0}, <b>{sinal(a.m, 4)}</b> ({a.ganham} de {NS}, {entreSementes(a)}): z = {num(a.z, 2)} {naValidacao(a)}. O <LinkSlide slug="c6p17">slide 17</LinkSlide> compara com a logística.</>}
-      fonte={`Validação sorteada: ${int(NV)} propostas, ${DV} defaults. η ${num(CFG_CARTEIRA.eta, 1)}, profundidade ${CFG_CARTEIRA.profundidade}, mínimo ${CFG_CARTEIRA.minFolha}; subamostra sem reposição, sementes 1 a ${NS}. Faixas de 95%: entre sementes, ± t de ${NS - 1} graus (${num(TS, 3)}) × erro padrão da média; da validação, ± t de ${int(NV - 1)} graus (${num(TV, 3)}) × erro padrão da diferença, proposta a proposta, entre a perda sem sorteio e a média das perdas das ${NS} sementes. Parada em ${k0} escolhida nesta validação. Método: Friedman (2002).`}>
+        : <>Com {pct(f, 0)} e {T} árvores, <b>{sinal(b.m, 4)}</b>, {entreSementes(b)} ({b.ganham} de {NS}), e z = {num(b.z, 2)} {naValidacao(b)}. Na parada em {k0}, <b>{sinal(a.m, 4)}</b> ({a.ganham} de {NS}), z = {num(a.z, 2)}: {curto(a)}. <LinkSlide slug="c6p17">Slide 17</LinkSlide>: contra a logística.</>}
+      fonte={`Validação: ${int(NV)} propostas, ${DV} defaults. η ${num(CFG_CARTEIRA.eta, 1)}, profundidade ${CFG_CARTEIRA.profundidade}, mínimo ${CFG_CARTEIRA.minFolha}; sementes 1 a ${NS}, sem reposição. Faixas de 95%: ± t de ${NS - 1} graus (${num(TS, 3)}) × erro padrão entre sementes; ± t de ${int(NV - 1)} (${num(TV, 3)}) × erro padrão, por proposta, da perda sem sorteio − média das ${NS}. Parada escolhida nesta validação.`}>
       <Painel>
         {filas
-          ? <Grafico titulo={`Subamostra de ${pct(f, 0)}`} sub="● semente · ◆ média, com a faixa de 95% entre sementes · cinza: faixa de 95% da validação" rotulo={`Ganho de log loss de dez sementes com subamostra de ${pct(f, 0)} sobre o modelo sem sorteio. ${filas.map((q, i) => `${q.tit}: ${revelado || i > 0 ? `média ${sinal(q.m, 4)}, faixa de 95% entre sementes ±${num(TS * q.se, 4)}, ${q.ganham} de ${NS} com ganho, z ${num(q.z, 2)}` : "oculto até a previsão"}; faixa de 95% da validação ±${num(TV * q.ev, 4)}`).join(". ")}`} arCelular="4 / 3">
+          ? <Grafico titulo={`Subamostra de ${pct(f, 0)}`} sub="● semente · ◆ média, barra: faixa de 95% entre sementes · cinza: da validação" rotulo={`Ganho de log loss de dez sementes com subamostra de ${pct(f, 0)} sobre o modelo sem sorteio. ${filas.map((q, i) => `${q.tit}: ${revelado || i > 0 ? `média ${sinal(q.m, 4)}, faixa de 95% entre sementes ±${num(TS * q.se, 4)}, ${q.ganham} de ${NS} com ganho, z ${num(q.z, 2)}` : "oculto até a previsão"}; faixa de 95% da validação ±${num(TV * q.ev, 4)}`).join(". ")}`} arCelular="4 / 3">
             {(d) => <Pontos d={d} filas={filas} revelado={revelado} />}
           </Grafico>
           : <p className="q7-nota">Sorteando: {ss.length} de {NS} sementes calculadas.</p>}
@@ -155,14 +156,13 @@ export function S16Subamostra({ pagina }: { pagina?: Pagina }) {
       <Painel>
         <Previsao pergunta={`Parando na árvore ${k0}, a parada sem sorteio, a subamostra de ${pct(0.5, 0)}...`} opcoes={ops} escolha={esc} onEscolha={setEsc} recolher />
         {revelado && a && b && <>
-          <p className="q7-k">A mesma régua nas duas filas ({pct(f, 0)})</p>
+          <p className="q7-k">A mesma régua nas duas filas</p>
           <table className="q7-tab q6-s16-tab">
             <thead><tr><th className="q7-t-l"></th><th>Parada em {k0}</th><th>{T} árvores</th></tr></thead>
             <tbody>
               <tr><th>Ganho médio</th><td>{sinal(a.m, 4)}</td><td>{sinal(b.m, 4)}</td></tr>
               <tr><th>Sementes com ganho</th><td>{a.ganham} de {NS}</td><td>{b.ganham} de {NS}</td></tr>
-              <tr data-on="1"><th>z = ganho ÷ erro padrão</th><td>{num(a.z, 2)}</td><td>{num(b.z, 2)}</td></tr>
-              <tr><th>Faixa da validação (|z| &lt; {num(TV, 2)})</th><td>{cabe(a) ? "cabe" : "passa"}</td><td>{cabe(b) ? "cabe" : "passa"}</td></tr>
+              <tr data-on="1"><th>z = ganho ÷ erro padrão</th><td>{num(a.z, 2)}: {cabe(a) ? "cabe" : "passa"}</td><td>{num(b.z, 2)}: {cabe(b) ? "cabe" : "passa"}</td></tr>
             </tbody>
           </table>
         </>}

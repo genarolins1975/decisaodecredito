@@ -115,7 +115,7 @@ export function S01Mapa({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c6p1" pagina={pagina} layout="um"
       conclusao={<>O candidato cai <b>{num(QUEDA, CASAS)}</b>; a logística, que decora pouco, <b>{num(QUEDA_LOG, CASAS)}</b>. Se a safra custa ao boosting o mesmo que à logística, cerca de <b>{num(EXCESSO, CASAS)}</b> é excesso do boosting (estimativa); {num(VAL, CASAS)} é otimista: escolheu os hiperparâmetros (<LinkSlide slug="c6p21">slide 21</LinkSlide>). Mecanismo: <LinkSlide slug="c6p2">slide 2</LinkSlide>.</>}
-      fonte={`Base sintética (semente ${META.seed}). Candidato: ${HP_CANDIDATO.max_iter} árvores de até ${HP_CANDIDATO.max_leaf_nodes} folhas, taxa ${num(HP_CANDIDATO.learning_rate, 2)}, mínimo ${HP_CANDIDATO.min_samples_leaf} por folha, regularização l2 = ${num(HP_CANDIDATO.l2_regularization, 0)}, escolhido na validação; logística com as mesmas ${NVARS} variáveis. Tracejado: aprofundamento.`}>
+      fonte={`Base sintética (semente ${META.seed}). Candidato: ${HP_CANDIDATO.max_iter} árvores de até ${HP_CANDIDATO.max_leaf_nodes} folhas, taxa ${num(HP_CANDIDATO.learning_rate, 2)}, mínimo ${HP_CANDIDATO.min_samples_leaf} por folha, regularização l2 = ${num(HP_CANDIDATO.l2_regularization, 0)}; logística com as mesmas ${NVARS} variáveis. Tracejado: aprofundamento.`}>
       <div className="q6-s01">
         <div className="q6-s01-g"><Gancho /></div>
         <div className="q6-s01-dir">

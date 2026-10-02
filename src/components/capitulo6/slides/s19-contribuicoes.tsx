@@ -151,8 +151,8 @@ export function S19Contribuicoes({ pagina }: { pagina?: Pagina }) {
           <tbody>{VARIAVEIS.map((v, j) => <tr key={v} data-on={revelado && j === jm ? "1" : undefined}><th>{v}</th><td>{pct(GANHO[j], 0)}</td><td>{revelado ? `${c.phi[j] > 0 ? "▲" : c.phi[j] < 0 ? "▼" : ""} ${sinal(c.phi[j], 2)}` : "?"}</td></tr>)}</tbody>
         </table>
         {revelado && (x[0] > CORTE_U && c.phi[0] < 0
-          ? <p className="q7-nota">A utilização de {num(x[0], 1)}% baixa a PD: acima de {num(CORTE_U, 1)}%, a dependência parcial (PD média da carteira com a utilização fixada) cai de {pct(PD_ANTES, 2)} para {pct(PD_DEPOIS, 2)}, num trecho com {int(N_ACIMA)} das {int(XA.length)} propostas de ajuste. Forma sem lógica de crédito: o <LinkSlide slug="c6p20">slide 20</LinkSlide> a proíbe com restrição monotônica.</p>
-          : <p className="q7-nota">Ganho: soma da redução de perda (erro quadrático dos pseudo-resíduos) nos cortes que usam a variável, normalizada para 100%, sem sinal; é o feature_importances_ do scikit-learn. Contribuição: quanto o valor desta proposta move a log odds, com sinal.</p>)}
+          ? <p className="q7-nota">A utilização de {num(x[0], 1)}% baixa a PD: acima de {num(CORTE_U, 1)}%, a dependência parcial (PD média com a utilização fixada) cai de {pct(PD_ANTES, 2)} para {pct(PD_DEPOIS, 2)}, com {int(N_ACIMA)} das {int(XA.length)} propostas de ajuste. Sem lógica de crédito: o <LinkSlide slug="c6p20">slide 20</LinkSlide> a proíbe com restrição monotônica.</p>
+          : <p className="q7-nota">Ganho: soma da redução de perda (erro quadrático dos pseudo-resíduos) nos cortes que usam a variável, normalizada, sem sinal: o feature_importances_ do scikit-learn. Contribuição: o que esta proposta move na log odds, com sinal.</p>)}
       </Painel>
     </Quadro>
   );

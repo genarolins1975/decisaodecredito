@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "b758de3330e01aeafbbc9c30832ec824fa0e49453a06cb6df431d363ef118e1b",
- "extractedAt": "2026-10-02T14:27:57.828Z",
+ "sourceSha256": "33c02027f31428207d0b1400564105596711f23fca6679c1850aa016d257f2ab",
+ "extractedAt": "2026-10-02T14:32:58.472Z",
  "meta": {
   "capitulos": [
    {
@@ -6590,15 +6590,15 @@
    },
    "origem": "esq",
    "aprendizado": "Situar o capítulo: o candidato do comitê perde ordenação fora do treino, e o capítulo monta o boosting à mão, roda na carteira e mostra o que o comitê precisa conferir.",
-   "apoio": "Leia o gancho (AUC do candidato e da logística do gerador no treino e na validação temporal do gerador, com a queda do boosting dividida), as três escalas do caso e as quatro perguntas; os números de slide levam a cada trecho.",
+   "apoio": "Leia o gancho (AUC do candidato e da logística do gerador no treino e na validação temporal do gerador, com a queda do boosting dividida sob uma hipótese declarada), as três escalas do caso e as quatro perguntas; os números de slide levam a cada trecho.",
    "conexao": "Antes de qualquer fórmula: três maneiras de juntar árvores, e só uma usa o erro da anterior.",
    "guia": {
     "funcao": "Abrir o capítulo com algo em jogo: um modelo que o comitê do capítulo 7 vai julgar e que ordena bem só no treino.",
     "pre": "Capítulo 5 (árvores de decisão) e capítulo 4 (logística e log odds).",
-    "conducao": "O candidato do comitê tem 7 variáveis, 60 árvores de até 8 folhas e taxa 0,05. No treino (2.103 propostas, safras 2022-01 a 2023-02) a AUC é 0,820; na validação temporal do gerador (760 propostas, safras 2023-03 a 2023-07), 0,648: 0,172 a menos. A logística do gerador, que decora pouco, perde 0,056 (0,697 para 0,641), 33% da queda do boosting: use essa queda como medida do que a troca de safra custa a qualquer modelo. Não use a alta da taxa de default (9,6% no treino, 13,2% na validação) como prova: a AUC não depende da prevalência. O resto, 0,116, é do boosting, e ainda é otimista: 0,648 é a mesma AUC usada para escolher os hiperparâmetros do candidato (slide 21), então a perda fora da amostra tende a ser maior. Apresente as três escalas do caso: 16 propostas para fazer o algoritmo à mão (slides 2 a 10), 2.103 propostas do treino (1.472 de ajuste e 631 de validação sorteada, que é parte do treino) para rodá-lo na carteira (slides 11 a 20) e o candidato (slide 21). As quatro perguntas organizam o percurso. A janela fora do tempo só abre no capítulo 7.",
-    "leitura": "Na peça principal, a AUC do candidato e da logística do gerador no treino (●) e na validação temporal do gerador (□); sob a seta do boosting, a queda dividida em 0,056 (como a logística) e 0,116 (a mais no boosting). À direita, compactas, as três escalas e as quatro perguntas com os números de slide de cada uma; número tracejado é aprofundamento.",
+    "conducao": "O candidato do comitê tem 7 variáveis, 60 árvores de até 8 folhas, taxa 0,05, mínimo de 60 propostas por folha e regularização l2 = 1; a logística do gerador usa as mesmas 7 variáveis. No treino (2.103 propostas, safras 2022-01 a 2023-02) a AUC é 0,820; na validação temporal do gerador (760 propostas, safras 2023-03 a 2023-07), 0,648: 0,172 a menos. A logística do gerador, que decora pouco, perde 0,056 (0,697 para 0,641), 33% da queda do boosting: use essa queda como estimativa do que a troca de safra custa. Não use a alta da taxa de default (9,6% no treino, 13,2% na validação) como prova: a AUC não depende da prevalência. Se a troca de safra custa ao boosting o mesmo que à logística, cerca de 0,116 é excesso do boosting. Diga que é estimativa condicional, não medida: AUCs de modelos diferentes não se somam, e um modelo com interações pode sofrer mais com a troca de safra. E 0,648 é otimista: é a mesma AUC usada para escolher os hiperparâmetros do candidato (slide 21), então a perda fora da amostra tende a ser maior. Apresente as três escalas do caso: 16 propostas para fazer o algoritmo à mão (slides 2 a 10), 2.103 propostas do treino (1.472 de ajuste e 631 de validação sorteada, que é parte do treino) para rodá-lo na carteira (slides 11 a 20) e o candidato (slide 21). As quatro perguntas organizam o percurso. A janela fora do tempo só abre no capítulo 7.",
+    "leitura": "Na peça principal, a AUC do candidato e da logística do gerador no treino (●) e na validação temporal do gerador (□); sob a seta do boosting, a queda dividida em 0,056 (como a logística) e 0,116 (excesso estimado, se a safra custa ao boosting o mesmo que à logística). À direita, compactas, as três escalas e as quatro perguntas com os números de slide de cada uma; número tracejado é aprofundamento.",
     "pergunta": "Se o treino tem AUC de 0,820, por que o comitê não aprova o modelo só com esse número? E a queda de 0,172 é toda decoreba?",
-    "resposta": "Porque o treino é a amostra em que o modelo foi ajustado: na validação temporal do gerador a AUC cai para 0,648. A queda não é toda decoreba: a logística, que decora pouco, também perde 0,056, cerca de um terço. O excesso do boosting, 0,116, é o que o capítulo explica, e ainda é otimista, porque 0,648 foi a AUC usada para escolher os hiperparâmetros.",
+    "resposta": "Porque o treino é a amostra em que o modelo foi ajustado: na validação temporal do gerador a AUC cai para 0,648. A queda não é toda decoreba: a logística, que decora pouco, também perde 0,056, cerca de um terço. Se a safra custa ao boosting o mesmo que à logística, cerca de 0,116 é excesso do boosting, o que o capítulo explica; é uma estimativa, não uma medida, e 0,648 ainda é otimista, porque foi a AUC usada para escolher os hiperparâmetros.",
     "erros": [
      {
       "alt": "Ler 0,8196 como a qualidade do modelo",
@@ -6609,6 +6609,11 @@
       "alt": "Atribuir toda a queda de 0,172 à decoreba",
       "confusao": "Ignora a mudança de safra entre as duas amostras, que a logística mede.",
       "intervencao": "Compare com a seta da logística (−0,056) e com a chave sob a seta do boosting."
+     },
+     {
+      "alt": "Ler 0,116 como a medida exata da decoreba",
+      "confusao": "Toma uma estimativa condicional por medida: supõe que a troca de safra custa ao boosting o mesmo que à logística.",
+      "intervencao": "Pergunte se um modelo com interações sofre a troca de safra como a logística; a frase da leitura começa com “se”."
      },
      {
       "alt": "Provar a mudança de safra com a alta da taxa de default",
@@ -6943,13 +6948,13 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Ler a taxa de aprendizagem como a fração do passo somada a cada árvore e saber que, no treino, a taxa maior desce mais rápido: a taxa pequena não serve ao treino.",
+   "aprendizado": "Ler a taxa de aprendizagem como a fração do passo somada a cada árvore e saber que, no treino, taxas perto de 1 descem mais rápido: a taxa pequena não serve ao treino.",
    "apoio": "Preveja que taxa faz a perda de treino descer mais rápido; depois mova a taxa e compare as curvas com η = 0,1, η = 0,95 e η = 1.",
    "conexao": "Com a taxa do curso, as quatro árvores uma a uma.",
    "guia": {
-    "funcao": "Separar o papel da taxa no treino (a maior desce mais rápido) do papel fora da amostra (evitar que uma árvore pese sozinha), que os slides 14 e 15 medem.",
+    "funcao": "Separar o papel da taxa no treino (taxas perto de 1 descem mais rápido) do papel fora da amostra (evitar que uma árvore pese sozinha), que os slides 14 e 15 medem.",
     "pre": "Slide 6 (o passo de Newton).",
-    "conducao": "Depois da primeira árvore, a log loss cai a cada aumento da taxa: 0,622 com η = 0,1, 0,452 com 0,4 e 0,268 com 1. Depois de quatro árvores, cai a cada aumento da taxa até η = 0,95 (0,073); η = 1 fica em 0,102. Não diga que η = 1 passa do ponto: a primeira árvore é a mesma para todas as taxas, mas da segunda em diante cada taxa gera árvores diferentes (com η = 1, a árvore 2 corta primeiro no atraso; com 0,95, na utilização), e na árvore 2 de η = 1 a perda seria mínima com 1,07 vezes o passo: o passo inteiro ainda fica curto. A virada: somar só um pedaço não é para descer mais rápido no treino; é para que nenhuma árvore, ajustada a poucos casos (a primeira tem folhas de 2 e de 6 propostas), pese sozinha na soma. Se isso compensa, quem diz é a validação: taxa e número de árvores se escolhem juntos (slide 14), e o número de árvores sai da validação (slide 15).",
+    "conducao": "Depois da primeira árvore, a log loss cai a cada aumento da taxa: 0,622 com η = 0,1, 0,452 com 0,4 e 0,268 com 1. Depois de quatro árvores, cai a cada aumento da taxa até η = 0,95 (0,073); η = 1 fica em 0,102, e todas as taxas de 0,80 a 1 terminam abaixo das menores. Por isso o título diz “taxas perto de 1”, não “a maior”. Não diga que η = 1 passa do ponto: a primeira árvore é a mesma para todas as taxas, mas da segunda em diante cada taxa gera árvores diferentes (com η = 1, a árvore 2 corta primeiro no atraso; com 0,95, na utilização), e na árvore 2 de η = 1 a perda seria mínima com 1,07 vezes o passo: o passo inteiro ainda fica curto. A virada: somar só um pedaço não é para descer mais rápido no treino; é para que nenhuma árvore, ajustada a poucos casos (a primeira tem folhas de 2 e de 6 propostas), pese sozinha na soma. Se isso compensa, quem diz é a validação: taxa e número de árvores se escolhem juntos (slide 14), e o número de árvores sai da validação (slide 15).",
     "leitura": "Log loss de treino depois de cada árvore para a taxa escolhida (●), com η = 0,1 (tracejada), η = 0,95 (pontilhada, ○) e η = 1 (contínua cinza, ■) como referência; ao lado, o múltiplo do passo que minimiza a perda na árvore 2 de η = 1.",
     "pergunta": "Se a taxa alta desce mais rápido no treino, por que o curso usa 0,1 na carteira?",
     "resposta": "Porque descer rápido no treino não é o objetivo: a taxa pequena evita que uma árvore ajustada a poucos casos pese sozinha na soma. Taxa e número de árvores se escolhem juntos (slide 14), e o número de árvores sai da validação (slide 15).",
@@ -7260,16 +7265,16 @@
     "disc": 1
    },
    "origem": "esq",
-   "aprendizado": "Ver que a perda de ajuste cai a cada árvore e que a validação não acompanha: desce no começo e depois piora até passar do palpite inicial.",
-   "apoio": "Mova o número de árvores e compare perda e AUC de ajuste e de validação, com o eixo de árvores em escala log. A validação sorteada são 631 propostas do mesmo período, não uma safra posterior.",
+   "aprendizado": "Ver que a perda de ajuste cai a cada árvore e que a validação não acompanha: desce no começo e depois piora até voltar ao nível do palpite inicial.",
+   "apoio": "Mova o número de árvores e compare perda e AUC de ajuste e de validação, com o eixo de árvores em escala log; ao lado, o intervalo de 95% da perda de validação a mais contra 16 árvores e contra o palpite. A validação sorteada são 631 propostas do mesmo período, não uma safra posterior.",
    "conexao": "Leva o algoritmo do slide 10 à carteira e abre a pergunta dos slides 13 a 16: que controles evitam a decoreba, e onde parar (slide 15).",
    "guia": {
     "funcao": "Separar o que o ajuste mede (o que o modelo já viu) do que a validação mede (propostas que ele não viu).",
     "pre": "Slides 8 e 10: perda que cai nas 16 propostas e o algoritmo em cinco linhas.",
-    "conducao": "Mostre o ajuste: perda de 0,313 a 0,234, caindo em 300 de 300 árvores; AUC de ajuste de 0,50 a 0,874. Peça a previsão para a validação antes de desenhá-la. Leia a nota: a validação é sorteada, não temporal.",
-    "leitura": "Eixo de árvores em escala log. Na validação sorteada, a perda desce até 0,296 com 16 árvores e termina em 0,329 com 300, acima do palpite (0,321, a linha pontilhada), que ela passa na árvore 169; os dois pontos estão marcados. A AUC de validação também piora: 0,689 com 6 árvores, 0,655 com 16 e 0,587 com 300, contra 0,874 no ajuste.",
+    "conducao": "Mostre o ajuste: perda de 0,313 a 0,234, caindo em 300 de 300 árvores nesta execução (o algoritmo não garante queda a cada árvore, slides 8 e 10); AUC de ajuste de 0,50 a 0,874. Peça a previsão para a validação antes de desenhá-la. Leia o subtítulo: a validação é sorteada do mesmo período, não temporal.",
+    "leitura": "Eixo de árvores em escala log; os valores no cursor ficam ao lado do título de cada gráfico. Na validação sorteada, a perda desce até 0,296 com 16 árvores e termina em 0,329 com 300, no nível do palpite (0,321, a linha pontilhada), que a curva cruza na árvore 169. Ao lado, os intervalos pareados: com 300 árvores, a perda de validação fica 0,033 acima da de 16 (IC 95% de 0,014 a 0,052) e 0,008 acima da do palpite (IC de −0,023 a 0,038). Com 62 defaults, o dado sustenta a subida desde o mínimo, não que 300 árvores sejam piores que o palpite. A AUC de validação também piora: pico de 0,689 com 6 árvores, 0,655 com 16 e 0,587 com 300, contra 0,874 no ajuste.",
     "pergunta": "Com 300 árvores, o que acontece com a perda nas 631 propostas da validação sorteada?",
-    "resposta": "Melhora no começo, depois piora até ficar acima do palpite inicial: 0,329 contra 0,321. A ordenação também piora: a AUC de validação chega a 0,689 com 6 árvores, cai para 0,655 com 16 e para 0,587 com 300. Isso vale com taxa 0,1 e sem subamostra.",
+    "resposta": "Melhora no começo, depois piora até voltar ao nível do palpite inicial: 0,329 contra 0,321, diferença que, com 62 defaults, não se distingue de zero (IC 95% de −0,023 a 0,038). A subida desde o mínimo, sim: 0,033 a mais que com 16 árvores (IC de 0,014 a 0,052). A ordenação também piora: a AUC de validação chega a 0,689 com 6 árvores, cai para 0,655 com 16 e para 0,587 com 300. Isso vale com taxa 0,1 e sem subamostra.",
     "erros": [
      {
       "alt": "Acompanha o ajuste: cai a cada árvore",
@@ -7278,13 +7283,18 @@
      },
      {
       "alt": "Melhora mais devagar, mas sempre melhora",
-      "confusao": "Acha que a decoreba só desacelera o ganho.",
-      "intervencao": "Leve o controle a 300 e compare com o palpite: a perda de validação fica pior que não usar árvore nenhuma."
+      "confusao": "Confunde desacelerar com inverter: acha que a decoreba só freia o ganho.",
+      "intervencao": "Leve o controle a 300 e compare com 16: a perda de validação sobe 0,033 desde o mínimo, com intervalo que não toca o zero, e volta ao nível de não usar árvore nenhuma."
+     },
+     {
+      "alt": "Ler 300 árvores como piores que o palpite",
+      "confusao": "Lê ruído como sinal: com 62 defaults, o intervalo da diferença contra o palpite contém o zero.",
+      "intervencao": "Mostre a linha “que o palpite” dos intervalos ao lado e compare com a linha “que com 16”."
      }
     ],
-    "interacao": "Controle do número de árvores com cursor nos dois gráficos e números nos quatro blocos; previsão com retorno e Tentar outra, validação oculta até a resposta certa; Restaurar volta a 300 árvores e limpa a previsão.",
-    "verificacao": "Com 80 árvores: perda de ajuste 0,263 e de validação 0,309; AUC 0,798 contra 0,631.",
-    "transicao": "Se o ajuste sempre melhora, quem freia? O slide 12 abre os controles da complexidade, começando pela profundidade."
+    "interacao": "Controle do número de árvores, no painel ao lado, com cursor nos dois gráficos, valores ao lado do título de cada gráfico e intervalos pareados que acompanham o controle; previsão com retorno e Tentar outra, validação e intervalos ocultos até a resposta certa; Restaurar volta a 300 árvores e limpa a previsão.",
+    "verificacao": "Com 80 árvores: perda de ajuste 0,263 e de validação 0,309; AUC 0,798 contra 0,631; perda de validação 0,013 acima da de 16 árvores (IC de 0,003 a 0,024).",
+    "transicao": "Se o ajuste continua melhorando e a validação não, quem freia? O slide 12 abre os controles da complexidade, começando pela profundidade."
    },
    "html": "<div class=\"grade g2\">\n  <div class=\"painel\" style=\"border-left:4px solid #8C2332\"><div class=\"rot\">Somar probabilidades não funciona</div>\n   <div class=\"rolax\"><table style=\"margin-top:8px\"><tbody>\n   <tr><th scope=\"row\">Ponto de partida</th><td class=\"num\">0,50</td></tr>\n   <tr><th scope=\"row\">Correção 1</th><td class=\"num\">+0,30</td></tr>\n   <tr><th scope=\"row\">Correção 2</th><td class=\"num\">+0,25</td></tr>\n   <tr style=\"background:#F7E6E6\"><th scope=\"row\">Resultado</th>\n    <td class=\"num\" style=\"font-weight:700;color:#8C2332\">1,05</td></tr></tbody></table></div>\n   <p class=\"nota\" style=\"margin-top:8px\">Nenhuma restrição impede isso. Truncar em 1 reintroduz\n   exatamente o problema da reta na probabilidade do capítulo 4.</p></div>\n  <div class=\"painel\" style=\"border-left:4px solid #2E6B4F\"><div class=\"rot\">Somar em log odds funciona</div>\n   <div class=\"rolax\"><table style=\"margin-top:8px\"><tbody>\n   <tr><th scope=\"row\">Ponto de partida, em log odds</th><td class=\"num\">0,000</td></tr>\n   <tr><th scope=\"row\">Correção 1</th><td class=\"num\">+1,200</td></tr>\n   <tr><th scope=\"row\">Correção 2</th><td class=\"num\">+1,050</td></tr>\n   <tr><th scope=\"row\">Escore final</th><td class=\"num\" style=\"font-weight:700\">2,250</td></tr>\n   <tr style=\"background:#E9F1EC\"><th scope=\"row\">PD, aplicando a logística</th>\n    <td class=\"num\" style=\"font-weight:700;color:#2E6B4F\">90,47%</td></tr></tbody></table></div>\n   <p class=\"nota\" style=\"margin-top:8px\">Qualquer soma, de qualquer tamanho, continua produzindo PD\n   dentro do intervalo. É a propriedade da página 7 do capítulo 4, agora usada para outro fim.</p></div></div>\n  <div class=\"grade g2\" style=\"margin-top:11px\">\n   <div class=\"revelacao bom\"><h4>As duas famílias compartilham a escala</h4>\n   A logística produz o escore como soma de coeficientes vezes variáveis. O boosting produz o escore como\n   soma de árvores. As duas vivem em log odds e as duas terminam na mesma curva de tradução. É por isso\n   que a comparação do capítulo 7 é entre modelos comensuráveis.</div>\n   <div class=\"revelacao\"><h4>O ponto de partida em classificação</h4>\n   F₀ é o log odds da prevalência da amostra. Nesta base didática a prevalência é\n   50%, então F₀ vale exatamente zero. Em carteira com 10%\n   de default, F₀ valeria -2,1972, o que já coloca todas as PDs iniciais em 10%.</div></div>\n  <div class=\"formula\" style=\"margin-top:11px\" data-original=\"F_M(x) = F₀ + η × Σ h_m(x), com F₀ = ln( prevalência ÷ (1 − prevalência) ) e PD = 1 ÷ (1 + e^(−F_M))\" data-latex=\"F_M(x)=F_0+\\eta\\sum_{m=1}^{M}h_m(x),\\quad F_0=\\ln\\!\\left(\\frac{\\pi}{1-\\pi}\\right),\\quad PD(x)=\\sigma(F_M(x))\" role=\"math\" aria-label=\"F_M(x) = F₀ + η × Σ h_m(x), com F₀ = ln( prevalência ÷ (1 − prevalência) ) e PD = 1 ÷ (1 + e^(−F_M))\"></div>",
    "text": "SOMAR PROBABILIDADES NÃO FUNCIONA\nPonto de partida\t0,50\nCorreção 1\t+0,30\nCorreção 2\t+0,25\nResultado\t1,05\n\nNenhuma restrição impede isso. Truncar em 1 reintroduz exatamente o problema da reta na probabilidade do capítulo 4.\n\nSOMAR EM LOG ODDS FUNCIONA\nPonto de partida, em log odds\t0,000\nCorreção 1\t+1,200\nCorreção 2\t+1,050\nEscore final\t2,250\nPD, aplicando a logística\t90,47%\n\nQualquer soma, de qualquer tamanho, continua produzindo PD dentro do intervalo. É a propriedade da página 7 do capítulo 4, agora usada para outro fim.\n\nAs duas famílias compartilham a escala\nA logística produz o escore como soma de coeficientes vezes variáveis. O boosting produz o escore como soma de árvores. As duas vivem em log odds e as duas terminam na mesma curva de tradução. É por isso que a comparação do capítulo 7 é entre modelos comensuráveis.\nO ponto de partida em classificação\nF₀ é o log odds da prevalência da amostra. Nesta base didática a prevalência é 50%, então F₀ vale exatamente zero. Em carteira com 10% de default, F₀ valeria -2,1972, o que já coloca todas as PDs iniciais em 10%.",
@@ -7620,7 +7630,7 @@
    "id": "c6p16",
    "cap": 6,
    "n": 16,
-   "titulo": "Longe da parada, o sorteio regulariza; na parada, o ganho cabe no erro da validação",
+   "titulo": "Na parada, o ganho do sorteio cabe no erro da validação",
    "nivel": "complementar",
    "nivel120": "assincrono",
    "min": 3,

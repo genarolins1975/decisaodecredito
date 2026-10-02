@@ -32,7 +32,7 @@ const CAI_ATE_TOP = GRADE.filter((e) => e <= TOP).every((e, i) => i === 0 || L(e
 // "taxas perto de 1": a partir de PERTO, toda taxa da grade termina as M árvores abaixo de toda taxa menor
 const PERTO = 0.8;
 const ALTAS = GRADE.filter((e) => e >= PERTO - 1e-9), BAIXAS = GRADE.filter((e) => e < PERTO - 1e-9);
-const MAX_ALTAS = Math.max(...ALTAS.map((e) => L(e)[M])), MIN_ALTAS = Math.min(...ALTAS.map((e) => L(e)[M]));
+const MAX_ALTAS = Math.max(...ALTAS.map((e) => L(e)[M]));
 const PERTO_DESCE = MAX_ALTAS < Math.min(...BAIXAS.map((e) => L(e)[M]));
 const ETA0 = CFG_DIDATICA.eta;
 const MOD1 = modelo({ ...CFG_DIDATICA, eta: 1 }, XD, YD);
@@ -50,7 +50,7 @@ const ESTILO: Record<string, { tr?: string; larg: number; cor: string }> = { [St
 
 const OPCOES: Opcao[] = [
   { texto: "η = 0,1: passos pequenos erram menos", retorno: <>Confunde <b>regularização com ajuste</b>. No treino, a taxa pequena desce devagar: após a árvore 1, {num(L(0.1)[1], 3)} com η = 0,1 contra {num(L(1)[1], 3)} com η = 1.</> },
-  { texto: "Perto de 1: soma quase toda a correção", certa: true, retorno: <>Isso, no treino: após a árvore 1, a perda cai a cada aumento da taxa (<b>{num(L(1)[1], 3)}</b> com η = 1); após {M}, as taxas de {num(PERTO, 2)} a 1 terminam entre {num(MIN_ALTAS, 3)} e {num(MAX_ALTAS, 3)}, abaixo de todas as menores. Por que somar só um pedaço? Na leitura.</> },
+  { texto: "Perto de 1: soma quase toda a correção", certa: true, retorno: <>Isso, no treino: após a árvore 1, a perda cai a cada aumento da taxa (<b>{num(L(1)[1], 3)}</b> com η = 1); após {M}, as de {num(PERTO, 2)} a 1 ficam todas abaixo das menores.</> },
   { texto: `η = ${num(ETA0, 1)}, a do curso: o meio-termo`, retorno: <>Confunde <b>convenção com ótimo</b>. {num(ETA0, 1)} é a taxa fixada para as 16; no treino, desce menos que as taxas perto de 1 ({num(L(ETA0)[1], 3)} contra {num(L(1)[1], 3)} após a árvore 1).</> },
 ];
 

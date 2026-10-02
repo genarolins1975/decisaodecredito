@@ -1,7 +1,7 @@
 {
  "source": "content/original/apresentacao-curso-pd.html",
- "sha256": "b758de3330e01aeafbbc9c30832ec824fa0e49453a06cb6df431d363ef118e1b",
- "extractedAt": "2026-10-02T14:27:57.828Z",
+ "sha256": "33c02027f31428207d0b1400564105596711f23fca6679c1850aa016d257f2ab",
+ "extractedAt": "2026-10-02T14:32:58.472Z",
  "edition": "2026",
  "units": [
   {
@@ -2057,7 +2057,7 @@
    "pageId": "y36xy3srm0b4xnklhjvwf",
    "chapter": 6,
    "unit": 2,
-   "title": "Longe da parada, o sorteio regulariza; na parada, o ganho cabe no erro da validação",
+   "title": "Na parada, o ganho do sorteio cabe no erro da validação",
    "level": "complementar",
    "minutes": 3,
    "origin": "rec",
@@ -4048,13 +4048,10 @@
  },
  "resync": {
   "synced": [
+   "c6p1",
    "c6p7",
    "c6p11",
-   "c6p15",
-   "c6p16",
-   "c6p17",
-   "c6p18",
-   "c6p19"
+   "c6p16"
   ],
   "diverged": []
  }
