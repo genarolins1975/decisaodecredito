@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "7a0ad4b090bf75a5128d0447156a528fe791c872e48c4ed7ef360bfc4f967540",
- "extractedAt": "2026-10-02T15:39:48.426Z",
+ "sourceSha256": "29557d091964875c7c6c8c9bfc4687690512ced00f8bf5d0967a7b230407e6c1",
+ "extractedAt": "2026-10-02T15:52:44.805Z",
  "meta": {
   "capitulos": [
    {
@@ -7710,7 +7710,7 @@
       "intervencao": "Compare na tabela: AUC 0,6553 contra 0,7006, fora do ruído; log loss 0,2955 contra 0,2932, empate dentro do ruído (IC de −0,0053 a 0,0099)."
      }
     ],
-    "interacao": "Previsão com três alternativas, validação oculta até o acerto; controle do número de árvores (1 a 300) que move o ponto nas curvas e a tabela; Restaurar volta a 16 árvores e à previsão. Depois do acerto, o subtítulo diz quando árvores ganhariam (Friedman, 2001) e a leitura cita o benchmark de crédito (Lessmann et al., 2015).",
+    "interacao": "Previsão com três alternativas, validação oculta até o acerto; controle do número de árvores (1 a 300) que move o ponto nas curvas e a tabela; Restaurar volta a 16 árvores e à previsão. Depois do acerto, o subtítulo diz quando árvores ganhariam (Friedman, 2001); a fonte cita o benchmark de crédito (Lessmann et al., 2015), em que conjuntos de modelos superam a logística na média.",
     "verificacao": "A turma diz, com os números da tela, em que métrica e em que amostra cada modelo ganha, e em qual métrica a amostra não separa os dois.",
     "transicao": "Se o boosting perde na ordem, como estão as probabilidades dele? O slide 18 confere o nível das PDs."
    },
