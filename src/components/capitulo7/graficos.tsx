@@ -12,8 +12,10 @@ export type SerieCal = { faixas: Faixa[]; classe: "ink" | "prob" | "dec" | "def"
 
 const ticksAte = (max: number) => { const passo = max > 0.4 ? 0.1 : max > 0.2 ? 0.05 : 0.02; const t: number[] = []; for (let v = 0; v <= max + 1e-9; v += passo) t.push(Math.round(v * 1000) / 1000); return t; };
 
-export function Confiabilidade({ series, max = 0.4, destaque, rotulo, titulo, sub, anotar = true, extra, arCelular, ticks, semTitulos }: {
+export function Confiabilidade({ series, max = 0.4, destaque, rotulo, titulo, sub, anotar = true, extra, arCelular, ticks, semTitulos, origemUnica }: {
   series: SerieCal[]; max?: number; destaque?: number | null; rotulo: string; titulo?: ReactNode; sub?: ReactNode; anotar?: boolean; extra?: (x: (v: number) => number, y: (v: number) => number, d: Dim) => ReactNode; arCelular?: string; ticks?: number[]; semTitulos?: boolean;
+  /** Um só "0%" na origem (o do eixo x): em gráfico pequeno os dois rótulos de zero se tocam no canto. */
+  origemUnica?: boolean;
 }) {
   const tab = (
     <table><caption>{rotulo}</caption><thead><tr><th>Série</th><th>Faixa</th><th>n</th><th>Defaults</th><th>PD média prevista</th><th>Default observado</th><th>Intervalo de 95%</th></tr></thead>
@@ -28,7 +30,7 @@ export function Confiabilidade({ series, max = 0.4, destaque, rotulo, titulo, su
         const t = ticks ?? ticksAte(max); const r = d.fs * 0.42;
         return (
           <g>
-            <Eixos x={x} y={y} xt={t} yt={t} fx={(v) => pct(v, 0)} fy={(v) => pct(v, 0)} xTit={semTitulos ? undefined : "PD média prevista na faixa"} yTit={semTitulos ? undefined : "Default observado na faixa"} />
+            <Eixos x={x} y={y} xt={t} yt={origemUnica ? t.filter((v) => v !== 0) : t} fx={(v) => pct(v, 0)} fy={(v) => pct(v, 0)} xTit={semTitulos ? undefined : "PD média prevista na faixa"} yTit={semTitulos ? undefined : "Default observado na faixa"} />
             <line className="q7-diag" x1={x(0)} y1={y(0)} x2={x(max)} y2={y(max)} />
             {anotar && <>
               <text className="q7-rot--peq" x={x(max * 0.04)} y={y(max * 0.9)} style={{ fill: "#5B6475" }}>acima da diagonal: risco subestimado</text>

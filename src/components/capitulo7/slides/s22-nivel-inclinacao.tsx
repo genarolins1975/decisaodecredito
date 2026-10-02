@@ -92,7 +92,7 @@ export const leituraComposta = (a: number, b: number, e: { i1: number; slope: nu
  */
 const TETOS: [number, number[]][] = [[0.55, [0, 0.1, 0.2, 0.3, 0.4, 0.5]], [0.6, [0, 0.2, 0.4, 0.6]], [0.8, [0, 0.2, 0.4, 0.6, 0.8]], [0.9, [0, 0.3, 0.6, 0.9]], [1, [0, 0.2, 0.4, 0.6, 0.8, 1]]];
 const tetoDe = (v: number) => (TETOS.find(([t]) => v + 0.02 <= t + 1e-9) ?? TETOS[TETOS.length - 1]);
-/** Miniatura larga: a curva ocupa o cartão; mesma escala (0% a 55%) nos quatro. */
+/** Miniatura larga: a curva ocupa o cartão; mesma escala (0% a 55%) nos quatro; um só "0%" na origem, o do eixo x. */
 function Mini({ faixas, nome }: { faixas: Faixa[]; nome: string }) {
   return (
     <Grafico rotulo={`Curva de confiabilidade: ${nome}`} arCelular="16 / 9">
@@ -102,7 +102,7 @@ function Mini({ faixas, nome }: { faixas: Faixa[]; nome: string }) {
         const pts = faixas.filter((f) => f.obs !== null).map((f) => ({ x: x(Math.min(0.55, f.pdMedia!)), y: y(Math.min(0.55, f.obs!)) }));
         return (
           <g>
-            <Eixos x={x} y={y} xt={[0, 0.25, 0.5]} yt={[0, 0.25, 0.5]} fx={(v) => pct(v, 0)} fy={(v) => pct(v, 0)} />
+            <Eixos x={x} y={y} xt={[0, 0.25, 0.5]} yt={[0.25, 0.5]} fx={(v) => pct(v, 0)} fy={(v) => pct(v, 0)} />
             <line className="q7-diag" x1={x(0)} y1={y(0)} x2={x(0.55)} y2={y(0.55)} />
             <path className="q7-linha q7-linha--fina q7-linha--prob" d={caminho(pts)} />
             {pts.map((p, i) => <circle key={i} cx={p.x} cy={p.y} r={d.fs * 0.32} className="q7-ptc q7-ptc--prob" />)}
@@ -152,7 +152,7 @@ export function S22NivelInclinacao({ pagina }: { pagina?: Pagina }) {
       fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults. Base: PD verdadeira do gerador (só existe em base sintética). Esperada: média da PD verdadeira na faixa, a frequência esperada nas réplicas sintéticas da janela (slides ${SLIDE.c7p24.n} e ${SLIDE.c7p16.n}: desfecho sorteado de novo pela PD verdadeira), sem ruído de amostra. Observada: defaults da janela; nela a PD verdadeira tem intercepto ${num(REF.intercepto, 2)} e slope ${num(REF.slope, 2)}. Faixas: decis de PD prevista.`}>
       <Painel titulo={foco ? `Em foco: ${c.nome}` : "Quatro jeitos de errar a probabilidade · clique num quadro para ampliar"}>
         {foco ? (
-          <div className="q7-g2-s22-foco"><div className="q7-g2-quad"><Confiabilidade titulo={`y: frequência ${freq}`} sub="x: PD média prevista" semTitulos anotar={false} rotulo={`Curva de confiabilidade: ${c.nome}, frequência ${freq}, eixos de 0% a ${pct(tetoF, 0)}`} max={tetoF} ticks={ticksF} series={[{ faixas: m.faixas, classe: "prob", linha: true, ic: freq === "observada" }]}
+          <div className="q7-g2-s22-foco"><div className="q7-g2-quad"><Confiabilidade titulo={`y: frequência ${freq}`} sub="x: PD média prevista" semTitulos origemUnica anotar={false} rotulo={`Curva de confiabilidade: ${c.nome}, frequência ${freq}, eixos de 0% a ${pct(tetoF, 0)}`} max={tetoF} ticks={ticksF} series={[{ faixas: m.faixas, classe: "prob", linha: true, ic: freq === "observada" }]}
             /><p className="q7-nota q7-s22-cantos"><span>▲ acima: subestima</span><span>▼ abaixo: superestima</span></p></div>
             <div className="q7-g2-s22-lado"><dl className="q7-lista">
               <div><dt>Slope</dt><dd>{revelado ? nr(m.slope) : "?"}</dd></div>

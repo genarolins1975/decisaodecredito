@@ -14,8 +14,8 @@ import { num, pct } from "@/lib/capitulo7/formato";
  * calibração: pela decomposição CORP da biblioteca (MCB − DSC + UNC), ele soma o erro de calibração e a falta de
  * separação, e a razão DSC ÷ MCB responde ao nível. A carteira é a peça principal; o cliente (a perda (p − y)²
  * conforme a PD dada a ele) é uma inserção no painel lateral, abaixo da previsão. O retorno da resposta certa fica
- * visível depois dela e lê o estado atual do controle: com o nível em +1,00 ele diz que a logística fica acima da
- * constante honesta, como a régua mostra.
+ * visível depois dela e lê o estado atual do controle e o mesmo intervalo pareado da leitura: com o nível em +1,00 ele
+ * diz que a logística fica acima da constante honesta, como a régua mostra, e que o intervalo não descarta empate.
  */
 type Yv = 0 | 1;
 const REF_TREINO_P = PL.map(() => PREVALENCIA.treino);
@@ -35,13 +35,13 @@ const pareada = (p: readonly number[], q: readonly number[]) => {
  * Alternativas da previsão. O retorno da certa lê o estado atual: depois da resposta o controle de nível muda a
  * logística, e a comparação com a constante honesta acompanha (em +1,00 ela fica acima da referência).
  */
-const ops = (nome: string, bs: number) => [
+const ops = (nome: string, bs: number, dif: { lo: number; hi: number }) => [
   { texto: "Sim: está perto de zero, o mínimo", certa: false, retorno: <>Perto de zero não diz nada sozinho: com evento raro, até uma PD constante, que não separa ninguém, tem Brier pequeno. Confunde a escala absoluta com qualidade.</> },
-  { texto: "Depende de uma referência na mesma amostra", certa: true, retorno: <>Isso: contra a constante honesta do treino ({num(REF_TREINO, 5)}), {nome} tem Brier {num(bs, 5)}, {pct(Math.abs(1 - bs / REF_TREINO), 1)} {bs <= REF_TREINO ? "abaixo: melhor" : "acima: pior"}.</> },
+  { texto: "Depende de uma referência na mesma amostra", certa: true, retorno: <>Isso: contra a constante honesta do treino ({num(REF_TREINO, 5)}), {nome} tem Brier {num(bs, 5)}, {pct(Math.abs(1 - bs / REF_TREINO), 1)} {bs <= REF_TREINO ? "abaixo" : "acima"}{dif.hi < 0 ? ": melhor, com intervalo pareado que não contém o zero" : dif.lo > 0 ? ": pior, com intervalo pareado que não contém o zero" : ", mas o intervalo pareado contém o zero: não descarta empate"}.</> },
   { texto: "Não: acima de 0,05 já é ruim", certa: false, retorno: <>Não há limiar universal: uma constante c tem Brier <span style={{ whiteSpace: "nowrap" }}>π(1 − π) + (c − π)²</span>, com π a taxa da amostra (a constante do treino, {pct(PREVALENCIA.treino, 2)}, dá {num(BC_TREINO, 5)}). Confunde o Brier com uma nota absoluta.</> },
 ];
 /** Só a posição da certa importa fora do componente (o estado revelado). */
-const CERTA = ops("", BS0).findIndex((o) => o.certa);
+const CERTA = ops("", BS0, { lo: 0, hi: 0 }).findIndex((o) => o.certa);
 
 export function S23Brier({ pagina }: { pagina?: Pagina }) {
   const [y, setY] = useState<Yv>(0);
@@ -55,7 +55,7 @@ export function S23Brier({ pagina }: { pagina?: Pagina }) {
   const dif = useMemo(() => pareada(PA, REF_TREINO_P), [PA]);
   const dec = useMemo(() => corp(Y, PA), [PA]);
   const sn = (v: number) => `${v > 0 ? "+" : v < 0 ? "−" : ""}${num(Math.abs(v), 2)}`;
-  const OPS = ops(nivel === 0 ? "a logística" : `a logística no nível ${sn(nivel)}`, BS);
+  const OPS = ops(nivel === 0 ? "a logística" : `a logística no nível ${sn(nivel)}`, BS, dif);
   const itens = [
     { nome: nivel === 0 ? "Logística" : `Logística, nível ${sn(nivel)}`, v: BS, cor: "#176C73", nota: "a avaliada", oculto: false },
     { nome: `Constante ${pct(PREVALENCIA.treino, 2)}`, v: REF_TREINO, cor: "#9AA1AD", nota: "treino: referência honesta", oculto: !revelado },
@@ -115,7 +115,7 @@ export function S23Brier({ pagina }: { pagina?: Pagina }) {
               const pts = Array.from({ length: 101 }, (_, i) => ({ x: x(i / 100), y: yy(perdaBrier1(i / 100, y)) }));
               return (
                 <g>
-                  <Eixos x={x} y={yy} xt={[0, 0.5, 1]} yt={[0, 1]} fx={(v) => pct(v, 0)} fy={(v) => num(v, 0)} />
+                  <Eixos x={x} y={yy} xt={[0, 0.5, 1]} yt={[0.5, 1]} fx={(v) => pct(v, 0)} fy={(v) => num(v, 1)} />
                   <path className="q7-linha q7-linha--prob" d={caminho(pts)} />
                   <line x1={x(p)} x2={x(p)} y1={yy(0)} y2={yy(perda)} stroke="#00205B" strokeWidth={2.5} strokeDasharray="5 4" />
                   <circle cx={x(p)} cy={yy(perda)} r={d.fs * 0.45} fill="#00205B" stroke="#fff" strokeWidth={2.5} />
