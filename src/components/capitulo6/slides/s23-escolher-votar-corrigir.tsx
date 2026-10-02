@@ -21,7 +21,7 @@ import base from "@/lib/capitulo6/base.json";
  *             a PD de cada proposta; a PD é o palpite mais η vezes a folha de cada árvore.
  * No pé de cada coluna, a proposta acompanhada: o alvo que a árvore k recebe para ela e a PD acumulada. A proposta inicial
  * é calculada: a primeira adimplente que ficou fora da primeira amostra de votar e recebeu PD 100% dessa árvore (#7).
- * A previsão pergunta qual método, com uma árvore só, dá a PD mais certa nas 16 (menor log loss). Antes da tentativa, o
+ * A previsão pergunta qual método, com uma árvore só, se ajusta melhor às 16 (menor log loss de treino). Antes da tentativa, o
  * quadro fica na árvore 1 e esconde o que responde: as taxas das folhas, a PD da proposta acompanhada e toda log loss; o
  * mecanismo (alvo, ligação, de onde sai a PD) fica à vista. No acerto, a linha de log loss com uma árvore (escolher,
  * votar sem limite, corrigir) e o seletor de árvores 1 a 3. Os retornos e a leitura explicam corrigir pelo passo de Newton
@@ -99,7 +99,7 @@ function Coluna({ met, k, foco, rev }: { met: Met; k: number; foco: number; rev:
   const id = ID(foco), y = YD[foco];
   // antes da tentativa, a descrição para leitor de tela também omite as taxas das folhas e a PD da proposta
   const rotulo = met === "esc" ? `Escolher: um modelo só, uma árvore com as ${N} e ${FOLHAS_ESC.length} folhas${rev ? `, com PD ${FOLHAS_ESC.map((f) => pct(f.pd, 0)).join(", ")}; #${id} recebe PD ${pct(P_ESC[foco], 0)}` : `; #${id} recebe y = ${y}`}${k > 1 ? `; não há árvore ${k}` : ""}`
-    : met === "vot" ? `Votar, árvore ${k}: amostra sorteada; #${id} ${naAmostra(k - 1, foco)}${rev ? `; a árvore dá PD ${pct(P_ARV[k - 1][foco], 0)} e a média das ${k} dá ${pct(P_VOT[k - 1][foco], 0)}` : ""}`
+    : met === "vot" ? `Votar, árvore ${k}: amostra sorteada; #${id} ${naAmostra(k - 1, foco)}${rev ? `; a árvore dá PD ${pct(P_ARV[k - 1][foco], 0)} e a média ${k === 1 ? "de 1 árvore" : `das ${k}`} dá ${pct(P_VOT[k - 1][foco], 0)}` : ""}`
       : `Corrigir, árvore ${k}: alvo y − p; #${id} recebe ${sinal(ALVO_COR[k - 1][foco])}${rev ? ` e a PD vai a ${pct(P_COR[k][foco], 0)}` : ""}`;
   return (
     <Grafico rotulo={rotulo} arCelular="16 / 12">
@@ -223,10 +223,10 @@ export function S23EscolherVotarCorrigir({ pagina }: { pagina?: Pagina }) {
   const p = DIDATICA[foco];
   return (
     <Quadro slug="c6p23" pagina={pagina} layout="glx"
-      titulo={rev ? undefined : "Escolher, votar ou corrigir: com uma árvore só, qual dá a PD mais certa?"}
+      titulo={rev ? undefined : "Escolher, votar ou corrigir: com uma árvore só, qual se ajusta melhor às 16?"}
       sub={rev ? undefined : `As mesmas ${N} propostas nos três métodos. Veja o que a árvore 1 recebe em cada um e responda ao lado.`}
-      conclusao={!rev ? <>Árvore 1, proposta #{p.id} ({p.y ? "default" : "adimplente"}): escolher ajusta uma árvore com as {N}; em votar, ela está {naAmostra(0, foco)}; corrigir lhe dá o alvo y − p = {sinal(ALVO_COR[0][foco])}. Qual dos três dá a PD mais certa?</>
-        : <>Com uma árvore, escolher perde menos na log loss das {N} (<b>{num(L_ESC!, 3)}</b> contra {num(L_COR1, 3)} de corrigir; votar sem limite). Corrigir dá um passo de Newton encolhido por η = {num(ETA, 1)}: folha pura em {pct(COR1_LO, 0)} (com η = 1, {pct(PD_PURA_ETA1, 1)}; nunca {pct(0, 0)}). Com muitas árvores, os dois ganham: <LinkSlide slug="c6p2">slide {SLIDE.c6p2.n}</LinkSlide>.</>}
+      conclusao={!rev ? <>Árvore 1, proposta #{p.id} ({p.y ? "default" : "adimplente"}): escolher ajusta uma árvore com as {N}; em votar, ela está {naAmostra(0, foco)}; corrigir lhe dá o alvo y − p = {sinal(ALVO_COR[0][foco])}. Qual dos três se ajusta melhor às {N} (menor log loss de treino)?</>
+        : <>Com uma árvore, escolher perde menos na log loss das {N} (<b>{num(L_ESC!, 3)}</b> contra {num(L_COR1, 3)} de corrigir; votar sem limite). Corrigir dá um passo de Newton (<LinkSlide slug="c6p6">slide {SLIDE.c6p6.n}</LinkSlide>) encolhido pela taxa η = {num(ETA, 1)} (<LinkSlide slug="c6p7">slide {SLIDE.c6p7.n}</LinkSlide>): folha pura em {pct(COR1_LO, 0)} (com η = 1, {pct(PD_PURA_ETA1, 1)}; nunca {pct(0, 0)}). É ajuste ao treino: uma PD de {pct(0, 0)} numa folha pequena não é crível fora das {N}. Com muitas árvores, os dois ganham: <LinkSlide slug="c6p2">slide {SLIDE.c6p2.n}</LinkSlide>.</>}
       fonte={`${N} propostas didáticas sintéticas (gerador do curso, semente ${SEMENTE_BASE}; ${YD.reduce((a, v) => a + v, 0)} defaults). Árvores de profundidade ${CFG_DIDATICA.profundidade}, mínimo de ${CFG_DIDATICA.minFolha} por folha. Escolher: em geral, entre candidatos; aqui, uma árvore. Votar: amostras com reposição, semente ${SEMENTE_VOTAR}; a floresta aleatória também sorteia variáveis. Corrigir: F₀ = ${num(MOD.f0, 0)}, taxa ${num(ETA, 1)}. Log loss média de treino, log natural.`}>
       <Painel>
         <div className="q6-s23" data-rev={rev ? "1" : "0"}>
@@ -252,7 +252,7 @@ export function S23EscolherVotarCorrigir({ pagina }: { pagina?: Pagina }) {
         </div>
       </Painel>
       <Painel>
-        <Previsao pergunta={`Com uma árvore só, qual dos três dá a PD mais certa nas ${N} propostas (menor log loss)?`} opcoes={OPCOES} escolha={esc} onEscolha={(i) => { setEsc(i); setK(1); }} recolher />
+        <Previsao pergunta={`Com uma árvore só, qual dos três se ajusta melhor às ${N} propostas (menor log loss de treino)?`} opcoes={OPCOES} escolha={esc} onEscolha={(i) => { setEsc(i); setK(1); }} recolher />
         {rev && <Seg rotulo="Árvore" opcoes={Array.from({ length: K }, (_, j) => ({ v: j + 1, r: `Árvore ${j + 1}` }))} valor={k} onChange={setK} />}
         <label className="q6-s08-sel"><span>Acompanhar</span>
           <select value={foco} onChange={(e) => setFoco(Number(e.target.value))}>{DIDATICA.map((q, i) => <option key={i} value={i}>#{q.id} · {q.y ? "default" : "adimplente"}</option>)}</select>
