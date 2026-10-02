@@ -55,6 +55,16 @@ Rodada 1 da revisão independente do capítulo 7 (outubro de 2026): média 8,47 
 - **Conceito usado antes de apresentado**: Brier e isotônica no slide 20, apresentados em 23 e 30; log loss e slope marcados como aprofundamento e usados nos essenciais seguintes.
 - **Recomendação final sem demonstração no capítulo**: o caso mandava corrigir o nível da logística e nenhum slide mostrava essa correção na logística.
 
+Rodadas 2 a 4 (capítulos 6 e 7):
+
+- **Régua estatística errada**: dispersão entre sementes usada como incerteza do efeito médio; mediana do erro de uma semente usada para julgar a média de dez; "1,8 vez o erro" ao lado de uma faixa de 1,96 erro com o mesmo nome. Uma régua só, com nome único em gráfico, tabela e leitura; erro pareado por proposta para comparar modelos na mesma amostra; t com os graus de liberdade certos.
+- **Regra afirmada onde só há observação**: "a perda de treino cai a cada árvore" (com passo de Newton não é garantido); "passa do ponto" sem busca em linha. Constatação do que a tela mostra, com o contraexemplo quando a regra não vale.
+- **Decomposição por hipótese apresentada como medida**: "0,056 é o custo da safra, 0,116 é do modelo". Escreva como estimativa condicional e diga a hipótese.
+- **Recomendação que não diz de onde vem a amostra**: "recalibrar em amostra própria" com a amostra sintética da própria janela. Diga a amostra real (safras anteriores), mostre o que a deriva faz com ela e ancore o nível em várias safras.
+- **Termo com dois sentidos**: "janelas novas" para réplicas sintéticas e "janela nova" para a safra futura. Um nome por objeto.
+- **Fonte declarada pela metade**: atalho no código que pulava a declaração da base quando a fonte dizia "sintética". A base (semente e período) entra em toda fonte; teste o caminho.
+- **Corte que só aparece depois de mexer no controle**: a varredura mede estados iniciais e expansões; tabelas que crescem com o seletor cortaram em 1366. Rode a verificação de corte em todos os estados de cada controle antes de pedir revisão.
+
 Antipadrões anteriores:
 
 - Fórmula cortada por `overflow: hidden` do painel: `.q7-formula { flex: none }` e `Formula compacta` em painel estreito.
