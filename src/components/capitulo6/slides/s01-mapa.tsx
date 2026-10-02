@@ -7,9 +7,11 @@ import { int, num, pct } from "@/lib/capitulo7/formato";
 
 /**
  * 01 · c6p1 · Mapa e gancho. A peça principal é o gancho: o candidato do comitê (o boosting de sete variáveis que o
- * capítulo 7 julga) e a logística do gerador, cada um com a AUC no treino e na validação temporal do gerador (760
- * propostas, safras 2023-03 a 2023-07), lidos de RES em dados.ts. A queda da logística, que decora pouco, mede o que a
- * troca de safra custa a qualquer modelo; sob a seta do boosting, a queda dele se divide nessa parte e no excesso. A AUC
+ * capítulo 7 julga) e a logística do gerador (as mesmas sete variáveis), cada um com a AUC no treino e na validação
+ * temporal do gerador (760 propostas, safras 2023-03 a 2023-07), lidos de RES em dados.ts. A queda da logística, que
+ * decora pouco, estima o que a troca de safra custa; sob a seta do boosting, a queda dele se divide nessa parte e no
+ * excesso. A divisão é condicional (AUCs de modelos diferentes não se somam, e um modelo com interações pode sofrer mais
+ * com a troca de safra): a leitura diz "se a safra custa ao boosting o mesmo que à logística". A AUC
  * de validação do candidato é a mesma usada para escolher os hiperparâmetros (meta.gbm_hp.auc_val, conferido abaixo),
  * então é otimista. Todas as AUCs e quedas com três casas, como no título do roteiro. À direita, compactos: as três
  * escalas do caso e as quatro perguntas (PERGUNTAS do roteiro), com os slides de cada uma como links no mesmo modo
@@ -38,7 +40,7 @@ for (const q of MODELOS) if (num(Math.round(q.t * 1000) / 1000 - Math.round(q.v 
 
 function Gancho() {
   return (
-    <Grafico titulo="AUC no treino e na validação temporal do gerador" rotulo={`${MODELOS.map((q) => `${q.nome}: AUC ${num(q.t, CASAS)} no treino e ${num(q.v, CASAS)} na validação temporal, queda de ${num(q.t - q.v, CASAS)}`).join("; ")}. Da queda do boosting, ${num(QUEDA_LOG, CASAS)} é a mesma da logística e ${num(EXCESSO, CASAS)} é a mais`} arCelular="4 / 3">
+    <Grafico titulo="AUC no treino e na validação temporal do gerador" rotulo={`${MODELOS.map((q) => `${q.nome}: AUC ${num(q.t, CASAS)} no treino e ${num(q.v, CASAS)} na validação temporal, queda de ${num(q.t - q.v, CASAS)}`).join("; ")}. Se a troca de safra custa ao boosting o mesmo que à logística (${num(QUEDA_LOG, CASAS)}), ${num(EXCESSO, CASAS)} da queda do boosting é excesso, uma estimativa`} arCelular="4 / 3">
       {(d) => {
         const estreito = d.w < d.fs * 30;
         const m = margens(d.fs, { l: estreito ? 6.2 : 8.4, r: 1.6, t: 0.6, b: estreito ? 7.4 : 5 });
@@ -77,7 +79,7 @@ function Gancho() {
               );
             })}
             {chave(xs[0], xs[1], "#5B6475", `−${num(QUEDA_LOG, CASAS)}`, "como a logística")}
-            {chave(xs[1], xs[2], "#00205B", `−${num(EXCESSO, CASAS)}`, "a mais no boosting")}
+            {chave(xs[1], xs[2], "#00205B", `−${num(EXCESSO, CASAS)}`, "excesso estimado")}
             {[
               { c: "#3D5A8A", t: `● treino: ${int(META.n_treino)} propostas`, s: META.treino },
               { c: "#2E6B4F", t: `□ validação temporal: ${int(META.n_val)} propostas`, s: META.validacao },
@@ -113,8 +115,8 @@ const ESCALAS = [
 export function S01Mapa({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c6p1" pagina={pagina} layout="um"
-      conclusao={<>O candidato cai <b>{num(QUEDA, CASAS)}</b>; a logística, que decora pouco, <b>{num(QUEDA_LOG, CASAS)}</b> ({pct(FRACAO, 0)} disso): o custo da troca de safra. O resto, <b>{num(EXCESSO, CASAS)}</b>, é do boosting, e otimista: {num(VAL, CASAS)} é a AUC que escolheu os hiperparâmetros (<LinkSlide slug="c6p21">slide 21</LinkSlide>). Mecanismo: <LinkSlide slug="c6p2">slide 2</LinkSlide>.</>}
-      fonte={`Base sintética (semente ${META.seed}). Candidato: ${HP_CANDIDATO.max_iter} árvores de até ${HP_CANDIDATO.max_leaf_nodes} folhas, taxa ${num(HP_CANDIDATO.learning_rate, 2)}, escolhido pela AUC na validação temporal. Número tracejado: aprofundamento.`}>
+      conclusao={<>O candidato cai <b>{num(QUEDA, CASAS)}</b>; a logística, que decora pouco, <b>{num(QUEDA_LOG, CASAS)}</b> ({pct(FRACAO, 0)} disso). Se a troca de safra custa ao boosting o mesmo que à logística, cerca de <b>{num(EXCESSO, CASAS)}</b> é excesso do boosting: estimativa, não medida. E {num(VAL, CASAS)} é otimista: é a AUC que escolheu os hiperparâmetros (<LinkSlide slug="c6p21">slide 21</LinkSlide>). Mecanismo: <LinkSlide slug="c6p2">slide 2</LinkSlide>.</>}
+      fonte={`Base sintética (semente ${META.seed}). Candidato: ${HP_CANDIDATO.max_iter} árvores de até ${HP_CANDIDATO.max_leaf_nodes} folhas, taxa ${num(HP_CANDIDATO.learning_rate, 2)}, mínimo de ${HP_CANDIDATO.min_samples_leaf} propostas por folha, regularização l2 = ${num(HP_CANDIDATO.l2_regularization, 0)}, escolhido pela AUC na validação temporal. Logística do gerador: as mesmas ${NVARS} variáveis, sem interações. Número tracejado: aprofundamento.`}>
       <div className="q6-s01">
         <div className="q6-s01-g"><Gancho /></div>
         <div className="q6-s01-dir">

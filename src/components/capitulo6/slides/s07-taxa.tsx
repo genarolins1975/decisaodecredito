@@ -9,9 +9,10 @@ import base from "@/lib/capitulo6/base.json";
 /**
  * 07 · c6p7 · A taxa de aprendizagem. F ← F + η · valor da folha. Nas 16 propostas didáticas, com as quatro árvores de
  * CFG_DIDATICA (profundidade 2, mínimo 2 por folha), a log loss de treino depois de cada árvore para cada η da grade de
- * 0,05 a 1, todas do boosting da biblioteca (modelo()). A turma prevê que taxa desce mais rápido no treino; a certa é a
- * maior (após a árvore 1, a perda cai a cada aumento de η em toda a grade; após M árvores, até a melhor taxa da grade,
- * conferido abaixo). A virada está na leitura: somar só um pedaço não serve para descer mais rápido no treino, serve
+ * 0,05 a 1, todas do boosting da biblioteca (modelo()). A turma prevê que taxa desce mais rápido no treino; a certa é
+ * "perto de 1" (após a árvore 1, a perda cai a cada aumento de η em toda a grade; após M árvores, cai até a melhor taxa
+ * da grade, η = 1 fica um pouco acima dela, e todas as taxas a partir de PERTO terminam abaixo de todas as menores,
+ * conferido abaixo). O título diz "taxas perto de 1", não "a maior", porque η = 1 não é a menor perda após M árvores. A virada está na leitura: somar só um pedaço não serve para descer mais rápido no treino, serve
  * para que nenhuma árvore, ajustada a poucos casos, pese sozinha na soma; quem julga isso é a validação (slides 14 e 15).
  * η = 1 termina acima de η = 0,95 porque da árvore 2 em diante cada taxa gera árvores diferentes, não porque o passo
  * inteiro passe do ponto: a busca em linha na árvore 2 do caminho de η = 1 dá o mínimo da perda acima de 1 vez o passo
@@ -28,6 +29,11 @@ const L = (eta: number) => CURVAS.get(eta)!;
 const CAI1 = GRADE.every((e, i) => i === 0 || L(e)[1] < L(GRADE[i - 1])[1]);
 const TOP = [...GRADE].sort((a, b) => L(a)[M] - L(b)[M])[0];
 const CAI_ATE_TOP = GRADE.filter((e) => e <= TOP).every((e, i) => i === 0 || L(e)[M] < L(GRADE[i - 1])[M]);
+// "taxas perto de 1": a partir de PERTO, toda taxa da grade termina as M árvores abaixo de toda taxa menor
+const PERTO = 0.8;
+const ALTAS = GRADE.filter((e) => e >= PERTO - 1e-9), BAIXAS = GRADE.filter((e) => e < PERTO - 1e-9);
+const MAX_ALTAS = Math.max(...ALTAS.map((e) => L(e)[M])), MIN_ALTAS = Math.min(...ALTAS.map((e) => L(e)[M]));
+const PERTO_DESCE = MAX_ALTAS < Math.min(...BAIXAS.map((e) => L(e)[M]));
 const ETA0 = CFG_DIDATICA.eta;
 const MOD1 = modelo({ ...CFG_DIDATICA, eta: 1 }, XD, YD);
 const EST1 = estagios(MOD1, XD);
@@ -37,14 +43,14 @@ const MULT = (() => {
   let lo = 0, hi = 4; for (let it = 0; it < 120; it++) { const u = lo + (hi - lo) / 3, w = hi - (hi - lo) / 3; if (f(u) < f(w)) hi = w; else lo = u; }
   return (lo + hi) / 2;
 })();
-if (!(CAI1 && CAI_ATE_TOP && TOP < 1 && L(1)[M] > L(TOP)[M] && MULT > 1)) throw new Error("a leitura do slide 7 não vale nos dados");
+if (!(CAI1 && CAI_ATE_TOP && PERTO_DESCE && TOP < 1 && L(1)[M] > L(TOP)[M] && MULT > 1)) throw new Error("a leitura do slide 7 não vale nos dados");
 /** Curvas de referência depois da previsão: a taxa pequena, a melhor da grade e a correção inteira. */
 const REFS = [0.1, TOP, 1];
 const ESTILO: Record<string, { tr?: string; larg: number; cor: string }> = { [String(0.1)]: { tr: "8 6", larg: 1.6, cor: "#9AA1AD" }, [String(TOP)]: { tr: "2 5", larg: 2.4, cor: "#5B6475" }, "1": { larg: 2.6, cor: "#5B6475" } };
 
 const OPCOES: Opcao[] = [
   { texto: "η = 0,1: passos pequenos erram menos", retorno: <>Confunde <b>regularização com ajuste</b>. No treino, a taxa pequena desce devagar: após a árvore 1, {num(L(0.1)[1], 3)} com η = 0,1 contra {num(L(1)[1], 3)} com η = 1.</> },
-  { texto: "A maior, perto de 1: soma mais da correção", certa: true, retorno: <>Isso, no treino: {CAI1 ? "após a árvore 1, a perda cai a cada aumento da taxa" : "η = 1 tem a menor perda após a árvore 1"} (<b>{num(L(1)[1], 3)}</b> com η = 1). Por que somar só um pedaço? Na leitura.</> },
+  { texto: "Perto de 1: soma quase toda a correção", certa: true, retorno: <>Isso, no treino: após a árvore 1, a perda cai a cada aumento da taxa (<b>{num(L(1)[1], 3)}</b> com η = 1); após {M}, as taxas de {num(PERTO, 2)} a 1 terminam entre {num(MIN_ALTAS, 3)} e {num(MAX_ALTAS, 3)}, abaixo de todas as menores. Por que somar só um pedaço? Na leitura.</> },
   { texto: `η = ${num(ETA0, 1)}, a do curso: o meio-termo`, retorno: <>Confunde <b>convenção com ótimo</b>. {num(ETA0, 1)} é a taxa fixada para as 16; no treino, desce menos que as taxas perto de 1 ({num(L(ETA0)[1], 3)} contra {num(L(1)[1], 3)} após a árvore 1).</> },
 ];
 

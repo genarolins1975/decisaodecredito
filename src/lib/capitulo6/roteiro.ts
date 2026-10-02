@@ -15,12 +15,15 @@
  * com sete variáveis que o comitê julga no capítulo 7.
  */
 import type { Nivel, Pergunta, Slide } from "@/lib/capitulo7/roteiro";
-import { num } from "../capitulo7/formato";
+import { int, num } from "../capitulo7/formato";
 import base from "./base.json";
+import { CFG_CARTEIRA } from "./dados";
 
 /** Queda de AUC do candidato do treino à validação temporal do gerador, com a mesma casa decimal do slide 1. */
 const QUEDA_GBM = base.res.gbm_treino.auc - base.res.gbm_val.auc;
 const N_DIDATICA = base.didatica.length;
+/** Propostas de ajuste e árvores da configuração de referência da carteira (slide 11; a queda em todas é conferida lá). */
+const N_AJUSTE = base.ajuste.y.length, ARVORES_CARTEIRA = CFG_CARTEIRA.arvores;
 
 export const PERGUNTAS: { id: Exclude<Pergunta, "todas" | "apoio">; nome: string; frase: string }[] = [
   { id: "ordenacao", nome: "Mecanismo", frase: "Como somar árvores pequenas, cada uma corrigindo a anterior, produz uma PD?" },
@@ -36,11 +39,11 @@ export const ROTEIRO: Slide[] = [
   { slug: "c6p4", n: 4, pergunta: "ordenacao", titulo: "O erro de cada proposta vira o alvo da próxima árvore", sub: "Em log loss, menos o gradiente na escala de log odds é y − p.", nivel: "essencial", min: 4 },
   { slug: "c6p5", n: 5, pergunta: "ordenacao", titulo: "A primeira árvore separa onde o palpite errou", sub: "Com palpite único, ela separa os mesmos grupos que uma árvore de default; a diferença aparece da segunda árvore em diante.", nivel: "essencial", min: 4 },
   { slug: "c6p6", n: 6, pergunta: "ordenacao", titulo: "O valor da folha é um passo de Newton, não a média do erro", sub: "A soma dos erros dividida pela soma de p(1 − p): é o que o scikit-learn usa.", nivel: "essencial", min: 3 },
-  { slug: "c6p7", n: 7, pergunta: "ordenacao", titulo: "Taxa de aprendizagem: a maior desce mais rápido no treino", sub: `Nas ${N_DIDATICA} propostas, taxas perto de 1 descem mais rápido; a taxa pequena não é para o treino (slides 14 e 15).`, nivel: "essencial", min: 3 },
+  { slug: "c6p7", n: 7, pergunta: "ordenacao", titulo: "Taxa de aprendizagem: no treino, taxas perto de 1 descem mais rápido", sub: `Nas ${N_DIDATICA} propostas, a maior taxa desce mais na primeira árvore; a taxa pequena não é para o treino (slides 14 e 15).`, nivel: "essencial", min: 3 },
   { slug: "c6p8", n: 8, pergunta: "ordenacao", titulo: "Nas quatro árvores, a perda de treino cai", sub: "Quatro correções nas dezesseis propostas, com a PD de cada uma se movendo.", nivel: "essencial", min: 4 },
   { slug: "c6p9", n: 9, pergunta: "probabilidade", titulo: "A PD final se decompõe em parcelas rastreáveis", sub: "Palpite mais η vezes cada folha, em log odds; a sigmoide só no fim.", nivel: "aprofundamento", min: 3 },
   { slug: "c6p10", n: 10, pergunta: "ordenacao", titulo: "A fórmula de Friedman resume os passos já vistos", sub: "Cada termo do algoritmo é uma peça dos slides anteriores.", nivel: "aprofundamento", min: 3 },
-  { slug: "c6p11", n: 11, pergunta: "validacao", titulo: "O mesmo algoritmo em 1.472 propostas: o treino sempre melhora", sub: "Utilização, atraso e score de bureau; a validação sorteada são 631 propostas que o modelo não viu.", nivel: "essencial", min: 4 },
+  { slug: "c6p11", n: 11, pergunta: "validacao", titulo: `O mesmo algoritmo em ${int(N_AJUSTE)} propostas: o ajuste melhora em todas as ${ARVORES_CARTEIRA} árvores`, sub: `Utilização, atraso e score de bureau; validação: ${int(base.validacao.y.length)} propostas que o modelo não viu, sorteadas do mesmo período (não é safra posterior).`, nivel: "essencial", min: 4 },
   { slug: "c6p12", n: 12, pergunta: "decisao", titulo: "Profundidade é a ordem de interação", sub: "Com tocos, cada variável age sozinha; com profundidade 2, o efeito de uma depende da outra.", nivel: "aprofundamento", min: 3 },
   { slug: "c6p13", n: 13, pergunta: "decisao", titulo: "Quatro controles mexem na mesma complexidade", sub: "Taxa, número de árvores, profundidade e mínimo por folha, medidos no ajuste e na validação.", nivel: "essencial", min: 4 },
   { slug: "c6p14", n: 14, pergunta: "decisao", titulo: "Metade da taxa pede o dobro de árvores", sub: "Taxa e número de árvores andam juntos: escolher um sem o outro não faz sentido.", nivel: "aprofundamento", min: 3 },
