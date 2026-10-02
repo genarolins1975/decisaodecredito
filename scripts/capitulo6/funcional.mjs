@@ -10,7 +10,8 @@ let page = await nova();
 // 1. setas num controle não trocam de slide (c6p11: número de árvores)
 await ir(page, "http://localhost:3000/apresentacao/c6p11");
 const r = page.locator(".q7 input[type=range]").first(); await r.focus(); const v0 = await r.inputValue();
-await page.keyboard.press("ArrowRight"); await page.keyboard.press("ArrowRight"); await page.waitForTimeout(300);
+// o controle abre no máximo (300 árvores): seta para a esquerda
+await page.keyboard.press("ArrowLeft"); await page.keyboard.press("ArrowLeft"); await page.waitForTimeout(300);
 ok(page.url().endsWith("/c6p11"), "setas no controle não trocam de slide"); ok((await r.inputValue()) !== v0, "setas mudam o valor do controle");
 // 2. foco visível e Tab chega a um botão
 let foco = null;
@@ -31,8 +32,10 @@ ok(n >= 2 && (await q.locator(".q7-prev-op[data-estado='certa'], .q7-prev-op[dat
 let errou = false, acertou = false;
 for (let i = 0; i < n && !acertou; i++) {
   await ops.nth(i).click(); await page.waitForTimeout(250);
+  const estado = await q.locator(".q7-prev-op[aria-pressed='true']").getAttribute("data-estado");
   const tentar = q.getByRole("button", { name: "Tentar outra" });
-  if (await tentar.count()) { errou = true; await tentar.click(); await page.waitForTimeout(200); } else acertou = true;
+  if (estado === "certa") acertou = true;
+  else if (await tentar.count()) { errou = true; await tentar.click(); await page.waitForTimeout(200); }
 }
 ok(errou, "alternativa errada oferece nova tentativa"); ok(acertou, "acerto encerra a previsão");
 // 6. movimento reduzido: transições zeradas
