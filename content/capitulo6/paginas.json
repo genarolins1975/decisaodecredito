@@ -53,31 +53,31 @@
     "exp": 2,
     "disc": 1
    },
-   "aprendizado": "Distinguir os três modos de usar várias árvores: escolher uma árvore, votar com árvores independentes em amostras sorteadas e corrigir com árvores em sequência, cada uma no erro que sobrou.",
-   "apoio": "Leia cada coluna de cima para baixo: o que a árvore recebe nas 16 propostas, como as árvores se ligam e a PD da proposta acompanhada. Responda à previsão; depois passe da árvore 1 à 3 e troque a proposta.",
+   "aprendizado": "Distinguir os três modos de usar árvores (escolher: um modelo só, uma árvore ajustada com as 16; votar: árvores independentes em amostras sorteadas; corrigir: árvores em sequência, cada uma no erro que sobrou) e explicar por que, com uma árvore só, escolher dá a PD mais certa.",
+   "apoio": "Leia cada coluna de cima para baixo: o que a árvore recebe nas 16 propostas, como as árvores se ligam e de onde sai a PD. As PDs e a log loss ficam ocultas até a previsão; depois passe da árvore 1 à 3 e troque a proposta.",
    "conexao": "Prepara o slide 3, que mede os três métodos na log loss de treino conforme as árvores se somam.",
    "guia": {
-    "funcao": "Explicar, antes de qualquer curva, o que significa escolher, votar e corrigir, com as mesmas 16 propostas e a mesma proposta acompanhada nas três colunas.",
+    "funcao": "Explicar, antes de qualquer curva, o que significa escolher, votar e corrigir, com as mesmas 16 propostas e a mesma proposta acompanhada nas três colunas, e responder à dúvida que o slide 3 levanta: com uma árvore só, por que escolher perde menos?",
     "pre": "Slide 1 (o caso) e o capítulo 5 (a árvore de profundidade 2 e a PD como taxa de default da folha).",
-    "conducao": "Comece por escolher: uma árvore no default com as 16; as chaves são as quatro folhas, com PD 50%, 0%, 100% e 50%, e 12 das 16 caem em folhas puras. Votar: cada árvore recebe o default numa amostra de 16 sorteada com reposição (semente 20260502); pilha de marcas é proposta repetida, anel tracejado é proposta fora da amostra. Na árvore 1, #7 e #8 (adimplentes) ficaram fora e caíram numa folha que, na amostra, só tinha defaults: a árvore dá PD 100% às duas. Corrigir: o palpite dá 50% a todas; a árvore 1 recebe y − p = ±0,50 e soma só η = 0,4 do passo, e as PDs vão a 31% e 69%. Peça a previsão. Depois do acerto, passe às árvores 2 e 3 com #7: em votar, ela recebe y = 0 de novo (1× na amostra) e a média vai de 100% a 50% e 33%; em corrigir, recebe −0,31 e −0,20, e a PD desce a 20% e 13%; escolher continua em 0%, com uma árvore só.",
-    "leitura": "Três colunas, uma por método: no alto, o alvo que a árvore recebe nas 16 propostas; no meio, como as árvores se ligam; embaixo, o alvo e a PD da proposta acompanhada. As linhas de baixo comparam alvo, ligação e PD.",
-    "pergunta": "Por que, com uma árvore só, escolher dá PDs melhores que votar e corrigir?",
-    "resposta": "Porque usa as 16 de uma vez e chega a 0% e 100% nas folhas puras. Votar vê uma amostra perturbada (#7 e #8 ficaram fora e receberam 100%); corrigir soma só 40% do passo. Os dois pagam na primeira árvore para ganhar com muitas.",
+    "conducao": "Defina os três métodos pelo mecanismo, que fica à vista. Escolher é um modelo só: uma árvore ajustada no default com as 16 (em geral se escolhe entre candidatos; aqui é uma árvore de profundidade 2); as chaves são as quatro folhas. Votar: cada árvore recebe o default numa amostra de 16 sorteada com reposição (semente 20260502); pilha de marcas é proposta repetida, anel tracejado é proposta fora da amostra. Corrigir: o palpite dá 50% a todas e a árvore 1 recebe y − p = ±0,50. Antes da resposta, as taxas das folhas, as PDs da proposta acompanhada e a log loss ficam ocultas. Peça a previsão: com uma árvore só, qual dos três dá a PD mais certa nas 16 (menor log loss)? Revelado, escolher tem log loss 0,173: 12 das 16 caem em folhas puras, com PD 0% ou 100%. Votar fica sem limite: #7 e #8, adimplentes, ficaram fora da primeira amostra, caíram numa folha só de defaults e receberam PD 100%. Corrigir fica em 0,452: a primeira árvore separa os mesmos grupos, mas o passo de Newton (slide 7) a partir de 50% leva a folha pura a 11,9%, não a 0%, e só η = 0,4 dele entra (PDs de 31% e 69%); com η = 1 a perda seria 0,268, ainda acima de 0,173. Depois, passe às árvores 2 e 3 com #7: em votar, a média vai de 100% a 50% e 33%; em corrigir, o alvo vai a −0,31 e −0,20 e a PD desce a 20% e 13%; escolher continua em 0%, com um modelo só.",
+    "leitura": "Três colunas, uma por método: no alto, o alvo que a árvore recebe nas 16 propostas e as folhas (ou as setas de corrigir); no meio, como as árvores se ligam (um modelo só, árvores em paralelo até a média, árvores em cadeia a partir do palpite); embaixo, o alvo e a PD da proposta acompanhada. As linhas de baixo comparam alvo, de onde sai a PD e a log loss com uma árvore.",
+    "pergunta": "Corrigir separa na primeira árvore os mesmos grupos que escolher. Por que perde mais?",
+    "resposta": "Porque a folha de corrigir é um passo de Newton a partir do palpite de 50%: numa folha pura ele leva a PD a 11,9%, não a 0%, e ainda é encolhido por η = 0,4, o que deixa as PDs em 31% e 69% (log loss 0,452). Escolher usa a taxa da folha, que vai a 0% e 100% nas folhas puras (0,173). Votar e corrigir pagam na primeira árvore para ganhar com muitas.",
     "erros": [
      {
-      "alt": "Escolher",
-      "confusao": "Confunde escolher entre candidatos com uma sequência: cada candidato é ajustado no y inteiro e fica o melhor; nenhum vê o erro do outro.",
-      "intervencao": "Mostre a coluna de escolher na árvore 2: não há árvore 2."
+      "alt": "Votar",
+      "confusao": "Acha que sortear amostras ajuda já com uma árvore: a árvore 1 viu só uma amostra e deixou de fora #7 e #8, adimplentes, que caíram numa folha só de defaults e receberam PD 100%; uma PD de 100% num adimplente deixa a perda sem limite.",
+      "intervencao": "Aponte os anéis tracejados de #7 e #8 na coluna de votar e a chave de 100% sobre eles."
      },
      {
-      "alt": "Votar",
-      "confusao": "Confunde várias árvores com árvores em sequência: em votar, a árvore 2 recebe o mesmo y numa outra amostra e poderia ser ajustada antes da 1.",
-      "intervencao": "Compare o alvo de #7 nas árvores 1 e 2 de votar (y = 0 nas duas) com o de corrigir (−0,50 e −0,31)."
+      "alt": "Corrigir",
+      "confusao": "Confunde separar os mesmos grupos com chegar à mesma PD: o passo de Newton a partir de 50% leva a folha pura a 11,9%, e só η = 0,4 dele entra (PDs de 31% e 69%, perda 0,452; com η = 1, 0,268).",
+      "intervencao": "Compare a chave de 0% de escolher com a PD de 31% de #7 em corrigir e mostre onde está η na coluna."
      }
     ],
-    "interacao": "Previsão com retorno por alternativa e Tentar outra; antes do acerto, o quadro fica na árvore 1 e a ligação entre as árvores fica oculta. No acerto, aparecem o seletor de árvore (1 a 3) e o desenho da ligação; o seletor de proposta funciona desde o início. Restaurar volta à árvore 1, à proposta #7 e à previsão em aberto.",
-    "verificacao": "O aluno escolhe outra proposta e diz o que a árvore 2 recebe em votar e em corrigir.",
-    "transicao": "Escolher acerta mais com uma árvore; votar e corrigir ganham com muitas. Quanto, na log loss de treino, o slide 3 mede."
+    "interacao": "Previsão com retorno por alternativa e Tentar outra; antes do acerto, o quadro fica na árvore 1, com o mecanismo à vista e as taxas das folhas, as PDs da proposta acompanhada e a log loss ocultas. No acerto, aparecem esses números, a linha de log loss com uma árvore (0,173, sem limite, 0,452) e o seletor de árvore (1 a 3); o seletor de proposta funciona desde o início. Restaurar volta à árvore 1, à proposta #7 e à previsão em aberto.",
+    "verificacao": "O aluno explica por que, com uma árvore, escolher perde menos que corrigir e que votar, e diz o que a árvore 2 recebe em votar e em corrigir.",
+    "transicao": "Escolher perde menos com uma árvore; votar e corrigir ganham com muitas. Quanto, na log loss de treino, o slide 3 mede."
    }
   },
   "c6p2": {
@@ -89,10 +89,10 @@
    "apoio": "Os três métodos são os do slide 2. Leia a primeira árvore (a expansão explica por que escolher perde menos), preveja como votar e corrigir andam de 1 a 20 árvores e depois mova o número de árvores.",
    "conexao": "A sequência precisa de um ponto de partida: o palpite inicial.",
    "guia": {
-    "funcao": "Mostrar com as 16 propostas que, com uma árvore, escolher perde menos, e que só corrigir em sequência continua reduzindo o erro de treino, porque cada árvore mira o que sobrou.",
+    "funcao": "Mostrar com as 16 propostas que, com uma árvore, escolher (um modelo só) perde menos, e que só corrigir em sequência continua reduzindo o erro de treino, porque cada árvore mira o que sobrou.",
     "pre": "Slide 2 (escolher, votar e corrigir) e o capítulo 5 (a árvore de profundidade 2).",
-    "conducao": "Comece pela primeira árvore e abra a expansão: escolher tem log loss 0,173 porque 12 das 16 caem em folhas puras (PD 0% ou 100%, perda zero) e 4 ficam em 50%; corrigir fica em 0,452 porque soma só η = 0,4 do passo de Newton e as PDs vão a 31% e 69% (com η = 1, o passo para em 11,9% e a perda seria 0,268); votar não tem limite porque a primeira amostra deixou de fora #7 e #8, adimplentes, que caíram numa folha só de defaults e receberam PD 100%. Peça a previsão antes de abrir as curvas. Votar cai a 0,346 com 2 árvores e a 0,232 com 8, e depois oscila entre 0,232 e 0,252 até a 20 (0,237). Corrigir cai a cada árvore, de 0,452 com uma a 0,030 com 20. Feche com o alerta: com 20 árvores, #1 e #2, vizinhas no plano, terminam com 7% e 93%: nas 16 isso já é decorar.",
-    "leitura": "Log loss de treino conforme as árvores se somam: escolher como referência tracejada, votar em quadrados, corrigir em círculos.",
+    "conducao": "Comece pela primeira árvore e abra a expansão: escolher, um modelo só ajustado com as 16, tem log loss 0,173 porque 12 das 16 caem em folhas puras (PD 0% ou 100%, perda zero) e 4 ficam em 50%; corrigir fica em 0,452 porque a primeira árvore separa os mesmos grupos, mas o passo de Newton (slide 7) a partir de 50% leva a folha pura a 11,9%, não a 0%, e só η = 0,4 dele entra (PDs de 31% e 69%; com η = 1 a perda seria 0,268, ainda acima de 0,173); votar não tem limite porque a primeira amostra deixou de fora #7 e #8, adimplentes, que caíram numa folha só de defaults e receberam PD 100%. Feche a expansão com a frase dela: escolher vence com uma árvore porque usa todos os dados e vai a 0% e 100% nas folhas puras; votar e corrigir pagam na primeira para ganhar com muitas. Peça a previsão antes de abrir as curvas. Votar cai a 0,346 com 2 árvores e a 0,232 com 8, e depois oscila entre 0,232 e 0,252 até a 20 (0,237). Corrigir cai a cada árvore, de 0,452 com uma a 0,030 com 20. Feche com o alerta: com 20 árvores, #1 e #2, vizinhas no plano, terminam com 7% e 93%: nas 16 isso já é decorar.",
+    "leitura": "Log loss de treino conforme as árvores se somam: escolher (um modelo só, uma árvore com as 16) como referência tracejada, votar em quadrados, corrigir em círculos. A expansão, no pé do painel, explica a primeira árvore.",
     "pergunta": "Por que votar para de cair depois de poucas árvores?",
     "resposta": "Porque todas as árvores olham o mesmo y em amostras parecidas e repetem o mesmo erro; a média reduz a variância e estaciona no erro comum (a menor perda, 0,232, vem na árvore 8). Só corrigir mira o erro que sobrou.",
     "erros": [
@@ -107,7 +107,7 @@
       "intervencao": "Leve o controle a 20 e compare as duas curvas."
      }
     ],
-    "interacao": "Previsão com retorno por alternativa e Tentar outra; as curvas de 2 a 20 árvores e o controle abrem só no acerto. A expansão do painel explica a primeira árvore. Restaurar volta à previsão em aberto.",
+    "interacao": "Previsão com retorno por alternativa e Tentar outra; as curvas de 2 a 20 árvores e o controle abrem só no acerto. A expansão do painel explica a primeira árvore e liga o passo de Newton ao slide 7. Restaurar volta à previsão em aberto e fecha a expansão.",
     "verificacao": "O aluno explica por que escolher perde menos com uma árvore e por que votar para de cair.",
     "transicao": "Corrigir parte de um palpite: qual número único dar a todas as propostas?"
    }

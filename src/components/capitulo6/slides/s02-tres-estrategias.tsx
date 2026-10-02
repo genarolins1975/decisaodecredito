@@ -16,7 +16,9 @@ import base from "@/lib/capitulo6/base.json";
  * loss infinita: o quadro marca "sem limite" em vez de usar o piso numérico. A turma prevê o comportamento com 20 árvores
  * antes de ver as curvas; só no acerto o controle de árvores aparece. A expansão do painel explica a primeira árvore, com
  * números calculados aqui: folhas puras de escolher, PDs extremas de corrigir com η = 0,4 e com η = 1 (passo de Newton
- * inteiro), e as propostas que a primeira amostra de votar deixou de fora.
+ * inteiro, ligado ao slide 7), e as propostas que a primeira amostra de votar deixou de fora; fecha com a frase de por que
+ * escolher vence com uma árvore. Escolher é um modelo só: uma árvore ajustada com as 16. Restaurar fecha a expansão
+ * (a chave do Expandir muda e o details volta fechado), para ela não cobrir a previsão restaurada.
  */
 const SEMENTE_BASE = base.meta.seed; // semente do gerador do curso, que também gerou as 16 propostas didáticas
 const KMAX = 20;
@@ -32,7 +34,7 @@ const EST = estagios(MOD, XD);
 const L_COR = EST.map((F) => perdaLog(F, YD)); // índice k = k árvores
 const P1 = sigmoide(EST[KMAX][0]), P2 = sigmoide(EST[KMAX][1]);
 const fmtL = (v: number | null) => (v === null ? "sem limite" : num(v, 3));
-const DEFS = ["┄ escolher: uma árvore", "■ votar: média de árvores", "● corrigir: soma em sequência"];
+const DEFS = ["┄ escolher: um modelo só, uma árvore com as 16", "■ votar: média de árvores", "● corrigir: soma em sequência"];
 const DEFS_CURTAS = ["┄ escolher", "■ votar", "● corrigir"]; // gráfico estreito (celular): só o nome, como no slide 2
 
 /** Votar para de cair: a menor perda de votar fica numa árvore intermediária e, dali até KMAX, oscila acima dela. */
@@ -48,6 +50,10 @@ const MEIO = P_ESC.filter((p) => p > 0 && p < 1);
 const PD_COR1 = EST[1].map(sigmoide), COR1 = [Math.min(...PD_COR1), Math.max(...PD_COR1)];
 const EST_ETA1 = estagios(modelo({ ...CFG_DIDATICA, eta: 1, arvores: 1 }, XD, YD), XD);
 const COR1_ETA1 = Math.min(...EST_ETA1[1].map(sigmoide)), L_COR1_ETA1 = perdaLog(EST_ETA1[1], YD);
+const P0 = sigmoide(MOD.f0); // PD do palpite, de onde parte o passo de Newton
+// o mínimo com η = 1 é a folha pura de adimplentes (as que escolher leva a 0%), e as PDs de corrigir com η vêm do mesmo passo
+const PURA0 = P_ESC.map((p, i) => (p === 0 ? i : -1)).filter((i) => i >= 0);
+if (!PURA0.every((i) => sigmoide(EST_ETA1[1][i]) === COR1_ETA1 && PD_COR1[i] === COR1[0]) || !(COR1_ETA1 > 0)) throw new Error("a folha pura de corrigir não vale nos dados");
 const FORA1 = DIDATICA.filter((_, i) => !AMOSTRAS[0].includes(i));
 const ERRADAS1 = DIDATICA.filter((p, i) => (p.y === 0 && P_VOT[0][i] >= 1) || (p.y === 1 && P_VOT[0][i] <= 0));
 const ids = (ps: { id: number }[]) => ps.map((p) => `#${p.id}`).join(" e ");
@@ -63,6 +69,7 @@ const OPCOES: Opcao[] = [
 export function S02TresEstrategias({ pagina }: { pagina?: Pagina }) {
   const [esc, setEsc] = useState<number | null>(null);
   const [k, setK] = useState(KMAX);
+  const [nExp, setNExp] = useState(0); // muda a cada Restaurar: o Expandir remonta fechado
   const rev = esc !== null && !!OPCOES[esc].certa;
   return (
     <Quadro slug="c6p2" pagina={pagina} layout="gl"
@@ -106,14 +113,17 @@ export function S02TresEstrategias({ pagina }: { pagina?: Pagina }) {
       </Painel>
       <Painel>
         <Previsao pergunta={`De 1 a ${KMAX} árvores, como anda a log loss de treino de votar e de corrigir?`} opcoes={OPCOES} escolha={esc} onEscolha={(i) => { setEsc(i); setK(KMAX); }} recolher />
-        <Expandir resumo="Uma árvore: por que escolher perde menos?">
+        <div className="q6-s02-exp">
+        <Expandir key={nExp} resumo="Uma árvore: por que escolher perde menos?">
           <dl className="q6-s02-um">
-            <div><dt>┄ Escolher {num(L_ESC, 3)}</dt><dd>{PURAS} das {DIDATICA.length} caem em folhas puras e recebem PD 0% ou 100%, com perda zero; {MEIO.length} ficam em {pct(MEIO[0], 0)}.</dd></div>
-            <div><dt>● Corrigir {num(L_COR[1], 3)}</dt><dd>soma só η = {num(CFG_DIDATICA.eta, 1)} do passo de Newton: as PDs vão a {pct(COR1[0], 0)} e {pct(COR1[1], 0)}. Com η = 1, o passo para em {pct(COR1_ETA1, 1)} e a perda seria {num(L_COR1_ETA1, 3)}.</dd></div>
-            <div><dt>■ Votar: sem limite</dt><dd>a primeira amostra deixou de fora {ids(ERRADAS1)}, adimplentes, que caíram numa folha só de defaults e receberam PD {pct(1, 0)}.</dd></div>
+            <div><dt>┄ Escolher {num(L_ESC, 3)}</dt><dd>um modelo só, com as {DIDATICA.length}: {PURAS} em folhas puras (PD {pct(0, 0)} ou {pct(1, 0)}, perda zero), {MEIO.length} em {pct(MEIO[0], 0)}.</dd></div>
+            <div><dt>● Corrigir {num(L_COR[1], 3)}</dt><dd>mesmos grupos, mas o passo de Newton (<LinkSlide slug="c6p6">slide {SLIDE.c6p6.n}</LinkSlide>) a partir de {pct(P0, 0)} leva a folha pura a {pct(COR1_ETA1, 1)}, não a {pct(0, 0)}, e só η = {num(CFG_DIDATICA.eta, 1)} dele entra: PDs de {pct(COR1[0], 0)} e {pct(COR1[1], 0)}. Com η = 1, {num(L_COR1_ETA1, 3)}.</dd></div>
+            <div><dt>■ Votar, sem limite</dt><dd>{ids(ERRADAS1)}, adimplentes, ficaram fora da primeira amostra e caíram numa folha só de defaults: PD {pct(1, 0)}.</dd></div>
           </dl>
+          <p className="q6-s02-fecho">Escolher vence com uma árvore porque usa todos os dados e vai a {pct(0, 0)} e {pct(1, 0)} nas folhas puras; votar e corrigir pagam na primeira para ganhar com muitas.</p>
         </Expandir>
-        <div className="q7-botoes"><Botao sec onClick={() => { setEsc(null); setK(KMAX); }}>Restaurar</Botao></div>
+        </div>
+        <div className="q7-botoes"><Botao sec onClick={() => { setEsc(null); setK(KMAX); setNExp((n) => n + 1); }}>Restaurar</Botao></div>
       </Painel>
     </Quadro>
   );

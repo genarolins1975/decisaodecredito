@@ -144,7 +144,15 @@ export function Expandir({ resumo, children, aberto }: { resumo: ReactNode; chil
     // altura disponível acima do resumo, dentro do painel
     setSobe(cortado ? Math.max(120, dr.top - pr.top - 8) : null);
   };
-  return <details ref={ref} className="q7-exp" data-sobe={sobe !== null ? "1" : undefined} open={aberto} onToggle={aoAlternar}><summary>{resumo}</summary><div className="q7-exp-c" style={sobe !== null ? { maxHeight: sobe } : undefined}>{children}</div></details>;
+  // Medida aberta no fluxo pode subestimar a altura livre (o conteúdo empurra ou espreme os vizinhos). Já como cartão,
+  // o details volta ao lugar de fechado: mede de novo a partir dali (converge num passo, a posição não depende de sobe).
+  useLayoutEffect(() => {
+    const d = ref.current; if (sobe === null || !d) return;
+    const p = d.closest(".q7-painel") ?? d.closest(".q7-corpo"); if (!p) return;
+    const alt = Math.max(120, d.getBoundingClientRect().top - p.getBoundingClientRect().top - 8);
+    if (Math.abs(alt - sobe) > 1) setSobe(alt);
+  }, [sobe]);
+  return <details ref={ref} className="q7-exp" data-sobe={sobe !== null ? "1" : undefined} open={aberto} onToggle={aoAlternar}><summary>{resumo}</summary><div className="q7-exp-c" style={sobe !== null ? { maxHeight: sobe, ["--q7-exp-alt" as string]: `${sobe}px` } : undefined}>{children}</div></details>;
 }
 
 /** Fórmula em KaTeX com a tradução dos símbolos logo abaixo. */

@@ -77,9 +77,14 @@
   .q6-s23-c[data-oculta="1"] > span:last-child { min-width: 28px; }
 }
 
-/* 03 · c6p2 · a primeira árvore explicada na expansão */
+/* 03 · c6p2 · a primeira árvore explicada na expansão, no pé do painel: aberta, sobe até o topo sem cobrir o Restaurar */
+.q6-s02-exp { margin-top: auto; }
+.q7 .q7-slide .q6-s02-exp .q7-exp[data-sobe="1"] > .q7-exp-c { min-height: var(--q7-exp-alt); }
 .q6-s02-um { margin: 0; display: grid; gap: .45cqw; }
 .q6-s02-um > div { border-top: 1px solid var(--q7-borda); padding-top: .3cqw; }
-.q6-s02-um dt { font-size: 1.25cqw; font-weight: 700; color: var(--q7-ink); }
-.q6-s02-um dd { margin: .1cqw 0 0; font-size: 1.25cqw; line-height: 1.25; }
-@container q7 (max-width: 820px) { .q6-s02-um dt, .q6-s02-um dd { font-size: 13.5px; } }
+.q6-s02-um > div { font-size: 1.25cqw; line-height: 1.25; }
+.q6-s02-um dt { display: inline; font-weight: 700; color: var(--q7-ink); }
+.q6-s02-um dt::after { content: ": "; }
+.q6-s02-um dd { display: inline; margin: 0; }
+.q6-s02-fecho { margin: .45cqw 0 0; padding-top: .3cqw; border-top: 1px solid var(--q7-borda); font-size: 1.25cqw; line-height: 1.25; font-weight: 600; color: var(--q7-ink); }
+@container q7 (max-width: 820px) { .q6-s02-um > div, .q6-s02-fecho { font-size: 13.5px; } }
