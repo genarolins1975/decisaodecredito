@@ -25,8 +25,20 @@ function Histograma({ v, dom, passo, ic, ref0, d, real, xt, novas }: { v: number
   const m = margens(d.fs, { l: 3, b: 2.9, t: 1.6, r: 1 });
   const nb = Math.round((dom[1] - dom[0]) / passo); const cont = new Array(nb).fill(0) as number[];
   for (const x of v) { const k = Math.floor((x - dom[0]) / passo); if (k >= 0 && k < nb) cont[k]++; }
-  const passoY = Math.max(5, Math.ceil(Math.max(...cont) / 2 / 5) * 5); const ymax = passoY * 2.2;
-  const x = escala(dom, [m.l, d.w - m.r]), y = escala([0, ymax], [d.h - m.b, m.t]);
+  const passoY = Math.max(5, Math.ceil(Math.max(...cont) / 2 / 5) * 5);
+  const x0 = escala(dom, [m.l, d.w - m.r]);
+  // rótulo da média nas réplicas sintéticas da janela: uma linha quando cabe à direita da linha verde; senão duas, e o
+  // teto do eixo sobe para que a faixa do rótulo fique acima da barra mais alta (largura estimada pela letra)
+  const lx = novas === null ? 0 : x0(novas) + d.fs * 0.35, cw = d.fs * 0.86 * 0.54;
+  const umaLinha = novas === null ? "" : `▲ média nas réplicas sintéticas da janela ${num(novas, 4)}`;
+  const linhas = novas === null ? [] : lx + umaLinha.length * cw <= d.w ? [umaLinha] : ["▲ média nas réplicas", `sintéticas da janela ${num(novas, 4)}`];
+  // na vista da diferença o teto deixa a faixa de cima livre para o rótulo da média, antes e depois da previsão
+  const ymax = passoY * (linhas.length > 1 ? 2.8 : ref0 ? 2.5 : 2.2);
+  const x = x0, y = escala([0, ymax], [d.h - m.b, m.t]);
+  const ly = m.t + d.fs * 0.9, lh = d.fs * 1.05, lw = Math.max(0, ...linhas.map((l) => l.length)) * cw;
+  const faixaFim = ly + (linhas.length - 1) * lh + d.fs * 0.35;
+  // a linha tracejada da janela se interrompe na faixa do rótulo quando o rótulo passa por ela
+  const corta = linhas.length > 0 && x(real) > lx - d.fs * 0.2 && x(real) < lx + lw + d.fs * 0.2;
   return (
     <g>
       <Eixos x={x} y={y} xt={xt} yt={[0, passoY, passoY * 2]} fx={(t) => num(t, 2)} fy={(t) => int(t)} xTit={ref0 ? "AUC logística − AUC boosting" : "AUC da logística"} yTit="Reamostragens" />
@@ -34,15 +46,15 @@ function Histograma({ v, dom, passo, ic, ref0, d, real, xt, novas }: { v: number
       {ic && (() => { const fim = x(ic[1]) + d.fs * (0.3 + 16 * 0.86 * 0.55) > d.w; return <text className="q7-rot--peq" x={x(ic[1]) + (fim ? -d.fs * 0.3 : d.fs * 0.3)} y={m.t + d.fs * 2} textAnchor={fim ? "end" : "start"} style={{ fill: "#2E6B4F", fontWeight: 700, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em" }}>IC percentil 95%</text>; })()}
       {cont.map((c, k) => c ? <rect key={k} x={x(dom[0] + k * passo) + 1} y={y(c)} width={Math.max(1, x(dom[0] + (k + 1) * passo) - x(dom[0] + k * passo) - 2)} height={y(0) - y(c)} fill="#3D5A8A" /> : null)}
       {ref0 && <><line x1={x(0)} x2={x(0)} y1={m.t} y2={y(0)} stroke="#5B6475" strokeWidth={2.5} /><text className="q7-rot q7-rot--peq" x={x(0) - d.fs * 0.4} y={m.t + d.fs * 0.6} textAnchor="end" style={{ fill: "#5B6475", fontWeight: 700 }}>diferença zero</text></>}
-      <line x1={x(real)} x2={x(real)} y1={m.t - d.fs * 0.6} y2={y(0)} stroke="#00205B" strokeWidth={2.5} strokeDasharray="6 4" />
+      {corta ? <>
+        <line x1={x(real)} x2={x(real)} y1={m.t - d.fs * 0.6} y2={m.t - d.fs * 0.05} stroke="#00205B" strokeWidth={2.5} strokeDasharray="6 4" />
+        <line x1={x(real)} x2={x(real)} y1={faixaFim} y2={y(0)} stroke="#00205B" strokeWidth={2.5} strokeDasharray="6 4" />
+      </> : <line x1={x(real)} x2={x(real)} y1={m.t - d.fs * 0.6} y2={y(0)} stroke="#00205B" strokeWidth={2.5} strokeDasharray="6 4" />}
       <text className="q7-rot--peq" x={d.w < 600 ? x(real) + d.fs * 0.3 : x(real)} y={m.t - d.fs * 0.8} textAnchor={d.w < 600 ? "start" : "middle"} style={{ fill: "#00205B", fontWeight: 700 }}>na janela {num(real, 4)}</text>
-      {novas !== null && (() => {
-        // rótulo com fundo branco: passa sobre a linha tracejada da janela sem ser cortado por ela (largura estimada pela letra)
-        // em tela estreita, duas linhas
-        const linhas = d.w < 600 ? ["▲ média nas réplicas", `sintéticas da janela ${num(novas, 4)}`] : [`▲ média nas réplicas sintéticas da janela ${num(novas, 4)}`];
-        const lw = Math.max(...linhas.map((l) => l.length)) * d.fs * 0.86 * 0.54, lx = x(novas) + d.fs * 0.35, ly = m.t + d.fs * 0.9, lh = d.fs * 1.05;
-        return <><line x1={x(novas)} x2={x(novas)} y1={m.t} y2={y(0)} stroke="#2E6B4F" strokeWidth={3} /><rect x={lx - d.fs * 0.2} y={ly - d.fs * 0.85} width={lw + d.fs * 0.4} height={d.fs * 1.15 + lh * (linhas.length - 1)} rx={d.fs * 0.2} fill="#fff" fillOpacity={0.94} />{linhas.map((l, i) => <text key={i} className="q7-rot--peq" x={lx} y={ly + i * lh} textAnchor="start" style={{ fill: "#2E6B4F", fontWeight: 700 }}>{l}</text>)}</>;
-      })()}
+      {novas !== null && <>
+        <line x1={x(novas)} x2={x(novas)} y1={m.t} y2={y(0)} stroke="#2E6B4F" strokeWidth={3} />
+        {linhas.map((l, i) => <text key={i} className="q7-rot--peq" x={lx} y={ly + i * lh} textAnchor="start" style={{ fill: "#2E6B4F", fontWeight: 700, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em" }}>{l}</text>)}
+      </>}
     </g>
   );
 }
