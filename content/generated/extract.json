@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "cb1e9248eb9a065c5e6b640ace657cd01e58f3961c7aeebe1dc002abb4d6b6fa",
- "extractedAt": "2026-10-02T11:12:57.715Z",
+ "sourceSha256": "3c5bd0111c65ab2244b0eaa88a88757de8bc8036418ecccd9dfaa3360b6c5acc",
+ "extractedAt": "2026-10-02T11:39:07.754Z",
  "meta": {
   "capitulos": [
    {
@@ -6589,20 +6589,31 @@
     "disc": 1
    },
    "origem": "esq",
-   "aprendizado": "Como se forma um modelo assim, e onde o ganho virou decoreba? O comitê do capítulo 7 vai julgá-lo.",
-   "apoio": "Provisório: o quadro está em reconstrução.",
-   "conexao": "Escolher, votar ou corrigir: o boosting corrige em sequência",
+   "aprendizado": "Situar o capítulo: o candidato do comitê perde ordenação fora do treino, e o capítulo monta o boosting à mão, roda na carteira e mostra o que o comitê precisa conferir.",
+   "apoio": "Leia o gancho (AUC no treino e na validação), as três escalas do caso e as quatro perguntas; os números de slide levam a cada trecho.",
+   "conexao": "Antes de qualquer fórmula: três maneiras de juntar árvores, e só uma usa o erro da anterior.",
    "guia": {
-    "funcao": "Provisório.",
-    "pre": "Capítulo 5.",
-    "conducao": "Provisório.",
-    "leitura": "Provisório.",
-    "pergunta": "Provisório.",
-    "resposta": "Provisório.",
-    "erros": [],
-    "interacao": "Provisório.",
-    "verificacao": "Provisório.",
-    "transicao": "Escolher, votar ou corrigir: o boosting corrige em sequência"
+    "funcao": "Abrir o capítulo com algo em jogo: um modelo que o comitê do capítulo 7 vai julgar e que ordena bem só no treino.",
+    "pre": "Capítulo 5 (árvores de decisão) e capítulo 4 (logística e log odds).",
+    "conducao": "O candidato do comitê tem 7 variáveis, 60 árvores de até 8 folhas e taxa 0,05. No treino (2.103 propostas) a AUC é 0,8196; na validação (760 propostas de safras seguintes), 0,6476: 0,1720 a menos. Apresente as três escalas do caso: 16 propostas para fazer o algoritmo à mão (slides 2 a 10), 2.103 propostas do treino (1.472 de ajuste e 631 de validação) para rodá-lo de verdade (slides 11 a 20) e o candidato (slide 21). As quatro perguntas organizam o percurso. A janela fora do tempo só abre no capítulo 7.",
+    "leitura": "À esquerda, a AUC do candidato no treino e na validação, com o acaso em 0,5; abaixo, as três escalas. À direita, as quatro perguntas com os slides de cada uma; tracejado é aprofundamento.",
+    "pergunta": "Se o treino tem AUC de 0,82, por que o comitê não aprova o modelo só com esse número?",
+    "resposta": "Porque o treino é a amostra em que o modelo foi ajustado: na validação a AUC cai para 0,6476. O que vale para a decisão é o desempenho em propostas que o modelo não viu.",
+    "erros": [
+     {
+      "alt": "Ler 0,8196 como a qualidade do modelo",
+      "confusao": "Confunde ajuste com desempenho fora da amostra.",
+      "intervencao": "Aponte a linha que desce até a validação e pergunte quantas propostas cada número usa."
+     },
+     {
+      "alt": "Achar que a queda prova que o boosting não serve",
+      "confusao": "Toma um diagnóstico por veredito; a complexidade é escolhida na validação (slide 15).",
+      "intervencao": "Mostre que o capítulo termina com uma lista de provas, não com uma rejeição."
+     }
+    ],
+    "interacao": "Slide de consulta: os números de slide e as três escalas são links no mesmo modo (apresentação ou estudo); na sessão ao vivo viram texto. Não há estado para restaurar.",
+    "verificacao": "O aluno diz as três escalas do caso e onde o capítulo usa cada uma.",
+    "transicao": "Para entender onde o ganho vira decoreba, primeiro o mecanismo: escolher, votar ou corrigir."
    },
    "html": "<div class=\"nv nv-episodio\"><div class=\"nv-episodio-num\"><small>capítulo</small><strong>06</strong></div><div class=\"nv-episodio-main\"><div class=\"rot\">O desafio deste capítulo</div><h3>Um modelo fraco corrige o erro deixado pelo anterior.</h3><p>O boosting começa com um palpite simples e soma pequenas correções: a previsão é a soma, não uma árvore isolada.</p><div class=\"nv-episodio-rota\"><button type=\"button\" data-v13-episodio=\"0\" data-detalhe=\"O primeiro valor ignora todas as variáveis.\" class=\"ativo\"><b>1. Palpite</b>comece aqui</button><button type=\"button\" data-v13-episodio=\"1\" data-detalhe=\"O erro vira o alvo da próxima árvore.\" class=\"\"><b>2. Resíduo</b>ver etapa</button><button type=\"button\" data-v13-episodio=\"2\" data-detalhe=\"A taxa de aprendizagem controla cada correção.\" class=\"\"><b>3. Soma</b>ver etapa</button></div><div class=\"nv-episodio-detalhe\" id=\"v13-episodio-detalhe\">O primeiro valor ignora todas as variáveis.</div></div></div>",
    "text": "CAPÍTULO\n06\nO DESAFIO DESTE CAPÍTULO\nUm modelo fraco corrige o erro deixado pelo anterior.\n\nO boosting começa com um palpite simples e soma pequenas correções: a previsão é a soma, não uma árvore isolada.\n\n1. Palpite\ncomece aqui\n2. Resíduo\nver etapa\n3. Soma\nver etapa\nO primeiro valor ignora todas as variáveis.",
@@ -6646,20 +6657,31 @@
     "disc": 1
    },
    "origem": "esq",
-   "aprendizado": "Três maneiras de combinar árvores; só uma usa o erro da anterior.",
-   "apoio": "Provisório: o quadro está em reconstrução.",
-   "conexao": "O palpite inicial são as log odds da carteira",
+   "aprendizado": "Distinguir escolher uma árvore, votar com árvores em paralelo e corrigir com árvores em sequência, e reconhecer que só o boosting usa o erro da árvore anterior.",
+   "apoio": "Preveja o que acontece com a log loss de treino de 1 a 20 árvores; depois mova o número de árvores e compare votar e corrigir, olhando o alvo da árvore na proposta #3.",
+   "conexao": "A sequência precisa de um ponto de partida: o palpite inicial.",
    "guia": {
-    "funcao": "Provisório.",
-    "pre": "Slide 1.",
-    "conducao": "Provisório.",
-    "leitura": "Provisório.",
-    "pergunta": "Provisório.",
-    "resposta": "Provisório.",
-    "erros": [],
-    "interacao": "Provisório.",
-    "verificacao": "Provisório.",
-    "transicao": "O palpite inicial são as log odds da carteira"
+    "funcao": "Mostrar com as 16 propostas que só corrigir em sequência continua reduzindo o erro de treino, porque cada árvore mira o que sobrou.",
+    "pre": "Slide 1 (o caso) e o capítulo 5 (a árvore de profundidade 2).",
+    "conducao": "Escolher: uma árvore de profundidade 2 no default dá log loss de 0,173. Votar: árvores em amostras sorteadas com reposição (semente 20260502); com uma árvore a log loss não tem limite (a amostra deu PD 0% a um default); com 20 árvores fica em 0,237. Corrigir: cada árvore ajusta o erro que sobrou; a log loss vai de 0,452 com uma árvore a 0,030 com 20. Peça a previsão antes de abrir as curvas. Depois, mostre o alvo da árvore na proposta #3: em votar é sempre y = 0; em corrigir encolhe de −0,50 para −0,01. Feche com o alerta: com 20 árvores, #1 e #2, vizinhas no plano, terminam com 7% e 93%: nas 16 isso já é decorar.",
+    "leitura": "Log loss de treino conforme as árvores se somam: escolher como referência tracejada, votar em quadrados, corrigir em círculos.",
+    "pergunta": "Por que votar não continua caindo com mais árvores?",
+    "resposta": "Porque todas as árvores olham o mesmo y em amostras parecidas e repetem o mesmo erro; a média reduz a variância, não o erro comum.",
+    "erros": [
+     {
+      "alt": "Cai nas duas: mais árvores, menos erro",
+      "confusao": "Confunde votar com corrigir.",
+      "intervencao": "Mostre o alvo da árvore na proposta #3: em votar ele não muda."
+     },
+     {
+      "alt": "Votar cai mais, porque cada árvore vê outra amostra",
+      "confusao": "Confunde reduzir variância com reduzir o erro que todas cometem.",
+      "intervencao": "Leve o controle a 20 e compare as duas curvas."
+     }
+    ],
+    "interacao": "Previsão com retorno por alternativa e Tentar outra; as curvas de 2 a 20 árvores e o controle abrem só no acerto. Restaurar volta à previsão em aberto.",
+    "verificacao": "O aluno diz o que a segunda árvore ajusta em cada estratégia.",
+    "transicao": "Corrigir parte de um palpite: qual número único dar a todas as propostas?"
    },
    "html": "<div class=\"nv\"><div class=\"nv-strategy\"><div><div class=\"nv-mini-models\"><i>M1</i><i class=\"active\">M2</i><i>M3</i></div><h3>Selecionar um</h3><p>Treinar candidatos e ficar com o vencedor.</p></div><div><div class=\"nv-mini-models\"><i>M1</i><i>M2</i><i>M3</i><i class=\"sum\">média</i></div><h3>Combinar em paralelo</h3><p>Modelos independentes votam ou têm suas previsões médias.</p></div><div><div class=\"nv-mini-models\"><i class=\"active\">F₀</i><i>+h₁</i><i>+h₂</i><i class=\"sum\">F</i></div><h3>Corrigir em sequência</h3><p>Cada modelo nasce depois de observar o erro do anterior.</p></div></div>\n   <div class=\"nv-demo\"><div class=\"nv-demo-nav\"><button data-bstep=\"0\" class=\"ativo\">0. Palpite</button><button data-bstep=\"1\" class=\"\">1. Árvore 1</button><button data-bstep=\"2\" class=\"\">2. Árvore 2</button><button data-bstep=\"3\" class=\"\">3. Árvore 3</button><button data-bstep=\"4\" class=\"\">4. Árvore 4</button></div><div class=\"nv-demo-scene\" id=\"nv-bscene\"><div><small>previsão para x = 8</small><div class=\"number\">6,50</div><h3>Começamos simples</h3><p>Para o caso x = 8, o modelo inicial prevê 6,50; o observado é 12,00.</p></div><div><small>erro absoluto restante</small><div class=\"error\"><i style=\"width:100%\"></i></div><p style=\"margin-top:8px\"><b>5,50</b> até o observado 12,00</p></div></div></div></div>",
    "text": "M1\nM2\nM3\nSelecionar um\n\nTreinar candidatos e ficar com o vencedor.\n\nM1\nM2\nM3\nmédia\nCombinar em paralelo\n\nModelos independentes votam ou têm suas previsões médias.\n\nF₀\n+h₁\n+h₂\nF\nCorrigir em sequência\n\nCada modelo nasce depois de observar o erro do anterior.\n\n0. Palpite\n1. Árvore 1\n2. Árvore 2\n3. Árvore 3\n4. Árvore 4\nprevisão para x = 8\n6,50\nComeçamos simples\n\nPara o caso x = 8, o modelo inicial prevê 6,50; o observado é 12,00.\n\nerro absoluto restante\n\n5,50 até o observado 12,00",
@@ -6715,20 +6737,31 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Dezesseis propostas, as mesmas dos capítulos 4 e 5, e um único número para todas.",
-   "apoio": "Provisório: o quadro está em reconstrução.",
-   "conexao": "O erro de cada proposta vira o alvo da próxima árvore",
+   "aprendizado": "Calcular o palpite inicial do boosting como as log odds da taxa da carteira e reconhecer que é a PD única de menor log loss.",
+   "apoio": "Escolha o palpite F₀ em log odds; depois mova a PD única e veja a perda subir dos dois lados da taxa, nas 16 propostas e no ajuste de 1.472.",
+   "conexao": "Com o palpite, cada proposta erra de um jeito: esse erro vira o alvo.",
    "guia": {
-    "funcao": "Provisório.",
-    "pre": "Slide 2.",
-    "conducao": "Provisório.",
-    "leitura": "Provisório.",
-    "pergunta": "Provisório.",
-    "resposta": "Provisório.",
-    "erros": [],
-    "interacao": "Provisório.",
-    "verificacao": "Provisório.",
-    "transicao": "O erro de cada proposta vira o alvo da próxima árvore"
+    "funcao": "Fixar o ponto de partida do boosting e a escala em que ele soma: log odds.",
+    "pre": "Slide 2 e capítulo 4 (log odds e log loss).",
+    "conducao": "Nas 16, 8 defaults: taxa de 50%, F₀ = ln(8 ÷ 8) = 0,00, perda de partida 0,693 (o ln 2). As alternativas erradas trocam a escala: 0,5 (a taxa usada como log odds) e 1 (a chance 8 ÷ 8 tomada pela log odds). Depois do acerto, mova a PD única: a log loss sobe dos dois lados de 50%. Troque para o ajuste do slide 11: 139 defaults em 1.472, taxa 9,44%, F₀ = −2,26 e perda de partida 0,313.",
+    "leitura": "Faixa das 16 propostas com a mesma barra de PD; abaixo, a log loss média em função da PD única, com o mínimo marcado na taxa.",
+    "pergunta": "Por que o palpite não é a média de y somada diretamente às log odds?",
+    "resposta": "Porque o modelo soma em log odds: o número que corresponde à taxa p̄ é ln(p̄ ÷ (1 − p̄)).",
+    "erros": [
+     {
+      "alt": "0,5: a taxa de default",
+      "confusao": "Confunde probabilidade com log odds.",
+      "intervencao": "Mostre que 0,5 em log odds é PD de 62,2%."
+     },
+     {
+      "alt": "1: as chances são de 8 para 8",
+      "confusao": "Confunde chance com log odds.",
+      "intervencao": "Escreva ln 1 = 0 no quadro."
+     }
+    ],
+    "interacao": "Previsão com retorno; a curva, o controle da PD única, a chave entre as 16 e o ajuste e a fórmula abrem no acerto. Restaurar volta às 16, PD de 30% e previsão em aberto.",
+    "verificacao": "O aluno calcula F₀ para uma carteira com 10% de default (ln(1 ÷ 9) = −2,20).",
+    "transicao": "O palpite erra cada proposta de um jeito: quanto vale esse erro?"
    },
    "html": "<div class=\"v13-interativo\"><div class=\"v13-cena\"><div class=\"v13-cena-lado\"><small>previsão inicial</small><span class=\"big\">6,5</span><p>a média dos oito valores</p></div><div class=\"v13-cena-main\"><svg viewBox=\"0 0 620 260\" role=\"img\" aria-label=\"oito pontos de regressão\" style=\"width:100%;max-height:270px\"><line x1=\"45\" y1=\"225\" x2=\"590\" y2=\"225\" stroke=\"#9AA5B2\"></line><line x1=\"45\" y1=\"20\" x2=\"45\" y2=\"225\" stroke=\"#9AA5B2\"></line><line x1=\"45\" y1=\"121\" x2=\"590\" y2=\"121\" stroke=\"var(--ouro)\" stroke-dasharray=\"7 5\"></line><circle tabindex=\"0\" role=\"button\" data-v13-xy=\"0\" cx=\"55\" cy=\"193\" r=\"9\" fill=\"var(--cap)\"></circle><text x=\"55\" y=\"245\" text-anchor=\"middle\" font-size=\"11\">1</text><circle tabindex=\"0\" role=\"button\" data-v13-xy=\"1\" cx=\"127\" cy=\"177\" r=\"9\" fill=\"var(--cap)\"></circle><text x=\"127\" y=\"245\" text-anchor=\"middle\" font-size=\"11\">2</text><circle tabindex=\"0\" role=\"button\" data-v13-xy=\"2\" cx=\"199\" cy=\"153\" r=\"9\" fill=\"var(--cap)\"></circle><text x=\"199\" y=\"245\" text-anchor=\"middle\" font-size=\"11\">3</text><circle tabindex=\"0\" role=\"button\" data-v13-xy=\"3\" cx=\"271\" cy=\"145\" r=\"9\" fill=\"var(--cap)\"></circle><text x=\"271\" y=\"245\" text-anchor=\"middle\" font-size=\"11\">4</text><circle tabindex=\"0\" role=\"button\" data-v13-xy=\"4\" cx=\"343\" cy=\"97\" r=\"9\" fill=\"var(--cap)\"></circle><text x=\"343\" y=\"245\" text-anchor=\"middle\" font-size=\"11\">5</text><circle tabindex=\"0\" role=\"button\" data-v13-xy=\"5\" cx=\"415\" cy=\"89\" r=\"9\" fill=\"var(--cap)\"></circle><text x=\"415\" y=\"245\" text-anchor=\"middle\" font-size=\"11\">6</text><circle tabindex=\"0\" role=\"button\" data-v13-xy=\"6\" cx=\"487\" cy=\"81\" r=\"9\" fill=\"var(--cap)\"></circle><text x=\"487\" y=\"245\" text-anchor=\"middle\" font-size=\"11\">7</text><circle tabindex=\"0\" role=\"button\" data-v13-xy=\"7\" cx=\"559\" cy=\"33\" r=\"9\" fill=\"var(--cap)\"></circle><text x=\"559\" y=\"245\" text-anchor=\"middle\" font-size=\"11\">8</text><text x=\"590\" y=\"114\" text-anchor=\"end\" font-size=\"11\">F₀ = 6,5</text></svg></div></div><div class=\"v13-alerta\" id=\"v13-xy-out\"><b>Escolha um ponto.</b> O erro é y − 6,5 nesta primeira rodada.</div></div>",
    "text": "previsão inicial\n6,5\n\na média dos oito valores\n\n1\n2\n3\n4\n5\n6\n7\n8\nF₀ = 6,5\nEscolha um ponto. O erro é y − 6,5 nesta primeira rodada.",
@@ -6753,20 +6786,31 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Em log loss, menos o gradiente na escala de log odds é y − p.",
-   "apoio": "Provisório: o quadro está em reconstrução.",
-   "conexao": "A primeira árvore separa onde o palpite errou",
+   "aprendizado": "Derivar o pseudo-resíduo da log loss na escala de log odds, y − p, e calculá-lo para cada proposta.",
+   "apoio": "Preveja o erro de cada proposta no palpite F₀ = 0; depois mova o palpite comum e veja as inclinações e os 16 resíduos mudarem. A derivação está na expansão.",
+   "conexao": "Esses 16 números são o que a primeira árvore vai ajustar.",
    "guia": {
-    "funcao": "Provisório.",
-    "pre": "Slide 3.",
-    "conducao": "Provisório.",
-    "leitura": "Provisório.",
-    "pergunta": "Provisório.",
-    "resposta": "Provisório.",
-    "erros": [],
-    "interacao": "Provisório.",
-    "verificacao": "Provisório.",
-    "transicao": "A primeira árvore separa onde o palpite errou"
+    "funcao": "Mostrar que o alvo do boosting é menos o gradiente da perda em F, que na log loss é y − p.",
+    "pre": "Slide 3 (F₀ e log loss).",
+    "conducao": "No palpite F₀ = 0 (PD 50%), a inclinação da perda é −0,50 num default e +0,50 num adimplente; o resíduo é o oposto: +0,50 e −0,50 para as 16. As alternativas erradas são o próprio y (o votar do slide 2) e a perda de cada uma (ln 2, igual para todas). Depois, use o atalho do F₀ do ajuste (−2,26, PD 9,4%): o default passa a erro +0,91 e o adimplente −0,09. Abra a derivação: dℓ/dF = p − y, logo −dℓ/dF = y − p.",
+    "leitura": "Em cima, a perda de um default e de um adimplente em função de F, com as tangentes no palpite; embaixo, a barra do erro de cada proposta.",
+    "pergunta": "Por que um default com PD de 9,4% tem erro maior que um com PD de 50%?",
+    "resposta": "Porque y − p = 0,91 contra 0,50: o palpite subestimou mais o primeiro, e a perda dele é mais inclinada.",
+    "erros": [
+     {
+      "alt": "1 num default e 0 num adimplente",
+      "confusao": "Confunde o alvo com o default.",
+      "intervencao": "Volte ao slide 2: árvores no y são o votar."
+     },
+     {
+      "alt": "0,693 nas 16: a perda de cada uma",
+      "confusao": "Confunde a perda com a inclinação dela.",
+      "intervencao": "Aponte a tangente: o resíduo é a inclinação com sinal trocado."
+     }
+    ],
+    "interacao": "Previsão com retorno; as barras, as tangentes, o controle do palpite, os dois atalhos e a derivação abrem no acerto. Restaurar volta a F₀ = 0 e à previsão em aberto.",
+    "verificacao": "O aluno calcula y − p para um adimplente com PD de 20% (−0,20).",
+    "transicao": "A primeira árvore agrupa propostas com erros parecidos."
    },
    "html": "<div class=\"palcoflex\" data-colunas=\"dados\"><div class=\"esq\" style=\"flex: 0.56 1 0px;\"><div class=\"painel\">\n   <div class=\"rot\">Candidatos a palpite constante</div>\n   <div class=\"rolax\" data-exploravel=\"tabela\"><table style=\"margin-top:7px\"><thead><tr><th>Constante</th><th>Erro quadrático médio</th></tr></thead><tbody>\n    <tr>\n     <th scope=\"row\">4,00</th><td class=\"num\" style=\"font-weight:400\">16,43750</td></tr><tr>\n     <th scope=\"row\">5,50</th><td class=\"num\" style=\"font-weight:400\">11,18750</td></tr><tr style=\"background:#FBF3DE\">\n     <th scope=\"row\">6,50</th><td class=\"num\" style=\"font-weight:700\">10,18750</td></tr><tr>\n     <th scope=\"row\">7,50</th><td class=\"num\" style=\"font-weight:400\">11,18750</td></tr><tr>\n     <th scope=\"row\">9,00</th><td class=\"num\" style=\"font-weight:400\">16,43750</td></tr>\n   </tbody></table></div>\n   <div class=\"formula\" style=\"margin-top:10px\" data-original=\"F₀ = média de y = 6,500 · MSE inicial = 10,18750\" data-latex=\"F_0=\\bar y=6{,}500,\\qquad MSE_0=10{,}18750\" role=\"math\" aria-label=\"F₀ = média de y = 6,500 · MSE inicial = 10,18750\"></div>\n   <p class=\"nota\" style=\"margin-top:9px\">Confere com o gerador em Python: 10,1875.\n   <span class=\"selo s-rec\">Recalculado aqui</span></p></div>\n   <div class=\"revelacao\" style=\"margin-top:10px\"><h4>A quarta aparição do mesmo resultado</h4>\n   Capítulo 2, PD constante de um grupo. Capítulo 5, valor de uma folha. Aqui, ponto de partida do\n   boosting. Em log loss o melhor constante é a proporção; em erro quadrático é a média. O princípio é\n   o mesmo: o melhor constante é o que minimiza o critério escolhido.</div>\n   </div><div class=\"dir\" style=\"flex: 0.44 1 0px;\"><div class=\"svgfit\" data-exploravel=\"grafico\"><svg viewBox=\"0 0 600 360\" role=\"img\" aria-label=\"y por x\" style=\"font-family:system-ui,sans-serif\"><line x1=\"62\" y1=\"314.0\" x2=\"582\" y2=\"314.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"318.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,0</text><line x1=\"62\" y1=\"243.0\" x2=\"582\" y2=\"243.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"247.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">3,5</text><line x1=\"62\" y1=\"172.0\" x2=\"582\" y2=\"172.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"176.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">7,0</text><line x1=\"62\" y1=\"101.0\" x2=\"582\" y2=\"101.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"105.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">10,5</text><line x1=\"62\" y1=\"30.0\" x2=\"582\" y2=\"30.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"34.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">14,0</text><line x1=\"62\" y1=\"30\" x2=\"62\" y2=\"314\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <line x1=\"62\" y1=\"314\" x2=\"582\" y2=\"314\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <text transform=\"translate(12,172) rotate(-90)\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">y</text>\n   <text x=\"322\" y=\"355\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">x</text><text x=\"94.5\" y=\"330\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">1</text><text x=\"159.5\" y=\"330\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">2</text><text x=\"224.5\" y=\"330\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">3</text><text x=\"289.5\" y=\"330\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">4</text><text x=\"354.5\" y=\"330\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">5</text><text x=\"419.5\" y=\"330\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">6</text><text x=\"484.5\" y=\"330\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">7</text><text x=\"549.5\" y=\"330\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">8</text><line x1=\"66\" y1=\"15\" x2=\"82\" y2=\"15\" stroke=\"#C9A84C\" stroke-width=\"2.5\"></line>\n      <text x=\"87\" y=\"18\" font-size=\"11.5\" fill=\"#333\">F₀ = média</text><path d=\"M62.0 182.1L582.0 182.1\" fill=\"none\" stroke=\"#C9A84C\" stroke-width=\"3\" stroke-linejoin=\"round\"></path><line x1=\"94.5\" y1=\"182.1\" x2=\"94.5\" y2=\"273.4\" stroke=\"#3D5A8A\" stroke-width=\"2\"></line>\n      <circle cx=\"94.5\" cy=\"182.1\" r=\"3.4\" fill=\"#3D5A8A\"></circle>\n      <circle cx=\"94.5\" cy=\"273.4\" r=\"3.4\" fill=\"#3D5A8A\"></circle>\n      <line x1=\"159.5\" y1=\"182.1\" x2=\"159.5\" y2=\"253.1\" stroke=\"#3D5A8A\" stroke-width=\"2\"></line>\n      <circle cx=\"159.5\" cy=\"182.1\" r=\"3.4\" fill=\"#3D5A8A\"></circle>\n      <circle cx=\"159.5\" cy=\"253.1\" r=\"3.4\" fill=\"#3D5A8A\"></circle>\n      <line x1=\"224.5\" y1=\"182.1\" x2=\"224.5\" y2=\"222.7\" stroke=\"#3D5A8A\" stroke-width=\"2\"></line>\n      <circle cx=\"224.5\" cy=\"182.1\" r=\"3.4\" fill=\"#3D5A8A\"></circle>\n      <circle cx=\"224.5\" cy=\"222.7\" r=\"3.4\" fill=\"#3D5A8A\"></circle>\n      <line x1=\"289.5\" y1=\"182.1\" x2=\"289.5\" y2=\"212.6\" stroke=\"#3D5A8A\" stroke-width=\"2\"></line>\n      <circle cx=\"289.5\" cy=\"182.1\" r=\"3.4\" fill=\"#3D5A8A\"></circle>\n      <circle cx=\"289.5\" cy=\"212.6\" r=\"3.4\" fill=\"#3D5A8A\"></circle>\n      <line x1=\"354.5\" y1=\"182.1\" x2=\"354.5\" y2=\"151.7\" stroke=\"#8C2332\" stroke-width=\"2\"></line>\n      <circle cx=\"354.5\" cy=\"182.1\" r=\"3.4\" fill=\"#8C2332\"></circle>\n      <circle cx=\"354.5\" cy=\"151.7\" r=\"3.4\" fill=\"#8C2332\"></circle>\n      <line x1=\"419.5\" y1=\"182.1\" x2=\"419.5\" y2=\"141.6\" stroke=\"#8C2332\" stroke-width=\"2\"></line>\n      <circle cx=\"419.5\" cy=\"182.1\" r=\"3.4\" fill=\"#8C2332\"></circle>\n      <circle cx=\"419.5\" cy=\"141.6\" r=\"3.4\" fill=\"#8C2332\"></circle>\n      <line x1=\"484.5\" y1=\"182.1\" x2=\"484.5\" y2=\"131.4\" stroke=\"#8C2332\" stroke-width=\"2\"></line>\n      <circle cx=\"484.5\" cy=\"182.1\" r=\"3.4\" fill=\"#8C2332\"></circle>\n      <circle cx=\"484.5\" cy=\"131.4\" r=\"3.4\" fill=\"#8C2332\"></circle>\n      <line x1=\"549.5\" y1=\"182.1\" x2=\"549.5\" y2=\"70.6\" stroke=\"#8C2332\" stroke-width=\"2\"></line>\n      <circle cx=\"549.5\" cy=\"182.1\" r=\"3.4\" fill=\"#8C2332\"></circle>\n      <circle cx=\"549.5\" cy=\"70.6\" r=\"3.4\" fill=\"#8C2332\"></circle>\n      <circle cx=\"94.5\" cy=\"273.4\" r=\"5.5\" fill=\"#00205B\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"159.5\" cy=\"253.1\" r=\"5.5\" fill=\"#00205B\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"224.5\" cy=\"222.7\" r=\"5.5\" fill=\"#00205B\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"289.5\" cy=\"212.6\" r=\"5.5\" fill=\"#00205B\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"354.5\" cy=\"151.7\" r=\"5.5\" fill=\"#00205B\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"419.5\" cy=\"141.6\" r=\"5.5\" fill=\"#00205B\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"484.5\" cy=\"131.4\" r=\"5.5\" fill=\"#00205B\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"549.5\" cy=\"70.6\" r=\"5.5\" fill=\"#00205B\" stroke=\"#fff\" stroke-width=\"1.6\"></circle></svg></div>\n   <p class=\"nota\" style=\"margin-top:8px\">Cada segmento vertical é o resíduo de um ponto: a distância\n   entre o observado e o palpite. Em vermelho, o palpite ficou baixo. Em azul, ficou alto.</p></div></div>",
    "text": "CANDIDATOS A PALPITE CONSTANTE\nConstante\tErro quadrático médio\n4,00\t16,43750\n5,50\t11,18750\n6,50\t10,18750\n7,50\t11,18750\n9,00\t16,43750\n\nConfere com o gerador em Python: 10,1875. RECALCULADO AQUI\n\nA quarta aparição do mesmo resultado\nCapítulo 2, PD constante de um grupo. Capítulo 5, valor de uma folha. Aqui, ponto de partida do boosting. Em log loss o melhor constante é a proporção; em erro quadrático é a média. O princípio é o mesmo: o melhor constante é o que minimiza o critério escolhido.\n0,0\n3,5\n7,0\n10,5\n14,0\ny\nx\n1\n2\n3\n4\n5\n6\n7\n8\nF₀ = média\n\nCada segmento vertical é o resíduo de um ponto: a distância entre o observado e o palpite. Em vermelho, o palpite ficou baixo. Em azul, ficou alto.",
@@ -6791,20 +6835,31 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Ela não prevê default: prevê o erro, e agrupa propostas com erros parecidos.",
-   "apoio": "Provisório: o quadro está em reconstrução.",
-   "conexao": "O valor da folha é um passo de Newton, não a média do erro",
+   "aprendizado": "Ajustar a primeira árvore de regressão aos resíduos: escolher o corte que mais reduz o erro quadrático e ler as folhas.",
+   "apoio": "Preveja o primeiro corte; depois percorra os cortes de cada variável e veja o erro quadrático restante; cresça o segundo nível e leia quem cai em cada folha.",
+   "conexao": "A folha guarda a média do erro; o valor que ela soma às log odds é outro.",
    "guia": {
-    "funcao": "Provisório.",
-    "pre": "Slide 4.",
-    "conducao": "Provisório.",
-    "leitura": "Provisório.",
-    "pergunta": "Provisório.",
-    "resposta": "Provisório.",
-    "erros": [],
-    "interacao": "Provisório.",
-    "verificacao": "Provisório.",
-    "transicao": "O valor da folha é um passo de Newton, não a média do erro"
+    "funcao": "Mostrar que a árvore do boosting prevê o erro, não o default, e agrupa erros parecidos.",
+    "pre": "Slide 4 (os resíduos) e capítulo 5 (corte por redução de impureza).",
+    "conducao": "Erro quadrático dos resíduos no palpite: 4,00. Utilização ≤ 57,5% deixa 1,75, o menor entre os 18 cortes possíveis; o melhor de atraso (≤ 15 dias) deixa 3,43; utilização ≤ 27,5% isola #1 e #2, que têm erros opostos, e não reduz nada (4,00). No segundo nível: A = #1 e #2 (média 0), B = #3 a #8 (−0,50), C = #9 a #14 (+0,50), D = #15 e #16 (0); erro quadrático 1,00. O mínimo de 2 por folha é o que deixa A e D com duas propostas.",
+    "leitura": "Plano utilização por atraso com o erro de cada proposta; o corte divide o plano e as quatro folhas aparecem como faixas com a média do erro.",
+    "pergunta": "Por que a folha A tem média zero se #2 deu default?",
+    "resposta": "Porque #1 (adimplente) e #2 (default) têm erros +0,5 e −0,5, que se cancelam: a folha não tem nada a corrigir.",
+    "erros": [
+     {
+      "alt": "Atraso ≤ 15 dias: atraso é o sinal clássico",
+      "confusao": "Toma a intuição de crédito pelo critério da árvore.",
+      "intervencao": "Mova para Atraso e compare o erro restante com o de utilização."
+     },
+     {
+      "alt": "Utilização ≤ 27,5%, isolando #1 e #2",
+      "confusao": "Acha que isolar propostas reduz o erro mesmo com erros opostos.",
+      "intervencao": "Mostre as duas médias, ambas zero."
+     }
+    ],
+    "interacao": "Previsão com retorno; o seletor de variável, o controle do corte e o botão Crescer o segundo nível abrem no acerto. Restaurar volta à previsão em aberto.",
+    "verificacao": "O aluno explica por que o primeiro corte é em utilização e não em atraso.",
+    "transicao": "Cada folha precisa de um número para somar às log odds: a média do erro não serve."
    },
    "html": "<div class=\"nv\"><div class=\"nv-residual-case\"><div class=\"nv-value\"><small>observado em x = 8</small><span class=\"big\">12,00</span></div><div class=\"nv-minus\">−</div><div class=\"nv-value gold\"><small>previsão atual</small><span class=\"big\">6,50</span></div></div>\n   <div class=\"nv-caption\"><b>De onde vem 6,50</b><span>y = 2,0 · 3,0 · 4,5 · 5,0 · 8,0 · 8,5 · 9,0 · 12,0. Soma 52,0 ÷ 8 = <strong>6,50</strong>. F₀ é a média porque o critério é erro quadrático, o mesmo argumento que dá o valor da folha no capítulo 5.</span></div>\n   <div class=\"nv-caption\"><b>Novo alvo do caso</b><span><strong>resíduo = +5,50</strong>. Sinal positivo: a previsão precisa subir; sinal negativo: precisa descer.</span></div>\n   <div class=\"nv-caption\"><b>Resíduo não é erro final</b><span>+5,50 é o que falta <strong>agora</strong>, com uma única previsão na mesa. Depois das quatro árvores esse caso erra 1,14. Resíduo é sempre relativo ao modelo do momento e muda a cada árvore acrescentada.</span></div>\n   <div class=\"nv-residual-bars\" aria-label=\"Resíduos positivos e negativos de oito casos\"><i style=\"--h:58px;--c:#3D5A8A;--side:end;--label:-18px\" data-v=\"−4,5\" data-x=\"x=1\"></i><i style=\"--h:46px;--c:#3D5A8A;--side:end;--label:-18px\" data-v=\"−3,5\" data-x=\"x=2\"></i><i style=\"--h:30px;--c:#3D5A8A;--side:end;--label:-18px\" data-v=\"−2,0\" data-x=\"x=3\"></i><i style=\"--h:24px;--c:#3D5A8A;--side:end;--label:-18px\" data-v=\"−1,5\" data-x=\"x=4\"></i><i style=\"--h:24px;--c:#8C2332;--side:start;--label:calc(100% + 5px);--xlabel:calc(100% + 24px)\" data-v=\"+1,5\" data-x=\"x=5\"></i><i style=\"--h:30px;--c:#8C2332;--side:start;--label:calc(100% + 5px);--xlabel:calc(100% + 24px)\" data-v=\"+2,0\" data-x=\"x=6\"></i><i style=\"--h:38px;--c:#8C2332;--side:start;--label:calc(100% + 5px);--xlabel:calc(100% + 24px)\" data-v=\"+2,5\" data-x=\"x=7\"></i><i style=\"--h:70px;--c:#8C2332;--side:start;--label:calc(100% + 5px);--xlabel:calc(100% + 24px)\" data-v=\"+5,5\" data-x=\"x=8\"></i></div></div>",
    "text": "observado em x = 8\n12,00\n−\nprevisão atual\n6,50\nDe onde vem 6,50\ny = 2,0 · 3,0 · 4,5 · 5,0 · 8,0 · 8,5 · 9,0 · 12,0. Soma 52,0 ÷ 8 = 6,50. F₀ é a média porque o critério é erro quadrático, o mesmo argumento que dá o valor da folha no capítulo 5.\nNovo alvo do caso\nresíduo = +5,50. Sinal positivo: a previsão precisa subir; sinal negativo: precisa descer.\nResíduo não é erro final\n+5,50 é o que falta agora, com uma única previsão na mesa. Depois das quatro árvores esse caso erra 1,14. Resíduo é sempre relativo ao modelo do momento e muda a cada árvore acrescentada.",
@@ -6829,20 +6884,31 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "A soma dos erros dividida pela soma de p(1 − p): é o que o scikit-learn usa.",
-   "apoio": "Provisório: o quadro está em reconstrução.",
-   "conexao": "Somar só um pedaço da correção: a taxa de aprendizagem",
+   "aprendizado": "Calcular o valor da folha pelo passo de Newton, Σ r ÷ Σ p(1 − p), e explicar por que não é a média do resíduo.",
+   "apoio": "Preveja o valor da folha B; depois troque de folha, mova o valor somado e compare a média com o passo de Newton na tabela.",
+   "conexao": "Somar o passo inteiro ou só uma fração: a taxa de aprendizagem.",
    "guia": {
-    "funcao": "Provisório.",
-    "pre": "Slide 5.",
-    "conducao": "Provisório.",
-    "leitura": "Provisório.",
-    "pergunta": "Provisório.",
-    "resposta": "Provisório.",
-    "erros": [],
-    "interacao": "Provisório.",
-    "verificacao": "Provisório.",
-    "transicao": "Somar só um pedaço da correção: a taxa de aprendizagem"
+    "funcao": "Mostrar que o valor da folha é o mínimo da aproximação de segunda ordem da perda, o mesmo que o scikit-learn usa.",
+    "pre": "Slide 5 (as folhas e a média do erro).",
+    "conducao": "Folha B: seis adimplentes, erro −0,5 cada, p = 50%. Média do erro −0,50; Newton −3,0 ÷ (6 × 0,25) = −2,00. Somada às log odds, a média leva a PD de 50% a 37,8% e a perda da folha de 4,16 a 2,84; Newton leva a 11,9% e 0,76. O mínimo exato da perda numa folha pura foge para menos infinito; o passo de Newton para no mínimo da parábola. A biblioteca reproduz as folhas do GradientBoostingClassifier do scikit-learn (teste automático). Nas folhas A e D os erros se cancelam e as duas regras dão zero.",
+    "leitura": "Perda da folha em função do valor somado, com a parábola de segunda ordem, o passo de Newton e a média marcados; tabela com Σ r, Σ p(1 − p), média e Newton das quatro folhas.",
+    "pergunta": "Por que dividir por p(1 − p)?",
+    "resposta": "Porque p(1 − p) é quanto a PD anda por unidade de log odds: a divisão leva o erro, que está em probabilidade, para a escala de F.",
+    "erros": [
+     {
+      "alt": "−0,50: a média do erro",
+      "confusao": "Confunde a escala de probabilidade com a de log odds.",
+      "intervencao": "Mostre a PD que a média produz: 37,8%, longe dos 0% observados."
+     },
+     {
+      "alt": "Menos infinito: a folha só tem adimplentes",
+      "confusao": "Confunde o mínimo exato da perda com o passo de Newton.",
+      "intervencao": "Aponte a parábola e o mínimo dela."
+     }
+    ],
+    "interacao": "Previsão com retorno; a parábola, os marcadores, o seletor de folha, o controle do valor somado, a tabela e a expansão abrem no acerto. Restaurar volta à folha B e à previsão em aberto.",
+    "verificacao": "O aluno calcula o passo de Newton de uma folha com Σ r = 1,2 e Σ p(1 − p) = 0,6 (2,0).",
+    "transicao": "Somar o passo inteiro desce mais rápido no treino; por que somar só um pedaço?"
    },
    "html": "<div class=\"nv\"><div class=\"nv-split\"><div class=\"nv-split-side\"><small>casos com x ≤ 4,5</small><span class=\"big\">−2,875</span><p>o palpite está alto<br><b>corrigir para baixo</b></p></div><div class=\"nv-stump\"><b>x ≤ 4,5?</b><small>uma pergunta sobre os resíduos</small></div><div class=\"nv-split-side high\"><small>casos com x &gt; 4,5</small><span class=\"big\">+2,875</span><p>o palpite está baixo<br><b>corrigir para cima</b></p></div></div>\n   <div class=\"nv-flow\" style=\"--cols:3\"><div class=\"nv-step\" data-n=\"1\"><h3>Agrupar</h3><p>O corte reúne resíduos com direção parecida.</p></div><div class=\"nv-step gold\" data-n=\"2\"><h3>Resumir</h3><p>Cada folha guarda a correção média do grupo.</p></div><div class=\"nv-step green\" data-n=\"3\"><h3>Somar</h3><p>O palpite de cada caso anda o tamanho da folha em que ele caiu.</p></div></div>\n   <div class=\"nv-caption\"><b>Para x = 8</b><span>6,50 + 2,875 = <strong>9,375</strong>, contra 12,00 observado. A direção está certa e o erro médio cai de 10,19 para 1,92.</span></div>\n   <div class=\"revelacao ruim\" style=\"margin-top:10px\"><h4>A mesma correção cai sobre quem não precisava</h4>\n   O caso x = 5 observou 8,00 e também está do lado x &gt; 4,5. Ele sobe para 9,375 e o resíduo dele passa\n   de +1,50 para −1,375: trocou de sinal. Cinco dos oito casos trocam de sinal quando o toco inteiro é\n   somado. Somar tudo acerta na média e passa do ponto caso a caso. É esse o problema que a próxima\n   página resolve.</div></div>",
    "text": "casos com x ≤ 4,5\n−2,875\n\no palpite está alto\ncorrigir para baixo\n\nx ≤ 4,5?\numa pergunta sobre os resíduos\ncasos com x > 4,5\n+2,875\n\no palpite está baixo\ncorrigir para cima\n\nAgrupar\n\nO corte reúne resíduos com direção parecida.\n\nResumir\n\nCada folha guarda a correção média do grupo.\n\nSomar\n\nO palpite de cada caso anda o tamanho da folha em que ele caiu.\n\nPara x = 8\n6,50 + 2,875 = 9,375, contra 12,00 observado. A direção está certa e o erro médio cai de 10,19 para 1,92.\nA mesma correção cai sobre quem não precisava\nO caso x = 5 observou 8,00 e também está do lado x > 4,5. Ele sobe para 9,375 e o resíduo dele passa de +1,50 para −1,375: trocou de sinal. Cinco dos oito casos trocam de sinal quando o toco inteiro é somado. Somar tudo acerta na média e passa do ponto caso a caso. É esse o problema que a próxima página resolve.",
@@ -6867,20 +6933,31 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "No ajuste, a correção inteira desce mais rápido; a taxa pequena paga na validação.",
-   "apoio": "Provisório: o quadro está em reconstrução.",
-   "conexao": "Árvore a árvore, a perda de treino cai",
+   "aprendizado": "Ler a taxa de aprendizagem como a fração do passo somada a cada árvore e saber que, no treino, a taxa alta desce mais rápido.",
+   "apoio": "Preveja a taxa de menor perda depois da primeira árvore; depois mova a taxa e compare as curvas com η = 0,1 e η = 1.",
+   "conexao": "Com a taxa do curso, as quatro árvores uma a uma.",
    "guia": {
-    "funcao": "Provisório.",
-    "pre": "Slide 6.",
-    "conducao": "Provisório.",
-    "leitura": "Provisório.",
-    "pergunta": "Provisório.",
-    "resposta": "Provisório.",
-    "erros": [],
-    "interacao": "Provisório.",
-    "verificacao": "Provisório.",
-    "transicao": "Árvore a árvore, a perda de treino cai"
+    "funcao": "Separar o papel da taxa no ajuste (desce mais devagar) do papel fora da amostra (regulariza), que os slides 11 e 15 medem.",
+    "pre": "Slide 6 (o passo de Newton).",
+    "conducao": "Depois da primeira árvore, a log loss cai a cada aumento da taxa: 0,622 com η = 0,1, 0,452 com 0,4 e 0,268 com 1. Depois de quatro árvores, a menor perda da grade é a de η = 0,95 (0,073), seguida de η = 0,90 (0,082); com η = 1, 0,102; com 0,4, 0,217. Não diga que a correção inteira passa do ponto: no ajuste, a taxa alta desce mais rápido. A taxa pequena só se justifica em propostas que o modelo não viu (slides 11 e 15). A PD da folha B depois da primeira árvore vai a σ(−2η): 31,0% com 0,4 e 11,9% com 1.",
+    "leitura": "Log loss de treino depois de cada árvore para a taxa escolhida, com η = 0,1 e η = 1 como referência.",
+    "pergunta": "Se a taxa alta desce mais rápido, por que o curso usa 0,1 na carteira?",
+    "resposta": "Porque a escolha é feita na validação: passos pequenos espalham o ajuste por mais árvores e decoram menos (slides 11, 14 e 15).",
+    "erros": [
+     {
+      "alt": "η = 0,1: passos pequenos erram menos",
+      "confusao": "Confunde regularização com ajuste.",
+      "intervencao": "Mostre a curva de η = 0,1 lado a lado com a de η = 1."
+     },
+     {
+      "alt": "η = 0,4, a do curso: o meio-termo",
+      "confusao": "Confunde convenção com ótimo.",
+      "intervencao": "Lembre que a taxa da carteira sai da validação."
+     }
+    ],
+    "interacao": "Previsão com retorno; o controle da taxa e as curvas de referência abrem no acerto. Restaurar volta a η = 0,4 e à previsão em aberto.",
+    "verificacao": "O aluno diz em que amostra a taxa deve ser escolhida.",
+    "transicao": "Com η = 0,4, as quatro árvores nas 16 propostas."
    },
    "html": "<div class=\"palcoflex\" data-colunas=\"dados\"><div class=\"esq\" style=\"flex: 0.56 1 0px;\">\n  <div class=\"ctrl\"><label for=\"c67e\">Taxa de aprendizagem η <b id=\"c67ev\">0,50</b></label>\n   <input type=\"range\" id=\"c67e\" min=\"5\" max=\"100\" step=\"5\" value=\"50\"></div>\n  <div id=\"c67o\" style=\"margin-top:10px\"><div class=\"rolax\" data-exploravel=\"tabela\"><table>\n    <thead><tr><th>Após</th><th>Erro quadrático médio de treino</th><th>Redução acumulada</th></tr></thead><tbody>\n    <tr>\n     <th scope=\"row\">só F₀</th>\n     <td class=\"num\" style=\"font-weight:400\">10,18750</td>\n     <td class=\"num\">—</td></tr><tr>\n     <th scope=\"row\">1 árvore</th>\n     <td class=\"num\" style=\"font-weight:400\">3,98828</td>\n     <td class=\"num\">60,9%</td></tr><tr>\n     <th scope=\"row\">2 árvores</th>\n     <td class=\"num\" style=\"font-weight:400\">2,22001</td>\n     <td class=\"num\">78,2%</td></tr><tr>\n     <th scope=\"row\">3 árvores</th>\n     <td class=\"num\" style=\"font-weight:400\">0,92914</td>\n     <td class=\"num\">90,9%</td></tr><tr style=\"background:#FBF3DE\">\n     <th scope=\"row\">4 árvores</th>\n     <td class=\"num\" style=\"font-weight:700\">0,44851</td>\n     <td class=\"num\">95,6%</td></tr>\n    </tbody></table></div>\n    <div class=\"nota\" style=\"margin-top:8px\">Este é o valor usado no resto do capítulo, e o mesmo do gerador em Python: MSE final 0,4485.</div></div>\n  <div class=\"formula\" style=\"margin-top:10px\" data-original=\"F_m(x) = F_{m−1}(x) + η × h_m(x)\" data-latex=\"F_m(x)=F_{m-1}(x)+\\eta\\,h_m(x)\" role=\"math\" aria-label=\"F_m(x) = F_{m−1}(x) + η × h_m(x)\"></div>\n  <p class=\"nota\">η igual a 1 soma a árvore inteira. η igual a 0,5 soma metade dela, e o que sobra volta\n  a aparecer no resíduo seguinte, para a árvore seguinte trabalhar.</p>\n  </div><div class=\"dir\" style=\"flex: 0.44 1 0px;\"><div class=\"svgfit\" id=\"c67g\" data-exploravel=\"grafico\"><svg viewBox=\"0 0 600 360\" role=\"img\" aria-label=\"y por x\" style=\"font-family:system-ui,sans-serif\"><line x1=\"62\" y1=\"314.0\" x2=\"582\" y2=\"314.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"318.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,0</text><line x1=\"62\" y1=\"243.0\" x2=\"582\" y2=\"243.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"247.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">3,5</text><line x1=\"62\" y1=\"172.0\" x2=\"582\" y2=\"172.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"176.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">7,0</text><line x1=\"62\" y1=\"101.0\" x2=\"582\" y2=\"101.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"105.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">10,5</text><line x1=\"62\" y1=\"30.0\" x2=\"582\" y2=\"30.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"34.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">14,0</text><line x1=\"62\" y1=\"30\" x2=\"62\" y2=\"314\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <line x1=\"62\" y1=\"314\" x2=\"582\" y2=\"314\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <text transform=\"translate(12,172) rotate(-90)\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">y</text>\n   <text x=\"322\" y=\"355\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">x</text><text x=\"94.5\" y=\"330\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">1</text><text x=\"159.5\" y=\"330\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">2</text><text x=\"224.5\" y=\"330\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">3</text><text x=\"289.5\" y=\"330\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">4</text><text x=\"354.5\" y=\"330\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">5</text><text x=\"419.5\" y=\"330\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">6</text><text x=\"484.5\" y=\"330\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">7</text><text x=\"549.5\" y=\"330\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">8</text><line x1=\"66\" y1=\"15\" x2=\"82\" y2=\"15\" stroke=\"#1F6F5C\" stroke-width=\"2.5\"></line>\n      <text x=\"87\" y=\"18\" font-size=\"11.5\" fill=\"#333\">previsão após 4 árvores</text><line x1=\"252.70000000000002\" y1=\"15\" x2=\"268.70000000000005\" y2=\"15\" stroke=\"#C9A84C\" stroke-width=\"2.5\" stroke-dasharray=\"6 3\"></line>\n      <text x=\"273.70000000000005\" y=\"18\" font-size=\"11.5\" fill=\"#333\">F₀</text><path d=\"M62.0 246.5L127.0 246.5L127.0 246.5L192.0 246.5L192.0 215.8L257.0 215.8L257.0 215.8L322.0 215.8L322.0 157.5L387.0 157.5L387.0 140.7L452.0 140.7L452.0 140.7L517.0 140.7L517.0 93.6L582.0 93.6\" fill=\"none\" stroke=\"#1F6F5C\" stroke-width=\"3\" stroke-linejoin=\"round\"></path><path d=\"M62.0 182.1L582.0 182.1\" fill=\"none\" stroke=\"#C9A84C\" stroke-width=\"2\" stroke-dasharray=\"7 4\" stroke-linejoin=\"round\"></path><circle cx=\"94.5\" cy=\"273.4\" r=\"5\" fill=\"#00205B\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"159.5\" cy=\"253.1\" r=\"5\" fill=\"#00205B\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"224.5\" cy=\"222.7\" r=\"5\" fill=\"#00205B\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"289.5\" cy=\"212.6\" r=\"5\" fill=\"#00205B\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"354.5\" cy=\"151.7\" r=\"5\" fill=\"#00205B\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"419.5\" cy=\"141.6\" r=\"5\" fill=\"#00205B\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"484.5\" cy=\"131.4\" r=\"5\" fill=\"#00205B\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"549.5\" cy=\"70.6\" r=\"5\" fill=\"#00205B\" stroke=\"#fff\" stroke-width=\"1.6\"></circle></svg></div>\n  <div class=\"revelacao\" style=\"margin-top:10px\"><h4>Por que não somar tudo</h4>\n  Com η igual a 1, a primeira árvore define quase todo o modelo e as seguintes trabalham sobre um resíduo\n  já pequeno e ruidoso. Com η pequeno, nenhuma árvore isolada domina, e o conjunto depende menos de qual\n  corte a primeira encontrou. É o mesmo argumento de estabilidade do capítulo 5.</div>\n  <div class=\"nota\" style=\"margin-top:9px\">Com quatro árvores fixas, η menor produz erro maior. Isso não\n  contradiz o parágrafo acima: η pequeno exige mais árvores. A relação entre os dois é o assunto da\n  página 16.</div></div></div>",
    "text": "Taxa de aprendizagem η\n0,50\nApós\tErro quadrático médio de treino\tRedução acumulada\nsó F₀\t10,18750\t—\n1 árvore\t3,98828\t60,9%\n2 árvores\t2,22001\t78,2%\n3 árvores\t0,92914\t90,9%\n4 árvores\t0,44851\t95,6%\nEste é o valor usado no resto do capítulo, e o mesmo do gerador em Python: MSE final 0,4485.\n\nη igual a 1 soma a árvore inteira. η igual a 0,5 soma metade dela, e o que sobra volta a aparecer no resíduo seguinte, para a árvore seguinte trabalhar.\n\n0,0\n3,5\n7,0\n10,5\n14,0\ny\nx\n1\n2\n3\n4\n5\n6\n7\n8\nprevisão após 4 árvores\nF₀\nPor que não somar tudo\nCom η igual a 1, a primeira árvore define quase todo o modelo e as seguintes trabalham sobre um resíduo já pequeno e ruidoso. Com η pequeno, nenhuma árvore isolada domina, e o conjunto depende menos de qual corte a primeira encontrou. É o mesmo argumento de estabilidade do capítulo 5.\nCom quatro árvores fixas, η menor produz erro maior. Isso não contradiz o parágrafo acima: η pequeno exige mais árvores. A relação entre os dois é o assunto da página 16.",
@@ -6912,20 +6989,31 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Quatro correções nas dezesseis propostas, com a PD de cada uma se movendo.",
-   "apoio": "Provisório: o quadro está em reconstrução.",
-   "conexao": "A PD final se decompõe em parcelas rastreáveis",
+   "aprendizado": "Acompanhar a PD de uma proposta árvore a árvore e ver que a perda média cai mesmo quando a PD de um default recua.",
+   "apoio": "Preveja se a PD de todo default sobe a cada árvore; depois avance as árvores e acompanhe uma proposta do palpite à quarta árvore.",
+   "conexao": "A PD final como soma de parcelas rastreáveis.",
    "guia": {
-    "funcao": "Provisório.",
-    "pre": "Slide 7.",
-    "conducao": "Provisório.",
-    "leitura": "Provisório.",
-    "pergunta": "Provisório.",
-    "resposta": "Provisório.",
-    "erros": [],
-    "interacao": "Provisório.",
-    "verificacao": "Provisório.",
-    "transicao": "A PD final se decompõe em parcelas rastreáveis"
+    "funcao": "Fechar a mecânica nas 16 propostas: quatro árvores, a perda que cai e as PDs que se movem em grupo.",
+    "pre": "Slide 7 (taxa) e slide 6 (valor da folha).",
+    "conducao": "Log loss de treino: 0,693 → 0,452 → 0,330 → 0,263 → 0,217. As propostas que caem nas mesmas folhas andam juntas: #3 a #8 vão de 50% a 8,8%; #9 e #11 a #14 a 92,1%; #1 e #2 ficam em 50% (a folha dos dois soma zero). #10, que deu default, recua nas árvores 2 e 3 (69,0% → 65,4% → 63,2%) porque divide a folha com #15, adimplente; termina em 74,1%. #16 recua na árvore 4 (75,9% → 72,4%). Na árvore 4, #10 cai numa folha de valor +1,27: soma 0,4 × esse valor às log odds.",
+    "leitura": "PD de cada grupo de propostas por estágio, com a proposta acompanhada em destaque e a log loss de treino abaixo do eixo.",
+    "pergunta": "Se a perda média cai, por que a PD de #10 recua?",
+    "resposta": "Porque a árvore corrige grupos: a folha de #10 inclui #15, adimplente, e a parcela da folha é negativa.",
+    "erros": [
+     {
+      "alt": "Sim: a PD de todo default sobe a cada árvore",
+      "confusao": "Acha que a árvore corrige proposta por proposta.",
+      "intervencao": "Selecione #10 e avance até a árvore 3."
+     },
+     {
+      "alt": "Não se sabe: a log loss pode subir numa árvore",
+      "confusao": "Confunde o recuo de uma PD com a perda média.",
+      "intervencao": "Leia a linha da log loss abaixo do eixo."
+     }
+    ],
+    "interacao": "Previsão com retorno; as árvores 2 a 4, o seletor de estágio e o de proposta abrem no acerto. Restaurar volta à quarta árvore, à proposta #10 e à previsão em aberto.",
+    "verificacao": "O aluno acompanha outra proposta e diz em que árvore a PD dela mais muda.",
+    "transicao": "A PD final se decompõe em palpite mais η vezes cada folha."
    },
    "html": "<div>\n  <div class=\"linhabotoes\"><button class=\"botao sec min\" id=\"c68a\">Anterior</button>\n   <button class=\"botao min\" id=\"c68p\">Próxima árvore</button>\n   <span class=\"nota\" id=\"c68s\">Árvore 1 de 4. Corte em x = 4,5. Erro: 10,1875 → 3,9883.</span></div>\n  <div class=\"passos\" style=\"margin-top:8px\" id=\"c68d\"><i class=\"on\"></i><i class=\"\"></i><i class=\"\"></i><i class=\"\"></i></div>\n  <div class=\"grade g3\" style=\"margin-top:10px\" id=\"c68g\"><div class=\"painel\"><div class=\"rot\">1. O que sobrava antes da árvore 1</div>\n   <div class=\"svgfit\" data-exploravel=\"grafico\"><svg viewBox=\"0 0 330 230\" role=\"img\" aria-label=\" por x\" style=\"font-family:system-ui,sans-serif\"><line x1=\"62\" y1=\"184.0\" x2=\"312\" y2=\"184.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"188.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">-6,0</text><line x1=\"62\" y1=\"107.0\" x2=\"312\" y2=\"107.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"111.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,0</text><line x1=\"62\" y1=\"30.0\" x2=\"312\" y2=\"30.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"34.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">6,0</text><line x1=\"62\" y1=\"30\" x2=\"62\" y2=\"184\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <line x1=\"62\" y1=\"184\" x2=\"312\" y2=\"184\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <text transform=\"translate(12,107) rotate(-90)\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\"></text>\n   <text x=\"187\" y=\"225\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">x</text><text x=\"77.6\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">1</text><text x=\"108.9\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">2</text><text x=\"140.1\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">3</text><text x=\"171.4\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">4</text><text x=\"202.6\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">5</text><text x=\"233.9\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">6</text><text x=\"265.1\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">7</text><text x=\"296.4\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">8</text><line x1=\"66\" y1=\"15\" x2=\"82\" y2=\"15\" stroke=\"#5B6475\" stroke-width=\"2.5\" stroke-dasharray=\"6 3\"></line>\n      <text x=\"87\" y=\"18\" font-size=\"11.5\" fill=\"#333\">zero</text><path d=\"M62.0 107.0L312.0 107.0\" fill=\"none\" stroke=\"#5B6475\" stroke-width=\"1.4\" stroke-dasharray=\"7 4\" stroke-linejoin=\"round\"></path><line x1=\"77.6\" y1=\"107.0\" x2=\"77.6\" y2=\"164.8\" stroke=\"#3D5A8A\" stroke-width=\"2\"></line>\n      <circle cx=\"77.6\" cy=\"107.0\" r=\"3.4\" fill=\"#3D5A8A\"></circle>\n      <circle cx=\"77.6\" cy=\"164.8\" r=\"3.4\" fill=\"#3D5A8A\"></circle>\n      <line x1=\"108.9\" y1=\"107.0\" x2=\"108.9\" y2=\"151.9\" stroke=\"#3D5A8A\" stroke-width=\"2\"></line>\n      <circle cx=\"108.9\" cy=\"107.0\" r=\"3.4\" fill=\"#3D5A8A\"></circle>\n      <circle cx=\"108.9\" cy=\"151.9\" r=\"3.4\" fill=\"#3D5A8A\"></circle>\n      <line x1=\"140.1\" y1=\"107.0\" x2=\"140.1\" y2=\"132.7\" stroke=\"#3D5A8A\" stroke-width=\"2\"></line>\n      <circle cx=\"140.1\" cy=\"107.0\" r=\"3.4\" fill=\"#3D5A8A\"></circle>\n      <circle cx=\"140.1\" cy=\"132.7\" r=\"3.4\" fill=\"#3D5A8A\"></circle>\n      <line x1=\"171.4\" y1=\"107.0\" x2=\"171.4\" y2=\"126.3\" stroke=\"#3D5A8A\" stroke-width=\"2\"></line>\n      <circle cx=\"171.4\" cy=\"107.0\" r=\"3.4\" fill=\"#3D5A8A\"></circle>\n      <circle cx=\"171.4\" cy=\"126.3\" r=\"3.4\" fill=\"#3D5A8A\"></circle>\n      <line x1=\"202.6\" y1=\"107.0\" x2=\"202.6\" y2=\"87.8\" stroke=\"#8C2332\" stroke-width=\"2\"></line>\n      <circle cx=\"202.6\" cy=\"107.0\" r=\"3.4\" fill=\"#8C2332\"></circle>\n      <circle cx=\"202.6\" cy=\"87.8\" r=\"3.4\" fill=\"#8C2332\"></circle>\n      <line x1=\"233.9\" y1=\"107.0\" x2=\"233.9\" y2=\"81.3\" stroke=\"#8C2332\" stroke-width=\"2\"></line>\n      <circle cx=\"233.9\" cy=\"107.0\" r=\"3.4\" fill=\"#8C2332\"></circle>\n      <circle cx=\"233.9\" cy=\"81.3\" r=\"3.4\" fill=\"#8C2332\"></circle>\n      <line x1=\"265.1\" y1=\"107.0\" x2=\"265.1\" y2=\"74.9\" stroke=\"#8C2332\" stroke-width=\"2\"></line>\n      <circle cx=\"265.1\" cy=\"107.0\" r=\"3.4\" fill=\"#8C2332\"></circle>\n      <circle cx=\"265.1\" cy=\"74.9\" r=\"3.4\" fill=\"#8C2332\"></circle>\n      <line x1=\"296.4\" y1=\"107.0\" x2=\"296.4\" y2=\"36.4\" stroke=\"#8C2332\" stroke-width=\"2\"></line>\n      <circle cx=\"296.4\" cy=\"107.0\" r=\"3.4\" fill=\"#8C2332\"></circle>\n      <circle cx=\"296.4\" cy=\"36.4\" r=\"3.4\" fill=\"#8C2332\"></circle>\n      <circle cx=\"77.6\" cy=\"164.8\" r=\"5\" fill=\"#3D5A8A\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"108.9\" cy=\"151.9\" r=\"5\" fill=\"#3D5A8A\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"140.1\" cy=\"132.7\" r=\"5\" fill=\"#3D5A8A\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"171.4\" cy=\"126.3\" r=\"5\" fill=\"#3D5A8A\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"202.6\" cy=\"87.8\" r=\"5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"233.9\" cy=\"81.3\" r=\"5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"265.1\" cy=\"74.9\" r=\"5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"296.4\" cy=\"36.4\" r=\"5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle></svg></div></div><div class=\"painel\"><div class=\"rot\">2. O que a árvore 1 propôs, já multiplicado pela taxa de aprendizagem de 0,50</div>\n   <div class=\"svgfit\" data-exploravel=\"grafico\"><svg viewBox=\"0 0 330 230\" role=\"img\" aria-label=\" por x\" style=\"font-family:system-ui,sans-serif\"><line x1=\"62\" y1=\"184.0\" x2=\"312\" y2=\"184.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"188.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">-6,0</text><line x1=\"62\" y1=\"107.0\" x2=\"312\" y2=\"107.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"111.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,0</text><line x1=\"62\" y1=\"30.0\" x2=\"312\" y2=\"30.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"34.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">6,0</text><line x1=\"62\" y1=\"30\" x2=\"62\" y2=\"184\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <line x1=\"62\" y1=\"184\" x2=\"312\" y2=\"184\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <text transform=\"translate(12,107) rotate(-90)\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\"></text>\n   <text x=\"187\" y=\"225\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">x</text><text x=\"77.6\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">1</text><text x=\"108.9\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">2</text><text x=\"140.1\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">3</text><text x=\"171.4\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">4</text><text x=\"202.6\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">5</text><text x=\"233.9\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">6</text><text x=\"265.1\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">7</text><text x=\"296.4\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">8</text><line x1=\"66\" y1=\"15\" x2=\"82\" y2=\"15\" stroke=\"#1F6F5C\" stroke-width=\"2.5\"></line>\n      <text x=\"87\" y=\"18\" font-size=\"11.5\" fill=\"#333\">correção</text><line x1=\"149.2\" y1=\"15\" x2=\"165.2\" y2=\"15\" stroke=\"#5B6475\" stroke-width=\"2.5\" stroke-dasharray=\"6 3\"></line>\n      <text x=\"170.2\" y=\"18\" font-size=\"11.5\" fill=\"#333\">zero</text><path d=\"M62.0 125.4L93.3 125.4L93.3 125.4L124.5 125.4L124.5 125.4L155.8 125.4L155.8 125.4L187.0 125.4L187.0 88.6L218.3 88.6L218.3 88.6L249.5 88.6L249.5 88.6L280.8 88.6L280.8 88.6L312.0 88.6\" fill=\"none\" stroke=\"#1F6F5C\" stroke-width=\"3\" stroke-linejoin=\"round\"></path><path d=\"M62.0 107.0L312.0 107.0\" fill=\"none\" stroke=\"#5B6475\" stroke-width=\"1.4\" stroke-dasharray=\"7 4\" stroke-linejoin=\"round\"></path></svg></div></div><div class=\"painel\"><div class=\"rot\">3. Como ficou a previsão após a árvore 1</div>\n   <div class=\"svgfit\" data-exploravel=\"grafico\"><svg viewBox=\"0 0 330 230\" role=\"img\" aria-label=\" por x\" style=\"font-family:system-ui,sans-serif\"><line x1=\"62\" y1=\"184.0\" x2=\"312\" y2=\"184.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"188.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,0</text><line x1=\"62\" y1=\"107.0\" x2=\"312\" y2=\"107.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"111.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">7,0</text><line x1=\"62\" y1=\"30.0\" x2=\"312\" y2=\"30.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"34.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">14,0</text><line x1=\"62\" y1=\"30\" x2=\"62\" y2=\"184\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <line x1=\"62\" y1=\"184\" x2=\"312\" y2=\"184\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <text transform=\"translate(12,107) rotate(-90)\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\"></text>\n   <text x=\"187\" y=\"225\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">x</text><text x=\"77.6\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">1</text><text x=\"108.9\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">2</text><text x=\"140.1\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">3</text><text x=\"171.4\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">4</text><text x=\"202.6\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">5</text><text x=\"233.9\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">6</text><text x=\"265.1\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">7</text><text x=\"296.4\" y=\"200\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">8</text><line x1=\"66\" y1=\"15\" x2=\"82\" y2=\"15\" stroke=\"#00205B\" stroke-width=\"2.5\"></line>\n      <text x=\"87\" y=\"18\" font-size=\"11.5\" fill=\"#333\">depois</text><line x1=\"135.4\" y1=\"15\" x2=\"151.4\" y2=\"15\" stroke=\"#5B6475\" stroke-width=\"2.5\" stroke-dasharray=\"6 3\"></line>\n      <text x=\"156.4\" y=\"18\" font-size=\"11.5\" fill=\"#333\">antes</text><path d=\"M62.0 128.3L93.3 128.3L93.3 128.3L124.5 128.3L124.5 128.3L155.8 128.3L155.8 128.3L187.0 128.3L187.0 96.7L218.3 96.7L218.3 96.7L249.5 96.7L249.5 96.7L280.8 96.7L280.8 96.7L312.0 96.7\" fill=\"none\" stroke=\"#00205B\" stroke-width=\"3\" stroke-linejoin=\"round\"></path><path d=\"M62.0 112.5L93.3 112.5L93.3 112.5L124.5 112.5L124.5 112.5L155.8 112.5L155.8 112.5L187.0 112.5L187.0 112.5L218.3 112.5L218.3 112.5L249.5 112.5L249.5 112.5L280.8 112.5L280.8 112.5L312.0 112.5\" fill=\"none\" stroke=\"#5B6475\" stroke-width=\"2\" stroke-dasharray=\"7 4\" stroke-linejoin=\"round\"></path><circle cx=\"77.6\" cy=\"162.0\" r=\"4.5\" fill=\"#C9A84C\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"108.9\" cy=\"151.0\" r=\"4.5\" fill=\"#C9A84C\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"140.1\" cy=\"134.5\" r=\"4.5\" fill=\"#C9A84C\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"171.4\" cy=\"129.0\" r=\"4.5\" fill=\"#C9A84C\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"202.6\" cy=\"96.0\" r=\"4.5\" fill=\"#C9A84C\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"233.9\" cy=\"90.5\" r=\"4.5\" fill=\"#C9A84C\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"265.1\" cy=\"85.0\" r=\"4.5\" fill=\"#C9A84C\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"296.4\" cy=\"52.0\" r=\"4.5\" fill=\"#C9A84C\" stroke=\"#fff\" stroke-width=\"1.6\"></circle></svg></div></div></div>\n  <div id=\"c68t\" style=\"margin-top:10px\"><div class=\"rolax\" data-exploravel=\"tabela\"><table>\n    <thead><tr><th>x</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr></thead><tbody>\n    <tr><th scope=\"row\">y observado</th><td class=\"num\">2,0</td><td class=\"num\">3,0</td><td class=\"num\">4,5</td><td class=\"num\">5,0</td><td class=\"num\">8,0</td><td class=\"num\">8,5</td><td class=\"num\">9,0</td><td class=\"num\">12,0</td></tr>\n    <tr><th scope=\"row\">previsão antes</th><td class=\"num\">6,50</td><td class=\"num\">6,50</td><td class=\"num\">6,50</td><td class=\"num\">6,50</td><td class=\"num\">6,50</td><td class=\"num\">6,50</td><td class=\"num\">6,50</td><td class=\"num\">6,50</td></tr>\n    <tr><th scope=\"row\">resíduo</th><td class=\"num\" style=\"color:#3D5A8A\">-4,50</td><td class=\"num\" style=\"color:#3D5A8A\">-3,50</td><td class=\"num\" style=\"color:#3D5A8A\">-2,00</td><td class=\"num\" style=\"color:#3D5A8A\">-1,50</td><td class=\"num\" style=\"color:#8C2332\">1,50</td><td class=\"num\" style=\"color:#8C2332\">2,00</td><td class=\"num\" style=\"color:#8C2332\">2,50</td><td class=\"num\" style=\"color:#8C2332\">5,50</td></tr>\n    <tr><th scope=\"row\">η × árvore 1</th><td class=\"num\" style=\"font-weight:700;color:#1F6F5C\">-1,44</td><td class=\"num\" style=\"font-weight:700;color:#1F6F5C\">-1,44</td><td class=\"num\" style=\"font-weight:700;color:#1F6F5C\">-1,44</td><td class=\"num\" style=\"font-weight:700;color:#1F6F5C\">-1,44</td><td class=\"num\" style=\"font-weight:700;color:#1F6F5C\">1,44</td><td class=\"num\" style=\"font-weight:700;color:#1F6F5C\">1,44</td><td class=\"num\" style=\"font-weight:700;color:#1F6F5C\">1,44</td><td class=\"num\" style=\"font-weight:700;color:#1F6F5C\">1,44</td></tr>\n    <tr style=\"background:#FBF3DE\"><th scope=\"row\">previsão depois</th><td class=\"num\" style=\"font-weight:700\">5,06</td><td class=\"num\" style=\"font-weight:700\">5,06</td><td class=\"num\" style=\"font-weight:700\">5,06</td><td class=\"num\" style=\"font-weight:700\">5,06</td><td class=\"num\" style=\"font-weight:700\">7,94</td><td class=\"num\" style=\"font-weight:700\">7,94</td><td class=\"num\" style=\"font-weight:700\">7,94</td><td class=\"num\" style=\"font-weight:700\">7,94</td></tr>\n    </tbody></table></div>\n    <div class=\"nota\" style=\"margin-top:8px\">A primeira árvore separa os quatro primeiros dos quatro últimos. É a correção mais grosseira e a que mais reduz o erro.</div></div></div><div style=\"margin-top:13px\"><div data-block=\"question\" data-slug=\"c6p8q\"></div></div>",
    "text": "Anterior\nPróxima árvore\nÁrvore 1 de 4. Corte em x = 4,5. Erro: 10,1875 → 3,9883.\n1. O QUE SOBRAVA ANTES DA ÁRVORE 1\n-6,0\n0,0\n6,0\nx\n1\n2\n3\n4\n5\n6\n7\n8\nzero\n2. O QUE A ÁRVORE 1 PROPÔS, JÁ MULTIPLICADO PELA TAXA DE APRENDIZAGEM DE 0,50\n-6,0\n0,0\n6,0\nx\n1\n2\n3\n4\n5\n6\n7\n8\ncorreção\nzero\n3. COMO FICOU A PREVISÃO APÓS A ÁRVORE 1\n0,0\n7,0\n14,0\nx\n1\n2\n3\n4\n5\n6\n7\n8\ndepois\nantes\nx\t1\t2\t3\t4\t5\t6\t7\t8\ny observado\t2,0\t3,0\t4,5\t5,0\t8,0\t8,5\t9,0\t12,0\nprevisão antes\t6,50\t6,50\t6,50\t6,50\t6,50\t6,50\t6,50\t6,50\nresíduo\t-4,50\t-3,50\t-2,00\t-1,50\t1,50\t2,00\t2,50\t5,50\nη × árvore 1\t-1,44\t-1,44\t-1,44\t-1,44\t1,44\t1,44\t1,44\t1,44\nprevisão depois\t5,06\t5,06\t5,06\t5,06\t7,94\t7,94\t7,94\t7,94\nA primeira árvore separa os quatro primeiros dos quatro últimos. É a correção mais grosseira e a que mais reduz o erro.",
@@ -7018,20 +7106,36 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Palpite mais η vezes cada folha, em log odds; a sigmoide só no fim.",
-   "apoio": "Provisório: o quadro está em reconstrução.",
-   "conexao": "A fórmula depois da história",
+   "aprendizado": "Ler a PD do boosting como soma de parcelas em log odds, uma por árvore, e entender por que a sigmoide entra só no fim.",
+   "apoio": "Escolha uma das 16 propostas e leia a cascata: palpite F₀ = 0,00 mais η = 0,4 vezes a folha de cada árvore. Responda à previsão para ver a soma virar PD na sigmoide.",
+   "conexao": "Fecha o mecanismo dos slides 3 a 8 com uma proposta inteira e prepara a fórmula do slide 10; a mesma soma volta no slide 19, quando as parcelas forem repartidas por variável.",
    "guia": {
-    "funcao": "Provisório.",
-    "pre": "Slide 8.",
-    "conducao": "Provisório.",
-    "leitura": "Provisório.",
-    "pergunta": "Provisório.",
-    "resposta": "Provisório.",
-    "erros": [],
-    "interacao": "Provisório.",
-    "verificacao": "Provisório.",
-    "transicao": "A fórmula depois da história"
+    "funcao": "Mostrar que a PD final é rastreável: cada árvore contribui com uma parcela em log odds, e a probabilidade só aparece depois da soma.",
+    "pre": "Slides 3, 6 e 8: palpite inicial em log odds, valor da folha por Newton e as quatro árvores nas 16 propostas.",
+    "conducao": "Abra na proposta 10: 0,00 + 0,80 − 0,16 − 0,10 + 0,51 = 1,05 em log odds. Mostre que a árvore 1 dá +0,80 porque a folha vale 2,00 e η = 0,4. Antes de revelar a PD, faça a previsão: as propostas 10 e 9 caem na mesma folha da árvore 4 (+0,51); quanto cada uma ganha em PD?",
+    "leitura": "Proposta 10: PD = σ(1,05) = 74,1%. A mesma parcela de +0,51 vale +10,9 pp na proposta 10 (que estava em 63%) e +4,6 pp na 9 (em 87%). Só as log odds somam.",
+    "pergunta": "As propostas 10 e 9 ganham +0,51 em log odds na árvore 4. Quantos pontos de PD cada uma ganha?",
+    "resposta": "A 10 ganha +10,9 pp e a 9, +4,6 pp: a sigmoide é íngreme perto de 50% e achatada perto de 100%.",
+    "erros": [
+     {
+      "alt": "As duas ganham 51 pontos de PD",
+      "confusao": "Lê log odds como pontos percentuais de PD.",
+      "intervencao": "Aponte o eixo de baixo: a cascata está em log odds; a PD só aparece depois da sigmoide."
+     },
+     {
+      "alt": "As duas ganham os mesmos pontos de PD",
+      "confusao": "Supõe que a PD é a soma das parcelas, como se o modelo fosse aditivo em probabilidade.",
+      "intervencao": "Troque para a proposta 9 e compare o degrau no eixo da PD com o da proposta 10."
+     },
+     {
+      "alt": "A 9 (em 87%) ganha mais que a 10 (em 63%)",
+      "confusao": "Acha que a curva sobe mais rápido perto de 100%.",
+      "intervencao": "Mostre a inclinação da sigmoide: máxima em 50%, quase plana perto de 100%."
+     }
+    ],
+    "interacao": "Seletor das 16 propostas (teclado e foco visível) e previsão com retorno por alternativa e Tentar outra; a PD e a projeção na sigmoide ficam ocultas até a resposta certa. Restaurar volta à proposta 10 e limpa a previsão.",
+    "verificacao": "Peça a um aluno a PD da proposta 3: −2,34 em log odds, PD 8,8%.",
+    "transicao": "Somar palpite e parcelas, árvore a árvore, é exatamente o algoritmo de Friedman: o slide 10 escreve essa soma como fórmula."
    },
    "html": "<div class=\"nv\"><div class=\"nv-waterfall\" aria-label=\"Evolução da previsão para x igual a 8\"><button data-wstep=\"0\" class=\"ativo\" style=\"--h:100px\"><span>6,50</span><small>palpite</small></button><button data-wstep=\"1\" class=\"\" style=\"--h:123px\"><span>7,94</span><small>árvore 1</small></button><button data-wstep=\"2\" class=\"\" style=\"--h:158px\"><span>9,97</span><small>árvore 2</small></button><button data-wstep=\"3\" class=\"\" style=\"--h:166px\"><span>10,35</span><small>árvore 3</small></button><button data-wstep=\"4\" class=\"\" style=\"--h:178px\"><span>10,86</span><small>árvore 4</small></button></div><div class=\"nv-caption\" id=\"nv-wdetail\"><b>Etapa 0:</b><span>O ponto de partida é deliberadamente simples.</span></div><div class=\"nv-line\"></div><small>observado do caso: 12,00 · erro cai de 5,50 para 1,14</small></div>",
    "text": "6,50\npalpite\n7,94\nárvore 1\n9,97\nárvore 2\n10,35\nárvore 3\n10,86\nárvore 4\nEtapa 0:\nO ponto de partida é deliberadamente simples.\nobservado do caso: 12,00 · erro cai de 5,50 para 1,14",
@@ -7087,20 +7191,36 @@
     "disc": 1
    },
    "origem": "esq",
-   "aprendizado": "Cada termo do algoritmo de Friedman é uma peça já vista.",
-   "apoio": "Provisório: o quadro está em reconstrução.",
-   "conexao": "O mesmo algoritmo em 1.472 propostas: o treino sempre melhora",
+   "aprendizado": "Reconhecer cada termo do algoritmo de Friedman (2001) para log loss como uma peça já vista e calcular um passo com números.",
+   "apoio": "Leia as cinco linhas e siga o link de cada uma para o slide em que ela apareceu. Calcule F₂ da proposta 10 antes de revelar a última linha; depois troque a árvore e a proposta.",
+   "conexao": "Formaliza os slides 3 a 9 e abre a carteira do slide 11, onde o mesmo algoritmo roda 300 vezes em 1.472 propostas.",
    "guia": {
-    "funcao": "Provisório.",
-    "pre": "Slide 9.",
-    "conducao": "Provisório.",
-    "leitura": "Provisório.",
-    "pergunta": "Provisório.",
-    "resposta": "Provisório.",
-    "erros": [],
-    "interacao": "Provisório.",
-    "verificacao": "Provisório.",
-    "transicao": "O mesmo algoritmo em 1.472 propostas: o treino sempre melhora"
+    "funcao": "Dar nome formal ao mecanismo depois da intuição: palpite, pseudo-resíduo, árvore, folha por Newton e soma com taxa.",
+    "pre": "Slides 3 a 9: palpite em log odds, erro y − p, primeira árvore, passo de Newton, taxa, perda que cai e parcelas da PD.",
+    "conducao": "Percorra as linhas com a árvore 2 e a proposta 10: F₁ = 0,80, resíduo 1 − σ(0,80) = 0,31; a folha junta 2 propostas (10 e 15) e vale −0,41, negativa porque a 15 é adimplente com PD de 50%. Antes da linha 5, peça F₂.",
+    "leitura": "F₂ = 0,80 + 0,4 × (−0,41) = 0,64: o acumulado entra inteiro e só a folha nova é multiplicada por η.",
+    "pergunta": "Com F₁ = 0,80, η = 0,4 e γ = −0,41, quanto vale F₂ da proposta 10?",
+    "resposta": "F₂ = 0,80 + 0,4 × (−0,41) = 0,64: cada árvore entra multiplicada pela taxa, em log odds.",
+    "erros": [
+     {
+      "alt": "0,80 − 0,41 = 0,39",
+      "confusao": "Esquece a taxa e soma a correção inteira.",
+      "intervencao": "Volte ao slide 7: a taxa encolhe cada correção nova."
+     },
+     {
+      "alt": "0,4 × (0,80 − 0,41)",
+      "confusao": "Aplica η ao acumulado, como se a taxa encolhesse o que já foi aprendido.",
+      "intervencao": "Escreva Fₘ = Fₘ₋₁ + η·γ e circule o que η multiplica."
+     },
+     {
+      "alt": "σ aplicada a cada passo",
+      "confusao": "Soma em probabilidade em vez de log odds.",
+      "intervencao": "Mostre o slide 9: a sigmoide só entra no fim."
+     }
+    ],
+    "interacao": "Seletor da árvore m e das 16 propostas, liberados depois da previsão; a coluna do exemplo se recalcula com os números da biblioteca. Links para os slides 3 a 9 no mesmo modo.",
+    "verificacao": "Peça F₃ da proposta 15: −0,16 + 0,4 × (−0,24) = −0,26.",
+    "transicao": "Com a fórmula na mão, o mesmo algoritmo vai para a carteira: 1.472 propostas de ajuste, três variáveis e 300 árvores."
    },
    "html": "<div class=\"nv\"><div class=\"nv-formula-anatomy\"><div class=\"nv-term\"><span class=\"math\">\\(F_{m-1}(x)\\)</span><b>previsão anterior</b><p>o que a sequência já aprendeu</p></div><div class=\"nv-op\">+</div><div class=\"nv-term\"><span class=\"math\">\\(\\eta\\)</span><b>taxa de aprendizagem</b><p>o mesmo fator em todas as etapas, escolhido antes do treino</p></div><div class=\"nv-op\">×</div><div class=\"nv-term\"><span class=\"math\">\\(h_m(x)\\)</span><b>nova correção</b><p>o padrão encontrado no erro atual</p></div></div>\n   <div class=\"formula\" data-latex=\"F_m(x)=F_{m-1}(x)+\\eta\\,h_m(x)\" data-original=\"F m de x igual a F m menos 1 de x mais eta vezes h m de x\" role=\"math\" aria-label=\"F m de x igual a F m menos 1 de x mais eta vezes h m de x\"></div><div class=\"nv-caption\"><b>No caso \\(\\boldsymbol{x = 8}\\)</b><span>\\(6{,}50 + 0{,}5 \\times 2{,}875 = 7{,}94\\). Só então calculamos o novo resíduo: \\(12{,}00 - 7{,}94 = 4{,}06\\). Resíduo, não erro final: ele vai mudar de novo na próxima árvore.</span></div>\n   <div class=\"nv-caption\"><b>η não é um peso por árvore</b><span>Não é nota que o algoritmo dá a cada árvore conforme ela é boa. É um único número, igual para as M árvores, escolhido antes de treinar. O que muda de árvore para árvore é h<sub>m</sub>, nunca η.</span></div></div>",
    "text": "\\(F_{m-1}(x)\\)\nprevisão anterior\n\no que a sequência já aprendeu\n\n+\n\\(\\eta\\)\ntaxa de aprendizagem\n\no mesmo fator em todas as etapas, escolhido antes do treino\n\n×\n\\(h_m(x)\\)\nnova correção\n\no padrão encontrado no erro atual\n\nNo caso \\(\\boldsymbol{x = 8}\\)\n\\(6{,}50 + 0{,}5 \\times 2{,}875 = 7{,}94\\). Só então calculamos o novo resíduo: \\(12{,}00 - 7{,}94 = 4{,}06\\). Resíduo, não erro final: ele vai mudar de novo na próxima árvore.\nη não é um peso por árvore\nNão é nota que o algoritmo dá a cada árvore conforme ela é boa. É um único número, igual para as M árvores, escolhido antes de treinar. O que muda de árvore para árvore é hm, nunca η.",
@@ -7125,20 +7245,31 @@
     "disc": 1
    },
    "origem": "esq",
-   "aprendizado": "Utilização, atraso e score de bureau; a validação são 631 propostas que o modelo não viu.",
-   "apoio": "Provisório: o quadro está em reconstrução.",
-   "conexao": "Profundidade é a ordem de interação",
+   "aprendizado": "Ver que a perda de ajuste cai a cada árvore e que a validação não acompanha: desce no começo e depois piora até passar do palpite inicial.",
+   "apoio": "Mova o número de árvores e compare perda e AUC de ajuste e de validação. A validação é sorteada do mesmo período (631 propostas), não uma safra posterior.",
+   "conexao": "Leva o algoritmo do slide 10 à carteira e abre a pergunta dos slides 13 a 16: que controles evitam a decoreba, e onde parar (slide 15).",
    "guia": {
-    "funcao": "Provisório.",
-    "pre": "Slide 10.",
-    "conducao": "Provisório.",
-    "leitura": "Provisório.",
-    "pergunta": "Provisório.",
-    "resposta": "Provisório.",
-    "erros": [],
-    "interacao": "Provisório.",
-    "verificacao": "Provisório.",
-    "transicao": "Profundidade é a ordem de interação"
+    "funcao": "Separar o que o ajuste mede (o que o modelo já viu) do que a validação mede (propostas que ele não viu).",
+    "pre": "Slides 8 e 10: perda que cai nas 16 propostas e o algoritmo em cinco linhas.",
+    "conducao": "Mostre o ajuste: perda de 0,313 a 0,234, caindo em 300 de 300 árvores; AUC de ajuste de 0,50 a 0,874. Peça a previsão para a validação antes de desenhá-la. Leia a nota: a validação é sorteada, não temporal.",
+    "leitura": "Na validação, a perda desce até 0,296 e termina em 0,329 com 300 árvores, acima do palpite (0,321), que ela passa a partir da árvore 169. A AUC de validação termina em 0,587, contra 0,874 no ajuste.",
+    "pergunta": "Com 300 árvores, o que acontece com a perda nas 631 propostas de validação?",
+    "resposta": "Melhora no começo, depois piora até ficar acima do palpite inicial: 0,329 contra 0,321.",
+    "erros": [
+     {
+      "alt": "Acompanha o ajuste: cai a cada árvore",
+      "confusao": "Toma o ajuste como medida de generalização.",
+      "intervencao": "Pergunte quem escolheu os cortes das árvores: as mesmas propostas em que a perda é medida."
+     },
+     {
+      "alt": "Melhora mais devagar, mas sempre melhora",
+      "confusao": "Acha que a decoreba só desacelera o ganho.",
+      "intervencao": "Leve o controle a 300 e compare com o palpite: a perda de validação fica pior que não usar árvore nenhuma."
+     }
+    ],
+    "interacao": "Controle do número de árvores com cursor nos dois gráficos e números nos quatro blocos; previsão com retorno e Tentar outra, validação oculta até a resposta certa; Restaurar volta a 300 árvores e limpa a previsão.",
+    "verificacao": "Com 80 árvores: perda de ajuste 0,263 e de validação 0,309; AUC 0,798 contra 0,631.",
+    "transicao": "Se o ajuste sempre melhora, quem freia? O slide 12 abre os controles da complexidade, começando pela profundidade."
    },
    "html": "<div class=\"grade g2\">\n  <div class=\"painel\" style=\"border-left:4px solid #8C2332\"><div class=\"rot\">Somar probabilidades não funciona</div>\n   <div class=\"rolax\"><table style=\"margin-top:8px\"><tbody>\n   <tr><th scope=\"row\">Ponto de partida</th><td class=\"num\">0,50</td></tr>\n   <tr><th scope=\"row\">Correção 1</th><td class=\"num\">+0,30</td></tr>\n   <tr><th scope=\"row\">Correção 2</th><td class=\"num\">+0,25</td></tr>\n   <tr style=\"background:#F7E6E6\"><th scope=\"row\">Resultado</th>\n    <td class=\"num\" style=\"font-weight:700;color:#8C2332\">1,05</td></tr></tbody></table></div>\n   <p class=\"nota\" style=\"margin-top:8px\">Nenhuma restrição impede isso. Truncar em 1 reintroduz\n   exatamente o problema da reta na probabilidade do capítulo 4.</p></div>\n  <div class=\"painel\" style=\"border-left:4px solid #2E6B4F\"><div class=\"rot\">Somar em log odds funciona</div>\n   <div class=\"rolax\"><table style=\"margin-top:8px\"><tbody>\n   <tr><th scope=\"row\">Ponto de partida, em log odds</th><td class=\"num\">0,000</td></tr>\n   <tr><th scope=\"row\">Correção 1</th><td class=\"num\">+1,200</td></tr>\n   <tr><th scope=\"row\">Correção 2</th><td class=\"num\">+1,050</td></tr>\n   <tr><th scope=\"row\">Escore final</th><td class=\"num\" style=\"font-weight:700\">2,250</td></tr>\n   <tr style=\"background:#E9F1EC\"><th scope=\"row\">PD, aplicando a logística</th>\n    <td class=\"num\" style=\"font-weight:700;color:#2E6B4F\">90,47%</td></tr></tbody></table></div>\n   <p class=\"nota\" style=\"margin-top:8px\">Qualquer soma, de qualquer tamanho, continua produzindo PD\n   dentro do intervalo. É a propriedade da página 7 do capítulo 4, agora usada para outro fim.</p></div></div>\n  <div class=\"grade g2\" style=\"margin-top:11px\">\n   <div class=\"revelacao bom\"><h4>As duas famílias compartilham a escala</h4>\n   A logística produz o escore como soma de coeficientes vezes variáveis. O boosting produz o escore como\n   soma de árvores. As duas vivem em log odds e as duas terminam na mesma curva de tradução. É por isso\n   que a comparação do capítulo 7 é entre modelos comensuráveis.</div>\n   <div class=\"revelacao\"><h4>O ponto de partida em classificação</h4>\n   F₀ é o log odds da prevalência da amostra. Nesta base didática a prevalência é\n   50%, então F₀ vale exatamente zero. Em carteira com 10%\n   de default, F₀ valeria -2,1972, o que já coloca todas as PDs iniciais em 10%.</div></div>\n  <div class=\"formula\" style=\"margin-top:11px\" data-original=\"F_M(x) = F₀ + η × Σ h_m(x), com F₀ = ln( prevalência ÷ (1 − prevalência) ) e PD = 1 ÷ (1 + e^(−F_M))\" data-latex=\"F_M(x)=F_0+\\eta\\sum_{m=1}^{M}h_m(x),\\quad F_0=\\ln\\!\\left(\\frac{\\pi}{1-\\pi}\\right),\\quad PD(x)=\\sigma(F_M(x))\" role=\"math\" aria-label=\"F_M(x) = F₀ + η × Σ h_m(x), com F₀ = ln( prevalência ÷ (1 − prevalência) ) e PD = 1 ÷ (1 + e^(−F_M))\"></div>",
    "text": "SOMAR PROBABILIDADES NÃO FUNCIONA\nPonto de partida\t0,50\nCorreção 1\t+0,30\nCorreção 2\t+0,25\nResultado\t1,05\n\nNenhuma restrição impede isso. Truncar em 1 reintroduz exatamente o problema da reta na probabilidade do capítulo 4.\n\nSOMAR EM LOG ODDS FUNCIONA\nPonto de partida, em log odds\t0,000\nCorreção 1\t+1,200\nCorreção 2\t+1,050\nEscore final\t2,250\nPD, aplicando a logística\t90,47%\n\nQualquer soma, de qualquer tamanho, continua produzindo PD dentro do intervalo. É a propriedade da página 7 do capítulo 4, agora usada para outro fim.\n\nAs duas famílias compartilham a escala\nA logística produz o escore como soma de coeficientes vezes variáveis. O boosting produz o escore como soma de árvores. As duas vivem em log odds e as duas terminam na mesma curva de tradução. É por isso que a comparação do capítulo 7 é entre modelos comensuráveis.\nO ponto de partida em classificação\nF₀ é o log odds da prevalência da amostra. Nesta base didática a prevalência é 50%, então F₀ vale exatamente zero. Em carteira com 10% de default, F₀ valeria -2,1972, o que já coloca todas as PDs iniciais em 10%.",
@@ -7163,20 +7294,31 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Com tocos, cada variável age sozinha; com profundidade 2, o efeito de uma depende da outra.",
-   "apoio": "Provisório: o quadro está em reconstrução.",
-   "conexao": "Quatro controles mexem na mesma complexidade",
+   "aprendizado": "Entender a profundidade como ordem de interação: com tocos o modelo é aditivo; com profundidade 2 o efeito de uma variável depende de outra.",
+   "apoio": "Compare as três curvas de log odds por utilização, uma por score: com tocos elas são paralelas; com profundidade 2 se afastam. Troque o atraso fixo e veja o mapa de PD.",
+   "conexao": "Primeiro dos controles da complexidade; o slide 13 junta os quatro, e a pergunta sobre interação volta no slide 17, quando a logística, sem interação, valida melhor.",
    "guia": {
-    "funcao": "Provisório.",
-    "pre": "Slide 11.",
-    "conducao": "Provisório.",
-    "leitura": "Provisório.",
-    "pergunta": "Provisório.",
-    "resposta": "Provisório.",
-    "erros": [],
-    "interacao": "Provisório.",
-    "verificacao": "Provisório.",
-    "transicao": "Quatro controles mexem na mesma complexidade"
+    "funcao": "Ligar a profundidade à forma da PD: quantas variáveis uma folha combina.",
+    "pre": "Slides 5 e 11: a árvore corta em sequência e o mesmo algoritmo na carteira com profundidade 2.",
+    "conducao": "Abra na profundidade 2: de 0% a 60% de utilização, as log odds mudam +2,73 com score 700 e −0,16 com score 900. Pergunte o que os tocos fariam antes de liberar a profundidade 1.",
+    "leitura": "Com tocos, a utilização soma +0,99 em log odds com score 700, 800 ou 900: curvas paralelas, modelo aditivo. Na validação, a melhor perda é 0,2936 com tocos (20 árvores), 0,2955 com profundidade 2 e 0,2974 com 3: aqui a interação não melhora a validação.",
+    "pergunta": "Com tocos (profundidade 1), o que acontece com as três curvas de log odds?",
+    "resposta": "Ficam paralelas: a utilização soma +0,99 em qualquer score, porque nenhuma folha combina duas variáveis.",
+    "erros": [
+     {
+      "alt": "Continuam a se afastar, como com profundidade 2",
+      "confusao": "Atribui a interação aos dados, não à estrutura do modelo.",
+      "intervencao": "Desenhe um toco: um corte, uma variável. Onde a folha poderia saber o score?"
+     },
+     {
+      "alt": "Viram retas, como na logística",
+      "confusao": "Confunde aditivo com linear.",
+      "intervencao": "Aponte os degraus das curvas: cada árvore soma um valor de cada lado de um corte."
+     }
+    ],
+    "interacao": "Profundidade (1, 2, 3), liberada depois da previsão, e atraso fixo (0, 5, 15 dias) redesenham o mapa de PD e as curvas; a expansão calcula na validação se a interação paga. Restaurar volta à profundidade 2.",
+    "verificacao": "Com profundidade 3, de 0% a 60% a utilização soma +1,87 com score 700 e +0,20 com score 900.",
+    "transicao": "Profundidade é um dos quatro controles; o slide 13 mexe nos quatro e mede o ajuste e a validação ao mesmo tempo."
    },
    "html": "<div class=\"v13-interativo\"><div class=\"v13-tabs\"><button type=\"button\" data-v13-y=\"0\" class=\"ativo\">y = 0 · pagou</button><button type=\"button\" data-v13-y=\"1\">y = 1 · default</button></div><div class=\"v13-cena\"><div class=\"v13-cena-lado\"><small>PD atual</small><span class=\"big\" id=\"v13-res-p\">50%</span><input id=\"v13-res-range\" type=\"range\" min=\"1\" max=\"99\" value=\"50\" style=\"width:100%\"></div><div class=\"v13-cena-main\"><h3>Alvo da próxima árvore</h3><div class=\"v13-metricas\"><div><small>y</small><strong id=\"v13-res-y\">0</strong></div><div><small>p</small><strong id=\"v13-res-p2\">0,50</strong></div><div><small>y − p</small><strong id=\"v13-res-r\">-0,50</strong></div></div><p id=\"v13-res-texto\">Caso ainda mal previsto: a árvore recebe uma correção relevante.</p></div></div><div class=\"formula\" data-latex=\"r_i^{(m)}=y_i-p_i^{(m-1)}\" data-original=\"resíduo na iteração m = y − p da iteração anterior\" role=\"math\" aria-label=\"resíduo na iteração m = y − p da iteração anterior\"></div></div>",
    "text": "y = 0 · pagou\ny = 1 · default\nPD atual\n50%\nAlvo da próxima árvore\ny\n0\np\n0,50\ny − p\n-0,50\n\nCaso ainda mal previsto: a árvore recebe uma correção relevante.",
@@ -7271,24 +7413,40 @@
    "nivel120": "essencial",
    "min": 4,
    "t": {
-    "exp": 3,
-    "disc": 1
+    "exp": 2,
+    "disc": 2
    },
    "origem": "rec",
-   "aprendizado": "Taxa, número de árvores, profundidade e mínimo por folha, medidos no ajuste e na validação.",
-   "apoio": "Provisório: o quadro está em reconstrução.",
-   "conexao": "Metade da taxa pede o dobro de árvores",
+   "aprendizado": "Distinguir os controles que aceleram a complexidade (taxa, árvores, profundidade) do que a freia (mínimo por folha), medindo no ajuste e na validação.",
+   "apoio": "Responda qual controle freia; depois combine taxa, profundidade, mínimo por folha e número de árvores e veja as perdas e as AUCs responderem. A curva cinza é a validação da referência do slide 11.",
+   "conexao": "Junta a taxa (slide 7), as árvores (slide 11) e a profundidade (slide 12); o slide 14 mostra que taxa e árvores se compensam e o slide 15 escolhe as árvores na validação.",
    "guia": {
-    "funcao": "Provisório.",
-    "pre": "Slide 12.",
-    "conducao": "Provisório.",
-    "leitura": "Provisório.",
-    "pergunta": "Provisório.",
-    "resposta": "Provisório.",
-    "erros": [],
-    "interacao": "Provisório.",
-    "verificacao": "Provisório.",
-    "transicao": "Metade da taxa pede o dobro de árvores"
+    "funcao": "Fazer a turma experimentar a complexidade com as próprias mãos e ver que o ajuste sempre agradece mais complexidade.",
+    "pre": "Slides 7, 11 e 12: taxa de aprendizagem, curvas de ajuste e validação na carteira e profundidade como ordem de interação.",
+    "conducao": "Peça a previsão: qual dos quatro freia? Depois deixe a turma propor combinações. Sugira η 0,5 com profundidade 4 e compare com a referência (validação 0,329 com 300 árvores).",
+    "leitura": "Mínimo por folha de 5 para 160: perda de ajuste com 300 árvores sobe de 0,197 para 0,259. Taxa de 0,05 para 0,5: cai de 0,252 para 0,142. Profundidade de 1 para 4: cai de 0,276 para 0,175.",
+    "pergunta": "Três controles aumentam a complexidade quando sobem. Qual freia?",
+    "resposta": "O mínimo de propostas por folha: folha maior não pode isolar poucas propostas.",
+    "erros": [
+     {
+      "alt": "Taxa de aprendizagem η",
+      "confusao": "Acha que taxa maior regulariza porque converge rápido.",
+      "intervencao": "Mostre a perda de ajuste com η 0,5: 0,142, contra 0,252 com 0,05."
+     },
+     {
+      "alt": "Número de árvores",
+      "confusao": "Confunde parar cedo (freio) com ter mais árvores.",
+      "intervencao": "Mais árvores é mais complexidade; o freio é parar na validação, no slide 15."
+     },
+     {
+      "alt": "Profundidade",
+      "confusao": "Acha que árvore funda é mais cuidadosa.",
+      "intervencao": "Profundidade 4 leva a perda de ajuste a 0,175."
+     }
+    ],
+    "interacao": "Quatro controles (taxa, profundidade e mínimo em botões, árvores em controle deslizante) ajustam o modelo ao vivo; travados até a resposta certa. Restaurar volta à referência.",
+    "verificacao": "Peça uma combinação em que a perda de validação com 300 árvores fique abaixo da referência e outra em que fique acima, com os números da tela.",
+    "transicao": "Taxa e número de árvores parecem dois controles, mas andam juntos: o slide 14 mostra quanto."
    },
    "html": "<div>\n  <div class=\"painel\" style=\"margin-bottom:10px\"><div class=\"rot\">O procedimento, em cinco linhas</div>\n   <ol style=\"margin:7px 0 0;padding-left:20px\">\n   <li><b>F₀ = ln(π ÷ (1 − π)).</b> A prevalência desta base é 50%, então F₀ = 0,000. F é escore em\n    log odds, não probabilidade: é a escala do capítulo 4.</li>\n   <li><b>p = σ(F).</b> A mesma curva logística do capítulo 4, agora usada só para traduzir o escore.</li>\n   <li><b>Alvo de cada caso: r = y − p.</b> Em regressão era y − F. Na primeira árvore todos valem ±0,500,\n    porque todos partem de p = 50%.</li>\n   <li><b>Ajuste uma árvore rasa a r.</b> Cada folha guarda a média de r do seu grupo.</li>\n   <li><b>F ← F + η × h.</b> Volte à linha 2.</li></ol>\n   <p class=\"nota\" style=\"margin-top:7px\">Nada foi introduzido: são as mesmas cinco linhas da regressão,\n   com duas trocas. O alvo passou de y − F para y − p, e a leitura final passa pela logística.\n   Primeira ordem didática: a folha recebe a média do gradiente negativo, sem passo de Newton.\n   Bibliotecas reais mudam esse ponto e obtêm convergência mais rápida.</p></div>\n  <div class=\"linhabotoes\"><button class=\"botao sec min\" id=\"c613a\">Anterior</button>\n   <button class=\"botao min\" id=\"c613p\">Próxima árvore</button>\n   <span class=\"nota\" id=\"c613s\">Árvore 1 de 4. Perda: 0,6931 → 0,6219. η = 0,40.</span></div>\n  <div class=\"passos\" style=\"margin-top:8px\" id=\"c613d\"><i class=\"on\"></i><i class=\"\"></i><i class=\"\"></i><i class=\"\"></i></div>\n  <div class=\"palcoflex\" style=\"margin-top:10px\" data-colunas=\"dados\"><div class=\"esq\" style=\"flex: 0.56 1 0px;\"><div id=\"c613t\"><div class=\"rolax\" data-exploravel=\"tabela\" data-aberta=\"true\"><table>\n    <thead><tr><th>#</th><th>y</th><th>F antes</th><th>p antes</th><th>alvo y − p</th>\n     <th>η × árvore</th><th>F depois</th><th>p depois</th></tr></thead><tbody>\n    <tr><th scope=\"row\">1</th>\n     <td class=\"num\" style=\"color:#2E6B4F;font-weight:700\">0</td>\n     <td class=\"num\">0,000</td><td class=\"num\">50%</td>\n     <td class=\"num\" style=\"color:#3D5A8A\">-0,500</td>\n     <td class=\"num\" style=\"color:#1F6F5C;font-weight:700\">0,000</td>\n     <td class=\"num\">0,000</td>\n     <td class=\"num\" style=\"font-weight:700\">50%</td></tr><tr><th scope=\"row\">2</th>\n     <td class=\"num\" style=\"color:#8C2332;font-weight:700\">1</td>\n     <td class=\"num\">0,000</td><td class=\"num\">50%</td>\n     <td class=\"num\" style=\"color:#8C2332\">0,500</td>\n     <td class=\"num\" style=\"color:#1F6F5C;font-weight:700\">0,000</td>\n     <td class=\"num\">0,000</td>\n     <td class=\"num\" style=\"font-weight:700\">50%</td></tr><tr><th scope=\"row\">3</th>\n     <td class=\"num\" style=\"color:#2E6B4F;font-weight:700\">0</td>\n     <td class=\"num\">0,000</td><td class=\"num\">50%</td>\n     <td class=\"num\" style=\"color:#3D5A8A\">-0,500</td>\n     <td class=\"num\" style=\"color:#1F6F5C;font-weight:700\">-0,200</td>\n     <td class=\"num\">-0,200</td>\n     <td class=\"num\" style=\"font-weight:700\">45%</td></tr><tr><th scope=\"row\">4</th>\n     <td class=\"num\" style=\"color:#2E6B4F;font-weight:700\">0</td>\n     <td class=\"num\">0,000</td><td class=\"num\">50%</td>\n     <td class=\"num\" style=\"color:#3D5A8A\">-0,500</td>\n     <td class=\"num\" style=\"color:#1F6F5C;font-weight:700\">-0,200</td>\n     <td class=\"num\">-0,200</td>\n     <td class=\"num\" style=\"font-weight:700\">45%</td></tr><tr><th scope=\"row\">5</th>\n     <td class=\"num\" style=\"color:#2E6B4F;font-weight:700\">0</td>\n     <td class=\"num\">0,000</td><td class=\"num\">50%</td>\n     <td class=\"num\" style=\"color:#3D5A8A\">-0,500</td>\n     <td class=\"num\" style=\"color:#1F6F5C;font-weight:700\">-0,200</td>\n     <td class=\"num\">-0,200</td>\n     <td class=\"num\" style=\"font-weight:700\">45%</td></tr><tr><th scope=\"row\">6</th>\n     <td class=\"num\" style=\"color:#2E6B4F;font-weight:700\">0</td>\n     <td class=\"num\">0,000</td><td class=\"num\">50%</td>\n     <td class=\"num\" style=\"color:#3D5A8A\">-0,500</td>\n     <td class=\"num\" style=\"color:#1F6F5C;font-weight:700\">-0,200</td>\n     <td class=\"num\">-0,200</td>\n     <td class=\"num\" style=\"font-weight:700\">45%</td></tr><tr><th scope=\"row\">7</th>\n     <td class=\"num\" style=\"color:#2E6B4F;font-weight:700\">0</td>\n     <td class=\"num\">0,000</td><td class=\"num\">50%</td>\n     <td class=\"num\" style=\"color:#3D5A8A\">-0,500</td>\n     <td class=\"num\" style=\"color:#1F6F5C;font-weight:700\">-0,200</td>\n     <td class=\"num\">-0,200</td>\n     <td class=\"num\" style=\"font-weight:700\">45%</td></tr><tr><th scope=\"row\">8</th>\n     <td class=\"num\" style=\"color:#2E6B4F;font-weight:700\">0</td>\n     <td class=\"num\">0,000</td><td class=\"num\">50%</td>\n     <td class=\"num\" style=\"color:#3D5A8A\">-0,500</td>\n     <td class=\"num\" style=\"color:#1F6F5C;font-weight:700\">-0,200</td>\n     <td class=\"num\">-0,200</td>\n     <td class=\"num\" style=\"font-weight:700\">45%</td></tr><tr><th scope=\"row\">9</th>\n     <td class=\"num\" style=\"color:#8C2332;font-weight:700\">1</td>\n     <td class=\"num\">0,000</td><td class=\"num\">50%</td>\n     <td class=\"num\" style=\"color:#8C2332\">0,500</td>\n     <td class=\"num\" style=\"color:#1F6F5C;font-weight:700\">0,200</td>\n     <td class=\"num\">0,200</td>\n     <td class=\"num\" style=\"font-weight:700\">55%</td></tr><tr><th scope=\"row\">10</th>\n     <td class=\"num\" style=\"color:#8C2332;font-weight:700\">1</td>\n     <td class=\"num\">0,000</td><td class=\"num\">50%</td>\n     <td class=\"num\" style=\"color:#8C2332\">0,500</td>\n     <td class=\"num\" style=\"color:#1F6F5C;font-weight:700\">0,200</td>\n     <td class=\"num\">0,200</td>\n     <td class=\"num\" style=\"font-weight:700\">55%</td></tr><tr><th scope=\"row\">11</th>\n     <td class=\"num\" style=\"color:#8C2332;font-weight:700\">1</td>\n     <td class=\"num\">0,000</td><td class=\"num\">50%</td>\n     <td class=\"num\" style=\"color:#8C2332\">0,500</td>\n     <td class=\"num\" style=\"color:#1F6F5C;font-weight:700\">0,200</td>\n     <td class=\"num\">0,200</td>\n     <td class=\"num\" style=\"font-weight:700\">55%</td></tr><tr><th scope=\"row\">12</th>\n     <td class=\"num\" style=\"color:#8C2332;font-weight:700\">1</td>\n     <td class=\"num\">0,000</td><td class=\"num\">50%</td>\n     <td class=\"num\" style=\"color:#8C2332\">0,500</td>\n     <td class=\"num\" style=\"color:#1F6F5C;font-weight:700\">0,200</td>\n     <td class=\"num\">0,200</td>\n     <td class=\"num\" style=\"font-weight:700\">55%</td></tr><tr><th scope=\"row\">13</th>\n     <td class=\"num\" style=\"color:#8C2332;font-weight:700\">1</td>\n     <td class=\"num\">0,000</td><td class=\"num\">50%</td>\n     <td class=\"num\" style=\"color:#8C2332\">0,500</td>\n     <td class=\"num\" style=\"color:#1F6F5C;font-weight:700\">0,200</td>\n     <td class=\"num\">0,200</td>\n     <td class=\"num\" style=\"font-weight:700\">55%</td></tr><tr><th scope=\"row\">14</th>\n     <td class=\"num\" style=\"color:#8C2332;font-weight:700\">1</td>\n     <td class=\"num\">0,000</td><td class=\"num\">50%</td>\n     <td class=\"num\" style=\"color:#8C2332\">0,500</td>\n     <td class=\"num\" style=\"color:#1F6F5C;font-weight:700\">0,200</td>\n     <td class=\"num\">0,200</td>\n     <td class=\"num\" style=\"font-weight:700\">55%</td></tr><tr><th scope=\"row\">15</th>\n     <td class=\"num\" style=\"color:#2E6B4F;font-weight:700\">0</td>\n     <td class=\"num\">0,000</td><td class=\"num\">50%</td>\n     <td class=\"num\" style=\"color:#3D5A8A\">-0,500</td>\n     <td class=\"num\" style=\"color:#1F6F5C;font-weight:700\">0,000</td>\n     <td class=\"num\">0,000</td>\n     <td class=\"num\" style=\"font-weight:700\">50%</td></tr><tr><th scope=\"row\">16</th>\n     <td class=\"num\" style=\"color:#8C2332;font-weight:700\">1</td>\n     <td class=\"num\">0,000</td><td class=\"num\">50%</td>\n     <td class=\"num\" style=\"color:#8C2332\">0,500</td>\n     <td class=\"num\" style=\"color:#1F6F5C;font-weight:700\">0,000</td>\n     <td class=\"num\">0,000</td>\n     <td class=\"num\" style=\"font-weight:700\">50%</td></tr>\n    </tbody></table></div></div></div>\n  <div class=\"dir\" style=\"flex: 0.44 1 0px;\"><div id=\"c613o\"><div class=\"grade g3\">\n    <div class=\"painel\" style=\"text-align:center\"><div class=\"rot\">Perda de treino antes</div>\n     <div class=\"numg\">0,6931</div></div>\n    <div class=\"painel\" style=\"text-align:center\"><div class=\"rot\">Perda de treino depois</div>\n     <div class=\"numg\" style=\"color:#2E6B4F\">0,6219</div></div>\n    <div class=\"painel\" style=\"text-align:center\"><div class=\"rot\">Queda</div>\n     <div class=\"numg\">0,0713</div></div></div>\n    <div class=\"nota\" style=\"margin-top:8px\">Confere com o gerador em Python:\n    0,6931 · 0,6219 · 0,5630 · 0,5150 · 0,4748. <span class=\"selo s-rec\">Recalculado aqui</span>\n    Para referência, a regressão logística do capítulo 4 atinge 0,43282 nesta mesma base.\n    Quatro árvores ainda não chegam lá.\n    <b>As duas perdas são de treino</b>, nas mesmas dezesseis propostas. Perda de treino desce com qualquer\n    complexidade acrescentada, e por isso não compara modelos: a comparação honesta é a da página 17.</div></div><div class=\"svgfit\" id=\"c613g\" style=\"margin-top:9px\" data-exploravel=\"grafico\"><svg viewBox=\"0 0 560 250\" role=\"img\" aria-label=\"log loss de treino por árvores acrescentadas\" style=\"font-family:system-ui,sans-serif\"><line x1=\"62\" y1=\"204.0\" x2=\"542\" y2=\"204.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"208.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,40</text><line x1=\"62\" y1=\"160.5\" x2=\"542\" y2=\"160.5\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"164.5\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,48</text><line x1=\"62\" y1=\"117.0\" x2=\"542\" y2=\"117.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"121.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,56</text><line x1=\"62\" y1=\"73.5\" x2=\"542\" y2=\"73.5\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"77.5\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,64</text><line x1=\"62\" y1=\"30.0\" x2=\"542\" y2=\"30.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"34.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,72</text><line x1=\"62\" y1=\"30\" x2=\"62\" y2=\"204\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <line x1=\"62\" y1=\"204\" x2=\"542\" y2=\"204\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <text transform=\"translate(12,117) rotate(-90)\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">log loss de treino</text>\n   <text x=\"302\" y=\"245\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">árvores acrescentadas</text><text x=\"62.0\" y=\"220\" text-anchor=\"start\" font-size=\"11.5\" fill=\"#5B6475\">0</text><text x=\"182.0\" y=\"220\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">1</text><text x=\"302.0\" y=\"220\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">2</text><text x=\"422.0\" y=\"220\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">3</text><text x=\"542.0\" y=\"220\" text-anchor=\"end\" font-size=\"11.5\" fill=\"#5B6475\">4</text><line x1=\"66\" y1=\"15\" x2=\"82\" y2=\"15\" stroke=\"#00205B\" stroke-width=\"2.5\"></line>\n      <text x=\"87\" y=\"18\" font-size=\"11.5\" fill=\"#333\">log loss por árvore acrescentada</text><line x1=\"314.8\" y1=\"15\" x2=\"330.8\" y2=\"15\" stroke=\"#6B4E8C\" stroke-width=\"2.5\" stroke-dasharray=\"6 3\"></line>\n      <text x=\"335.8\" y=\"18\" font-size=\"11.5\" fill=\"#333\">logística do capítulo 4</text><path d=\"M62.0 44.6L182.0 83.3L302.0 115.4L422.0 141.5L542.0 163.3\" fill=\"none\" stroke=\"#00205B\" stroke-width=\"2.5\" stroke-linejoin=\"round\"></path><path d=\"M62.0 186.2L542.0 186.2\" fill=\"none\" stroke=\"#6B4E8C\" stroke-width=\"2.5\" stroke-dasharray=\"7 4\" stroke-linejoin=\"round\"></path><circle cx=\"182.0\" cy=\"83.3\" r=\"5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><text x=\"191.0\" y=\"75.3\" font-size=\"11.5\" font-weight=\"700\" fill=\"#8C2332\" text-anchor=\"start\">árvore 1</text></svg></div></div></div></div>",
    "text": "O PROCEDIMENTO, EM CINCO LINHAS\nF₀ = ln(π ÷ (1 − π)). A prevalência desta base é 50%, então F₀ = 0,000. F é escore em log odds, não probabilidade: é a escala do capítulo 4.\np = σ(F). A mesma curva logística do capítulo 4, agora usada só para traduzir o escore.\nAlvo de cada caso: r = y − p. Em regressão era y − F. Na primeira árvore todos valem ±0,500, porque todos partem de p = 50%.\nAjuste uma árvore rasa a r. Cada folha guarda a média de r do seu grupo.\nF ← F + η × h. Volte à linha 2.\n\nNada foi introduzido: são as mesmas cinco linhas da regressão, com duas trocas. O alvo passou de y − F para y − p, e a leitura final passa pela logística. Primeira ordem didática: a folha recebe a média do gradiente negativo, sem passo de Newton. Bibliotecas reais mudam esse ponto e obtêm convergência mais rápida.\n\nAnterior\nPróxima árvore\nÁrvore 1 de 4. Perda: 0,6931 → 0,6219. η = 0,40.\n#\ty\tF antes\tp antes\talvo y − p\tη × árvore\tF depois\tp depois\n1\t0\t0,000\t50%\t-0,500\t0,000\t0,000\t50%\n2\t1\t0,000\t50%\t0,500\t0,000\t0,000\t50%\n3\t0\t0,000\t50%\t-0,500\t-0,200\t-0,200\t45%\n4\t0\t0,000\t50%\t-0,500\t-0,200\t-0,200\t45%\n5\t0\t0,000\t50%\t-0,500\t-0,200\t-0,200\t45%\n6\t0\t0,000\t50%\t-0,500\t-0,200\t-0,200\t45%\n7\t0\t0,000\t50%\t-0,500\t-0,200\t-0,200\t45%\n8\t0\t0,000\t50%\t-0,500\t-0,200\t-0,200\t45%\n9\t1\t0,000\t50%\t0,500\t0,200\t0,200\t55%\n10\t1\t0,000\t50%\t0,500\t0,200\t0,200\t55%\n11\t1\t0,000\t50%\t0,500\t0,200\t0,200\t55%\n12\t1\t0,000\t50%\t0,500\t0,200\t0,200\t55%\n13\t1\t0,000\t50%\t0,500\t0,200\t0,200\t55%\n14\t1\t0,000\t50%\t0,500\t0,200\t0,200\t55%\n15\t0\t0,000\t50%\t-0,500\t0,000\t0,000\t50%\n16\t1\t0,000\t50%\t0,500\t0,000\t0,000\t50%\nPERDA DE TREINO ANTES\n0,6931\nPERDA DE TREINO DEPOIS\n0,6219\nQUEDA\n0,0713\nConfere com o gerador em Python: 0,6931 · 0,6219 · 0,5630 · 0,5150 · 0,4748. RECALCULADO AQUI Para referência, a regressão logística do capítulo 4 atinge 0,43282 nesta mesma base. Quatro árvores ainda não chegam lá. As duas perdas são de treino, nas mesmas dezesseis propostas. Perda de treino desce com qualquer complexidade acrescentada, e por isso não compara modelos: a comparação honesta é a da página 17.\n0,40\n0,48\n0,56\n0,64\n0,72\nlog loss de treino\nárvores acrescentadas\n0\n1\n2\n3\n4\nlog loss por árvore acrescentada\nlogística do capítulo 4\nárvore 1",
@@ -7326,20 +7484,31 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Taxa e número de árvores andam juntos: escolher um sem o outro não faz sentido.",
-   "apoio": "Provisório: o quadro está em reconstrução.",
-   "conexao": "A validação diz quando parar",
+   "aprendizado": "Ver que reduzir a taxa pela metade pede cerca do dobro de árvores para chegar ao mesmo ponto da validação.",
+   "apoio": "Preveja onde fica o mínimo com metade da taxa; depois troque o eixo para η × árvores e veja as curvas se alinharem. O segundo par confirma.",
+   "conexao": "Aprofunda o slide 13 e prepara o slide 15: fixada a taxa, o número de árvores se escolhe na validação.",
    "guia": {
-    "funcao": "Provisório.",
-    "pre": "Slide 13.",
-    "conducao": "Provisório.",
-    "leitura": "Provisório.",
-    "pergunta": "Provisório.",
-    "resposta": "Provisório.",
-    "erros": [],
-    "interacao": "Provisório.",
-    "verificacao": "Provisório.",
-    "transicao": "A validação diz quando parar"
+    "funcao": "Mostrar que taxa e número de árvores não se escolhem separados: conta o passo total.",
+    "pre": "Slides 7 e 13: a taxa encolhe cada correção, e os quatro controles mexem na mesma complexidade.",
+    "conducao": "Com η 0,1, o mínimo da validação está em 16 árvores. Peça a previsão para η 0,05 antes de mostrar a segunda curva. Depois troque o eixo.",
+    "leitura": "η 0,05: mínimo em 34 árvores (2,1 vezes 16); η 0,025: em 73. No eixo η × árvores as curvas de 0,1 e 0,05 ficam a no máximo 0,0023 uma da outra; as perdas mínimas são 0,2955, 0,2955 e 0,2959.",
+    "pergunta": "Com η 0,05, metade da taxa, onde fica o mínimo da perda de validação?",
+    "resposta": "Em 34 árvores, perto do dobro de 16.",
+    "erros": [
+     {
+      "alt": "Também perto de 16",
+      "confusao": "Acha que a taxa não muda o número de árvores necessário.",
+      "intervencao": "Cada árvore anda metade do passo; mostre o eixo η × árvores."
+     },
+     {
+      "alt": "Perto de 8",
+      "confusao": "Inverte a relação: taxa menor chegaria antes.",
+      "intervencao": "Pergunte quanto anda cada passo com η menor."
+     }
+    ],
+    "interacao": "Previsão com retorno; depois, seletor do par de taxas e do eixo (árvores ou η × árvores). Restaurar volta ao primeiro par e ao eixo de árvores.",
+    "verificacao": "Peça o passo total no mínimo: 1,60 com η 0,1 e 1,70 com η 0,05.",
+    "transicao": "Fixada a taxa, falta dizer quantas árvores ficam: o slide 15 usa a validação para parar."
    },
    "html": "<div class=\"palcoflex\" data-colunas=\"dados\"><div class=\"esq\" style=\"flex: 0.52 1 0px;\">\n  <div class=\"ctrl\"><label for=\"c614i\">Proposta <b id=\"c614iv\">#12: utilização 75%, atraso 40 dias, desfecho default</b></label>\n   <input type=\"range\" id=\"c614i\" min=\"1\" max=\"16\" step=\"1\" value=\"12\"></div>\n  <div id=\"c614o\" style=\"margin-top:10px\"><div class=\"rolax\" data-exploravel=\"tabela\"><table>\n    <thead><tr><th>Parcela</th><th>Acréscimo em log odds</th><th>Escore acumulado</th>\n     <th>PD acumulada</th></tr></thead><tbody>\n    <tr><th scope=\"row\">F₀</th><td class=\"num\">0,000</td>\n     <td class=\"num\">0,000</td><td class=\"num\">50,0%</td></tr>\n    <tr><th scope=\"row\">árvore 1</th>\n     <td class=\"num\" style=\"font-weight:700;color:#8C2332\">+0,200</td>\n     <td class=\"num\">0,200</td>\n     <td class=\"num\">55,0%</td></tr><tr><th scope=\"row\">árvore 2</th>\n     <td class=\"num\" style=\"font-weight:700;color:#8C2332\">+0,183</td>\n     <td class=\"num\">0,383</td>\n     <td class=\"num\">59,5%</td></tr><tr><th scope=\"row\">árvore 3</th>\n     <td class=\"num\" style=\"font-weight:700;color:#8C2332\">+0,165</td>\n     <td class=\"num\">0,549</td>\n     <td class=\"num\">63,4%</td></tr><tr><th scope=\"row\">árvore 4</th>\n     <td class=\"num\" style=\"font-weight:700;color:#8C2332\">+0,152</td>\n     <td class=\"num\">0,701</td>\n     <td class=\"num\">66,8%</td></tr>\n    <tr style=\"background:#FBF3DE\"><th scope=\"row\">total</th>\n     <td class=\"num\" style=\"font-weight:700\">0,701</td>\n     <td class=\"num\" style=\"font-weight:700\">0,701</td>\n     <td class=\"num\" style=\"font-weight:700\">66,8%</td></tr></tbody></table></div>\n    <div class=\"nota\" style=\"margin-top:8px\">Comparação nesta proposta: boosting com quatro árvores\n    estima <b>66,8%</b>, a regressão logística do capítulo 4 estima\n    <b>99,6%</b> e a árvore do capítulo 5 estima\n    <b>100%</b>.</div></div>\n  </div><div class=\"dir\" style=\"flex: 0.48 1 0px;\"><div class=\"svgfit\" id=\"c614g\" data-exploravel=\"grafico\"><svg viewBox=\"0 0 600 320\" role=\"img\" aria-label=\"escore em log odds por árvores acrescentadas\" style=\"font-family:system-ui,sans-serif\"><line x1=\"62\" y1=\"274.0\" x2=\"582\" y2=\"274.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"278.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">-2,5</text><line x1=\"62\" y1=\"213.0\" x2=\"582\" y2=\"213.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"217.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">-1,3</text><line x1=\"62\" y1=\"152.0\" x2=\"582\" y2=\"152.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"156.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,0</text><line x1=\"62\" y1=\"91.0\" x2=\"582\" y2=\"91.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"95.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">1,3</text><line x1=\"62\" y1=\"30.0\" x2=\"582\" y2=\"30.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"34.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">2,5</text><line x1=\"62\" y1=\"30\" x2=\"62\" y2=\"274\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <line x1=\"62\" y1=\"274\" x2=\"582\" y2=\"274\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <text transform=\"translate(12,152) rotate(-90)\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">escore em log odds</text>\n   <text x=\"322\" y=\"315\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">árvores acrescentadas</text><text x=\"62.0\" y=\"290\" text-anchor=\"start\" font-size=\"11.5\" fill=\"#5B6475\">F₀</text><text x=\"192.0\" y=\"290\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">+1</text><text x=\"322.0\" y=\"290\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">+2</text><text x=\"452.0\" y=\"290\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">+3</text><text x=\"582.0\" y=\"290\" text-anchor=\"end\" font-size=\"11.5\" fill=\"#5B6475\">+4</text><line x1=\"66\" y1=\"15\" x2=\"82\" y2=\"15\" stroke=\"#00205B\" stroke-width=\"2.5\"></line>\n      <text x=\"87\" y=\"18\" font-size=\"11.5\" fill=\"#333\">escore acumulado da proposta #12</text><line x1=\"314.8\" y1=\"15\" x2=\"330.8\" y2=\"15\" stroke=\"#5B6475\" stroke-width=\"2.5\" stroke-dasharray=\"6 3\"></line>\n      <text x=\"335.8\" y=\"18\" font-size=\"11.5\" fill=\"#333\">escore zero, PD de 50%</text><path d=\"M62.0 152.0L192.0 142.2L322.0 133.3L452.0 125.2L582.0 117.8\" fill=\"none\" stroke=\"#00205B\" stroke-width=\"3\" stroke-linejoin=\"round\"></path><path d=\"M62.0 152.0L582.0 152.0\" fill=\"none\" stroke=\"#5B6475\" stroke-width=\"1.4\" stroke-dasharray=\"7 4\" stroke-linejoin=\"round\"></path><circle cx=\"62.0\" cy=\"152.0\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"192.0\" cy=\"142.2\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"322.0\" cy=\"133.3\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"452.0\" cy=\"125.2\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"582.0\" cy=\"117.8\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle></svg></div>\n  <div class=\"revelacao\" style=\"margin-top:10px\"><h4>Rastreável, mas não interpretável da mesma forma</h4>\n  Com quatro árvores, a decomposição cabe numa tabela. Com duzentas árvores, a mesma decomposição existe\n  e ninguém a lê. É essa diferença, e não a ausência de explicação, que separa o boosting da logística\n  em termos de interpretabilidade.</div></div></div>",
    "text": "Proposta\n#12: utilização 75%, atraso 40 dias, desfecho default\nParcela\tAcréscimo em log odds\tEscore acumulado\tPD acumulada\nF₀\t0,000\t0,000\t50,0%\nárvore 1\t+0,200\t0,200\t55,0%\nárvore 2\t+0,183\t0,383\t59,5%\nárvore 3\t+0,165\t0,549\t63,4%\nárvore 4\t+0,152\t0,701\t66,8%\ntotal\t0,701\t0,701\t66,8%\nComparação nesta proposta: boosting com quatro árvores estima 66,8%, a regressão logística do capítulo 4 estima 99,6% e a árvore do capítulo 5 estima 100%.\n-2,5\n-1,3\n0,0\n1,3\n2,5\nescore em log odds\nárvores acrescentadas\nF₀\n+1\n+2\n+3\n+4\nescore acumulado da proposta #12\nescore zero, PD de 50%\nRastreável, mas não interpretável da mesma forma\nCom quatro árvores, a decomposição cabe numa tabela. Com duzentas árvores, a mesma decomposição existe e ninguém a lê. É essa diferença, e não a ausência de explicação, que separa o boosting da logística em termos de interpretabilidade.",
@@ -7371,20 +7540,31 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "A perda de validação desce e volta a subir; o ponto mais baixo escolhe o número de árvores.",
-   "apoio": "Provisório: o quadro está em reconstrução.",
-   "conexao": "Sortear propostas a cada árvore também regulariza",
+   "aprendizado": "Escolher o número de árvores pelo mínimo da perda de validação e reconhecer que o ajuste não dá sinal de parada.",
+   "apoio": "Preveja quantas das 300 árvores ficam; depois mova o ponto de parada e compare a perda de validação com o mínimo. A faixa verde mostra onde a perda fica a menos de 0,001 do mínimo.",
+   "conexao": "Responde à pergunta aberta no slide 11 e entrega ao slide 17 o modelo parado na validação, para enfrentar a logística.",
    "guia": {
-    "funcao": "Provisório.",
-    "pre": "Slide 14.",
-    "conducao": "Provisório.",
-    "leitura": "Provisório.",
-    "pergunta": "Provisório.",
-    "resposta": "Provisório.",
-    "erros": [],
-    "interacao": "Provisório.",
-    "verificacao": "Provisório.",
-    "transicao": "Sortear propostas a cada árvore também regulariza"
+    "funcao": "Transformar a curva de validação em decisão: parada antecipada.",
+    "pre": "Slides 11 e 14: curvas de ajuste e validação na carteira, e taxa e árvores acopladas.",
+    "conducao": "Lembre que a perda de ajuste cai até a árvore 300. Peça a previsão. Revelado o mínimo (16 árvores, 0,2955), mova o cursor para 100 e 300 e leia a perda de validação e a AUC de ajuste.",
+    "leitura": "Mínimo em 16 árvores (0,2955); com 100, 0,3096; com 300, 0,3289. A AUC de ajuste sobe de 0,743 em 16 árvores para 0,874 em 300. De 9 a 22 árvores, a perda fica a menos de 0,001 do mínimo.",
+    "pergunta": "Das 300 árvores do slide 11, quantas a perda de validação manda manter?",
+    "resposta": "16 (menos de 20); as outras 284 só baixam o ajuste.",
+    "erros": [
+     {
+      "alt": "Todas as 300",
+      "confusao": "Usa o ajuste como critério de parada.",
+      "intervencao": "Mostre a perda de validação com 300 árvores: 0,3289, contra 0,2955."
+     },
+     {
+      "alt": "Cerca de 100",
+      "confusao": "Corta por intuição, sem olhar a curva.",
+      "intervencao": "Com 100 árvores a perda de validação já é 0,3096."
+     }
+    ],
+    "interacao": "Controle do ponto de parada, seletor do eixo (0 a 60 ou 0 a 300) e previsão; a curva de validação aparece só depois do acerto. A expansão mostra a regra de paciência calculada na mesma curva. Restaurar volta a 300 árvores.",
+    "verificacao": "Regra de paciência: com 10 árvores sem melhorar, o treino para na 26 e guarda a 16; com 3, para na 14 e guarda a 11, um mínimo local.",
+    "transicao": "Parar cedo é um freio; o slide 16 mostra outro, sortear propostas a cada árvore. Depois, o slide 17 põe o modelo parado contra a logística."
    },
    "html": "<div class=\"palcoflex\"><div class=\"esq\">\n  <div class=\"ctrl\"><label for=\"c615e\">Taxa de aprendizagem η <b id=\"c615ev\">0,40</b></label>\n   <input type=\"range\" id=\"c615e\" min=\"5\" max=\"100\" step=\"5\" value=\"40\"></div>\n  <div class=\"ctrl\" style=\"margin-top:7px\"><label for=\"c615m\">Número de árvores M <b id=\"c615mv\">4</b></label>\n   <input type=\"range\" id=\"c615m\" min=\"1\" max=\"40\" step=\"1\" value=\"4\"></div>\n  <div class=\"ctrl\" style=\"margin-top:7px\"><label for=\"c615d\">Profundidade de cada árvore <b id=\"c615dv\">2</b></label>\n   <input type=\"range\" id=\"c615d\" min=\"1\" max=\"3\" step=\"1\" value=\"2\"></div>\n  <div class=\"ctrl\" style=\"margin-top:7px\"><label for=\"c615f\">Mínimo de propostas por folha <b id=\"c615fv\">2</b></label>\n   <input type=\"range\" id=\"c615f\" min=\"1\" max=\"4\" step=\"1\" value=\"2\"></div>\n  <div id=\"c615o\" style=\"margin-top:10px\"><div class=\"grade g2\">\n    <div class=\"painel\" style=\"text-align:center\"><div class=\"rot\">Log loss de treino</div>\n     <div class=\"numg\" style=\"color:#00205B\">0,47481</div>\n     <div class=\"nota\">logística: 0,43282</div></div>\n    <div class=\"painel\" style=\"text-align:center\"><div class=\"rot\">Folhas somadas</div>\n     <div class=\"numg\">16</div>\n     <div class=\"nota\">parâmetros estimados no total</div></div>\n    <div class=\"painel\" style=\"text-align:center\"><div class=\"rot\">Menor folha</div>\n     <div class=\"numg\" style=\"color:#8C2332\">2</div></div>\n    <div class=\"painel\" style=\"text-align:center\"><div class=\"rot\">PD mínima e máxima</div>\n     <div style=\"font-size:17px;font-weight:700;margin-top:8px;font-family:monospace\">\n      33% a 67%</div></div></div>\n    <div class=\"nota\" style=\"margin-top:8px\">Configuração razoável para esta base. Em base real, a escolha se faz por validação e não por inspeção.</div></div>\n  </div><div class=\"dir\"><div class=\"svgfit\" id=\"c615g\" data-exploravel=\"grafico\"><svg viewBox=\"0 0 600 320\" role=\"img\" aria-label=\"log loss de treino por árvores acrescentadas\" style=\"font-family:system-ui,sans-serif\"><line x1=\"62\" y1=\"274.0\" x2=\"582\" y2=\"274.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"278.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,00</text><line x1=\"62\" y1=\"213.0\" x2=\"582\" y2=\"213.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"217.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,18</text><line x1=\"62\" y1=\"152.0\" x2=\"582\" y2=\"152.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"156.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,36</text><line x1=\"62\" y1=\"91.0\" x2=\"582\" y2=\"91.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"95.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,54</text><line x1=\"62\" y1=\"30.0\" x2=\"582\" y2=\"30.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"34.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,72</text><line x1=\"62\" y1=\"30\" x2=\"62\" y2=\"274\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <line x1=\"62\" y1=\"274\" x2=\"582\" y2=\"274\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <text transform=\"translate(12,152) rotate(-90)\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">log loss de treino</text>\n   <text x=\"322\" y=\"315\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">árvores acrescentadas</text><text x=\"62.0\" y=\"290\" text-anchor=\"start\" font-size=\"11.5\" fill=\"#5B6475\">0</text><text x=\"192.0\" y=\"290\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">1</text><text x=\"322.0\" y=\"290\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">2</text><text x=\"452.0\" y=\"290\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">3</text><text x=\"582.0\" y=\"290\" text-anchor=\"end\" font-size=\"11.5\" fill=\"#5B6475\">4</text><line x1=\"66\" y1=\"15\" x2=\"82\" y2=\"15\" stroke=\"#00205B\" stroke-width=\"2.5\"></line>\n      <text x=\"87\" y=\"18\" font-size=\"11.5\" fill=\"#333\">log loss de treino</text><line x1=\"218.2\" y1=\"15\" x2=\"234.2\" y2=\"15\" stroke=\"#6B4E8C\" stroke-width=\"2.5\" stroke-dasharray=\"6 3\"></line>\n      <text x=\"239.2\" y=\"18\" font-size=\"11.5\" fill=\"#333\">logística do capítulo 4</text><path d=\"M62.0 39.1L192.0 63.2L322.0 83.2L452.0 99.5L582.0 113.1\" fill=\"none\" stroke=\"#00205B\" stroke-width=\"2.6\" stroke-linejoin=\"round\"></path><path d=\"M62.0 127.3L582.0 127.3\" fill=\"none\" stroke=\"#6B4E8C\" stroke-width=\"2.5\" stroke-dasharray=\"7 4\" stroke-linejoin=\"round\"></path></svg></div>\n  <div class=\"painel\" style=\"margin-top:10px\"><div class=\"rot\">O que cada um controla</div>\n   <div class=\"rolax\"><table style=\"margin-top:7px\"><tbody>\n   <tr><th scope=\"row\">η</th><td>quanto de cada correção é aceito. Menor significa avanço mais lento e\n    menos dependência de cada árvore</td></tr>\n   <tr><th scope=\"row\">M</th><td>quantas correções. Cada árvore acrescentada aumenta a complexidade, então\n    M é o acelerador, não o freio: o freio é parar cedo. É também o que mais depende de amostra fora do\n    treino, porque a perda de treino cai com M e nunca indica onde parar. Os outros três também se\n    escolhem fora do treino</td></tr>\n   <tr><th scope=\"row\">Profundidade</th><td>quantas variáveis podem interagir dentro de uma árvore.\n    Profundidade 1 não permite interação alguma no escore; profundidade 2 permite pares</td></tr>\n   <tr><th scope=\"row\">Mínimo por folha</th><td>quão específica pode ser uma correção. É a mesma função\n    do capítulo 5, e o mesmo argumento de incerteza da folha</td></tr></tbody></table></div></div></div></div>",
    "text": "Taxa de aprendizagem η\n0,40\nNúmero de árvores M\n4\nProfundidade de cada árvore\n2\nMínimo de propostas por folha\n2\nLOG LOSS DE TREINO\n0,47481\nlogística: 0,43282\nFOLHAS SOMADAS\n16\nparâmetros estimados no total\nMENOR FOLHA\n2\nPD MÍNIMA E MÁXIMA\n33% a 67%\nConfiguração razoável para esta base. Em base real, a escolha se faz por validação e não por inspeção.\n0,00\n0,18\n0,36\n0,54\n0,72\nlog loss de treino\nárvores acrescentadas\n0\n1\n2\n3\n4\nlog loss de treino\nlogística do capítulo 4\nO QUE CADA UM CONTROLA\nη\tquanto de cada correção é aceito. Menor significa avanço mais lento e menos dependência de cada árvore\nM\tquantas correções. Cada árvore acrescentada aumenta a complexidade, então M é o acelerador, não o freio: o freio é parar cedo. É também o que mais depende de amostra fora do treino, porque a perda de treino cai com M e nunca indica onde parar. Os outros três também se escolhem fora do treino\nProfundidade\tquantas variáveis podem interagir dentro de uma árvore. Profundidade 1 não permite interação alguma no escore; profundidade 2 permite pares\nMínimo por folha\tquão específica pode ser uma correção. É a mesma função do capítulo 5, e o mesmo argumento de incerteza da folha",
@@ -7434,20 +7614,31 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "O boosting estocástico de Friedman (2002): cada árvore vê só uma parte do ajuste.",
-   "apoio": "Provisório: o quadro está em reconstrução.",
-   "conexao": "Com três variáveis, a logística valida melhor",
+   "aprendizado": "Entender a subamostra (boosting estocástico de Friedman, 2002) como regularização e ler o efeito com a variação entre sementes.",
+   "apoio": "Preveja o efeito de sortear metade das propostas a cada árvore; depois compare as dez sementes com a curva sem sorteio e troque a fração.",
+   "conexao": "Completa os controles dos slides 12 a 15 e prepara a comparação com a logística do slide 17.",
    "guia": {
-    "funcao": "Provisório.",
-    "pre": "Slide 15.",
-    "conducao": "Provisório.",
-    "leitura": "Provisório.",
-    "pergunta": "Provisório.",
-    "resposta": "Provisório.",
-    "erros": [],
-    "interacao": "Provisório.",
-    "verificacao": "Provisório.",
-    "transicao": "Com três variáveis, a logística valida melhor"
+    "funcao": "Mostrar um freio que não muda o número de árvores: ruído deliberado em cada árvore.",
+    "pre": "Slides 13 e 15: os quatro controles e a parada pela validação.",
+    "conducao": "Mostre a curva sem sorteio (mínimo 0,2955, 0,3228 com 200 árvores). Peça a previsão para a subamostra de 50%.",
+    "leitura": "Com 50% e 200 árvores, as dez sementes ficam entre 0,3075 e 0,3173, todas abaixo de 0,3228 sem sorteio. No mínimo, a média das sementes é 0,2935 contra 0,2955, diferença menor que a faixa entre sementes (0,2912 a 0,2955).",
+    "pergunta": "Com subamostra de 50% e 200 árvores, a perda de validação melhora ou piora?",
+    "resposta": "Melhora em todas as dez sementes com 200 árvores; no ponto mínimo, a diferença é menor que a variação entre sementes.",
+    "erros": [
+     {
+      "alt": "Piora: cada árvore vê menos propostas",
+      "confusao": "Pensa em cada árvore isolada, não na soma de muitas árvores com amostras diferentes.",
+      "intervencao": "Mostre a média das sementes contra a curva cinza depois de 100 árvores."
+     },
+     {
+      "alt": "Não muda: só acrescenta ruído",
+      "confusao": "Não vê que o ruído é o que impede a decoreba.",
+      "intervencao": "Compare as perdas com 200 árvores na tabela."
+     }
+    ],
+    "interacao": "Previsão com retorno; depois, seletor da fração (80%, 50%, 30%), com as dez sementes calculadas uma a uma. Restaurar volta a 50% e limpa a previsão.",
+    "verificacao": "Peça à turma a faixa entre sementes no mínimo e com 200 árvores, lida na tabela, e o que ela permite concluir.",
+    "transicao": "Com os freios na mão, o slide 17 compara o boosting parado na validação com a logística das mesmas três variáveis."
    },
    "html": "<div class=\"palcoflex\" data-colunas=\"dados\"><div class=\"esq\" style=\"flex: 0.52 1 0px;\"><div class=\"rolax\" data-exploravel=\"tabela\" data-aberta=\"true\"><table>\n   <thead><tr><th><span class=\"letra-grega\">η</span></th><th>Árvores até perda de treino 0,50</th><th><span class=\"letra-grega\">η</span> × árvores</th>\n    <th>Perda de treino com 60 árvores</th></tr></thead><tbody>\n   <tr>\n    <th scope=\"row\">0,10</th><td class=\"num\">14</td>\n    <td class=\"num\">1,40</td>\n    <td class=\"num\">0,28394</td></tr><tr>\n    <th scope=\"row\">0,15</th><td class=\"num\">10</td>\n    <td class=\"num\">1,50</td>\n    <td class=\"num\">0,23680</td></tr><tr>\n    <th scope=\"row\">0,20</th><td class=\"num\">7</td>\n    <td class=\"num\">1,40</td>\n    <td class=\"num\">0,20965</td></tr><tr>\n    <th scope=\"row\">0,30</th><td class=\"num\">5</td>\n    <td class=\"num\">1,50</td>\n    <td class=\"num\">0,16621</td></tr><tr style=\"background:#FBF3DE\">\n    <th scope=\"row\">0,40</th><td class=\"num\">4</td>\n    <td class=\"num\">1,60</td>\n    <td class=\"num\">0,13711</td></tr><tr>\n    <th scope=\"row\">0,50</th><td class=\"num\">3</td>\n    <td class=\"num\">1,50</td>\n    <td class=\"num\">0,11702</td></tr><tr>\n    <th scope=\"row\">0,60</th><td class=\"num\">3</td>\n    <td class=\"num\">1,80</td>\n    <td class=\"num\">0,10227</td></tr><tr>\n    <th scope=\"row\">0,80</th><td class=\"num\">2</td>\n    <td class=\"num\">1,60</td>\n    <td class=\"num\">0,08165</td></tr><tr>\n    <th scope=\"row\">1,00</th><td class=\"num\">2</td>\n    <td class=\"num\">2,00</td>\n    <td class=\"num\">0,06800</td></tr>\n   </tbody></table></div>\n   <p class=\"nota\" style=\"margin-top:8px\">A terceira coluna é quase constante. Reduzir η pela metade exige\n   aproximadamente dobrar M para chegar ao mesmo ponto. <span class=\"selo s-rec\">Recalculado aqui</span></p>\n   <p class=\"nota\" style=\"margin-top:7px\">As duas colunas de perda são de treino. A última coluna desce\n   sem parar conforme η cresce: com dezesseis propostas e sessenta árvores, 0,06800\n   é memorização, não desempenho. É por isso que a pergunta “qual η dá a menor perda” não se\n   responde nesta tabela.</p>\n   </div><div class=\"dir\" style=\"flex: 0.48 1 0px;\"><div class=\"svgfit\" data-exploravel=\"grafico\"><svg viewBox=\"0 0 600 340\" role=\"img\" aria-label=\"árvores até a perda alvo por taxa de aprendizagem η\" style=\"font-family:system-ui,sans-serif\"><line x1=\"62\" y1=\"294.0\" x2=\"582\" y2=\"294.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"298.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0</text><line x1=\"62\" y1=\"130.0\" x2=\"582\" y2=\"130.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"134.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">10</text><line x1=\"62\" y1=\"-34.0\" x2=\"582\" y2=\"-34.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"-30.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">20</text><line x1=\"62\" y1=\"-197.9\" x2=\"582\" y2=\"-197.9\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"-193.9\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">30</text><line x1=\"62\" y1=\"-361.9\" x2=\"582\" y2=\"-361.9\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"-357.9\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">40</text><line x1=\"62\" y1=\"30\" x2=\"62\" y2=\"294\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <line x1=\"62\" y1=\"294\" x2=\"582\" y2=\"294\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <text transform=\"translate(12,162) rotate(-90)\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">árvores até a perda alvo</text>\n   <text x=\"322\" y=\"335\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">taxa de aprendizagem η</text><text x=\"88.0\" y=\"310\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">0,10</text><text x=\"166.0\" y=\"310\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">0,25</text><text x=\"296.0\" y=\"310\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">0,50</text><text x=\"426.0\" y=\"310\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">0,75</text><text x=\"556.0\" y=\"310\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">1,00</text><line x1=\"66\" y1=\"15\" x2=\"82\" y2=\"15\" stroke=\"#00205B\" stroke-width=\"2.5\"></line>\n      <text x=\"87\" y=\"18\" font-size=\"11.5\" fill=\"#333\">árvores necessárias</text><path d=\"M88.0 64.4L114.0 130.0L140.0 179.2L192.0 212.0L244.0 228.4L296.0 244.8L348.0 244.8L452.0 261.2L556.0 261.2\" fill=\"none\" stroke=\"#00205B\" stroke-width=\"2.6\" stroke-linejoin=\"round\"></path><circle cx=\"88.0\" cy=\"64.4\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"114.0\" cy=\"130.0\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"140.0\" cy=\"179.2\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"192.0\" cy=\"212.0\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"244.0\" cy=\"228.4\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"296.0\" cy=\"244.8\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"348.0\" cy=\"244.8\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"452.0\" cy=\"261.2\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"556.0\" cy=\"261.2\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle></svg></div>\n   <div class=\"revelacao\" style=\"margin-top:10px\"><h4>Chegando à mesma perda alvo, por que preferir η pequeno?</h4>\n   Porque o caminho não é idêntico. Com η pequeno, o modelo passa por muitos estágios intermediários, e a\n   validação pode interromper em qualquer um deles. Com η grande, os saltos são grossos e o melhor ponto\n   pode ficar entre duas iterações. A granularidade do controle é a vantagem.</div>\n   <div class=\"revelacao ruim\" style=\"margin-top:10px\"><h4>O custo</h4>\n   Tempo. η de 0,01 com dez mil árvores custa cem vezes mais que η de 1 com cem. Em produção, a escolha\n   típica fica entre 0,01 e 0,1 com parada antecipada monitorada em validação, e não em uma grade fixa.</div></div></div>",
    "text": "η\tÁrvores até perda de treino 0,50\tη × árvores\tPerda de treino com 60 árvores\n0,10\t14\t1,40\t0,28394\n0,15\t10\t1,50\t0,23680\n0,20\t7\t1,40\t0,20965\n0,30\t5\t1,50\t0,16621\n0,40\t4\t1,60\t0,13711\n0,50\t3\t1,50\t0,11702\n0,60\t3\t1,80\t0,10227\n0,80\t2\t1,60\t0,08165\n1,00\t2\t2,00\t0,06800\n\nA terceira coluna é quase constante. Reduzir η pela metade exige aproximadamente dobrar M para chegar ao mesmo ponto. RECALCULADO AQUI\n\nAs duas colunas de perda são de treino. A última coluna desce sem parar conforme η cresce: com dezesseis propostas e sessenta árvores, 0,06800 é memorização, não desempenho. É por isso que a pergunta “qual η dá a menor perda” não se responde nesta tabela.\n\n0\n10\n20\n30\n40\nárvores até a perda alvo\ntaxa de aprendizagem η\n0,10\n0,25\n0,50\n0,75\n1,00\nárvores necessárias\nChegando à mesma perda alvo, por que preferir η pequeno?\nPorque o caminho não é idêntico. Com η pequeno, o modelo passa por muitos estágios intermediários, e a validação pode interromper em qualquer um deles. Com η grande, os saltos são grossos e o melhor ponto pode ficar entre duas iterações. A granularidade do controle é a vantagem.\nO custo\nTempo. η de 0,01 com dez mil árvores custa cem vezes mais que η de 1 com cem. Em produção, a escolha típica fica entre 0,01 e 0,1 com parada antecipada monitorada em validação, e não em uma grade fixa.",
@@ -7472,20 +7663,31 @@
     "disc": 1
    },
    "origem": "obs",
-   "aprendizado": "O boosting só ganha quando há interação ou forma que a logística não captura.",
-   "apoio": "Provisório: o quadro está em reconstrução.",
-   "conexao": "As PDs do boosting saem fora de nível",
+   "aprendizado": "Comparar o boosting com a logística nas mesmas variáveis e nas mesmas amostras, e reconhecer que o ganho no ajuste não garante ganho na validação.",
+   "apoio": "Com utilização, atraso e score de bureau, a logística valida melhor que o boosting em qualquer número de árvores: AUC de validação 0,7006 contra 0,6553 do boosting parado em 16 árvores, e log loss 0,2932 contra 0,2955. No ajuste, o boosting passa a logística com 4 árvores e chega a 0,8740 com 300. A diferença de AUC na validação, 0,045, tem IC de DeLong de 0,020 a 0,070: não é ruído. O boosting só ganha quando há interação ou forma curva que a reta na log odds não captura (Lessmann et al., 2015).",
+   "conexao": "Fecha a parte de controles (slides 13 a 16) com a referência linear e abre o exame das probabilidades do boosting no slide 18.",
    "guia": {
-    "funcao": "Provisório.",
-    "pre": "Slide 16.",
-    "conducao": "Provisório.",
-    "leitura": "Provisório.",
-    "pergunta": "Provisório.",
-    "resposta": "Provisório.",
-    "erros": [],
-    "interacao": "Provisório.",
-    "verificacao": "Provisório.",
-    "transicao": "As PDs do boosting saem fora de nível"
+    "funcao": "Pôr a logística como referência obrigatória do boosting: mesma amostra, mesmas variáveis, mesma validação.",
+    "pre": "Slide 11 (o boosting na carteira de 1.472 propostas) e slide 15 (a parada pelo mínimo da log loss de validação, em 16 árvores).",
+    "conducao": "Abra com o título provisório e mostre só as curvas de ajuste: o boosting passa a logística com 4 árvores. Peça a previsão antes de revelar a validação. Depois da resposta, arraste o controle de 1 a 300 árvores e leia a tabela: nenhuma posição põe o boosting acima da logística na validação. Termine com o IC de DeLong.",
+    "leitura": "Logística: AUC de validação 0,7006 e log loss 0,2932. Boosting parado em 16 árvores: 0,6553 e 0,2955. O pico de AUC do boosting na validação é 0,6893, com 6 árvores, ainda abaixo. Diferença de 0,045 com IC de 0,020 a 0,070.",
+    "pergunta": "Se o boosting ganha no ajuste com 4 árvores, por que não ganha na validação?",
+    "resposta": "Porque as três variáveis não trazem interação nem forma que a reta perca: os degraus do boosting acrescentam variância estimada com 139 defaults, e o ganho de ajuste não se repete em propostas novas.",
+    "erros": [
+     {
+      "alt": "Sim, com árvores suficientes",
+      "confusao": "Confunde ajuste com validação.",
+      "intervencao": "Leve o controle a 300 árvores: AUC de ajuste 0,8740, de validação 0,5869."
+     },
+     {
+      "alt": "Sim, parado em 16 árvores",
+      "confusao": "Toma o melhor boosting pelo melhor modelo.",
+      "intervencao": "Compare na tabela: 0,6553 e 0,2955 contra 0,7006 e 0,2932."
+     }
+    ],
+    "interacao": "Previsão com três alternativas, validação oculta até o acerto; controle do número de árvores (1 a 300) que move o ponto nas curvas e a tabela; Restaurar volta a 16 árvores e à previsão.",
+    "verificacao": "A turma diz, com os números da tela, em que métrica e em que amostra cada modelo ganha.",
+    "transicao": "Se o boosting perde na ordem, como estão as probabilidades dele? O slide 18 confere o nível das PDs."
    },
    "html": "<div class=\"palcoflex\" data-colunas=\"grafico\"><div class=\"esq\" style=\"flex: 1 1 58%;\"><div class=\"svgfit\" data-exploravel=\"grafico\"><svg viewBox=\"0 0 640 400\" role=\"img\" aria-label=\"AUC por número de árvores\" style=\"font-family:system-ui,sans-serif\"><line x1=\"62\" y1=\"354.0\" x2=\"622\" y2=\"354.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"358.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,60</text><line x1=\"62\" y1=\"283.5\" x2=\"622\" y2=\"283.5\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"287.5\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,70</text><line x1=\"62\" y1=\"213.0\" x2=\"622\" y2=\"213.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"217.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,80</text><line x1=\"62\" y1=\"142.5\" x2=\"622\" y2=\"142.5\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"146.5\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,90</text><line x1=\"62\" y1=\"72.0\" x2=\"622\" y2=\"72.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"76.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">1,00</text><line x1=\"62\" y1=\"72\" x2=\"62\" y2=\"354\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <line x1=\"62\" y1=\"354\" x2=\"622\" y2=\"354\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <text transform=\"translate(12,213) rotate(-90)\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">AUC</text>\n   <text x=\"342\" y=\"395\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">número de árvores</text><text x=\"62.0\" y=\"370\" text-anchor=\"start\" font-size=\"11.5\" fill=\"#5B6475\">60</text><text x=\"186.4\" y=\"370\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">100</text><text x=\"373.1\" y=\"370\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">160</text><text x=\"622.0\" y=\"370\" text-anchor=\"end\" font-size=\"11.5\" fill=\"#5B6475\">240</text><line x1=\"66\" y1=\"57\" x2=\"82\" y2=\"57\" stroke=\"#2E6B4F\" stroke-width=\"2.5\"></line>\n      <text x=\"87\" y=\"60\" font-size=\"11.5\" fill=\"#333\">4 folhas, treino</text><line x1=\"204.4\" y1=\"57\" x2=\"220.4\" y2=\"57\" stroke=\"#00205B\" stroke-width=\"2.5\"></line>\n      <text x=\"225.4\" y=\"60\" font-size=\"11.5\" fill=\"#333\">8 folhas, treino</text><line x1=\"342.8\" y1=\"57\" x2=\"358.8\" y2=\"57\" stroke=\"#8C2332\" stroke-width=\"2.5\"></line>\n      <text x=\"363.8\" y=\"60\" font-size=\"11.5\" fill=\"#333\">16 folhas, treino</text><line x1=\"66\" y1=\"71\" x2=\"82\" y2=\"71\" stroke=\"#2E6B4F\" stroke-width=\"2.5\"></line>\n      <text x=\"87\" y=\"74\" font-size=\"11.5\" fill=\"#333\">4 folhas, validação</text><line x1=\"225.1\" y1=\"71\" x2=\"241.1\" y2=\"71\" stroke=\"#00205B\" stroke-width=\"2.5\"></line>\n      <text x=\"246.1\" y=\"74\" font-size=\"11.5\" fill=\"#333\">8 folhas, validação</text><line x1=\"384.2\" y1=\"71\" x2=\"400.2\" y2=\"71\" stroke=\"#8C2332\" stroke-width=\"2.5\"></line>\n      <text x=\"405.2\" y=\"74\" font-size=\"11.5\" fill=\"#333\">16 folhas, validação</text><line x1=\"66\" y1=\"85\" x2=\"82\" y2=\"85\" stroke=\"#2E6B4F\" stroke-width=\"2.5\" stroke-dasharray=\"6 3\"></line>\n      <text x=\"87\" y=\"88\" font-size=\"11.5\" fill=\"#333\">4 folhas, fora do tempo</text><line x1=\"252.70000000000002\" y1=\"85\" x2=\"268.70000000000005\" y2=\"85\" stroke=\"#00205B\" stroke-width=\"2.5\" stroke-dasharray=\"6 3\"></line>\n      <text x=\"273.70000000000005\" y=\"88\" font-size=\"11.5\" fill=\"#333\">8 folhas, fora do tempo</text><line x1=\"66\" y1=\"99\" x2=\"82\" y2=\"99\" stroke=\"#8C2332\" stroke-width=\"2.5\" stroke-dasharray=\"6 3\"></line>\n      <text x=\"87\" y=\"102\" font-size=\"11.5\" fill=\"#333\">16 folhas, fora do tempo</text><path d=\"M62.0 242.0L186.4 227.0L373.1 209.0L622.0 190.3\" fill=\"none\" stroke=\"#2E6B4F\" stroke-width=\"2.6\" stroke-linejoin=\"round\"></path><path d=\"M62.0 199.2L186.4 170.3L373.1 140.4L622.0 116.8\" fill=\"none\" stroke=\"#00205B\" stroke-width=\"2.6\" stroke-linejoin=\"round\"></path><path d=\"M62.0 134.5L186.4 106.7L373.1 86.8L622.0 77.1\" fill=\"none\" stroke=\"#8C2332\" stroke-width=\"2.6\" stroke-linejoin=\"round\"></path><path d=\"M62.0 325.8L186.4 328.0L373.1 329.4L622.0 331.0\" fill=\"none\" stroke=\"#2E6B4F\" stroke-width=\"2.2\" stroke-dasharray=\"2 3\" stroke-linejoin=\"round\"></path><path d=\"M62.0 320.4L186.4 326.4L373.1 333.1L622.0 337.1\" fill=\"none\" stroke=\"#00205B\" stroke-width=\"2.2\" stroke-dasharray=\"2 3\" stroke-linejoin=\"round\"></path><path d=\"M62.0 326.6L186.4 328.3L373.1 338.0L622.0 349.6\" fill=\"none\" stroke=\"#8C2332\" stroke-width=\"2.2\" stroke-dasharray=\"2 3\" stroke-linejoin=\"round\"></path><path d=\"M62.0 291.5L186.4 288.5L373.1 292.9L622.0 295.6\" fill=\"none\" stroke=\"#2E6B4F\" stroke-width=\"1.8\" stroke-dasharray=\"7 4\" stroke-linejoin=\"round\"></path><path d=\"M62.0 286.5L186.4 294.6L373.1 303.6L622.0 304.8\" fill=\"none\" stroke=\"#00205B\" stroke-width=\"1.8\" stroke-dasharray=\"7 4\" stroke-linejoin=\"round\"></path><path d=\"M62.0 314.6L186.4 321.3L373.1 324.5L622.0 327.5\" fill=\"none\" stroke=\"#8C2332\" stroke-width=\"1.8\" stroke-dasharray=\"7 4\" stroke-linejoin=\"round\"></path><circle cx=\"62.0\" cy=\"320.4\" r=\"6\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><text x=\"71.0\" y=\"312.4\" font-size=\"11.5\" font-weight=\"700\" fill=\"#8C2332\" text-anchor=\"start\">escolhida aqui</text></svg></div>\n   <p class=\"nota\" style=\"margin-top:8px\">Linhas contínuas: treino. Pontilhadas: validação, que é a que\n   escolhe. Tracejadas: fora do tempo, lida uma única vez, depois. Mesmas cores para o mesmo número de\n   folhas. <span class=\"selo s-obs\">Dado observado</span> Base sintética de 5.000 propostas, semente 20260501.</p>\n   <p class=\"nota\" style=\"margin-top:7px\">A ordem das três famílias na tela é a ordem do procedimento:\n   a de cima nunca decide, a do meio decide, e a de baixo só confirma.</p>\n   </div><div class=\"dir\" style=\"flex: 1 1 42%;\"><div class=\"painel\"><div class=\"rot\">Leitura direta</div>\n   <div class=\"rolax\"><table style=\"margin-top:8px\"><tbody>\n   <tr><th scope=\"row\">Treino</th><td>sobe com árvores e com folhas, sem exceção, até\n    0,9927</td></tr>\n   <tr><th scope=\"row\">Validação</th><td>o máximo da grade é 0,6476,\n    e é ele que escolhe a configuração</td></tr>\n   <tr><th scope=\"row\">Fora do tempo</th><td>tende a descer quando a complexidade cresce, chegando a\n    0,6376. Com 4 folhas ela ainda sobe de 60 para 100 árvores antes\n    de cair: a queda é a tendência, não uma lei</td></tr>\n   <tr><th scope=\"row\">Distância máxima</th>\n    <td>0,3551 entre treino e fora do tempo</td></tr>\n   <tr style=\"background:#FBF3DE\"><th scope=\"row\">Escolhida por validação</th>\n    <td>60 árvores, 8 folhas, η 0,05,\n    mínimo por folha 60</td></tr></tbody></table></div></div>\n   <div class=\"revelacao ruim\" style=\"margin-top:10px\"><h4>A leitura que destrói o modelo</h4>\n   Apresentar a AUC de treino de 0,9927 como resultado. Essa\n   configuração tem a pior AUC fora do tempo da grade inteira. Um comitê que aprova pelo primeiro número\n   está aprovando o pior modelo disponível.</div>\n   <div class=\"revelacao bom\" style=\"margin-top:10px\"><h4>O procedimento defensável</h4>\n   Escolher por validação, reportar fora do tempo, declarar a grade inteira e o critério de escolha antes\n   de olhar os resultados. O capítulo 7 acrescenta a esse procedimento o teste estatístico que diz se a\n   diferença entre dois modelos é distinguível de ruído.</div></div></div><div style=\"margin-top:13px\"><div data-block=\"question\" data-slug=\"c6p17q\"></div></div>",
    "text": "0,60\n0,70\n0,80\n0,90\n1,00\nAUC\nnúmero de árvores\n60\n100\n160\n240\n4 folhas, treino\n8 folhas, treino\n16 folhas, treino\n4 folhas, validação\n8 folhas, validação\n16 folhas, validação\n4 folhas, fora do tempo\n8 folhas, fora do tempo\n16 folhas, fora do tempo\nescolhida aqui\n\nLinhas contínuas: treino. Pontilhadas: validação, que é a que escolhe. Tracejadas: fora do tempo, lida uma única vez, depois. Mesmas cores para o mesmo número de folhas. DADO OBSERVADO Base sintética de 5.000 propostas, semente 20260501.\n\nA ordem das três famílias na tela é a ordem do procedimento: a de cima nunca decide, a do meio decide, e a de baixo só confirma.\n\nLEITURA DIRETA\nTreino\tsobe com árvores e com folhas, sem exceção, até 0,9927\nValidação\to máximo da grade é 0,6476, e é ele que escolhe a configuração\nFora do tempo\ttende a descer quando a complexidade cresce, chegando a 0,6376. Com 4 folhas ela ainda sobe de 60 para 100 árvores antes de cair: a queda é a tendência, não uma lei\nDistância máxima\t0,3551 entre treino e fora do tempo\nEscolhida por validação\t60 árvores, 8 folhas, η 0,05, mínimo por folha 60\nA leitura que destrói o modelo\nApresentar a AUC de treino de 0,9927 como resultado. Essa configuração tem a pior AUC fora do tempo da grade inteira. Um comitê que aprova pelo primeiro número está aprovando o pior modelo disponível.\nO procedimento defensável\nEscolher por validação, reportar fora do tempo, declarar a grade inteira e o critério de escolha antes de olhar os resultados. O capítulo 7 acrescenta a esse procedimento o teste estatístico que diz se a diferença entre dois modelos é distinguível de ruído.",
@@ -7565,20 +7767,31 @@
     "disc": 1
    },
    "origem": "esq",
-   "aprendizado": "Ordenar bem não garante probabilidade certa; o capítulo 7 mede e corrige.",
-   "apoio": "Provisório: o quadro está em reconstrução.",
-   "conexao": "Por que esta PD? A contribuição de cada variável",
+   "aprendizado": "Distinguir a PD média da carteira da calibração por faixa e ler o slope de calibração com o seu intervalo.",
+   "apoio": "Parado em 16 árvores, o boosting tem PD média de 9,3% na validação, contra 9,8% observados (62 de 631; Wilson de 7,7% a 12,4%). Em cinco faixas pela fila de PD, a PD média cabe no intervalo de Wilson em 3, e o slope de calibração é 1,19 (IC de 0,80 a 1,58): 631 propostas não provam desvio. Com todas as 300 árvores, a PD média quase não muda (8,9%), mas a faixa 1 recebe 1,4% contra 7,9% observados e a faixa 5, 22,9% contra 15,1%; slope 0,42 (IC de 0,18 a 0,66): PDs extremas demais. Média certa não é PD certa; o capítulo 7 mede na janela e recalibra (Niculescu-Mizil e Caruana, 2005).",
+   "conexao": "Usa o boosting parado dos slides 15 e 17 e prepara o capítulo 7, que mede a calibração na janela fora do tempo e recalibra.",
    "guia": {
-    "funcao": "Provisório.",
-    "pre": "Slide 17.",
-    "conducao": "Provisório.",
-    "leitura": "Provisório.",
-    "pergunta": "Provisório.",
-    "resposta": "Provisório.",
-    "erros": [],
-    "interacao": "Provisório.",
-    "verificacao": "Provisório.",
-    "transicao": "Por que esta PD? A contribuição de cada variável"
+    "funcao": "Mostrar que o número de árvores mexe na dispersão das PDs sem mexer na média, e que a média da carteira não confere a calibração.",
+    "pre": "Slide 15 (parada em 16 árvores) e slide 17 (o mesmo boosting contra a logística).",
+    "conducao": "Comece pelos números do modelo parado: média 9,3% contra 9,8%, dentro do intervalo. Peça a previsão sobre o modelo com 300 árvores. Depois do acerto, percorra o controle de 1 a 300 árvores: com 1 árvore as PDs ficam presas perto da média (slope 5,86); entre 16 e 30 árvores o slope passa por 1; com 300, cai a 0,42.",
+    "leitura": "Com 300 árvores: PD média 8,9%, uma faixa de cinco no intervalo, slope 0,42 com IC de 0,18 a 0,66. Parado em 16: 9,3%, três de cinco, slope 1,19 com IC de 0,80 a 1,58.",
+    "pergunta": "O modelo parado está calibrado?",
+    "resposta": "A validação não prova desvio, o que não é o mesmo que provar calibração: o IC do slope vai de 0,80 a 1,58. O capítulo 7 confere com a janela fora do tempo.",
+    "erros": [
+     {
+      "alt": "Quase não muda: se a média bate, as faixas batem",
+      "confusao": "Confunde média com calibração.",
+      "intervencao": "Mostre a faixa 1 com 300 árvores: 1,4% previstos contra 7,9% observados, com a média quase igual."
+     },
+     {
+      "alt": "Sobe inteira: mais árvores subestimam o risco",
+      "confusao": "Confunde dispersão com nível.",
+      "intervencao": "A PD média vai de 9,3% a 8,9%: o que muda é a inclinação."
+     }
+    ],
+    "interacao": "Previsão com título provisório; controle de árvores com nove posições (1 a 300); a curva do modelo parado fica como referência em quadrados vazados; Restaurar volta ao modelo parado.",
+    "verificacao": "A turma explica por que slope abaixo de 1 significa PDs extremas demais, com os números da faixa 1 e da faixa 5.",
+    "transicao": "Média certa não diz por que cada proposta recebeu a sua PD. O slide 19 decompõe uma PD em contribuições."
    },
    "html": "<div class=\"v13-interativo\"><div class=\"v13-tabs\"><button type=\"button\" data-v13-limite=\"\" data-i=\"0\" class=\"ativo\">Sobreajuste</button><button type=\"button\" data-v13-limite=\"\" data-i=\"1\" class=\"\">Instabilidade</button><button type=\"button\" data-v13-limite=\"\" data-i=\"2\" class=\"\">Explicação</button></div><div class=\"v13-cena\" id=\"v13-limite-out\"><div class=\"v13-cena-lado\"><small>sinal</small><span class=\"big\">Sobreajuste</span><p>treino melhora; validação piora</p></div><div class=\"v13-cena-main\"><h3>Resposta proporcional</h3><p>early stopping, menor profundidade e folha mínima maior.</p><div class=\"v13-alerta\"><b>Não existe correção universal.</b> Primeiro nomeie a falha; depois escolha o controle correspondente.</div></div></div></div>",
    "text": "Sobreajuste\nInstabilidade\nExplicação\nsinal\nSobreajuste\n\ntreino melhora; validação piora\n\nResposta proporcional\n\nearly stopping, menor profundidade e folha mínima maior.\n\nNão existe correção universal. Primeiro nomeie a falha; depois escolha o controle correspondente.",
@@ -7622,20 +7835,31 @@
     "disc": 1
    },
    "origem": "esq",
-   "aprendizado": "Contribuições de Shapley pelo caminho das árvores somam exatamente a log odds da proposta.",
-   "apoio": "Provisório: o quadro está em reconstrução.",
-   "conexao": "PD que cai quando o atraso sobe? Restrição monotônica",
+   "aprendizado": "Decompor a log odds de uma proposta em contribuições de Shapley que somam exatamente o escore, e saber o que a importância por ganho não diz.",
+   "apoio": "No boosting parado em 16 árvores, a proposta da validação com utilização de 75,8%, atraso de 10 dias e score 756 tem PD de 9,8%. Partindo do valor esperado do modelo, −2,38 em log odds (8,5%), a utilização soma −0,04, o atraso 0,00 (nenhuma árvore corta no atraso) e o score +0,20: escore −2,22, exatamente. A importância por ganho põe o score em 89%, a utilização em 11% e o atraso em 0% para a carteira, sem sinal; só a contribuição diz direção e tamanho para uma proposta (Lundberg et al., 2020).",
+   "conexao": "Explica as PDs cujo nível o slide 18 conferiu; o atraso com contribuição zero prepara o slide 20, em que o atraso entra no modelo na direção errada.",
    "guia": {
-    "funcao": "Provisório.",
-    "pre": "Slide 18.",
-    "conducao": "Provisório.",
-    "leitura": "Provisório.",
-    "pergunta": "Provisório.",
-    "resposta": "Provisório.",
-    "erros": [],
-    "interacao": "Provisório.",
-    "verificacao": "Provisório.",
-    "transicao": "PD que cai quando o atraso sobe? Restrição monotônica"
+    "funcao": "Dar ao aluno a explicação por proposta que o validador e o cliente recusado podem pedir.",
+    "pre": "Slide 9 (a PD como soma de parcelas em log odds) e slide 18 (o boosting parado e o nível das PDs).",
+    "conducao": "Apresente a tabela de ganho, que está visível, e a proposta. Peça a previsão: qual variável mais empurra a PD para cima? Revele a cascata e leia a soma. Depois troque de proposta (maior PD, menor PD, default com PD baixa) e edite a utilização e o score; mova o atraso e mostre que nada muda.",
+    "leitura": "Valor esperado −2,38, utilização −0,04, atraso 0,00, score +0,20, escore −2,22, PD 9,8%. A soma fecha exatamente.",
+    "pergunta": "Por que a utilização de 75,8% puxa a PD para baixo nesta proposta?",
+    "resposta": "Porque a contribuição mede o que o modelo aprendeu dos dados para essa faixa de utilização, dadas as outras variáveis: nas 16 árvores do modelo parado, ela ficou um pouco abaixo da média. Valor alarmante não é contribuição alta; o slide 20 mostra como impor a direção esperada.",
+    "erros": [
+     {
+      "alt": "Utilização",
+      "confusao": "Confunde valor alarmante com contribuição.",
+      "intervencao": "Leia a barra: −0,04, para baixo."
+     },
+     {
+      "alt": "Atraso",
+      "confusao": "Supõe que o modelo usa toda variável que recebe.",
+      "intervencao": "Nenhuma das 16 árvores corta no atraso: contribuição e ganho zero; mova o controle do atraso e veja a PD parada."
+     }
+    ],
+    "interacao": "Previsão com a cascata oculta; depois, quatro propostas da validação e três controles para editar a proposta; a soma é verificada a cada mudança; Restaurar volta à proposta e à previsão.",
+    "verificacao": "A turma refaz a soma com os números da cascata e diz o que a coluna de ganho não informa.",
+    "transicao": "O atraso não entra no modelo parado. Quando entra, com mais árvores, ele contraria a lógica de crédito: slide 20."
    },
    "html": "<div class=\"nv nv-checkpoint\"><div class=\"nv-checkpoint-side\"><span class=\"big\">3</span><h3>ideias para levar</h3><p>A previsão final acumula árvores que atacam erros diferentes.</p></div><div class=\"nv-checkpoint-main\"><div class=\"nv-checkpoint-nav\"><button type=\"button\" data-v13-check=\"0\" data-titulo=\"Resíduo\" data-pergunta=\"O que a nova árvore tenta prever?\" data-resposta=\"O erro que o conjunto atual ainda deixa.\" class=\"ativo\">1. Resíduo</button><button type=\"button\" data-v13-check=\"1\" data-titulo=\"Soma\" data-pergunta=\"Onde está a previsão?\" data-resposta=\"No valor inicial mais todas as correções ponderadas.\" class=\"\">2. Soma</button><button type=\"button\" data-v13-check=\"2\" data-titulo=\"Teste\" data-pergunta=\"Como escolher complexidade?\" data-resposta=\"Pelo desempenho fora do ajuste, com taxa e número de árvores avaliados juntos.\" class=\"\">3. Teste</button></div><div class=\"nv-checkpoint-detail\" id=\"v13-check-detail\"><h3>Resíduo</h3><p>O que a nova árvore tenta prever?</p><div class=\"resposta\">O erro que o conjunto atual ainda deixa.</div></div></div></div>",
    "text": "3\nideias para levar\n\nA previsão final acumula árvores que atacam erros diferentes.\n\n1. Resíduo\n2. Soma\n3. Teste\nResíduo\n\nO que a nova árvore tenta prever?\n\nO erro que o conjunto atual ainda deixa.",
@@ -7679,20 +7903,31 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "O modelo livre pode contrariar a lógica de crédito em trechos com poucos dados.",
-   "apoio": "Provisório: o quadro está em reconstrução.",
-   "conexao": "O candidato do comitê: o que o boosting precisa provar",
+   "aprendizado": "Reconhecer quando o modelo livre contraria a lógica de crédito em trechos com poucos dados e medir o custo de impor monotonia.",
+   "apoio": "Na amostra de ajuste, as 11 propostas com 31 a 60 dias de atraso não tiveram default, mas zero em 11 cabe numa taxa de até 25,9% (Wilson). Com 300 árvores e mínimo de 10 por folha, a dependência parcial do modelo livre vai de 14,6% com 30 dias para 3,4% a partir de 34 dias e cai em 10 trechos; com monotonia (utilização +1, atraso +1, score −1), nenhum trecho cai. Na validação, a restrição não custou: AUC 0,6756 contra 0,5979 (IC da diferença de 0,035 a 0,121); parados pela validação, com mínimo de 40 por folha, 0,6828 contra 0,6553 (IC de 0,007 a 0,048).",
+   "conexao": "Usa a dependência parcial e a explicação do slide 19 e leva a monotonia à lista do comitê no slide 21.",
    "guia": {
-    "funcao": "Provisório.",
-    "pre": "Slide 19.",
-    "conducao": "Provisório.",
-    "leitura": "Provisório.",
-    "pergunta": "Provisório.",
-    "resposta": "Provisório.",
-    "erros": [],
-    "interacao": "Provisório.",
-    "verificacao": "Provisório.",
-    "transicao": "O candidato do comitê: o que o boosting precisa provar"
+    "funcao": "Mostrar que o modelo não conhece a lógica de crédito e que a restrição monotônica a impõe, com custo medido.",
+    "pre": "Slide 13 (mínimo por folha e número de árvores como controles) e slide 19 (o atraso fora do modelo parado).",
+    "conducao": "Mostre os pontos observados por faixa de atraso, com o 0 de 11 e o intervalo até 25,9%. Peça a previsão sobre a PD livre acima de 30 dias. Revele as duas curvas, conte os trechos de queda e leia a tabela da validação. Troque para Parada e para mínimo de 40: o modelo livre parado quase não usa o atraso; a monotonia segue sem custo.",
+    "leitura": "300 árvores, mínimo de 10: PD livre de 14,6% com 30 dias para 3,4% a partir de 34; 10 trechos de queda contra 0 com monotonia; AUC de validação 0,5979 livre e 0,6756 monotônico.",
+    "pergunta": "Por que a monotonia melhorou a validação em vez de custar?",
+    "resposta": "Porque ela impede o modelo de gastar cortes em padrões de poucas propostas que não se repetem: funciona como regularização alinhada à lógica de crédito.",
+    "erros": [
+     {
+      "alt": "Sobe, como manda o crédito",
+      "confusao": "Atribui ao modelo um conhecimento que só os dados dão.",
+      "intervencao": "Aponte o 0 de 11: é isso que o modelo vê."
+     },
+     {
+      "alt": "Fica estável: são poucas propostas",
+      "confusao": "Esquece que o mínimo por folha de 10 permite uma folha só com elas.",
+      "intervencao": "Troque para mínimo de 40 e compare as curvas."
+     }
+    ],
+    "interacao": "Previsão com título e subtítulo provisórios; depois, número de árvores (parada, 100, 300) e mínimo por folha (10, 40), com curvas, trechos de queda e tabela da validação recalculados; Restaurar volta ao início.",
+    "verificacao": "A turma diz quantos trechos caem em cada configuração e se a diferença de AUC está acima do ruído.",
+    "transicao": "Referência linear, parada, nível, explicação e monotonia: o slide 21 junta tudo na lista que o validador confere."
    },
    "html": "<div class=\"svgfit\"><div class=\"rolax\" data-exploravel=\"tabela\" data-aberta=\"true\"><table><thead><tr><th>#</th><th>Utilização</th><th>Atraso</th><th>Desfecho</th><th>Logística</th><th>Árvore</th><th>Boosting</th></tr></thead><tbody><tr><th scope=\"row\">#1</th><td class=\"num\">20%</td><td class=\"num\">25 d</td><td>pagou</td><td class=\"num\">33,5%</td><td class=\"num\">50,0%</td><td class=\"num\">50,0%</td></tr><tr><th scope=\"row\">#2</th><td class=\"num\">25%</td><td class=\"num\">20 d</td><td>default</td><td class=\"num\">26,7%</td><td class=\"num\">50,0%</td><td class=\"num\">50,0%</td></tr><tr><th scope=\"row\">#3</th><td class=\"num\">30%</td><td class=\"num\">5 d</td><td>pagou</td><td class=\"num\">6,1%</td><td class=\"num\">0,0%</td><td class=\"num\">33,4%</td></tr><tr><th scope=\"row\">#4</th><td class=\"num\">35%</td><td class=\"num\">10 d</td><td>pagou</td><td class=\"num\">15,9%</td><td class=\"num\">0,0%</td><td class=\"num\">33,4%</td></tr><tr><th scope=\"row\">#5</th><td class=\"num\">40%</td><td class=\"num\">20 d</td><td>pagou</td><td class=\"num\">52,6%</td><td class=\"num\">0,0%</td><td class=\"num\">33,4%</td></tr><tr><th scope=\"row\">#6</th><td class=\"num\">45%</td><td class=\"num\">0 d</td><td>pagou</td><td class=\"num\">9,0%</td><td class=\"num\">0,0%</td><td class=\"num\">33,4%</td></tr><tr><th scope=\"row\">#7</th><td class=\"num\">50%</td><td class=\"num\">0 d</td><td>pagou</td><td class=\"num\">12,6%</td><td class=\"num\">0,0%</td><td class=\"num\">33,4%</td></tr><tr><th scope=\"row\">#8</th><td class=\"num\">55%</td><td class=\"num\">5 d</td><td>pagou</td><td class=\"num\">29,5%</td><td class=\"num\">0,0%</td><td class=\"num\">33,4%</td></tr><tr><th scope=\"row\">#9</th><td class=\"num\">60%</td><td class=\"num\">20 d</td><td>default</td><td class=\"num\">83,1%</td><td class=\"num\">100,0%</td><td class=\"num\">66,8%</td></tr><tr><th scope=\"row\">#10</th><td class=\"num\">65%</td><td class=\"num\">0 d</td><td>default</td><td class=\"num\">30,5%</td><td class=\"num\">100,0%</td><td class=\"num\">58,3%</td></tr><tr><th scope=\"row\">#11</th><td class=\"num\">70%</td><td class=\"num\">5 d</td><td>default</td><td class=\"num\">56,2%</td><td class=\"num\">100,0%</td><td class=\"num\">66,8%</td></tr><tr><th scope=\"row\">#12</th><td class=\"num\">75%</td><td class=\"num\">40 d</td><td>default</td><td class=\"num\">99,6%</td><td class=\"num\">100,0%</td><td class=\"num\">66,8%</td></tr><tr><th scope=\"row\">#13</th><td class=\"num\">80%</td><td class=\"num\">5 d</td><td>default</td><td class=\"num\">73,0%</td><td class=\"num\">100,0%</td><td class=\"num\">66,8%</td></tr><tr><th scope=\"row\">#14</th><td class=\"num\">85%</td><td class=\"num\">30 d</td><td>default</td><td class=\"num\">99,2%</td><td class=\"num\">100,0%</td><td class=\"num\">66,8%</td></tr><tr><th scope=\"row\">#15</th><td class=\"num\">90%</td><td class=\"num\">0 d</td><td>pagou</td><td class=\"num\">73,9%</td><td class=\"num\">50,0%</td><td class=\"num\">49,1%</td></tr><tr><th scope=\"row\">#16</th><td class=\"num\">95%</td><td class=\"num\">20 d</td><td>default</td><td class=\"num\">98,5%</td><td class=\"num\">50,0%</td><td class=\"num\">58,2%</td></tr></tbody></table></div></div>\n  <div class=\"grade g2\" style=\"margin-top:11px\">\n   <div class=\"revelacao\"><h4>O que a perda no treino diz</h4>\n   No treino, a log loss média das 16 propostas é 0,43282 na logística, 0,18844 na árvore e 0,47481 no\n   boosting. A árvore parece a melhor porque cada folha repete a frequência dos casos que a formaram; o\n   boosting parece o pior porque parou em quatro árvores com η = 0,4, ainda perto dos 50% de onde partiu.\n   Com 50 árvores ele desce a 0,15503, abaixo da árvore, e com 200 a 0,05444. No treino, vence quem\n   ajusta mais, e ajustar mais não é prever melhor.</div>\n   <div class=\"revelacao bom\"><h4>A pergunta da próxima aula</h4>\n   Os três modelos discordam, e o treino não escolhe. Qual critério decide entre eles, e quando uma\n   diferença é grande o bastante para trocar o modelo em produção? A Aula 3 responde fora da amostra:\n   ordenação, calibração e incerteza no capítulo 7, e o valor da PD na decisão no capítulo 8.</div></div><div class=\"revelacao bom\" style=\"margin-top:12px\"><h4>Entrega da aula 2</h4>Salvar a comparação conceitual das três técnicas e os exercícios de interpretação.</div>",
    "text": "#\tUtilização\tAtraso\tDesfecho\tLogística\tÁrvore\tBoosting\n#1\t20%\t25 d\tpagou\t33,5%\t50,0%\t50,0%\n#2\t25%\t20 d\tdefault\t26,7%\t50,0%\t50,0%\n#3\t30%\t5 d\tpagou\t6,1%\t0,0%\t33,4%\n#4\t35%\t10 d\tpagou\t15,9%\t0,0%\t33,4%\n#5\t40%\t20 d\tpagou\t52,6%\t0,0%\t33,4%\n#6\t45%\t0 d\tpagou\t9,0%\t0,0%\t33,4%\n#7\t50%\t0 d\tpagou\t12,6%\t0,0%\t33,4%\n#8\t55%\t5 d\tpagou\t29,5%\t0,0%\t33,4%\n#9\t60%\t20 d\tdefault\t83,1%\t100,0%\t66,8%\n#10\t65%\t0 d\tdefault\t30,5%\t100,0%\t58,3%\n#11\t70%\t5 d\tdefault\t56,2%\t100,0%\t66,8%\n#12\t75%\t40 d\tdefault\t99,6%\t100,0%\t66,8%\n#13\t80%\t5 d\tdefault\t73,0%\t100,0%\t66,8%\n#14\t85%\t30 d\tdefault\t99,2%\t100,0%\t66,8%\n#15\t90%\t0 d\tpagou\t73,9%\t50,0%\t49,1%\n#16\t95%\t20 d\tdefault\t98,5%\t50,0%\t58,2%\nO que a perda no treino diz\nNo treino, a log loss média das 16 propostas é 0,43282 na logística, 0,18844 na árvore e 0,47481 no boosting. A árvore parece a melhor porque cada folha repete a frequência dos casos que a formaram; o boosting parece o pior porque parou em quatro árvores com η = 0,4, ainda perto dos 50% de onde partiu. Com 50 árvores ele desce a 0,15503, abaixo da árvore, e com 200 a 0,05444. No treino, vence quem ajusta mais, e ajustar mais não é prever melhor.\nA pergunta da próxima aula\nOs três modelos discordam, e o treino não escolhe. Qual critério decide entre eles, e quando uma diferença é grande o bastante para trocar o modelo em produção? A Aula 3 responde fora da amostra: ordenação, calibração e incerteza no capítulo 7, e o valor da PD na decisão no capítulo 8.\nEntrega da aula 2\nSalvar a comparação conceitual das três técnicas e os exercícios de interpretação.",
@@ -7717,23 +7952,34 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Sete variáveis, hiperparâmetros escolhidos na validação, e a lista que o validador independente confere.",
-   "apoio": "Provisório: o quadro está em reconstrução.",
-   "conexao": "Apêndice: fórmulas, fronteira e referências",
+   "aprendizado": "Escolher os hiperparâmetros pela validação e montar a lista de evidências que um validador independente exige antes do comitê.",
+   "apoio": "O candidato do comitê é o boosting completo do gerador, com sete variáveis. Na grade de 12 combinações, a AUC de treino sobe sempre com árvores e folhas, de 0,7588 a 0,9927; a de validação (760 propostas de 2023-03 a 2023-07) é maior com 60 árvores e 8 folhas, 0,6476, e menor justamente onde o treino é máximo, 0,6063. A lista do validador, com as provas do capítulo: referência linear (0,7006 contra 0,6553), parada pela validação (16 árvores), monotonia (0,6828 contra 0,6553), nível conferido (9,3% contra 9,8%), explicação por proposta (soma exata) e janela fora do tempo congelada (737 propostas de 2023-08 a 2023-12). Resolução CMN 4.557/2017 e EBA (2023).",
+   "conexao": "Fecha o capítulo voltando ao gancho do slide 1 (0,8196 no treino, 0,6476 na validação) e entrega o candidato ao comitê do capítulo 7.",
    "guia": {
-    "funcao": "Provisório.",
-    "pre": "Slide 20.",
-    "conducao": "Provisório.",
-    "leitura": "Provisório.",
-    "pergunta": "Provisório.",
-    "resposta": "Provisório.",
-    "erros": [],
-    "interacao": "Provisório.",
-    "verificacao": "Provisório.",
-    "transicao": "Apêndice: fórmulas, fronteira e referências"
+    "funcao": "Transformar o capítulo num procedimento: regra de escolha e lista de adoção.",
+    "pre": "Slides 15, 17, 18, 19 e 20, cada um com uma prova da lista.",
+    "conducao": "Mostre a grade de treino e peça que cada grupo escolha a combinação antes de ver a validação. Envie as escolhas mais votadas, uma de cada vez, e leia o retorno. Depois percorra a lista, abrindo os slides de cada prova.",
+    "leitura": "Pela validação, 60 árvores e 8 folhas: 0,6476 contra 0,8196 no treino. A combinação de maior treino, 240 árvores e 16 folhas (0,9927), tem a pior validação, 0,6063.",
+    "pergunta": "Por que a janela fora do tempo fica fechada até o comitê?",
+    "resposta": "Porque ela é a prova do desempenho em safras futuras: usada para escolher, deixa de medir. A Resolução CMN 4.557/2017 pede validação independente do desenvolvimento.",
+    "erros": [
+     {
+      "alt": "240 árvores e 16 folhas",
+      "confusao": "Confunde ajuste com generalização.",
+      "intervencao": "Leia a célula da validação: 0,6063, a pior da grade."
+     },
+     {
+      "alt": "Uma combinação do meio da grade",
+      "confusao": "Escolhe por intuição de equilíbrio, não pela regra.",
+      "intervencao": "Compare com a maior validação, 0,6476."
+     }
+    ],
+    "interacao": "Escolha de árvores e folhas com envio ao comitê antes de ver a validação; retorno por escolha e Tentar outra; itens da lista com link para o slide da prova; Restaurar volta ao início.",
+    "verificacao": "Cada grupo cita os seis itens da lista e o número que prova cada um.",
+    "transicao": "O candidato vai ao comitê como desafiante da logística. No capítulo 7, a janela fora do tempo abre e o comitê julga ordenação, probabilidade e decisão."
    },
-   "html": "<div class=\"painel\"><p>Sete variáveis, hiperparâmetros escolhidos na validação, e a lista que o validador independente confere.</p><p class=\"nota\">Quadro interativo do capítulo 6 na plataforma.</p></div>",
-   "text": "Sete variáveis, hiperparâmetros escolhidos na validação, e a lista que o validador independente confere.\n\nQuadro interativo do capítulo 6 na plataforma.",
+   "html": "<div class=\"painel\"><p>Escolher os hiperparâmetros pela validação e montar a lista de evidências que um validador independente exige antes do comitê.</p><p class=\"nota\">Quadro interativo do capítulo 6 na plataforma.</p></div>",
+   "text": "Escolher os hiperparâmetros pela validação e montar a lista de evidências que um validador independente exige antes do comitê.\n\nQuadro interativo do capítulo 6 na plataforma.",
    "controls": [],
    "interactive": false,
    "svgs": 0,
@@ -7755,23 +8001,29 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Material de consulta; o percurso da aula termina no slide anterior.",
-   "apoio": "Provisório: o quadro está em reconstrução.",
-   "conexao": "Fim do capítulo.",
+   "aprendizado": "Consultar as fórmulas do algoritmo, os métodos da fronteira com o que resolvem e quando usar, as referências primárias e o caminho para reproduzir os números.",
+   "apoio": "Fórmulas do palpite inicial, do pseudo-resíduo, do passo de Newton, da atualização com taxa, da log loss, das contribuições de Shapley, da dependência parcial e da monotonia. Fronteira: XGBoost (objetivo regularizado de segunda ordem), LightGBM (histogramas e amostragem por gradiente), CatBoost (categóricas sem vazamento), EBM e GA2M (modelo aditivo legível), árvores contra redes em dados tabulares e explicações contrafactuais. Reprodução: semente 20260501 da base, 20260601 da divisão, scripts/capitulo6/referencia.py e tests/capitulo6-gbm.test.ts.",
+   "conexao": "Material de consulta: o percurso da aula termina no slide 21.",
    "guia": {
-    "funcao": "Provisório.",
-    "pre": "Slide 21.",
-    "conducao": "Provisório.",
-    "leitura": "Provisório.",
-    "pergunta": "Provisório.",
-    "resposta": "Provisório.",
-    "erros": [],
-    "interacao": "Provisório.",
-    "verificacao": "Provisório.",
-    "transicao": "Capítulo 7."
+    "funcao": "Servir de consulta para fórmulas, métodos atuais, referências e reprodução.",
+    "pre": "Todo o capítulo; as fórmulas têm link para o slide em que aparecem.",
+    "conducao": "Não é slide de aula. Indique as abas no fim e use a de Fronteira se a turma perguntar por XGBoost, LightGBM ou CatBoost.",
+    "leitura": "Cada método da fronteira traz o que resolve e quando usar; a folha do XGBoost é o passo de Newton do slide 6 com λ no denominador.",
+    "pergunta": "Qual método da fronteira você usaria numa carteira com CEP e CNAE como variáveis?",
+    "resposta": "CatBoost, que codifica categóricas de alta cardinalidade pela taxa de default em ordem, sem vazamento do alvo.",
+    "erros": [
+     {
+      "alt": "LightGBM",
+      "confusao": "Resolve tamanho de base, não vazamento em categóricas.",
+      "intervencao": "Releia a linha do CatBoost na aba Fronteira."
+     }
+    ],
+    "interacao": "Cinco abas: fórmulas, fronteira, referências de método, referências de validação e reprodução.",
+    "verificacao": "O aluno localiza a referência primária de cada item do checklist.",
+    "transicao": "Volte ao slide 21 ou siga para o capítulo 7."
    },
-   "html": "<div class=\"painel\"><p>Material de consulta; o percurso da aula termina no slide anterior.</p><p class=\"nota\">Quadro interativo do capítulo 6 na plataforma.</p></div>",
-   "text": "Material de consulta; o percurso da aula termina no slide anterior.\n\nQuadro interativo do capítulo 6 na plataforma.",
+   "html": "<div class=\"painel\"><p>Consultar as fórmulas do algoritmo, os métodos da fronteira com o que resolvem e quando usar, as referências primárias e o caminho para reproduzir os números.</p><p class=\"nota\">Quadro interativo do capítulo 6 na plataforma.</p></div>",
+   "text": "Consultar as fórmulas do algoritmo, os métodos da fronteira com o que resolvem e quando usar, as referências primárias e o caminho para reproduzir os números.\n\nQuadro interativo do capítulo 6 na plataforma.",
    "controls": [],
    "interactive": false,
    "svgs": 0,

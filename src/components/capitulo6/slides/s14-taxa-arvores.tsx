@@ -76,7 +76,7 @@ export function S14TaxaArvores({ pagina }: { pagina?: Pagina }) {
   const P0 = PARES[0]; const a1 = argmin(curva(P0[0])), a2 = argmin(curva(P0[1]));
   const f = fe;
   const ops = [
-    { texto: `Também perto de ${a1}: a taxa não muda quantas árvores`, certa: false, retorno: <>Cada árvore com η {f(P0[1])} anda metade do passo; para chegar ao mesmo ponto são precisas mais. O mínimo fica em {a2}.</> },
+    { texto: `Também perto de ${a1}: a taxa não importa`, certa: false, retorno: <>Cada árvore com η {f(P0[1])} anda metade do passo; para chegar ao mesmo ponto são precisas mais. O mínimo fica em {a2}.</> },
     { texto: `Perto de ${2 * a1}: o dobro`, certa: true, retorno: <>Isso: {a2} árvores, {num(a2 / a1, 1)} vezes {a1}. Metade do passo, o dobro de passos.</> },
     { texto: `Perto de ${Math.round(a1 / 2)}: taxa menor chega antes`, certa: false, retorno: <>É o contrário: taxa menor anda menos por árvore e chega depois. O mínimo fica em {a2} árvores.</> },
   ];
@@ -87,7 +87,7 @@ export function S14TaxaArvores({ pagina }: { pagina?: Pagina }) {
       sub={revelado ? undefined : `Com η ${f(P0[0])}, a perda de validação é mínima em ${a1} árvores. E com η ${f(P0[1])}?`}
       conclusao={revelado
         ? <>η {f(e1)}: mínimo em {i1} árvores ({num(c1[i1], 4)}); η {f(e2)}: em <b>{i2}</b> ({num(c2[i2], 4)}), {num(i2 / i1, 1)} vezes mais árvores. No eixo η × árvores as curvas quase coincidem (maior distância {num(dmax, 4)}): conta o passo total. Fixe a taxa e ache as árvores na validação, como no <LinkSlide slug="c6p15">slide 15</LinkSlide>.</>
-        : <>Com η {f(P0[0])} e os demais controles da referência do <LinkSlide slug="c6p13">slide 13</LinkSlide>, a perda de validação desce até {num(curva(P0[0])[a1], 4)} em {a1} árvores e depois sobe.</>}
+        : <>Referência do <LinkSlide slug="c6p13">slide 13</LinkSlide>: com η {f(P0[0])}, a validação desce até {num(curva(P0[0])[a1], 4)} em {a1} árvores e depois sobe.</>}
       fonte={`Validação: ${int(NV)} propostas, ${YV.reduce((s, v) => s + v, 0)} defaults. Profundidade ${CFG_CARTEIRA.profundidade}, mínimo ${CFG_CARTEIRA.minFolha}; cada taxa até ${PASSO} ÷ η árvores (gbm.ts). Distância: M árvores com η contra 2M com η ÷ 2.`}>
       <Painel>
         <Grafico2 par={par} alinhado={alinhado && revelado} revelado={revelado} />
@@ -101,7 +101,7 @@ export function S14TaxaArvores({ pagina }: { pagina?: Pagina }) {
           <Kpi rotulo={`Mínimo com η ${f(e1)}`} valor={`${i1} árvores`} detalhe={`perda ${num(c1[i1], 4)}`} tom="val" tam="mini" />
           <Kpi rotulo={`Mínimo com η ${f(e2)}`} valor={revelado ? `${i2} árvores` : "·"} detalhe={revelado ? `perda ${num(c2[i2], 4)}` : "depois da previsão"} tom="val" tam="mini" />
         </div>
-        <Previsao pergunta={`Com η ${f(P0[1])}, metade da taxa, onde fica o mínimo da perda de validação?`} opcoes={ops} escolha={esc} onEscolha={setEsc} recolher />
+        <Previsao pergunta={`Onde fica o mínimo com η ${f(P0[1])}?`} opcoes={ops} escolha={esc} onEscolha={setEsc} recolher />
         {revelado ? (
           <dl className="q7-lista">
             <div data-tom="val"><dt>Passo total no mínimo, η {f(e1)} × {i1}</dt><dd>{num(e1 * i1, 2)}</dd></div>

@@ -109,7 +109,7 @@ export function S12Profundidade({ pagina }: { pagina?: Pagina }) {
         : iguais
           ? <>Profundidade {p}: de 0% a {U_DELTA}% de utilização soma <b>{sn(ds[0])}</b> em log odds com score {SCORES[0]}, {SCORES[1]} ou {SCORES[2]}. Curvas paralelas: o modelo é uma soma de uma função por variável, como na logística, só que em degraus.</>
           : <>Profundidade {p}: a mesma utilização soma <b>{sn(ds[0])}</b> com score {SCORES[0]} e <b>{sn(ds[2])}</b> com score {SCORES[2]}: o efeito de uma variável depende da outra. Mais profundidade, mais complexidade: o <LinkSlide slug="c6p13">slide 13</LinkSlide> junta os quatro controles.</>}
-      fonte={`Ajuste: ${int(NA)} propostas; validação: ${int(NV)}. η = ${num(CFG_CARTEIRA.eta, 1)}, mínimo ${CFG_CARTEIRA.minFolha} por folha, ${CFG_CARTEIRA.arvores} árvores, profundidade 1, 2 ou 3 (gbm.ts). Eixos nos percentis 5 a 95 do ajuste; a terceira variável, o atraso, fica fixa.`}>
+      fonte={`Ajuste: ${int(NA)} propostas. η ${num(CFG_CARTEIRA.eta, 1)}, mínimo ${CFG_CARTEIRA.minFolha}, ${CFG_CARTEIRA.arvores} árvores, profundidade 1, 2 ou 3 (gbm.ts). Eixos nos percentis 5 a 95; atraso fixo.`}>
       <Painel>
         <div className="q6-s12-g">
           <Superficie p={p} atr={atr} />

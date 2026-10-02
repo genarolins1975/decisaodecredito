@@ -100,7 +100,7 @@ export function S15QuandoParar({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c6p15" pagina={pagina} layout="gl"
       titulo={revelado ? undefined : `Das ${MAXA} árvores, quantas a validação manda manter?`}
-      sub={revelado ? undefined : "A perda de ajuste cai até a última árvore. Preveja antes de ver a curva de validação."}
+      sub={revelado ? undefined : "A perda de ajuste cai até a última. Preveja antes de ver a validação."}
       conclusao={revelado
         ? <>Parando em {m}: perda de validação {num(c.pv[m], 4)}{m === imin ? ", o mínimo" : ` (${num(c.pv[m] - vmin, 4)} acima do mínimo)`}; a AUC de ajuste segue de {num(c.aa[imin], 3)} em {imin} árvores a <b>{num(c.aa[MAXA], 3)}</b> em {MAXA}. <b>Só a validação diz onde parar</b>, e de {faixa[0]} a {faixa[1]} árvores a perda fica a menos de {num(TOL, 3)} do mínimo. O <LinkSlide slug="c6p17">slide 17</LinkSlide> põe este modelo contra a logística.</>
         : <>No ajuste, a perda cai de {num(c.pa[0], 3)} a {num(c.pa[MAXA], 3)} e a AUC sobe de {num(c.aa[0], 2)} a {num(c.aa[MAXA], 3)} nas {MAXA} árvores do <LinkSlide slug="c6p11">slide 11</LinkSlide>: nenhuma das duas avisa quando parar.</>}
@@ -118,7 +118,7 @@ export function S15QuandoParar({ pagina }: { pagina?: Pagina }) {
           <Kpi rotulo="AUC ajuste" valor={num(c.aa[m], 3)} detalhe={`em ${m}`} tam="mini" />
           <Kpi rotulo="AUC validação" valor={revelado ? num(c.av[m], 3) : "·"} detalhe={`em ${m}`} tom="val" tam="mini" />
         </div>
-        <Previsao pergunta={`Das ${MAXA} árvores do slide 11, quantas a perda de validação manda manter?`} opcoes={ops} escolha={esc} onEscolha={escolher} recolher />
+        <Previsao pergunta={`Quantas das ${MAXA} árvores do slide 11 ficam?`} opcoes={ops} escolha={esc} onEscolha={escolher} recolher />
         {revelado && (
           <Expandir resumo="Regra de paciência: parar sem ver a curva inteira">
             <table className="q7-tab">

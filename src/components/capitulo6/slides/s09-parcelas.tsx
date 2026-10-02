@@ -115,10 +115,10 @@ function Cascata({ i, revelado }: { i: number; revelado: boolean }) {
                 {/* o ganho da última árvore em PD, no eixo */}
                 <line x1={m.l + fs * 0.45} x2={m.l + fs * 0.45} y1={y(sigmoide(dc.acum[M - 1]))} y2={y(pdF)} stroke="#176C73" strokeWidth={fs * 0.32} />
                 <circle cx={x(dc.acum[M])} cy={y(pdF)} r={fs * 0.36} fill="#176C73" stroke="#fff" strokeWidth={2} />
-                {(() => { const y0 = pdF > 0.7 ? y(pdF) + fs * 1.15 : y(0.93) + fs * 0.4; return (
-                  <text x={m.l + fs * 1.2} y={y0} style={{ paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em" }}>
+                {(() => { const y0 = pdF > 0.7 ? y(pdF) + fs * 1.15 : y(0.93) + fs * 0.4; const x0 = dc.acum[M] < 0 ? Math.max(m.l + fs * 1.2, x(dc.acum[M]) + fs * 0.8) : m.l + fs * 1.2; return (
+                  <text x={x0} y={y0} style={{ paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em" }}>
                     <tspan className="q7-rot" style={{ fill: "#176C73", fontWeight: 700 }}>{`PD = σ(${num(dc.acum[M], 2)}) = ${pct(pdF, 1)}`}</tspan>
-                    <tspan className="q7-rot--peq" x={m.l + fs * 1.2} dy="1.25em" style={{ fill: "#176C73", fontWeight: 600 }}>{`na árvore ${M}: ${sinal((pdF - sigmoide(dc.acum[M - 1])) * 100, 1)} pp`}</tspan>
+                    <tspan className="q7-rot--peq" x={x0} dy="1.25em" style={{ fill: "#176C73", fontWeight: 600 }}>{`na árvore ${M}: ${sinal((pdF - sigmoide(dc.acum[M - 1])) * 100, 1)} pp`}</tspan>
                   </text>
                 ); })()}
               </g>
