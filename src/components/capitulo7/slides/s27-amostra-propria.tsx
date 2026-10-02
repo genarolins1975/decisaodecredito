@@ -97,7 +97,7 @@ function Linha({ modo }: { modo: Modo }) {
             })}
             <path d={ajusta} fill="none" stroke="#176C73" strokeWidth={3} markerEnd={`url(#${id}p)`} />
             <path d={mede} fill="none" stroke="#2E6B4F" strokeWidth={3} markerEnd={`url(#${id}v)`} />
-            <text className="q7-rot--peq" x={sxAj + fs * 0.2} y={yRotAj} style={{ fill: "#176C73", fontWeight: 700 }}>{safras ? "ajusta o nível" : "ajusta"}</text>
+            <text className="q7-rot--peq" x={sxAj + fs * 0.2} y={yRotAj} style={{ fill: "#176C73", fontWeight: 700 }}>{safras && !estreito ? "ajusta o nível" : "ajusta"}</text>
             <text className="q7-rot--peq" x={sx + fs * 0.2} y={yRotMe} style={{ fill: "#2E6B4F", fontWeight: 700 }}>mede</text>
             <rect x={noX} y={noY - noH / 2} width={noW} height={noH} rx={fs * 0.4} fill="#fff" stroke={atalho ? "#8C2332" : "#00205B"} strokeWidth={2} />
             <text className="q7-rot" x={noX + noW / 2} y={noY - fs * 0.15} textAnchor="middle" style={{ fill: "#00205B" }}>{safras ? "Nível" : "Platt"}</text>

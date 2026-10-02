@@ -77,7 +77,11 @@ export function Roc({ series, rotulo, titulo, sub, ponto, xTit = "Adimplentes re
           <g>
             <Eixos x={x} y={y} xt={t} yt={t} fx={(v) => pct(v, 0)} fy={(v) => pct(v, 0)} xTit={xTit} yTit={yTit} />
             <line className="q7-diag" x1={x(0)} y1={y(0)} x2={x(1)} y2={y(1)} />
-            <text className="q7-rot--peq" x={x(0.62)} y={y(0.5)} style={{ fill: "#5B6475" }}>sorteio: AUC 0,5</text>
+            {/* Com curva abaixo da diagonal (fila invertida), o rótulo do sorteio desce para o rodapé, abaixo da curva. */}
+            {(() => {
+              const abaixo = series.some((s) => s.pts.reduce((a, p) => a + p.tpr - p.fpr, 0) < 0);
+              return <text className="q7-rot--peq" x={x(abaixo ? 0.52 : 0.62)} y={y(abaixo ? 0.04 : 0.5)} style={{ fill: "#5B6475", paintOrder: "stroke", stroke: "#fff", strokeWidth: 4 }}>sorteio: AUC 0,5</text>;
+            })()}
             {series.map((s, i) => {
               const pts = s.pts.map((p) => ({ x: x(p.fpr), y: y(p.tpr) }));
               return <g key={i}>

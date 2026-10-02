@@ -124,7 +124,7 @@ export function S34ComparacaoJusta({ pagina }: { pagina?: Pagina }) {
             </tbody>
           </table>
         )}
-        <p className="q7-nota">{justa ? (ol === "oot" ? "Outra armadilha: " : `${AGG[ol].n}. Outra armadilha: `) : "Taxas observadas diferentes denunciam a troca de amostra. Outra armadilha: "}logística com recusados ({num(RES.logit_populacao_completa_oot.auc, 4)}) contra só aprovados ({num(RES.logit_oot.auc, 4)}) compara populações.</p>
+        <p className="q7-nota">{justa && ol !== "oot" ? `${AGG[ol].n}, as mesmas para os dois modelos.` : <>{justa ? "Outra armadilha: " : "Taxas observadas diferentes denunciam a troca de amostra. Outra armadilha: "}logística com recusados ({num(RES.logit_populacao_completa_oot.auc, 4)}) contra só aprovados ({num(RES.logit_oot.auc, 4)}) compara populações.</>}</p>
         <div className="q7-botoes"><Botao onClick={() => { setOl("oot"); setOg("treino"); }}>Exemplo injusto</Botao><Botao sec onClick={() => { setOl("oot"); setOg("oot"); }}>Restaurar</Botao></div>
       </Painel>
     </Quadro>
