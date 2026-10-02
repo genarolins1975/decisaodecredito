@@ -6,7 +6,7 @@
  * Arco:
  *   gancho    o boosting que o comitê julga no capítulo 7 ordenou o treino com AUC 0,8196 e a validação com 0,6476;
  *   pergunta  como somar árvores pequenas, cada uma corrigindo o erro das anteriores, produz uma PD?
- *   tensão    cada árvore reduz a perda de treino, sempre; taxa, profundidade e número de árvores aceleram o ganho;
+ *   tensão    cada árvore costuma reduzir a perda de treino; taxa, profundidade e número de árvores aceleram o ganho;
  *   virada    na validação, a perda volta a subir depois de poucas árvores, e com três variáveis a logística valida melhor;
  *   decisão   complexidade escolhida na validação, monotonia, nível conferido e PD explicada: o boosting vai ao comitê
  *             como desafiante, com essas provas.
@@ -15,6 +15,12 @@
  * com sete variáveis que o comitê julga no capítulo 7.
  */
 import type { Nivel, Pergunta, Slide } from "@/lib/capitulo7/roteiro";
+import { num } from "../capitulo7/formato";
+import base from "./base.json";
+
+/** Queda de AUC do candidato do treino à validação temporal do gerador, com a mesma casa decimal do slide 1. */
+const QUEDA_GBM = base.res.gbm_treino.auc - base.res.gbm_val.auc;
+const N_DIDATICA = base.didatica.length;
 
 export const PERGUNTAS: { id: Exclude<Pergunta, "todas" | "apoio">; nome: string; frase: string }[] = [
   { id: "ordenacao", nome: "Mecanismo", frase: "Como somar árvores pequenas, cada uma corrigindo a anterior, produz uma PD?" },
@@ -24,14 +30,14 @@ export const PERGUNTAS: { id: Exclude<Pergunta, "todas" | "apoio">; nome: string
 ];
 
 export const ROTEIRO: Slide[] = [
-  { slug: "c6p1", n: 1, pergunta: "todas", titulo: "Do treino à validação, o boosting perdeu 0,17 de AUC", sub: "Parte da queda é mudança de safra; parte é o modelo decorando o treino. Como ele se forma? O comitê do capítulo 7 vai julgá-lo.", nivel: "essencial", min: 4 },
+  { slug: "c6p1", n: 1, pergunta: "todas", titulo: `Do treino à validação, o boosting perdeu ${num(QUEDA_GBM, 3)} de AUC`, sub: "Parte da queda é a safra, parte é decoreba. Como o boosting se forma? O comitê do capítulo 7 vai julgá-lo.", nivel: "essencial", min: 4 },
   { slug: "c6p2", n: 2, pergunta: "ordenacao", titulo: "Escolher, votar ou corrigir: o boosting corrige em sequência", sub: "Três maneiras de combinar árvores; só uma usa o erro da anterior.", nivel: "essencial", min: 3 },
   { slug: "c6p3", n: 3, pergunta: "ordenacao", titulo: "O palpite inicial são as log odds da carteira", sub: "Dezesseis propostas, as mesmas dos capítulos 4 e 5, e um único número para todas.", nivel: "essencial", min: 3 },
   { slug: "c6p4", n: 4, pergunta: "ordenacao", titulo: "O erro de cada proposta vira o alvo da próxima árvore", sub: "Em log loss, menos o gradiente na escala de log odds é y − p.", nivel: "essencial", min: 4 },
   { slug: "c6p5", n: 5, pergunta: "ordenacao", titulo: "A primeira árvore separa onde o palpite errou", sub: "Com palpite único, ela separa os mesmos grupos que uma árvore de default; a diferença aparece da segunda árvore em diante.", nivel: "essencial", min: 4 },
   { slug: "c6p6", n: 6, pergunta: "ordenacao", titulo: "O valor da folha é um passo de Newton, não a média do erro", sub: "A soma dos erros dividida pela soma de p(1 − p): é o que o scikit-learn usa.", nivel: "essencial", min: 3 },
-  { slug: "c6p7", n: 7, pergunta: "ordenacao", titulo: "Somar só um pedaço da correção: a taxa de aprendizagem", sub: "No ajuste, taxas perto de 1 descem mais rápido nas primeiras árvores; a taxa muda quantas árvores são precisas (slide 14).", nivel: "essencial", min: 3 },
-  { slug: "c6p8", n: 8, pergunta: "ordenacao", titulo: "Árvore a árvore, a perda de treino cai", sub: "Quatro correções nas dezesseis propostas, com a PD de cada uma se movendo.", nivel: "essencial", min: 4 },
+  { slug: "c6p7", n: 7, pergunta: "ordenacao", titulo: "Taxa de aprendizagem: um pedaço menor da correção desce mais devagar no treino", sub: `Nas ${N_DIDATICA} propostas, taxas perto de 1 descem mais rápido; a taxa pequena não serve ao treino, e quem a julga é a validação (slides 14 e 15).`, nivel: "essencial", min: 3 },
+  { slug: "c6p8", n: 8, pergunta: "ordenacao", titulo: "Nas quatro árvores, a perda de treino cai", sub: "Quatro correções nas dezesseis propostas, com a PD de cada uma se movendo.", nivel: "essencial", min: 4 },
   { slug: "c6p9", n: 9, pergunta: "probabilidade", titulo: "A PD final se decompõe em parcelas rastreáveis", sub: "Palpite mais η vezes cada folha, em log odds; a sigmoide só no fim.", nivel: "aprofundamento", min: 3 },
   { slug: "c6p10", n: 10, pergunta: "ordenacao", titulo: "A fórmula de Friedman resume os passos já vistos", sub: "Cada termo do algoritmo é uma peça dos slides anteriores.", nivel: "aprofundamento", min: 3 },
   { slug: "c6p11", n: 11, pergunta: "validacao", titulo: "O mesmo algoritmo em 1.472 propostas: o treino sempre melhora", sub: "Utilização, atraso e score de bureau; a validação sorteada são 631 propostas que o modelo não viu.", nivel: "essencial", min: 4 },
