@@ -1,7 +1,7 @@
 {
  "source": "content/original/apresentacao-curso-pd.html",
- "sha256": "a65b53513716cc30507e06364f50732fd1a203ab8652ddccb94a31905673ceed",
- "extractedAt": "2026-10-01T23:06:34.800Z",
+ "sha256": "c7290713d678aa785dd78745937e3c6b0c65bd048f7bc2fdc5f83362ab16869e",
+ "extractedAt": "2026-10-02T00:17:36.177Z",
  "edition": "2026",
  "units": [
   {
@@ -2183,7 +2183,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -2280,7 +2280,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -2299,7 +2299,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -2337,7 +2337,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -2394,7 +2394,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -2413,7 +2413,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -2432,7 +2432,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -2451,7 +2451,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -2489,7 +2489,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -2527,7 +2527,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -2546,7 +2546,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -2565,7 +2565,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -2584,7 +2584,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -2603,7 +2603,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -2643,7 +2643,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -2721,7 +2721,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -2740,7 +2740,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -2837,7 +2837,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -3923,7 +3923,7 @@
    "hasFormula": false
   }
  ],
- "questions": 240,
+ "questions": 268,
  "rubrics": [
   {
    "slug": "comite",
@@ -4010,28 +4010,7 @@
  },
  "resync": {
   "synced": [
-   "c4p21",
-   "c5p3",
-   "c7p1",
-   "c7p2",
-   "c7p3",
-   "c7p4",
-   "c7p5",
-   "c7p6",
-   "c7p7",
-   "c7p8",
-   "c7p9",
-   "c7p10",
-   "c7p11",
-   "c7p16",
-   "c7p12",
-   "c7p13",
-   "c7p18",
-   "c7p14",
-   "c7p15",
-   "c7p17",
-   "c7p20",
-   "c7p19"
+   "c7p28"
   ],
   "diverged": []
  }

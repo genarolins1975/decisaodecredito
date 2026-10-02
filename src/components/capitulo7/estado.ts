@@ -9,7 +9,7 @@ import { useSyncExternalStore } from "react";
 type Chave = "fracaoExaminada";
 const valores: Record<Chave, number> = { fracaoExaminada: 0.1 };
 const ouvintes = new Set<() => void>();
-export function usarCompartilhado(k: Chave): [number, (v: number) => void] {
+export function useCompartilhado(k: Chave): [number, (v: number) => void] {
   const v = useSyncExternalStore((cb) => { ouvintes.add(cb); return () => ouvintes.delete(cb); }, () => valores[k], () => 0.1);
   return [v, (x: number) => { valores[k] = x; ouvintes.forEach((f) => f()); }];
 }

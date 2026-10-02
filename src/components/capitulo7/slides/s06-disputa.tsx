@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Botao, caminho, Eixos, escala, Expandir, Formula, Grafico, margens, Painel, Quadro, type Pagina } from "../base";
 import { D, A, MINI, PL, Y } from "@/lib/capitulo7/dados";
 import { aucPorPares, mulberry32 } from "@/lib/capitulo7/metricas";
@@ -21,6 +21,7 @@ function sortear(n: number): Sorteio[] {
   return out;
 }
 const TODOS = sortear(1000);
+const SERIE = (() => { let a = 0; return TODOS.map((s, k) => { a += s.r === "acerto" ? 1 : s.r === "empate" ? 0.5 : 0; return a / (k + 1); }); })();
 const MD = MINI.filter((m) => m.y), MA = MINI.filter((m) => !m.y);
 const FRASE = { acerto: "acerto: o default recebeu a PD maior", inversao: "inversão: o adimplente recebeu a PD maior", empate: "empate: PDs iguais, meio ponto" } as const;
 
@@ -31,7 +32,7 @@ export function S06Disputa({ pagina }: { pagina?: Pagina }) {
   const ac = vistos.filter((s) => s.r === "acerto").length, em = vistos.filter((s) => s.r === "empate").length;
   const est = n ? (ac + 0.5 * em) / n : null;
   const ult = n ? vistos[n - 1] : null;
-  const serie = useMemo(() => { let a = 0; return TODOS.map((s, k) => { a += s.r === "acerto" ? 1 : s.r === "empate" ? 0.5 : 0; return a / (k + 1); }); }, []);
+  const serie = SERIE;
   const pd = MINI.find((m) => m.id === md)!.pd, pa = MINI.find((m) => m.id === ma)!.pd;
   const manual = pd > pa ? "acerto" : pd === pa ? "empate" : "inversao";
   return (

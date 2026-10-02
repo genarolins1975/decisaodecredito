@@ -81,8 +81,8 @@ export function S29Platt({ pagina }: { pagina?: Pagina }) {
           </>
         )}
         <Expandir resumo="A fórmula e a convenção do scikit-learn">
-          <Formula f={String.raw`p'=\sigma\big(a+b\,\operatorname{logit}(p)\big)\qquad \text{scikit-learn: } p'=\frac{1}{1+e^{A f+B}},\; f=\operatorname{logit}(p)\Rightarrow A=-b,\;B=-a`} />
-          <p className="q7-nota">Na mesma amostra, o scikit-learn 1.9.1 dá A = {num(SK.A, 4)} e B = {num(SK.B, 4)}, isto é, b = {num(-SK.A, 4)} e a = {num(-SK.B, 4)}, contra b = {num(PC.b, 4)} e a = {num(PC.a, 4)} aqui. A diferença vem da suavização de alvos de Platt (1999), que o scikit-learn aplica e a máxima verossimilhança simples não.</p>
+          <Formula f={String.raw`\begin{aligned}\text{aqui: }p'&=\sigma\big(a+b\,\operatorname{logit}p\big)\\ \text{scikit-learn: }p'&=\frac{1}{1+e^{A\,\operatorname{logit}p+B}}\\ \Rightarrow\ A&=-b,\ \ B=-a\end{aligned}`} />
+          <p className="q7-nota">Na mesma amostra, o scikit-learn 1.9.1 dá b = {num(-SK.A, 4)} e a = {num(-SK.B, 4)}, contra {num(PC.b, 4)} e {num(PC.a, 4)} aqui: ele suaviza os alvos como Platt (1999).</p>
         </Expandir>
         <div className="q7-botoes"><Botao sec onClick={() => { setV("bruto"); setPrev(null); }}>Restaurar</Botao></div>
       </Painel>

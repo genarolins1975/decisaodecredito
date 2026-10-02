@@ -1,6 +1,6 @@
 "use client";
 import { Botao, caminho, Controle, Eixos, escala, Expandir, Formula, Grafico, Painel, Quadro, margens, type Pagina } from "../base";
-import { usarCompartilhado } from "../estado";
+import { useCompartilhado } from "../estado";
 import { D, FILA_PL, N, PL, Y } from "@/lib/capitulo7/dados";
 import { ganho, liftFaixa } from "@/lib/capitulo7/metricas";
 import { int, num, pct, vezes } from "@/lib/capitulo7/formato";
@@ -16,7 +16,7 @@ const LIFTS = QS.map((q) => ({ q, l: ganho(Y, PL, q, FILA_PL).lift! }));
 const BANDAS = Array.from({ length: 10 }, (_, j) => ({ j, ...liftFaixa(Y, PL, j / 10, (j + 1) / 10, FILA_PL) }));
 
 export function S13Lift({ pagina }: { pagina?: Pagina }) {
-  const [q, setQ] = usarCompartilhado("fracaoExaminada");
+  const [q, setQ] = useCompartilhado("fracaoExaminada");
   const g = ganho(Y, PL, q, FILA_PL);
   return (
     <Quadro slug="c7p25" pagina={pagina} layout="gl"
@@ -56,7 +56,7 @@ export function S13Lift({ pagina }: { pagina?: Pagina }) {
         </dl>
         <div className="q7-botoes"><Botao onClick={() => setQ(0.1)}>10%</Botao><Botao onClick={() => setQ(0.5)}>50%</Botao><Botao onClick={() => setQ(1)}>100%</Botao></div>
         <Expandir resumo="Lift acumulado e lift de faixa">
-          <Formula f={String.raw`\mathrm{lift}(q)=\frac{\mathrm{ganho}(q)}{q}=\frac{\text{taxa no grupo}}{\text{taxa da carteira}}`} />
+          <Formula f={String.raw`\begin{aligned}\mathrm{lift}(q)&=\frac{\mathrm{ganho}(q)}{q}\\&=\frac{\text{taxa no grupo}}{\text{taxa da carteira}}\end{aligned}`} />
           <p className="q7-nota">O lift de faixa usa só a faixa (barras); o acumulado usa tudo até q (linha). Em 100% da carteira, o lift acumulado é 1.</p>
         </Expandir>
       </Painel>

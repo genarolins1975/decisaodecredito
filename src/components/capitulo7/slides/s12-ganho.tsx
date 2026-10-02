@@ -1,6 +1,6 @@
 "use client";
 import { Botao, caminho, Controle, Eixos, escala, Grafico, Kpi, Painel, Quadro, margens, type Pagina } from "../base";
-import { usarCompartilhado } from "../estado";
+import { useCompartilhado } from "../estado";
 import { D, FILA_PL, N, PL, Y } from "@/lib/capitulo7/dados";
 import { curvaGanho, ganho } from "@/lib/capitulo7/metricas";
 import { int, pct } from "@/lib/capitulo7/formato";
@@ -15,7 +15,7 @@ const PI = D / N;
 const FAIXAS = Array.from({ length: 10 }, (_, j) => { const a = ganho(Y, PL, j / 10, FILA_PL), b = ganho(Y, PL, (j + 1) / 10, FILA_PL); return { j, n: b.examinados - a.examinados, d: b.capturados - a.capturados }; });
 
 export function S12Ganho({ pagina }: { pagina?: Pagina }) {
-  const [q, setQ] = usarCompartilhado("fracaoExaminada");
+  const [q, setQ] = useCompartilhado("fracaoExaminada");
   const g = ganho(Y, PL, q, FILA_PL);
   const faixa = FAIXAS[Math.min(9, Math.ceil(q * 10 - 1e-9) - 1)] ?? FAIXAS[0];
   return (

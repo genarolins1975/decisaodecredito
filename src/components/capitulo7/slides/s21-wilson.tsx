@@ -42,7 +42,7 @@ export function S21Wilson({ pagina }: { pagina?: Pagina }) {
                     <text className="q7-rot" x={x(-0.05)} y={cy - dm.fs * 0.9} style={{ fill: l.on ? "#00205B" : "#2A3342" }}>{l.rot}</text>
                     <line x1={x(ww.lo)} x2={x(ww.hi)} y1={cy} y2={cy} stroke="#176C73" strokeWidth={dm.fs * 0.55} strokeLinecap="round" />
                     <circle cx={x(l.d / l.n)} cy={cy} r={dm.fs * 0.42} fill="#fff" stroke="#00205B" strokeWidth={3} />
-                    <text className="q7-rot--peq" x={x(ww.hi) + dm.fs * 0.6} y={cy} dy=".35em">Wilson {pct(ww.lo, 1)} a {pct(ww.hi, 1)}</text>
+                    {ww.hi > 0.17 ? <text className="q7-rot--peq" x={x(ww.hi)} y={cy - dm.fs * 0.75} textAnchor="end">Wilson {pct(ww.lo, 1)} a {pct(ww.hi, 1)}</text> : <text className="q7-rot--peq" x={x(ww.hi) + dm.fs * 0.6} y={cy} dy=".35em">Wilson {pct(ww.lo, 1)} a {pct(ww.hi, 1)}</text>}
                     <line x1={x(Math.max(-0.05, wd.lo))} x2={x(wd.hi)} y1={cy + dm.fs * 1.05} y2={cy + dm.fs * 1.05} stroke="#9AA1AD" strokeWidth={dm.fs * 0.22} strokeDasharray="6 4" />
                     <text className="q7-rot--peq" x={x(wd.hi) + dm.fs * 0.6} y={cy + dm.fs * 1.05} dy=".35em" style={{ fill: "#5B6475" }}>normal {pct(wd.lo, 1)} a {pct(wd.hi, 1)}</text>
                   </g>

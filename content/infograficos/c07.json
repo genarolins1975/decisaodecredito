@@ -1,28 +1,28 @@
 {
  "numero": "07",
  "titulo": "Avaliação e calibração",
- "pergunta": "Como saber se o modelo ordena e estima bem o risco?",
- "kicker1": "1 · Quatro perguntas separadas (janela fora do tempo: 737 propostas, 81 defaults)",
+ "pergunta": "Que quatro perguntas um modelo de PD precisa responder antes de merecer confiança?",
+ "kicker1": "1 · Quatro perguntas, uma janela (fora do tempo: 737 propostas, 81 defaults)",
  "cartoes": [
   {
-   "tit": "Ordena bem?",
+   "tit": "Ordena?",
    "cor": "steel",
-   "corpo": "AUC de 0,7257: a chance de um default receber risco maior que um adimplente. Olhando os 2 piores decis, o ganho é 42% dos defaults, alavancagem 2,10×."
+   "corpo": "AUC de 0,7257: num par default contra adimplente, o default recebe a PD maior em 73% das vezes. Os 20% piores da fila concentram 42% dos defaults, lift de 2,10."
   },
   {
-   "tit": "As probabilidades são honestas?",
-   "cor": "orange",
-   "corpo": "Calibração por faixa: PD média prevista contra frequência observada, com intervalo. Na faixa de 2,48% previsto, 1,35% observado em 74 casos, intervalo de 0,24% a 7,27%."
-  },
-  {
-   "tit": "Mantém no tempo?",
-   "cor": "navy",
-   "corpo": "No treino, boosting 0,8196 contra logística 0,6968; fora do tempo, 0,6958 contra 0,7257. O treino não decide nada."
-  },
-  {
-   "tit": "Qual a incerteza?",
+   "tit": "A probabilidade é adequada?",
    "cor": "green",
-   "corpo": "AUC pontual 0,7257; em 400 reamostragens, faixa central de 95% de 0,6543 a 0,7831. Reportar só o valor esconde a evidência."
+   "corpo": "PD média de 9,72% contra 10,99% observados: 71,6 defaults esperados e 81 ocorridos. A curva por faixa, com intervalo de Wilson, mostra onde o nível erra."
+  },
+  {
+   "tit": "Sustenta a decisão?",
+   "cor": "orange",
+   "corpo": "Com as hipóteses do capítulo 8, o resultado esperado é máximo no corte de 14,0%; o KS está em 9,75%. A política sai da conta econômica, não da métrica de separação."
+  },
+  {
+   "tit": "Prova fora da amostra?",
+   "cor": "navy",
+   "corpo": "Fora do tempo, logística 0,7257 contra boosting 0,6958; diferença de 0,0299, intervalo de DeLong de 0,0001 a 0,0596. No treino, o boosting parecia muito melhor: 0,8196."
   }
  ],
  "kicker2": "2 · Três números que não se substituem",
@@ -30,25 +30,25 @@
   {
    "sigla": "0,7257",
    "nome": "AUC",
-   "desc": "Proporção de pares default × adimplente corretamente ordenados. Só ordem.",
+   "desc": "Proporção de pares default × adimplente na ordem certa, empate valendo meio. Só ordem.",
    "cor": "steel"
   },
   {
-   "sigla": "KS",
-   "nome": "distância máxima",
-   "desc": "Maior distância entre as acumuladas; declarar amostra, sentido do eixo e onde ocorre.",
+   "sigla": "0,3621",
+   "nome": "KS",
+   "desc": "Maior distância entre as acumuladas, em PD de 9,75%. Separação, não corte de política.",
    "cor": "orange"
   },
   {
    "sigla": "0,0913",
    "nome": "Brier",
-   "desc": "Soma erro de nível e poder de separação: compara candidatos, não prova calibração.",
+   "desc": "Mistura nível e separação: compara candidatos na mesma amostra, não prova calibração.",
    "cor": "green"
   }
  ],
- "formula": "AUC = pares corretamente ordenados ÷ total de pares",
- "formulaNota": "Exemplo didático: 12 de 20 = 0,600. Na janela fora do tempo: 0,7257 sobre 53.136 pares (81 × 656).",
- "kicker3": "3 · O protocolo antes de abrir o OOT",
+ "formula": "AUC = (pares certos + ½ × empates) ÷ total de pares",
+ "formulaNota": "Na mini-base: 60 pares certos e 1 empate em 75, AUC de 0,8067. Na janela: 0,7257 sobre 53.136 pares (81 × 656).",
+ "kicker3": "3 · Evidência e protocolo",
  "paineis": [
   {
    "tipo": "barras",
@@ -100,9 +100,9 @@
    "tipo": "lista",
    "titulo": "Congelar e medir uma única vez",
    "itens": [
-    "Validação fixa: comparar candidatos, incerteza, discriminação, Brier e calibração.",
-    "Escolher e calibrar usando somente desenvolvimento; definir regra de desempate.",
-    "Congelar o pacote; executar o teste reservado uma única vez."
+    "Escolher modelo, calibrador e corte sem tocar na janela final.",
+    "Ajustar o calibrador numa amostra própria e avaliá-lo em outra.",
+    "Congelar tudo e abrir a janela uma única vez; escolher olhando para ela a transforma em validação."
    ]
   }
  ],
@@ -111,15 +111,15 @@
   "itens": [
    {
     "k": "Ordem",
-    "v": "Quem recebe maior risco? AUC, KS e ganho examinam a posição relativa."
+    "v": "Quem recebe maior risco? AUC, KS, ganho e lift leem a mesma fila."
    },
    {
     "k": "Nível",
-    "v": "Dez por cento significa 10 em 100? Calibração por faixa, Brier e log loss."
+    "v": "Dez por cento significa 10 em 100? Curva por faixa, Brier e log loss, sempre contra uma referência."
    },
    {
-    "k": "Protocolo",
-    "v": "O que torna a escolha defensável? Seleção, calibração e congelamento antes do OOT."
+    "k": "Decisão e prova",
+    "v": "O corte sai de perda, receita e custos; a janela final prova uma vez."
    }
   ]
  }

@@ -23,7 +23,8 @@ export function S09Roc({ pagina }: { pagina?: Pagina }) {
   const [s, setS] = useState(0);
   const [tocando, setTocando] = useState(false);
   const reduzido = useMovimentoReduzido();
-  useEffect(() => { if (!tocando) return; if (s >= PTS.length - 1) { setTocando(false); return; } const t = setTimeout(() => setS(s + 1), 750); return () => clearTimeout(t); }, [tocando, s]);
+  const rodando = tocando && !reduzido && s < PTS.length - 1;
+  useEffect(() => { if (!rodando) return; const t = setTimeout(() => setS((v) => Math.min(PTS.length - 1, v + 1)), 750); return () => clearTimeout(t); }, [rodando, s]);
   const p = PTS[s], ant = PTS[Math.max(0, s - 1)];
   const novos = s ? MINI.filter((m) => m.pd === p.limiar) : [];
   const dd = p.vp - ant.vp, dg = p.fp - ant.fp;
@@ -42,7 +43,7 @@ export function S09Roc({ pagina }: { pagina?: Pagina }) {
         <Seg rotulo="Base" opcoes={[{ v: "mini" as Base, r: "Mini-base (20)" }, { v: "janela" as Base, r: "Janela (737)" }]} valor={base} onChange={(v) => { setBase(v); setTocando(false); }} />
         {mini ? (
           <>
-            <div className="q7-botoes"><Botao prim onClick={() => setS(Math.min(PTS.length - 1, s + 1))} desab={s >= PTS.length - 1}>Baixar o corte</Botao><Botao onClick={() => setS(Math.max(0, s - 1))} desab={s === 0}>Voltar</Botao>{!reduzido && <Botao onClick={() => { if (s >= PTS.length - 1) setS(0); setTocando(!tocando); }}>{tocando ? "Pausar" : "Reproduzir"}</Botao>}<Botao sec onClick={() => { setS(0); setTocando(false); }}>Restaurar</Botao></div>
+            <div className="q7-botoes"><Botao prim onClick={() => setS(Math.min(PTS.length - 1, s + 1))} desab={s >= PTS.length - 1}>Baixar o corte</Botao><Botao onClick={() => setS(Math.max(0, s - 1))} desab={s === 0}>Voltar</Botao>{!reduzido && <Botao onClick={() => { if (s >= PTS.length - 1) setS(0); setTocando(!rodando); }}>{rodando ? "Pausar" : "Reproduzir"}</Botao>}<Botao sec onClick={() => { setS(0); setTocando(false); }}>Restaurar</Botao></div>
             <p className="q7-p">{passo}</p>
             {novos.length > 0 && <p className="q7-nota">Recusadas neste passo: {novos.map((m) => `#${m.id} (${m.y ? "default" : "pagou"})`).join(", ")}.</p>}
             <Matriz vp={p.vp} fp={p.fp} fn={5 - p.vp} vn={15 - p.fp} compacta rotulos={false} />

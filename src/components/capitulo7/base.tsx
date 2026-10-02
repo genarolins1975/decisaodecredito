@@ -1,5 +1,5 @@
 "use client";
-import { Fragment, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { Fragment, useId, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { PERGUNTAS, SLIDE, TOTAL, type Pergunta } from "@/lib/capitulo7/roteiro";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -105,14 +105,30 @@ export function Previsao({ pergunta, opcoes, escolha, onEscolha, rotulo = "Antes
 }
 
 export function Expandir({ resumo, children, aberto }: { resumo: ReactNode; children: ReactNode; aberto?: boolean }) {
-  return <details className="q7-exp" open={aberto}><summary>{resumo}</summary><div className="q7-exp-c">{children}</div></details>;
+  // No quadro 16:9 nada pode ficar cortado: se o conteúdo aberto não cabe no painel, ele sobe sobre o painel, como um
+  // cartão, em vez de empurrar o resto para fora. Em tela estreita (página rolável) fica no fluxo normal.
+  const ref = useRef<HTMLDetailsElement>(null);
+  const [sobe, setSobe] = useState<number | null>(null);
+  const aoAlternar = () => {
+    const d = ref.current; if (!d) return;
+    if (!d.open) { setSobe(null); return; }
+    const p = d.closest(".q7-painel") ?? d.closest(".q7-corpo");
+    if (!p) return;
+    // um aberto por vez no mesmo painel: abrir este fecha os vizinhos
+    p.querySelectorAll<HTMLDetailsElement>("details.q7-exp[open]").forEach((o) => { if (o !== d) o.open = false; });
+    const pr = p.getBoundingClientRect(), dr = d.getBoundingClientRect();
+    const cortado = dr.bottom > pr.bottom + 1 || [...p.querySelectorAll("*")].some((e) => e.getBoundingClientRect().bottom > pr.bottom + 1);
+    // altura disponível acima do resumo, dentro do painel
+    setSobe(cortado ? Math.max(120, dr.top - pr.top - 8) : null);
+  };
+  return <details ref={ref} className="q7-exp" data-sobe={sobe !== null ? "1" : undefined} open={aberto} onToggle={aoAlternar}><summary>{resumo}</summary><div className="q7-exp-c" style={sobe !== null ? { maxHeight: sobe } : undefined}>{children}</div></details>;
 }
 
 /** Fórmula em KaTeX com a tradução dos símbolos logo abaixo. */
-export function Formula({ f, simbolos }: { f: string; simbolos?: [string, ReactNode][] }) {
+export function Formula({ f, simbolos, compacta }: { f: string; simbolos?: [string, ReactNode][]; compacta?: boolean }) {
   return (
     <>
-      <div className="q7-formula"><Tex f={f} bloco /></div>
+      <div className={`q7-formula${compacta ? " q7-formula--compacta" : ""}`}><Tex f={f} bloco /></div>
       {simbolos && <dl className="q7-simbolos">{simbolos.map(([s, d], i) => <Fragment key={i}><dt><Tex f={s} /></dt><dd>{d}</dd></Fragment>)}</dl>}
     </>
   );
@@ -185,11 +201,14 @@ export function Marca({ x, y, r, def, destaque }: { x: number; y: number; r: num
     : <circle cx={x} cy={y} r={r * 0.86} className="q7-pt-adi" stroke={destaque ? "#00205B" : undefined} strokeWidth={destaque ? 3 : undefined} />;
 }
 
-/** Preferência por movimento reduzido, lida depois da montagem (sem divergência entre servidor e cliente). */
+/** Preferência por movimento reduzido. No servidor e na hidratação vale "sem preferência"; depois segue o sistema. */
+const consultaMovimento = () => (typeof window !== "undefined" ? window.matchMedia?.("(prefers-reduced-motion: reduce)") : undefined);
 export function useMovimentoReduzido() {
-  const [r, setR] = useState(false);
-  useEffect(() => { const m = window.matchMedia?.("(prefers-reduced-motion: reduce)"); if (!m) return; setR(m.matches); const f = () => setR(m.matches); m.addEventListener?.("change", f); return () => m.removeEventListener?.("change", f); }, []);
-  return r;
+  return useSyncExternalStore(
+    (cb) => { const m = consultaMovimento(); m?.addEventListener?.("change", cb); return () => m?.removeEventListener?.("change", cb); },
+    () => consultaMovimento()?.matches ?? false,
+    () => false,
+  );
 }
 
 /**

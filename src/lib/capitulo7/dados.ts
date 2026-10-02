@@ -59,7 +59,7 @@ export const QUATRO = [MINI[0], MINI[3], MINI[10], MINI[16]];
 
 /**
  * Três cenários na mesma janela (slides 15, 16 e 25):
- * boa fila e nível distorcido: a logística com o nível deslocado em +0,8 em log odds (média sobe de 9,7% para 18,8%);
+ * boa fila e nível distorcido: a logística com o nível deslocado em +0,8 em log odds (média sobe de 9,7% para 18,5%);
  * boa fila e nível adequado: a logística como estimada;
  * fila fraca e média certa: as PDs da logística embaralhadas entre as propostas (semente 7), mesma média e mesma
  * distribuição, ordenação destruída.

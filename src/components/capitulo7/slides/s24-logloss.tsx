@@ -58,7 +58,7 @@ export function S24LogLoss({ pagina }: { pagina?: Pagina }) {
           <div data-tom="mudo"><dt>Constante {pct(PREVALENCIA.treino, 2)} (treino)</dt><dd>{num(LL_REF.valor, 5)}</dd></div>
         </dl>
         <Expandir resumo="Fórmula">
-          <Formula f={String.raw`\mathrm{LL}=-\frac1n\sum_i\big[y_i\ln p_i+(1-y_i)\ln(1-p_i)\big]`} />
+          <Formula f={String.raw`\begin{aligned}\mathrm{LL}&=-\frac1n\sum_i \ell_i\\ \ell_i&=y_i\ln p_i+(1-y_i)\ln(1-p_i)\end{aligned}`} compacta />
         </Expandir>
         <div className="q7-botoes"><Botao onClick={() => { setY(1); setP(0.005); }}>Default com PD de 0,5%</Botao><Botao sec onClick={() => { setY(1); setP(0.1); }}>Restaurar</Botao></div>
       </Painel>
