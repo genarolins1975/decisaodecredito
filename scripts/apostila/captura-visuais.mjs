@@ -14,13 +14,13 @@ const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromi
 const ctx = await browser.newContext({ viewport: { width: 1000, height: 900 }, deviceScaleFactor: 2 });
 await ctx.request.post(`${BASE}/api/auth/login`, { data: { email: "aluno.a@example.test", password: "aluno-a-dev-2026" }, headers: { "x-requested-with": "fetch" } });
 const page = await ctx.newPage();
-/* Quadros do capítulo 7 que abrem vazios de propósito (a turma constrói ao vivo): no papel sai o estado construído.
-   Previsões que bloqueiam a revelação (slides 3, 15, 29, 30 e 36) ficam como estão: o guia pede a resposta antes. */
+/* Quadros do capítulo 7 que abrem vazios de propósito (a turma constrói ao vivo): no papel sai o estado construído até
+   onde não há previsão. Previsões que bloqueiam a revelação (slides 3, 5, 6, 8 na precisão, 15, 17, 28, 29, 30, 35 e 36)
+   ficam como estão: o guia pede a resposta antes, e responder na captura imprimiria o retorno da alternativa certa. */
 const PASSOS = {
-  c7p4: ["1. Ordenar pela PD", "Revelar todos"], c7p5: ["+100", "+100", "+100", "+100", "+100", "+100", "+100", "+100", "+100", "+100"],
-  c7p22: ["Todos os pares"], c7p23: ["Revelar a próxima taxa", "Revelar a próxima taxa", "Revelar a próxima taxa"],
-  c7p6: ["Janela (737)"], c7p10: ["Todas"], c7p9: ["+50 amostras"], c7p12: ["Abrir o teste"],
-  c7p14: ["Completar 1.000"], c7p17: ["Mais 5", "Mais 5"], c7p20: ["AUC boa, curva fora da diagonal"], c7p38: ["Ordenação"],
+  c7p4: ["1. Ordenar pela PD"], c7p22: ["Todos os pares"], c7p23: ["Revelar a próxima taxa", "Revelar a próxima taxa"],
+  c7p6: ["Janela (737)"], c7p10: ["Todas"], c7p9: ["Nova amostra", "Nova amostra", "Nova amostra", "Nova amostra"],
+  c7p14: ["Completar 1.000"], c7p20: ["Curva fora da diagonal"], c7p38: ["Ordenação consultar"],
 };
 const meta = fs.existsSync(`${S}/fig/_meta.json`) ? JSON.parse(fs.readFileSync(`${S}/fig/_meta.json`, "utf8")) : {};
 for (const slug of slugs) {
@@ -34,7 +34,9 @@ for (const slug of slugs) {
     let alvo, tipo;
     if (await vz.count()) { alvo = vz; tipo = "nativo"; } else { alvo = page.locator("article .mt-6").first(); tipo = "conteudo"; }
     for (const nome of PASSOS[slug] ?? []) { await alvo.getByRole("button", { name: nome, exact: true }).first().click(); await page.waitForTimeout(250); }
-    await alvo.scrollIntoViewIfNeeded(); await page.waitForTimeout(250);
+    /* o ponteiro fica onde foi o último clique, inclusive da página anterior: sobre uma alternativa, o realce de
+       hover parece resposta escolhida no papel */
+    await page.mouse.move(0, 0); await alvo.scrollIntoViewIfNeeded(); await page.waitForTimeout(250);
     const box = await alvo.boundingBox(); if (!box) throw new Error("sem caixa");
     await alvo.screenshot({ path: `${S}/fig/${slug}.png` });
     meta[slug] = { w: Math.round(box.width), h: Math.round(box.height), tipo };
