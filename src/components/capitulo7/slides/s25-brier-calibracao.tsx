@@ -52,6 +52,8 @@ function saida() {
 }
 /** zero exibido sem sinal: a decomposição de B dá zero por construção, e o arredondamento não pode virar "−0". */
 const n5 = (v: number) => num(Math.abs(v) < 5e-6 ? 0 : v, 5);
+/** Deslocamento de nível na tela: "0" sem sinal; positivo com "+". */
+const aTxt = (a: number) => (Math.abs(a) < 1e-9 ? "0" : `+${num(a, 1)}`);
 const OPS = [
   { texto: "Logo acima de 0", certa: false, retorno: <>Com a = {num(A_MEIO, 1)}, A ainda tem Brier {num(C_MEIO.bs, 5)} contra {num(CB.bs, 5)} de B: o erro de nível ainda é pequeno perto da separação. Confunde Brier com calibração.</> },
   { texto: `Perto de +${num(VIRADA, 1)}`, certa: true, retorno: <>Isso: só a partir de a = {num(VIRADA, 2)}. Pouco antes, a descalibração de A já sai da banda do acaso e A ainda vence no Brier.</> },
@@ -66,7 +68,7 @@ export function S25BrierCalibracao({ pagina }: { pagina?: Pagina }) {
   const BA = useMemo(() => bandaA(a), [a]);
   const vence = CA.bs < CB.bs; const fora = CA.mcb > BA.hi;
   const revelado = esc !== null && OPS[esc].certa;
-  const barras = [{ r: a === 0 ? "A (logística)" : `A, a = +${num(a, 1)}`, c: CA, b: BA as Banda | null }, { r: "B (constante)", c: CB, b: null }];
+  const barras = [{ r: a === 0 ? "A (logística)" : `A, a = ${aTxt(a)}`, c: CA, b: BA as Banda | null }, { r: "B (constante)", c: CB, b: null }];
   const mx = Math.max(...barras.flatMap((b) => [b.c.mcb, b.c.dsc, b.b?.hi ?? 0])) * 1.05;
   const escolher = (i: number | null) => { setEsc(i); setA(i !== null && OPS[i].certa ? saida() : 0); };
   const faixaTxt = <>banda {num(BA.lo, 5)} a {num(BA.hi, 5)}</>;
@@ -74,10 +76,10 @@ export function S25BrierCalibracao({ pagina }: { pagina?: Pagina }) {
     <Quadro slug="c7p11" pagina={pagina} layout="gl"
       titulo={revelado ? undefined : "Menor Brier prova melhor calibração?"}
       sub={revelado ? undefined : "A ordena bem; B dá a todos a mesma PD, a taxa da janela."}
-      conclusao={!revelado ? <>Com a = {num(a, 1)}: Brier de A = {num(CA.bs, 5)}; de B = {num(CB.bs, 5)}. Subindo o nível de A, quando B passa a ter o Brier menor? O controle abre depois da resposta.</>
-        : vence && fora ? <>Com a = +{num(a, 1)}, a MCB de A ({num(CA.mcb, 5)}) <b>sai da banda da calibração perfeita</b> ({faixaTxt}): descalibração além do acaso. Ainda assim <b>A tem o Brier menor</b> ({num(CA.bs, 5)} contra {num(CB.bs, 5)} de B, calibrado por construção), pela separação. B só vence a partir de a = {num(VIRADA, 2)}.</>
-        : vence ? <>Com a = +{num(a, 1)}: MCB de A {num(CA.mcb, 5)}, dentro da {faixaTxt}: compatível com calibração, como nos slides 19 e 21. A tem o Brier menor pela separação (DSC {num(CA.dsc, 5)}). Suba o nível até a MCB sair da banda.</>
-        : <>Com a = +{num(a, 1)}, B passa a ter o Brier menor: a MCB de A ({num(CA.mcb, 5)}, banda até {num(BA.hi, 5)}) superou a separação (DSC {num(CA.dsc, 5)}). A fila não mudou; a PD média foi a {pct(gA.pdMedia!, 1)} contra {pct(TAXA, 1)} observados.</>}
+      conclusao={!revelado ? <>Com a = {aTxt(a)}: Brier de A = {num(CA.bs, 5)}; de B = {num(CB.bs, 5)}. Subindo o nível de A, quando B passa a ter o Brier menor? O controle abre depois da resposta.</>
+        : vence && fora ? <>Com a = {aTxt(a)}, a MCB de A ({num(CA.mcb, 5)}) <b>sai da banda da calibração perfeita</b> ({faixaTxt}): descalibração além do acaso. Ainda assim <b>A tem o Brier menor</b> ({num(CA.bs, 5)} contra {num(CB.bs, 5)} de B, calibrado por construção), pela separação. B só vence a partir de a = {num(VIRADA, 2)}.</>
+        : vence ? <>Com a = {aTxt(a)}: MCB de A {num(CA.mcb, 5)}, dentro da {faixaTxt}: compatível com calibração, como nos slides 19 e 21. A tem o Brier menor pela separação (DSC {num(CA.dsc, 5)}). Suba o nível até a MCB sair da banda.</>
+        : <>Com a = {aTxt(a)}, B passa a ter o Brier menor: a MCB de A ({num(CA.mcb, 5)}, banda até {num(BA.hi, 5)}) superou a separação (DSC {num(CA.dsc, 5)}). A fila não mudou; a PD média foi a {pct(gA.pdMedia!, 1)} contra {pct(TAXA, 1)} observados.</>}
       fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. A: σ(logit p + a) sobre a logística. B: PD constante de ${pct(TAXA, 2)}, a taxa da janela. MCB na própria amostra tem viés para cima; banda: 5% a 95% de ${REPLICAS} sorteios do desfecho pela PD do modelo (semente ${SEMENTE_BANDA}). CORP: Dimitriadis, Gneiting e Jordan (2021).`}>
       <Painel>
         <div className="q7-g2-s25 q7-s25v3">
@@ -115,7 +117,7 @@ export function S25BrierCalibracao({ pagina }: { pagina?: Pagina }) {
       </Painel>
       <Painel>
         <Previsao rotulo="Antes de mover o nível" pergunta="Subindo o nível de A, a partir de que deslocamento a o Brier de B fica menor?" opcoes={OPS} escolha={esc} onEscolha={escolher} recolher />
-        {revelado ? <Controle rotulo="Nível de A: a, em log odds" valor={a} min={0} max={1.4} passo={0.1} onChange={setA} mostrar={`+${num(a, 1)}`} escala={["0: a logística", "+1,4"]} /> : null}
+        {revelado ? <Controle rotulo="Nível de A: a, em log odds" valor={a} min={0} max={1.4} passo={0.1} onChange={setA} mostrar={aTxt(a)} escala={["0: a logística", "+1,4"]} /> : null}
         <div className="q7-s25v3-acoes">
           {revelado && <Expandir resumo="Como se calcula">
             <Formula compacta f={String.raw`\begin{aligned}\mathrm{MCB}&=\mathrm{BS}-\mathrm{BS}_{\mathrm{iso}}\\ \mathrm{DSC}&=\mathrm{UNC}-\mathrm{BS}_{\mathrm{iso}}\end{aligned}`} />

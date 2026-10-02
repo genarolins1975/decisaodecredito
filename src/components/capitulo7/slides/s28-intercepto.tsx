@@ -12,13 +12,15 @@ import { int, num, pct } from "@/lib/capitulo7/formato";
  * logits das médias aparece ao lado para mostrar que ela não resolve a equação. A janela fora do tempo fica fechada até
  * a previsão: o que acontece com o Brier quando só o nível é corrigido. Rodada 2: a mesma leitura para os dois modelos.
  * A PD média antes já cabia no intervalo da janela (Jeffreys); a correção vem da amostra de calibração de 3.000 casos e
- * a evidência de que ela melhora vem da perda esperada em janelas novas (calibradores de janelas.ts), não da janela de
+ * a evidência de que ela melhora vem da perda esperada pela PD verdadeira (calibradores de janelas.ts), não da janela de
  * 81 defaults. A régua de baixo marca a PD média antes e depois e, revelada a previsão, a taxa observada com Wilson.
  * Rodada 4: os marcadores de média dizem que são da janela (737), não das 20 propostas desenhadas; a leitura revelada
- * justifica a previsão com o Brier da tabela; "janelas novas" viram réplicas sintéticas da janela.
+ * justifica a previsão com o Brier da tabela.
  * Rodada 5: o Brier quase não muda porque a parte de calibração (MCB da decomposição CORP, slide 25) já era pequena,
  * não porque o intercepto "só mexe no nível": com a logística deslocada em +1,4 (o A do slide 25), o mesmo ajuste,
  * estimado na mesma calibração, derruba o Brier (CONTRA). O marcador de baixo é ▼ e o rótulo diz ▼.
+ * Rodada 6: ▲ fica acima do eixo de cima e ▼ abaixo do de baixo, fora da faixa dos segmentos; a log loss esperada é a
+ * perda esperada pela PD verdadeira (média exata), não as réplicas sintéticas (termo reservado aos 300 sorteios).
  */
 type Mod = "logistica" | "boosting";
 const ALVO = CAL.y.reduce((s, v) => s + v, 0);
@@ -54,25 +56,27 @@ export function S28Intercepto({ pagina }: { pagina?: Pagina }) {
   const r = R[mod];
   return (
     <Quadro slug="c7p12" pagina={pagina} layout="gl"
-      conclusao={!aberto ? <>Na amostra de calibração ({int(CAL.n)} casos, {ALVO} defaults), Newton chega a <b>a = {num(r.A, 4)}</b> para a {NOME[mod]}. A diferença de logits das médias daria {num(r.ingenuo, 4)}, que não fecha a conta: esperaria {num(r.somaIngenuo, 1)} defaults, não {ALVO}. Agora a previsão.</>
-        : <>{bsQuase(r) ? "Isso: o" : "O"} Brier na janela vai de {num(r.bs0, 5)} para <b>{num(r.bs1, 5)}</b>: o intercepto só mexe na parte de calibração, que era pequena (MCB {num(r.mcb0, 4)}); a separação (DSC {num(r.dsc0, 4)}) e a ordem ficam. A PD média {DA[mod]} {NOME[mod]} vai de {pct(r.pm0, 2)} para <b>{pct(r.pm1, 2)}</b>, observado {pct(OBS.p, 2)}; os {pct(r.pm0, 2)} {r.pm0 >= OBS.lo && r.pm0 <= OBS.hi ? "já cabiam no IC de Wilson" : "ficavam fora do IC de Wilson"} (Jeffreys p = {num(r.j0, 2)}: teste unilateral da PD média contra os defaults, priori de Jeffreys, adotado pelo BCE). A correção vem dos {int(CAL.n)} casos da calibração; nas réplicas sintéticas da janela, a log loss esperada cai de {num(r.e0, 4)} para <b>{num(r.e1, 4)}</b>. E se a inclinação também errar? <LinkSlide slug="c7p13">Slide 29</LinkSlide>.</>}
-      fonte={`Calibração sintética: ${int(CAL.n)} sorteios dos proponentes da janela, desfecho novo da PD verdadeira (semente ${CAL.semente}). Janela fora do tempo: ${N} propostas, ${D} defaults; IC de Wilson de 95%; Jeffreys unilateral para PD baixa. Esperada: média exata pela PD verdadeira.`}>
+      conclusao={!aberto ? <>Na amostra de calibração ({int(CAL.n)} casos, {ALVO} defaults), Newton chega ao intercepto {DA[mod]} {NOME[mod]}: <b>a = {num(r.A, 4)}</b>. A diferença de logits das médias daria {num(r.ingenuo, 4)}, que não fecha a conta: esperaria {num(r.somaIngenuo, 1)} defaults, não {ALVO}. Agora a previsão.</>
+        : <>{bsQuase(r) ? "Isso: o" : "O"} Brier na janela vai de {num(r.bs0, 5)} para <b>{num(r.bs1, 5)}</b>: o intercepto só mexe na parte de calibração, que era pequena (MCB {num(r.mcb0, 4)}); a separação (DSC {num(r.dsc0, 4)}) e a ordem ficam. A PD média {DA[mod]} {NOME[mod]} vai de {pct(r.pm0, 2)} para <b>{pct(r.pm1, 2)}</b>, observado {pct(OBS.p, 2)}; os {pct(r.pm0, 2)} {r.pm0 >= OBS.lo && r.pm0 <= OBS.hi ? "já cabiam no IC de Wilson" : "ficavam fora do IC de Wilson"} (Jeffreys p = {num(r.j0, 2)}: teste unilateral da PD média contra os defaults, priori de Jeffreys, adotado pelo BCE). A correção vem dos {int(CAL.n)} casos da calibração; na perda esperada pela PD verdadeira (média exata), a log loss cai de {num(r.e0, 4)} para <b>{num(r.e1, 4)}</b>. E se a inclinação também errar? <LinkSlide slug="c7p13">Slide 29</LinkSlide>.</>}
+      fonte={`Calibração sintética: ${int(CAL.n)} sorteios dos proponentes da janela, desfecho novo da PD verdadeira (semente ${CAL.semente}). Janela fora do tempo: ${N} propostas, ${D} defaults; IC de Wilson de 95%; Jeffreys unilateral para PD baixa. Log loss esperada: perda esperada pela PD verdadeira (média exata sobre o desfecho, sem sorteio).`}>
       <Painel titulo="Antes e depois, na mesma escala: 20 propostas da mini-base">
         <Grafico rotulo={`PD da ${NOME[mod]} antes e depois do ajuste de intercepto ${num(r.A, 3)} para 20 propostas; nenhuma linha se cruza; PD média da janela ${pct(r.pm0, 2)} antes e ${pct(r.pm1, 2)} depois${aberto ? `; observado ${pct(OBS.p, 1)}` : ""}`} arCelular="4 / 3">
           {(d) => {
             // em tela estreita, o rótulo da média vai para uma segunda linha e os eixos se afastam das bordas para caber nela
             const estreito = d.w < 560, l2 = estreito ? d.fs * 1.15 : 0;
-            const x = escala([0, 0.4], [d.fs * 1.2, d.w - d.fs * 1.2]); const yA = d.fs * 3.2 + l2, yB = d.h - d.fs * 3.6 - l2;
+            // de cima para baixo: título, ticks, ▲ da média (fora da faixa dos segmentos), eixo de cima; eixo de baixo, ▼ da
+            // média, ticks, taxa observada com Wilson, título. Os marcadores nunca tocam os segmentos das propostas.
+            const x = escala([0, 0.4], [d.fs * 1.2, d.w - d.fs * 1.2]); const yA = d.fs * 4 + l2, yB = d.h - d.fs * 4.5 - l2;
             const antes = MINI.map((m) => r.antes[m.id]), dep = MINI.map((m) => r.depois[m.id]);
             return (
               <g>
-                <text className="q7-eixo-t" x={x(0)} y={yA - d.fs * 1.75 - l2}>PD antes<tspan {...(estreito ? { x: x(0), dy: "1.15em" } : { dx: "0.8em" })} style={{ fill: "#176C73" }}>▲ média da janela (737): {pct(r.pm0, 2)}</tspan></text>
-                <text className="q7-eixo-t" x={x(0)} y={yB + d.fs * 3.3}>PD depois do ajuste<tspan {...(estreito ? { x: x(0), dy: "1.15em" } : { dx: "0.8em" })} style={{ fill: "#176C73" }}>▼ média da janela (737): {pct(r.pm1, 2)}</tspan></text>
-                {[yA, yB].map((yy, k) => <g key={k}><line className="q7-eixo" x1={x(0)} x2={x(0.4)} y1={yy} y2={yy} />{[0, 0.1, 0.2, 0.3, 0.4].map((t) => <text key={t} className="q7-tick" x={x(t)} y={yy} dy={k ? "1.2em" : "-.5em"} textAnchor="middle">{pct(t, 0)}</text>)}</g>)}
+                <text className="q7-eixo-t" x={x(0)} y={yA - d.fs * 2.6 - l2}>PD antes<tspan {...(estreito ? { x: x(0), dy: "1.15em" } : { dx: "0.8em" })} style={{ fill: "#176C73" }}>▲ média da janela (737): {pct(r.pm0, 2)}</tspan></text>
+                <text className="q7-eixo-t" x={x(0)} y={yB + d.fs * 4.15}>PD depois do ajuste<tspan {...(estreito ? { x: x(0), dy: "1.15em" } : { dx: "0.8em" })} style={{ fill: "#176C73" }}>▼ média da janela (737): {pct(r.pm1, 2)}</tspan></text>
+                {[yA, yB].map((yy, k) => <g key={k}><line className="q7-eixo" x1={x(0)} x2={x(0.4)} y1={yy} y2={yy} />{[0, 0.1, 0.2, 0.3, 0.4].map((t) => <text key={t} className="q7-tick" x={x(t)} y={k ? yy + d.fs * 1.95 : yy - d.fs * 1.25} textAnchor="middle">{pct(t, 0)}</text>)}</g>)}
                 {MINI.map((m, i) => <line key={m.id} x1={x(antes[i])} y1={yA} x2={x(dep[i])} y2={yB} stroke={m.y ? "#8C2332" : "#9AA1AD"} strokeWidth={m.y ? 2.6 : 1.6} />)}
                 {MINI.map((m, i) => <g key={`c${m.id}`}><circle cx={x(antes[i])} cy={yA} r={d.fs * 0.3} className={m.y ? "q7-pt-def" : "q7-pt-adi"} /><circle cx={x(dep[i])} cy={yB} r={d.fs * 0.3} className={m.y ? "q7-pt-def" : "q7-pt-adi"} /></g>)}
-                {aberto && <g><rect x={x(OBS.lo)} y={yB + d.fs * 1.75} width={x(OBS.hi) - x(OBS.lo)} height={d.fs * 0.5} rx={d.fs * 0.25} fill="#5B6475" fillOpacity={0.35} /><rect x={x(OBS.p) - d.fs * 0.3} y={yB + d.fs * 1.7} width={d.fs * 0.6} height={d.fs * 0.6} fill="#fff" stroke="#2A3342" strokeWidth={2} /><text className="q7-rot--peq" x={x(OBS.hi) + d.fs * 0.4} y={yB + d.fs * 2.0} dy=".35em" style={{ fill: "#2A3342", fontWeight: 700 }}>□ observado {pct(OBS.p, 1)}, IC {pct(OBS.lo, 1)} a {pct(OBS.hi, 1)}</text></g>}
-                {[{ v: r.pm0, yy: yA, cima: true }, { v: r.pm1, yy: yB, cima: false }].map((q) => <path key={String(q.cima)} d={q.cima ? `M${x(q.v)} ${q.yy + d.fs * 0.5}l${d.fs * 0.5} ${d.fs * 0.85}h${-d.fs}z` : `M${x(q.v)} ${q.yy - d.fs * 0.5}l${d.fs * 0.5} ${-d.fs * 0.85}h${-d.fs}z`} fill="#176C73" stroke="#fff" strokeWidth={1.5} />)}
+                {aberto && <g><rect x={x(OBS.lo)} y={yB + d.fs * 2.45} width={x(OBS.hi) - x(OBS.lo)} height={d.fs * 0.5} rx={d.fs * 0.25} fill="#5B6475" fillOpacity={0.35} /><rect x={x(OBS.p) - d.fs * 0.3} y={yB + d.fs * 2.4} width={d.fs * 0.6} height={d.fs * 0.6} fill="#fff" stroke="#2A3342" strokeWidth={2} /><text className="q7-rot--peq" x={x(OBS.hi) + d.fs * 0.4} y={yB + d.fs * 2.7} dy=".35em" style={{ fill: "#2A3342", fontWeight: 700 }}>□ observado {pct(OBS.p, 1)}, IC {pct(OBS.lo, 1)} a {pct(OBS.hi, 1)}</text></g>}
+                {[{ v: r.pm0, yy: yA, cima: true }, { v: r.pm1, yy: yB, cima: false }].map((q) => <path key={String(q.cima)} d={q.cima ? `M${x(q.v)} ${q.yy - d.fs * 0.95}l${d.fs * 0.42} ${d.fs * 0.75}h${-d.fs * 0.84}z` : `M${x(q.v)} ${q.yy + d.fs * 0.95}l${d.fs * 0.42} ${-d.fs * 0.75}h${-d.fs * 0.84}z`} fill="#176C73" stroke="#fff" strokeWidth={1.5} />)}
               </g>
             );
           }}
@@ -98,7 +102,7 @@ export function S28Intercepto({ pagina }: { pagina?: Pagina }) {
                 <tr><th>AUC na janela</th><td>{num(r.auc0, 4)}</td><td>{num(r.auc1, 4)}</td></tr>
                 <tr><th>Brier na janela</th><td>{num(r.bs0, 5)}</td><td>{num(r.bs1, 5)}</td></tr>
                 <tr><th>Log loss na janela</th><td>{num(r.ll0, 4)}</td><td>{num(r.ll1, 4)}</td></tr>
-                <tr data-on="1"><th>Log loss esperada</th><td>{num(r.e0, 4)}</td><td>{num(r.e1, 4)}</td></tr>
+                <tr data-on="1"><th>Log loss esperada (PD verdadeira)</th><td>{num(r.e0, 4)}</td><td>{num(r.e1, 4)}</td></tr>
               </tbody>
             </table>
           </>
