@@ -4047,13 +4047,7 @@
   "native": 21
  },
  "resync": {
-  "synced": [
-   "c6p17",
-   "c6p18",
-   "c6p19",
-   "c6p20",
-   "c6p21"
-  ],
+  "synced": [],
   "diverged": []
  }
 }
