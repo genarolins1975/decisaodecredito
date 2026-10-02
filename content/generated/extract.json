@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "86d520b3104c32005fe820a2e2ec9bc547bde5239bea28ef05461ab7175e6863",
- "extractedAt": "2026-10-02T16:07:58.642Z",
+ "sourceSha256": "45f9d0dbd7b00e2d9e989464de0919fe4bc1f2edfde3fb8098d0db4c6c12ef63",
+ "extractedAt": "2026-10-02T16:13:46.506Z",
  "meta": {
   "capitulos": [
    {
@@ -7732,7 +7732,7 @@
       "Os dois como equivalentes, porque a diferença é pequena"
      ],
      "certa": 1,
-     "porqueCerta": "A comparação justa é na mesma amostra que nenhum dos dois viu. Ali a logística valida melhor, e o intervalo da diferença não contém o zero: ela fica como referência. O boosting segue ao comitê como desafiante, com a lista do que precisa provar (slide 21). O ganho dele no ajuste mede quanto se adapta às propostas que já viu.",
+     "porqueCerta": "A comparação justa é na mesma amostra que nenhum dos dois usou no ajuste (a parada do boosting foi escolhida nela, o que o favorece). Ali a logística valida melhor, e o intervalo da diferença não contém o zero: ela fica como referência. O boosting segue ao comitê como desafiante, com a lista do que precisa provar (slide 21). O ganho dele no ajuste mede quanto se adapta às propostas que já viu.",
      "erros": [
       {
        "confusao": "O ajuste foi tomado como prova. A AUC de ajuste sobe com qualquer árvore a mais e não diz nada sobre propostas novas.",

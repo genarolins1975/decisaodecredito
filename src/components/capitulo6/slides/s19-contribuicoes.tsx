@@ -159,7 +159,7 @@ export function S19Contribuicoes({ pagina }: { pagina?: Pagina }) {
         {revelado && (x[0] > CORTE_U && c.phi[0] < 0
           ? <p className="q7-nota">Utilização de {num(x[0], 1)}% baixa a PD: acima de {num(CORTE_U, 1)}%, a dependência parcial (PD média com a utilização fixada) cai de {pct(PD_ANTES, 2)} para {pct(PD_DEPOIS, 2)}, com {int(N_ACIMA)} das {int(XA.length)} propostas de ajuste. Sem lógica de crédito: o <LinkSlide slug="c6p20">slide 20</LinkSlide> a proíbe.</p>
           : <p className="q7-nota">Ganho: redução do erro quadrático dos pseudo-resíduos nos cortes que usam a variável, somada na carteira, normalizada e sem sinal (feature_importances_ do scikit{"\u2011"}learn).</p>)}
-        {!revelado && <p className="q7-nota">Ganho: quanto os cortes na variável reduzem a perda, somado na carteira e sem sinal.</p>}
+        {!revelado && <p className="q7-nota">Ganho: quanto os cortes na variável reduzem o erro quadrático dos resíduos, somado nas árvores e sem sinal.</p>}
       </Painel>
     </Quadro>
   );
