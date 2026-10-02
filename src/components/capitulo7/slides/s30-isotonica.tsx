@@ -151,8 +151,10 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
             const x = escala([0, 0.55], [mg0.l, d.w - mg0.r]);
             const yTitW = "PD calibrada".length * fs * 0.95 * 0.6, ocupado: Caixa[] = [{ x0: mg0.l, x1: mg0.l + yTitW, linha: 0 }];
             const linhas = Math.max(1, ...ESTADOS.map((e) => Math.max(0, ...rotulosSaida(e.saidas, x, fs, fs * 0.2, d.w - 2, ocupado).map((r) => r.linha + 1))));
-            const mg = { ...mg0, t: fs * (1.95 + (linhas - 1) * 1.15) };
-            const y = escala([0, 0.5], [faixaTopo - mg.b - fs * 0.3, mg.t]);
+            const mg = { ...mg0, t: fs * (2.05 + (linhas - 1) * 1.15) };
+            // em tela estreita o rótulo do degrau não cabe entre as curvas: vai para duas linhas sob o título do eixo x
+            const degFora = estreito && revelado, extraDeg = degFora ? fs * 2.6 : 0;
+            const y = escala([0, 0.5], [faixaTopo - mg.b - fs * 0.3 - extraDeg, mg.t]);
             const cl = (v: number) => Math.min(0.5, v);
             const platt = (q: number) => sigmoide(a.pc.a + a.pc.b * logit(q));
             const isoPts = pontosIso(a.iso);
@@ -165,11 +167,17 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
               for (let p = x0 - f; p <= x1 + f; p += fs * 0.25) { const q = x.inv(p); if (q < 0 || q > 0.55) continue; for (const c of curvas) { const cy = y(cl(c(q))); if (cy > topo - f && cy < fundo + f) return false; } }
               return true;
             };
-            // rótulo do degrau no canto de cima à esquerda, ligado ao degrau por uma linha; desce em passos de meio corpo
-            // até a caixa das duas linhas ficar longe das curvas (ou até a linha de ligação não caber mais)
-            const rx = x(0.012), wDeg = 42 * fs * 0.86 * 0.56;
-            let ry1 = y(0.47); while (!longeDasCurvas(rx, rx + wDeg, ry1 - fs * 0.45, ry1 + fs * 1.6) && ry1 + fs * 2.35 < gy - fs * 2) ry1 += fs * 0.5;
-            const ry2 = ry1 + fs * 1.15, mx = (gx0 + Math.max(gx1, gx0 + fs * 0.4)) / 2;
+            // rótulo do degrau ligado ao degrau por uma linha: no canto de cima à esquerda ou, se uma curva passa por ali, no
+            // primeiro lugar livre descendo em meio corpo e andando para a direita em dois corpos (a ligação precisa caber)
+            const deg1 = `degrau de ${pct(g.v, 1)}: ${g.d + g.a} propostas da janela`, deg2 = `${g.d} × ${g.a} = ${int(g.empates)} pares empatados`;
+            const wDeg = Math.max(deg1.length * 0.53, deg2.length * 0.58) * fs * 0.86;
+            const posDeg = (() => {
+              for (let dy = 0; y(0.47) + dy + fs * 2.35 < gy - fs * 2; dy += fs * 0.5)
+                for (let dx = 0; x(0.012) + dx + wDeg <= d.w - mg.r; dx += fs * 2)
+                  if (longeDasCurvas(x(0.012) + dx, x(0.012) + dx + wDeg, y(0.47) + dy - fs * 0.45, y(0.47) + dy + fs * 1.6)) return { rx: x(0.012) + dx, ry1: y(0.47) + dy };
+              return { rx: x(0.012), ry1: y(0.47) };
+            })();
+            const { rx, ry1 } = posDeg, ry2 = ry1 + fs * 1.15, mx = (gx0 + Math.max(gx1, gx0 + fs * 0.4)) / 2;
             const zerosDef = a.pi.map((q, i) => (q <= 0 && Y[i] ? PGR[i] : null)).filter((v): v is number => v !== null);
             // rótulo dos defaults com PD 0%: na faixa de baixo do quadro, no primeiro lugar à direita das marcas em que a
             // caixa do texto fica a mais de meio corpo de toda curva (Platt, isotônica, diagonal); as curvas sobem com a PD
@@ -192,14 +200,20 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
                 {rotSaida.map((sx) => (
                   <g key={sx.nome} className="q7-s30-saida">
                     <path d={`M${sx.ax} ${y(0.5) - fs * 0.75}l${fs * 0.42} ${fs * 0.7}h${-fs * 0.84}z`} fill={sx.cor} />
-                    <text className="q7-rot q7-rot--peq q7-s30-lbl" x={sx.x0} y={y(0.5) - fs * (1 + sx.linha * 1.15)} style={{ fill: sx.cor, fontWeight: 700 }}>{sx.txt}</text>
+                    <text className="q7-rot q7-rot--peq q7-s30-lbl" x={sx.x0} y={y(0.5) - fs * (1.1 + sx.linha * 1.15)} style={{ fill: sx.cor, fontWeight: 700 }}>{sx.txt}</text>
                   </g>
                 ))}
                 {revelado && <g>
                   <line x1={gx0} x2={Math.max(gx1, gx0 + fs * 0.4)} y1={gy} y2={gy} stroke="#5B6475" strokeWidth={fs * 0.55} strokeOpacity={0.45} strokeLinecap="round" />
-                  <path d={`M${rx + fs * 1.2} ${ry2 + fs * 0.6}L${rx + fs * 1.2} ${gy - fs * 1.4}L${mx} ${gy - fs * 0.4}`} fill="none" stroke="#5B6475" strokeWidth={1.5} />
-                  <text className="q7-rot q7-rot--peq q7-s30-lbl" x={rx} y={ry1} dy=".35em" style={{ fill: "#2A3342" }}>degrau de {pct(g.v, 1)}: {g.d + g.a} propostas da janela</text>
-                  <text className="q7-rot q7-rot--peq q7-s30-lbl" x={rx} y={ry2} dy=".35em" style={{ fill: "#5B6475", fontWeight: 700 }}>{g.d} × {g.a} = {int(g.empates)} pares empatados</text>
+                  {degFora ? <>
+                    <line x1={0} x2={fs * 1.2} y1={y(0) + mg.b + fs * 1.0} y2={y(0) + mg.b + fs * 1.0} stroke="#5B6475" strokeWidth={fs * 0.55} strokeOpacity={0.45} strokeLinecap="round" />
+                    <text className="q7-rot q7-rot--peq q7-s30-lbl" x={fs * 1.7} y={y(0) + mg.b + fs * 1.0} dy=".35em" style={{ fill: "#2A3342" }}>{deg1}</text>
+                    <text className="q7-rot q7-rot--peq q7-s30-lbl" x={fs * 1.7} y={y(0) + mg.b + fs * 2.15} dy=".35em" style={{ fill: "#5B6475", fontWeight: 700 }}>{deg2}</text>
+                  </> : <>
+                    <path d={`M${rx + fs * 1.2} ${ry2 + fs * 0.6}L${rx + fs * 1.2} ${gy - fs * 1.4}L${mx} ${gy - fs * 0.4}`} fill="none" stroke="#5B6475" strokeWidth={1.5} />
+                    <text className="q7-rot q7-rot--peq q7-s30-lbl" x={rx} y={ry1} dy=".35em" style={{ fill: "#2A3342" }}>{deg1}</text>
+                    <text className="q7-rot q7-rot--peq q7-s30-lbl" x={rx} y={ry2} dy=".35em" style={{ fill: "#5B6475", fontWeight: 700 }}>{deg2}</text>
+                  </>}
                 </g>}
                 {revelado && zerosDef.length > 0 && <g>
                   {zerosDef.map((v, i) => <circle key={i} cx={x(cl(v))} cy={y(0) - fs * 0.05} r={fs * 0.3} className="q7-pt-def" />)}

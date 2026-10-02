@@ -69,7 +69,7 @@ function tituloRevelado(f: number, a: Fila, b: Fila) {
     : sa === "nulo" ? `${sb === "ganho" ? "ganho" : "piora"} só longe da parada`
     : sa === "piora" && sb === "ganho" ? "piora na parada e ganho longe dela"
     : `na parada, ${nome[sa]}; longe dela, ${nome[sb]}`;
-  const val = cabe(a) && cabe(b) ? (sa === sb ? "dentro do erro da validação" : "no erro da validação") : !cabe(a) && !cabe(b) ? "além do erro da validação" : cabe(a) ? "além do erro só longe da parada" : "além do erro só na parada";
+  const val = cabe(a) && cabe(b) ? (sa === sb ? "dentro do erro da validação" : "dentro do erro da validação nas duas filas") : !cabe(a) && !cabe(b) ? "além do erro da validação" : cabe(a) ? "além do erro só longe da parada" : "além do erro só na parada";
   return `${pre}: ${meio}, ${val}`;
 }
 /** Subtítulo revelado: o tamanho relativo das filas (razão calculada) e a origem do método. */
@@ -85,7 +85,7 @@ function conclusaoParada(f: number, a: Fila) {
   if (!cabe(a)) return a.m > 0 ? <>Aqui a validação distingue o ganho do acaso: sortear muda a decisão tomada na parada.</> : <>Aqui a validação distingue a piora do acaso: com {pct(f, 0)}, não sortear.</>;
   const s = sinalS(a);
   if (s === "ganho") return <><b>Nesta carteira, sortear não muda a decisão tomada na parada</b>: o ganho se repete nas sementes{porPouco(a) ? ", por pouco" : ""}, mas fica dentro do erro da validação de {int(NV)} propostas; é um controle barato, não uma prova.</>;
-  if (s === "nulo") return <><b>Nesta carteira, sortear não muda a decisão tomada na parada</b>: ali o ganho nem se repete entre sementes; é um controle barato, não uma prova.</>;
+  if (s === "nulo") return <><b>Nesta carteira, sortear não muda a decisão tomada na parada</b>: ali o ganho não se repete de forma consistente ({a.ganham} de {a.g.length} sementes; {deAte(a)}); é um controle barato, não uma prova.</>;
   return <><b>Com {pct(f, 0)}, sortear piora a parada em {a.g.length - a.ganham} de {a.g.length} sementes</b>, ainda dentro do erro da validação: a fração também se escolhe na validação, não se presume.</>;
 }
 

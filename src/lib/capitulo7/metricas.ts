@@ -360,6 +360,17 @@ export function juntarAmostras(amostras: { n: number; taxa: number; pdMedia: num
   for (const a of amostras) { n += a.n; defaults += Math.round(a.n * a.taxa); somaPd += a.n * a.pdMedia; }
   return { n, defaults, taxa: n ? defaults / n : null, pdMedia: n ? somaPd / n : null };
 }
+/**
+ * Intercepto com slope 1 numa amostra que junta propostas com PD própria (y, pd) e amostras que só existem agregadas
+ * (n, taxa, PD média). A equação de escore das propostas é exata; cada amostra agregada entra como n casos com a PD
+ * média e round(n · taxa) defaults, a mesma aproximação de interceptoDasMedias. A raiz zera
+ * Σ [yᵢ − σ(a + logit pᵢ)] + Σ [dⱼ − nⱼ σ(a + logit p̄ⱼ)]; sem propostas, coincide com interceptoDasMedias.
+ */
+export function interceptoComAgregadas(y: Vetor, pd: Vetor, agregadas: { n: number; taxa: number; pdMedia: number }[]) {
+  const yy = y.slice(), pp = pd.slice();
+  for (const g of agregadas) { const d = Math.round(g.n * g.taxa); for (let i = 0; i < g.n; i++) { yy.push(i < d ? 1 : 0); pp.push(g.pdMedia); } }
+  return interceptoComSlope1(yy, pp);
+}
 /** Platt sobre o escore s = logit(PD): regressão logística de y em s, por máxima verossimilhança, sem suavizar os alvos. */
 export function ajustarPlatt(yCal: Vetor, pdCal: Vetor) { const r = logisticaNewton(yCal, logits(pdCal), pdCal.map(() => 0)); return { a: r.a, b: r.b }; }
 
@@ -522,20 +533,51 @@ export function rejeicaoJeffreys(d: number, n: number, pd: number, alfa = 0.05):
   return p < alfa ? 1 : 1 - p < alfa ? -1 : 0;
 }
 /**
- * Regra de controle do monitoramento por safra (slides 36 e 37): recalibrar o intercepto só quando as k últimas safras
- * rejeitam no mesmo sentido, para não recalibrar por ruído. Recebe os sentidos em ordem de safra (rejeicaoJeffreys).
+ * Fronteiras do teste de Jeffreys bilateral com n casos e PD p0, ao nível α (α/2 em cada cauda). O p-valor
+ * F_Beta(p0; d + ½, n − d + ½) cai quando d cresce, então as rejeições são dois intervalos de d: superestimação quando
+ * d ≤ baixo (1 − p < α/2) e subestimação quando d ≥ alto (p < α/2). Busca binária nas duas pontas; baixo = −1 e
+ * alto = n + 1 quando a cauda não tem rejeição possível.
  */
-export function gatilhoSeguidas(sentidos: readonly number[], k = 2): boolean {
-  if (sentidos.length < k) return false;
-  const u = sentidos.slice(-k);
-  return u[0] !== 0 && u.every((s) => s === u[0]);
+export function limitesJeffreys(n: number, p0: number, alfa: number): { baixo: number; alto: number } {
+  const p = (d: number) => jeffreys(d, n, p0);
+  let lo = -1, hi = n; // baixo: o maior d com 1 − p(d) < α/2
+  while (lo < hi) { const m = Math.ceil((lo + hi) / 2); if (1 - p(m) < alfa / 2) lo = m; else hi = m - 1; }
+  const baixo = lo;
+  lo = 0; hi = n + 1; // alto: o menor d com p(d) < α/2
+  while (lo < hi) { const m = Math.floor((lo + hi) / 2); if (p(m) < alfa / 2) hi = m; else lo = m + 1; }
+  return { baixo, alto: lo };
 }
 /**
- * Probabilidade de o gatilho disparar por acaso com o modelo certo: cada safra rejeita num sentido com probabilidade
- * α (nível do teste unilateral) e, com safras independentes, k rejeições seguidas nesse sentido têm probabilidade αᵏ.
- * Com α = 5% e k = 2, 0,25%. É o nível nominal: com d discreto, o tamanho exato do teste numa safra fica perto de α.
+ * Monitoramento do nível da PD por safra, por simulação com semente (slides 36, 37 e 38). Cada sorteio é uma
+ * sequência de `safras` safras de m propostas, com a PD média p0 do modelo e defaults ~ Binomial(m, pReal), sorteados
+ * pela inversa da acumulada (um uniforme por safra). Em cada safra, dois testes de Jeffreys bilaterais: o da própria
+ * safra, ao nível `alfa`, e o do acumulado desde a última calibração (defaults e casos somados), ao nível `alfaOlhada`
+ * em cada olhada. Devolve a fração de safras em que o teste da safra rejeita (porSafra) e a fração de sorteios em que
+ * o acumulado rejeita ao menos uma vez nas `safras` olhadas (acumulado). Com pReal = p0, os dois são falso alarme; com
+ * pReal ≠ p0, poder. A PD média constante na safra é a simplificação declarada: com PDs desiguais, a variância dos
+ * defaults é um pouco menor que a binomial.
  */
-export const falsoAlarmeSeguidas = (alfa: number, k: number) => alfa ** k;
+export function monitorarNivel(o: { m: number; p0: number; pReal: number; safras: number; alfa: number; alfaOlhada: number; sorteios: number; semente: number }): { porSafra: number; acumulado: number } {
+  const { m, p0, pReal, safras, sorteios } = o;
+  // acumulada da Binomial(m, pReal) pela recorrência das probabilidades
+  const acum: number[] = []; let pk = (1 - pReal) ** m, s = 0;
+  for (let k = 0; k <= m; k++) { s += pk; acum.push(s); pk *= ((m - k) / (k + 1)) * (pReal / (1 - pReal)); }
+  const sortear = (u: number) => { let a = 0, b = m; while (a < b) { const c = (a + b) >> 1; if (u <= acum[c]) b = c; else a = c + 1; } return a; };
+  const uma = limitesJeffreys(m, p0, o.alfa);
+  const olhadas = Array.from({ length: safras }, (_, k) => limitesJeffreys((k + 1) * m, p0, o.alfaOlhada));
+  const r = mulberry32(o.semente);
+  let rejSafra = 0, rejAcum = 0;
+  for (let b = 0; b < sorteios; b++) {
+    let d = 0, disparou = false;
+    for (let k = 0; k < safras; k++) {
+      const dk = sortear(r()); d += dk;
+      if (dk <= uma.baixo || dk >= uma.alto) rejSafra++;
+      if (!disparou && (d <= olhadas[k].baixo || d >= olhadas[k].alto)) disparou = true;
+    }
+    if (disparou) rejAcum++;
+  }
+  return { porSafra: rejSafra / (sorteios * safras), acumulado: rejAcum / sorteios };
+}
 /** Diferença entre duas proporções independentes com erro padrão próprio (teste de Wald da diferença). */
 export function diferencaProporcoes(d1: number, n1: number, d2: number, n2: number) {
   const p1 = d1 / n1, p2 = d2 / n2, ep = Math.sqrt((p1 * (1 - p1)) / n1 + (p2 * (1 - p2)) / n2), dif = p1 - p2;
