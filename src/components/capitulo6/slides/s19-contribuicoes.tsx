@@ -90,7 +90,7 @@ function Cascata({ d, base, phi, ver }: { d: Dim; base: number; phi: number[]; v
   return (
     <g>
       {yt.map((t) => <g key={t}><line className="q7-grade" x1={m.l} x2={d.w - m.r} y1={y(t)} y2={y(t)} /><text className="q7-tick" x={m.l} dx="-.45em" y={y(t)} dy=".34em" textAnchor="end">{num(t, 1)}</text></g>)}
-      <text className="q7-eixo-t" x={m.l} y={m.t} dy="-.9em">Log odds da proposta (PD entre parênteses)</text>
+      <text className="q7-eixo-t" x={d.w < fs * 30 ? fs * 0.2 : m.l} y={m.t} dy="-.9em">{d.w < fs * 30 ? "Log odds (PD entre parênteses)" : "Log odds da proposta (PD entre parênteses)"}</text>
       <line className="q7-eixo" x1={m.l} x2={d.w - m.r} y1={d.h - m.b} y2={d.h - m.b} />
       {cols.map((c, i) => <text key={c} className="q7-tick" x={cx(i)} y={d.h - m.b} dy="1.3em" textAnchor="middle" style={{ fontWeight: i === 0 || i === 4 ? 700 : 500 }}>{c}</text>)}
       <line x1={cx(0) - bw / 2} x2={cx(0) + bw / 2} y1={y(base)} y2={y(base)} stroke="#00205B" strokeWidth={4} />
@@ -112,7 +112,7 @@ function Cascata({ d, base, phi, ver }: { d: Dim; base: number; phi: number[]; v
       })}
       {ver && <line x1={cx(3) + bw / 2} x2={cx(4) - bw / 2} y1={y(fim)} y2={y(fim)} stroke="#9AA1AD" strokeWidth={1.5} strokeDasharray="4 4" />}
       <circle cx={cx(4)} cy={y(fim)} r={fs * 0.5} fill="#176C73" stroke="#fff" strokeWidth={2.5} />
-      <text className="q7-rot" x={cx(4)} y={y(fim)} dy="-.9em" textAnchor="middle" style={{ fill: "#176C73" }}>{num(fim, 2)} ({pct(sigmoide(fim), 1)})</text>
+      <text className="q7-rot" x={cx(4)} y={y(fim)} dy={y(fim) - fs * 1.9 < 0 ? "1.7em" : "-.9em"} textAnchor="middle" style={{ fill: "#176C73" }}>{num(fim, 2)} ({pct(sigmoide(fim), 1)})</text>
     </g>
   );
 }

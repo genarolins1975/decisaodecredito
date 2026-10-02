@@ -68,15 +68,17 @@ function Graficos({ c, m, revelado, ate, imin, faixa }: { c: Curvas; m: number; 
                   const t = `mínimo: ${imin} árvores, ${num(c.pv[imin], 4)}`, fs = d.fs, w = t.length * fs * 0.56, h = fs * 1.25, folga = fs * 0.3;
                   const mx = x(imin), my = y(c.pv[imin]) - r * 2.6;
                   const curvasPx = [pts(c.pa), pts(c.pv)];
-                  const cands: { x0: number; yb: number }[] = [];
-                  for (const dy of [-1.2, 1.6, 2.6, 3.6, 4.8, -2.6, 6, 7.5]) for (const dx of [-0.5, 1.2, 2.5, 4, 6, 8, 11]) cands.push({ x0: mx + (dx === -0.5 ? -w / 2 : dx * fs), yb: my + dy * fs });
                   const caixa = (k: { x0: number; yb: number }) => ({ x0: k.x0 - folga, x1: k.x0 + w + folga, y0: k.yb - h * 0.82 - folga, y1: k.yb + h * 0.25 + folga });
+                  const xs0 = [mx - w / 2, ...[1.2, 2.5, 4, 6, 8, 11].map((v) => mx + v * fs), ...[2, 4, 6, 8].map((v) => mx - v * fs), g.l + folga, d.w - g.r - w - folga];
+                  const cands = [-1.2, 1.6, 2.6, 3.6, 4.8, -2.6, -3.6, -4.6, 6, 7.5].flatMap((dy) => xs0.map((x0) => ({ x0, yb: my + dy * fs })));
+                  // distância da caixa ao marcador: fica a caixa livre mais próxima
+                  const dist = (k: { x0: number; yb: number }) => { const q = caixa(k); return Math.hypot(Math.max(q.x0 - mx, 0, mx - q.x1), Math.max(q.y0 - my, 0, my - q.y1)); };
                   const livre = (k: { x0: number; yb: number }) => { const q = caixa(k); return q.x0 >= g.l && q.x1 <= d.w - g.r && q.y0 >= g.t - fs * 0.6 && q.y1 <= d.h - g.b && !(mx >= q.x0 - r * 1.3 && mx <= q.x1 + r * 1.3 && my >= q.y0 - r * 1.3 && my <= q.y1 + r * 1.3) && !cruza(curvasPx, q); };
-                  const k = cands.find(livre) ?? { x0: Math.max(g.l, mx - w / 2), yb: my - fs * 1.2 };
-                  const q = caixa(k), longe = q.y0 > my + r * 1.3 || q.x0 > mx + r * 2.5;
-                  const ax = Math.min(Math.max(mx, q.x0 + folga), q.x1 - folga), ay = q.y0 > my ? q.y0 + folga * 0.5 : q.y1 - folga * 0.5;
+                  const k = cands.filter(livre).sort((u, v) => dist(u) - dist(v))[0] ?? { x0: Math.max(g.l, mx - w / 2), yb: my - fs * 1.2 };
+                  const q = caixa(k), longe = dist(k) > r * 1.6;
+                  const ax = Math.min(Math.max(mx, q.x0 + folga), q.x1 - folga), ay = q.y0 > my ? q.y0 + folga * 0.5 : q.y1 < my ? q.y1 - folga * 0.5 : my;
                   return <g data-rotulo-minimo="1">
-                    {longe && <line x1={mx} y1={my + r * 1.25} x2={ax} y2={ay} stroke="#2E6B4F" strokeWidth={1.4} />}
+                    {longe && <line x1={mx} y1={ay > my ? my + r * 1.25 : my - r * 0.9} x2={ax} y2={ay} stroke="#2E6B4F" strokeWidth={1.4} />}
                     <text className="q7-rot" x={k.x0} y={k.yb} style={{ fill: "#2E6B4F", paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em", strokeLinejoin: "round" }}>{t}</text>
                   </g>;
                 })()}

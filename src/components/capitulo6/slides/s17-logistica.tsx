@@ -94,7 +94,8 @@ function Painel2({ d, k, revelado }: { d: Dim; k: number; revelado: boolean }) {
             </>}
             {!revelado && (() => {
               // rótulo com fundo próprio, à direita da linha da parada: nada o atravessa
-              const t = "validação: abre depois da previsão", w = t.length * fs * 0.86 * 0.56 + fs, xc = Math.min(d.w - m.r - w / 2, x(lk(K_PARADA)) + fs * 0.8 + w / 2), yc = b.top + hh * (bi ? 0.25 : 0.82);
+              const estreito = d.w < fs * 36, t = estreito ? "validação: após a previsão" : "validação: abre depois da previsão", w = t.length * fs * 0.86 * 0.56 + fs;
+              const xc = Math.max(m.l + w / 2, Math.min(d.w - m.r - w / 2, x(lk(K_PARADA)) + fs * 0.8 + w / 2)), yc = b.top + hh * (bi ? 0.25 : 0.82);
               return <g><rect x={xc - w / 2} y={yc - fs * 0.85} width={w} height={fs * 1.3} rx={fs * 0.3} fill="#fff" stroke="#2E6B4F" strokeOpacity={0.35} /><text className="q7-rot--peq" x={xc} y={yc} textAnchor="middle" style={{ fill: "#2E6B4F", fontWeight: 700 }}>{t}</text></g>;
             })()}
             <rect x={x(lk(k)) - fs * 0.32} y={y(b.a[k]) - fs * 0.32} width={fs * 0.64} height={fs * 0.64} fill="#fff" stroke="#5B6475" strokeWidth={2.5} />
@@ -103,7 +104,7 @@ function Painel2({ d, k, revelado }: { d: Dim; k: number; revelado: boolean }) {
         );
       })}
       <text className="q7-rot--peq" x={x(lk(K_PARADA)) + fs * 0.3} y={m.t + hh + gap * 0.62} style={{ fill: "#00205B", fontWeight: 700, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.35em", strokeLinejoin: "round" }}>parada: {K_PARADA} árvores</text>
-      <text className="q7-eixo-t" x={(m.l + d.w - m.r) / 2} y={d.h - m.b} dy="2.5em" textAnchor="middle">Número de árvores (escala logarítmica)</text>
+      <text className="q7-eixo-t" x={d.w < fs * 36 ? m.l : (m.l + d.w - m.r) / 2} y={d.h - m.b} dy="2.5em" textAnchor={d.w < fs * 36 ? "start" : "middle"}>{d.w < fs * 36 ? "Árvores (escala logarítmica)" : "Número de árvores (escala logarítmica)"}</text>
     </g>
   );
 }
