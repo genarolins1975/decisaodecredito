@@ -47,3 +47,34 @@ Conferido em outubro de 2026.
 - Algum essencial está ausente? Qual, e onde deveria entrar?
 - O que está em slide funciona com os dados do caso ou é só citação?
 - Há algo apresentado como atual que a literatura já superou (por exemplo, Hosmer e Lemeshow como teste principal de calibração)?
+
+## Checklist preenchido: gradient boosting com árvores em crédito (capítulo 6)
+
+Conferido em outubro de 2026.
+
+### Essenciais
+
+| id | Tema | Referência primária |
+|---|---|---|
+| E1 | Modelo aditivo construído em etapas: palpite inicial mais correções | Friedman (2001), Greedy function approximation: a gradient boosting machine, Annals of Statistics 29(5) |
+| E2 | Pseudo-resíduo como gradiente negativo da perda; em log loss, y − p na escala de log odds | Friedman (2001); Friedman, Hastie e Tibshirani (2000), Additive logistic regression, Annals of Statistics 28(2) |
+| E3 | Valor da folha por passo de Newton (soma dos gradientes sobre soma das curvaturas) | Friedman (2001); Chen e Guestrin (2016), XGBoost, KDD |
+| E4 | Taxa de aprendizagem e número de árvores acoplados; parada antecipada por validação | Friedman (2001); Hastie, Tibshirani e Friedman (2009), The Elements of Statistical Learning, cap. 10 |
+| E5 | Profundidade (ordem de interação), mínimo por folha e subamostragem como controles | Friedman (2002), Stochastic gradient boosting, Computational Statistics & Data Analysis 38(4) |
+| E6 | Validação fora do tempo: treino sempre melhora, janela futura decide a complexidade | BCBS (2005), Studies on the Validation of Internal Rating Systems, WP 14 |
+| E7 | Probabilidades do boosting distorcidas e recalibração | Niculescu-Mizil e Caruana (2005), ICML |
+| E8 | Comparação com a logística como referência em crédito | Lessmann, Baesens, Seow e Thomas (2015), EJOR 247(1) |
+| E9 | Explicação por contribuições aditivas (TreeSHAP) e limites da importância por ganho | Lundberg et al. (2020), Nature Machine Intelligence 2(1) |
+| E10 | Restrições monotônicas para respeitar a lógica de negócio | documentação de XGBoost, LightGBM e scikit-learn (monotonic_cst) |
+| E11 | Governança: validação independente e backtesting de modelos | Resolução CMN 4.557/2017; EBA (2023), Follow-up report on machine learning for IRB models |
+
+### Fronteira
+
+| id | Tema | Referência primária |
+|---|---|---|
+| F1 | Objetivo regularizado de segunda ordem | Chen e Guestrin (2016), KDD |
+| F2 | Histogramas e amostragem por gradiente | Ke et al. (2017), LightGBM, NeurIPS |
+| F3 | Vazamento de alvo em variáveis categóricas e boosting ordenado | Prokhorenkova et al. (2018), CatBoost, NeurIPS |
+| F4 | Modelos aditivos explicáveis com interações (GA2M, EBM) | Lou, Caruana, Gehrke e Hooker (2013), KDD |
+| F5 | Árvores ainda à frente de redes profundas em dados tabulares | Grinsztajn, Oyallon e Varoquaux (2022), NeurIPS Datasets and Benchmarks |
+| F6 | Explicações contrafactuais para decisões adversas | Wachter, Mittelstadt e Russell (2018), Harvard Journal of Law & Technology 31(2) |
