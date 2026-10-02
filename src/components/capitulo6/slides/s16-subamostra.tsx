@@ -180,7 +180,7 @@ export function S16Subamostra({ pagina }: { pagina?: Pagina }) {
       fonte={`Validação: ${int(NV)} propostas, ${DV} defaults; boosting do slide 15, sementes 1 a ${NS}, parada escolhida nesta validação. 95%: t de ${NS - 1} graus (${num(TS, 3)}) entre sementes; t de ${int(NV - 1)} (${num(TV, 3)}) com erro pareado por proposta.`}>
       <Painel>
         {filas
-          ? <Grafico titulo={`Subamostra de ${pct(f, 0)}`} sub="● semente · ◆ média ± 95% entre sementes · cinza: 95% da validação" rotulo={`Ganho de log loss de dez sementes com subamostra de ${pct(f, 0)} sobre o modelo sem sorteio. ${filas.map((q, i) => `${q.tit}: ${revelado || i > 0 ? `média ${sinal(q.m, 4)}, faixa de 95% entre sementes ±${num(TS * q.se, 4)}, ${q.ganham} de ${NS} com ganho, z ${num(q.z, 2)}` : "oculto até a previsão"}; faixa de 95% da validação ±${num(TV * q.ev, 4)}`).join(". ")}`} arCelular="4 / 3">
+          ? <Grafico titulo={`Subamostra de ${pct(f, 0)}`} sub="● semente · ◆ média ± 95% entre sementes · cinza: validação" rotulo={`Ganho de log loss de dez sementes com subamostra de ${pct(f, 0)} sobre o modelo sem sorteio. ${filas.map((q, i) => `${q.tit}: ${revelado || i > 0 ? `média ${sinal(q.m, 4)}, faixa de 95% entre sementes ±${num(TS * q.se, 4)}, ${q.ganham} de ${NS} com ganho, z ${num(q.z, 2)}` : "oculto até a previsão"}; faixa de 95% da validação ±${num(TV * q.ev, 4)}`).join(". ")}`} arCelular="4 / 3">
             {(d) => <Pontos d={d} filas={filas} revelado={revelado} />}
           </Grafico>
           : <p className="q7-nota">Sorteando: {ss.length} de {NS} sementes calculadas.</p>}
