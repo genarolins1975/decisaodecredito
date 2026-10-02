@@ -166,7 +166,7 @@ export function S27AmostraPropria({ pagina }: { pagina?: Pagina }) {
         {aberto && !safras && <p className="q7-retorno" data-tom="certa">Isso: nos mesmos casos, o atalho escolhe a&nbsp;=&nbsp;{num(PLATT_OOT.a, 3)} e b&nbsp;=&nbsp;{num(PLATT_OOT.b, 3)} (protocolo: {num(PLATT_CAL.a, 3)} e {num(PLATT_CAL.b, 3)}) para minimizar a perda que vai reportar. Ler o número menor como calibrador melhor confunde ajuste com prova.</p>}
         {safras ? (<>
           <div className="q7-linha-ctl" data-ancora=""><Seg rotulo="Âncora do nível" opcoes={[{ v: "ultima" as Ancora, r: "Última safra" }, { v: "varias" as Ancora, r: "Várias safras" }]} valor={ancora} onChange={setAncora} /></div>
-          <table className="q7-tab q7-tab--comp q7-s27-t">
+          <table className="q7-tab q7-tab--comp q7-s27-t q7-s27-t--4">
             <thead><tr><th className="q7-t-l">Âncora do intercepto (aproximação)</th><th>PD média</th><th>O/E obs.</th><th>O/E verd.</th></tr></thead>
             <tbody>
               <tr><th>Sem recalibrar</th><td>{pct(A.sem.pdMedia, 1)}</td><td>{num(A.sem.oe, 3)}</td><td>{num(A.sem.oeVerd, 3)}</td></tr>
