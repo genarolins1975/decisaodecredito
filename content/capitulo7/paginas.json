@@ -12,7 +12,7 @@
    "guia": {
     "funcao": "Dar o mapa do capítulo antes da primeira métrica: cada medida responde a uma de quatro perguntas.",
     "pre": "Logística do capítulo 4 e boosting do capítulo 6.",
-    "conducao": "Leia em voz alta as quatro frases, na ordem do fluxo. Mostre que validação é uma faixa embaixo das três, não uma quarta etapa no fim. Leia o número de cada cartão e diga que todos vêm da mesma janela de 737 propostas. Anuncie o caso: no slide 36, o comitê decide se a logística entra em produção; cada pergunta traz uma evidência para essa decisão.",
+    "conducao": "Leia em voz alta as quatro frases, na ordem do fluxo. Mostre que validação é uma faixa embaixo das três, não uma quarta etapa no fim. Leia o número de cada cartão e diga que todos vêm da mesma janela de 737 propostas. Anuncie o caso: no slide 36, o comitê decide se o boosting substitui a logística em produção; cada pergunta traz uma evidência para essa decisão.",
     "leitura": "Três cartões em fluxo (ordenação, probabilidade, decisão) e a faixa de validação. Cada cartão traz a pergunta, um número da janela e os slides que a tratam.",
     "pergunta": "Um gerente diz que o modelo é bom porque tem AUC de 0,73. Qual das quatro perguntas isso responde?",
     "resposta": "Só a de ordenação. Nada sobre o nível da PD, sobre o corte ou sobre a robustez fora da amostra.",
@@ -742,7 +742,7 @@
     "conducao": "Protocolo: Platt na amostra de calibração, log loss no teste 0,3167. Atalho: ajustado e medido no teste, 0,3136. Sem calibrar: 0,3149. O atalho parece melhor e não vale; o protocolo mostra que aqui o calibrador piora.",
     "leitura": "Linha do tempo das partições e três indicadores de log loss.",
     "pergunta": "Se o protocolo mostra piora, devemos descartar a recalibração?",
-    "resposta": "Para a logística nesta janela, sim; é uma decisão por evidência, não por hábito.",
+    "resposta": "Descartar o Platt para a logística, sim: o protocolo mostra piora (0,3167 contra 0,3149), porque o slope estimado achata as PDs. Não descartar a correção de nível: o ajuste só de intercepto, estimado na mesma amostra de calibração, melhora a log loss para 0,3140 (slide 28). Decisão por evidência, não por hábito.",
     "erros": [
      {
       "alt": "Reportar a melhora do atalho",
@@ -752,7 +752,7 @@
     ],
     "interacao": "Seletor de procedimento. Ao voltar, protocolo.",
     "verificacao": "O aluno descreve onde cada etapa acontece.",
-    "transicao": "O ajuste mais simples: o intercepto."
+    "transicao": "O ajuste mais simples, só de nível: o intercepto, primeiro na logística."
    }
   },
   "c7p12": {
@@ -761,15 +761,15 @@
     "ex": 1
    },
    "aprendizado": "Estimar um ajuste de intercepto na amostra de calibração e verificar no teste que a fila não muda.",
-   "apoio": "Siga os passos de Newton na amostra de calibração; só depois abra o teste.",
+   "apoio": "Abra o teste na logística e veja o nível corrigido sem mexer na fila; depois troque para o boosting.",
    "conexao": "Quando também a inclinação está errada, entram dois parâmetros.",
    "guia": {
     "funcao": "Estimar a correção de nível por intercepto e ler seu efeito no teste.",
     "pre": "Slide 27.",
-    "conducao": "Na amostra de calibração (3.000 casos, 345 defaults), Newton chega a a = 0,1829 em três passos. A diferença de logits das médias daria 0,1718 e não fecha a conta. No teste, a PD média vai de 9,77% para 11,40% contra 10,99%; a AUC fica igual.",
+    "conducao": "Comece na logística, o modelo em produção. Na amostra de calibração (3.000 casos, 345 defaults), Newton chega a a = 0,1822 em três passos; a diferença de logits das médias daria 0,1714 e não fecha a conta. No teste, a PD média vai de 9,72% para 11,34% contra 10,99%, a AUC fica igual, e Brier (0,09128 para 0,09092) e log loss (0,3149 para 0,3140) melhoram: é a correção que o comitê aprova no slide 36. Troque para o boosting: o mesmo ajuste passa do ponto.",
     "leitura": "Linhas ligando a PD antes e depois para 20 propostas; tabela de iterações; indicadores no teste.",
-    "pergunta": "Por que Brier e log loss pioraram um pouco no teste?",
-    "resposta": "O ajuste aprendeu o nível da amostra de calibração (11,5%), acima da janela.",
+    "pergunta": "Por que o intercepto melhora a logística e o Platt do slide 27 piorava?",
+    "resposta": "O Platt estima também o slope (0,77 na amostra de calibração) e achata as PDs da logística, que na janela pediam slope acima de 1. O intercepto só corrige o nível, que era o problema: observado sobre esperado de 1,131. No boosting, o ajuste aprende o nível da amostra de calibração (11,5%), acima da janela, e quase não melhora.",
     "erros": [
      {
       "alt": "Somar a diferença das médias em PD",
@@ -777,7 +777,7 @@
       "intervencao": "Abra a nota da diferença de logits."
      }
     ],
-    "interacao": "Botão que abre o teste. Ao voltar, teste fechado.",
+    "interacao": "Seletor de modelo (logística ou boosting) e botão que abre o teste. Ao voltar, logística com o teste fechado.",
     "verificacao": "O aluno descreve a equação que o intercepto resolve.",
     "transicao": "Corrigir também a inclinação: Platt."
    }

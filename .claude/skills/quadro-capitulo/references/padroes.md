@@ -42,6 +42,21 @@ Padrões que passaram na rubrica no capítulo 7. Cada um diz o que fazer e onde 
 
 ## Antipadrões que já derrubaram nota
 
+Rodada 1 da revisão independente do capítulo 7 (outubro de 2026): média 8,47 nos 152 itens humanos, 75 abaixo de 9. Os padrões que mais derrubaram nota, em ordem de frequência:
+
+- **Resposta na tela antes da tentativa** (didática 8 em 25 slides): linha da AUC desenhada antes do sorteio, valor do KPI visível sob uma pergunta, leitura em negrito que já conclui, subtítulo que responde à própria previsão. Esconda o resultado até o acerto; se o slide não tem nada a descobrir, o título é afirmação e a leitura usa os números da tela.
+- **Cor fora do papel** (beleza 8): laranja de decisão pintando PD ou perda, vinho de default pintando uma curva de perda. Probabilidade é petróleo; decisão só corte e política; vinho só default.
+- **Peça principal pequena e área morta**: gráfico quadrado num painel largo, metade do painel vazia. O gráfico ocupa a largura; o espaço que sobra recebe a tabela ou o número que apoia a leitura.
+- **Afirmação não conferida no dado**: "acima da diagonal em todas as faixas" quando duas estão abaixo; "a trapezoidal é otimista" ao lado de um número menor. Toda frase quantificadora é calculada no código, não escrita à mão.
+- **Ruído lido como sinal**: slope, nível ou diferença sem intervalo e com verbo forte ("passou do ponto"). Mostre o intervalo; a frase acompanha o que o intervalo permite.
+- **Um desfecho tratado como prova contra a PD**: "confiança errada" para PD de 10% num default. Fale em probabilidade baixa dada ao que aconteceu e em média de muitos casos.
+- **Busca em grade que perde o ótimo**: o melhor corte realizado procurado de 0,5 em 0,5 ponto perdeu o corte do KS. Procure em todos os limiares distintos.
+- **Dado sintético sem declaração na tela**: a amostra de calibração reusava os proponentes da janela; estava no documento, não no slide que dizia "amostra que ele nunca viu".
+- **Conceito usado antes de apresentado**: Brier e isotônica no slide 20, apresentados em 23 e 30; log loss e slope marcados como aprofundamento e usados nos essenciais seguintes.
+- **Recomendação final sem demonstração no capítulo**: o caso mandava corrigir o nível da logística e nenhum slide mostrava essa correção na logística.
+
+Antipadrões anteriores:
+
 - Fórmula cortada por `overflow: hidden` do painel: `.q7-formula { flex: none }` e `Formula compacta` em painel estreito.
 - Interação que só alterna entre telas prontas (abas sem efeito na leitura): virou 8 em interação.
 - Tabela onde um gráfico diria mais, ou duas peças do mesmo tamanho disputando: 8 em beleza.

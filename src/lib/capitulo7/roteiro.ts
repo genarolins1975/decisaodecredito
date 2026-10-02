@@ -15,7 +15,7 @@ export const PERGUNTAS: { id: Exclude<Pergunta, "todas" | "apoio">; nome: string
 ];
 
 export const ROTEIRO: Slide[] = [
-  { slug: "c7p1", n: 1, pergunta: "todas", titulo: "Da PD à decisão: quatro perguntas para confiar no modelo", sub: "O comitê decide no slide 36; cada métrica responde a uma destas perguntas.", nivel: "essencial", min: 4 },
+  { slug: "c7p1", n: 1, pergunta: "todas", titulo: "Da PD à decisão: quatro perguntas para confiar no modelo", sub: "No slide 36, o comitê decide se o boosting substitui a logística.", nivel: "essencial", min: 4 },
   { slug: "c7p21", n: 2, pergunta: "todas", titulo: "Estamos prevendo qual evento, para quem e em quanto tempo?", sub: "Métricas só se comparam quando a pergunta e a amostra são as mesmas.", nivel: "essencial", min: 3 },
   { slug: "c7p2", n: 3, pergunta: "ordenacao", titulo: "Aprovar todos pode produzir alta acurácia", sub: "Com evento raro, a regra que ignora o risco acerta quase tudo e não separa ninguém.", nivel: "essencial", min: 4 },
   { slug: "c7p3", n: 4, pergunta: "ordenacao", titulo: "Ordenar, prever e decidir são tarefas distintas", sub: "Os mesmos quatro clientes numa fila, numa escala de PD e diante de um corte.", nivel: "essencial", min: 4 },
@@ -36,9 +36,9 @@ export const ROTEIRO: Slide[] = [
   { slug: "c7p10", n: 19, pergunta: "probabilidade", titulo: "A curva de confiabilidade, construída faixa a faixa", sub: "Cada ponto compara a PD média prevista com a frequência observada no mesmo grupo.", nivel: "essencial", min: 4 },
   { slug: "c7p30", n: 20, pergunta: "probabilidade", titulo: "As faixas escolhidas mudam a leitura da curva", sub: "O agrupamento muda o diagnóstico visual, não as PDs.", nivel: "aprofundamento", min: 3 },
   { slug: "c7p31", n: 21, pergunta: "probabilidade", titulo: "Cinco defaults em cem casos não são uma verdade exata", sub: "A frequência observada tem incerteza, e ela depende do número de casos.", nivel: "essencial", min: 3 },
-  { slug: "c7p32", n: 22, pergunta: "probabilidade", titulo: "Erro de nível e erro de inclinação têm assinaturas diferentes", sub: "Quatro formas típicas de errar a probabilidade, e como cada uma aparece na curva.", nivel: "aprofundamento", min: 4 },
+  { slug: "c7p32", n: 22, pergunta: "probabilidade", titulo: "Erro de nível e erro de inclinação têm assinaturas diferentes", sub: "Quatro formas típicas de errar a probabilidade, e como cada uma aparece na curva.", nivel: "essencial", min: 4 },
   { slug: "c7p33", n: 23, pergunta: "probabilidade", titulo: "Brier: o custo quadrático de errar a probabilidade", sub: "Menor é melhor; o valor só se lê ao lado de uma referência na mesma amostra.", nivel: "essencial", min: 3 },
-  { slug: "c7p34", n: 24, pergunta: "probabilidade", titulo: "Log loss: confiança errada custa caro", sub: "A perda cresce sem limite quando se dá probabilidade quase nula ao que aconteceu.", nivel: "aprofundamento", min: 3 },
+  { slug: "c7p34", n: 24, pergunta: "probabilidade", titulo: "Log loss: confiança errada custa caro", sub: "A perda cresce sem limite quando se dá probabilidade quase nula ao que aconteceu.", nivel: "essencial", min: 3 },
   { slug: "c7p11", n: 25, pergunta: "probabilidade", titulo: "Menor Brier não prova melhor calibração", sub: "O Brier mistura separação e nível; a curva por faixa mostra o nível.", nivel: "essencial", min: 3 },
   { slug: "c7p35", n: 26, pergunta: "probabilidade", titulo: "Laboratório: boa fila, probabilidades ruins", sub: "Mexa no nível e na inclinação das PDs; a ordem e a AUC ficam onde estão.", nivel: "essencial", min: 5 },
   { slug: "c7p16", n: 27, pergunta: "validacao", titulo: "Recalibrar exige uma amostra própria", sub: "O calibrador é ajustado numa amostra e avaliado em outra, que ele nunca viu.", nivel: "essencial", min: 3 },
