@@ -94,15 +94,15 @@ function MiniVal({ d, novas }: { d: Dim; novas: number }) {
 
 const SINTOMAS: Record<Sint, { r: string; diag: string; voltar: string[] }> = {
   auc: { r: "AUC baixa", diag: "Problema de ordenação: as variáveis ou a forma do modelo não separam. Recalibrar não resolve; volte à modelagem.", voltar: ["c7p5", "c7p6", "c7p27"] },
-  cal: { r: "AUC boa, curva fora da diagonal", diag: "Problema de probabilidade: nível ou inclinação. Corrija com intercepto ou Platt, ajustados na amostra que a finalidade pede (safra maturada recente para provisão, várias para capital), e confira na safra seguinte.", voltar: ["c7p10", "c7p32", "c7p16", "c7p12"] },
+  cal: { r: "AUC boa, curva fora da diagonal", diag: "Problema de probabilidade: nível ou inclinação. Corrija com intercepto ou Platt na amostra que a finalidade pede e confira na safra seguinte.", voltar: ["c7p10", "c7p32", "c7p16", "c7p12"] },
   dec: { r: "PD boa, resultado ruim", diag: "Problema de decisão: corte, perda ou receita mal especificados. A PD não escolhe a política sozinha.", voltar: ["c7p37", "c7p18"] },
   oot: { r: "Bom na validação, ruim na janela", diag: "Problema de validação: sobreajuste, seleção feita olhando a janela ou mudança de população. Congele e use uma janela nova.", voltar: ["c7p15", "c7p17", "c7p14"] },
 };
 const PASSOS: [string, string][] = [
-  ["Antes", "congelar escolhas e amostras; a janela só mede"],
+  ["Antes", "congelar escolhas e amostras"],
   ["Ordenação", "AUC com IC pareado"],
   ["Probabilidade", "O/E, Jeffreys por faixa, slope"],
-  ["Nível", `amostra pela finalidade; recalibrar se Jeffreys rejeitar em duas safras seguidas, no mesmo sentido (regra contra ruído: por acaso, ${pct(FALSO, 2)})`],
+  ["Nível", `amostra pela finalidade; recalibrar se Jeffreys rejeitar em duas safras seguidas no mesmo sentido (regra contra ruído: por acaso, ${pct(FALSO, 2)})`],
   ["Segmentos", "O/E e curva por segmento"],
   ["Decisão", "corte pela conta"],
 ];
@@ -119,7 +119,7 @@ export function S37Conclusao({ pagina }: { pagina?: Pagina }) {
   ];
   return (
     <Quadro slug="c7p20" pagina={pagina} layout="gl" rotuloConclusao="Síntese"
-      conclusao={<><b>A logística fica.</b> O nível vem da amostra que a finalidade pede, fixada antes da janela (provisão: safra maturada recente; capital: várias safras); é vigiado por safra com Jeffreys e <b>recalibrado se o teste rejeitar em duas seguidas</b>; confirmação nas safras de 2024.</>}
+      conclusao={<><b>A logística fica.</b> O nível vem da amostra que a finalidade pede, fixada antes da janela, e é vigiado por safra com Jeffreys: <b>recalibrar se o teste rejeitar em duas safras seguidas</b>; confirmar nas safras de 2024.</>}
       fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults. DeLong, Wilson, Jeffreys; motor do slide 32; réplicas sintéticas da janela: ${N_JANELAS} sorteios (semente ${SEMENTE_JANELAS}). Gatilho: com teste unilateral a ${pct(ALFA, 0)} e safras independentes, duas rejeições seguidas por acaso têm probabilidade ${pct(ALFA, 0)}² = ${pct(FALSO, 2)}.`}>
       <Painel titulo="As quatro respostas, para a logística da janela">
         <div className="q7-s37-r">

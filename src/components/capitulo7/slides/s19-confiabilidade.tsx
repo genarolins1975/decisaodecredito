@@ -31,7 +31,7 @@ const ASC = PL.map((p, i) => ({ p, y: Y[i] })).sort((a, b) => a.p - b.p);
 const PMAX = ASC[ASC.length - 1].p;
 type Palpite = "acima" | "abaixo" | null;
 const OPS = [
-  { texto: "Em nenhuma", certa: false, retorno: <>Um ponto fora da diagonal, sozinho, não prova nada: com cerca de 74 casos, o intervalo de cada faixa tem de {pp(LMIN, 0).replace("+", "")} a {pp(LMAX, 0).replace("+", "")} de largura. Confunde distância isolada com descalibração.</> },
+  { texto: "Em nenhuma", certa: false, retorno: <>Sozinho, um ponto fora da diagonal não prova nada: com cerca de 74 casos, cada intervalo tem de {pp(LMIN, 0).replace("+", "")} a {pp(LMAX, 0).replace("+", "")} de largura. Confunde distância isolada com descalibração.</> },
   { texto: COMPATIVEIS >= 9 ? "Em todas ou quase todas" : `Em ${COMPATIVEIS}`, certa: true, retorno: <>Isso: em {COMPATIVEIS} das 10.</> },
   { texto: `Só nas ${ABAIXO} abaixo`, certa: false, retorno: <>O lado não decide: um ponto acima da diagonal pode estar perto dela, dentro do ruído. Confunde a direção do erro com a evidência dele.</> },
 ];
