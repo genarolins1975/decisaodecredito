@@ -14,8 +14,21 @@ export type Pagina = { index: number; total: number };
 const ORDEM: Pergunta[] = ["ordenacao", "probabilidade", "decisao", "validacao"];
 const dois = (n: number) => String(n).padStart(2, "0");
 
-export function Quadro({ slug, pagina, layout = "gl", conclusao, fonte, children, rotuloConclusao = "Leitura", sub }: {
-  slug: string; pagina?: Pagina; layout?: "gl" | "lg" | "gg" | "g3" | "um" | "glx" | "qd"; conclusao?: ReactNode; fonte?: ReactNode; children: ReactNode; rotuloConclusao?: string; sub?: ReactNode;
+/**
+ * Declaração da base em toda fonte: os números do capítulo saem da base sintética do curso. A fonte que já declara a
+ * base fica como está; a que começa por "Janela fora do tempo:" ganha semente e safras no lugar; as outras recebem a
+ * declaração antes do texto.
+ */
+const BASE_CURSO = "Base sintética (semente 20260501), safras 2023-08 a 2023-12";
+export function declararBase(fonte: ReactNode): ReactNode {
+  if (typeof fonte !== "string" || /sint[ée]tic/i.test(fonte)) return fonte;
+  if (/^Janela fora do tempo:/.test(fonte)) return fonte.replace(/^Janela fora do tempo:/, `${BASE_CURSO}, janela fora do tempo:`);
+  return `${BASE_CURSO}. ${fonte}`;
+}
+
+/** `titulo` e `sub` substituem os do roteiro enquanto uma previsão está aberta (pergunta antes, afirmação depois). */
+export function Quadro({ slug, pagina, layout = "gl", conclusao, fonte, children, rotuloConclusao = "Leitura", sub, titulo }: {
+  slug: string; pagina?: Pagina; layout?: "gl" | "lg" | "gg" | "g3" | "um" | "glx" | "qd"; conclusao?: ReactNode; fonte?: ReactNode; children: ReactNode; rotuloConclusao?: string; sub?: ReactNode; titulo?: ReactNode;
 }) {
   const s = SLIDE[slug];
   const atual = ORDEM.indexOf(s.pergunta);
@@ -32,13 +45,13 @@ export function Quadro({ slug, pagina, layout = "gl", conclusao, fonte, children
             </ol>
             <span className="q7-num" aria-label={`Slide ${num.replace(" / ", " de ")}`}>{s.nivel === "aprofundamento" ? "aprofundamento · " : s.nivel === "apendice" ? "apêndice · " : ""}{num}</span>
           </div>
-          <h2 className="q7-tit" id={`${slug}-tit`}>{s.titulo}</h2>
+          <h2 className="q7-tit" id={`${slug}-tit`}>{titulo ?? s.titulo}</h2>
           <p className="q7-sub">{sub ?? s.sub}</p>
         </header>
         <div className={`q7-corpo q7-l-${layout}`}>{children}</div>
         <footer className="q7-rod">
           {conclusao && <p className="q7-conclusao" aria-live="polite"><span>{rotuloConclusao}</span><span>{conclusao}</span></p>}
-          {fonte && <p className="q7-fonte">{fonte}</p>}
+          {fonte && <p className="q7-fonte">{declararBase(fonte)}</p>}
         </footer>
       </div>
     </figure>

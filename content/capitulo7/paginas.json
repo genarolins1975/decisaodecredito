@@ -1046,7 +1046,7 @@
     "funcao": "Material de consulta, fora do percurso da aula.",
     "pre": "Nenhum.",
     "conducao": "Não apresente em aula; indique para estudo.",
-    "leitura": "Quatro abas de consulta.",
+    "leitura": "Cinco abas de consulta: fórmulas, métricas fora do protocolo, fronteira e regulação, referências e reprodução.",
     "pergunta": "Como converter AUC em Gini?",
     "resposta": "Gini = 2 × AUC menos 1: 0,4514 na janela.",
     "erros": [],
