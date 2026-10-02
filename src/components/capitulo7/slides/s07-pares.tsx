@@ -55,7 +55,7 @@ export function S07Pares({ pagina }: { pagina?: Pagina }) {
           <div><dt>Denominador</dt><dd>5 × 15 = 75</dd></div>
           <div data-tom="prob"><dt>AUC</dt><dd>{modo === "todos" ? num(c.auc!, 4) : "?"}</dd></div>
         </dl>
-        <Formula f={String.raw`\mathrm{AUC}=\frac{C+\tfrac12\,E}{n_D\times n_A}`} simbolos={[["C", "pares em que o default tem PD maior"], ["E", "pares empatados"]]} />
+        <Formula compacta f={String.raw`\mathrm{AUC}=\frac{C+\tfrac12\,E}{n_D\times n_A}`} simbolos={[["C", "pares em que o default tem PD maior"], ["E", "pares empatados"]]} />
         <div className="q7-botoes"><Botao onClick={() => setPlena(!plena)}>{plena ? "Voltar a pontos inteiros" : "Usar a PD em precisão plena"}</Botao><Botao sec onClick={() => { setModo("um"); setSel(null); setPlena(false); }}>Restaurar</Botao></div>
       </Painel>
     </Quadro>

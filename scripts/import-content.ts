@@ -424,9 +424,9 @@ async function main() {
   /* `url` aponta para uma rota da própria plataforma; `citation` fica só nas referências bibliográficas.
      O título nomeia os capítulos porque `materiaisDoCapitulo` casa o material ao capítulo pelo título. */
   const refs: { title: string; kind: string; description: string; url?: string; unitId?: string; status?: string }[] = [
-    /* guias do aluno dos capítulos da Aula 2, gerados por scripts/apostila/gerar.mjs e servidos por /api/materiais/[arquivo].
+    /* guias do aluno dos capítulos da Aula 2 e do capítulo 7, gerados por scripts/apostila/gerar.mjs e servidos por /api/materiais/[arquivo].
        O guia do professor traz gabaritos e o repositório é público: ele entra pelo canal privado (bucket e "Registrar pacote"). */
-    ...[4, 5, 6].map((n) => ({ title: `Capítulo ${n}: guia do aluno (PDF)`, kind: "arquivo", url: `/api/materiais/capitulo-${String(n).padStart(2, "0")}-aluno.pdf`, description: GUIA_ALUNO })),
+    ...[4, 5, 6, 7].map((n) => ({ title: `Capítulo ${n}: guia do aluno (PDF)`, kind: "arquivo", url: `/api/materiais/capitulo-${String(n).padStart(2, "0")}-aluno.pdf`, description: GUIA_ALUNO })),
     { title: "Siddiqi, N. Intelligent Credit Scoring: Building and Implementing Better Credit Risk Scorecards. 2. ed. Wiley, 2017.", kind: "referencia", description: "Construção de scorecards, WoE/IV, segmentação e implantação." },
     { title: "Thomas, L. C.; Crook, J. N.; Edelman, D. B. Credit Scoring and Its Applications. 2. ed. SIAM, 2017.", kind: "referencia", description: "Fundamentos estatísticos de credit scoring, validação e decisão." },
     { title: "Hastie, T.; Tibshirani, R.; Friedman, J. The Elements of Statistical Learning. 2. ed. Springer, 2009.", kind: "referencia", description: "Árvores, boosting e viés-variância (capítulos 9 e 10)." },

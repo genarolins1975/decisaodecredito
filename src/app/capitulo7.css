@@ -117,7 +117,7 @@
 .q7 .q7-slide .q7-exp:not([open]) > .q7-exp-c { display: none; }
 .q7 .q7-slide .q7-exp[data-sobe="1"] { position: relative; }
 .q7 .q7-slide .q7-exp[data-sobe="1"] > .q7-exp-c { position: absolute; z-index: 6; left: -1px; right: -1px; bottom: calc(100% - .5cqw); background: #fff; border: 1px solid var(--q7-ink); border-radius: .7cqw .7cqw 0 0; padding-top: .7cqw; overflow-y: auto; }
-.q7-formula { font-size: 1.7cqw; color: var(--q7-ink); overflow-x: auto; overflow-y: hidden; }
+.q7-formula { font-size: 1.7cqw; color: var(--q7-ink); overflow-x: auto; overflow-y: hidden; flex: none; }
 .q7-formula--compacta { font-size: 1.3cqw; }
 .q7-formula .katex-display { margin: .2cqw 0; }
 .q7-simbolos { display: grid; grid-template-columns: auto 1fr; gap: .15cqw .8cqw; font-size: 1.25cqw; margin: 0; }

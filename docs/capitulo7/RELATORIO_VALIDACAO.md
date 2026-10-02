@@ -130,6 +130,6 @@ Ajustes feitos a partir dessas medições: cor âmbar do capítulo escurecida de
 - A janela tem 81 defaults: todos os intervalos são largos, e o quadro diz isso onde importa.
 - Apresentação em celular: o palco foi desenhado para projeção 16:9; em 390 px o modo previsto é o estudo, que passa na varredura. No palco a 390 px a grade de pessoas dos slides 3 e 17 não se ajusta.
 - A matriz de 75 pares (slide 7) rola na horizontal no celular, de propósito, dentro do próprio quadro.
-- Os PDFs da apostila não foram regenerados neste ambiente; as explicações do capítulo 7 (`scripts/apostila/explicacoes/c07.json`) foram reescritas e passam no validador.
+- Guias do capítulo 7 gerados em 02/10/2026 (`scripts/apostila/gerar.mjs`): aluno com 47 páginas, publicado em `content/materiais/capitulo-07-aluno.pdf` (só para matriculados); professor com 65 páginas, fora do repositório porque traz gabaritos, com o pacote privado montado para o bucket (versão `guias-2026-10`). Falta enviar o pacote ao bucket e registrá-lo em Bases e gabaritos, o que exige a credencial do armazenamento privado.
 - Questões com gabarito continuam no repositório público, como antes (pendência anterior a este trabalho).
 - Produção não foi tocada; a publicação acontece no merge.

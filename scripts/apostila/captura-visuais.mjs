@@ -14,6 +14,14 @@ const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromi
 const ctx = await browser.newContext({ viewport: { width: 1000, height: 900 }, deviceScaleFactor: 2 });
 await ctx.request.post(`${BASE}/api/auth/login`, { data: { email: "aluno.a@example.test", password: "aluno-a-dev-2026" }, headers: { "x-requested-with": "fetch" } });
 const page = await ctx.newPage();
+/* Quadros do capítulo 7 que abrem vazios de propósito (a turma constrói ao vivo): no papel sai o estado construído.
+   Previsões que bloqueiam a revelação (slides 3, 15, 29, 30 e 36) ficam como estão: o guia pede a resposta antes. */
+const PASSOS = {
+  c7p4: ["1. Ordenar pela PD", "Revelar todos"], c7p5: ["+100", "+100", "+100", "+100", "+100", "+100", "+100", "+100", "+100", "+100"],
+  c7p22: ["Todos os pares"], c7p23: ["Revelar a próxima taxa", "Revelar a próxima taxa", "Revelar a próxima taxa"],
+  c7p6: ["Janela (737)"], c7p10: ["Todas"], c7p9: ["+50 amostras"], c7p12: ["Abrir o teste"],
+  c7p14: ["Completar 1.000"], c7p17: ["Mais 5", "Mais 5"], c7p20: ["AUC boa, curva fora da diagonal"], c7p38: ["Ordenação"],
+};
 const meta = fs.existsSync(`${S}/fig/_meta.json`) ? JSON.parse(fs.readFileSync(`${S}/fig/_meta.json`, "utf8")) : {};
 for (const slug of slugs) {
   try {
@@ -22,9 +30,10 @@ for (const slug of slugs) {
        cinco peças do capítulo 4 usam <aside> para os controles, e um "aside" solto aqui os apagava da captura */
     await page.addStyleTag({ content: "nextjs-portal, body > header, header.sticky, aside:not(.vz aside), nav, .no-print, [data-testid=abertura-capitulo], section[data-questao], .vz-fonte { display: none !important } article { max-width: 1000px } .vz { box-shadow: none !important }" });
     await page.waitForTimeout(500);
-    const vz = page.locator("figure.vz").first();
+    const vz = page.locator("figure.vz, figure.q7").first(); // figure.q7: quadros do capítulo 7
     let alvo, tipo;
     if (await vz.count()) { alvo = vz; tipo = "nativo"; } else { alvo = page.locator("article .mt-6").first(); tipo = "conteudo"; }
+    for (const nome of PASSOS[slug] ?? []) { await alvo.getByRole("button", { name: nome, exact: true }).first().click(); await page.waitForTimeout(250); }
     await alvo.scrollIntoViewIfNeeded(); await page.waitForTimeout(250);
     const box = await alvo.boundingBox(); if (!box) throw new Error("sem caixa");
     await alvo.screenshot({ path: `${S}/fig/${slug}.png` });

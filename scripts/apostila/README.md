@@ -27,7 +27,7 @@ O gerador confere o HTML antes de imprimir e sai com código 1 se houver imagem 
 
 ## Publicação
 
-**Guia do aluno.** Fica em `content/materiais/capitulo-NN-aluno.pdf`, copiado de `build/`, e sai pela rota `/api/materiais/[arquivo]` para qualquer matriculado (401 sem sessão, 403 sem turma). O importador (`scripts/import-content.ts`) cadastra o material "Capítulo N: guia do aluno (PDF)"; a página do capítulo o lista pelo número no título, e Materiais também. Hoje estão publicados os capítulos 4, 5 e 6, os da Aula 2.
+**Guia do aluno.** Fica em `content/materiais/capitulo-NN-aluno.pdf`, copiado de `build/`, e sai pela rota `/api/materiais/[arquivo]` para qualquer matriculado (401 sem sessão, 403 sem turma). O importador (`scripts/import-content.ts`) cadastra o material "Capítulo N: guia do aluno (PDF)"; a página do capítulo o lista pelo número no título, e Materiais também. Hoje estão publicados os capítulos 4, 5 e 6, os da Aula 2, e o capítulo 7.
 
 **Guia do professor.** Contém gabaritos, e o repositório é público: nunca entra em `content/materiais/` (o `.gitignore` recusa `*-professor.pdf`) e a rota não o serve. Sai pelo canal privado dos gabaritos do trabalho final:
 
