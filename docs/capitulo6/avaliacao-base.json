@@ -1,0 +1,631 @@
+{
+ "capitulo": 6,
+ "data": "2026-10-02",
+ "revisor": "subagentes em contexto limpo",
+ "versao": "capítulo 6 antes da reconstrução (20 páginas)",
+ "slides": {
+  "c6p1": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "c6p1-1.png: dispersão dos oito pontos com a linha tracejada F₀ = 6,5 domina a metade direita; número 06, desafio e três etapas numeradas à esquerda; legenda com barra dourada; nada decorativo, nenhum rótulo sobreposto.",
+    "corrigir": ""
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Uma ideia (palpite, resíduo, soma); desafio em forma de afirmação; legenda diz o que concluir com o número da tela ('a média dos oito valores, 6,5: a mesma previsão para todos, sem olhar para x'); 'A seguir: A ideia, antes de qualquer fórmula.'",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Três botões de etapa (abertura-boosting.tsx, aria-pressed) trocam o gráfico: palpite, resíduos (rótulo em x = 8) e degraus após quatro árvores com MSE 10,19 → 0,45; a etapa 1 devolve o estado inicial; botões nativos acessíveis por teclado.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Números conferidos em Python (média 6,5; MSE 10,1875 → 0,44851 com quatro tocos e η = 0,5). Mas Palco esconde a nota de fonte: globals.css linha 440 (.slide-inner .vz-fonte { display: none }), e a captura não traz amostra, natureza sintética ou didática dos dados nem convenções.",
+    "corrigir": "Declarar no palco que os oito pontos são didáticos e sintéticos e o método (tocos, η = 0,5). Mostrar no palco uma linha de fonte curta (dados didáticos sintéticos, n, método, η, conferência com o gerador em Python), por exemplo tirando .vz-fonte da regra de globals.css linha 440 ou criando uma variante compacta para o palco."
+   }
+  },
+  "c6p2": {
+   "beleza": {
+    "nota": 7,
+    "evidencia": "c6p2-1.png: metade direita do painel vazia abaixo do bloco 'Erro absoluto restante' (da altura 455 à 920 da captura); a faixa de três cartões M1, M2, M3, 'média', F₀ +h₁ +h₂ F concorre com o gráfico e no palco não traz texto, só fichas e rótulos.",
+    "corrigir": "Tirar a faixa das três estratégias do palco (ou reduzi-la a uma linha) e ocupar a metade direita com a tabela passo, previsão, erro que já existe em tres-estrategias.tsx, hoje escondida, para preencher a área morta."
+   },
+   "didatica": {
+    "nota": 7,
+    "evidencia": "Duas ideias disputam (taxonomia selecionar, paralelo, sequência; e o passo a passo do boosting em x = 8). O passo 1 diz 'Com taxa de aprendizagem 0,5, o caso recebe +1,44' antes de η (c6p7) e de resíduo (c6p5) serem apresentados: salto de pré-requisito.",
+    "corrigir": "Escolher uma ideia: ou a taxonomia (com uma frase por estratégia visível no palco), ou o passo a passo; no passo a passo, trocar 'taxa de aprendizagem 0,5' por 'metade da correção' até c6p7 apresentar η."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Cinco botões 0. Palpite a 4. Árvore 4 mudam o degrau, o traço do resíduo, o número 'erro absoluto restante' (5,50 → 1,14) e a barra; '0. Palpite' volta ao início; botões de teclado.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Previsões 6,50 · 7,94 · 9,97 · 10,35 · 10,86 conferidas em Python. Mas Palco esconde a nota de fonte: globals.css linha 440 (.slide-inner .vz-fonte { display: none }), e a captura não traz amostra, natureza sintética ou didática dos dados nem convenções.",
+    "corrigir": "Mostrar no palco uma linha de fonte curta (dados didáticos sintéticos, n, método, η, conferência com o gerador em Python), por exemplo tirando .vz-fonte da regra de globals.css linha 440 ou criando uma variante compacta para o palco."
+   }
+  },
+  "c6p3": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "c6p3-1.png: gráfico dos oito pontos domina; F₀ = 6,5 tracejada; ponto x = 8 em destaque dourado com o segmento +5,5 rotulado; ficha lateral 'Previsão inicial F₀ 6,5' discreta; hierarquia título, estado, peça.",
+    "corrigir": ""
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Uma ideia (erro inicial y menos 6,5); estado em negrito com o número ('Erro inicial: y − 6,5 = +5,5. A previsão precisa subir'); ligação 'Antes de qualquer árvore, o palpite mais simples possível'. Observação: repete conteúdo de c6p1 etapa 2 e de c6p5, o que é assunto do storytelling.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Oito pontos clicáveis com role=button, tabIndex=0 e Enter/espaço (oito-pontos.tsx); o estado e o segmento mudam com o ponto; o próprio seletor volta a x = 8; experimento direto de 'o erro de cada ponto'.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "y − 6,5 correto para os oito pontos. Mas Palco esconde a nota de fonte: globals.css linha 440 (.slide-inner .vz-fonte { display: none }), e a captura não traz amostra, natureza sintética ou didática dos dados nem convenções.",
+    "corrigir": "Mostrar no palco uma linha de fonte curta (dados didáticos sintéticos, n, método, η, conferência com o gerador em Python), por exemplo tirando .vz-fonte da regra de globals.css linha 440 ou criando uma variante compacta para o palco."
+   }
+  },
+  "c6p4": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "c6p4-1.png: tabela de cinco candidatos à esquerda repete exatamente os cinco pontos marcados na parábola à direita (4,00; 5,50; 6,50; 7,50; 9,00): duas peças de peso parecido dizendo a mesma coisa.",
+    "corrigir": "Tirar a tabela do palco e deixar a parábola como peça única, com os cinco valores rotulados nos próprios pontos; a frase '52,0 ÷ 8 = 6,50' vira a leitura sob o gráfico."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Uma ideia (o melhor constante em erro quadrático é a média); leitura com o número da tela ('52,0 ÷ 8 = 6,50. Não foi escolhido: foi calculado'); três notas ligam ao capítulo 2, ao capítulo 5 e à próxima página ('o alvo da próxima página').",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 7,
+    "evidencia": "Componente palpite-constante.tsx não tem estado nem controle (nenhum useState, onClick ou onChange): o conceito pede o experimento de mover o valor constante e ver o erro subir dos dois lados.",
+    "corrigir": "Acrescentar um controle deslizante do valor constante c (de 2 a 11) que move um ponto sobre a parábola e mostra o erro quadrático médio, com 'Restaurar' em 6,50."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Tabela conferida (16,4375; 11,1875; 10,1875; 11,1875; 16,4375) e afirmação 'em log loss é a proporção' correta. Mas Palco esconde a nota de fonte: globals.css linha 440 (.slide-inner .vz-fonte { display: none }), e a captura não traz amostra, natureza sintética ou didática dos dados nem convenções.",
+    "corrigir": "Mostrar no palco uma linha de fonte curta (dados didáticos sintéticos, n, método, η, conferência com o gerador em Python), por exemplo tirando .vz-fonte da regra de globals.css linha 440 ou criando uma variante compacta para o palco."
+   }
+  },
+  "c6p5": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "c6p5-1.png: gráfico com os oito resíduos rotulados (−4,5 a +5,5), vermelho para subir e azul para descer, mais símbolo de sinal; quadro lateral com a conta 12,00 − 6,50 = +5,50 em destaque; leitura em barra dourada.",
+    "corrigir": ""
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Uma ideia (resíduo é o novo alvo); leitura com número ('Depois de quatro, em x = 8 sobram 1,14'); antecipa a confusão resíduo versus erro final; ligação 'A árvore que ajusta o resíduo é a do capítulo 5, com outro critério'.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 7,
+    "evidencia": "erro-como-alvo.tsx não tem controle algum. O slide afirma que o resíduo 'muda a cada árvore somada' sem deixar o aluno mudar a árvore e ver isso.",
+    "corrigir": "Acrescentar seletor F₀, árvore 1 a árvore 4 que redesenha os oito resíduos em relação à previsão do momento (5,50 → 4,06 → 2,03 → 1,65 → 1,14 em x = 8), com retorno ao F₀."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "12,00 − 6,50 = +5,50 e 1,14 após quatro tocos conferidos em Python. Mas Palco esconde a nota de fonte: globals.css linha 440 (.slide-inner .vz-fonte { display: none }), e a captura não traz amostra, natureza sintética ou didática dos dados nem convenções.",
+    "corrigir": "Mostrar no palco uma linha de fonte curta (dados didáticos sintéticos, n, método, η, conferência com o gerador em Python), por exemplo tirando .vz-fonte da regra de globals.css linha 440 ou criando uma variante compacta para o palco."
+   }
+  },
+  "c6p6": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "c6p6-1.png: regiões azul e vermelha do toco, corte em 4,5, degrau da previsão, anéis dourados nos cinco pontos que trocaram de sinal (símbolo além da cor); quadro lateral com a regra e '5 de 8' em destaque.",
+    "corrigir": ""
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "A leitura ensina uma causa errada: 'A direção está certa, mas o passo é grande demais'. O '5 de 8' é dado pronto, sem previsão antes, num slide que tem algo a descobrir.",
+    "corrigir": "Pedir antes a previsão ('quantos dos oito resíduos trocam de sinal?') e reescrever a leitura: a troca de sinal vem de a folha guardar a média do grupo, e η serve para que nenhuma árvore isolada domine fora da amostra, não para baixar o erro de treino."
+   },
+   "interacao": {
+    "nota": 7,
+    "evidencia": "primeira-correcao.tsx sem controle: η fixo em 1 justamente no slide que motiva η; o experimento natural (mudar o tamanho do passo e ver trocas de sinal e erro) não existe.",
+    "corrigir": "Acrescentar um controle de fração da correção (0,1 a 1) que mostra trocas de sinal e MSE; o aluno verá que η = 1 dá o menor MSE de treino (1,92 contra 3,99 com 0,5) e que trocas de sinal caem com η menor."
+   },
+   "rigor": {
+    "nota": 7,
+    "evidencia": "Erro conceitual na motivação de η. Para o toco ajustado por mínimos quadrados, η = 1 é o passo ótimo no treino: recalculei MSE 1,92188 com η = 1 contra 3,98828 com η = 0,5, e após quatro árvores 0,40784 contra 0,44851. Logo 'o passo é grande demais' e 'passa do ponto' são falsos no critério de treino; as trocas de sinal (5 de 8, conferido) decorrem da média da folha, e o encolhimento se justifica por regularização fora da amostra (Friedman, 2001). Fonte também escondida no palco (globals.css linha 440).",
+    "corrigir": "Reescrever subtítulo e leitura: 'Somada inteira, a correção minimiza o erro de treino desta árvore (10,19 → 1,92), mas faz a primeira árvore decidir quase tudo; η menor espalha o ajuste por muitas árvores, o que só se paga fora da amostra (página 17)'. Mostrar a fonte no palco."
+   }
+  },
+  "c6p7": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "c6p7-1.png: degraus da previsão com resíduos coloridos à esquerda, barras de erro por etapa (10,1875 a 0,4485) com a etapa atual em dourado e as futuras esmaecidas à direita; hierarquia clara; nada decorativo.",
+    "corrigir": ""
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "O apoio pede 'Mova η e compare o erro depois das quatro árvores', mas ao mover para 1 (c6p7-eta1.png) o erro após quatro árvores cai para 0,4078, abaixo de 0,4485, e a redução vai a 96,0%: o experimento contradiz 'avanço mais lento e mais estável' e nada no palco explica (o texto 'η pequeno exige mais árvores' do HTML herdado não aparece). Leitura 'Com η intermediário, nenhuma árvore isolada manda' é genérica.",
+    "corrigir": "Acrescentar ao painel 'Por que não somar tudo' a frase com os números da tela: 'Com 4 árvores, η = 1 erra menos no treino (0,4078 contra 0,4485); η menor precisa de mais árvores e é a validação, na página 17, que mostra o ganho'."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Controle deslizante de η (0,1 a 1, range nativo), seletor F₀ a árvore 4 e 'Reproduzir do início' mudam degraus, barras e redução acumulada; o seletor volta ao F₀; é o experimento do conceito.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Números com η = 0,5 conferidos (3,98828; 2,22001; 0,92914; 0,44851). Defeito na tela com η = 1, árvore 4 (c6p7-eta1.png): '0,554 à esquerda, +−0,554 à direita', porque residuos-que-encolhem.tsx põe '+' fixo antes do valor da direita. Subtítulo 'mais estável' sem nenhum dado de estabilidade na tela. Fonte escondida no palco.",
+    "corrigir": "Formatar os dois valores de folha com sinal calculado (sinal8) em vez do '+' fixo; trocar 'mais estável' por afirmação que a tela mostra ou mostrar a estabilidade (por exemplo, variação da primeira árvore entre reamostragens); Mostrar no palco uma linha de fonte curta (dados didáticos sintéticos, n, método, η, conferência com o gerador em Python), por exemplo tirando .vz-fonte da regra de globals.css linha 440 ou criando uma variante compacta para o palco."
+   }
+  },
+  "c6p8": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "c6p8-1.png: degraus com o corte da árvore 1 em 4,5 à esquerda e tabela x, y, antes, resíduo, η × árvore, depois à direita, com resíduos coloridos por sinal; bloco 'Erro antes → depois' com 10,1875 → 3,9883. c6p8-2.png: questão limpa.",
+    "corrigir": ""
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "No palco a questão (c6p8-2.png) não dá retorno: ao marcar a alternativa errada e clicar Conferir, aparece só 'Enviado (tentativa 0).' (captura tmp/c6/revisao-base/shots/c6p8-apresentacao-erro.png), sem a confusão nomeada nem nova tentativa; no estudo o retorno existe ('Confusão: A sequência de cortes foi lida como varredura do eixo...').",
+    "corrigir": "Exibir no palco o mesmo retorno do estudo (confusão, conceito, tabela de cortes e 'Tentar de novo'), ou, se o palco só coleta respostas, mostrar ao professor a distribuição e o retorno depois do envio; corrigir o contador 'tentativa 0'."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Seletor F₀ a árvore 4 e 'Reproduzir do início' mudam degraus, tabela e bloco de erro (10,1875 → 3,9883 na árvore 1); seletor volta ao F₀; teclado nos botões.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Tabela conferida em Python (η × árvore 1 = ±1,44; previsão 5,06 e 7,94; cortes 4,5 · 7,5 · 2,5 · 5,5). Mas Palco esconde a nota de fonte: globals.css linha 440 (.slide-inner .vz-fonte { display: none }), e a captura não traz amostra, natureza sintética ou didática dos dados nem convenções.",
+    "corrigir": "Mostrar no palco uma linha de fonte curta (dados didáticos sintéticos, n, método, η, conferência com o gerador em Python), por exemplo tirando .vz-fonte da regra de globals.css linha 440 ou criando uma variante compacta para o palco."
+   }
+  },
+  "c6p9": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "c6p9-1.png: à direita, abaixo dos blocos 'Observado 12,00' e 'Previsão após 4 árvores 10,86', área vazia da altura 650 à 920 da captura, cerca de um terço do painel.",
+    "corrigir": "Ocupar a área com a soma escrita da previsão (6,50 + 1,44 + 2,03 + 0,38 + 0,52 = 10,86) em tamanho de leitura, ou subir o gráfico de parcelas e aumentá-lo."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Uma ideia (previsão final é palpite mais quatro parcelas); parcelas +1,44, +2,03, +0,38, +0,52 com acumulados 7,94 a 10,86; 'erro de 5,50 para 1,14'; ligação 'Está na hora de escrever a fórmula'.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 8,
+    "evidencia": "A interação principal do apoio ('Clique noutro ponto do gráfico') só funciona com mouse: os pontos são <g onClick> sem tabIndex nem role (residuos-que-encolhem.tsx); conferi 0 elementos com tabindex no svg de c6p9.",
+    "corrigir": "Dar aos oito pontos role=button, tabIndex=0, aria-label e Enter/espaço, como em oito-pontos.tsx."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Parcelas conferidas (10,347 − 9,969 = 0,378; 10,864 − 10,347 = 0,517). O mesmo '+' fixo de c6p7 no estado aparece quando o controle de η produz folha direita negativa. Fonte escondida no palco.",
+    "corrigir": "Corrigir o sinal das folhas no estado e Mostrar no palco uma linha de fonte curta (dados didáticos sintéticos, n, método, η, conferência com o gerador em Python), por exemplo tirando .vz-fonte da regra de globals.css linha 440 ou criando uma variante compacta para o palco."
+   }
+  },
+  "c6p10": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "c6p10-1.png: a fórmula aparece duas vezes com peso parecido, nos três cartões F_{m−1}(x), η, h_m(x) e na caixa F_m(x) = F_{m−1}(x) + η h_m(x); o cartão central fica deslocado para cima em relação aos outros dois.",
+    "corrigir": "Fundir as duas peças: manter a anatomia em três cartões e escrever o caso x = 8 diretamente embaixo de cada termo (6,50; 0,5; 2,875 → 7,94), tirando a caixa da fórmula repetida."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Uma ideia (cada termo é uma parte do mecanismo visto); caso numérico '6,50 + 0,5 × 2,875 = 7,94 ... 12,00 − 7,94 = 4,06'; desmonta a confusão 'η não é um peso por árvore'; ligação 'Agora, de volta ao crédito'.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 7,
+    "evidencia": "HTML herdado sem nenhum controle (extract.json, c6p10): slide estático, quando o conceito comportaria escolher a árvore m e ver os três termos preenchidos.",
+    "corrigir": "Acrescentar seletor de árvore (1 a 4) e de ponto x que preenche F_{m−1}(x), η e h_m(x) com os números do caso e o resultado F_m(x)."
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "7,9375 ≈ 7,94 e 4,0625 ≈ 4,06 conferidos; 'η é um único número, igual para as M árvores, escolhido antes de treinar' correto; os números são os de c6p6 e c6p8, já na tela anterior.",
+    "corrigir": ""
+   }
+  },
+  "c6p11": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "c6p11-1.png: duas tabelas lado a lado são a peça; uma curva logística com os dois caminhos (0,50 + 0,30 + 0,25 = 1,05 fora do eixo; escore 2,25 → 90,47% sobre a curva) diria mais que as tabelas.",
+    "corrigir": "Trocar as duas tabelas por um gráfico da curva logística com as somas marcadas: em probabilidade a soma sai do quadro em 1,05; em log odds o ponto 2,25 cai em 90,47%."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Uma ideia (somar em log odds); leitura com números ('Passa de 1'; 'Qualquer soma vira uma PD entre 0 e 1'; F₀ de carteira com 10% = −2,1972); ligação 'Falta definir o que as árvores vão prever'.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 7,
+    "evidencia": "soma-em-log-odds.tsx sem controle: o experimento natural (somar correções e ver a probabilidade passar de 1 enquanto o log odds continua válido) não existe.",
+    "corrigir": "Dar dois controles de correção (por exemplo de −1 a +1,5) aplicados às duas colunas, com o resultado em probabilidade ficando vermelho fora de [0, 1] e a PD logística sempre válida."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "σ(2,25) = 90,47% e ln(0,1 ÷ 0,9) = −2,1972 conferidos. As correções 0,30, 0,25, 1,200 e 1,050 não têm origem na tela: o 'Correções ilustrativas' está só na fonte escondida (globals.css linha 440).",
+    "corrigir": "Escrever 'correções ilustrativas' no próprio título das tabelas ou numa linha de fonte visível no palco."
+   }
+  },
+  "c6p12": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "c6p12-1.png: rótulos de PD espremidos na faixa de 0 a 5 dias entre 40% e 60% de utilização ('45%' encostados nos círculos vizinhos); pontos 'pagou' azul claro sobre a região azul têm pouco contraste.",
+    "corrigir": "Mostrar a PD só na proposta em foco ou em lista lateral, e usar contorno escuro nos pontos 'pagou' sobre região azul."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "A leitura do painel é genérica e igual em todas as árvores ('Caso já bem previsto tem resíduo pequeno e pesa pouco'), sem número da tela; a questão c6p12q existe só no estudo, o palco não tem previsão.",
+    "corrigir": "Leitura com os números da tela: 'Na árvore 4, as seis 'pagou' bem classificadas valem −0,33; #15 e #1, ainda em 49% e 50%, valem −0,49 e −0,50'; trazer a questão c6p12q como segunda tela."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Seletor F₀ a árvore 4 e 'Reproduzir do início' redesenham regiões, PDs e as dezesseis barras de y menos p ordenadas (c6p12-a4.png); botões de teclado; volta ao F₀.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Alvos conferidos em Python (±0,50 na árvore 1; ±0,45 na 2; ±0,33 após a 4). O subtítulo 'Quem já está bem previsto quase não pesa' vai além do dado: com η = 0,4 e quatro árvores a menor PD é 33% e o menor alvo em módulo é 0,33 contra 0,50 do maior (c6p12-a4.png), nada perto de zero. Fonte escondida no palco.",
+    "corrigir": "Trocar por 'Quem já está mais bem previsto pesa menos (0,33 contra 0,50)' ou mostrar um caso com alvo de fato pequeno (por exemplo com mais árvores); Mostrar no palco uma linha de fonte curta (dados didáticos sintéticos, n, método, η, conferência com o gerador em Python), por exemplo tirando .vz-fonte da regra de globals.css linha 440 ou criando uma variante compacta para o palco."
+   }
+  },
+  "c6p13": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "c6p13-1.png: o plano das variáveis, maior, ocupa a esquerda e repete c6p12; a curva de perda, que prova o título 'a perda cai a cada árvore', fica menor à direita.",
+    "corrigir": "Inverter o peso: curva de perda grande como peça principal e o plano reduzido ou fora do palco neste slide."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "O procedimento de cinco linhas (F₀ = log odds da prevalência, p = σ(F), alvo y menos p, árvore, F ← F + ηh), que é a ideia do subtítulo, não aparece no palco. O bloco 'Distância até a logística 0,1891 ... mais árvores chegam' trata a perda de treino da logística como meta, a comparação que c6p20 depois desmonta.",
+    "corrigir": "Mostrar as cinco linhas compactas ao lado da curva e trocar o bloco por 'Perda de treino não compara modelos: desce com qualquer árvore acrescentada'."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Controle de η (range) e seletor F₀ a árvore 4 mudam regiões, PDs, curva e os blocos (0,6219 na árvore 1); 'Reproduzir do início'; teclado nativo; o aluno muda a causa e vê a perda responder.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Perdas 0,6931 · 0,6219 · 0,5630 · 0,5150 · 0,4748 e logística 0,43282 conferidas em Python. A folha recebe a média de y menos p, sem passo de Newton (boosting.ts, arvoreRegressao), e o palco não declara: com Newton (Σr ÷ Σp(1 − p), usado em XGBoost, LightGBM e scikit-learn) a primeira folha das seis 'pagou' valeria −0,8 com η = 0,4, não −0,2. Fonte escondida.",
+    "corrigir": "Declarar na tela 'primeira ordem didática: folha = média de y menos p; bibliotecas usam passo de Newton e convergem mais rápido'; Mostrar no palco uma linha de fonte curta (dados didáticos sintéticos, n, método, η, conferência com o gerador em Python), por exemplo tirando .vz-fonte da regra de globals.css linha 440 ou criando uma variante compacta para o palco."
+   }
+  },
+  "c6p14": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "c6p14-1.png: o plano (terceira repetição desde c6p12) concorre com a decomposição em barras, que é a peça do título; rótulos '33%' espremidos na faixa de 0 a 5 dias.",
+    "corrigir": "Reduzir o plano a seletor compacto de propostas e dar à cascata de parcelas a maior área, com os três modelos comparados embaixo."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "Não há leitura no palco: o estado traz só 'Árvore 4 de 4. Perda 0,5150 → 0,4748...' e os três blocos 66,8%, 99,6%, 100,0% ficam sem frase do que concluir; o 'Rastreável, mas não interpretável da mesma forma' do HTML herdado não aparece.",
+    "corrigir": "Acrescentar leitura: 'Quatro parcelas (+0,200, +0,183, +0,165, +0,152) levam #12 a 66,8%; com duzentas árvores a decomposição existe, mas ninguém a lê'."
+   },
+   "interacao": {
+    "nota": 8,
+    "evidencia": "'Clique numa proposta' só com mouse: os pontos do plano são <g onClick> sem tabIndex nem role (perda-que-cai.tsx); conferi 0 elementos com tabindex no svg de c6p14.",
+    "corrigir": "Dar às dezesseis propostas role=button, tabIndex=0, aria-label e Enter/espaço."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Parcelas +0,200 · +0,183 · +0,165 · +0,152 e PD 66,8% conferidas; logística 99,6% conferida com β da aula. Mas Palco esconde a nota de fonte: globals.css linha 440 (.slide-inner .vz-fonte { display: none }), e a captura não traz amostra, natureza sintética ou didática dos dados nem convenções.",
+    "corrigir": "Mostrar no palco uma linha de fonte curta (dados didáticos sintéticos, n, método, η, conferência com o gerador em Python), por exemplo tirando .vz-fonte da regra de globals.css linha 440 ou criando uma variante compacta para o palco."
+   }
+  },
+  "c6p15": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "c6p15-1.png: o gráfico tem eixo de 0 a 0,72 e a curva ocupa só o terço superior, deixando a metade de baixo vazia; os quatro controles e os quatro blocos à esquerda competem em peso com o gráfico.",
+    "corrigir": "Ajustar o eixo ao intervalo dos dados ou ao menor valor alcançável pelos controles e dar ao gráfico a maior área; blocos em uma linha só."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Uma ideia (quatro controles da complexidade); estado com os números ('log loss de treino 0,47481 contra 0,43282 da logística, 16 folhas somadas, menor folha com 2, PD de 33% a 67%') e a ressalva 'Em base real, a escolha se faz por validação'; ligação 'Dois desses quatro não podem ser escolhidos separadamente'.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Quatro controles deslizantes (η, M, profundidade, mínimo por folha) e três configurações prontas; 'a da aula' restaura; perda, folhas, menor folha e PDs respondem; teclado nos ranges.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 7,
+    "evidencia": "Na página de estudo (/aulas/c6p15, texto lido por Playwright), a tabela 'O que cada um controla' diz que M 'É o freio contra o sobreajuste, e o único que precisa ser escolhido observando amostra fora do treino': M é acelerador da complexidade, e η, profundidade e folha mínima também se escolhem fora do treino. Contradiz o próprio HTML herdado ('M é o acelerador, não o freio') e c6p19. Números da configuração da aula conferidos (0,47481; 33% a 67%).",
+    "corrigir": "Corrigir CONTROLA em hiperparametros.tsx: 'M: quantas correções; cada árvore aumenta a complexidade, o freio é parar cedo por validação. Os quatro se escolhem fora do treino'. Mostrar a fonte no palco."
+   }
+  },
+  "c6p16": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "c6p16-1.png: tabela e curva com o mesmo peso; a coluna 'árvores até perda 0,50' é exatamente o que a curva desenha.",
+    "corrigir": "Fazer da curva a peça principal (com 1,5 ÷ η tracejada) e reduzir a tabela às colunas que a curva não mostra (η × árvores e perda com 60 árvores)."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "Há algo a descobrir (o produto η × M quase constante) e a resposta está no subtítulo ('Reduzir η pela metade pede o dobro de árvores') e na nota 1, sem previsão antes.",
+    "corrigir": "Esconder a coluna η × árvores e pedir a previsão: 'η = 0,4 precisa de 4 árvores; quantas η = 0,2 precisa?'; revelar 7 e o produto depois."
+   },
+   "interacao": {
+    "nota": 7,
+    "evidencia": "eta-e-arvores.tsx sem controle (nenhum useState): o acoplamento η e M é exatamente o experimento que pedia um controle.",
+    "corrigir": "Acrescentar controle de η que mostra a curva de perda por árvore e o ponto em que cruza 0,50, com o produto η × M atualizado."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "As nove linhas conferidas em Python (14, 10, 7, 5, 4, 3, 3, 2, 2 árvores; perda com 60 árvores de 0,28394 a 0,06800). 'Fica perto de 1,5' generaliza: o produto vai de 1,40 a 2,00 (1,80 em η = 0,6). Base de 16 propostas não nomeada no palco (fonte escondida).",
+    "corrigir": "Dizer 'entre 1,4 e 2,0; mais perto de constante quanto menor η' e Mostrar no palco uma linha de fonte curta (dados didáticos sintéticos, n, método, η, conferência com o gerador em Python), por exemplo tirando .vz-fonte da regra de globals.css linha 440 ou criando uma variante compacta para o palco."
+   }
+  },
+  "c6p17": {
+   "beleza": {
+    "nota": 7,
+    "evidencia": "c6p17-1.png e c6p17-treino.png: as linhas de treino aparecem como cunhas cheias (o path parece receber preenchimento), as três áreas translúcidas se sobrepõem num bloco rosa e cinza, as linhas tracejadas de fora do tempo e os marcadores brancos se amontoam entre 0,64 e 0,70; metade de baixo do painel direito vazia.",
+    "corrigir": "Desenhar só a configuração escolhida com área, as demais como linhas finas sem área; corrigir o preenchimento das linhas de treino (fill: none); separar fora do tempo em painel próprio ou em escala ampliada de 0,60 a 0,72."
+   },
+   "didatica": {
+    "nota": 7,
+    "evidencia": "O estado inicial já seleciona 60 árvores e 8 folhas e o bloco diz 'a melhor da grade, escolhida sem olhar o fora do tempo' antes de o aluno escolher um critério. Na tela 2 (c6p17-2.png), Conferir devolve só 'Enviado (tentativa 0).' no palco, sem retorno (shots/c6p17-apresentacao-erro.png).",
+    "corrigir": "Começar sem configuração selecionada e com os blocos vazios até o aluno escolher; mostrar no palco o retorno da questão c6p17q que já existe no estudo."
+   },
+   "interacao": {
+    "nota": 8,
+    "evidencia": "Botões de critério e caixa da validação funcionam por teclado, mas 'clique num ponto' usa <g onClick> sem tabIndex (distancia-que-se-abre.tsx) e não há como voltar ao estado inicial sem recarregar.",
+    "corrigir": "Pontos com role=button e tabIndex; botão 'Restaurar' que limpa o critério."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Grade conferida em grid-boosting.json (0,9927 e 0,6376 da configuração 240 × 16; distância máxima 0,3551; 0,6958 é a maior AUC fora do tempo). Não aparecem no palco base sintética, semente nem tamanhos de validação e fora do tempo; a validação fica abaixo do fora do tempo nas doze células (0,64 contra 0,69) sem explicação; 'a melhor da grade' separa 0,6958 de 0,6929 sem incerteza.",
+    "corrigir": "Mostrar 'base sintética de 5.000, semente 20260501, n de validação e fora do tempo', comentar em uma frase por que fora do tempo supera a validação nesta base e dizer que diferenças de 0,003 a 0,008 de AUC estão dentro do ruído (capítulo 7)."
+   }
+  },
+  "c6p18": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "c6p18-1.png: barras agrupadas treino, validação, fora do tempo por folhas, com valores rotulados (0,759 a 0,911; 0,640 a 0,648); quadro 'O que se perde' à direita; abas no topo; sem sobreposição.",
+    "corrigir": ""
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "O título promete 'como responder', mas no palco só aparece 'O que se perde'; 'O que se faz' (monotonicidade, efeito parcial, atribuição, modelo de referência) está escondido. A evidência de sobreajuste mostrada é fraca: validação 0,640 → 0,648 → 0,639.",
+    "corrigir": "Trocar o quadro 'O que se perde' pelo 'O que se faz' de cada limite, e na aba Sobreajuste usar a grade com 240 árvores (validação 0,6326 → 0,6240 → 0,6063), onde a queda é visível."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Três abas mudam o gráfico (barras; três árvores com e sem #15 e #16; cascata com 4, 12 ou 40 árvores) e o estado; 'Sobreajuste' devolve o início; botões de teclado.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Números conferidos na grade e a instabilidade recalculada (sem #15 o nó direito vira folha; sem #16 o corte passa de 87,5% para 82,5%). Mas o sinal 'treino melhora; validação piora' é sustentado na tela por 0,6400 → 0,6388 (queda de 0,0012, ruído, com máximo em 8 folhas), e a base de 5.000 não é declarada sintética.",
+    "corrigir": "Usar a evidência de 240 árvores ou dizer 'validação não acompanha'; escrever 'sintética' e a semente no título do gráfico."
+   }
+  },
+  "c6p19": {
+   "beleza": {
+    "nota": 7,
+    "evidencia": "c6p19-1.png: slide de texto, três cartões com pergunta e resposta e um '3' grande; nenhuma peça que prove o título; faixa vazia entre o cabeçalho e o bloco (alturas 150 a 300) e abaixo dos cartões.",
+    "corrigir": "Dar uma peça: por exemplo o caso x = 8 indo de 6,50 a 10,86 (resíduo), a PD de #12 indo de 50% a 66,8% (soma em log odds) e a grade de AUC (teste), uma miniatura por ideia."
+   },
+   "didatica": {
+    "nota": 7,
+    "evidencia": "O apoio diz 'Explique cada ideia com suas palavras antes de revelar', mas as três respostas já estão visíveis em negrito; nenhum número do caso; o HTML herdado tinha botões de revelar (data-v13-check) que o palco não mostra.",
+    "corrigir": "Esconder as respostas atrás de um botão por cartão e escrever cada resposta com o número do caso (1,14 em x = 8; 66,8% em #12; 0,9927 contra 0,6376)."
+   },
+   "interacao": {
+    "nota": 7,
+    "evidencia": "Nenhum controle no palco (captura c6p19-1.png), embora o apoio peça revelar depois de explicar.",
+    "corrigir": "Um botão 'revelar' por ideia, com 'Restaurar' que esconde as três."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "'No valor inicial mais todas as correções ponderadas' contradiz c6p10 ('η não é um peso por árvore'): as correções são multiplicadas pelo mesmo η, não ponderadas.",
+    "corrigir": "Trocar por 'No palpite inicial mais todas as correções, cada uma multiplicada pelo mesmo η, em log odds na classificação'."
+   }
+  },
+  "c6p20": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "c6p20-1.png: gráfico de halteres com uma linha por proposta domina; símbolos diferentes por família (círculo, quadrado, losango) além da cor; faixa rosa para lados opostos de 50% com legenda; painel lateral com perdas e a pergunta da aula 3.",
+    "corrigir": ""
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Uma ideia (concordam onde é claro, divergem na fronteira, treino não decide); estado com números ('logística 99,6% · árvore 100,0% · boosting 66,8%. 33,2 pontos'); leitura 'No treino vence quem ajusta mais' com 0,43282, 0,18844, 0,47481 e 0,15503; ligação com a Aula 3.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Três botões de família ligam e desligam marcas e distâncias; as dezesseis linhas são role=button com tabIndex e Enter/espaço (tres-modelos.tsx) e trocam o estado; experimento útil para achar a proposta mais disputada (#10, 69,5 pontos).",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "PDs das três famílias conferidas em Python (logística com β da aula; boosting 33,4%, 58,3%, 49,1%, 58,2%...); perdas conferidas. A perda 0,18844 da árvore depende do piso e teto de 2% e 98% nas folhas puras, convenção que só está na fonte e na tabela, ambas cortadas no palco ({!palco && ...} em tres-modelos.tsx).",
+    "corrigir": "Mostrar no palco a convenção ('folhas puras com piso de 2% e teto de 98%') e 'base didática sintética de 16 propostas'."
+   }
+  }
+ },
+ "storytelling": {
+  "coerencia": {
+   "nota": 8,
+   "evidencia": "O fio mecânico é limpo e constante: c6p1 declara 'um modelo fraco corrige o erro deixado pelo anterior' com Palpite, Resíduo e Soma; F₀, resíduo, η, M e log odds mantêm o mesmo nome do início ao fim; toda página tem 'A seguir' (conexao) e há ligações explícitas a c2p13, c4p7, c4p16, c5p10 e c5p18. Mas o fio declarado em c6p1 não inclui o terceiro passo que o capítulo de fato conclui (Teste fora da amostra, que domina c6p15 a c6p20 e reaparece em c6p19 como Resíduo, Soma, Teste); o capítulo troca três vezes de base sem ponte na tela (oito pontos de regressão em c6p1 a c6p10, 16 propostas em c6p11 a c6p16 e c6p20, carteira de 5.000 em c6p17 e c6p18); e a complexidade muda de unidade sem aviso (c6p15 fala em profundidade 2, c6p17 e c6p18 em 4, 8 e 16 folhas). O guia de c6p17 diz 'dados reais do curso' enquanto a tela diz 'Base sintética de 5.000 propostas'.",
+   "corrigir": "Para 9: reescrever c6p1 para declarar o fio completo em crédito (palpite e resíduo, soma em log odds, teste fora do tempo) e anunciar os oito pontos como desvio didático que volta às 16 propostas em c6p11; em c6p17 apresentar a base de 5.000 como a carteira do curso já vista em c2p14 e c4p12, com utilização e atraso entre as sete variáveis; dizer na tela de c6p15 ou c6p17 que profundidade 2 equivale a 4 folhas e que a grade varia o número máximo de folhas; corrigir 'dados reais do curso' no guia de c6p17. Para 10: trocar as conexões que são rótulos ('Agora, de volta ao crédito.' em c6p10, 'Fechamento do capítulo.' em c6p18, 'Classificação.') por uma pergunta sobre o caso que só a página seguinte responde."
+  },
+  "arco": {
+   "nota": 6,
+   "evidencia": "Tensão e virada existem e vêm do dado: c6p6 mostra o toco inteiro trocando o sinal de 5 dos 8 resíduos e c6p7 resolve com η; c6p13 mostra quatro árvores perdendo para a logística (0,4748 contra 0,4328) e c6p15 e c6p16 mostram que a perda de treino só desce; em c6p17 a configuração com AUC de treino 0,9927 é a pior fora do tempo da grade (0,6376), uma virada honesta. Falham o gancho e o fecho: c6p1 a c6p3 são oito pontos x e y sem decisão, sem carteira e sem erro caro (a pergunta do guia de c6p1 é 'quem já usou boosting?'); c6p20 volta às 16 propostas, que não foram o gancho de c6p1, e declara que 'o treino não escolhe', adiando qualquer decisão para a Aula 3.",
+   "corrigir": "Para 9: abrir com algo em jogo herdado de c5p18 e c5p19: as propostas #5, #10 e #15, em que logística e árvore divergem em até 69,5 pontos, e a pergunta 'uma soma de árvores pequenas decide esses casos melhor?'; fechar em c6p20 voltando a essas mesmas propostas e tomando uma decisão (qual modelo vai ao comitê como desafiante e sob que condições), em vez de só transferir a pergunta. Para 10: usar a virada que o próprio dado do curso já contém e o capítulo não mostra: na janela fora do tempo a logística tem AUC 0,7257 e o boosting escolhido por validação 0,6958 (content/generated/dados.json, res.logit_oot e res.gbm_raw_oot), apresentada em c6p17 ou c6p20 como a queda da crença 'o modelo mais flexível vence', deixando ao capítulo 7 o teste de significância."
+  },
+  "exemplo": {
+   "nota": 5,
+   "evidencia": "Metade do capítulo não é crédito: c6p1 a c6p10 usam oito pontos de regressão abstratos (x de 1 a 8, y de 2 a 12), e seis das nove páginas essenciais (c6p1, c6p2, c6p5, c6p6, c6p7, c6p10) ficam nesses pontos; em sala o aluno só vê crédito em c6p13, c6p17 e c6p20. O caso de crédito são as 16 propostas de c4 e c5 (utilização e atraso), bem rastreadas proposta a proposta (#12 em c6p14, #10 e #15 em c6p20), mas com duas variáveis e prevalência de 50% são um brinquedo declarado ('base didática'); a carteira plausível de 5.000 propostas, com safras e janela fora do tempo, aparece só em c6p17 e c6p18. Sintético declarado (c6p17: 'Base sintética de 5.000 propostas, semente 20260501'), mas sem dizer o que ele permite que dados reais não permitiriam. Nenhuma decisão de crédito (aprovar, recusar, corte, perda) é tomada com o caso, e não há consequência econômica.",
+   "corrigir": "Para 9: fazer um caso de crédito atravessar o capítulo inteiro: substituir os oito pontos por um alvo contínuo de crédito (por exemplo, perda em reais ou utilização de limite) ou fazer a primeira correção direto em y menos p nas 16 propostas, mantendo os oito pontos como complementar; levar a carteira de 5.000 a mais de duas páginas e declarar em c6p17 o que o sintético permite (processo gerador conhecido, repetição com semente, janela fora do tempo sem sigilo bancário); fazer a decisão de c6p20 usar o caso (quantas propostas mudam de lado num corte de PD entre logística e boosting). Para 10: dar consequência econômica ou regulatória mensurável: traduzir a diferença entre logística e boosting na carteira de 5.000 em aprovados, inadimplência ou perda esperada e provisão sob a Resolução CMN 4.966/2021."
+  },
+  "progressao": {
+   "nota": 8,
+   "evidencia": "Do intuitivo ao formal, com cuidado: história antes da fórmula (c6p10 'A fórmula depois da história'), regressão antes de classificação, e vários conceitos nascem de uma limitação mostrada na tela (o toco inteiro passa do ponto em c6p6 e pede η em c6p7; somar probabilidades chega a 1,05 em c6p11 e pede log odds; a perda de treino que nunca para em c6p15 pede a validação de c6p17). Os níveis estão marcados e o guia diz o que fica para estudo. Falhas verificáveis: o percurso essencial do c6 soma 73 min (c6p1, p2, p5, p6, p7, p10, p13, p17, p20), contra 49 do c4 e 49 do c5, e a Aula 2 fica em 171 min essenciais para 165 úteis (180 menos 15 de intervalo); c6p17, essencial, depende de folhas, mínimo por folha e grade introduzidos em c6p15, complementar, e de uma base nova; c6p13 nomeia o 'passo de Newton' sem explicá-lo; a derivação de que y menos p é o gradiente negativo da log loss está só no guia de c6p12 ('faça a regra da cadeia no quadro'), não na tela.",
+   "corrigir": "Para 9: cortar o percurso essencial para caber na aula (por exemplo, c6p2 ou c6p10 como complementar, ou reduzir minutos de c6p6 e c6p13); tornar c6p17 autossuficiente, definindo na própria página folhas, validação e a carteira de 5.000; levar à tela de c6p12 a derivação em uma linha (a derivada da log loss em F é p menos y, logo o alvo é y menos p); explicar ou retirar a menção ao passo de Newton em c6p13. Para 10: fazer nascer de uma limitação mostrada também o passo de Newton (a média de y menos p corrige pouco onde p está perto de 0 ou 1), a subamostragem e a recalibração (as PDs do boosting presas entre 33% e 67% em c6p20)."
+  },
+  "estadoDaArte": {
+   "nota": 5,
+   "evidencia": "Pelo checklist de estado-da-arte.md: seis de onze essenciais cobertos com os dados do caso (E1, E2, E4, E6, E8 e E5 apenas em parte, sem subamostragem) e nenhum dos seis de fronteira. Ausentes: E3 (c6p13 diz expressamente 'sem passo de Newton'), E7 (nenhuma página trata a distorção das PDs do boosting nem a recalibração, que só aparece em c7p13 e c7p16), E9 (c6p14 decompõe por árvore, não por variável; TreeSHAP e os limites da importância por ganho não aparecem), E10 (restrição monotônica só citada numa linha de c6p18, sem funcionar no caso) e E11 (há 'comitê' em c6p17 e c6p18, mas nem validação independente, nem backtesting, nem norma). O capítulo não cita nenhuma referência primária e não tem apêndice. A regra derruba para 8 com um essencial ausente; com cinco ausentes e zero de fronteira a nota fica bem abaixo. O que está coberto está bem feito: o mecanismo de Friedman (2001) funciona nos dados (c6p8, c6p13), o acoplamento η e M está demonstrado (c6p16) e a escolha fora do tempo está na carteira de 5.000 (c6p17). Ressalva de rigor: em c6p17 a configuração escolhida (60 árvores) está na borda inferior da grade de M (60, 100, 160, 240), o que pede estender a grade ou mostrar a parada antecipada de fato.",
+   "corrigir": "Para 9: cobrir os cinco essenciais ausentes, em página com os dados do caso ou em apêndice com referência e quando usar: E3 com a conta da folha por Newton (soma de y menos p sobre soma de p vezes 1 menos p) numa folha das 16 (Friedman 2001; Chen e Guestrin 2016); E7 mostrando a distorção (PDs de 33% a 67% em c6p20) e remetendo a c7p13 e c7p16 (Niculescu-Mizil e Caruana 2005); E9 com TreeSHAP na proposta #12 ou na carteira de 5.000 e o contraste com a importância por ganho (Lundberg et al. 2020); E10 com monotonicidade imposta em utilização e atraso e o efeito na AUC fora do tempo (monotonic_cst); E11 com validação independente e backtesting (Resolução CMN 4.557/2017; EBA 2023); completar E5 com subamostragem (Friedman 2002); e ao menos três de fronteira, por exemplo F1 (o gerador já usa l2_regularization 1), F3 e F5. Para 10: os seis de fronteira, incluindo F2 (LightGBM), F4 (EBM como alternativa interpretável) e F6 (contrafactual para o motivo de recusa, que responde à pergunta do comitê de c6p18)."
+  },
+  "fechamento": {
+   "nota": 7,
+   "evidencia": "c6p20 é um bom fecho visual: as 16 propostas com as PDs de logística, árvore e boosting lado a lado, as perdas de treino (0,43282, 0,18844, 0,47481 e 0,15503 com 50 árvores) e o que ainda falta, entregue ao capítulo 7 (ordenação, calibração, incerteza) e ao 8 (decisão); c6p19 consolida em três ideias. Mas a conclusão não responde ao desafio de c6p1, que é sobre os oito pontos, com os números do caso; termina numa pergunta e numa 'entrega' genérica ('salvar a comparação conceitual'), sem diagnóstico, decisão ou checklist; o procedimento de adoção está disperso em c6p16 (η entre 0,01 e 0,1 com parada antecipada), c6p17 ('O procedimento defensável') e c6p18 ('Uma posição defensável'). Material de apoio quase todo alinhado (infográfico c06, apostila de 28 páginas, questões curadas para as essenciais), com o desvio do guia de c6p17 ('dados reais do curso').",
+   "corrigir": "Para 9: fazer c6p20 responder à pergunta do capítulo ('como uma sequência de árvores melhora uma previsão?') com os números do caso (a perda de 0,47481 com 4 árvores a 0,05444 com 200 no treino, e o que isso vale fora do tempo na carteira de 5.000) e terminar numa ação: um checklist de adoção do boosting que reúna c6p16 a c6p18 (η fixo com parada antecipada em validação temporal, profundidade de 2 a 6, folha mínima, monotonicidade, atribuição individual, recalibração, comparação fora do tempo com a logística); alinhar o guia de c6p17 à tela. Para 10: entregar esse procedimento como ficha aplicável amanhã a uma carteira real, preenchida com a configuração escolhida (60 árvores, 8 folhas, η 0,05, mínimo por folha 60) como modelo do que se leva ao comitê."
+  }
+ },
+ "estadoDaArte": [
+  {
+   "id": "E1",
+   "tema": "Modelo aditivo construído em etapas: palpite inicial mais correções",
+   "classe": "essencial",
+   "slides": [
+    "c6p1",
+    "c6p2",
+    "c6p4",
+    "c6p8",
+    "c6p9",
+    "c6p10",
+    "c6p13"
+   ],
+   "fonte": "Friedman (2001), Annals of Statistics 29(5). Coberto: F₀ e quatro correções somadas nos oito pontos e nas 16 propostas; referência não citada no capítulo."
+  },
+  {
+   "id": "E2",
+   "tema": "Pseudo-resíduo como gradiente negativo da perda; em log loss, y menos p na escala de log odds",
+   "classe": "essencial",
+   "slides": [
+    "c6p10",
+    "c6p11",
+    "c6p12",
+    "c6p13"
+   ],
+   "fonte": "Friedman (2001); Friedman, Hastie e Tibshirani (2000), Annals of Statistics 28(2). Coberto: soma em log odds (c6p11) e alvo y menos p nas 16 (c6p12, c6p13); a derivação do gradiente está só no guia."
+  },
+  {
+   "id": "E3",
+   "tema": "Valor da folha por passo de Newton (soma dos gradientes sobre soma das curvaturas)",
+   "classe": "essencial",
+   "slides": [],
+   "fonte": "Friedman (2001); Chen e Guestrin (2016), KDD. Não coberto: c6p13 declara 'primeira ordem didática, sem passo de Newton'."
+  },
+  {
+   "id": "E4",
+   "tema": "Taxa de aprendizagem e número de árvores acoplados; parada antecipada por validação",
+   "classe": "essencial",
+   "slides": [
+    "c6p7",
+    "c6p15",
+    "c6p16",
+    "c6p17"
+   ],
+   "fonte": "Friedman (2001); Hastie, Tibshirani e Friedman (2009), cap. 10. Coberto: acoplamento demonstrado em c6p16 e escolha de M por validação em c6p17; a parada antecipada é dita, não mostrada, e o ótimo cai na borda da grade (60 árvores)."
+  },
+  {
+   "id": "E5",
+   "tema": "Profundidade (ordem de interação), mínimo por folha e subamostragem como controles",
+   "classe": "essencial",
+   "slides": [
+    "c6p15",
+    "c6p17"
+   ],
+   "fonte": "Friedman (2002), Computational Statistics & Data Analysis 38(4). Cobertura parcial: profundidade e mínimo por folha em c6p15 e folhas em c6p17; subamostragem ausente."
+  },
+  {
+   "id": "E6",
+   "tema": "Validação fora do tempo: treino sempre melhora, janela futura decide a complexidade",
+   "classe": "essencial",
+   "slides": [
+    "c6p17",
+    "c6p18"
+   ],
+   "fonte": "BCBS (2005), WP 14. Coberto: treino, validação e fora do tempo na carteira de 5.000, com safras."
+  },
+  {
+   "id": "E7",
+   "tema": "Probabilidades do boosting distorcidas e recalibração",
+   "classe": "essencial",
+   "slides": [],
+   "fonte": "Niculescu-Mizil e Caruana (2005), ICML. Não coberto no capítulo 6; Platt sobre o boosting aparece em c7p13 e c7p16."
+  },
+  {
+   "id": "E8",
+   "tema": "Comparação com a logística como referência em crédito",
+   "classe": "essencial",
+   "slides": [
+    "c6p13",
+    "c6p14",
+    "c6p18",
+    "c6p20"
+   ],
+   "fonte": "Lessmann, Baesens, Seow e Thomas (2015), EJOR 247(1). Coberto só no treino das 16 propostas e como 'modelo de referência' em c6p18; sem comparação fora do tempo e sem a referência."
+  },
+  {
+   "id": "E9",
+   "tema": "Explicação por contribuições aditivas (TreeSHAP) e limites da importância por ganho",
+   "classe": "essencial",
+   "slides": [],
+   "fonte": "Lundberg et al. (2020), Nature Machine Intelligence 2(1). Não coberto: c6p14 decompõe por árvore, não por variável; 'atribuição por observação' só citada em c6p18."
+  },
+  {
+   "id": "E10",
+   "tema": "Restrições monotônicas para respeitar a lógica de negócio",
+   "classe": "essencial",
+   "slides": [],
+   "fonte": "Documentação de XGBoost, LightGBM e scikit-learn (monotonic_cst). Não coberto: uma linha em c6p18, sem funcionar com os dados do caso."
+  },
+  {
+   "id": "E11",
+   "tema": "Governança: validação independente e backtesting de modelos",
+   "classe": "essencial",
+   "slides": [],
+   "fonte": "Resolução CMN 4.557/2017; EBA (2023), Follow-up report on machine learning for IRB models. Não coberto: o comitê aparece em c6p17 e c6p18, sem validação independente, backtesting ou norma."
+  },
+  {
+   "id": "F1",
+   "tema": "Objetivo regularizado de segunda ordem",
+   "classe": "fronteira",
+   "slides": [],
+   "fonte": "Chen e Guestrin (2016), KDD. Não coberto (o gerador usa l2_regularization 1 sem explicar)."
+  },
+  {
+   "id": "F2",
+   "tema": "Histogramas e amostragem por gradiente",
+   "classe": "fronteira",
+   "slides": [],
+   "fonte": "Ke et al. (2017), LightGBM, NeurIPS. Não coberto."
+  },
+  {
+   "id": "F3",
+   "tema": "Vazamento de alvo em variáveis categóricas e boosting ordenado",
+   "classe": "fronteira",
+   "slides": [],
+   "fonte": "Prokhorenkova et al. (2018), CatBoost, NeurIPS. Não coberto."
+  },
+  {
+   "id": "F4",
+   "tema": "Modelos aditivos explicáveis com interações (GA2M, EBM)",
+   "classe": "fronteira",
+   "slides": [],
+   "fonte": "Lou, Caruana, Gehrke e Hooker (2013), KDD. Não coberto."
+  },
+  {
+   "id": "F5",
+   "tema": "Árvores ainda à frente de redes profundas em dados tabulares",
+   "classe": "fronteira",
+   "slides": [],
+   "fonte": "Grinsztajn, Oyallon e Varoquaux (2022), NeurIPS Datasets and Benchmarks. Não coberto."
+  },
+  {
+   "id": "F6",
+   "tema": "Explicações contrafactuais para decisões adversas",
+   "classe": "fronteira",
+   "slides": [],
+   "fonte": "Wachter, Mittelstadt e Russell (2018), Harvard Journal of Law & Technology 31(2). Não coberto; o motivo de recusa é citado em c6p18 sem método."
+  }
+ ],
+ "leitura": "Coerente como explicação do mecanismo, sim: o fio 'cada árvore corrige o erro que sobrou' vai de c6p1 a c6p19 com terminologia constante, conexões em todas as páginas e números que batem entre telas e gerador (10,1875 para 0,4485 nos oito pontos; 0,6931 para 0,4748 nas 16). Coerente como capítulo de crédito, só em parte: o fio declarado em c6p1 não anuncia o teste fora da amostra que o capítulo conclui, e a narrativa troca três vezes de base sem ponte. Exemplo prático do domínio que atravesse o capítulo, não: a primeira metade (c6p1 a c6p10, seis das nove essenciais) roda em oito pontos abstratos; as 16 propostas de c4 e c5 entram em c6p11 e dão um fecho bonito em c6p20, mas são um brinquedo de duas variáveis, a carteira plausível de 5.000 aparece em duas páginas e nenhuma decisão de crédito é tomada com o caso; o dado mais interessante do curso, a logística vencendo o boosting fora do tempo (0,7257 contra 0,6958), fica de fora. Estado da arte, não: o núcleo de Friedman está ensinado com rigor e com os dados, mas faltam cinco dos onze essenciais (passo de Newton, recalibração, TreeSHAP, monotonicidade funcionando, governança e backtesting), todos os seis de fronteira e qualquer referência primária; é o que um validador cobraria primeiro. Para chegar a 9 em tudo: abrir e fechar com as propostas #5, #10 e #15 e uma decisão, levar a carteira de 5.000 ao centro, cobrir E3, E7, E9, E10 e E11 com três itens de fronteira e fechar com um checklist de adoção."
+}

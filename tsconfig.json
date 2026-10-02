@@ -37,6 +37,7 @@
   ],
   "exclude": [
     "node_modules",
+    "tmp",
     "content/generated",
     "e2e",
     "scripts/legacy"

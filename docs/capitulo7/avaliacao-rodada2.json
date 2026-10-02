@@ -1,0 +1,1074 @@
+{
+ "capitulo": 7,
+ "data": "2026-10-02",
+ "revisor": "subagentes em contexto limpo",
+ "slides": {
+  "c7p1": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Captura 01-c7p1-1920x1080-palco.png: três cartões em fluxo (Ordenação, Probabilidade, Decisão) e a faixa de Validação que os atravessa, cada um com a cor do papel e símbolo além da cor (● ▲ ◆ ■, s01-mapa.tsx linha 23); a régua do cartão Decisão põe KS 9,7% e econômico 14,0% na mesma escala de PD. Hierarquia título, subtítulo, mapa, leitura, fonte limpa; nenhum rótulo sobreposto.",
+    "corrigir": "Para 10: a massa de pílulas de slides (24 no cartão Ordenação e Probabilidade) faz o mapa parecer sumário; agrupar por bloco ou reduzir as pílulas sem rótulo (7, 13, 14, 20, 30, 33) daria mais peso à régua, que é a peça memorável."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Uma ideia (as quatro perguntas e o caso do comitê no slide 36, subtítulo); leitura com números da tela: \"AUC 0,7257, mas prevê 9,7% contra 11,0%, e o KS e a economia apontam cortes diferentes\"; ligação explícita com o seguinte pelo botão \"Começar: slide 2\". Nada a descobrir, então sem previsão.",
+    "corrigir": "Para 10: o cartão Validação usa \"IC 95% de DeLong\" antes de o conceito existir no capítulo; trocar por \"diferença +0,0299, intervalo de 0,0001 a 0,0596 (slide 34)\" e dizer que o intervalo quase toca zero, que é a dúvida que o comitê vai resolver."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Slide de consulta: cada pílula é LinkSlide no mesmo modo (s01-mapa.tsx linha 48); tmp/funcional-c7.txt: \"link do mapa abre o slide no palco (.../apresentacao/c7p6)\"; atalhos Começar, Comitê 36, Conclusão 37, Apêndice 38.",
+    "corrigir": "Para 10 não se aplica com rigor a um mapa; no máximo, destacar no mapa o slide atual quando o professor volta a ele."
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Conferido com npx tsx: AUC 0,72569, KS 0,36209 em PD 0,097464, PD média 0,09721 contra 81/737 = 0,10991, DeLong dif 0,02987 com IC [0,000104; 0,05963] e p = 0,049, corte econômico 0,14 (src/lib/visuais/economia.ts, testado em tests/visuais.test.ts). Fonte (linha 57) traz base sintética, semente, período, 737 e 81.",
+    "corrigir": "Para 10: escrever na leitura a consequência do intervalo (p ≈ 0,049, limite inferior 0,0001), que é a incerteza que muda a decisão do slide 36."
+   }
+  },
+  "c7p21": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Captura 02-c7p21-1920x1080-palco.png: linha do tempo de safras domina o painel esquerdo, barra cheia para contratação e tracejada para os 12 meses de observação, data de corte 31/01/2025 em laranja; contrato em grade de seis campos; KPIs e previsão à direita. Nenhum rótulo sobreposto.",
+    "corrigir": "Para 10: o treino usa #3D5A8A, a cor do papel Ordenação (linha 18); usar um tom neutro para as partições e reservar o verde de Validação só para a janela final."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "A previsão \"Outro banco reporta AUC de 0,80... é pior?\" tem retornos que nomeiam a confusão, mas o subtítulo fixo do roteiro (roteiro.ts linha 19) diz \"Métricas só se comparam quando a pergunta e a amostra são as mesmas\", que é a alternativa B, e o seletor Aprovados e recusados já funciona antes da tentativa. Nenhuma ligação explícita com o slide 1 ou o 3 na tela.",
+    "corrigir": "Enquanto a previsão estiver aberta, trocar o subtítulo por uma pergunta (como o slide 10 faz com sub={esc === null ? ...}) e desabilitar o seletor de população até a escolha; acrescentar à leitura uma frase que ligue ao slide 3 (\"com esta pergunta fixa, a primeira armadilha é a acurácia\")."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Seletor Só aprovados / Aprovados e recusados muda os dois KPIs e a leitura (captura estados2/c7p21-todos-1920.png: 17,9% e AUC 0,7548); Restaurar volta população e previsão (linha 77); estado inicial interpretável.",
+    "corrigir": "Para 10: o seletor só alterna duas telas prontas; deixar o aluno compor o contrato (evento 60 ou 90 dias, horizonte, população) e ver a AUC e a taxa responderem."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Com \"Aprovados e recusados\", o KPI mostra 17,9% com detalhe \"aprovados 11,0%; recusados 33,0%\" sem nenhum denominador (linha 68); AUC 0,7548 e 17,9% vêm de RES.logit_populacao_completa_oot do gerador, não da biblioteca conferida (só logit_oot é testado em tests/visuais.test.ts linha 14). A grade do contrato continua dizendo \"só propostas aprovadas\" e \"737 propostas, 81 defaults\" nesse estado.",
+    "corrigir": "Mostrar n e defaults da população inteira e dos recusados (por exemplo \"x de 1.0yy\"), registrar a origem dos números do gerador num teste de reconciliação e fazer a grade do contrato acompanhar o seletor."
+   }
+  },
+  "c7p2": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Capturas 03-c7p2-1920x1080-palco.png e estados2/c7p2-revelado-1920.png: matriz 2 × 2 com VN destacado, células de erro em laranja e de acerto em cinza, rótulos VP/FP/FN/VN além da cor; grade de 100 pessoas (11 discos cheios); KPI 89,0% em destaque. Alinhamento limpo.",
+    "corrigir": "Para 10: a grade de pessoas repete a informação da matriz e disputa atenção com ela; trocá-la por uma barra única de 737 com os 81 marcados, ou fundi-la na coluna \"Deu default\"."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "O título \"Aprovar todos pode produzir alta acurácia\" e o subtítulo \"acerta quase tudo\" (roteiro.ts linha 20) entregam a alternativa C (\"Perto de 89%\") antes da tentativa. Retornos nomeiam a confusão (A: \"11% é a prevalência\") e há Tentar outra, mas a escolha errada já revela a matriz e o 89,0% (estados2/c7p2-errada-1920.png). Sem ligação explícita com o slide 2 ou o 4.",
+    "corrigir": "Enquanto a previsão estiver aberta, título e subtítulo em forma de pergunta (\"Qual a acurácia de aprovar todos?\"); na leitura revelada, uma frase que leve ao slide 4 (\"o que falta à acurácia é a ordem: próximo slide\")."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "Depois da previsão, o controle de defaults na carteira de 737 (1% a 50%) muda grade, matriz, KPI e leitura: a causa (prevalência) e o efeito que o título afirma (acurácia de não fazer nada) respondem juntos; botões \"Voltar à janela real: 81\" e \"Carteira com 2%\"; Tentar outra limpa a escolha.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Números conferidos: 656/737 = 89,0%; logística no corte de 12%: acurácia 0,7327, VP 48 de 81 (confusao(Y, PL, 0.12)). Mas a fonte (linha 54) não declara base sintética nem semente; o controle é declarado \"cenário ilustrativo\".",
+    "corrigir": "Acrescentar à fonte \"base sintética do curso, semente 20260501, safras 2023-08 a 2023-12\", como já fazem os slides 1 e 2."
+   }
+  },
+  "c7p3": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Capturas 04-c7p3-1920x1080-palco.png e estados2/c7p3-nivel-1920.png: três faixas (Ordenar, Prever, Decidir) numeradas e alinhadas, disco cheio para default e anel para adimplente, recusa em laranja; painel \"O que mudou\" com selos coloridos pelo papel (prob, dec). Pequena colisão: em c7p3-nivel o rótulo \"#137 · 21,6%\" cai sobre o círculo fantasma tracejado do #85 em 20%.",
+    "corrigir": "Para 10: afastar o rótulo do círculo fantasma (ou desenhar os fantasmas na linha de base) e ocupar o vazio abaixo dos botões do painel direito com a contagem de recusas pelo nível e pelo corte."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "Há algo a descobrir (a fila muda quando o nível muda?), mas não há previsão e a leitura inicial já dá a resposta: \"somar δ em log odds nunca muda essa ordem\" (s04-tres-objetos.tsx linha 35). Ligação explícita com o slide 5 na fonte. A leitura com δ = +0,8 e corte 20% diz \"só o nível mudou a decisão de #194 e #137\" enquanto o selo \"Decisões, pelo corte\" também está em \"mudou\" (estados2/c7p3-nivel-1920.png).",
+    "corrigir": "Trocar a leitura inicial por uma previsão (\"Se todas as PDs subirem 0,8 em log odds, a fila muda? as decisões mudam?\") com retornos por alternativa; reescrever o estado misto como \"no mesmo corte de 20%, o nível mudou a decisão de #194 e #137; o corte, sozinho, mudou a de #194\"."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "Dois controles separam causa e efeito do título: δ em log odds move a escala e deixa a fila igual; o corte move decisões e deixa as PDs iguais; os quatro selos dizem o que mudou desde o início; Restaurar e \"Exemplo: PDs altas demais\" (linha 92).",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "PDs conferidas: #85 0,20 (default), #194 0,16, #137 0,11 (default), #312 0,05 (QUATRO em dados.ts); p' = σ(logit p + δ) declarado. Mas a fonte (linha 39) chama os casos de \"Quatro propostas reais da janela\", em base sintética, e não declara a origem sintética nem a semente.",
+    "corrigir": "Trocar \"propostas reais\" por \"propostas da base sintética do curso (semente 20260501), janela 2023-08 a 2023-12\"."
+   }
+  },
+  "c7p4": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Capturas 05-c7p4-1920x1080-palco.png, estados2/c7p4-ordenada e c7p4-fim: fichas com posição, PD e desfecho; régua \"as 5 primeiras posições\" destacando o topo; D em disco cheio vinho, anel para adimplente, ? para oculto, com legenda. Nada sobreposto.",
+    "corrigir": "Para 10: a fila quebra em duas linhas de 10 e perde a leitura de fila única; uma faixa única horizontal (ou em L com seta contínua) e o vazio acima das fichas no estado inicial removido."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "Previsão bem feita: \"quantos dos 5 defaults nas 5 primeiras?\", retornos que nomeiam a confusão (A: sorteio põe 1,25; C: \"boa ordem com ordem perfeita, PD de 20% quer dizer 8 em 10 pagam\"), revelação só depois da aposta, leitura final com 2 de 5, perfeito 5, acaso 1,25. Falha a ligação explícita: os quatro clientes do slide 4 (#85, #194, #137, #312) estão na fila sem menção, e nada aponta para a disputa do slide 6.",
+    "corrigir": "Acrescentar à leitura final: \"os quatro clientes do slide 4 estão aqui; no slide 6, cada par default × adimplente desta fila vira uma disputa\"."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Ordenar pela PD, revelar um a um ou todos, Restaurar (linhas 77 a 80); revelação condicionada à previsão; estado inicial interpretável (ordem de chegada).",
+    "corrigir": "Para 10: deixar o aluno trocar a PD da logística pela PD embaralhada (CENARIOS.filaFracaMediaCerta) e ver os defaults do topo caírem para perto de 1,25."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido: fila 85, 64, 179, 194, 383; topo com 2 defaults; acaso 5 × 5/20 = 1,25. Empate 64 e 179 a 17% resolvido pelo id, sem declarar na tela. Fonte (linha 70) diz \"20 propostas reais da janela\" numa base sintética e não traz a semente da base.",
+    "corrigir": "Trocar \"propostas reais\" por \"propostas da base sintética\" com semente 20260501 e declarar o desempate (\"empates na PD seguem o número da proposta\")."
+   }
+  },
+  "c7p5": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Captura 06-c7p5-1920x1080-palco+abrir.png: a expansão \"Compare você mesmo\" abre sobre a linha \"Inversões 0 / Proporção ?\" e corta os rótulos pela metade (rótulo sobreposto). Em estados2/c7p5-cem-1920.png, com 100 sorteios a série ocupa só o primeiro décimo do eixo de 0 a 1.000, o resto é área morta.",
+    "corrigir": "Abrir a expansão para cima sem cobrir a lista de contagens (ou mover as contagens para o painel do par) e fazer o eixo x acompanhar n (0 a max(100, n), ou escala logarítmica)."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Uma ideia (AUC como probabilidade de par); previsão antes do primeiro sorteio com retornos que nomeiam a confusão (A: fila ao acaso; C: ordem quase perfeita, com referência à fila do slide 5); linha da AUC exata só depois de 100 sorteios; leitura final \"conta os 53.136 pares e dá 0,7257; probabilidade sobre pares, não sobre um cliente\".",
+    "corrigir": "Para 10: fazer o aluno ver o erro \"AUC é acurácia\" acontecer, por exemplo mostrando ao lado a acurácia de um corte qualquer (73,3% em 12%) que não tem nada a ver com os 72,6% dos pares."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "Sortear 1, +10, +100 com mulberry32 e semente 20261006 (linha 20), Restaurar repete a sequência; o aluno executa o próprio experimento que define a AUC e vê a proporção convergir (71,0% em 100 sorteios, estados2/c7p5-cem); par manual da mini-base na expansão.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido: aucPorPares(Y, PL) = 0,72569 com 38.559 acertos, 2 empates, 53.136 = 81 × 656 pares; sorteio com reposição e semente declarados. A fonte (linha 51) não diz que a base é sintética nem traz período.",
+    "corrigir": "Acrescentar à fonte \"base sintética do curso, semente 20260501, safras 2023-08 a 2023-12\", como já fazem os slides 1 e 2."
+   }
+  },
+  "c7p22": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Capturas 07-c7p22-1920x1080-palco.png e estados2/c7p22-todos e c7p22-plena: matriz 5 × 15 de pares domina; a escada de zeros mostra as inversões; ½ destacado; somas por linha; fórmula com 5 × 15. Nada cortado.",
+    "corrigir": "Para 10: os zeros usam o vinho do papel default para significar inversão; usar o laranja de erro ou cinza com borda, e tirar o vazio sob a tabela."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Uma ideia; a linha do #85 vem preenchida como exemplo; previsão sobre arredondar com retornos que nomeiam a confusão (A: \"precisão com acerto\"; C: \"o arredondamento parecia inofensivo, mas criou um empate\"); leitura com 60,5 sobre 75, 0,8067 contra 0,8000, e ligação com a janela do slide 6 (0,7257).",
+    "corrigir": "Para 10: dizer na leitura o efeito prático (arredondar PDs de relatório a pontos inteiros infla a AUC quando cria empates entre classes)."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Clique por célula, seletor Um par / Todos os pares, previsão que troca para precisão plena, Restaurar (linha 65).",
+    "corrigir": "Para 10: um seletor de casas decimais (0, 1, 2, plena) que o aluno move e vê empates e AUC responderem, em vez de uma troca única presa à previsão."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido: inteiros C 60, E 1, AUC 0,80667; plena C 60, E 0, AUC 0,8000; #179 0,167362 contra #64 0,171856. Fonte (linha 48) declara a não independência dos pares, mas não a base sintética, a semente nem o período.",
+    "corrigir": "Acrescentar à fonte \"base sintética do curso, semente 20260501, safras 2023-08 a 2023-12\", como já fazem os slides 1 e 2."
+   }
+  },
+  "c7p23": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Capturas 08-c7p23-1920x1080-palco.png e estados2/c7p23-taxas: fila de 20 fichas com a fronteira \"corte 14%\" em laranja, matriz 2 × 2 com totais 5, 15, 8 e 12, taxas com numerador e denominador escritos. Cores por papel e símbolo D além da cor.",
+    "corrigir": "Para 10: a fila em duas linhas obriga o olho a procurar a fronteira; uma fila única com a fronteira deslizando deixaria a peça mais memorável."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "Uma ideia, leitura com 4 evitados, 4 bons recusados e 1 default aprovado, e o lembrete de que o default só se conhece 12 meses depois. Mas não há ligação explícita com o slide 7 nem com a ROC do slide 9, e as três taxas são reveladas por botão sem previsão, embora haja algo a prever (a precisão de 50% surpreende quem espera 80%).",
+    "corrigir": "Acrescentar uma previsão curta antes de revelar a precisão e uma frase na leitura: \"cada corte é um ponto: o slide 9 percorre todos\"."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "O controle de corte de 2% a 21% move a fronteira na fila e muda VP, FP, FN, VN, as taxas e a leitura: é exatamente o que o título afirma; Restaurar (linha 46).",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido: confusao no corte de 14% dá VP 4, FP 4, FN 1, VN 11, sensibilidade 0,80, especificidade 0,733, precisão 0,50; positivo = recusa declarado. A fonte (linha 32) não declara base sintética, semente nem período.",
+    "corrigir": "Acrescentar à fonte \"base sintética do curso, semente 20260501, safras 2023-08 a 2023-12\", como já fazem os slides 1 e 2."
+   }
+  },
+  "c7p6": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Captura estados2/c7p6-janela-1920.png: na janela, o painel direito tem só três linhas (723 cortes, AUC 0,7257, diagonal) e cerca de 60% em branco, enquanto a ROC fica limitada a um quadrado pequeno à esquerda (área morta grande). No estado inicial (09-c7p6-1920x1080-palco.png) também sobra metade inferior esquerda do painel.",
+    "corrigir": "Na janela, aumentar a ROC e usar o painel para algo que ensine (o ponto do KS e o do corte de 12% com as suas matrizes, ou a mini-base sobreposta à janela)."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Previsão a cada passo (sobe, direita, diagonal) com retornos que nomeiam a confusão de cada alternativa; Tentar outra desfaz o passo; leitura passo a passo com o denominador (1/5, 1/15); ligação explícita com os slides 7 e 8; na janela, \"a ROC não sabe quanto custa cada erro\".",
+    "corrigir": "Para 10: mostrar com o dado que \"a curva já estava decidida pela ordem\" (aplicar uma transformação crescente e ver a mesma ROC), o que hoje só aparece no slide 10."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "Baixar o corte, Voltar, Reproduzir com respeito a movimento reduzido (funcional: sem reprodução automática e transições zeradas), Restaurar, seletor Mini-base / Janela; o aluno muda o corte e vê o ponto andar e a matriz mudar, o próprio conceito.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido: pontos 0,20 (1/0), 0,17 (2/1, diagonal do empate), 0,15 (2/4), 0,14 (4/4); área da mini-base 0,8067 igual à contagem de pares; janela com 723 PDs distintas e AUC 0,7257. A fonte (linha 103) não declara base sintética, semente nem período.",
+    "corrigir": "Acrescentar à fonte \"base sintética do curso, semente 20260501, safras 2023-08 a 2023-12\", como já fazem os slides 1 e 2."
+   }
+  },
+  "c7p24": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Capturas 10-c7p24-1920x1080-palco.png e estados2/c7p24-embaralhada: a ponte entre PD original e PD do cenário é a solução própria do conceito (linhas paralelas = ordem preservada; cruzadas = ordem destruída), ao lado da ROC da janela; defaults em vinho e adimplentes em cinza.",
+    "corrigir": "Para 10: na transformação crescente a curva do cenário cobre por inteiro a curva de referência; desenhar a referência por cima, tracejada, para que \"a mesma ROC\" se veja, e dar à ponte o peso principal."
+   },
+   "didatica": {
+    "nota": 10,
+    "evidencia": "Subtítulo vira pergunta até a escolha (linha 52); as quatro frases cobrem os erros clássicos (AUC como acurácia, como nível, como corte) com retornos que os nomeiam; o cenário crescente mostra a PD mudar de nível sem a AUC sair de 0,7257 e o embaralhado mostra 85 cruzamentos e AUC 0,5014: o aluno vê a confusão acontecer; links explícitos para os slides 19 e 32.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "Seletor de quatro cenários muda a causa (as PDs) e o efeito (ponte, ROC, AUC e leitura) responde: 0,7257, 0,5014, 0,2743, 0,7373; Tentar outra na previsão.",
+    "corrigir": "Falta um Restaurar explícito do cenário; o seletor volta ao início, o que a rubrica aceita."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido: crescente 0,72569, embaralhada 0,50139 (mesma média 0,09721), invertida 0,27431 = 1 − 0,72569, PD verdadeira 0,73733. A origem sintética só aparece no texto do cenário PD verdadeira; a fonte (linha 57) não traz semente da base nem período.",
+    "corrigir": "Acrescentar à fonte \"base sintética do curso, semente 20260501, safras 2023-08 a 2023-12\", como já fazem os slides 1 e 2. Para 10: dizer que, nesta janela, a PD verdadeira supera a logística por só 0,012 de AUC, o teto prático do problema."
+   }
+  },
+  "c7p7": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Capturas 11-c7p7-1920x1080-palco.png e estados2/c7p7-max: as duas acumuladas (vinho para defaults, cinza para adimplentes, ● e ○ na legenda), barra do KS em azul escuro e corte econômico tracejado em laranja; o gráfico domina e prova o título.",
+    "corrigir": "Para 10: cortar o eixo x em 30% (as curvas já se encontram) e sombrear a distância entre as curvas, para que a separação máxima salte sem ler números."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Previsão \"o corte do KS é o de maior resultado esperado?\" e, depois dela, o KS em 9,75% e o corte econômico em 14,0% aparecem no mesmo gráfico: o erro \"KS é corte\" é desmontado com o dado; leitura com 272 recusadas e KS 0,3621. Porém o retorno da alternativa A ensina uma justificativa errada (\"o KS pesa igual um default aprovado e um bom cliente recusado\", linha 22).",
+    "corrigir": "Corrigir o retorno A (ver rigor) e ligar explicitamente ao slide 9 (\"KS = maior distância vertical da ROC à diagonal\")."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Controle de corte de 2% a 40% em passos de 0,25 ponto, conta TPR − FPR com contagens (33 de 81 − 105 de 656 = 0,2473), botões Ir ao máximo, Corte econômico e Restaurar; funcional: setas mudam o valor sem trocar de slide e foco visível em \"Ir ao máximo\".",
+    "corrigir": "Para 10: mostrar o resultado esperado também respondendo ao corte, para o aluno ver o valor econômico subir até 14% enquanto a separação já caiu."
+   },
+   "rigor": {
+    "nota": 7,
+    "evidencia": "Erro conceitual no retorno A (s11-ks.tsx linha 22): max(TPR − FPR) equivale a minimizar FN/81 + FP/656, isto é, um default aprovado pesa 656/81 ≈ 8,1 bons clientes recusados, não \"igual\". Números conferidos: KS 0,36209 em 0,097464, 272 recusadas, 56 de 81 e 216 de 656; no corte de 15%, 33 e 105, distância 0,2473; corte econômico 0,14. Fonte (linha 38) sem base sintética, semente e período.",
+    "corrigir": "Reescrever o retorno A: \"O KS trata as taxas de erro como iguais, o que dá a um default aprovado o peso de cerca de 8 bons clientes recusados (656/81), uma relação que não vem da economia da carteira\". Acrescentar à fonte \"base sintética do curso, semente 20260501, safras 2023-08 a 2023-12\", como já fazem os slides 1 e 2."
+   }
+  },
+  "c7p8": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Capturas 12-c7p8-1920x1080-palco.png e estados2/c7p8-trinta e c7p8-prev: antes da estimativa só o acaso e a fila perfeita; depois, curva, área até o ponto, rótulo 27,2% e barras por faixa de 10% no canto que a curva não ocupa, com a faixa atual em laranja.",
+    "corrigir": "Para 10: as barras por faixa são uma segunda peça dentro do gráfico; levá-las para o slide 13 (que já mostra lift por faixa) ou reduzi-las a uma linha de números sob o eixo."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "Previsão com retornos que nomeiam a confusão (acaso; fila perfeita a 91%, 74 de 81). Mas a leitura no estado padrão revelado (q = 10%) diz \"na faixa de 0% a 10%, só 22 de 74\" (s12-ganho.tsx linha 37, estados2/c7p8-prev-1920.png): o \"só\" desqualifica a melhor faixa, 29,7% contra 11,0% da carteira. Sem ligação explícita com o slide 11 ou o 13.",
+    "corrigir": "Usar \"só\" apenas para faixas abaixo da taxa da carteira e, na primeira, escrever \"22 de 74, 2,7 vezes a taxa da carteira\"; acrescentar \"o slide 13 transforma este ganho em lift, com o mesmo controle\"."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Controle da fração examinada de 5% a 100%, atalhos 10%, 20%, 30% e Restaurar; curva e controle só depois da estimativa; estado compartilhado com o slide 13 documentado como exceção em estado.ts.",
+    "corrigir": "Para 10: permitir trocar a fila (logística, embaralhada, boosting) e ver a curva de ganho mudar, tornando a interação um experimento e não só uma leitura ao longo da curva."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido: 10% = 74 propostas, 22 de 81, ganho 0,2716; 30% = 221, 49, 0,6049; perfeita 74 de 81 = 0,9136; faixas 22, 12, 15, 7, 8, 4, 5, 4, 3, 1 com 74 ou 73 casos; arredondamento ⌊q·737 + ½⌋ e desempate declarados. Fonte (linha 38) sem base sintética, semente e período.",
+    "corrigir": "Acrescentar à fonte \"base sintética do curso, semente 20260501, safras 2023-08 a 2023-12\", como já fazem os slides 1 e 2."
+   }
+  },
+  "c7p25": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Capturas 13-c7p25-1920x1080-palco.png e estados2/c7p25-mais: linha do lift acumulado sobre barras de lift por faixa, referência 1× tracejada com rótulo \"acaso\", números das faixas no topo, ponto em laranja com 2,71×.",
+    "corrigir": "Para 10: os números das faixas ficam numa régua no topo, longe das barras; colocá-los sobre cada barra e sombrear abaixo de 1× para o \"pior que o acaso\" saltar."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Previsão \"se as mesmas PDs forem sorteadas, o lift no topo\" com retornos que nomeiam a confusão (A: nível com ordem; C: zero seria um topo sem defaults); leitura separa \"27,2% dos defaults capturados e 29,7% de inadimplência entre os examinados\" e liga ao ganho do slide 12 (linha \"Ganho: defaults capturados 22 ÷ 81\").",
+    "corrigir": "Para 10: usar o próprio dado embaralhado para desmontar a leitura de lift por faixa (a faixa 4 embaralhada chega a 1,72×, mais que a faixa 2 da logística, 1,50×): uma faixa de 74 casos oscila muito."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "Seletor Logística / Embaralhada, liberado só depois da previsão, troca a causa (a ordem, com as mesmas PDs) e o efeito do título responde: 2,71× contra 0,86× nos 10%, 1,01× em 50%; controle da fração e Restaurar.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido: lift 10% = 2,705 (22 ÷ 74 = 29,7% contra 10,99%), embaralhada 0,861, embaralhada em 50% 41 ÷ 369 = 1,011; lift por faixa 2,71, 1,50, 1,84, 0,86, 0,98, 0,50, 0,61, 0,49, 0,37, 0,12. A linha \"Lift = taxa ÷ 11,0%\" dá 2,70 com os números exibidos e a tela mostra 2,71×. Fonte (linha 44) traz semente 7 e 10,99%, mas não base sintética nem período.",
+    "corrigir": "Acrescentar à fonte \"base sintética do curso, semente 20260501, safras 2023-08 a 2023-12\", como já fazem os slides 1 e 2. Escrever \"taxa ÷ 10,99%\" na linha do lift."
+   }
+  },
+  "c7p26": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "14-c7p26-1920x1080-palco.png: a curva PR domina e prova o título; a linha do acaso tracejada leva o rótulo \"ao acaso: precisão = prevalência, 11,0%\"; o corte em laranja (decisão) tem rótulo próprio. Em estados2/c7p26-prev-c-1920.png a legenda de quatro itens fica no alto, sem sobrepor curvas, e quadrado (hipótese) contra círculo (janela) carrega a distinção além da cor.",
+    "corrigir": "Para 10: uma ROC miniatura ao lado que não se move quando a prevalência muda, para a forma mostrar o argumento \"a ROC fica, a precisão cai\"."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Uma ideia; previsão com retorno que nomeia a confusão (A: \"Confunde precisão com a ROC, que não vê a prevalência\"; B: confunde acaso desta janela com o da outra carteira); leitura com números (23,9% contra 11,0% ao acaso, 2,2×, recall 40,7%) e ligação explícita com \"a ROC do slide 9\".",
+    "corrigir": "Para 10: hoje qualquer escolha, mesmo errada, já desenha a curva hipotética e escreve 4,9% na leitura (estados2/c7p26-prev-a-1920.png), o que esvazia o \"Tentar outra\"; revelar só no acerto."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "Dois controles que mudam a leitura: corte de PD (33 + 105 = 138 sinalizadas no corte de 15%) e, depois da previsão, a prevalência hipotética, que redesenha a curva inteira com o mesmo recall: o aluno muda a raridade e vê a precisão cair para 4,9% (2,5× o acaso). Restaurar e \"Voltar à janela\" presentes (linha 75 do código).",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Números conferidos com a biblioteca: confusao(Y, PL, 0,15) dá VP 33, FP 105, precisão 0,2391, recall 0,4074; precisão sob 2% = 0,0494; AP 0,2554 e trapezoidal 0,2476, como na expansão. A carteira hipotética é declarada como cálculo. Porém a fonte não declara base sintética, período da janela (safras 2023-08 a 2023-12) nem semente (20260501), que a rubrica exige no 9 e que o slide 1 já traz.",
+    "corrigir": "Incluir na fonte \"Base sintética do curso, semente 20260501; janela fora do tempo, safras 2023-08 a 2023-12\" (de preferência como padrão do Quadro em base.tsx, para todos os slides). Com isso fica em 9; para 10, um intervalo para a precisão no corte (33 em 138)."
+   }
+  },
+  "c7p27": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Peça concorrente: o título afirma que AUC, KS, ganho e lift andam juntos, mas o gráfico mostra uma medida por vez (ROC quadrada que ocupa menos da metade do painel em 15-c7p27-1920x1080-palco.png) e quem prova o título é a grade de quatro KPIs ao lado. No foco Lift (estados2/c7p27-ruido-1920.png) as duas curvas são cortadas em 3,2× e aparecem planas no topo, sem aviso (linha 74: Math.min(ymax, ...)).",
+    "corrigir": "Trocar o gráfico com seletor por quatro pequenos múltiplos (ROC, KS, ganho, lift), cada um com a logística em cinza, para o \"todos juntos\" ser visto de uma vez; no lift, eixo até o máximo real ou marca de corte."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Previsão sobre a fila invertida com retorno que nomeia cada confusão (A: AUC ignora sentido; B: confunde invertida com aleatória; D: acha que precisa recalcular); os cenários só abrem no acerto (linha 64: liberado exige certa). Leitura com números por cenário (aleatória: AUC 0,501 dentro de 0,44 a 0,56, \"média certa não ordena\"); o título nomeia as quatro métricas dos slides 6 a 13.",
+    "corrigir": "Para 10: incluir um cenário \"mesma ordem, nível deslocado\" (CENARIOS.filaBoaNivelErrado já existe em dados.ts) para o aluno ver o \"só a ordem\" acontecer e a ponte explícita com o slide 16."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Quatro cenários, ruído σ em log odds e foco do gráfico; Restaurar zera previsão, cenário, σ e foco (linha 113). Com σ = 1,0 a AUC cai para 0,684, KS 0,322, 18 de 81 nos 10% piores: os números respondem.",
+    "corrigir": "Para 10: um controle de nível (a em log odds) que deixe as quatro medidas paradas, completando o experimento do \"só a ordem move\"."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido: AUC 0,7257, KS 0,362, 22 de 74 nos 10% piores (lift 2,705), invertida 0,2743 = 1 − 0,7257, faixa do acaso 0,438 a 0,560 em 200 embaralhamentos. Sementes declaradas. Porém a fonte não declara base sintética, período da janela (safras 2023-08 a 2023-12) nem semente (20260501), que a rubrica exige no 9 e que o slide 1 já traz; e o título generaliza (\"todos juntos\") além do que o dado mostra: na invertida o KS por máximo de TPR − FPR vai a 0,003 enquanto a AUC vai a 0,274, e em geral AUC e KS podem ordenar modelos de forma diferente.",
+    "corrigir": "Incluir na fonte \"Base sintética do curso, semente 20260501; janela fora do tempo, safras 2023-08 a 2023-12\" (de preferência como padrão do Quadro em base.tsx, para todos os slides); trocar \"e todos juntos\" por \"e, aqui, juntos\" ou dizer na leitura que AUC e KS podem divergir quando as ROC se cruzam."
+   }
+  },
+  "c7p28": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Estado inicial limpo (16-c7p28-1920x1080-palco.png), mas no estado do botão \"B no total observado\" (estados2/c7p28-ajuste-1920.png) os rótulos \"81\" e \"687 mil\" ficam sobre a hachura da barra B e cruzados pela linha tracejada do realizado: rótulo sobreposto.",
+    "corrigir": "Quando o topo da barra encosta na linha do realizado, pôr o rótulo acima da linha ou ao lado da barra (a regra \"dentro\" da linha 56 empurra o texto para dentro da barra hachurada)."
+   },
+   "didatica": {
+    "nota": 10,
+    "evidencia": "Desmonta com o próprio dado o erro mais comum (AUC alta = PD boa): AUC 0,7257 idêntica nos dois modelos e perda esperada de R$ 607 mil contra R$ 1,16 mi, com R$ 687 mil observados. Retornos nomeiam a confusão (A: perto no total não é perto por faixa; B: provisão alta também é erro); leitura com números; o ajuste na própria janela é sinalizado como provisório (slide 27).",
+    "corrigir": "Opcional: o subtítulo promete \"o preço\", que a tela não mostra; ou mostrar ou tirar."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "O controle de nível de B (−1,0 a +1,5) é o experimento: a AUC não sai de 0,7257 e defaults esperados e perda esperada respondem; \"B no total observado\" leva a +0,15 e 81 esperados; Restaurar volta a +0,80 e limpa a previsão (linha 70).",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido: soma das PDs 71,64; com +0,8, 136,30; perda esperada 606.772 e 1.160.790; com os defaults observados 686.732; deslocamento que iguala o total 0,145. Regulação citada corretamente (Res. CMN 4.966/2021, vigência 1/1/2025). Porém a fonte não declara base sintética, período da janela (safras 2023-08 a 2023-12) nem semente (20260501), que a rubrica exige no 9 e que o slide 1 já traz; e o rótulo \"realizado\" chama de realizada uma perda que usa LGD hipotética de 65% e EAD igual ao valor da proposta.",
+    "corrigir": "Incluir na fonte \"Base sintética do curso, semente 20260501; janela fora do tempo, safras 2023-08 a 2023-12\" (de preferência como padrão do Quadro em base.tsx, para todos os slides); trocar \"realizado\" por \"com os defaults observados (LGD hipotética)\"."
+   }
+  },
+  "c7p9": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "17-c7p9-1920x1080-palco.png: grade de 100 pessoas (forma do conceito \"grupo\") e histograma das contagens com a linha \"esperado: 10\"; cores pelo papel (default em vinho, esperado em verde). Em estados2/c7p9-50-1920.png a binomial sobreposta às barras lê bem.",
+    "corrigir": "Para 10: o item de legenda \"contorno verde: esperados\" não tem amostra do símbolo; e o KPI \"Média das amostras\" repete o observado quando há uma amostra só."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "A previsão está respondida antes da tentativa: o subtítulo do roteiro diz \"cerca de 10% dão default; quantas, exatamente, varia\", o que elimina A (\"Exatamente 10\") e C (\"Qualquer número\") e deixa só B. Além disso, qualquer escolha já revela a binomial e 20 amostras (linha 109).",
+    "corrigir": "Trocar a pergunta por uma que o subtítulo não resolve (por exemplo, \"em quantas de 100 amostras saem 15 ou mais defaults?\", com a binomial dando cerca de 4) ou reescrever o subtítulo como pergunta; revelar só no acerto."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "É o experimento do conceito: PD das 100 propostas, \"Nova amostra\" e \"+50 amostras\" acumulam o histograma contra a binomial; amostras com semente 20261017 + n; modo \"Na janela\" com as 100 propostas reais; Restaurar (linha 107).",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido: as 100 PDs mais perto de 10% vão de 8,5% a 11,4%, média 9,71%, 10 defaults, Wilson 5,52% a 17,44%; binomial(100; 0,1) dá 5 e 16 nos quantis de 2,5% e 97,5% e P(≥ 25) = 1,3e−5. Definição P(Y=1 | PD=p) = p correta. A simulação declara semente; o modo janela não: a fonte não declara base sintética, período da janela (safras 2023-08 a 2023-12) nem semente (20260501), que a rubrica exige no 9 e que o slide 1 já traz.",
+    "corrigir": "Incluir na fonte \"Base sintética do curso, semente 20260501; janela fora do tempo, safras 2023-08 a 2023-12\" (de preferência como padrão do Quadro em base.tsx, para todos os slides) no modo \"Na janela\"; trocar \"desfecho observado\" por \"desfecho da base sintética\"."
+   }
+  },
+  "c7p29": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "18-c7p29-1920x1080-palco.png: barras previsto (petróleo) e observado (vinho) por grupo, com as metades ocultas em caixas \"?\" até a previsão; rótulos de valor sem sobreposição; denominadores sob cada grupo (\"18 defaults em 369\").",
+    "corrigir": "Para 10: a legenda usa círculo para o observado, mas as barras são retângulos; pôr um marcador de forma diferente nas barras de observado."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "A previsão está respondida no subtítulo: \"Erros de sinais opostos se compensam na média\" é quase o texto da alternativa certa B (\"Erra para lados opostos, e os erros se cancelam\"). Fora isso o slide é forte (retornos nomeiam a confusão, leitura com 9,2% contra 4,9% e 12,8% contra 17,1%). Também cita o teste de Jeffreys (p = 0,12) antes de o slide 21 o apresentar.",
+    "corrigir": "Mover a frase do subtítulo para a leitura depois da revelação (subtítulo como pergunta: \"O total bater garante as partes?\"); na menção a Jeffreys, uma oração que diga o que o p mede."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "O controle de compressão b (0,3 a 1) com a resolvido para O/E = 1 é o próprio experimento: o total fica em 81,0 contra 81 e as metades se afastam; o seletor leva à logística (O/E 1,13); Restaurar volta a b = 0,30 e limpa a previsão (linha 76).",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido: a = −1,376 para b = 0,3; metades 369 e 368 com 18 e 63 defaults, esperados 33,85 e 47,15 (O/E 0,53 e 1,34); logística 71,64 esperados, O/E 1,131, Jeffreys p = 0,1233. O comprimido é declarado como construído. Porém a fonte não declara base sintética, período da janela (safras 2023-08 a 2023-12) nem semente (20260501), que a rubrica exige no 9 e que o slide 1 já traz.",
+    "corrigir": "Incluir na fonte \"Base sintética do curso, semente 20260501; janela fora do tempo, safras 2023-08 a 2023-12\" (de preferência como padrão do Quadro em base.tsx, para todos os slides). Com isso fica em 9; para 10, o intervalo de cada metade (Wilson) nas barras."
+   }
+  },
+  "c7p10": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "estados2/c7p10-todas-ic-1920.png: curva de confiabilidade com intervalos de Wilson, régua das 737 PDs ordenadas com defaults em vinho e as dez faixas marcadas, tabela com Defaults/n; triângulos ▲▼ carregam o lado além da cor.",
+    "corrigir": "Para 10: com o intervalo ligado o eixo vai a 40% e os pontos ficam espremidos abaixo de 17%; e a tabela de dez colunas compete com a curva. Cortar o eixo em 35% com seta para o intervalo de F10 e levar a tabela para uma expansão."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "O retorno de cada palpite só diz \"Acertou\"/\"Errou\" com os números (estados2/c7p10-5-1920.png: \"Errou: você previu acima; ficou abaixo (6,8% contra 7,1%)\"), sem nomear confusão nem oferecer nova tentativa; e a conclusão final usa o intervalo de Wilson (\"10 das 10 faixas\") antes de o slide 21 ensiná-lo.",
+    "corrigir": "Fazer uma previsão conceitual antes do botão de Wilson (\"em quantas das 10 faixas a PD cabe no intervalo?\") com retornos que nomeiem a confusão \"distância isolada é descalibração\"; no retorno por faixa, dizer que com 74 casos um desvio de 1 ponto é ruído."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Construção faixa a faixa com palpite ▲/▼, contagem de acertos, \"Todas\", botão de Wilson e Restaurar (linha 71); cada passo muda a leitura.",
+    "corrigir": "Para 10: deixar o aluno mudar a causa (número de faixas ou a PD) e ver o ponto se mover; hoje ele só revela pontos prontos."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido: decis 1/74, 3/73, ..., 22/74; PD média 2,5% a 25,2%; observado 1,4% a 29,7%; 6 de 10 acima; Wilson compatível nas 10. Porém a fonte não declara base sintética, período da janela (safras 2023-08 a 2023-12) nem semente (20260501), que a rubrica exige no 9 e que o slide 1 já traz; e a leitura final diz \"O que pesa é o padrão, 6 de 10 acima\", quando sob calibração perfeita 6 ou mais acima em 10 ocorre com probabilidade 0,377: não é padrão.",
+    "corrigir": "Incluir na fonte \"Base sintética do curso, semente 20260501; janela fora do tempo, safras 2023-08 a 2023-12\" (de preferência como padrão do Quadro em base.tsx, para todos os slides); trocar a frase por \"6 de 10 acima é compatível com o acaso; o que pesa é o total, que o slide 21 testa na carteira\"."
+   }
+  },
+  "c7p30": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Em estados2/c7p30-prev-b-1920.png (20 faixas fixas) o rótulo \"3/5 = 60%, fora do eixo\" fica sobre os segmentos da curva e o texto \"vazias: F17, F18, F20\" sobre as marcas tracejadas e o ponto de F19; os números 0 0 1 0 da ocupação ficam espremidos. O CORP (c7p30-corp-1920.png) é limpo e próprio do conceito.",
+    "corrigir": "Ancorar o rótulo \"fora do eixo\" à direita do triângulo ou fora da área do gráfico; subir \"vazias\" acima das marcas; com mais de 14 faixas, rotular só as faixas com menos de 30 casos."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Previsão sobre 20 faixas fixas com retorno que nomeia a confusão (A: \"Confunde largura com tamanho da amostra\"); leitura com números (3 vazias e 10 com menos de 30 casos; decis de 1,5% a 3,1% contra 19,6% a 45,2%); ligação explícita com os slides 19, 25 e 30; o CORP resolve a limitação mostrada.",
+    "corrigir": "Para 10: o retorno de C (\"Exagera\") não nomeia uma confusão; e qualquer escolha libera as faixas fixas, inclusive a errada."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "Tipo de faixa e número de faixas (3 a 20) mudam a curva e a ocupação com as PDs fixas: é o experimento do título; Largura fixa e CORP abrem depois da previsão; Restaurar (linha 83).",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "CORP correto (Dimitriadis, Gneiting e Jordan, 2021): isotônica PAV de y sobre a PD na própria amostra; conferido corp(Y, PL): 11 degraus monótonos, BS 0,09128, BS da recalibrada 0,08885, MCB 0,00242, DSC 0,00897, UNC 0,09783, MCB − DSC + UNC − BS = 0. Faixas fixas: ocupação 32, 181, ..., 0 com 3 vazias e 10 pequenas, como na tela; faixa vazia não vira zero. Porém a fonte não declara base sintética, período da janela (safras 2023-08 a 2023-12) nem semente (20260501), que a rubrica exige no 9 e que o slide 1 já traz.",
+    "corrigir": "Incluir na fonte \"Base sintética do curso, semente 20260501; janela fora do tempo, safras 2023-08 a 2023-12\" (de preferência como padrão do Quadro em base.tsx, para todos os slides). Para 10: as bandas de consistência do CORP (reamostragem sob a hipótese de calibração), que o artigo recomenda."
+   }
+  },
+  "c7p31": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "21-c7p31-1920x1080-palco.png: intervalos como barras horizontais na mesma escala, Wald tracejado em cinza, faixa rosa \"abaixo de 0%\" onde o Wald de 1 em 20 entra (−4,6%); a linha de 5% ancora a comparação; caixa \"? preveja ao lado\" esconde a resposta.",
+    "corrigir": "Para 10: os dois KPIs abaixo (largura 22,7 pp, limite −4,6%) repetem rótulos que já estão no gráfico; tirar."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "Previsão bem feita (retornos de A e C nomeiam a confusão: frequência contra número de casos; aproximação normal simétrica) e leitura com números, mas não há ligação explícita com o slide anterior ou o seguinte na tela: os exemplos são ilustrativos de 5% e a única ponte com a carteira (F8 contra F9) fica escondida numa expansão. O código não cita nenhum slide fora dos comentários.",
+    "corrigir": "Na leitura depois da revelação, ligar ao slide 19: \"as faixas do slide 19 têm cerca de 74 casos: F8 observou 15 em 74, intervalo de 12,7% a 30,8%\"; e trazer a inversão F8 contra F9 para o painel principal."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "O número de casos (20 a 2.000, só onde 5% é inteiro) é o experimento: o intervalo encolhe com √n e o Wald perde o limite negativo; nível de confiança 90/95/99%; o controle só abre depois da previsão; Restaurar (linha 83).",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido: Wilson 1/20 = 0,9% a 23,6%, 5/100 = 2,2% a 11,2%, 50/1000 = 3,8% a 6,5%; Wald 5/100 = 0,73% a 9,27%. Jeffreys como o BCE (p = F_Beta(PD; d + ½, n − d + ½), H0: a PD não subestima): carteira p = 0,1233, conferido também por integração numérica da densidade Beta; F8 p = 0,040; 1 − 0,95¹⁰ = 0,40. Interpretação frequentista da cobertura e limitações corretas. Porém a fonte não declara base sintética, período da janela (safras 2023-08 a 2023-12) nem semente (20260501), que a rubrica exige no 9 e que o slide 1 já traz.",
+    "corrigir": "Incluir na fonte \"Base sintética do curso, semente 20260501; janela fora do tempo, safras 2023-08 a 2023-12\" (de preferência como padrão do Quadro em base.tsx, para todos os slides). Com isso o slide vai a 10: já mostra a incerteza e o que o intervalo não cobre."
+   }
+  },
+  "c7p32": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "22-c7p32-1920x1080-palco.png: quatro pequenos múltiplos com a mesma escala, cada assinatura legível (subestimação acima, superestimação abaixo, extremas deitada, comprimidas em pé); slope oculto como \"?\" até a previsão; quadro escolhido com borda.",
+    "corrigir": "Para 10: cada mini gráfico ocupa cerca de um terço do cartão e os pontos ficam no quarto inferior esquerdo (eixos até 50%, PDs quase todas abaixo de 30%); cortar o eixo em 35% e deixar a curva preencher o cartão."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Uma ideia; previsão que exige ler a forma da curva (não é dada pelo título); retornos nomeiam a confusão (A: \"Confunde nível com inclinação\"); leitura com a, b, slope e intercepto; ligação explícita com os slides 21 e 23; o seletor esperada/observada mostra o ruído da amostra.",
+    "corrigir": "Para 10: qualquer escolha já revela todos os slopes; revelar só no acerto."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Ampliar um quadro, alternar frequência esperada/observada (os slopes mudam de 1,00 para 1,14 na subestimação) e Restaurar (linha 88); teclado nos cartões (role=button com Enter e Espaço).",
+    "corrigir": "Para 10: controles de a e b no quadro ampliado, para o aluno criar a assinatura (hoje são quatro telas prontas)."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido: com y = PD verdadeira, slope 1,000 nas distorções de nível (intercepto com slope 1 de ±0,700), 0,556 = 1/1,8 nas extremas e 2,222 = 1/0,45 nas comprimidas; na janela a própria PD verdadeira tem slope 1,137 e intercepto 0,179. Base sintética declarada. Porém faltam período e semente na fonte, e o slope de referência 1,14 aparece sem intervalo (slopeComIntervalo dá 0,80 a 1,47, que contém 1).",
+    "corrigir": "Acrescentar período (safras 2023-08 a 2023-12) e semente (20260501) à fonte; mostrar o intervalo do slope na frequência observada."
+   }
+  },
+  "c7p33": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "23-c7p33-1920x1080-palco.png: gráfico de pontos com eixo truncado declarado (\"eixo começa em 0,088\"), quatro linhas com nome e papel (\"treino: referência honesta\", \"só na base sintética\"); à direita a parábola da perda de um cliente com o ponto rotulado.",
+    "corrigir": "Para 10: as duas peças têm o mesmo peso; deixar a carteira dominante e reduzir o painel do cliente."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "Não há ligação explícita com o slide anterior (22) ou o seguinte (24) na tela; o código não cita nenhum slide. E há algo a descobrir (se 0,091 é bom) que vem pronto, sem previsão. A leitura com números é boa (0,09128 contra 0,09803, 6,9% melhor).",
+    "corrigir": "Abrir com a previsão \"um Brier de 0,091 é bom?\" e só então mostrar as referências; na leitura, ligar ao slide 22 (\"o erro de nível e de inclinação, num número só\") e ao 24."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "PD dada ao cliente e desfecho mudam a perda do cliente (\"Default com PD de 5%\" leva a 0,9025); Restaurar (linha 77).",
+    "corrigir": "Para 10: um controle que mova o Brier da carteira (por exemplo, o nível da logística em log odds), para a leitura principal responder."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido: Brier 0,09128; constante do treino (9,56%) 0,09803; constante da janela 0,09783; PD verdadeira 0,09037; 1 − 0,09128/0,09803 = 6,89%. Boa distinção entre referência honesta e taxa conhecida só depois; \"sozinho, não isola calibração\" correto. Porém faltam na fonte o período da janela e a semente.",
+    "corrigir": "Incluir na fonte \"Base sintética do curso, semente 20260501; janela fora do tempo, safras 2023-08 a 2023-12\" (de preferência como padrão do Quadro em base.tsx, para todos os slides); para 10, um intervalo pareado para a diferença de Brier."
+   }
+  },
+  "c7p34": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "24-c7p34-1920x1080-palco.png: as duas perdas lado a lado, cada uma no seu eixo (sem escala comum que engane), Brier contínuo em petróleo e log loss tracejada; ponto do cliente rotulado (0,990 e 5,298).",
+    "corrigir": "Para 10: depois da previsão, marcar nas duas curvas o trecho de 1% a 0,1% que a pergunta compara."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "A previsão mostra a resposta antes da tentativa: o subtítulo diz \"A perda cresce sem limite quando se dá probabilidade quase nula ao que aconteceu\" e as duas curvas já estão desenhadas com o ponto em 0,5% (Brier 0,990 colado no teto, log loss 5,298 subindo), o que entrega a alternativa C.",
+    "corrigir": "Até a previsão, mostrar só o Brier ou abrir o controle em 10%, e trocar o subtítulo por uma pergunta; o subtítulo atual vira leitura depois da revelação."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "PD de 0,1% a 99,9% e desfecho: o aluno leva a probabilidade a zero e vê a log loss explodir enquanto o Brier para em 1; a tabela só abre no acerto (linha 66); Restaurar (linha 61).",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido: log loss da logística 0,31487, nenhuma previsão limitada por EPS; constante do treino 0,34745; em 0,5%, 5,298 e 0,990; de 1% para 0,1%, Brier +0,018 e log loss +2,30. Porém a fonte não declara base sintética, período da janela (safras 2023-08 a 2023-12) nem semente (20260501), que a rubrica exige no 9 e que o slide 1 já traz.",
+    "corrigir": "Incluir na fonte \"Base sintética do curso, semente 20260501; janela fora do tempo, safras 2023-08 a 2023-12\" (de preferência como padrão do Quadro em base.tsx, para todos os slides)."
+   }
+  },
+  "c7p11": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "estados2/c7p11-prev-b-1920.png: duas curvas de confiabilidade na mesma escala; B é um único ponto sobre a diagonal, forma que é o argumento (nível certo, nenhuma separação); A abaixo da diagonal com intervalos.",
+    "corrigir": "Para 10: a decomposição BS, MCB, DSC em tabela de 12 números; barras de MCB e DSC por modelo mostrariam \"A separa e erra o nível\" sem leitura de números."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "A previsão está respondida pelo título: \"Menor Brier não prova melhor calibração\" contradiz diretamente as alternativas A (\"mais bem calibrado, porque tem Brier menor\") e C (\"Brier menor é sempre o melhor\"), sobrando B. Também falta ligação explícita com os slides 24 ou 26 (só cita o slide 30, numa expansão).",
+    "corrigir": "Perguntar algo que o título não resolve (por exemplo, \"a partir de que deslocamento a deixa de ter Brier menor?\", resposta entre 0,8 e 0,9) e ligar na leitura ao Brier do slide 23 e ao laboratório do 26."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "Depois da previsão, o controle de a (0 a 1,4) é o experimento: em 0,8 A vence por 0,09732 contra 0,09783; já em 0,9 B passa a ter Brier menor, e a leitura troca de frase; a DSC de A fica em 0,00897 porque a fila não muda; Restaurar (linha 52).",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Decomposição MCB, DSC, UNC correta: conferido corp(): A (a = 0,8) BS 0,09732, MCB 0,00847, DSC 0,00897; B 0,09783, 0, 0; logística 0,09128, 0,00242, 0,00897; boosting 0,09516, 0,00286, 0,00552; UNC 0,09783 em todos; A abaixo da diagonal nos 10 decis, PD média 18,5%. Porém a fonte não declara base sintética, período da janela (safras 2023-08 a 2023-12) nem semente (20260501), que a rubrica exige no 9 e que o slide 1 já traz; e a vantagem de A em 0,8 é de 0,0005 sem intervalo, no limite exato da virada.",
+    "corrigir": "Incluir na fonte \"Base sintética do curso, semente 20260501; janela fora do tempo, safras 2023-08 a 2023-12\" (de preferência como padrão do Quadro em base.tsx, para todos os slides); abrir o controle em a = 0 (a logística já tem Brier menor e MCB maior que B, com folga) ou mostrar o intervalo da diferença."
+   }
+  },
+  "c7p35": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Elemento cortado: no gráfico \"A transformação\" a curva é limitada a 50% (Math.min(0,5, ...), linha 56) e aparece como um teto plano (estados2/c7p35-prev-b-1920.png, a partir de PD original de cerca de 27%; c7p35-ajuste-1920.png, perto de 42%), como se a transformação saturasse; com b = 2,2 a PD original de 30% vira 58,7%.",
+    "corrigir": "Estender o eixo da PD nova até o máximo transformado ou marcar a saída com seta e \"fora do eixo\", como o slide 20 faz."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "A previsão mostra a resposta antes da tentativa: o subtítulo diz \"a ordem e a AUC ficam onde estão\" (elimina A e C) e o atalho \"Excesso de confiança\", visível antes de responder, aplica b = 2,2 e mostra o Brier subindo. As alternativas erradas não têm certa: false (linha 31), então aparecem neutras, não como erradas. Sem ligação explícita com slides vizinhos na tela.",
+    "corrigir": "Bloquear atalhos e controles até a resposta, perguntar algo que o subtítulo não diz (\"quem piora mais, Brier ou log loss?\"), marcar certa: false nas erradas e ligar ao slide 27 na leitura do \"melhor ajuste\"."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Dois controles (a, b), quatro atalhos, KPIs que respondem (excesso: Brier 0,09475 e log loss 0,3372, AUC 0,7257 \"igual à original\") e Restaurar (linha 64): é o experimento do título.",
+    "corrigir": "Corrigir o atalho \"Excesso de confiança\": ele põe a = 2,21, fora do intervalo do controle (−2 a 2); o cursor fica preso no fim e, ao ser tocado, volta a 2,0 e quebra a premissa \"mesma PD média\". Ampliar o intervalo de a para ±3."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido: a que mantém a PD média 9,7% vale 2,214 para b = 2,2 e −1,171 para b = 0,45; Brier 0,09475 e log loss 0,3372 no excesso, AUC 0,7257 inalterada; melhor ajuste na janela a = 0,392, b = 1,122, Brier 0,09089, declarado otimista; isotônica 0,08885. Porém a fonte não declara base sintética, período da janela (safras 2023-08 a 2023-12) nem semente (20260501), que a rubrica exige no 9 e que o slide 1 já traz; e o teto falso em 50% no gráfico da transformação mostra uma saturação que a fórmula não tem (22 propostas com PD original acima de 27%).",
+    "corrigir": "Incluir na fonte \"Base sintética do curso, semente 20260501; janela fora do tempo, safras 2023-08 a 2023-12\" (de preferência como padrão do Quadro em base.tsx, para todos os slides); corrigir o corte da curva da transformação."
+   }
+  },
+  "c7p16": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "27-c7p16-1920x1080-palco.png: linha do tempo com espessura proporcional a 2.103, 760, 737 e 3.000 casos domina o painel; setas 'ajusta' (teal) e 'mede' (verde) ligam a calibração hachurada ao nó Platt; no atalho (c7p16-atalho) as setas saem da janela e o nó ganha borda vinho com '✕ leu a prova'. Calibração com hachura e tracejado além da cor; nenhum rótulo cortado.",
+    "corrigir": "Para 10: tirar o Expandir de validação cruzada do painel da peça (vai para a nota do professor) e deixar só a linha do tempo, que já é o argumento."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "Previsão antes do atalho, retorno que nomeia a confusão (A: 'Confunde o risco com o número medido') e Restaurar. Mas a leitura do estado inicial ensina outra ideia: 'log loss 0,3167, pior que a logística sem calibrar (0,3149). O slope estimado (b = 0,766) achata as PDs; no slide 28, só o nível é corrigido'. O aluno sai achando que Platt em amostra própria piora, ideia que disputa com o título (amostra própria).",
+    "corrigir": "Reescrever a leitura do protocolo para concluir o título: a diferença 0,3167 contra 0,3149 (0,0018) numa janela de 81 defaults é ruído; em janelas novas, o Platt da calibração melhora a log loss esperada (0,3409 contra 0,3439, conta com PT e transformar(PL, −0,300; 0,766)). Manter a ponte para o slide 28 sem atribuir a piora ao slope."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Previsão libera o seletor Protocolo/Atalho; o diagrama troca a origem das setas e os KPIs mostram 0,3167, 0,3136 e 0,3149 (c7p16-atalho); botão Restaurar volta à previsão; funcional-c7.txt: retorno oculto antes da tentativa e reinício ao voltar.",
+    "corrigir": "Para 10: no modo Atalho, mostrar também o que o atalho promete contra o que entrega em janelas novas (a = 0,392, b = 1,122 dá 0,3437 esperada contra 0,3409 do protocolo), para o aluno ver o efeito que o título afirma, não só ler."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido com npx tsx: ajustarPlatt(CAL) a = −0,300, b = 0,766; ajustarPlatt(janela) a = 0,392, b = 1,122; log loss 0,3167, 0,3136, 0,3149 e 0,3140 (intercepto), 727 proponentes distintos; batem com a tela. Porém a frase 'O slope estimado (b = 0,766) achata as PDs' atribui causa a uma diferença de 0,0018 em uma janela; a própria base sintética desmente: slope médio da logística em 50 janelas novas = 0,786 e log loss esperada contra a PD verdadeira 0,3409 (Platt da calibração) contra 0,3439 (sem calibrar) e 0,3419 (só intercepto). É generalização além da amostra, o erro que os slides 33 e 35 ensinam a evitar.",
+    "corrigir": "Trocar a frase causal por: 'nesta janela, 0,0018 pior; em 300 janelas novas, o Platt da calibração é o melhor dos três (0,3409)'. Isso também leva o slide a 10, porque mostra a limitação que muda a conclusão."
+   }
+  },
+  "c7p12": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "28-c7p12-1920x1080-palco.png: 20 propostas ligadas da 'PD antes' à 'PD depois do ajuste' em duas réguas iguais de 0% a 40%, defaults em disco vinho e adimplentes em anel; nenhuma linha se cruza, o que prova 'um número somado em log odds'. Tabela de Newton e previsão à direita, hierarquia título, peça, leitura, fonte clara.",
+    "corrigir": "Para 10: a peça mostra o deslocamento, mas não o alvo; acrescentar na régua de baixo a marca da taxa observada (10,99%) e da PD média antes e depois (9,72% e 11,34%), para a forma carregar o resultado."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Previsão 'Só o nível é corrigido. Na janela, o Brier...' com retornos que nomeiam a confusão (A: 'Confunde nível com qualidade total'; C: diferença de nível é ruído), Tentar outra (c7p12-errada), leitura com números antes e depois da revelação e link explícito ao slide 36; a expansão explica por que a diferença de logits (0,1714, 341,9 esperados) não fecha a conta.",
+    "corrigir": "Para 10: deixar o aluno ver a confusão acontecer, mostrando o Brier com a diferença de logits ingênua ao lado do Newton."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Seletor Logística/Boosting troca a tabela de Newton (0,1822 contra 0,1829), a peça e os KPIs (c7p12-boost: Brier 0,09516 para 0,09518); Restaurar volta à logística e à previsão.",
+    "corrigir": "Para 10: um controle do próprio a (deslizar de −0,5 a +0,5) com a soma esperada e o Brier respondendo, até o aluno achar a raiz que o Newton acha."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido: a = 0,1822; ingênuo 0,1714 com 341,9 esperados; PD média 9,72% para 11,34%; Brier 0,09128 para 0,09092; log loss 0,3149 para 0,3140; Wilson 8,93% a 13,45%. Mas a leitura da logística diz que 11,34% é 'compatível com os 10,99% observados (IC 8,9% a 13,5%)', sugerindo que 9,72% não era, quando 9,72% está dentro do mesmo intervalo; para o boosting (9,77%) a leitura diz 'o nível já era compatível antes'. Mesma evidência, leituras opostas (o slide 37 confirma: Jeffreys p = 0,12, 'nível baixo, ainda sem prova'). Retorno A também escreve que o Brier 'soma' a resolução, quando ela entra com sinal negativo.",
+    "corrigir": "Na leitura da logística: 'antes, 9,72%, já dentro do IC da janela (Jeffreys p = 0,12); a correção vem da amostra de calibração de 3.000 casos, não da janela'. No retorno A: 'confiabilidade menos resolução mais incerteza'."
+   }
+  },
+  "c7p13": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "29-c7p13-1920x1080-palco.png: curva de confiabilidade por decis domina, com a miniatura da transformação subordinada à direita; Platt do curso tracejado, Platt da calibração em linha cheia teal, sem calibrar em cinza (c7p13-cal); AUC 0,6958 escrita sob a miniatura só depois da previsão.",
+    "corrigir": "Para 10: a miniatura e a curva disputam o olhar; integrar a transformação como inserto menor ou deslocar a AUC para junto da curva."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "Previsão sobre a AUC com retornos que nomeiam a confusão e nova tentativa. Mas o título afirma 'Platt corrige nível e inclinação' e a tela mostra o contrário sem explicar: Platt do curso leva a PD média de 9,77% a 13,21% contra 10,99% observados e a log loss de 0,3282 a 0,3298; o slope na janela vai de 0,88 a 1,20 e 1,22. A leitura só diz 'ainda compatível com 1'. Também não há ligação explícita com o slide 28 (intercepto é o caso b = 1) nem com o 30.",
+    "corrigir": "Acrescentar à leitura revelada: 'com 81 defaults a janela não mostra a correção; em janelas novas, a log loss esperada cai de 0,3458 para 0,3441 (curso) e 0,3430 (calibração)'; e uma ponte: 'o slide 28 era este caso com b = 1'."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Previsão libera o seletor Sem calibrar/Curso/Calibração, que move a curva e destaca a coluna da tabela; botão da fórmula do scikit-learn (c7p13-formula) e Restaurar que zera versão, previsão e fórmula.",
+    "corrigir": "Para 10: deslizadores de a e b com a curva e a AUC respondendo, para o aluno provar que qualquer b positivo deixa a AUC em 0,6958."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido: PC a = −0,3976, b = 0,7227; suavizado a = −0,4025, b = 0,7204; PD média 9,77%, 13,21%, 11,43%; Brier 0,09516, 0,09491, 0,09449; log loss 0,3282, 0,3298, 0,3277; slope 0,88 (0,55 a 1,21), 1,20 (0,75 a 1,64), 1,22 (0,77 a 1,67); AUC 0,6958 nas três. Os números estão certos, mas o título generaliza sem ressalva uma correção que a janela não mostra (nível do curso piora, slope se afasta de 1).",
+    "corrigir": "Qualificar o título ou a leitura com a evidência que a base sintética permite: Brier esperado contra a PD verdadeira 0,09952, 0,09929 e 0,09909 e log loss esperada 0,3458, 0,3441 e 0,3430; dizer que a janela de 81 defaults não distingue."
+   }
+  },
+  "c7p36": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "30-c7p36-1920x1080-palco.png: transformação isotônica em degraus contra a curva de Platt, com tapete das PDs da calibração no eixo; à direita, barras de pares certos, empates e invertidos, com a da isotônica tracejada e '? responda à previsão' até a revelação. As duas peças provam as duas metades do título.",
+    "corrigir": "Para 10: a barra de Platt repete a de sem calibrar; trocar as duas por uma barra só ('sem calibrar e Platt, 727 PDs distintas') e dar o espaço à isotônica, para uma peça dominar."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Previsão 'A isotônica nunca inverte a ordem... a AUC depois dela...' com retornos que nomeiam a confusão (A: 'não inverte, mas junta'; C: 'nunca cria pares certos novos'), Tentar outra; leitura com números (16 degraus, 8.063 empates, AUC 0,6958 para 0,6911) e contraste explícito com o Platt do slide anterior ('Fica igual, como em Platt').",
+    "corrigir": "Para 10: deixar o aluno ver os empates nascerem, por exemplo destacando na transformação o degrau que junta mais pares."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Depois da previsão, seletor 3.000 casos / 300 casos troca a transformação, as barras e a tabela (pequena: 15 degraus, AUC 0,6784, PD média 16,37% e 16,77%); Restaurar volta a 3.000 e à previsão.",
+    "corrigir": "Para 10: em vez de uma única amostra de 300, um seletor entre os dez blocos de 300 da calibração (27 a 49 defaults), para o aluno ver o ruído variar de bloco a bloco."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido: 3.000 casos, isotônica com 16 PDs distintas e 27 pontos, 8.063 empates, AUC 0,6911, Brier 0,09449 contra 0,09504, log loss 0,3277 contra 0,3286; 300 casos, 49 defaults, AUC 0,6784, PD média 16,37% e 16,77%. Mas os 300 primeiros são o bloco mais extremo dos dez blocos de 300 da mesma amostra (49,30,30,42,40,32,35,28,32,27 defaults; 16,3% contra 11,5% no total, cerca de 2,6 erros padrão), e a leitura conclui em geral 'com pouco dado, nenhum calibrador é confiável' sem dizer que a amostra pequena é atípica.",
+    "corrigir": "Declarar na fonte que o bloco tem 49 defaults contra 27 a 42 nos outros nove, ou trocar a leitura por 'nesta amostra pequena, que teve 16,3% de defaults'. Melhor: mostrar os dez blocos (ver interação)."
+   }
+  },
+  "c7p37": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "31-c7p37-1920x1080-palco.png: as 737 linhas da PD sem calibrar à PD com Platt, com as 121 que mudam em âmbar, são uma peça forte e própria do conceito. Mas o rótulo 'corte 14,0%' da régua de baixo fica sobre o feixe de linhas cinza e o '%' encosta na faixa âmbar (recorte em x 470 a 570, y 577), e o de cima também cai sobre linhas.",
+    "corrigir": "Levar os dois rótulos de corte para fora do feixe (acima da régua de cima e abaixo da de baixo, junto do tique), com fundo branco."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "Título e subtítulo claros, um conceito, leitura com números ('121 decisões mudam', 'R$ 596 mil e a janela entrega R$ 531 mil; com Platt, R$ 328 mil esperados e R$ 569 mil entregues'). Mas a leitura não diz o que concluir desses quatro valores (com Platt a promessa erra R$ 241 mil para baixo, sem calibrar R$ 65 mil para cima) e não há ligação explícita com o slide anterior nem com o 32.",
+    "corrigir": "Fechar a leitura com a conclusão ('o Platt do curso, com PD média 13,2% contra 11,0% observados, faz a diretoria esperar R$ 241 mil a menos do que a janela entrega') e apontar o slide 32: 'qual corte, então? Próximo slide'."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "Deslizador do corte (6% a 25%) e o seletor 'Mesmo corte de PD' / 'Mesma fração recusada' são o experimento do título: com corte fixo, 121 propostas mudam e os aprovados vão de 604 a 483; com a mesma fração, o corte vira 17,73% e nenhuma decisão muda (c7p37-fracao). Restaurar volta a 14% e corte fixo.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Conferido com npx tsx: 121 mudanças a 14%; corte transportado 17,73%; sem calibrar 604 aprovados, 53 defaults, esperado R$ 595.848, realizado R$ 531.066; com Platt 483, 31, R$ 327.721, R$ 568.630. Denominadores na tabela ('53 (8,8%)'), Platt do curso com a e b na fonte.",
+    "corrigir": "Para 10: trocar 'A PD também entra no preço' por 'a PD entra no resultado esperado' (o motor não precifica), listar na fonte os parâmetros do motor (receita 28%, perda 65%, funding 12%, R$ 120, capital 2%) e dizer que o realizado tem 81 defaults e é ruidoso."
+   }
+  },
+  "c7p18": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "32-c7p18-1920x1080-palco.png: curva do esperado (teal cheia) e do realizado (azul tracejada) por corte, com corte econômico em âmbar, KS em tracejado azul e o ponto 'melhor visto depois'; quatro KPIs subordinados; cores pelo papel (decisão âmbar, ordenação azul).",
+    "corrigir": "Para 10: no estado de receita 40% o rótulo 'melhor visto depois' fica a um corpo de letra da linha do corte; reservar faixa fixa para ele acima da área do gráfico."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "Leitura excelente e numérica: corte econômico 14,0% realiza R$ 588 mil, o KS 9,7% realiza R$ 660 mil 'por acaso', e convida a subir a receita para 40% (23,5%, R$ 1,57 mi contra R$ 1,47 mi). Falha a ligação explícita com o slide anterior (31, o mesmo corte de 14%) ou o seguinte; a única referência é ao 'capítulo 8', ainda não dado.",
+    "corrigir": "Uma frase de ponte: 'no slide 31 o corte de 14% era dado; aqui ele sai da conta' e trocar 'hipóteses do capítulo 8' por 'hipóteses da tela (receita, perda, funding, custo e capital)'."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "Deslizadores de perda (30% a 90%) e receita (15% a 40%) e o seletor de modelo movem o corte econômico e o resultado enquanto o KS fica parado (c7p18-rec40: 23,5% contra 9,7%; c7p18-boost: KS 7,8%): o aluno muda a causa e vê o efeito do título. Restaurar volta às hipóteses padrão.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Conferido: KS 9,75% (logística), 7,79% (boosting), 11,73% (Platt); corte econômico 14,0% com R$ 608.420 prometidos, R$ 588.474 realizados, KS R$ 659.957; melhorCorte 9,75%. O 'por acaso' se sustenta: com a PD verdadeira, o realizado esperado é R$ 471.777 no KS e R$ 471.784 a 14%. Mas o subtítulo diz que o corte depende de 'perda, receita e custo' e a tela só mostra perda, receita e o custo fixo de R$ 120; funding de 12% e capital de 2% da exposição, que pesam metade da receita, não aparecem.",
+    "corrigir": "Listar na fonte os cinco parâmetros do motor (receita 28%, perda 65%, funding 12%, custo R$ 120, capital 2%); para 10, mostrar que o realizado tem incerteza (81 defaults) e que, com a PD verdadeira, KS e 14% empatam em R$ 472 mil."
+   }
+  },
+  "c7p14": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "33-c7p14-1920x1080-palco.png: histograma das 100 réplicas da diferença domina, com faixa verde do IC percentil, linha 'diferença zero' e 'na janela 0,0299'; depois da previsão entra '▲ janelas novas 0,0067' (c7p14-prev), com contorno branco sobre a linha do zero.",
+    "corrigir": "Para 10: posicionar o rótulo 'janelas novas' à direita da linha quando ele cruzaria a linha do zero."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "Previsão com retorno que nomeia a confusão (A: 'Confunde a janela com a população'; C: 'a sorte exagerou a vantagem, não a criou') e nova tentativa; leitura com números (0,0067 contra 0,0299, 17 de 300). Falta ligação explícita com o slide anterior ou o seguinte (o slide 34 usa o mesmo DeLong, p = 0,049, sem menção); e a alternativa certa '0,007' coincide com o limite inferior do IC no KPI ao lado ('0,007 a 0,058'), uma pista involuntária.",
+    "corrigir": "Ponte na leitura revelada: 'no slide 34, a mesma diferença em cada amostra'. Escrever a alternativa B com três casas que não coincidam com o KPI ou mostrar o KPI do IC só depois da previsão."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "Sortear 1 réplica, Mais 100 e Completar 1.000 (semente 20260501, as 100 iniciais são o começo das 1.000) constroem a distribuição: o aluno reamostra e vê a métrica variar, que é o título; seletor Diferença/AUC da logística; Restaurar volta a 100 réplicas e à previsão.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 10,
+    "evidencia": "Conferido: 1.000 réplicas, IC percentil 0,0008 a 0,0587, 25 réplicas ≤ 0; DeLong 0,0299 [0,0001; 0,0596], p = 0,049, correlação 0,86; janelas novas: 0,6673 contra 0,6607, vantagem 0,0067, 17 de 300 acima da observada. Denominadores visíveis ('25 de 1.000 réplicas'), sementes na fonte, base sintética declarada, e o slide mostra a limitação que muda a conclusão (p = 0,049 não prova vantagem em outra janela) e o que o intervalo supõe.",
+    "corrigir": ""
+   }
+  },
+  "c7p15": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "34-c7p15-1920x1080-palco.png: AUC dos dois modelos por amostra, logística em disco e boosting em quadrado (forma além da cor), IC de DeLong só na janela, ligação verde 'mesma amostra: diferença 0,030' ou vinho tracejada 'amostras diferentes' (c7p15-injusto).",
+    "corrigir": "Para 10: o boosting usa o teal reservado à probabilidade; usar uma cor neutra de modelo para não confundir com o papel do sistema."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "Uma ideia, título afirmação, leitura que muda com a escolha e dá números (injusta: 0,7257 contra 0,8196, diferença −0,0939; justa: 0,0299 com IC [0,0001; 0,0596]). Falta ligação explícita com o slide 33 (o mesmo intervalo, já reamostrado) ou com o 35.",
+    "corrigir": "Acrescentar na leitura da janela: 'e o slide 33 mostrou que em janelas novas essa vantagem esperada é 0,0067'."
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "Dois seletores escolhem em que amostra cada modelo é medido; a diferença, o veredito 'Justa/Injusta' e a tabela respondem; 'Exemplo injusto' e Restaurar. O aluno muda a causa (a amostra) e vê o efeito (a diferença de 0,0939 virar 0,0299).",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Conferido: O/E 1,131, 1,125 e 0,832; Brier 0,09128, 0,09516, 0,09491 (biblioteca igual ao RES); slope 1,12; AUC treino 0,6968 e 0,8196, validação 0,6408 e 0,6476. Fonte declara treino e validação só agregados e a árvore fora da comparação.",
+    "corrigir": "Para 10: mostrar ao lado da diferença na janela a vantagem esperada em janelas novas (0,0067), a limitação que muda a leitura de 'a logística ordena melhor'."
+   }
+  },
+  "c7p17": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "35-c7p17-1920x1080-palco.png: degrau do escolhido na janela (teal) e em janelas novas (verde tracejado) contra as duas linhas de referência da logística (0,7257 e 0,6673); pontos cinza por candidato. No código atual o rótulo da logística fica à esquerda, antes do degrau de 0,7286 (que começa na abertura 6,5).",
+    "corrigir": "Para 10: o estado inicial deixa quase todo o gráfico vazio; mostrar os 20 pontos dos candidatos em cinza claro desde o início, revelando só o degrau depois da previsão."
+   },
+   "didatica": {
+    "nota": 10,
+    "evidencia": "Previsão com alternativa certa calculada (acimaJ && !acimaN), retornos que nomeiam a confusão ('Confunde o máximo de 20 medidas ruidosas com o melhor modelo'), reaberturas bloqueadas até o acerto; o aluno vê a confusão acontecer: o escolhido passa a logística na janela (0,7286 contra 0,7257) e fica abaixo dela em janelas novas (0,6565 contra 0,6673). Fonte liga aos slides 33 e 36.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "'Reabrir e testar mais um' e 'Mais 5' são o experimento do título, com candidatos sorteados com semente 20261035; KPIs de otimismo respondem (0,0452 com 1 reabertura, 0,0721 com 20, contra 0,0584); Restaurar volta a 1 reabertura e à previsão.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 10,
+    "evidencia": "Recalculado com npx tsx: primeiro candidato 0,7028 na janela e 0,6577 em janelas novas; melhor dos 20 é o 7º, 0,7286 e 0,6565; logística 0,7257 e 0,6673. Fonte com sementes, data de referência e 'só possível em base sintética'; a leitura mostra a limitação que muda a conclusão ('a janela já era favorável').",
+    "corrigir": ""
+   }
+  },
+  "c7p38": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "36-c7p38-1920x1080-palco.png: dossiê em quatro miniaturas, logística em disco cheio e candidato em quadrado vazado, cores por pergunta. Na miniatura Decisão, o rótulo 'realizado ◆' encosta na curva do esperado e os dois losangos realizados (R$ 588 mil e R$ 569 mil) se sobrepõem no corte de 14%, sem dizer qual é qual (recorte x 280 a 690, y 590 a 740).",
+    "corrigir": "Separar os losangos (deslocar meio corpo na horizontal ou rotular 'L 588' e 'C 569') e tirar o glifo ◆ do rótulo, que se confunde com um ponto de dado."
+   },
+   "didatica": {
+    "nota": 10,
+    "evidencia": "Decisão bloqueada até três consultas; cada alternativa errada devolve a confusão com os números dos cartões (A: 'Confunde modelo novo com modelo melhor: AUC 0,6958 contra 0,7257'; B: usa a prova para ajustar, slide 27; D: o ônus é de quem substitui, vantagem 0,0067); acerto fecha com a decisão e o link ao slide 28. Desmonta o erro mais comum (aprovar o modelo novo) com o próprio dado.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Cartões 'consultar' abrem a leitura de cada pergunta e contam '3 de 4'; a decisão só abre depois (c7p38-tres), com Tentar outra e Restaurar que zera consultas e escolha.",
+    "corrigir": "Para 10: um controle que mude a evidência (por exemplo, usar a vantagem da janela ou a de janelas novas) e mostre se a decisão resiste."
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Conferido: DeLong logística contra Platt p = 0,049; O/E 0,832; Jeffreys 1 − p = 0,035 (candidato) e p = 0,123 (logística); corte ótimo 14% nos dois modelos (por isso 'mesmo corte' vale), candidato R$ 327.721 prometidos e R$ 568.630 realizados, logística R$ 608.420 e R$ 588.474; AUC treino 0,8196, janela 0,6958. Fonte declara Jeffreys com a PD média e janelas novas sintéticas.",
+    "corrigir": "Para 10: dizer na tela que o Jeffreys 'na cauda oposta' é uma adaptação (o teste do BCE é unilateral para subestimação) e que 'sobreajuste' do treino à janela mistura sobreajuste e mudança de safra (a logística sobe de 0,6968 para 0,7257)."
+   }
+  },
+  "c7p20": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "37-c7p20-1920x1080-palco.png: quatro cartões com resposta e miniatura, mais o diagnóstico à direita; boa hierarquia. Mas na miniatura Decisão a curva do esperado atravessa o 'K' do rótulo 'KS 9,7%' (recorte x 280 a 690, y 620 a 720).",
+    "corrigir": "Ancorar o rótulo do KS à direita da linha pontilhada, acima da curva, ou baixá-lo para a linha do eixo."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Responde às quatro perguntas do slide 1 com números do caso (AUC 0,7257; PD 9,7% contra 11,0%, Jeffreys p = 0,12; corte 14,0%; diferença 0,0299 e 0,0067 em janelas novas), diz o que falta em cada uma e leva a ação ('Para aplicar amanhã'); links ao slide 28, ao Mapa e ao Caso integrador.",
+    "corrigir": "Para 10: no cartão 'Ordena?' pôr a AUC esperada em janelas novas (0,6673) ao lado de 0,7257, para o aluno ver a armadilha do slide 35 na própria conclusão; trocar 'margem de 0,0001' por 'limite inferior do IC de 0,0001'."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Seletor de sintoma troca o diagnóstico e os links de volta (c7p20-sintoma: 'AUC boa, curva fora da diagonal' leva a Confiabilidade, Nível e inclinação, Amostra própria, Intercepto); Restaurar volta ao procedimento.",
+    "corrigir": "Para 10: aplicar o sintoma escolhido ao caso (por exemplo, mostrar que valores da logística disparam cada sintoma)."
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Conferido: ganho nos 10% piores 27,2%; KS 9,75%; slope 1,12 com IC 0,79 a 1,46; Jeffreys 0,12; log loss 0,3149 para 0,3140; DeLong [0,0001; 0,0596]; janelas novas 0,0067. 'Falta: ... em calibração real' declara o limite da amostra sintética.",
+    "corrigir": "Para 10: a resposta 'Ordena? Sim' usa só a janela, que o slide 35 mostrou favorável em 0,058; incluir 0,6673 esperada."
+   }
+  },
+  "c7p19": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "38-c7p19-1920x1080-palco.png: abas no topo e grade 2 × 4 de fórmulas em KaTeX, cada uma com o nome sublinhado como link ao slide; Fora do protocolo e Reprodução em listas de definição alinhadas (c7p19-fora, c7p19-repro).",
+    "corrigir": "Para 10: a aba Referências é um bloco de texto em três colunas; agrupar por tema (ordenação, calibração, validação, regulação) com o slide de uso ao lado."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Apêndice declarado ('o percurso da aula termina no slide 37'), cada fórmula leva ao slide em que é usada (AUC por pares ao slide 7, KS ao 11, Wilson ao 21), métricas fora do protocolo com o motivo (Gini = 2 × AUC − 1 = 0,4514; Hosmer e Lemeshow; ECE; PSI) e fronteira com quando usar.",
+    "corrigir": "Para 10: em cada item da fronteira, uma linha 'na carteira do curso, isto daria ...' com um número da base."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Slide de consulta: cinco abas (Fórmulas, Fora do protocolo, Fronteira e regulação, Referências, Reprodução) e links de cada fórmula e de itens da fronteira para os slides; a aba Fórmulas é o estado inicial e o seletor volta a ele.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Referências conferidas (autores, anos, veículos): Brier 1950 MWR 78(1); Cox 1958 Biometrika 45(3/4); DeLong 1988 Biometrics 44(3); Dimitriadis, Gneiting e Jordan 2021 PNAS 118(8) e2016191118; Hosmer e Lemeshow 1980 Comm. Stat. 9(10); Murphy 1973 J. Appl. Meteor. 12(4); Stephenson, Coelho e Jolliffe 2008 Wea. Forecasting 23(4); Kull, Silva Filho e Flach 2017 AISTATS; Vovk e Petej 2014 UAI; Wilson 1927 JASA 22(158); EBA/GL/2017/16; ECB 2019; BCBS WP 14 (2005); CMN 4.966/2021 e BCB 352/2023, vigência em 1/1/2025. Fórmulas corretas (KS = F0 − F1 = TPR − FPR; beta calibration recai no Platt com a = b; temperature scaling é Platt sem intercepto); Gini 0,4514 confere com AUC 0,7257.",
+    "corrigir": "Para 10: Platt saiu em livro de 2000 (Advances in Large Margin Classifiers, MIT Press); citar '1999, publicado em 2000' e dar páginas onde faltam (Brier, Cox, Murphy)."
+   }
+  }
+ },
+ "storytelling": {
+  "coerencia": {
+   "nota": 9,
+   "evidencia": "O fio é declarado no slide 1 (c7p1): quatro perguntas (Ordenação, Probabilidade, Decisão, Validação, roteiro.ts linhas 9 a 14), cada uma com um número da mesma janela (AUC 0,7257; PD média 9,7% contra 11,0%; corte econômico 14,0% contra KS 9,7%; diferença 0,0299 com IC de DeLong 0,0001 a 0,0596) e o caso anunciado no subtítulo (no slide 36, o comitê decide se o boosting substitui a logística). A trilha das quatro perguntas aparece no topo de todos os 38 quadros (capturas 01, 02, 16, 20, 25, 27, 28, 36, 37); as 37 transições de content/capitulo7/paginas.json encadeiam cada slide no seguinte sem salto (ex.: c7p27 'Tudo até aqui mede a fila. Nada verifica se a PD está no nível certo'); a conclusão (slide 37, s37-conclusao.tsx linha 109) responde às quatro perguntas com os mesmos números e volta ao mapa e ao caso pelos botões. Nenhum slide sai do fio: até os construídos (comprimido no 18, A e B no 25, candidatos com ruído no 35) usam a janela de 737 propostas e 81 defaults. Ressalvas que não derrubam o 9: o mesmo objeto tem três nomes (janela fora do tempo; 'Janela final' no slide 2, s02 linha 127; a sigla OOT, nunca expandida na tela, no título do slide 35 e no rótulo 'OOT congelado' dos slides 1 e 37); o slide 27 (c7p16) acende 'Validação' na trilha entre dois slides de Probabilidade (26 e 28); a pergunta de validação promete 'nos segmentos' e nenhum slide trata segmento (só o 'Falta: estabilidade por segmento e tempo' do slide 37, linha 102).",
+   "corrigir": "Para 10: fazer a leitura (rodapé) de cada slide terminar com a frase que pede o seguinte, como já fazem o 17 ('a partir do slide 18') e o 27 ('no slide 28'); hoje essa ponte vive só no campo transicao do guia. De quebra: um nome só para a janela (expandir OOT no título do 35 ou trocar por 'janela fora do tempo'; 'Janela final' no 2 vira 'janela fora do tempo'); marcar o 27 como Probabilidade na trilha ou mover para o bloco de Validação; tirar 'nos segmentos' da pergunta ou dar a ela um slide."
+  },
+  "arco": {
+   "nota": 9,
+   "evidencia": "Gancho nos três primeiros slides com algo em jogo: o slide 1 anuncia a decisão de produção do slide 36 e mostra a tensão na leitura ('o KS e a economia apontam cortes diferentes', régua com 9,7% e 14,0%); o slide 2 fixa o contrato (AUC 0,7257 só aprovados contra outra AUC com recusados); o slide 3 mostra o erro caro (aprovar todos acerta 89,0% e recusa 0 de 81 defaults). A tensão cresce por partes que fecham uma dúvida e abrem outra: a ordenação termina em 'tudo até aqui mede a fila' (16: mesma AUC 0,7257 e perda esperada de R$ 607 mil a R$ 1,16 mi contra R$ 687 mil realizados); a probabilidade termina em 'recalibrar exige amostra própria' (27: Platt no protocolo piora a log loss, 0,3167 contra 0,3149). Viradas vindas do dado: no 34, o boosting que vence no treino (0,8196) perde na janela (0,6958 contra 0,7257); no 33, a vantagem 'significativa' da logística (p = 0,049) cai a 0,0067 em 300 janelas novas e só 17 a repetem; no 32, o corte do KS realiza R$ 660 mil contra R$ 588 mil do econômico, e o código trata os dois desfechos (s32 linha 47, ksGanha) e diz 'por acaso'. Fecho volta ao gancho e decide: slide 36 com decisão bloqueada até três cartões e a resposta 'manter a logística, corrigir o nível dela e reavaliar o boosting numa janela nova'; slide 37 sintetiza.",
+   "corrigir": "Para 10: a virada principal está entregue no gancho. O cartão Validação do slide 1 (s01 linha 22) já mostra 'Logística menos boosting: AUC +0,0299 (IC 0,0001 a 0,0596)', então a queda do boosting no 34 e a do p = 0,049 no 33 não surpreendem. Trocar o número do cartão por uma pergunta ('o boosting ganha no treino por 0,123; e na janela?') e guardar a revelação para o 34; e fazer a descoberta do 33 (0,0067 em janelas novas) mudar algo no 36, por exemplo uma alternativa que exija equivalência com margem declarada."
+  },
+  "exemplo": {
+   "nota": 10,
+   "evidencia": "Um caso concreto atravessa os 38 slides: janela fora do tempo de 737 propostas aprovadas, safras 2023-08 a 2023-12, 81 defaults (atraso de 90 dias ou mais em 12 meses), logística do capítulo 4 contra boosting do capítulo 6 (fonte de quase todo quadro, ex.: s16, s25, s34, s36, s37); a mini-base de 20 propostas (5 e 15) é recorte declarado da mesma janela, e os quatro clientes do slide 4 voltam no 5. Tamanho e contexto plausíveis para uma carteira de crédito pessoal (taxa de 11,0%, perda média por proposta compatível com EAD de cerca de R$ 13 mil), e o tamanho pequeno é usado a favor (intervalos de Wilson e DeLong largos). A decisão final usa o caso (slide 36: AUC 0,6958 contra 0,7257, O/E 0,832 do candidato, R$ 569 mil contra R$ 588 mil realizados no corte de 14,0%). Dados sintéticos declarados com o que eles permitem: desfecho dos recusados (slide 2), PD verdadeira (10, 22), amostra de calibração (27, 'Não existe em dados reais'), janelas novas (33, 35, 36). Consequência econômica e regulatória mensurável e atual: no slide 16 a logística provisiona R$ 607 mil contra R$ 687 mil realizados (subprovisão de cerca de 12%), com a Resolução CMN 4.966/2021 e a BCB 352/2023 citadas na fonte; nos slides 32 e 36, resultado esperado e realizado em reais.",
+   "corrigir": "Já em 10. Para reforçar: levar ao slide 36 ou 37 o efeito em reais, sob a 4.966, da correção de nível que o comitê aprova (PD média de 9,72% para 11,34% no slide 28), para que a decisão final carregue a consequência de provisão que o slide 16 mediu."
+  },
+  "progressao": {
+   "nota": 8,
+   "evidencia": "Do intuitivo ao formal está bem resolvido (fila e pares antes da AUC; contagem binomial antes da curva de confiabilidade; quatro clientes antes de três tarefas), e cada conceito novo nasce da limitação do anterior mostrada na tela (acurácia do slide 3 leva a ordenar; 'o que a AUC não diz' do 10 leva ao 16). Aprofundamentos marcados e puláveis (7, 13, 14, 20, 30, 33 com o rótulo APROFUNDAMENTO, captura 20). Duas condições do 9 falham. Tempo: o percurso essencial do capítulo soma 114 min (tests/capitulo7-roteiro.test.ts linha 48) e a Aula 3 tem os capítulos 7 e 8 (docs/00-briefing-original.md linha 17); os essenciais do capítulo 8 somam 63 min (content/generated/extract.json, c8p2 a c8p13), total de 177 min para 165 úteis (DUR_AULA 180 menos INTERVALO 15, apresentacao-curso-pd.html linha 1639). Conceito antes de apresentado: o slide 18 usa o p de Jeffreys na leitura (s18 linha 45, 'slide 21') três slides antes de o 21 apresentá-lo; os slides 20 e 25 usam a isotônica e a decomposição CORP (s20 linha 48 e s25 linha 69, 'isotônica, slide 30') dez e cinco slides antes de o 30 apresentá-la; o resultado esperado com receita de 28%, perda de 65%, funding de 12%, R$ 120 e 2% de capital entra nos slides 1, 11 e 16 (fonte do s11 linha 38, 'capítulo 8') e só é explicado no 32, apoiado num motor que o capítulo 8, posterior, ensina (c8p4 a perda esperada, c8p5 o resultado por proposta).",
+   "corrigir": "Cortar 12 min do essencial: rebaixar a aprofundamento o 15 (c7p27, laboratório de ordenação, 5 min), o 26 (c7p35, laboratório de calibração, 5 min) e o 24 (c7p34, log loss, 3 min), o que leva o capítulo a 101 min e a Aula 3 a 164; ou acertar com o capítulo 8 a redução equivalente. Tirar os usos antecipados: no slide 18, trocar o p de Jeffreys pelo intervalo de Wilson da taxa (8,9% a 13,5%) e deixar Jeffreys para o 21; no 20 e no 25, definir em uma frase na tela a regressão isotônica (curva não decrescente ajustada por PAV) ou mover o 30 para antes do 20; no 11, dizer só 'corte que maximiza o resultado esperado, slide 32' e, no 32, mostrar a fórmula do resultado por proposta com as cinco hipóteses."
+  },
+  "estadoDaArte": {
+   "nota": 10,
+   "evidencia": "Os 12 essenciais estão em slide funcionando com os dados do caso: E1 nos slides 4, 10 e 16; E2 nos slides 6 a 11 (Gini = 2 AUC menos 1 = 0,4514 no apêndice, s38 linha 26); E3 nos 33, 34 e 36 com IC de DeLong; E4 no 14 com curva PR e precisão média; E5 no 19 e no 21 com Wilson por faixa; E6 no 18 (média), 22 e 29 (intercepto e slope com IC de Wald) e 19 (curva); E7 nos 23, 24 e 25 (decomposição sem faixas e a de Murphy na nota); E8 nos 27 a 30; E9 nos 11, 31 e 32; E10 nos 2, 34 e 35; E11 no 21 (Jeffreys na carteira e por decil, com a nota de que é o teste que o BCE pede), 18 e 36; E12 no 16 (Σ PD × 65% × EAD contra o realizado, Res. CMN 4.966/2021). Fronteira: F1 em slide com os dados (CORP no 20 e MCB, DSC, UNC no 25, com a logística e o boosting); F2 a F6 no apêndice, aba Fronteira e regulação (s38 linhas 35 a 39), cada um com uma frase do que resolve e quando usar e com a referência primária na aba Referências (Kull, Silva Filho e Flach 2017; Guo e outros 2017; Vovk e Petej 2014; Vickers e Elkin 2006; Hébert Johnson e outros 2018; EBA/GL/2017/16). Nada superado apresentado como atual: Hosmer e Lemeshow e ECE estão em Fora do protocolo com o motivo (s38 linhas 28 e 29).",
+   "corrigir": "Já em 10 pela regra do checklist. O que tornaria a entrega mais forte que a regra: levar ao menos dois métodos de fronteira para a tela com o caso, porque os dados já existem (curva de benefício líquido sobre a mesma grade de cortes do slide 32, que o apêndice linka como se lá estivesse; curva de confiabilidade por segmento no slide 37, onde hoje está só 'Falta'); dizer na frase de F6 o que o ajuste ao ciclo resolve (prociclicidade do capital) e, em E12, que a 4.966 usa PD de 12 meses no estágio 1 e PD de vida inteira nos estágios 2 e 3."
+  },
+  "fechamento": {
+   "nota": 8,
+   "evidencia": "A conclusão (slide 37, captura 37) cumpre o miolo do 9: responde às quatro perguntas com os números do caso (AUC 0,7257, IC 0,668 a 0,783; PD 9,7% contra 11,0%, Jeffreys p = 0,12, slope 1,12 com IC 0,79 a 1,46; corte 14,0% contra KS 9,7%; diferença 0,0299, IC 0,0001 a 0,0596, e 0,0067 em 300 janelas novas), diz o que falta em cada cartão ('Falta: ...', s37 linhas 102 a 105), decide ('A logística fica... O boosting só volta numa janela nova', linha 109) e leva a ação (diagnóstico por sintoma com links de volta e o painel 'Para aplicar amanhã', linhas 90 a 95 e 134). Falha a condição do material de apoio alinhado à tela. O guia do aluno publicado (content/materiais/capitulo-07-aluno.pdf, gerado às 07:13 de 02/10, antes dos commits das 08:02 a 09:26 que puseram CORP e Jeffreys e corrigiram os slides) não contém nenhuma ocorrência de Jeffreys nem de CORP; descreve o slide 36 com KS no cartão Ordenação e log loss no cartão Probabilidade, que a tela não mostra; descreve o 37 com 'observado ÷ esperado de 1,13... Brier de 0,0913 contra 0,0980', enquanto a tela mostra Jeffreys p = 0,12 e o IC do slope; e diz que o apêndice tem 'quatro abas', quando a tela tem cinco (s38 linha 88, com Fronteira e regulação). O guia do professor repete o erro das abas (paginas.json, c7p19, leitura 'Quatro abas de consulta'). Guia do professor, questões curadas (c7p7q com 9,75% e 14,0%, c7p16q com 0,3136, 0,3167 e 0,3149) e síntese da apostila (sinteses.json, chave 7) estão alinhados com a tela.",
+   "corrigir": "Regerar o guia do aluno do capítulo 7 a partir do estado atual (Jeffreys nos slides 18, 21, 36 e 37; CORP nos 20 e 25; cartões do 36 e do 37 como estão na tela; cinco abas no apêndice) e republicar content/materiais/capitulo-07-aluno.pdf; corrigir em paginas.json, c7p19, a leitura para 'Cinco abas de consulta' e a condução para citar a aba Fronteira e regulação. Com isso o item vai a 10, porque o painel 'Para aplicar amanhã' do slide 37 já entrega o procedimento aplicável a uma carteira real."
+  }
+ },
+ "estadoDaArte": [
+  {
+   "id": "E1",
+   "tema": "Discriminação, calibração e decisão como perguntas distintas",
+   "classe": "essencial",
+   "slides": [
+    "c7p1",
+    "c7p3",
+    "c7p24",
+    "c7p28"
+   ],
+   "fonte": "Van Calster e outros (2019), BMC Medicine 17:230; na tela, quatro clientes reais com δ em log odds e corte (slide 4) e mesma AUC 0,7257 com perdas diferentes (slide 16)"
+  },
+  {
+   "id": "E2",
+   "tema": "ROC, AUC (com Gini = 2 AUC menos 1) e KS",
+   "classe": "essencial",
+   "slides": [
+    "c7p5",
+    "c7p22",
+    "c7p23",
+    "c7p6",
+    "c7p24",
+    "c7p7",
+    "apendice"
+   ],
+   "fonte": "Hanley e McNeil (1982), Radiology 143(1); Fawcett (2006), Pattern Recognition Letters 27(8); Gini 0,4514 só no apêndice, aba Fora do protocolo"
+  },
+  {
+   "id": "E3",
+   "tema": "Incerteza da AUC e comparação pareada de modelos",
+   "classe": "essencial",
+   "slides": [
+    "c7p14",
+    "c7p15",
+    "c7p38",
+    "c7p1"
+   ],
+   "fonte": "DeLong, DeLong e Clarke Pearson (1988), Biometrics 44(3); na tela, diferença 0,0299 com IC 0,0001 a 0,0596 e bootstrap pareado de 1.000 réplicas"
+  },
+  {
+   "id": "E4",
+   "tema": "Evento raro: precisão, recall e curva PR",
+   "classe": "essencial",
+   "slides": [
+    "c7p23",
+    "c7p26"
+   ],
+   "fonte": "Saito e Rehmsmeier (2015), PLoS ONE 10(3); na tela, curva PR da janela com a prevalência como referência e carteira hipotética de outra prevalência"
+  },
+  {
+   "id": "E5",
+   "tema": "Curva de confiabilidade com intervalo por faixa",
+   "classe": "essencial",
+   "slides": [
+    "c7p10",
+    "c7p31",
+    "c7p11"
+   ],
+   "fonte": "Wilson (1927), JASA 22(158); na tela, decis da logística com Wilson de 95% e comparação com a aproximação normal"
+  },
+  {
+   "id": "E6",
+   "tema": "Hierarquia de calibração: média, intercepto e slope, curva",
+   "classe": "essencial",
+   "slides": [
+    "c7p29",
+    "c7p32",
+    "c7p13",
+    "c7p10"
+   ],
+   "fonte": "Cox (1958), Biometrika 45; Van Calster e outros (2019); na tela, O/E 1,13 (slide 18), intercepto e slope por máxima verossimilhança (22) e slope com IC de Wald (29)"
+  },
+  {
+   "id": "E7",
+   "tema": "Regras de pontuação próprias: Brier, log loss, decomposição de Murphy",
+   "classe": "essencial",
+   "slides": [
+    "c7p33",
+    "c7p34",
+    "c7p11"
+   ],
+   "fonte": "Brier (1950); Murphy (1973); Gneiting e Raftery (2007), JASA 102(477); na tela, Brier contra a constante do treino, log loss contra Brier e decomposição do Brier"
+  },
+  {
+   "id": "E8",
+   "tema": "Recalibração em amostra própria: intercepto, Platt, isotônica",
+   "classe": "essencial",
+   "slides": [
+    "c7p16",
+    "c7p12",
+    "c7p13",
+    "c7p36"
+   ],
+   "fonte": "Platt (1999); Zadrozny e Elkan (2002), KDD; Niculescu Mizil e Caruana (2005), ICML; na tela, protocolo contra atalho (0,3167 contra 0,3136), Newton para o intercepto (a = 0,1822) e isotônica com 3.000 e 300 casos"
+  },
+  {
+   "id": "E9",
+   "tema": "Corte por custo e receita, não por métrica estatística",
+   "classe": "essencial",
+   "slides": [
+    "c7p7",
+    "c7p37",
+    "c7p18",
+    "c7p38"
+   ],
+   "fonte": "Elkan (2001), IJCAI; na tela, corte econômico de 14,0% contra KS de 9,7%, sensibilidade a receita de 40%"
+  },
+  {
+   "id": "E10",
+   "tema": "Validação fora do tempo com escolhas congeladas",
+   "classe": "essencial",
+   "slides": [
+    "c7p21",
+    "c7p15",
+    "c7p17"
+   ],
+   "fonte": "BCBS (2005), Studies on the Validation of Internal Rating Systems, WP 14; na tela, 20 reaberturas da janela contra 300 janelas novas"
+  },
+  {
+   "id": "E11",
+   "tema": "Teste de aderência da PD por faixa usado por supervisores (binomial, Jeffreys)",
+   "classe": "essencial",
+   "slides": [
+    "c7p31",
+    "c7p29",
+    "c7p38",
+    "c7p20"
+   ],
+   "fonte": "ECB (2019), Instructions for reporting the validation results of internal models; na tela, Jeffreys na carteira (p = 0,12) e por decil, e na cauda oposta para o candidato que superestima"
+  },
+  {
+   "id": "E12",
+   "tema": "PD calibrada como insumo de perda esperada e provisão no Brasil",
+   "classe": "essencial",
+   "slides": [
+    "c7p28",
+    "apendice"
+   ],
+   "fonte": "Resolução CMN 4.966/2021 e Resolução BCB 352/2023; na tela, perda esperada de R$ 607 mil (logística) contra R$ 687 mil realizados no slide 16"
+  },
+  {
+   "id": "F1",
+   "tema": "Diagrama de confiabilidade estável por regressão isotônica (CORP) e decomposição MCB, DSC, UNC",
+   "classe": "fronteira",
+   "slides": [
+    "c7p30",
+    "c7p11"
+   ],
+   "fonte": "Dimitriadis, Gneiting e Jordan (2021), PNAS 118(8) e2016191118; na tela, degraus CORP da logística (slide 20) e MCB, DSC, UNC de A, B, logística e boosting (slide 25)"
+  },
+  {
+   "id": "F2",
+   "tema": "Calibradores além de Platt: beta calibration, temperature scaling",
+   "classe": "fronteira",
+   "slides": [
+    "apendice"
+   ],
+   "fonte": "Kull, Silva Filho e Flach (2017), AISTATS; Guo e outros (2017), ICML; apêndice, aba Fronteira e regulação, s38 linha 35"
+  },
+  {
+   "id": "F3",
+   "tema": "Probabilidades com garantia de validade: Venn Abers e predição conformal",
+   "classe": "fronteira",
+   "slides": [
+    "apendice"
+   ],
+   "fonte": "Vovk e Petej (2014), Venn Abers predictors, UAI; apêndice, s38 linha 36, com quando usar (amostra de calibração pequena)"
+  },
+  {
+   "id": "F4",
+   "tema": "Benefício líquido e curva de decisão",
+   "classe": "fronteira",
+   "slides": [
+    "apendice"
+   ],
+   "fonte": "Vickers e Elkin (2006), Medical Decision Making 26(6); apêndice, s38 linha 37; o link para o slide 32 não corresponde a cobertura em slide, porque o 32 não calcula benefício líquido"
+  },
+  {
+   "id": "F5",
+   "tema": "Calibração por segmento e multicalibração",
+   "classe": "fronteira",
+   "slides": [
+    "apendice"
+   ],
+   "fonte": "Hébert Johnson e outros (2018), Multicalibration, ICML; apêndice, s38 linha 38; no slide 37 aparece só como 'Falta: estabilidade por segmento'"
+  },
+  {
+   "id": "F6",
+   "tema": "PD de longo prazo e ajuste ao ciclo (through the cycle)",
+   "classe": "fronteira",
+   "slides": [
+    "apendice"
+   ],
+   "fonte": "EBA (2017), Guidelines on PD estimation, LGD estimation and the treatment of defaulted exposures, EBA/GL/2017/16; apêndice, s38 linha 39"
+  }
+ ],
+ "excecoesVarredura": [],
+ "leitura": "O capítulo é coerente: as quatro perguntas e o comitê do slide 36 são declarados no slide 1, a trilha está em todos os quadros, as transições encadeiam os 38 slides e a conclusão responde às quatro perguntas com os números da mesma janela; as falhas são de acabamento (três nomes para a janela, o 27 marcado como Validação no meio de Probabilidade, segmentos prometidos e não tratados). Há um exemplo prático e interessante: a mesma janela de 737 propostas e 81 defaults atravessa tudo, a pergunta (o boosting substitui a logística?) é a que um comitê de risco de fato enfrenta, e o caso mede consequências em reais e sob a Resolução CMN 4.966 (subprovisão de R$ 607 mil contra R$ 687 mil no slide 16; R$ 569 mil contra R$ 588 mil no 36), com os dados sintéticos declarados e usados para o que dados reais não permitem (janelas novas, PD verdadeira, recusados). Entrega o estado da arte informacional: os 12 essenciais estão em slide funcionando com o caso, incluindo DeLong, Wilson, Jeffreys e recalibração em amostra própria, e o CORP com MCB, DSC e UNC também; os outros cinco temas de fronteira estão só no apêndice, com referência e quando usar, o que cumpre a regra mas fica como catálogo, não como demonstração. O que impede a aprovação são dois itens: a progressão (o essencial do capítulo, 114 min, mais os 63 do capítulo 8 passam dos 165 úteis da Aula 3, e Jeffreys, isotônica e o resultado econômico são usados antes de apresentados) e o fechamento (o guia do aluno publicado está atrás da tela: sem Jeffreys nem CORP, cartões do 36 e do 37 descritos como não estão, e quatro abas no apêndice em vez de cinco)."
+}

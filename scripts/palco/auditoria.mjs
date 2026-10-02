@@ -49,7 +49,7 @@ const MEDIR = () => {
     const px = parseFloat(cs.fontSize) * zoom; const pct = (px / rs.height) * 100;
     if (el.closest("svg")) { fonteSvgMin = Math.min(fonteSvgMin, pct); continue; }
     palavras += t.split(" ").length;
-    if (el.closest(".eyebrow, sup, sub, .badge, .vz-fonte, .hint, .nota, figcaption, small, .rot, .info-kicker, .info-faixa-k, .info-nome, .selo, .explorar-dados, .vz-grafico-t, .katex, .vz-ace-eixo, .vz-legenda, .vz-slider-rotulo, th, td, button, .btn, .table")) continue;
+    if (el.closest(".eyebrow, sup, sub, .badge, .vz-fonte, .hint, .nota, figcaption, small, .rot, .info-kicker, .info-faixa-k, .info-nome, .selo, .explorar-dados, .vz-grafico-t, .katex, .vz-ace-eixo, .vz-legenda, .vz-slider-rotulo, th, td, button, .btn, .table, .q7-trilha, .q7-num, .q7-k, .q7-fonte, .q7-nota, .q7-leg, .q7-graf-t")) continue; // capítulo 7: equivalentes de eyebrow, fonte, nota, legenda e título de gráfico
     if (pct < fonteMin) { fonteMin = pct; fonteMinEl = el.tagName.toLowerCase() + (el.className ? "." + String(el.className).split(" ")[0] : "") + ":" + t.slice(0, 30); }
     const bloco = el.closest("p, li, dd, dt"); if (bloco && !vistos.has(bloco)) { vistos.add(bloco); const rb = bloco.getBoundingClientRect(); const lh = parseFloat(cs.lineHeight) * zoom || px * 1.4; const linhas = Math.max(1, Math.round(rb.height / lh)); if (linhas > 1) linhaMax = Math.max(linhaMax, bloco.textContent.trim().length / linhas); }
   }

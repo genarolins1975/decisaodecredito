@@ -1,0 +1,122 @@
+"use client";
+import { useState } from "react";
+import { Botao, escala, Expandir, Formula, Grafico, Kpi, LinkSlide, Painel, Previsao, Quadro, Seg, type Pagina } from "../base";
+import { CAL, CAL_PGR, CAL_PL, D, MINI, N, PGR, PL, Y } from "@/lib/capitulo7/dados";
+import { ajustarIntercepto, aucPorPares, brier, corp, jeffreys, logit, logLoss, media, sigmoide, transformar, wilson } from "@/lib/capitulo7/metricas";
+import { calibradores } from "@/lib/capitulo7/janelas";
+import { int, num, pct } from "@/lib/capitulo7/formato";
+
+/**
+ * 28 · c7p12 · Correção de nível por ajuste de intercepto. O a é estimado na amostra de calibração resolvendo
+ * Σ σ(logit pᵢ + a) = Σ yᵢ por Newton (a mesma conta da máxima verossimilhança com slope fixado em 1); a diferença de
+ * logits das médias aparece ao lado para mostrar que ela não resolve a equação. A janela fora do tempo fica fechada até
+ * a previsão: o que acontece com o Brier quando só o nível é corrigido. Rodada 2: a mesma leitura para os dois modelos.
+ * A PD média antes já cabia no intervalo da janela (Jeffreys); a correção vem da amostra de calibração de 3.000 casos e
+ * a evidência de que ela melhora vem da perda esperada pela PD verdadeira (calibradores de janelas.ts), não da janela de
+ * 81 defaults. A régua de baixo marca a PD média antes e depois e, revelada a previsão, a taxa observada com Wilson.
+ * Rodada 4: os marcadores de média dizem que são da janela (737), não das 20 propostas desenhadas; a leitura revelada
+ * justifica a previsão com o Brier da tabela.
+ * Rodada 5: o Brier quase não muda porque a parte de calibração (MCB da decomposição CORP, slide 25) já era pequena,
+ * não porque o intercepto "só mexe no nível": com a logística deslocada em +1,4 (o A do slide 25), o mesmo ajuste,
+ * estimado na mesma calibração, derruba o Brier (CONTRA). O marcador de baixo é ▼ e o rótulo diz ▼.
+ * Rodada 6: ▲ fica acima do eixo de cima e ▼ abaixo do de baixo, fora da faixa dos segmentos; a log loss esperada é a
+ * perda esperada pela PD verdadeira (média exata), não as réplicas sintéticas (termo reservado aos 300 sorteios).
+ */
+type Mod = "logistica" | "boosting";
+const ALVO = CAL.y.reduce((s, v) => s + v, 0);
+function calcula(pdCal: readonly number[], pdJan: readonly number[], modelo: "pl" | "pgr") {
+  const iter: { k: number; a: number; soma: number }[] = []; let a = 0;
+  for (let k = 0; k < 6; k++) { let f = 0, g = 0; for (const p of pdCal) { const q = sigmoide(logit(p) + a); f += q; g += q * (1 - q); } iter.push({ k, a, soma: f }); a -= (f - ALVO) / g; }
+  const A = iter[iter.length - 1].a, ingenuo = logit(ALVO / CAL.n) - logit(media(pdCal)!);
+  const depois = transformar(pdJan, A, 1);
+  return { iter, A, ingenuo, somaIngenuo: pdCal.reduce((s, p) => s + sigmoide(logit(p) + ingenuo), 0), antes: pdJan, depois, auc0: aucPorPares(Y, pdJan).auc!, auc1: aucPorPares(Y, depois).auc!,
+    bs0: brier(Y, pdJan), bs1: brier(Y, depois), ll0: logLoss(Y, pdJan).valor, ll1: logLoss(Y, depois).valor, pm0: media(pdJan)!, pm1: media(depois)!,
+    j0: jeffreys(D, N, media(pdJan)!), e0: calibradores(modelo).sem!.esperada.logLoss, e1: calibradores(modelo).intercepto!.esperada.logLoss,
+    mcb0: corp(Y, pdJan).mcb, dsc0: corp(Y, pdJan).dsc };
+}
+const R: Record<Mod, ReturnType<typeof calcula>> = { logistica: calcula(CAL_PL, PL, "pl"), boosting: calcula(CAL_PGR, PGR, "pgr") };
+const NOME: Record<Mod, string> = { logistica: "logística", boosting: "boosting sem recalibrar" };
+const DA: Record<Mod, string> = { logistica: "da", boosting: "do" };
+const OBS = wilson(D, N)!;
+/** Contraexemplo: a logística com o nível deslocado em +1,4 log odds (o A do slide 25); o intercepto, estimado na mesma
+ * amostra de calibração deslocada, leva o Brier da janela de bs0 a bs1. */
+const DESLOC = 1.4;
+const CONTRA = (() => {
+  const pj = transformar(PL, DESLOC, 1), a = ajustarIntercepto(CAL.y, transformar(CAL_PL, DESLOC, 1));
+  return { bs0: brier(Y, pj), bs1: brier(Y, transformar(pj, a, 1)) };
+})();
+const CERTA = 1;
+/** a variação do Brier é menor que 1% do valor: "quase não muda", a alternativa certa da previsão */
+const bsQuase = (r: { bs0: number; bs1: number }) => Math.abs(r.bs1 - r.bs0) < 0.01 * r.bs0;
+
+export function S28Intercepto({ pagina }: { pagina?: Pagina }) {
+  const [prev, setPrev] = useState<number | null>(null);
+  const aberto = prev === CERTA;
+  const [mod, setMod] = useState<Mod>("logistica");
+  const r = R[mod];
+  return (
+    <Quadro slug="c7p12" pagina={pagina} layout="gl"
+      conclusao={!aberto ? <>Na amostra de calibração ({int(CAL.n)} casos, {ALVO} defaults), Newton chega ao intercepto {DA[mod]} {NOME[mod]}: <b>a = {num(r.A, 4)}</b>. A diferença de logits das médias daria {num(r.ingenuo, 4)}, que não fecha a conta: esperaria {num(r.somaIngenuo, 1)} defaults, não {ALVO}. Agora a previsão.</>
+        : <>{bsQuase(r) ? "Isso: o" : "O"} Brier na janela vai de {num(r.bs0, 5)} para <b>{num(r.bs1, 5)}</b>: o intercepto só mexe na parte de calibração, que era pequena (MCB {num(r.mcb0, 4)}); a separação (DSC {num(r.dsc0, 4)}) e a ordem ficam. A PD média {DA[mod]} {NOME[mod]} vai de {pct(r.pm0, 2)} para <b>{pct(r.pm1, 2)}</b>, observado {pct(OBS.p, 2)}; os {pct(r.pm0, 2)} {r.pm0 >= OBS.lo && r.pm0 <= OBS.hi ? "já cabiam no IC de Wilson" : "ficavam fora do IC de Wilson"} (Jeffreys p = {num(r.j0, 2)}: teste unilateral da PD média contra os defaults, priori de Jeffreys, adotado pelo BCE). A correção vem dos {int(CAL.n)} casos da calibração; pela PD verdadeira (média exata), a log loss esperada cai de {num(r.e0, 4)} para <b>{num(r.e1, 4)}</b>. E se a inclinação também errar? <LinkSlide slug="c7p13">Slide 29</LinkSlide>.</>}
+      fonte={`Calibração sintética: ${int(CAL.n)} sorteios dos proponentes da janela, desfecho novo da PD verdadeira (semente ${CAL.semente}). Janela fora do tempo: ${N} propostas, ${D} defaults; IC de Wilson de 95%; Jeffreys unilateral para PD baixa. Log loss esperada: perda esperada pela PD verdadeira (média exata sobre o desfecho, sem sorteio).`}>
+      <Painel titulo="Antes e depois, na mesma escala: 20 propostas da mini-base">
+        <Grafico rotulo={`PD da ${NOME[mod]} antes e depois do ajuste de intercepto ${num(r.A, 3)} para 20 propostas; nenhuma linha se cruza; PD média da janela ${pct(r.pm0, 2)} antes e ${pct(r.pm1, 2)} depois${aberto ? `; observado ${pct(OBS.p, 1)}` : ""}`} arCelular="4 / 3">
+          {(d) => {
+            // em tela estreita, o rótulo da média vai para uma segunda linha e os eixos se afastam das bordas para caber nela
+            const estreito = d.w < 560, l2 = estreito ? d.fs * 1.15 : 0;
+            // de cima para baixo: título, ▲ da média (fora da faixa dos segmentos), eixo de cima; eixo de baixo, ▼ da média,
+            // marcas de 0% a 40%, taxa observada com Wilson, título. Os marcadores nunca tocam os segmentos das propostas; a
+            // escala comum aparece numa grade vertical clara entre os dois eixos e nas marcas do eixo de baixo.
+            const x = escala([0, 0.4], [d.fs * 1.2, d.w - d.fs * 1.2]); const yA = d.fs * 2.9 + l2, yB = d.h - d.fs * 4.45 - l2;
+            const antes = MINI.map((m) => r.antes[m.id]), dep = MINI.map((m) => r.depois[m.id]);
+            return (
+              <g>
+                <text className="q7-eixo-t" x={x(0)} y={yA - d.fs * 1.75 - l2}>PD antes<tspan {...(estreito ? { x: x(0), dy: "1.15em" } : { dx: "0.8em" })} style={{ fill: "#176C73" }}>▲ média da janela (737): {pct(r.pm0, 2)}</tspan></text>
+                <text className="q7-eixo-t" x={x(0)} y={yB + d.fs * 4.15}>PD depois do ajuste<tspan {...(estreito ? { x: x(0), dy: "1.15em" } : { dx: "0.8em" })} style={{ fill: "#176C73" }}>▼ média da janela (737): {pct(r.pm1, 2)}</tspan></text>
+                {[0, 0.1, 0.2, 0.3, 0.4].map((t) => <g key={t}><line className="q7-grade" x1={x(t)} x2={x(t)} y1={yA} y2={yB} /><text className="q7-tick" x={x(t)} y={yB + d.fs * 2.1} textAnchor="middle">{pct(t, 0)}</text></g>)}
+                {[yA, yB].map((yy) => <line key={yy} className="q7-eixo" x1={x(0)} x2={x(0.4)} y1={yy} y2={yy} />)}
+                {MINI.map((m, i) => <line key={m.id} x1={x(antes[i])} y1={yA} x2={x(dep[i])} y2={yB} stroke={m.y ? "#8C2332" : "#9AA1AD"} strokeWidth={m.y ? 2.6 : 1.6} />)}
+                {MINI.map((m, i) => <g key={`c${m.id}`}><circle cx={x(antes[i])} cy={yA} r={d.fs * 0.3} className={m.y ? "q7-pt-def" : "q7-pt-adi"} /><circle cx={x(dep[i])} cy={yB} r={d.fs * 0.3} className={m.y ? "q7-pt-def" : "q7-pt-adi"} /></g>)}
+                {aberto && <g><rect x={x(OBS.lo)} y={yB + d.fs * 2.5} width={x(OBS.hi) - x(OBS.lo)} height={d.fs * 0.5} rx={d.fs * 0.25} fill="#5B6475" fillOpacity={0.35} /><rect x={x(OBS.p) - d.fs * 0.3} y={yB + d.fs * 2.45} width={d.fs * 0.6} height={d.fs * 0.6} fill="#fff" stroke="#2A3342" strokeWidth={2} /><text className="q7-rot--peq" x={x(OBS.hi) + d.fs * 0.4} y={yB + d.fs * 2.75} dy=".35em" style={{ fill: "#2A3342", fontWeight: 700 }}>□ observado {pct(OBS.p, 1)}, IC {pct(OBS.lo, 1)} a {pct(OBS.hi, 1)}</text></g>}
+                {[{ v: r.pm0, yy: yA, cima: true }, { v: r.pm1, yy: yB, cima: false }].map((q) => <path key={String(q.cima)} d={q.cima ? `M${x(q.v)} ${q.yy - d.fs * 1.2}l${d.fs * 0.4} ${d.fs * 0.7}h${-d.fs * 0.8}z` : `M${x(q.v)} ${q.yy + d.fs * 1.2}l${d.fs * 0.4} ${-d.fs * 0.7}h${-d.fs * 0.8}z`} fill="#176C73" stroke="#fff" strokeWidth={1.5} />)}
+              </g>
+            );
+          }}
+        </Grafico>
+        <Formula f={String.raw`\begin{aligned}p'&=\sigma\big(\operatorname{logit}(p)+a\big)\\ \textstyle\sum_i y_i&=\textstyle\sum_i \sigma\big(\operatorname{logit}(p_i)+a\big)\end{aligned}`} />
+        <Expandir resumo="Por que não a diferença de logits das médias?">
+          <p className="q7-nota">logit(média de y) − logit(média de p) = {num(r.ingenuo, 4)}. Como σ não é linear, somar esse valor a cada logit não leva a média das PDs à taxa observada: dá {num(r.somaIngenuo, 1)} esperados contra {ALVO}. A equação precisa de uma raiz numérica, aqui por Newton.</p>
+        </Expandir>
+      </Painel>
+      <Painel>
+        <div className="q7-linha-ctl"><Seg rotulo="Modelo" opcoes={[{ v: "logistica" as Mod, r: "Logística" }, { v: "boosting" as Mod, r: "Boosting" }]} valor={mod} onChange={setMod} cor /><Botao sec onClick={() => { setPrev(null); setMod("logistica"); }}>Restaurar</Botao></div>
+        {prev === null && <table className="q7-tab">
+          <thead><tr><th className="q7-t-l">Newton, na calibração</th><th>a</th><th>Defaults esperados</th></tr></thead>
+          <tbody>{r.iter.slice(0, 3).map((it) => <tr key={it.k}><th>{it.k}</th><td>{num(it.a, 4)}</td><td>{num(it.soma, 2)}</td></tr>)}<tr data-on="1"><th>alvo</th><td></td><td>{ALVO}</td></tr></tbody>
+        </table>}
+        {prev !== null && <p className="q7-nota">Newton, na calibração: a = {num(r.A, 4)}, {num(r.iter[r.iter.length - 1].soma, 2)} defaults esperados para {ALVO} observados.</p>}
+        {aberto ? (
+          <>
+            <Kpi rotulo="PD média na janela" valor={pct(r.pm1, 2)} detalhe={`antes ${pct(r.pm0, 2)}, Jeffreys p = ${num(r.j0, 2)} · observado ${pct(OBS.p, 2)}`} tom="prob" tam="mini" />
+            <table className="q7-tab q7-tab--comp">
+              <thead><tr><th className="q7-t-l">{mod === "logistica" ? "Logística" : "Boosting"}</th><th>Antes</th><th>Depois</th></tr></thead>
+              <tbody>
+                <tr><th>AUC na janela</th><td>{num(r.auc0, 4)}</td><td>{num(r.auc1, 4)}</td></tr>
+                <tr><th>Brier na janela</th><td>{num(r.bs0, 5)}</td><td>{num(r.bs1, 5)}</td></tr>
+                <tr><th>Log loss na janela</th><td>{num(r.ll0, 4)}</td><td>{num(r.ll1, 4)}</td></tr>
+                <tr data-on="1"><th>Log loss esperada</th><td>{num(r.e0, 4)}</td><td>{num(r.e1, 4)}</td></tr>
+              </tbody>
+            </table>
+          </>
+        ) : (
+          <Previsao pergunta="Só o nível é corrigido. Na janela, o Brier..." escolha={prev} onEscolha={setPrev} recolher
+            opcoes={[
+              { certa: false, texto: "Cai muito: a PD média chega ao observado", retorno: `O intercepto só tira do Brier a parte de calibração, e aqui ela é pequena: MCB ${num(r.mcb0, 4)} num Brier de ${num(r.bs0, 4)} (slide 25). Com o nível muito errado, como na logística deslocada em +${num(DESLOC, 1)} do slide 25, o mesmo ajuste levaria o Brier de ${num(CONTRA.bs0, 5)} a ${num(CONTRA.bs1, 5)}. Superestima o erro de nível desta carteira.` },
+              { texto: "Quase não muda", certa: true, retorno: `Isso: o intercepto só mexe na parte de calibração do Brier (MCB ${num(r.mcb0, 4)}), que já era pequena; a separação fica onde estava.` },
+              { certa: false, texto: `Piora: a calibração teve ${pct(ALVO / CAL.n, 1)} de defaults, a janela não`, retorno: `Seria um risco se a calibração viesse de outra população. Aqui ela sai da mesma PD verdadeira, e ${pct(ALVO / CAL.n, 1)} cabe no intervalo da janela (${pct(OBS.lo, 1)} a ${pct(OBS.hi, 1)}): diferença de nível desse tamanho é ruído.` },
+            ]} />
+        )}
+      </Painel>
+    </Quadro>
+  );
+}

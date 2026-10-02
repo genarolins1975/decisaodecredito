@@ -1,6 +1,6 @@
 # Registro de progresso (para continuar em outra sessão)
 
-Última atualização: 23 de setembro de 2026. Branch: `claude/new-session-d2yt8t`.
+Última atualização: 2 de outubro de 2026. Branch: `claude/new-session-05kw73`.
 
 ## Estado por etapa do briefing
 
@@ -10,9 +10,15 @@
 | 2. Modelo de dados, migrações, autenticação, matrícula, isolamento | concluída | `drizzle/0000_*.sql`, testes e2e de matrícula e isolamento |
 | 3. Aula ponta a ponta (conteúdo, questão, resposta, presença, painel) | concluída | testes e2e "aula ao vivo"; capturas em `content/generated/shots` |
 | 4. Trabalhos, grupos, versões, correção, devolutiva, teste cego | concluída | testes e2e "trabalhos"; fluxo completo verificado por API |
-| 5. Migração integral e revisão técnica, didática e visual | concluída com pendências declaradas | 180 páginas migradas e o fecho da Aula 2 (c6p20), 181 no total; 84 visuais em iframe legado isolado (a portar); docs/03 |
+| 5. Migração integral e revisão técnica, didática e visual | concluída com pendências declaradas | 180 páginas migradas e o fecho da Aula 2 (c6p20), 181 no total, e 18 páginas novas do capítulo 7 reconstruído, 199; 84 visuais em iframe legado isolado (a portar); docs/03 |
 | 6. Testes de aceitação, segurança, acessibilidade, carga, restauração | concluída no ambiente local | docs/07 |
 | 7. Homologação, publicação e manuais | manuais concluídos; produção no ar, e cada merge publica código e conteúdo (confirmado em 23/09/2026); homologação separada sem registro | docs/09 |
+
+## Capítulo 7 reconstruído (02/10/2026)
+
+Avaliação, calibração, decisão e validação em 38 slides com quadro interativo nativo (`src/components/capitulo7`), roteiro único (`src/lib/capitulo7/roteiro.ts`), biblioteca de métricas conferida contra scikit-learn, SciPy e statsmodels (`tests/capitulo7-metricas.test.ts`), guias do professor e textos da origem em `content/capitulo7/paginas.json`, aplicados ao material por `npx tsx scripts/capitulo7/injetar.ts`. Plano, mapa antigo para novo e registro dos dados: `docs/CAPITULO_7_RECONSTRUCAO.md`. Validação e rubrica: `docs/capitulo7/RELATORIO_VALIDACAO.md` e `docs/capitulo7/RUBRICA.md`.
+
+Depois de mexer no roteiro ou nos guias do capítulo 7: `npx tsx scripts/capitulo7/injetar.ts && node scripts/content/extract.mjs && npm run content:import`.
 
 ## O que impede a conclusão total
 

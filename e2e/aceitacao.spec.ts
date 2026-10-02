@@ -15,7 +15,7 @@ test.describe.serial("edições, turmas e isolamento", () => {
     const dup = await prof.post(`/api/professor/edicoes/${e2026.id}/duplicar`, { data: { year: 2027, label } });
     expect(dup.status()).toBe(201);
     const body = await dup.json();
-    expect(body.copied.pages).toBe(181);   // 180 do material original e o fecho da Aula 2 (c6p20)
+    expect(body.copied.pages).toBe(199);   // 180 do material original, o fecho da Aula 2 (c6p20) e as 18 páginas novas do capítulo 7 reconstruído
     expect(body.warning).toContain("Matrículas");
     // nada de pessoas/registros na nova edição
     const cls = await sql("select count(*)::int as n from classes where edition_id=$1", [body.edition.id]);
@@ -310,16 +310,16 @@ test("estudo: prerrequisitos visíveis ao aluno com links e síntese do capítul
   expect(p12).not.toContain("Notas do professor"); expect(p12).not.toContain("intervencao");
 });
 
-test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e recalculam na tela", async ({ page }) => {
+test("visuais nativos: a ROC do capítulo 7 e cem vidas substituem o conteúdo herdado e recalculam na tela", async ({ page }) => {
   await loginUi(page, ALUNO_A);
   await page.goto("/aulas/c7p6");
-  const fila = page.locator('figure[data-vz="fila-de-risco"]');
-  await expect(fila).toBeVisible();
+  const roc = page.locator('figure[data-q7="c7p6"]');
+  await expect(roc).toBeVisible();
   await expect(page.locator("iframe[title^='Visual interativo']")).toHaveCount(0);
-  await expect(fila).toContainText("AUC 0,7257");
-  await expect(fila).toContainText("48 de 81");
-  await fila.getByRole("button", { name: "Sortear sem modelo" }).click();
-  await expect(fila).toContainText("fila sorteada");
+  await roc.getByRole("button", { name: "Baixar o corte" }).click();
+  await expect(roc.getByRole("button", { name: "Voltar" })).toBeEnabled();
+  await roc.getByRole("button", { name: "Janela (737)" }).click();
+  await expect(roc).toContainText("0,7257");
   await page.goto("/aulas/c1p5");
   const vidas = page.locator('figure[data-vz="cem-vidas"]');
   await expect(vidas).toBeVisible();
@@ -712,15 +712,20 @@ test("visuais nativos: a fila de risco e cem vidas substituem o iframe herdado e
   await mp.getByRole("button", { name: "Bloquear: o campo nasce depois" }).click();
   await expect(mp).toContainText("A AUC honesta é 0,6958");
 
-  // capítulo 7: o acerto que engana, os pares e o KS reproduzem os números das páginas
+  // capítulo 7: a armadilha da acurácia, os pares e o KS reproduzem os números da biblioteca do capítulo
   await page.goto("/aulas/c7p2");
-  await expect(page.locator('figure[data-vz="acerto-que-engana"]')).toContainText("acerto 73,27%");
-  await page.goto("/aulas/c7p5");
-  const par = page.locator('figure[data-vz="pares"]');
-  await par.getByRole("button", { name: "Todos" }).click();
-  await expect(par).toContainText("12 corretos");
+  const arm = page.locator('figure[data-q7="c7p2"]');
+  await arm.getByRole("button", { name: /Perto de 89%/ }).click();
+  await expect(arm).toContainText("89,0%");
+  await page.goto("/aulas/c7p22");
+  const pares = page.locator('figure[data-q7="c7p22"]');
+  await pares.getByRole("button", { name: "Todos os pares" }).click();
+  await expect(pares).toContainText("0,8067");
   await page.goto("/aulas/c7p7");
-  await expect(page.locator('figure[data-vz="ks-ks"]')).toContainText("KS máximo 0,3621");
+  const ks = page.locator('figure[data-q7="c7p7"]');
+  await ks.getByRole("button", { name: "Ir ao máximo" }).click();
+  await expect(ks).toContainText("KS = 0,3621");
+  await expect(ks).toContainText("14,0%");
 
   // capítulo 8: a política escolhida fecha consigo mesma e fica congelada para o capítulo 10
   await page.goto("/aulas/c8p12");

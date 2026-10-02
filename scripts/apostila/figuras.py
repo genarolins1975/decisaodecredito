@@ -63,15 +63,43 @@ ax.plot(range(len(F)), F, "-o", color=B, lw=2, ms=6, label="previsão acumulada 
 for m, f in enumerate(F): ax.annotate(f"{f:.2f}", (m, f), xytext=(0, 7), textcoords="offset points", ha="center", fontsize=8.5, color=INK)
 ax.set_xlabel("iteração m (cada uma ajusta uma árvore pequena ao resíduo)"); ax.set_ylabel("previsão"); ax.legend(loc="lower right"); ax.set_title("Palpite inicial 6,5; taxa de aprendizado 0,5; cada passo soma metade do resíduo", fontsize=9, color=MUT, loc="left"); salvar(fig, "conceito-c6-boosting")
 
-# c7 · quatro leituras da validação
-rng = np.random.default_rng(1); n = 4000; y = rng.random(n) < 0.1; s = rng.normal(0, 1, n) + 1.1 * y; p_hat = sig(-2.2 + 1.0 * s)
-o = np.argsort(-p_hat); ys = y[o]; tpr = np.cumsum(ys) / ys.sum(); fpr = np.cumsum(~ys) / (~ys).sum(); ks_i = np.argmax(tpr - fpr)
-fig, axs = plt.subplots(2, 2, figsize=(8, 6.2))
-axs[0, 0].plot(fpr, tpr, color=B, lw=2); axs[0, 0].plot([0, 1], [0, 1], color=MUT, lw=1, ls=":"); axs[0, 0].set_title("ROC: sensibilidade contra falso positivo", fontsize=9.5, loc="left"); axs[0, 0].set_xlabel("taxa de falso positivo"); axs[0, 0].set_ylabel("sensibilidade")
-q = np.arange(1, n + 1) / n; axs[0, 1].plot(q, tpr, color=O, lw=2, label="defaults acumulados"); axs[0, 1].plot(q, fpr, color=B, lw=2, label="não defaults acumulados"); axs[0, 1].vlines(q[ks_i], fpr[ks_i], tpr[ks_i], color=INK, lw=1.5); axs[0, 1].text(q[ks_i] + 0.02, (fpr[ks_i] + tpr[ks_i]) / 2, f"KS = {tpr[ks_i]-fpr[ks_i]:.2f}\nna PD {p_hat[o][ks_i]*100:.1f}%", fontsize=8.5); axs[0, 1].set_title("KS: onde as distribuições mais se separam", fontsize=9.5, loc="left"); axs[0, 1].set_xlabel("população ordenada por PD (proporção)"); axs[0, 1].legend(loc="lower right", fontsize=8)
-bins = np.quantile(p_hat, np.linspace(0, 1, 11)); idx = np.clip(np.digitize(p_hat, bins[1:-1]), 0, 9); pm = [p_hat[idx == b].mean() for b in range(10)]; om = [y[idx == b].mean() for b in range(10)]; nn = [(idx == b).sum() for b in range(10)]
-axs[1, 0].plot([0, max(pm) * 1.1], [0, max(pm) * 1.1], color=MUT, lw=1, ls=":"); axs[1, 0].errorbar(pm, om, yerr=1.96 * np.sqrt(np.array(om) * (1 - np.array(om)) / np.array(nn)), fmt="o", color=B, ecolor=B, capsize=3); axs[1, 0].set_title("Calibração por decil: PD média contra observado", fontsize=9.5, loc="left"); axs[1, 0].set_xlabel("PD média prevista"); axs[1, 0].set_ylabel("taxa observada")
-dec = np.arange(1, 11); ganho = [ys[: int(n * d / 10)].sum() / ys.sum() for d in dec]; axs[1, 1].bar(dec, np.array(ganho) * 100, color=B, width=0.7); axs[1, 1].plot(dec, dec * 10, color=MUT, lw=1, ls=":"); axs[1, 1].set_title("Ganho: quanto do risco está no topo", fontsize=9.5, loc="left"); axs[1, 1].set_xlabel("decis de maior PD (acumulado)"); axs[1, 1].set_ylabel("% dos defaults capturados"); axs[1, 1].set_xticks(dec)
+# c7 · as quatro perguntas na janela fora do tempo do curso (dados reais de src/lib/capitulo7/base.json, logística)
+import json
+_b = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../src/lib/capitulo7/base.json")))
+y = np.array(_b["oot"]["y"]) == 1; p_hat = np.array(_b["oot"]["pl"]); p_gb = np.array(_b["oot"]["pgr"]); ead = np.array(_b["oot"]["ead"]); n = len(y)
+o = np.argsort(-p_hat, kind="stable"); ys = y[o]; tpr = np.concatenate([[0], np.cumsum(ys) / ys.sum()]); fpr = np.concatenate([[0], np.cumsum(~ys) / (~ys).sum()])
+auc = ((p_hat[y][:, None] > p_hat[~y][None, :]).sum() + 0.5 * (p_hat[y][:, None] == p_hat[~y][None, :]).sum()) / (y.sum() * (~y).sum())
+fig, axs = plt.subplots(2, 2, figsize=(8, 6.4))
+a = axs[0, 0]; a.plot(fpr, tpr, color=B, lw=2); a.plot([0, 1], [0, 1], color=MUT, lw=1, ls=":"); a.set_title(f"Ordenação: ROC, AUC {auc:.4f}".replace(".", ","), fontsize=9.5, loc="left"); a.set_xlabel("adimplentes recusados (fração)"); a.set_ylabel("defaults recusados (fração)")
+borda = [int(np.floor(j * n / 10 + 0.5)) for j in range(11)]; asc = np.argsort(p_hat, kind="stable")
+pm = []; om = []; lo = []; hi = []
+for k in range(10):
+    ii = asc[borda[k]:borda[k + 1]]; m_ = len(ii); d_ = y[ii].sum(); ph = d_ / m_; z = 1.959964
+    c = (ph + z * z / (2 * m_)) / (1 + z * z / m_); w = z * np.sqrt(ph * (1 - ph) / m_ + z * z / (4 * m_ * m_)) / (1 + z * z / m_)
+    pm.append(p_hat[ii].mean()); om.append(ph); lo.append(ph - max(0, c - w)); hi.append(c + w - ph)
+a = axs[0, 1]; a.plot([0, 0.32], [0, 0.32], color=MUT, lw=1, ls=":"); a.errorbar(pm, om, yerr=[lo, hi], fmt="o", color=A, ecolor=A, capsize=3); a.set_title("Probabilidade: decis, com intervalo de Wilson", fontsize=9.5, loc="left"); a.set_xlabel("PD média prevista"); a.set_ylabel("taxa observada")
+cortes = np.arange(1, 81) * 0.005
+def esperado(c):
+    m_ = p_hat < c; return (0.28 * ead * (1 - p_hat) - 0.65 * ead * p_hat - 0.12 * ead - 120 - 0.02 * ead)[m_].sum()
+res = np.array([esperado(c) for c in cortes]) / 1e3; c_ot = cortes[np.argmax(res)]; ks_i = np.argmax(tpr - fpr); c_ks = p_hat[o][ks_i - 1]
+a = axs[1, 0]; a.plot(cortes * 100, res, color=O, lw=2); a.axvline(c_ot * 100, color=O, lw=1.2, ls="--"); a.axvline(c_ks * 100, color=B, lw=1.2, ls=":")
+a.text(c_ot * 100 + 0.6, res.min() + 30, f"ótimo {c_ot*100:.1f}%".replace(".", ","), fontsize=8.5, color=O); a.text(c_ks * 100 - 0.6, res.min() + 120, f"KS {c_ks*100:.1f}%".replace(".", ","), fontsize=8.5, color=B, ha="right")
+a.set_title("Decisão: resultado esperado por corte (R$ mil)", fontsize=9.5, loc="left"); a.set_xlabel("corte de PD (%): aprova abaixo")
+def mb32(semente):
+    st = [semente & 0xFFFFFFFF]
+    def r():
+        st[0] = (st[0] + 0x6D2B79F5) & 0xFFFFFFFF; t_ = st[0]
+        t_ = ((t_ ^ (t_ >> 15)) * (t_ | 1)) & 0xFFFFFFFF; t_ ^= (t_ + ((t_ ^ (t_ >> 7)) * (t_ | 61) & 0xFFFFFFFF)) & 0xFFFFFFFF
+        return ((t_ ^ (t_ >> 14)) & 0xFFFFFFFF) / 4294967296
+    return r
+def auc_(yy, pp):
+    pos = pp[yy]; neg = pp[~yy]; srt = np.sort(neg); return (np.searchsorted(srt, pos, "left").sum() + 0.5 * (np.searchsorted(srt, pos, "right") - np.searchsorted(srt, pos, "left")).sum()) / (len(pos) * len(neg))
+r_ = mb32(20260501); dif = []
+for _ in range(1000):
+    ii = np.array([int(np.floor(r_() * n)) for _ in range(n)]); dif.append(auc_(y[ii], p_hat[ii]) - auc_(y[ii], p_gb[ii]))
+dif = np.array(dif); q1, q2 = np.quantile(dif, [0.025, 0.975])
+a = axs[1, 1]; a.hist(dif, bins=np.arange(-0.04, 0.1001, 0.004), color=B, alpha=0.85); a.axvline(0, color=O, lw=1.5); a.axvspan(q1, q2, color=A, alpha=0.12)
+a.set_title(f"Validação: diferença de AUC, reamostragens ({q1:.4f} a {q2:.4f})".replace(".", ","), fontsize=9.5, loc="left"); a.set_xlabel("AUC logística menos AUC boosting"); a.set_ylabel("reamostragens")
 fig.tight_layout(); salvar(fig, "conceito-c7-validacao")
 
 # c8 · política: limiar, faixa manual e capacidade
