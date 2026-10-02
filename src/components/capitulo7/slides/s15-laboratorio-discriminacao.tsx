@@ -33,10 +33,11 @@ const ACASO = (() => {
 /** A previsão: somar A_PREV em log odds a todas as PDs. A PD média muda; a ordem, não. */
 const A_PREV = 1;
 const PDM_PREV = media(transformar(PL, A_PREV, 1))!;
+const PDM0 = media(PL)!;
 const OPS = [
   { texto: "Sobem: PDs maiores pegam mais defaults", certa: false, retorno: <>Todas as PDs sobem juntas e ninguém troca de lugar. Confunde nível com ordem; o nível pesa na perda (slide {SLIDE.c7p28.n}).</> },
   { texto: "Só a AUC fica; as outras dependem de corte", certa: false, retorno: <>KS e ganho leem posições da fila, não uma PD fixa. Confunde corte na fila com corte de PD, que muda a decisão (slide {SLIDE.c7p37.n}).</> },
-  { texto: "Nada: as quatro só leem a ordem", certa: true, retorno: <>Isso: ninguém troca de lugar (nível em +{num(A_PREV, 1)}).</> },
+  { texto: "Nada: as quatro só leem a ordem", certa: true, retorno: <>Isso: a mesma constante em log odds sobe todas as PDs e ninguém troca de lugar.</> },
   { texto: "Caem: as PDs ficam altas demais", certa: false, retorno: <>PD alta demais é erro de nível, medido na calibração (slides {SLIDE.c7p29.n} a {SLIDE.c7p32.n}). Confunde calibração com ordenação.</> },
 ];
 
@@ -99,7 +100,7 @@ export function S15LaboratorioDiscriminacao({ pagina }: { pagina?: Pagina }) {
         : cen === "boa" ? <>Fila da logística: {medidas}. Todas acima do acaso: aqui as quatro andam juntas porque leem a mesma fila. Entre modelos cujas ROC se cruzam, AUC e KS podem discordar.</>
         : cen === "aleatoria" ? <>Fila aleatória: AUC {num(auc, 4)}, dentro da faixa do acaso ({num(ACASO.lo, 2)} a {num(ACASO.hi, 2)}); ganho e lift no nível do acaso. A média das PDs é a mesma da logística: <b>média certa não ordena</b>.</>
         : cen === "invertida" ? <>Invertida: AUC {num(auc, 4)} = 1 − {num(AUC0, 4)}. Pela convenção (maior TPR − FPR), o KS cai a {num(k.ks, 3)}; medido por |TPR − FPR|, seria {num(ksAbs, 3)}{Math.abs(ksAbs - k0.ks) < 1e-9 ? ", o mesmo da logística" : ""}. A fila continua informativa, só que ao contrário: <b>KS baixo não separa fila invertida de fila sem informação</b>; a AUC abaixo de 0,5 separa.</>
-        : <>Ruído σ = {num(sigma, 1)}: {medidas}. Mais ruído, mais pares trocados, <b>as quatro caem juntas</b>.</>}
+        : <>Ruído σ = {num(sigma, 1)}: {medidas}. {pct(pdm0, 1) === pct(PDM0, 1) ? <>A PD média fica em {pct(PDM0, 1)}; </> : <>A PD média {pdm0 > PDM0 ? "sobe" : "cai"} de {pct(PDM0, 1)} para {pct(pdm0, 1)}, erro que um intercepto corrige; </>}o que derruba as quatro juntas são <b>os pares trocados</b>.</>}
       fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults. Embaralhamento com semente ${SEMENTE_EMBARALHAR}; faixa do acaso: 95% central de ${N_ACASO} embaralhamentos (sementes 1 a ${N_ACASO}); ruído normal com semente 20261015 somado em log odds. KS: maior TPR − FPR. Lift a partir de 2% da carteira.`}>
       <Painel>
         <div className="q7-s21-l"><Seg rotulo="Cenário" opcoes={(Object.keys(NOMES) as Cen[]).map((c) => ({ v: c, r: NOMES[c] }))} valor={cen} onChange={(c) => { setCen(c); setNivel(0); }} desab={!liberado} />{liberado ? <Botao sec onClick={restaurar}>Restaurar</Botao> : <span className="q7-nota">Cenários liberados depois da previsão</span>}</div>
@@ -115,7 +116,7 @@ export function S15LaboratorioDiscriminacao({ pagina }: { pagina?: Pagina }) {
         </div>
       </Painel>
       <Painel>
-        <Previsao pergunta={`+${num(A_PREV, 0)} em log odds em todas as PDs (média de ${pct(media(PL)!, 1)} a ${pct(PDM_PREV, 1)}): o que fazem AUC, KS, ganho e lift?`} opcoes={OPS} escolha={esc} onEscolha={(i) => { setEsc(i); if (i !== null && OPS[i].certa) { setCen("boa"); setNivel(A_PREV); } }} recolher={liberado} />
+        <Previsao pergunta={`+${num(A_PREV, 0)} em log odds em todas as PDs (média de ${pct(PDM0, 1)} a ${pct(PDM_PREV, 1)}): o que fazem AUC, KS, ganho e lift?`} opcoes={OPS} escolha={esc} onEscolha={(i) => { setEsc(i); if (i !== null && OPS[i].certa) { setCen("boa"); setNivel(A_PREV); } }} recolher={liberado} />
         {liberado && <p className="q7-k">Logística → cenário</p>}
         {liberado && <dl className="q7-g2-s15-ad" aria-label="As quatro medidas: logística, seta, cenário">
           {([["AUC", num(AUC0, 4), num(auc, 4)], ["KS", num(k0.ks, 3), num(k.ks, 3)], [`10% piores, de ${D}`, String(g0.capturados), String(g10.capturados)], ["Lift nos 10%", vezes(g0.lift!, 1), vezes(g10.lift!, 1)]] as const).map(([r, v0, v1]) => <div key={r}><dt>{r}</dt><dd><span>{v0}</span> → <b>{v1}</b></dd></div>)}

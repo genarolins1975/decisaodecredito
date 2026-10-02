@@ -12,13 +12,13 @@ import { aucEsperada, aucsEmJanelasNovas, N_JANELAS, SEMENTE_JANELAS } from "@/l
  * 10 · c7p24 · O que a AUC responde e o que deixa em aberto. A ponte liga a PD original de cada proposta da mini-base
  * à PD do cenário: numa transformação estritamente crescente nenhuma linha se cruza e a ROC da janela é a mesma; na
  * fila embaralhada as linhas se cruzam e a AUC cai para perto de 0,5; na orientação invertida tudo se cruza e a AUC
- * vira 1 − AUC. Até a turma escolher a frase, o subtítulo é pergunta e a leitura só dá a instrução; o que a AUC não
- * informa aparece depois da escolha. Na ponte, cada linha vai da posição exata no eixo de cima à posição exata no de
+ * vira 1 − AUC. Até a turma escolher a frase certa, o subtítulo é pergunta e a leitura só dá a instrução (uma errada recebe o
+ * retorno e pede Tentar outra, sem entregar a resposta); o que a AUC não informa aparece depois do acerto. Na ponte, cada linha vai da posição exata no eixo de cima à posição exata no de
  * baixo, então duas linhas só se cruzam quando o par troca de ordem (conferido por script: zero cruzamentos desenhados
  * na transformação crescente); marcas que se sobrepõem se empilham para fora da faixa entre os eixos, presas ao eixo por
  * uma haste.
- * Na ROC, a logística fica em cinza largo por baixo; na transformação crescente o cenário vem tracejado por cima, e o
- * cinza aparecendo entre os traços mostra que as duas curvas coincidem.
+ * Na ROC, a logística fica em cinza largo por baixo e o cenário vem em azul de ordenação tracejado por cima; na
+ * transformação crescente o cinza aparecendo entre os traços mostra que as duas curvas coincidem.
  */
 /** Empilha marcas próximas no mesmo eixo: cada ponto vai ao primeiro nível livre (0, 1, 2...) sem encostar em outro. */
 function niveis(xs: number[], dist: number) {
@@ -52,25 +52,29 @@ const OPS = [
  * Cenário PD verdadeira: a AUC de uma janela é uma realização ruidosa. A AUC média nas réplicas sintéticas da janela
  * (os mesmos proponentes, desfecho sorteado de novo pela PD verdadeira) separa o teto em média da sorte desta janela.
  */
-function VerdadeiraLeitura({ auc }: { auc: number }) {
+function VerdadeiraLeitura({ auc, cruz }: { auc: number; cruz: number }) {
   const eT = aucEsperada(PT), eL = aucEsperada(PL);
   const aT = aucsEmJanelasNovas(PT), aL = aucsEmJanelasNovas(PL);
   const passa = aT.reduce((k, v, i) => k + (aL[i] > v ? 1 : 0), 0);
-  return <>Em {N_JANELAS} réplicas sintéticas da janela (os mesmos {int(N)} proponentes com o desfecho sorteado de novo pela PD verdadeira), ela tem <b>AUC média {num(eT, 4)}</b> contra {num(eL, 4)} da logística; nesta janela, {num(auc, 4)} contra {num(AUC0, 4)}. Em média nenhum modelo passa da verdadeira; numa réplica isolada pode (aqui, em {passa} de {N_JANELAS}). Nenhum chega a 1.</>;
+  return <>Na ponte, a verdadeira troca <b>{cruz} dos {PARES} pares</b> da logística: outra fila, não só outro nível. Em {N_JANELAS} réplicas sintéticas da janela (os mesmos {int(N)} proponentes com o desfecho sorteado de novo pela PD verdadeira), ela tem <b>AUC média {num(eT, 4)}</b> contra {num(eL, 4)} da logística; nesta janela, {num(auc, 4)} contra {num(AUC0, 4)}. Em média nenhum modelo passa da verdadeira; numa réplica isolada pode (aqui, em {passa} de {N_JANELAS}). Nenhum chega a 1.</>;
 }
 
 export function S10LimitesAuc({ pagina }: { pagina?: Pagina }) {
   const [cen, setCen] = useState<Cen>("crescente");
   const [esc, setEsc] = useState<number | null>(null);
+  // subtítulo, leitura e o que a AUC não diz só aparecem com a frase certa; uma errada não entrega a resposta
+  const acertou = esc !== null && !!OPS[esc].certa;
   const c = CEN[cen]; const orig = MINI.map((m) => m.pdPlena); const novo = c.mini(orig);
   const auc = aucPorPares(Y, c.janela).auc!;
   const cruz = (() => { let k = 0; for (let i = 0; i < orig.length; i++) for (let j = i + 1; j < orig.length; j++) if ((orig[i] - orig[j]) * (novo[i] - novo[j]) < 0) k++; return k; })();
   return (
-    <Quadro slug="c7p24" pagina={pagina} layout="glx" sub={esc === null ? `Um número como ${num(AUC0, 4)} mede exatamente o quê? Escolha uma frase e teste nos cenários.` : undefined}
-      conclusao={esc === null ? "Escolha uma frase ao lado e depois teste nos quatro cenários." : cen === "crescente" ? <>A PD mudou de nível e <b>{cruz === 0 ? "nenhuma linha se cruzou" : `${cruz} pares se cruzaram`}</b>: a AUC continua {num(auc, 4)}. A AUC só lê a ordem.</>
-        : cen === "invertida" ? <>Tudo se cruza: a AUC vira 1 − {num(AUC0, 4)} = {num(auc, 4)}. Abaixo de 0,5 quase sempre é sentido trocado do escore, não um modelo &ldquo;pior que o acaso&rdquo;.</>
+    <Quadro slug="c7p24" pagina={pagina} layout="glx" sub={!acertou ? `Um número como ${num(AUC0, 4)} mede exatamente o quê? Escolha uma frase e teste nos cenários.` : undefined}
+      conclusao={esc === null ? "Escolha uma frase ao lado e depois teste nos quatro cenários."
+        : !acertou ? <>Essa frase não vale. Troque o cenário, veja o que acontece com a AUC e use Tentar outra.</>
+        : cen === "crescente" ? <>A PD mudou de nível e <b>{cruz === 0 ? "nenhuma linha se cruzou" : `${cruz} pares se cruzaram`}</b>: a AUC continua {num(auc, 4)}. A AUC só lê a ordem.</>
+        : cen === "invertida" ? <>Tudo se cruza ({cruz} de {PARES} pares): a AUC vira 1 − {num(AUC0, 4)} = {num(auc, 4)}. Aqui é sentido trocado do escore, não um modelo &ldquo;pior que o acaso&rdquo;: 1 − AUC devolve {num(1 - auc, 4)}.</>
         : cen === "embaralhada" ? <>{cruz} cruzamentos entre {PARES} pares de propostas: a AUC cai para {num(auc, 4)}, perto do sorteio, com a mesma média de PD.</>
-        : <VerdadeiraLeitura auc={auc} />}
+        : <VerdadeiraLeitura auc={auc} cruz={cruz} />}
       fonte={`Ponte: as 20 propostas da mini-base com a PD da logística em precisão plena. ROC e AUC: janela fora do tempo, 737 propostas e 81 defaults. Transformação estritamente crescente: σ(1 + 0,5 · logit p). Réplicas sintéticas da janela: os mesmos ${int(N)} proponentes com o desfecho sorteado de novo pela PD verdadeira; ${N_JANELAS} sorteios, semente ${SEMENTE_JANELAS}, só possível em base sintética.`}>
       <Painel>
         <Seg rotulo="Cenário" opcoes={(Object.keys(CEN) as Cen[]).map((k) => ({ v: k, r: CEN[k].nome }))} valor={cen} onChange={setCen} />
@@ -99,12 +103,12 @@ export function S10LimitesAuc({ pagina }: { pagina?: Pagina }) {
               );
             }}
           </Grafico>
-          <Roc titulo="ROC na janela" sub={`cenário: AUC ${num(auc, 4)} · cinza: logística`} rotulo={`ROC da logística e do cenário ${c.nome}`} series={[{ pts: curvaRoc(Y, PL), classe: "mudo q7-s10-ref" }, { pts: curvaRoc(Y, c.janela), classe: cen === "crescente" ? "prob q7-s10-trac" : "ord" }]} xTit="Falso positivo" yTit="Verdadeiro positivo" />
+          <Roc titulo="ROC na janela" sub={`cenário: AUC ${num(auc, 4)} · cinza: logística`} rotulo={`ROC da logística e do cenário ${c.nome}`} series={[{ pts: curvaRoc(Y, PL), classe: "mudo q7-s10-ref" }, { pts: curvaRoc(Y, c.janela), classe: "ord q7-s10-trac" }]} xTit="Falso positivo" yTit="Verdadeiro positivo" />
         </div>
       </Painel>
       <Painel>
         <Previsao rotulo="Escolha e justifique" pergunta={<>A logística tem AUC {num(AUC0, 4)} na janela. Qual frase é correta?</>} opcoes={OPS} escolha={esc} onEscolha={setEsc} recolher />
-        {esc !== null && (
+        {acertou && (
           <div className="q7-s10-nao">
             <p className="q7-k">O que a AUC não diz</p>
             <ul>{LIMITES.map(([o, slug, onde]) => <li key={o}><b>{o}</b>: <LinkSlide slug={slug} className="q7-s10-lk">{onde}, slide {SLIDE[slug].n}</LinkSlide></li>)}</ul>

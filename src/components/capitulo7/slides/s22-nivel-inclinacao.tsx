@@ -5,7 +5,6 @@ import { Confiabilidade } from "../graficos";
 import { D, N, PT, Y } from "@/lib/capitulo7/dados";
 import { faixasQuantis, interceptoComSlope1, interceptoESlope, logit, media, slopeComIntervalo, transformar, type Faixa } from "@/lib/capitulo7/metricas";
 import { int, num, pct } from "@/lib/capitulo7/formato";
-import { N_JANELAS } from "@/lib/capitulo7/janelas";
 import { SLIDE } from "@/lib/capitulo7/roteiro";
 
 /**
@@ -19,8 +18,10 @@ import { SLIDE } from "@/lib/capitulo7/roteiro";
  * dela compõe nível (intercepto com slope 1 e PD média) e inclinação (slope), não olha só b. As miniaturas são largas
  * (mesma escala de 0% a 55% nas quatro), com slope e intercepto numa linha abaixo. No quadro ampliado, os rótulos de
  * acima e abaixo da diagonal ficam numa linha sob o gráfico, fora da área dos dados; "Ver os quatro" fica junto dos
- * controles e "Restaurar" no alto do painel lateral, para que nenhum botão dependa da altura que sobra. O painel
- * fonte define as réplicas sintéticas da janela (slide 27 em diante), que também saem da PD verdadeira.
+ * controles e "Restaurar" no alto do painel lateral, para que nenhum botão dependa da altura que sobra. A fonte
+ * liga a frequência esperada às réplicas sintéticas da janela (slides 10 e 27): é a frequência que elas dão em média.
+ * Quando a distorção do aluno passa de 55%, o eixo do quadro ampliado se estende até o maior valor desenhado, com
+ * margem, e o subtítulo avisa; nenhum ponto fica preso na borda.
  */
 type Freq = "esperada" | "observada";
 const C = logit(0.11);
@@ -53,6 +54,9 @@ const leituraComposta = (a: number, b: number, e: Medida) => {
   if (!nivel && !incl) return `nível e inclinação perto do ideal (PD média ${pct(pm, 1)} contra ${pct(PD_VERD, 1)})`;
   return `erro ${[nivel, incl].filter(Boolean).join(" e ")}; corrige-se ${nivel && incl ? "o intercepto e b" : nivel ? "o intercepto" : "b"}`;
 };
+/** Teto do eixo ampliado: 55% ou o próximo múltiplo de 10% acima do maior valor desenhado mais 2 pontos de margem. */
+const tetoDe = (v: number) => Math.min(1, Math.max(0.55, Math.ceil((v + 0.02) / 0.1 - 1e-9) * 0.1));
+const ticksF = (t: number) => { const passo = t > 0.6 ? 0.2 : 0.1; return Array.from({ length: Math.floor(t / passo + 1e-9) + 1 }, (_, i) => Math.round(i * passo * 10) / 10); };
 /** Miniatura larga: a curva ocupa o cartão; mesma escala (0% a 55%) nos quatro. */
 function Mini({ faixas, nome }: { faixas: Faixa[]; nome: string }) {
   return (
@@ -92,6 +96,9 @@ export function S22NivelInclinacao({ pagina }: { pagina?: Pagina }) {
   const base = CASOS.find((x) => x.id === (foco ?? sel))!;
   const proprio = useMemo(() => { if (!aj) return null; const r = medir(aj.a, aj.b); return { id: "sua", nome: "Sua distorção", a: aj.a, b: aj.b, leitura: leituraComposta(aj.a, aj.b, r.esperada), ...r }; }, [aj]);
   const c = foco && proprio ? proprio : base; const m = c[freq];
+  // eixo do quadro ampliado: 55% ou, se a distorção passar disso, até o maior valor desenhado (PD, frequência ou
+  // limite do intervalo), com margem; nenhum ponto fica preso na borda
+  const tetoF = tetoDe(Math.max(...m.faixas.flatMap((f) => [f.pdMedia ?? 0, f.obs ?? 0, freq === "observada" ? f.ic?.hi ?? 0 : 0])));
   // na distorção do aluno, a leitura composta (nível e inclinação) já descreve a forma
   const assinatura = c.id === "sua" ? null : Math.abs(c.b - 1) < 0.025 ? `pontos ${m.acima >= 5 ? "acima" : "abaixo"} da diagonal em ${Math.max(m.acima, 10 - m.acima)} das 10 faixas` : c.b > 1 ? "em log odds, curva mais deitada que a diagonal" : "em log odds, curva mais em pé que a diagonal";
   const abrir = (id: string) => { setSel(id); setFoco(id); setAj(null); };
@@ -100,10 +107,10 @@ export function S22NivelInclinacao({ pagina }: { pagina?: Pagina }) {
     <Quadro slug="c7p32" pagina={pagina} layout="gl"
       conclusao={!revelado ? <>Quatro distorções da mesma PD verdadeira, cada uma com a sua forma. Qual delas tem slope abaixo de 1?</>
         : <><b>{c.nome}</b> (a = {num(c.a, 2)}, b = {num(c.b, 2)}): {assinatura ? <>{assinatura}. Slope</> : "slope"} {num(m.slope, 2)}{m.ic ? ` (intervalo de 95%: ${num(m.ic[0], 2)} a ${num(m.ic[1], 2)})` : ""}, intercepto com slope 1 de {num(m.i1, 2)}: {c.leitura}.{freq === "observada" ? ` Com o ruído da janela, a referência já tem slope ${num(REF.slope, 2)}.` : ""}</>}
-      fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults. Base: PD verdadeira do gerador; sorteando de novo o desfecho por ela, os mesmos ${int(N)} proponentes formam as réplicas sintéticas da janela do slide ${SLIDE.c7p16.n} (${N_JANELAS} sorteios, só possível em base sintética). Esperada: média da PD verdadeira na faixa, sem ruído de amostra. Observada: defaults da janela; nela a PD verdadeira tem intercepto ${num(REF.intercepto, 2)} e slope ${num(REF.slope, 2)}. Faixas: decis de PD prevista.`}>
+      fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults. Base: PD verdadeira do gerador, só possível em base sintética. Esperada: média da PD verdadeira na faixa, isto é, a frequência de default que se espera nas réplicas sintéticas da janela (os mesmos ${int(N)} proponentes com o desfecho sorteado de novo pela PD verdadeira, como nos slides ${SLIDE.c7p24.n} e ${SLIDE.c7p16.n}), sem ruído de amostra. Observada: defaults da janela; nela a PD verdadeira tem intercepto ${num(REF.intercepto, 2)} e slope ${num(REF.slope, 2)}. Faixas: decis de PD prevista.`}>
       <Painel titulo={foco ? `Em foco: ${c.nome}` : "Quatro jeitos de errar a probabilidade · clique num quadro para ampliar"}>
         {foco ? (
-          <div className="q7-g2-s22-foco"><div className="q7-g2-quad"><Confiabilidade titulo={`y: frequência ${freq}`} sub="x: PD média prevista" semTitulos anotar={false} rotulo={`Curva de confiabilidade: ${c.nome}, frequência ${freq}`} max={0.55} ticks={[0, 0.1, 0.2, 0.3, 0.4, 0.5]} series={[{ faixas: m.faixas, classe: "prob", linha: true, ic: freq === "observada" }]}
+          <div className="q7-g2-s22-foco"><div className="q7-g2-quad"><Confiabilidade titulo={`y: frequência ${freq}`} sub={tetoF > 0.55 ? `x: PD média prevista · eixo até ${pct(tetoF, 0)}` : "x: PD média prevista"} semTitulos anotar={false} rotulo={`Curva de confiabilidade: ${c.nome}, frequência ${freq}, eixos de 0% a ${pct(tetoF, 0)}`} max={tetoF} ticks={ticksF(tetoF)} series={[{ faixas: m.faixas, classe: "prob", linha: true, ic: freq === "observada" }]}
             /><p className="q7-nota q7-s22-cantos"><span>▲ acima: subestima</span><span>▼ abaixo: superestima</span></p></div>
             <div className="q7-g2-s22-lado"><dl className="q7-lista">
               <div><dt>Slope</dt><dd>{revelado ? num(m.slope, 2) : "?"}</dd></div>

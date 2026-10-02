@@ -140,7 +140,7 @@ export function S16Subamostra({ pagina }: { pagina?: Pagina }) {
       conclusao={!revelado
         ? <>Sem sorteio, a perda de validação desce até {num(L[k0], 4)} em {k0} árvores e sobe a {num(L[T], 4)} com {T} (<LinkSlide slug="c6p15">slide 15</LinkSlide>). Com {T} árvores, sortear {pct(0.5, 0)} baixa a perda {P ? (P[1].ganham === NS ? "em todas as sementes" : `em ${P[1].ganham} de ${NS} sementes`) : "nas sementes"}. E na parada?</>
         : !a || !b ? <>Sorteando: {ss.length} de {NS} sementes calculadas para a subamostra de {pct(f, 0)}.</>
-        : <>Com {pct(f, 0)} e {T} árvores, <b>{sinal(b.m, 4)}</b>, {entreSementes(b)} ({b.ganham} de {NS}), e z = {num(b.z, 2)} {naValidacao(b)}. Na parada em {k0}, <b>{sinal(a.m, 4)}</b> ({a.ganham} de {NS}), z = {num(a.z, 2)}: {curto(a)}. <LinkSlide slug="c6p17">Slide 17</LinkSlide>: contra a logística.</>}
+        : <>Com {pct(f, 0)} e {T} árvores, <b>{sinal(b.m, 4)}</b>, {entreSementes(b)} ({b.ganham} de {NS}), e z = {num(b.z, 2)} {naValidacao(b)}. Na parada em {k0}, <b>{sinal(a.m, 4)}</b>, {entreSementes(a).replace(" entre sementes", "")} ({a.ganham} de {NS}), z = {num(a.z, 2)}: {curto(a)}. <LinkSlide slug="c6p17">Slide 17</LinkSlide>: contra a logística.</>}
       fonte={`Validação: ${int(NV)} propostas, ${DV} defaults. η ${num(CFG_CARTEIRA.eta, 1)}, profundidade ${CFG_CARTEIRA.profundidade}, mínimo ${CFG_CARTEIRA.minFolha}; sementes 1 a ${NS}, sem reposição. Faixas de 95%: ± t de ${NS - 1} graus (${num(TS, 3)}) × erro padrão entre sementes; ± t de ${int(NV - 1)} (${num(TV, 3)}) × erro padrão, por proposta, da perda sem sorteio − média das ${NS}. Parada escolhida nesta validação.`}>
       <Painel>
         {filas

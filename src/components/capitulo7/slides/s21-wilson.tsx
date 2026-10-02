@@ -10,7 +10,8 @@ import { int, num, pct, pp } from "@/lib/capitulo7/formato";
  * passa por n múltiplos de 20, em que 5% é um número inteiro de defaults). Antes de liberar o controle, a turma prevê o
  * intervalo de 5 em 100; as alternativas erradas são o intervalo de 50 em 1.000 e o da aproximação normal. O intervalo
  * de Wilson encolhe com √n e nunca sai de [0, 1]; a aproximação normal (Wald), com poucos casos, dá limite inferior
- * negativo. O nível de confiança é escolhido no quadro (z de 1,645, 1,960 ou 2,576). Abaixo do gráfico, a ponte com
+ * negativo. O nível de confiança é escolhido no quadro (z de 1,645, 1,960 ou 2,576), travado em 95% até a resposta certa,
+ * como o controle de casos; a leitura usa o z e o nível escolhidos. Abaixo do gráfico, a ponte com
  * o slide 19: as faixas vizinhas F8 e F9 da logística, com o intervalo de cada uma e o da diferença (e não a
  * sobreposição dos dois intervalos). Na expansão, o teste de Jeffreys que o BCE pede no backtesting de PD.
  */
@@ -40,7 +41,7 @@ export function S21Wilson({ pagina }: { pagina?: Pagina }) {
   const linhas = [{ rot: `${d} em ${int(n)} (controle)`, n, d, on: true, oculto: false }, { rot: "5 em 100", n: 100, d: 5, oculto: !liberado }, { rot: "50 em 1.000", n: 1000, d: 50, oculto: false }];
   return (
     <Quadro slug="c7p31" pagina={pagina} layout="gl"
-      conclusao={!liberado ? <>1 default em 20: intervalo de 95% <b>{faixa(wilson(1, 20)!)}</b>; 50 em 1.000: {faixa(W1000)}. Antes de mover o número de casos, preveja o intervalo de 5 em 100.</> : <>{d} default{d === 1 ? "" : "s"} em {int(n)} casos: frequência de {pct(d / n, 1)}, intervalo de {nivel}% de <b>{pct(w.lo, 1)} a {pct(w.hi, 1)}</b>. {wa.lo < 0 ? <>A aproximação normal daria limite inferior negativo ({pct(wa.lo, 1)}).</> : n >= 500 ? "Com muitos casos, os dois métodos quase coincidem." : "Mais casos, intervalo mais estreito."} As faixas do slide 19 têm cerca de {F8.n} casos: F8 observou {F8.d} em {F8.n}, intervalo de {pct(F8.ic!.lo, 1)} a {pct(F8.ic!.hi, 1)}.</>}
+      conclusao={!liberado ? <>1 default em 20: intervalo de {nivel}% <b>{faixa(wilson(1, 20, z)!)}</b>; 50 em 1.000: {faixa(wilson(50, 1000, z)!)}. Antes de mover o número de casos, preveja o intervalo de 5 em 100.</> : <>{d} default{d === 1 ? "" : "s"} em {int(n)} casos: frequência de {pct(d / n, 1)}, intervalo de {nivel}% de <b>{pct(w.lo, 1)} a {pct(w.hi, 1)}</b>. {wa.lo < 0 ? <>A aproximação normal daria limite inferior negativo ({pct(wa.lo, 1)}).</> : n >= 500 ? "Com muitos casos, os dois métodos quase coincidem." : "Mais casos, intervalo mais estreito."} As faixas do slide 19 têm cerca de {F8.n} casos: F8 observou {F8.d} em {F8.n}, intervalo de {pct(F8.ic!.lo, 1)} a {pct(F8.ic!.hi, 1)}.</>}
       fonte={`Wilson (1927) para uma proporção binomial, com o denominador real de cada linha; nível de confiança de ${nivel}%. Exemplos ilustrativos com frequência de 5%; a comparação de faixas usa a janela fora do tempo (logística).`}>
       <Painel titulo="A mesma frequência observada, 5%, com números de casos diferentes">
         <Grafico rotulo={linhas.map((l) => { const ww = wilson(l.d, l.n, z)!; return l.oculto ? `${l.rot}: oculto até a previsão` : `${l.rot}: ${pct(ww.lo, 1)} a ${pct(ww.hi, 1)}`; }).join("; ")} arCelular="4 / 3">
@@ -50,8 +51,8 @@ export function S21Wilson({ pagina }: { pagina?: Pagina }) {
             const topo = dm.fs * 2.7, fundo = dm.h - dm.fs * 4.1; const passo = (fundo - topo) / (linhas.length - 1);
             return (
               <g>
-                <rect x={x(-0.05)} y={0} width={x(0) - x(-0.05)} height={dm.h - dm.fs * 2.4} fill="#FBF2F3" />
-                <text className="q7-rot--peq" x={x(-0.025)} y={dm.h - dm.fs * 2.4} dy="1.35em" textAnchor="middle" style={{ fill: "#8C2332" }}>abaixo de 0%</text>
+                <rect x={x(-0.05)} y={0} width={x(0) - x(-0.05)} height={dm.h - dm.fs * 2.4} fill="#EEF0F3" />
+                <text className="q7-rot--peq" x={x(-0.025)} y={dm.h - dm.fs * 2.4} dy="1.35em" textAnchor="middle" style={{ fill: "#5B6475" }}>abaixo de 0%</text>
                 {[0, 0.05, 0.1, 0.15, 0.2, 0.25].map((v) => <g key={v}><line className="q7-grade" x1={x(v)} x2={x(v)} y1={0} y2={dm.h - dm.fs * 2.4} /><text className="q7-tick" x={x(v)} y={dm.h - dm.fs * 2.4} dy="1.2em" textAnchor="middle">{pct(v, 0)}</text></g>)}
                 <line x1={x(0.05)} x2={x(0.05)} y1={0} y2={dm.h - dm.fs * 2.4} stroke="#176C73" strokeWidth={2} strokeDasharray="6 5" />
                 {linhas.map((l, k) => { const ww = wilson(l.d, l.n, z)!, wd = wald(l.d, l.n, z)!; const cy = topo + passo * k; return l.oculto ? (
@@ -84,10 +85,10 @@ export function S21Wilson({ pagina }: { pagina?: Pagina }) {
       <Painel>
         <Previsao pergunta="Com 5 defaults em 100 casos, o intervalo de 95% para a frequência vai:" opcoes={OPS} escolha={esc} onEscolha={(k) => { setEsc(k); setNivel("95"); if (k === null || !OPS[k].certa) setI(0); }} recolher />
         {liberado && <Controle rotulo="Número de casos" valor={i} min={0} max={NS.length - 1} passo={1} onChange={setI} mostrar={`${int(n)} (${d} default${d === 1 ? "" : "s"})`} />}
-        <div className="q7-s21-l"><Seg rotulo="Nível de confiança" opcoes={(Object.keys(Z) as Nivel[]).map((k) => ({ v: k, r: `${k}%` }))} valor={nivel} onChange={setNivel} /><Botao sec onClick={() => { setI(0); setNivel("95"); setEsc(null); }}>Restaurar</Botao></div>
+        <div className="q7-s21-l"><Seg rotulo="Nível de confiança" opcoes={(Object.keys(Z) as Nivel[]).map((k) => ({ v: k, r: `${k}%` }))} valor={nivel} onChange={setNivel} desab={!liberado} /><Botao sec onClick={() => { setI(0); setNivel("95"); setEsc(null); }}>Restaurar</Botao></div>
         <Expandir resumo="Fórmula e o que o intervalo cobre">
           <Formula f={String.raw`\frac{\hat p+\frac{z^2}{2n}\pm z\sqrt{\frac{\hat p(1-\hat p)}{n}+\frac{z^2}{4n^2}}}{1+\frac{z^2}{n}}`} simbolos={[[String.raw`\hat p`, "frequência observada d ÷ n"], ["z", `quantil da normal: ${num(Z[nivel], 3)} para ${nivel}%`]]} />
-          <p className="q7-nota">O procedimento, repetido em muitas amostras, cobre a frequência verdadeira em cerca de {nivel}% delas; não é a probabilidade de um parâmetro fixo estar dentro deste intervalo. Supõe casos independentes com a mesma probabilidade; não inclui a incerteza do treino do modelo nem a dependência entre clientes.</p>
+          <p className="q7-nota">O procedimento, repetido em muitas amostras, cobre a probabilidade de default verdadeira em cerca de {nivel}% delas; não é a probabilidade de um parâmetro fixo estar dentro deste intervalo. Supõe casos independentes com a mesma probabilidade; não inclui a incerteza do treino do modelo nem a dependência entre clientes.</p>
         </Expandir>
         <Expandir resumo="Como o supervisor testa a PD: Jeffreys">
           <Formula compacta f={String.raw`p=F_{\mathrm{Beta}}\big(\mathrm{PD};\ d+\tfrac12,\ n-d+\tfrac12\big)`} />

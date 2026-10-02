@@ -48,6 +48,50 @@ function lugar(j: number): { dx: number; dy: number; anc: "start" | "middle" | "
   if (o(i) < o(i - 1) && o(i) < o(i + 1)) return { dx: 0, dy: 3, anc: "middle" };
   return j % 2 === 1 ? { dx: -1.4, dy: -0.7, anc: "end" } : { dx: 1.3, dy: 2.9, anc: "start" };
 }
+type Caixa = { x0: number; x1: number; y0: number; y1: number };
+const cruza = (a: Caixa, b: Caixa) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
+/** O segmento (x1, y1) a (x2, y2) passa pela caixa? Recorte de Liang e Barsky. */
+function segCruza(c: Caixa, x1: number, y1: number, x2: number, y2: number) {
+  let t0 = 0, t1 = 1; const dx = x2 - x1, dy = y2 - y1;
+  for (const [p, q] of [[-dx, x1 - c.x0], [dx, c.x1 - x1], [-dy, y1 - c.y0], [dy, c.y1 - y1]]) {
+    if (p === 0) { if (q < 0) return false; continue; }
+    const t = q / p; if (p < 0) { if (t > t1) return false; if (t > t0) t0 = t; } else { if (t < t0) return false; if (t < t1) t1 = t; }
+  }
+  return true;
+}
+/**
+ * Com os intervalos ligados, o rótulo defaults/n vai para o primeiro lugar livre ao lado do próprio intervalo: à
+ * direita ou à esquerda do ponto, ou além da ponta do traço. Livre quer dizer sem tocar (com o halo) nenhum traço de
+ * intervalo, a diagonal, a curva, outro ponto, outro rótulo, as anotações dos cantos nem a borda da área do gráfico. Se
+ * não houver lugar (tela muito estreita), o rótulo some e o valor fica no título do ponto e na tabela acessível.
+ */
+function lugaresComIc(pts: { cx: number; cy: number; ylo: number; yhi: number; txt: string }[], r: number, fs: number, area: Caixa, diag: [number, number, number, number], fixos: Caixa[], traco: number) {
+  const h = fs * 0.86, halo = h * 0.18, larg = (t: string) => t.length * h * 0.6;
+  const linhas: [number, number, number, number][] = [diag];
+  for (let i = 1; i < pts.length; i++) linhas.push([pts[i - 1].cx, pts[i - 1].cy, pts[i].cx, pts[i].cy]);
+  const barras: Caixa[] = pts.map((p) => ({ x0: p.cx - traco / 2, x1: p.cx + traco / 2, y0: p.yhi, y1: p.ylo }));
+  const bolas: Caixa[] = pts.map((p) => ({ x0: p.cx - r, x1: p.cx + r, y0: p.cy - r, y1: p.cy + r }));
+  const postos: Caixa[] = [];
+  return pts.map((p) => {
+    const w = larg(p.txt), g = r * 0.9;
+    // (x da âncora, linha de base, âncora): lados do ponto em três alturas, depois além das pontas do traço
+    const cands: [number, number, "start" | "end" | "middle"][] = [
+      [p.cx + g, p.cy + h * 0.35, "start"], [p.cx - g, p.cy + h * 0.35, "end"],
+      [p.cx + g, p.cy - h * 0.6, "start"], [p.cx - g, p.cy - h * 0.6, "end"],
+      [p.cx + g, p.cy + h * 1.3, "start"], [p.cx - g, p.cy + h * 1.3, "end"],
+      [p.cx, p.yhi - h * 0.45, "middle"], [p.cx, p.ylo + h * 1.15, "middle"],
+    ];
+    for (const [x, y, anc] of cands) {
+      const x0 = anc === "start" ? x : anc === "end" ? x - w : x - w / 2;
+      const c: Caixa = { x0: x0 - halo, x1: x0 + w + halo, y0: y - h * 0.8 - halo, y1: y + h * 0.22 + halo };
+      if (c.x0 < area.x0 || c.x1 > area.x1 || c.y0 < area.y0 || c.y1 > area.y1) continue;
+      if ([...barras, ...bolas, ...postos, ...fixos].some((b) => cruza(c, b))) continue;
+      if (linhas.some(([a1, b1, a2, b2]) => segCruza(c, a1, b1, a2, b2))) continue;
+      postos.push(c); return { x, y, anc };
+    }
+    return null;
+  });
+}
 /** Defaults/n de cada ponto, alternando os lados para não encostar no vizinho. */
 function Curva({ k, ic, completa }: { k: number; ic: boolean; completa: boolean }) {
   const ymax = ic ? 0.45 : 0.3;
@@ -61,10 +105,20 @@ function Curva({ k, ic, completa }: { k: number; ic: boolean; completa: boolean 
         const x = escala([0, XMAX], [m.l, d.w - m.r]), y = escala([0, ymax], [d.h - m.b, m.t]);
         const r = d.fs * 0.42;
         const yt = ic ? [0, 0.1, 0.2, 0.3, 0.4] : [0, 0.1, 0.2, 0.3];
+        const traco = Math.max(2, d.fs * 0.14);
+        // anotações fixas dos cantos (caixas aproximadas pela largura do texto), para os rótulos não as cobrirem
+        const hp = d.fs * 0.86, lw = (t: string) => t.length * hp * 0.6;
+        const fixos: Caixa[] = [
+          { x0: x(0.006), x1: x(0.006) + lw("▲ acima: risco subestimado"), y0: y(ymax * 0.93) - hp, y1: y(ymax * 0.93) + hp * 0.3 },
+          { x0: x(XMAX) - d.fs * 2.3 - lw("diagonal: previsto = observado"), x1: x(XMAX), y0: y(ymax * 0.03) - d.fs * 1.35 - hp, y1: y(ymax * 0.03) - d.fs * 1.35 + hp * 0.3 },
+          { x0: x(XMAX) - lw("▼ abaixo: superestimado"), x1: x(XMAX), y0: y(ymax * 0.03) - hp, y1: y(ymax * 0.03) + hp * 0.3 },
+        ];
+        const lugIc = ic ? lugaresComIc(vis.map((f) => ({ cx: x(f.pdMedia!), cy: y(f.obs!), ylo: y(f.ic!.lo), yhi: y(f.ic!.hi), txt: `${f.d}/${f.n}` })), r, d.fs,
+          { x0: x(0), x1: d.w, y0: 0, y1: y(0) }, [x(0), y(0), x(XMAX), y(XMAX)], fixos, traco) : null;
         return (
           <g>
             <Eixos x={x} y={y} xt={[0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3]} yt={yt} fx={(v) => pct(v, 0)} fy={(v) => pct(v, 0)} xTit="PD média prevista na faixa" yTit="Default observado na faixa" />
-            <line className="q7-diag" x1={x(0)} y1={y(0)} x2={x(XMAX)} y2={y(XMAX)} />
+            <line className="q7-diag q7-s19-diag" x1={x(0)} y1={y(0)} x2={x(XMAX)} y2={y(XMAX)} />
             <text className="q7-rot--peq" x={x(0.006)} y={y(ymax * 0.93)} style={{ fill: "#5B6475" }}>▲ acima: risco subestimado</text>
             {/* a diagonal se identifica no canto vazio de baixo, à direita (PD de 20% a 30%, longe dos pontos e dos intervalos) */}
             {(() => { const yl = y(ymax * 0.03) - d.fs * 1.35, xf = x(XMAX); return <g>
@@ -77,9 +131,11 @@ function Curva({ k, ic, completa }: { k: number; ic: boolean; completa: boolean 
               const cx = x(f.pdMedia!), cy = y(f.obs!); const on = !completa && f.j === k; const esq = f.j % 2 === 1;
               return (
                 <g key={f.j} opacity={!completa && !on ? 0.6 : 1}>
-                  {ic && <line x1={cx} x2={cx} y1={y(f.ic!.lo)} y2={y(f.ic!.hi)} className="q7-linha q7-linha--fina q7-linha--prob" strokeOpacity={0.55} strokeWidth={Math.max(2, d.fs * 0.14)} />}
+                  <title>{`F${f.j}: ${f.d} defaults em ${f.n}, observado ${pct(f.obs!, 1)} contra PD média de ${pct(f.pdMedia!, 1)}${ic ? `; intervalo de 95% de ${pct(f.ic!.lo, 1)} a ${pct(f.ic!.hi, 1)}` : ""}`}</title>
+                  {ic && <line className="q7-s19-ic q7-linha q7-linha--fina q7-linha--prob" x1={cx} x2={cx} y1={y(f.ic!.lo)} y2={y(f.ic!.hi)} strokeOpacity={0.55} strokeWidth={traco} />}
                   <circle cx={cx} cy={cy} r={on ? r * 1.35 : r} className="q7-ptc q7-ptc--prob" />
-                  {(completa || on) && (() => { const L = lugar(f.j); return <text className="q7-rot--peq" x={cx + L.dx * r} y={cy + L.dy * r} textAnchor={L.anc} style={{ fill: "#2A3342", fontWeight: on ? 700 : 500, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em", strokeLinejoin: "round" }}>{f.d}/{f.n}</text>; })()}
+                  {ic && lugIc && (() => { const L = lugIc[f.j - 1]; return L && <text className="q7-rot--peq q7-s19-rot" x={L.x} y={L.y} textAnchor={L.anc} style={{ fill: "#2A3342", fontWeight: 500, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em", strokeLinejoin: "round" }}>{f.d}/{f.n}</text>; })()}
+                  {!ic && (completa || on) && (() => { const L = lugar(f.j); return <text className="q7-rot--peq q7-s19-rot" x={cx + L.dx * r} y={cy + L.dy * r} textAnchor={L.anc} style={{ fill: "#2A3342", fontWeight: on ? 700 : 500, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em", strokeLinejoin: "round" }}>{f.d}/{f.n}</text>; })()}
                 </g>
               );
             })}
