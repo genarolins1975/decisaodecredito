@@ -1,11 +1,11 @@
 "use client";
 import { useState, type ReactNode } from "react";
 import { Botao, caminho, escala, Grafico, LinkSlide, Painel, Previsao, Quadro, type Dim, type Pagina } from "../base";
-import { D, EAD, N, PG, PL, PT, RES, Y } from "@/lib/capitulo7/dados";
+import { ANCORA, D, EAD, N, PG, PL, PT, RES, Y } from "@/lib/capitulo7/dados";
 import { calibracaoGlobal, delong, faixasQuantis, jeffreys, slopeComIntervalo, Z95 } from "@/lib/capitulo7/metricas";
 import { curva, esperado, fmtReais, GRADE_CORTES, otimo, realizado } from "@/lib/visuais/economia";
-import { num, pct } from "@/lib/capitulo7/formato";
-import { calibradores, N_JANELAS, vantagemEmJanelasNovas } from "@/lib/capitulo7/janelas";
+import { int, num, pct } from "@/lib/capitulo7/formato";
+import { N_JANELAS, SEMENTE_JANELAS, vantagemEmJanelasNovas } from "@/lib/capitulo7/janelas";
 
 /**
  * 36 · c7p38 · Caso integrador. O comitê recebe o boosting com Platt como candidato a substituir a logística. O dossiê
@@ -21,7 +21,12 @@ import { calibradores, N_JANELAS, vantagemEmJanelasNovas } from "@/lib/capitulo7
  * realizados ficam lado a lado no corte, com rótulo direto. Rodada 3: os rótulos das miniaturas Decisão e
  * Probabilidade saem de cima das curvas e vão para uma coluna ao lado; slope e ICs vão para a leitura do cartão; a
  * decisão compara os modelos também pela PD verdadeira (o realizado de 81 defaults é ruidoso, slide 32); as quatro
- * alternativas têm o mesmo tamanho, para a certa não se denunciar pelo comprimento.
+ * alternativas têm o mesmo tamanho, para a certa não se denunciar pelo comprimento. Rodada 4: a decisão diz de onde
+ * vem a amostra do nível. A taxa de default oscila entre treino, validação e janela; o intercepto ancorado em várias
+ * safras maturadas antes da janela (treino e validação, ANCORA de dados.ts) leva a PD média da janela perto do
+ * observado, e o ancorado só na validação passa do observado. Decisão: manter a logística, ancorar o nível em várias
+ * safras, monitorar cada safra com Jeffreys e confirmar nas safras de 2024 quando maturarem. As janelas novas viram
+ * réplicas sintéticas da janela.
  */
 type P = "ord" | "prob" | "dec" | "val";
 const DL = delong(Y, PL, PG);
@@ -41,8 +46,7 @@ const verd = (p: readonly number[], c: number) => { let s = 0; for (let i = 0; i
 const V_L = verd(PL, OT_L.corte), V_G = verd(PG, OT_G.corte);
 const OBS = D / N;
 const AUCS = { l: [RES.logit_treino.auc, RES.logit_val.auc, DL.auc1], g: [RES.gbm_treino.auc, RES.gbm_val.auc, DL.auc2] };
-const CL = calibradores("pl");
-const E_SEM = CL.sem!.esperada.logLoss, E_INT = CL.intercepto!.esperada.logLoss, E_PLATT = CL.platt!.esperada.logLoss;
+const AN = ANCORA;
 const COR: Record<P, string> = { ord: "#3D5A8A", prob: "#176C73", dec: "#A85A0C", val: "#2E6B4F" };
 
 /* miniaturas: logística sempre traço cheio e disco; candidato tracejado e quadrado vazado, na cor da pergunta */
@@ -147,7 +151,7 @@ export function S36CasoIntegrador({ pagina }: { pagina?: Pagina }) {
   const liberado = vistos.length >= 3;
   const consultar = (k: P) => { if (!vistos.includes(k)) setVistos([...vistos, k]); };
   const leitura: Record<P, ReactNode> = {
-    ord: <>Logística melhor nesta janela (p = {num(DL.p, 3)}); em {N_JANELAS} janelas novas, a vantagem cai a {num(jn.vantagem, 4)}.</>,
+    ord: <>Logística melhor nesta janela (p = {num(DL.p, 3)}); nas {N_JANELAS} réplicas da janela, a vantagem esperada cai a {num(jn.vantagem, 4)}.</>,
     prob: <>Candidato: O/E {num(CAL_G.razaoOE!, 3)} (Jeffreys 1 − p = {num(J_G, 3)}). Logística: p = {num(J_L, 2)}. Slopes {num(SL_L.slope, 2)} e {num(SL_G.slope, 2)}, {COM1 ? "ICs com 1" : "IC sem o 1"}.</>,
     dec: <>Corte {pct(OT_L.corte, 1)}, pela PD verdadeira: □ {fmtReais(V_G)}, ● {fmtReais(V_L)}. O □ prometia {fmtReais(OT_G.parcelas.total)}.</>,
     val: <>Treino {num(AUCS.g[0], 4)}, janela {num(AUCS.g[2], 4)}: sobreajuste e safra (a logística sobe a {num(AUCS.l[2], 4)}); Platt na validação gasta.</>,
@@ -155,9 +159,9 @@ export function S36CasoIntegrador({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c7p38" pagina={pagina} layout="gl"
       conclusao={esc === null ? <>O comitê recebe o boosting com Platt para substituir a logística. Leia as quatro miniaturas e consulte pelo menos três cartões antes de decidir. {vistos.length ? `Consultados: ${vistos.length} de 4.` : ""}</>
-        : esc === 2 ? <>AUC {num(DL.auc2, 4)} contra {num(DL.auc1, 4)} (p = {num(DL.p, 3)}); O/E {num(CAL_G.razaoOE!, 3)} no candidato; no corte de {pct(OT_L.corte, 1)}, {fmtReais(V_G)} contra {fmtReais(V_L)} pela PD verdadeira; Platt na validação já usada. <b>Manter a logística, recalibrar o nível em amostra própria e confirmar numa janela nova</b>: intercepto e Platt melhoram a log loss esperada ({num(E_SEM, 4)} para {num(E_INT, 4)} e {num(E_PLATT, 4)}); a janela não escolhe entre eles (<LinkSlide slug="c7p12">slides 28</LinkSlide> e <LinkSlide slug="c7p13">29</LinkSlide>).</>
+        : esc === 2 ? <>Candidato: AUC {num(DL.auc2, 4)} contra {num(DL.auc1, 4)} (p = {num(DL.p, 3)}), O/E {num(CAL_G.razaoOE!, 3)}. <b>Manter a logística e ancorar o nível nas safras maturadas antes da janela</b> (treino e validação: {AN.variasSafras.defaults} defaults em {int(AN.variasSafras.n)}, {pct(AN.variasSafras.taxa, 1)}), não só na última ({pct(AN.validacao.taxa, 1)}): a PD média da janela iria a {pct(AN.variasSafras.pdMedia, 1)}, não a {pct(AN.soValidacao.pdMedia, 1)} (<LinkSlide slug="c7p16">slide 27</LinkSlide>). <b>Monitorar cada safra com Jeffreys; confirmar nas safras de 2024, quando maturarem.</b></>
           : <>Revise a evidência: a decisão escolhida ignora pelo menos uma das quatro perguntas. Tente outra.</>}
-      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. IC de DeLong; Jeffreys com a PD média da carteira (o do BCE testa subestimação; a cauda oposta, para o candidato, é adaptação); slope com IC de Wald. Motor econômico do slide 32. Janelas novas: ${N_JANELAS} sorteios do desfecho pela PD verdadeira; log loss esperada: média exata por ela; só em base sintética.`}>
+      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. IC de DeLong; Jeffreys com a PD média (o do BCE testa subestimação; a cauda oposta, para o candidato, é adaptação); slope com IC de Wald; motor do slide 32. Réplicas: ${N_JANELAS} sorteios do desfecho pela PD verdadeira (semente ${SEMENTE_JANELAS}). Nível: diferença de logits entre taxa e PD média de treino e validação.`}>
       <Painel titulo="Dossiê: logística (● cheio) contra candidato (□ vazado)">
         <div className="q7-s36-m">
           {CARTOES.map((c) => {
@@ -180,8 +184,8 @@ export function S36CasoIntegrador({ pagina }: { pagina?: Pagina }) {
             opcoes={[
               { certa: false, texto: "Aprovar o boosting com Platt", retorno: <>Confunde modelo novo com modelo melhor: AUC {num(DL.auc2, 4)} contra {num(DL.auc1, 4)} e PD média {pct(CAL_G.pdMedia!, 1)} contra {pct(OBS, 1)} observados.</> },
               { certa: false, texto: "Recalibrar o boosting na janela e aprovar", retorno: <>Usa a prova para ajustar (<LinkSlide slug="c7p16">slide 27</LinkSlide>): depois, a janela não mede mais nada. E recalibrar não tira a AUC de {num(DL.auc2, 4)}.</> },
-              { texto: "Manter a logística e recalibrar o nível", certa: true, retorno: "Isso: o candidato não ganha na ordem e erra o nível; a logística, recalibrada em amostra própria, melhora em expectativa." },
-              { certa: false, texto: "Trocar: a diferença de AUC é pequena", retorno: <>Diferença pequena não prova equivalência, e o ônus é de quem substitui; em janelas novas, a vantagem esperada ({num(jn.vantagem, 4)}) ainda é da logística.</> },
+              { texto: "Manter a logística, ancorar o nível em safras", certa: true, retorno: "Isso: o candidato não ganha na ordem e erra o nível; a logística fica, com o nível ancorado em várias safras." },
+              { certa: false, texto: "Trocar: a diferença de AUC é pequena", retorno: <>Diferença pequena não prova equivalência, e o ônus é de quem substitui; nas réplicas da janela, a vantagem esperada ({num(jn.vantagem, 4)}) ainda é da logística.</> },
             ]} />
         ) : (
           <div className="q7-s36-trava">

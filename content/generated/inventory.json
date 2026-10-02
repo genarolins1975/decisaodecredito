@@ -1,7 +1,7 @@
 {
  "source": "content/original/apresentacao-curso-pd.html",
- "sha256": "0d313c7a3303c79598e5a70bd22300537d724f889c7e63d639506e17e906e2a9",
- "extractedAt": "2026-10-02T13:42:38.230Z",
+ "sha256": "2d9cb3c4be399d700d96e654d6c86e930d2470d5e0f52ec96ba0f4da0c53d316",
+ "extractedAt": "2026-10-02T14:00:07.931Z",
  "edition": "2026",
  "units": [
   {
@@ -2846,7 +2846,7 @@
    "pageId": "7p5575awldug5o2nd7o6f",
    "chapter": 7,
    "unit": 3,
-   "title": "OOT: a prova depois de congelar as escolhas",
+   "title": "Janela fora do tempo: a prova depois de congelar as escolhas",
    "level": "essencial",
    "minutes": 4,
    "origin": "esq",
@@ -4047,14 +4047,7 @@
   "native": 21
  },
  "resync": {
-  "synced": [
-   "c6p1",
-   "c6p7",
-   "c6p8",
-   "c6p10",
-   "c6p11",
-   "c6p16"
-  ],
+  "synced": [],
   "diverged": []
  }
 }

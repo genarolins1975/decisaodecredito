@@ -48,7 +48,7 @@ const FRONTEIRA: [string, string, string?][] = [
   ["Venn-Abers e predição conformal", "Calibradores com garantia de validade em amostra finita, supondo observações trocáveis (por exemplo, independentes e de mesma distribuição); entregam um par de probabilidades cuja distância mostra a incerteza do próprio calibrador. Use com amostra de calibração pequena, quando importa a incerteza da PD de cada grau."],
   ["Benefício líquido e curva de decisão", "Mede o valor do modelo em cada limiar: acertos menos falsos positivos ponderados por pt ÷ (1 − pt), a razão implícita no limiar. Ponte entre calibração e decisão quando não há custos completos; o capítulo não a calcula: usa o resultado esperado em reais."],
   ["Calibração por segmento e multicalibração", "Calibrar na carteira não garante calibrar em cada segmento (produto, canal, região). Multicalibração exige calibração em todo subgrupo identificável; na prática, repita a curva por segmento relevante."],
-  ["PD de longo prazo e ajuste ao ciclo", "Para capital regulatório (abordagem IRB), a PD por grau é calibrada à média de longo prazo das taxas de default, cobrindo um ciclo econômico; para provisão, a perda esperada usa informação corrente e prospectiva."],
+  ["PD de longo prazo e ajuste ao ciclo", "Para capital regulatório (abordagem IRB), a PD por grau é calibrada à média de longo prazo das taxas de default, cobrindo um ciclo econômico; para provisão, a perda esperada usa informação corrente e prospectiva. No caso, o nível ancorado em várias safras, não só na última, segue a mesma ideia.", "c7p38"],
   ["Provisão por perda esperada no Brasil", "Desde 1/1/2025, a Resolução CMN 4.966/2021 (com a Resolução BCB 352/2023) baseia a provisão na perda esperada: PD mal calibrada vira provisão errada.", "c7p28"],
 ];
 /** Referências por tema: o que cada uma sustenta no capítulo, o slide que a usa (ou a aba do apêndice) e a citação. */
@@ -78,7 +78,7 @@ const REFS: { g: Grupo; quem: string; usa: string; onde: string; cit: string }[]
   { g: "decval", quem: "Elkan (2001)", usa: "corte pelo custo, não pela métrica", onde: "c7p18", cit: "The foundations of cost-sensitive learning. IJCAI, 973 a 978." },
   { g: "decval", quem: "Vickers e Elkin (2006)", usa: "benefício líquido e curva de decisão", onde: "Fronteira", cit: "Decision curve analysis: a novel method for evaluating prediction models. Medical Decision Making, 26(6)." },
   { g: "decval", quem: "DeLong, DeLong e Clarke-Pearson (1988)", usa: "diferença de AUCs na mesma amostra", onde: "c7p15", cit: "Comparing the areas under two or more correlated receiver operating characteristic curves: a nonparametric approach. Biometrics, 44(3)." },
-  { g: "decval", quem: "Sun e Xu (2014)", usa: "algoritmo rápido de DeLong", onde: "c7p14", cit: "Fast implementation of DeLong's algorithm for comparing the areas under correlated receiver operating characteristic curves. IEEE Signal Processing Letters, 21(11)." },
+  { g: "decval", quem: "Sun e Xu (2014)", usa: "implementação rápida equivalente de DeLong (o capítulo usa a direta, por pares)", onde: "c7p14", cit: "Fast implementation of DeLong's algorithm for comparing the areas under correlated receiver operating characteristic curves. IEEE Signal Processing Letters, 21(11)." },
   { g: "decval", quem: "Efron e Tibshirani (1993)", usa: "bootstrap e intervalo percentil", onde: "c7p14", cit: "An Introduction to the Bootstrap. Chapman & Hall." },
   { g: "reg", quem: "BCE (2019)", usa: "teste de Jeffreys no backtesting de PD", onde: "c7p31", cit: "Instructions for reporting the validation results of internal models: IRB Pillar I models for credit risk. ECB Banking Supervision, fevereiro de 2019." },
   { g: "reg", quem: "EBA (2017)", usa: "PD de longo prazo por grau", onde: "Fronteira", cit: "Guidelines on PD estimation, LGD estimation and the treatment of defaulted exposures. EBA/GL/2017/16." },
@@ -90,7 +90,7 @@ const REPRO: [string, string][] = [
   ["Base do curso", "gerador sintético, semente 20260501; data de referência 31/01/2025"],
   ["Referência numérica", "Python 3.11, scikit-learn 1.9.1, SciPy 1.17.1, statsmodels 0.15.0, NumPy 2.4.6 (scripts/capitulo7/referencia.py)"],
   ["Conferência", "tests/capitulo7-metricas.test.ts compara cada função com a referência"],
-  ["Sementes", "amostra de calibração 20261001; disputa 20261006; laboratório 20261015; PD coletiva 20261017 + k; bootstrap 20260501; janelas novas 20261033 (slides 27, 33, 34, 35 e 36); candidatos da reabertura 20261035; embaralhamento 7"],
+  ["Sementes", "amostra de calibração 20261001; disputa 20261006; laboratório 20261015; PD coletiva 20261017 + k; bootstrap 20260501; réplicas sintéticas da janela 20261033 (slides 27, 33, 34, 35, 36 e 37); candidatos da reabertura 20261035; embaralhamento 7"],
   ["Convenções", "recusa quando PD ≥ corte; faixas e ganho com ⌊x + ½⌋; empate vale meio par; log natural com limite de 10⁻¹⁵"],
 ];
 

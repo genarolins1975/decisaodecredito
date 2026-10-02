@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "0d313c7a3303c79598e5a70bd22300537d724f889c7e63d639506e17e906e2a9",
- "extractedAt": "2026-10-02T13:42:38.230Z",
+ "sourceSha256": "2d9cb3c4be399d700d96e654d6c86e930d2470d5e0f52ec96ba0f4da0c53d316",
+ "extractedAt": "2026-10-02T14:00:07.931Z",
  "meta": {
   "capitulos": [
    {
@@ -7556,15 +7556,15 @@
    },
    "origem": "rec",
    "aprendizado": "Escolher o número de árvores pelo mínimo da perda de validação e reconhecer que o ajuste não dá sinal de parada.",
-   "apoio": "Preveja quantas das 300 árvores ficam; depois mova o ponto de parada e compare a perda de validação com o mínimo. A faixa verde mostra onde a perda fica a menos de 0,001 do mínimo; a AUC de ajuste e a de validação ficam nos números ao lado.",
+   "apoio": "Preveja quantas das 300 árvores ficam; depois mova o ponto de parada e compare a perda de validação com o mínimo. A faixa verde mostra as árvores vizinhas do mínimo que ficam a menos de 0,001 dele (11 a 22); a AUC de ajuste e a de validação ficam nos números ao lado, e a tabela da regra de paciência diz quanto cada escolha fica acima do mínimo.",
    "conexao": "Responde à pergunta aberta no slide 11 e entrega ao slide 17 o modelo parado na validação, para enfrentar a logística.",
    "guia": {
     "funcao": "Transformar a curva de validação em decisão: parada antecipada.",
     "pre": "Slides 11 e 14: curvas de ajuste e validação na carteira, e taxa e árvores acopladas.",
     "conducao": "Lembre que a perda de ajuste cai até a árvore 300. Peça a previsão. Revelado o mínimo (16 árvores, 0,2955), mova o cursor para 100 e 300 e leia a perda de validação e a AUC de ajuste.",
-    "leitura": "Mínimo em 16 árvores (0,2955); com 100, 0,3096; com 300, 0,3289. A AUC de ajuste sobe de 0,743 em 16 árvores para 0,874 em 300. De 9 a 22 árvores, a perda fica a menos de 0,001 do mínimo. Como a mesma validação sorteada escolheu o ponto, a perda no mínimo é otimista: por isso a janela fora do tempo segue fechada.",
+    "leitura": "Mínimo em 16 árvores (0,2955); com 100, 0,3096; com 300, 0,3289. A AUC de ajuste sobe de 0,743 em 16 árvores para 0,874 em 300. De 11 a 22 árvores, a perda fica a menos de 0,001 do mínimo: qualquer uma equivale; depois da 22, passa dessa faixa e não volta (a árvore 10 fica dois centésimos de milésimo acima dela). Como a mesma validação sorteada escolheu o ponto, a perda no mínimo é otimista.",
     "pergunta": "Das 300 árvores do slide 11, quantas a perda de validação manda manter?",
-    "resposta": "16 (menos de 20); as outras 284 só baixam o ajuste.",
+    "resposta": "Menos de 20: o mínimo está em 16, e de 11 a 22 tanto faz. Depois da 22 a perda passa da faixa de 0,001 e não volta: as árvores seguintes só baixam o ajuste.",
     "erros": [
      {
       "alt": "Todas as 300",
@@ -7577,8 +7577,8 @@
       "intervencao": "Depois de 22 árvores a validação já passa de 0,001 acima do mínimo; com 100, 0,3096."
      }
     ],
-    "interacao": "Controle do ponto de parada, seletor do eixo (0 a 60 ou 0 a 300) e Restaurar abaixo da curva; previsão ao lado. A curva de validação e a tabela da regra de paciência aparecem depois do acerto.",
-    "verificacao": "Regra de paciência: com 10 árvores sem melhorar, o treino para na 26 e guarda a 16; com 3, para na 14 e guarda a 11, um mínimo local.",
+    "interacao": "Controle do ponto de parada, seletor do eixo (0 a 60 ou 0 a 300) e Restaurar abaixo da curva; previsão ao lado. A curva de validação e a tabela da regra de paciência (para na árvore, guarda a, distância ao mínimo) aparecem depois do acerto.",
+    "verificacao": "Regra de paciência: com 10 árvores sem melhorar, para na 26 e guarda a 16; com 3, para na 14 e guarda a 11, a 0,0003 do mínimo, dentro da faixa de 0,001: equivalente, não um erro. A turma lê na última linha da tabela a distância de cada escolha ao mínimo.",
     "transicao": "Parar cedo é um freio; o slide 16 mostra outro, sortear propostas a cada árvore. Depois, o slide 17 põe o modelo parado contra a logística."
    },
    "html": "<div class=\"palcoflex\"><div class=\"esq\">\n  <div class=\"ctrl\"><label for=\"c615e\">Taxa de aprendizagem η <b id=\"c615ev\">0,40</b></label>\n   <input type=\"range\" id=\"c615e\" min=\"5\" max=\"100\" step=\"5\" value=\"40\"></div>\n  <div class=\"ctrl\" style=\"margin-top:7px\"><label for=\"c615m\">Número de árvores M <b id=\"c615mv\">4</b></label>\n   <input type=\"range\" id=\"c615m\" min=\"1\" max=\"40\" step=\"1\" value=\"4\"></div>\n  <div class=\"ctrl\" style=\"margin-top:7px\"><label for=\"c615d\">Profundidade de cada árvore <b id=\"c615dv\">2</b></label>\n   <input type=\"range\" id=\"c615d\" min=\"1\" max=\"3\" step=\"1\" value=\"2\"></div>\n  <div class=\"ctrl\" style=\"margin-top:7px\"><label for=\"c615f\">Mínimo de propostas por folha <b id=\"c615fv\">2</b></label>\n   <input type=\"range\" id=\"c615f\" min=\"1\" max=\"4\" step=\"1\" value=\"2\"></div>\n  <div id=\"c615o\" style=\"margin-top:10px\"><div class=\"grade g2\">\n    <div class=\"painel\" style=\"text-align:center\"><div class=\"rot\">Log loss de treino</div>\n     <div class=\"numg\" style=\"color:#00205B\">0,47481</div>\n     <div class=\"nota\">logística: 0,43282</div></div>\n    <div class=\"painel\" style=\"text-align:center\"><div class=\"rot\">Folhas somadas</div>\n     <div class=\"numg\">16</div>\n     <div class=\"nota\">parâmetros estimados no total</div></div>\n    <div class=\"painel\" style=\"text-align:center\"><div class=\"rot\">Menor folha</div>\n     <div class=\"numg\" style=\"color:#8C2332\">2</div></div>\n    <div class=\"painel\" style=\"text-align:center\"><div class=\"rot\">PD mínima e máxima</div>\n     <div style=\"font-size:17px;font-weight:700;margin-top:8px;font-family:monospace\">\n      33% a 67%</div></div></div>\n    <div class=\"nota\" style=\"margin-top:8px\">Configuração razoável para esta base. Em base real, a escolha se faz por validação e não por inspeção.</div></div>\n  </div><div class=\"dir\"><div class=\"svgfit\" id=\"c615g\" data-exploravel=\"grafico\"><svg viewBox=\"0 0 600 320\" role=\"img\" aria-label=\"log loss de treino por árvores acrescentadas\" style=\"font-family:system-ui,sans-serif\"><line x1=\"62\" y1=\"274.0\" x2=\"582\" y2=\"274.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"278.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,00</text><line x1=\"62\" y1=\"213.0\" x2=\"582\" y2=\"213.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"217.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,18</text><line x1=\"62\" y1=\"152.0\" x2=\"582\" y2=\"152.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"156.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,36</text><line x1=\"62\" y1=\"91.0\" x2=\"582\" y2=\"91.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"95.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,54</text><line x1=\"62\" y1=\"30.0\" x2=\"582\" y2=\"30.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"34.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0,72</text><line x1=\"62\" y1=\"30\" x2=\"62\" y2=\"274\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <line x1=\"62\" y1=\"274\" x2=\"582\" y2=\"274\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <text transform=\"translate(12,152) rotate(-90)\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">log loss de treino</text>\n   <text x=\"322\" y=\"315\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">árvores acrescentadas</text><text x=\"62.0\" y=\"290\" text-anchor=\"start\" font-size=\"11.5\" fill=\"#5B6475\">0</text><text x=\"192.0\" y=\"290\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">1</text><text x=\"322.0\" y=\"290\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">2</text><text x=\"452.0\" y=\"290\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">3</text><text x=\"582.0\" y=\"290\" text-anchor=\"end\" font-size=\"11.5\" fill=\"#5B6475\">4</text><line x1=\"66\" y1=\"15\" x2=\"82\" y2=\"15\" stroke=\"#00205B\" stroke-width=\"2.5\"></line>\n      <text x=\"87\" y=\"18\" font-size=\"11.5\" fill=\"#333\">log loss de treino</text><line x1=\"218.2\" y1=\"15\" x2=\"234.2\" y2=\"15\" stroke=\"#6B4E8C\" stroke-width=\"2.5\" stroke-dasharray=\"6 3\"></line>\n      <text x=\"239.2\" y=\"18\" font-size=\"11.5\" fill=\"#333\">logística do capítulo 4</text><path d=\"M62.0 39.1L192.0 63.2L322.0 83.2L452.0 99.5L582.0 113.1\" fill=\"none\" stroke=\"#00205B\" stroke-width=\"2.6\" stroke-linejoin=\"round\"></path><path d=\"M62.0 127.3L582.0 127.3\" fill=\"none\" stroke=\"#6B4E8C\" stroke-width=\"2.5\" stroke-dasharray=\"7 4\" stroke-linejoin=\"round\"></path></svg></div>\n  <div class=\"painel\" style=\"margin-top:10px\"><div class=\"rot\">O que cada um controla</div>\n   <div class=\"rolax\"><table style=\"margin-top:7px\"><tbody>\n   <tr><th scope=\"row\">η</th><td>quanto de cada correção é aceito. Menor significa avanço mais lento e\n    menos dependência de cada árvore</td></tr>\n   <tr><th scope=\"row\">M</th><td>quantas correções. Cada árvore acrescentada aumenta a complexidade, então\n    M é o acelerador, não o freio: o freio é parar cedo. É também o que mais depende de amostra fora do\n    treino, porque a perda de treino cai com M e nunca indica onde parar. Os outros três também se\n    escolhem fora do treino</td></tr>\n   <tr><th scope=\"row\">Profundidade</th><td>quantas variáveis podem interagir dentro de uma árvore.\n    Profundidade 1 não permite interação alguma no escore; profundidade 2 permite pares</td></tr>\n   <tr><th scope=\"row\">Mínimo por folha</th><td>quão específica pode ser uma correção. É a mesma função\n    do capítulo 5, e o mesmo argumento de incerteza da folha</td></tr></tbody></table></div></div></div></div>",
@@ -7629,30 +7629,30 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Entender a subamostra (boosting estocástico de Friedman, 2002) como regularização e ler o efeito com a variação entre sementes.",
-   "apoio": "Antes de cada árvore, sorteia-se uma fração das 1.472 propostas de ajuste (dez sementes). A pergunta é feita no ponto de parada. Com 50%, a média dos mínimos das sementes é 0,2935 contra 0,2955 sem sorteio, melhora de 0,0020, menor que a faixa entre sementes (0,2912 a 0,2955). Com 30%, piora: 0,2966. Com 200 árvores, longe da parada, todas as sementes ficam abaixo de 0,3228 (50%: de 0,3075 a 0,3173): o sorteio achata a subida depois da parada, não o mínimo.",
+   "aprendizado": "Entender a subamostra (boosting estocástico de Friedman, 2002) como regularização e medir o ganho com duas réguas: a variação entre sementes (o efeito é consistente?) e o erro amostral da validação (631 propostas distinguem o ganho?).",
+   "apoio": "Antes de cada árvore, sorteia-se uma fração das 1.472 propostas de ajuste, com dez sementes. O gráfico mostra o ganho de log loss de cada semente sobre o modelo sem sorteio em dois pontos fixos: a parada sem sorteio (16 árvores) e 200 árvores. A barra da média é ±1,96 erro padrão entre sementes; a faixa cinza é ±1,96 erro padrão da diferença pareada, proposta a proposta, na validação. Com 50%, na parada: ganho médio de 0,0010, erro de 0,0004 entre sementes (8 de 10 com ganho), mas erro de 0,0028 da validação. Com 200 árvores: 0,0109, 1,8 erro da validação, todas as sementes com ganho. Medir no mínimo de cada semente infla o ganho para 0,0021.",
    "conexao": "Completa os controles dos slides 12 a 15 e prepara a comparação com a logística do slide 17.",
    "guia": {
-    "funcao": "Separar onde o sorteio regulariza (longe da parada) de onde o modelo seria usado (no mínimo), com o sinal medido.",
+    "funcao": "Separar onde o sorteio regulariza (longe da parada) de onde o modelo seria usado (na parada), e distinguir a variação entre sementes do erro amostral da validação.",
     "pre": "Slides 13 e 15: os quatro controles e a parada pela validação.",
-    "conducao": "Mostre a curva sem sorteio (mínimo 0,2955 em 16 árvores, 0,3228 com 200). Peça a previsão no ponto de parada para 50%. Depois do acerto o eixo abre de 0 a 50: aponte os mínimos das sementes espalhados. Troque para 0 a 200 e para 30%.",
-    "leitura": "50%: no mínimo, 0,2935 contra 0,2955, melhora de 0,0020, dentro da faixa entre sementes (0,2912 a 0,2955). 30%: 0,2966, piora de 0,0011. Com 200 árvores, todas as sementes abaixo de 0,3228.",
-    "pergunta": "Parando no mínimo de cada curva, a subamostra de 50% melhora a perda de validação?",
-    "resposta": "Quase nada: 0,0020, menos que a variação entre sementes, e com 30% o sinal troca. O ganho claro aparece longe da parada, com 200 árvores.",
+    "conducao": "Mostre a fila de baixo, aberta: com 200 árvores, todas as sementes ganham do modelo sem sorteio. Peça a previsão para a parada (16 árvores) com 50%. Depois do acerto, leia as duas réguas: a barra da média (entre sementes) não toca o zero; a faixa cinza (erro da validação) engole o ganho. Troque para o mínimo de cada semente e mostre o ganho dobrar só porque o ponto foi escolhido na mesma validação. Por fim, troque para 30%.",
+    "leitura": "50%, parada em 16: ganho médio de 0,0010 (perda 0,2946 contra 0,2955), erro padrão de 0,0004 entre sementes, 8 de 10 com ganho: consistente; erro padrão pareado da validação 0,0028 (mediana das sementes): o ganho cabe nele. 200 árvores: 0,0109, erro de 0,0009 entre sementes e 0,0061 da validação (1,8 erro). No mínimo de cada semente: 0,0021, 10 de 10, viés de seleção. 30%, parada em 16: perda de 0,0030 (1 de 10 com ganho). 80%: 0,0007, sem sinal consistente.",
+    "pergunta": "Parando na árvore 16, a subamostra de 50% melhora a perda de validação?",
+    "resposta": "Melhora pouco: as sementes concordam no sinal (o efeito médio existe), mas o ganho de 0,0010 é menor que o erro amostral de 631 propostas, 0,0028. Longe da parada, com 200 árvores, o ganho é dez vezes maior.",
     "erros": [
      {
       "alt": "Melhora com folga: o sorteio regulariza",
       "confusao": "Confunde o efeito longe da parada com o efeito na parada.",
-      "intervencao": "Compare as duas colunas da tabela: 0,3119 contra 0,3228 com 200 árvores, 0,2935 contra 0,2955 no mínimo."
+      "intervencao": "Compare as duas filas: 0,0109 com 200 árvores, 0,0010 na parada, dentro da faixa cinza."
      },
      {
-      "alt": "Piora: cada árvore vê menos propostas",
-      "confusao": "Pensa em cada árvore isolada, não na soma de muitas árvores com sorteios diferentes.",
-      "intervencao": "Com 50% a média dos mínimos fica abaixo de 0,2955; troque para 30% e veja o sinal mudar."
+      "alt": "Nada: as sementes caem para os dois lados",
+      "confusao": "Confunde a dispersão de cada semente com a incerteza do efeito médio.",
+      "intervencao": "Aponte a barra da média: erro de 0,0004, contra um ganho de 0,0010; 8 das 10 sementes ganham."
      }
     ],
-    "interacao": "Previsão com retorno; depois, fração sorteada (80%, 50%, 30%) com dez sementes calculadas uma a uma, eixo de 0 a 50 ou 0 a 200 e mínimos de cada curva marcados. Restaurar volta a 50%, eixo inteiro e limpa a previsão.",
-    "verificacao": "A turma lê na tabela a faixa entre sementes no mínimo e com 200 árvores e diz qual das duas diferenças cabe no ruído.",
+    "interacao": "Previsão com retorno; depois, fração sorteada (80%, 50%, 30%) com dez sementes calculadas uma a uma e ponto de comparação (parada fixa em 16 ou mínimo de cada semente); tabela das duas réguas ao lado. Restaurar volta a 50%, parada fixa e limpa a previsão.",
+    "verificacao": "A turma diz, com a tabela das duas réguas, por que o ganho é consistente e ainda assim não provado pela validação, e por que o mínimo de cada semente exagera o ganho.",
     "transicao": "Com os freios na mão, o slide 17 compara o boosting parado na validação com a logística das mesmas três variáveis."
    },
    "html": "<div class=\"palcoflex\" data-colunas=\"dados\"><div class=\"esq\" style=\"flex: 0.52 1 0px;\"><div class=\"rolax\" data-exploravel=\"tabela\" data-aberta=\"true\"><table>\n   <thead><tr><th><span class=\"letra-grega\">η</span></th><th>Árvores até perda de treino 0,50</th><th><span class=\"letra-grega\">η</span> × árvores</th>\n    <th>Perda de treino com 60 árvores</th></tr></thead><tbody>\n   <tr>\n    <th scope=\"row\">0,10</th><td class=\"num\">14</td>\n    <td class=\"num\">1,40</td>\n    <td class=\"num\">0,28394</td></tr><tr>\n    <th scope=\"row\">0,15</th><td class=\"num\">10</td>\n    <td class=\"num\">1,50</td>\n    <td class=\"num\">0,23680</td></tr><tr>\n    <th scope=\"row\">0,20</th><td class=\"num\">7</td>\n    <td class=\"num\">1,40</td>\n    <td class=\"num\">0,20965</td></tr><tr>\n    <th scope=\"row\">0,30</th><td class=\"num\">5</td>\n    <td class=\"num\">1,50</td>\n    <td class=\"num\">0,16621</td></tr><tr style=\"background:#FBF3DE\">\n    <th scope=\"row\">0,40</th><td class=\"num\">4</td>\n    <td class=\"num\">1,60</td>\n    <td class=\"num\">0,13711</td></tr><tr>\n    <th scope=\"row\">0,50</th><td class=\"num\">3</td>\n    <td class=\"num\">1,50</td>\n    <td class=\"num\">0,11702</td></tr><tr>\n    <th scope=\"row\">0,60</th><td class=\"num\">3</td>\n    <td class=\"num\">1,80</td>\n    <td class=\"num\">0,10227</td></tr><tr>\n    <th scope=\"row\">0,80</th><td class=\"num\">2</td>\n    <td class=\"num\">1,60</td>\n    <td class=\"num\">0,08165</td></tr><tr>\n    <th scope=\"row\">1,00</th><td class=\"num\">2</td>\n    <td class=\"num\">2,00</td>\n    <td class=\"num\">0,06800</td></tr>\n   </tbody></table></div>\n   <p class=\"nota\" style=\"margin-top:8px\">A terceira coluna é quase constante. Reduzir η pela metade exige\n   aproximadamente dobrar M para chegar ao mesmo ponto. <span class=\"selo s-rec\">Recalculado aqui</span></p>\n   <p class=\"nota\" style=\"margin-top:7px\">As duas colunas de perda são de treino. A última coluna desce\n   sem parar conforme η cresce: com dezesseis propostas e sessenta árvores, 0,06800\n   é memorização, não desempenho. É por isso que a pergunta “qual η dá a menor perda” não se\n   responde nesta tabela.</p>\n   </div><div class=\"dir\" style=\"flex: 0.48 1 0px;\"><div class=\"svgfit\" data-exploravel=\"grafico\"><svg viewBox=\"0 0 600 340\" role=\"img\" aria-label=\"árvores até a perda alvo por taxa de aprendizagem η\" style=\"font-family:system-ui,sans-serif\"><line x1=\"62\" y1=\"294.0\" x2=\"582\" y2=\"294.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"298.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">0</text><line x1=\"62\" y1=\"130.0\" x2=\"582\" y2=\"130.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"134.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">10</text><line x1=\"62\" y1=\"-34.0\" x2=\"582\" y2=\"-34.0\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"-30.0\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">20</text><line x1=\"62\" y1=\"-197.9\" x2=\"582\" y2=\"-197.9\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"-193.9\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">30</text><line x1=\"62\" y1=\"-361.9\" x2=\"582\" y2=\"-361.9\" stroke=\"#E2DFD6\"></line><text x=\"56\" y=\"-357.9\" text-anchor=\"end\" font-size=\"12\" fill=\"#5B6475\">40</text><line x1=\"62\" y1=\"30\" x2=\"62\" y2=\"294\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <line x1=\"62\" y1=\"294\" x2=\"582\" y2=\"294\" stroke=\"#5B6475\" stroke-width=\"1.3\"></line>\n   <text transform=\"translate(12,162) rotate(-90)\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">árvores até a perda alvo</text>\n   <text x=\"322\" y=\"335\" text-anchor=\"middle\" font-size=\"12.5\" fill=\"#00205B\" font-weight=\"600\">taxa de aprendizagem η</text><text x=\"88.0\" y=\"310\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">0,10</text><text x=\"166.0\" y=\"310\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">0,25</text><text x=\"296.0\" y=\"310\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">0,50</text><text x=\"426.0\" y=\"310\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">0,75</text><text x=\"556.0\" y=\"310\" text-anchor=\"middle\" font-size=\"11.5\" fill=\"#5B6475\">1,00</text><line x1=\"66\" y1=\"15\" x2=\"82\" y2=\"15\" stroke=\"#00205B\" stroke-width=\"2.5\"></line>\n      <text x=\"87\" y=\"18\" font-size=\"11.5\" fill=\"#333\">árvores necessárias</text><path d=\"M88.0 64.4L114.0 130.0L140.0 179.2L192.0 212.0L244.0 228.4L296.0 244.8L348.0 244.8L452.0 261.2L556.0 261.2\" fill=\"none\" stroke=\"#00205B\" stroke-width=\"2.6\" stroke-linejoin=\"round\"></path><circle cx=\"88.0\" cy=\"64.4\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"114.0\" cy=\"130.0\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"140.0\" cy=\"179.2\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"192.0\" cy=\"212.0\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"244.0\" cy=\"228.4\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"296.0\" cy=\"244.8\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"348.0\" cy=\"244.8\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"452.0\" cy=\"261.2\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle><circle cx=\"556.0\" cy=\"261.2\" r=\"4.5\" fill=\"#8C2332\" stroke=\"#fff\" stroke-width=\"1.6\"></circle></svg></div>\n   <div class=\"revelacao\" style=\"margin-top:10px\"><h4>Chegando à mesma perda alvo, por que preferir η pequeno?</h4>\n   Porque o caminho não é idêntico. Com η pequeno, o modelo passa por muitos estágios intermediários, e a\n   validação pode interromper em qualquer um deles. Com η grande, os saltos são grossos e o melhor ponto\n   pode ficar entre duas iterações. A granularidade do controle é a vantagem.</div>\n   <div class=\"revelacao ruim\" style=\"margin-top:10px\"><h4>O custo</h4>\n   Tempo. η de 0,01 com dez mil árvores custa cem vezes mais que η de 1 com cem. Em produção, a escolha\n   típica fica entre 0,01 e 0,1 com parada antecipada monitorada em validação, e não em uma grade fixa.</div></div></div>",
@@ -7789,9 +7789,9 @@
     "funcao": "Mostrar que o número de árvores mexe na dispersão das PDs sem mexer na média, e que a média da carteira não confere a calibração.",
     "pre": "Slide 15 (parada em 16 árvores) e slide 17 (o mesmo boosting contra a logística).",
     "conducao": "Comece pelos números do modelo parado: média 9,3% contra 9,8%, dentro do intervalo. Peça a previsão sobre o modelo com 300 árvores. Depois do acerto, percorra o controle de 1 a 300 árvores: com 1 árvore as PDs ficam presas perto da média (slope 5,86); entre 16 e 30 árvores o slope passa por 1; com 300, cai a 0,42.",
-    "leitura": "Com 300 árvores: PD média 8,9%, uma faixa de cinco no intervalo, slope 0,42 com IC de 0,18 a 0,66. Parado em 16: 9,3%, três de cinco, slope 1,19 com IC de 0,80 a 1,58.",
+    "leitura": "Com 300 árvores: PD média 8,9%, uma faixa de cinco no intervalo, slope 0,42 com IC de 0,18 a 0,66. Parado em 16: PD média 9,3% contra 9,8% (no intervalo) e slope 1,19 com IC de 0,80 a 1,58 (contém 1), mas as faixas 1 e 2 ficam fora do intervalo de Wilson: faixa 2 com 5,7% previstos contra 1,6% observados (intervalo de 0,4% a 5,6%); faixa 1 no limite (4,89% previstos, com o intervalo de 4,94% a 14,96% em torno dos 8,7% observados).",
     "pergunta": "O modelo parado está calibrado?",
-    "resposta": "A validação não prova desvio, o que não é o mesmo que provar calibração: o IC do slope vai de 0,80 a 1,58. O capítulo 7 confere com a janela fora do tempo.",
+    "resposta": "Os sinais são mistos: média e slope cabem no ruído, mas duas das cinco faixas ficam fora do intervalo de Wilson. Com 631 propostas não se resolve; o capítulo 7 mede com mais casos, na janela fora do tempo, e recalibra.",
     "erros": [
      {
       "alt": "Quase não muda: se a média bate, as faixas batem",
@@ -7851,29 +7851,29 @@
    },
    "origem": "esq",
    "aprendizado": "Decompor a log odds de uma proposta em contribuições de Shapley que somam exatamente o escore, e saber o que a importância por ganho não diz.",
-   "apoio": "Preveja qual variável mais pesa na PD da proposta escolhida; depois leia a cascata das contribuições até o escore, troque de proposta, edite as variáveis e compare com a importância por ganho.",
+   "apoio": "A proposta da previsão foi escolhida por busca: aquela em que a variável que mais move a log odds não é a de maior ganho na carteira. Preveja qual variável mais move a PD dela; depois leia a cascata das contribuições até o escore, troque de proposta, edite as variáveis e compare com a importância por ganho.",
    "conexao": "Explica as PDs cujo nível o slide 18 conferiu; o atraso com contribuição zero prepara o slide 20, em que o atraso entra no modelo na direção errada.",
    "guia": {
     "funcao": "Dar ao aluno a explicação por proposta que o validador e o cliente recusado podem pedir.",
     "pre": "Slide 9 (a PD como soma de parcelas em log odds) e slide 18 (o boosting parado e o nível das PDs).",
-    "conducao": "Apresente a tabela de ganho, que está visível, e a proposta. Peça a previsão: qual variável mais empurra a PD para cima? Revele a cascata e leia a soma. Depois troque de proposta (maior PD, menor PD, default com PD baixa) e edite a utilização e o score; mova o atraso e mostre que nada muda.",
-    "leitura": "Valor esperado −2,38, utilização −0,04, atraso 0,00, score +0,20, escore −2,22, PD 9,8%. A soma fecha exatamente.",
-    "pergunta": "Por que a utilização de 75,8% puxa a PD para baixo nesta proposta?",
-    "resposta": "Porque a contribuição mede o que o modelo aprendeu dos dados para essa faixa de utilização, dadas as outras variáveis: nas 16 árvores do modelo parado, ela ficou um pouco abaixo da média. Valor alarmante não é contribuição alta; o slide 20 mostra como impor a direção esperada.",
+    "conducao": "Apresente a tabela de ganho, que está visível (score com 89%), e a proposta: utilização de 0,3%, atraso de 9 dias, score 830. Peça a previsão: qual variável mais move esta PD, para cima ou para baixo? Revele a cascata e leia a soma. Depois troque para Utilização alta (75,8%) e leia a nota: a utilização baixa a PD porque, acima de 59,6%, a dependência parcial cai; ligue ao slide 20. Mova o atraso e mostre que nada muda.",
+    "leitura": "Caso da previsão: valor esperado −2,38, utilização −0,15, atraso 0,00, score +0,08, escore −2,45, PD 7,9%; a soma fecha exatamente. O ganho põe o score em 89% e a utilização em 11%, mas nesta proposta a utilização move quase o dobro do score. Utilização alta (75,8%, 10 dias, score 756): −0,04, 0,00 e +0,20; acima de 59,6% de utilização a PD média da carteira cai de 9,33% para 8,99%, num trecho com 90 das 1.472 propostas de ajuste.",
+    "pergunta": "Por que a utilização, com só 11% do ganho, é a variável que mais move esta PD?",
+    "resposta": "Porque o ganho soma, sem sinal, os cortes em todas as propostas, e a contribuição mede o que o valor desta proposta faz com a log odds: um cartão quase sem uso (0,3%) tira 0,15, e o score acrescenta só 0,08.",
     "erros": [
      {
-      "alt": "Utilização",
-      "confusao": "Confunde valor alarmante com contribuição.",
-      "intervencao": "Leia a barra: −0,04, para baixo."
+      "alt": "Score",
+      "confusao": "Confunde importância na carteira com peso na proposta.",
+      "intervencao": "Leia as duas colunas da tabela: 89% de ganho, +0,08 nesta proposta, contra −0,15 da utilização."
      },
      {
       "alt": "Atraso",
-      "confusao": "Supõe que o modelo usa toda variável que recebe.",
+      "confusao": "Confunde valor alarmante com contribuição: supõe que o modelo usa toda variável que recebe.",
       "intervencao": "Nenhuma das 16 árvores corta no atraso: contribuição e ganho zero; mova o controle do atraso e veja a PD parada."
      }
     ],
-    "interacao": "Previsão com a cascata oculta; depois, quatro propostas da validação e três controles para editar a proposta; a soma é verificada a cada mudança; Restaurar volta à proposta e à previsão.",
-    "verificacao": "A turma refaz a soma com os números da cascata e diz o que a coluna de ganho não informa.",
+    "interacao": "Previsão com a cascata oculta; depois, cinco propostas da validação (caso da previsão, utilização alta, maior PD, menor PD, default com PD baixa) e três controles para editar a proposta; a soma é verificada a cada mudança; quando a utilização passa do último corte e baixa a PD, uma nota liga ao slide 20; Restaurar volta à proposta e à previsão.",
+    "verificacao": "A turma refaz a soma com os números da cascata e diz o que a coluna de ganho não informa sobre esta proposta.",
     "transicao": "O atraso não entra no modelo parado. Quando entra, com mais árvores, ele contraria a lógica de crédito: slide 20."
    },
    "html": "<div class=\"nv nv-checkpoint\"><div class=\"nv-checkpoint-side\"><span class=\"big\">3</span><h3>ideias para levar</h3><p>A previsão final acumula árvores que atacam erros diferentes.</p></div><div class=\"nv-checkpoint-main\"><div class=\"nv-checkpoint-nav\"><button type=\"button\" data-v13-check=\"0\" data-titulo=\"Resíduo\" data-pergunta=\"O que a nova árvore tenta prever?\" data-resposta=\"O erro que o conjunto atual ainda deixa.\" class=\"ativo\">1. Resíduo</button><button type=\"button\" data-v13-check=\"1\" data-titulo=\"Soma\" data-pergunta=\"Onde está a previsão?\" data-resposta=\"No valor inicial mais todas as correções ponderadas.\" class=\"\">2. Soma</button><button type=\"button\" data-v13-check=\"2\" data-titulo=\"Teste\" data-pergunta=\"Como escolher complexidade?\" data-resposta=\"Pelo desempenho fora do ajuste, com taxa e número de árvores avaliados juntos.\" class=\"\">3. Teste</button></div><div class=\"nv-checkpoint-detail\" id=\"v13-check-detail\"><h3>Resíduo</h3><p>O que a nova árvore tenta prever?</p><div class=\"resposta\">O erro que o conjunto atual ainda deixa.</div></div></div></div>",
@@ -7968,29 +7968,29 @@
    },
    "origem": "rec",
    "aprendizado": "Escolher os hiperparâmetros pela validação e montar a lista de evidências que um validador independente exige antes do comitê.",
-   "apoio": "O candidato do comitê é o boosting do gerador, com sete variáveis, julgado na validação temporal do gerador (760 propostas, 100 defaults, safras 2023-03 a 2023-07). A lista do validador usa os números dele: referência linear não cumprida (AUC 0,6476 contra 0,6408 da logística de sete variáveis: empate; log loss 0,38293 contra 0,38298); nível não cumprido (PD média 9,70% contra 13,16% observados, fora do Wilson de 10,9% a 15,7%); complexidade a provar (60 árvores e 8 folhas pela validação, mas 60 é o menor valor testado, e a célula vizinha fica só 0,0076 abaixo, com erro padrão de 0,031 por AUC); monotonia e explicação a provar (o gerador não publica as árvores; método nos slides 19 e 20, na validação sorteada); janela fora do tempo a provar no capítulo 7 (737 propostas, 2023-08 a 2023-12). Vai ao comitê como desafiante, com a logística como referência.",
-   "conexao": "Fecha o capítulo voltando ao gancho do slide 1 (0,8196 no treino, 0,6476 na validação) e entrega o candidato ao comitê do capítulo 7.",
+   "apoio": "O candidato do comitê é o boosting do gerador, com sete variáveis (sem o score de bureau dos slides 11 a 20), julgado na validação temporal do gerador (760 propostas, 100 defaults, safras 2023-03 a 2023-07). A lista do validador tem dois modos: a evidência e o que pedir. Referência linear a provar: 0,6476 contra 0,6408 da logística empata pela régua aproximada de uma AUC isolada (0,031, Hanley e McNeil), porque o gerador não publica as previsões por proposta; as duas AUC vêm das mesmas propostas (correlação 0,95 no slide 17), e o validador deve pedir o DeLong pareado, com IC acima de zero. Nível não cumprido: só há a média, 9,70% no boosting e 9,72% na logística contra 13,16% observados (Wilson de 10,9% a 15,7%): os dois erram a safra; pedir curva por faixa e slope. Escolha a provar: 60 árvores e 8 folhas, a maior de 12 células, medida nas mesmas 760 da comparação (otimismo de seleção a favor do boosting), na borda da grade. Monotonia e explicação e janela fora do tempo a provar.",
+   "conexao": "Fecha o capítulo voltando ao gancho do slide 1 (0,8196 no treino, 0,6476 na validação), responde às quatro perguntas com números do candidato e entrega a decisão ao comitê do capítulo 7.",
    "guia": {
     "funcao": "Fechar o capítulo: responder às quatro perguntas com os números do candidato e entregar a lista do validador com o estado de cada item.",
     "pre": "Slides 15, 17, 18, 19 e 20, cada um com o método de um item da lista.",
-    "conducao": "Mostre a grade de treino e peça que cada grupo escolha a combinação antes de ver a validação. Envie as mais votadas e leia o retorno. Depois percorra a lista: dois itens não cumpridos, três a provar; abra o slide de método de cada um.",
-    "leitura": "Mecanismo: 60 árvores de 8 folhas, treino 0,8196. Probabilidade: PD média 9,70% contra 13,16%. Controle: escolha pela validação, na borda da grade. Prova: 0,6476 contra 0,6408 da logística, empate. A base sintética permite guardar a janela futura e conhecer a PD verdadeira.",
+    "conducao": "Peça que cada grupo escolha a combinação pela AUC de treino e envie. Num envio errado, abrem só a célula enviada e a melhor; Tentar outra fecha de novo. Se a turma enviar 60 árvores e 4 folhas, discuta a regra de um erro padrão: não é erro. Com o acerto, a grade abre inteira e a leitura responde às quatro perguntas. Percorra a lista nos dois modos (evidência e o que pedir) e abra o slide de método de cada item.",
+    "leitura": "Mecanismo: F₀ = −2,25 (log odds dos 9,56% de default do treino) mais 60 árvores, cada folha vezes 0,05, em log odds; sigmoide no fim. Probabilidade: PD média de 9,70% contra 13,16%, como a logística (9,72%): recalibrar os dois; explicação por contribuições exige as árvores. Controle: 60 árvores de até 8 folhas, mínimo de 60 por folha, na borda da grade. Prova: 0,6476 contra 0,6408, empate pela régua aproximada; faltam DeLong pareado, curva por faixa e janela futura. Decisão: o comitê só troca a logística se o boosting ganhar na janela futura, porque um modelo mais complexo custa validar e explicar.",
     "pergunta": "Se o boosting empata com a logística e erra o nível, por que ele vai ao comitê?",
-    "resposta": "Como desafiante, não como vencedor: o comitê julga na janela fora do tempo, e a logística segue como referência. A recalibração do nível é tema do capítulo 7.",
+    "resposta": "Como desafiante, não como vencedor: o empate usa uma régua aproximada e a comparação favorece o boosting (a célula foi escolhida nas mesmas propostas). O comitê julga na janela fora do tempo, com o DeLong pareado; o nível errado é dos dois modelos, e a recalibração é tema do capítulo 7.",
     "erros": [
      {
       "alt": "240 árvores e 16 folhas",
       "confusao": "Confunde ajuste com generalização.",
-      "intervencao": "Leia a célula da validação: 0,6063, a pior da grade."
+      "intervencao": "Leia a célula aberta: 0,6063, a pior da grade, com o maior treino (0,9927)."
      },
      {
       "alt": "60 árvores e 4 folhas",
-      "confusao": "Toma uma diferença de 0,0076 como prova.",
-      "intervencao": "Compare com o erro padrão de cada AUC, 0,031: a grade não separa as duas."
+      "confusao": "Não é erro: 0,0076 abaixo da maior, dentro de um erro padrão (0,031).",
+      "intervencao": "Apresente a regra de um erro padrão: um validador pode preferir o modelo mais simples; o gerador escolheu a maior AUC."
      }
     ],
-    "interacao": "Escolha de árvores e folhas com envio ao comitê antes de ver a validação; retorno por escolha e Tentar outra; itens da lista com estado (cumprido, não cumprido, a provar) e link para o slide de método; Restaurar volta ao início.",
-    "verificacao": "Cada grupo diz o estado de cada item e o número que o sustenta.",
+    "interacao": "Células da grade como botões (AUC de treino visível, de validação oculta); envio ao comitê; num envio errado, só a célula enviada e a melhor se abrem; Tentar outra fecha de novo; lista com dois modos (evidência e o que pedir, com limiares) e link para o slide de método de cada item; Restaurar volta ao início.",
+    "verificacao": "Cada grupo diz o estado de cada item, o número que o sustenta e o limiar que o validador exigiria.",
     "transicao": "O candidato vai ao comitê como desafiante da logística. No capítulo 7, a janela fora do tempo abre e o comitê julga ordenação, probabilidade e decisão."
    },
    "html": "<div class=\"painel\"><p>Escolher os hiperparâmetros pela validação e montar a lista de evidências que um validador independente exige antes do comitê.</p><p class=\"nota\">Quadro interativo do capítulo 6 na plataforma.</p></div>",
@@ -8017,7 +8017,7 @@
    },
    "origem": "rec",
    "aprendizado": "Consultar as fórmulas do algoritmo, os métodos da fronteira com o que resolvem e quando usar, as referências primárias e o caminho para reproduzir os números.",
-   "apoio": "Fórmulas do palpite inicial, do pseudo-resíduo, do passo de Newton, da atualização com taxa, da log loss, das contribuições de Shapley (K variáveis), da dependência parcial e da monotonia, com legenda de símbolos (n propostas, K variáveis, p a PD). Fronteira: XGBoost (folha w* = −G ÷ (H + λ), com G a soma de p − y e H a de p(1 − p)), LightGBM, CatBoost, EBM e GA2M, árvores contra redes e explicações contrafactuais, cada um com quando usar e o slide do curso. Referências com DOI, incluindo Potharst e Feelders (2002) para monotonia e Hanley e McNeil (1982) para o erro padrão da AUC. Reprodução: sementes 20260501 e 20260601, scripts/capitulo6/referencia.py e tests/capitulo6-gbm.test.ts.",
+   "apoio": "Fórmulas do palpite inicial, do pseudo-resíduo, do passo de Newton, da atualização com taxa, da log loss, das contribuições de Shapley (K variáveis), da dependência parcial e da monotonia, com legenda de símbolos (n propostas, K variáveis, p a PD). Fronteira: XGBoost (folha w* = −G ÷ (H + λ), com G a soma de p − y e H a de p(1 − p)), LightGBM, CatBoost, EBM e GA2M, árvores contra redes e explicações contrafactuais, cada um com quando usar e o slide do curso. Referências com DOI ou endereço direto do documento (LightGBM nos anais do NeurIPS, EBA 2023 e Resolução CMN 4.557 em PDF), incluindo Potharst e Feelders (2002) para monotonia e Hanley e McNeil (1982) para o erro padrão da AUC. Reprodução: sementes 20260501 e 20260601, scripts/capitulo6/referencia.py e tests/capitulo6-gbm.test.ts.",
    "conexao": "Material de consulta: o percurso da aula termina no slide 21.",
    "guia": {
     "funcao": "Servir de consulta para fórmulas, métodos atuais, referências e reprodução.",
@@ -8596,7 +8596,7 @@
     "funcao": "Delimitar a AUC: mede a ordem, não o nível, o corte ou a perda.",
     "pre": "Slide 9, a ROC.",
     "conducao": "Até a escolha, o subtítulo é pergunta e a leitura só dá a instrução: peça a frase antes de mostrar os cenários. Depois teste: transformação crescente, nenhuma linha se cruza e a AUC fica igual; fila embaralhada, AUC perto de 0,5; orientação invertida, 1 menos AUC. Feche com o que a AUC não diz: o nível da PD (slide 19), o corte e a perda (slide 32).",
-    "leitura": "Ponte entre a PD original e a do cenário para 20 propostas, ao lado da ROC da janela. No cenário PD verdadeira, a leitura usa janelas novas (300 sorteios do desfecho pela PD verdadeira, semente 20261033): AUC média 0,7026 da PD verdadeira contra 0,6673 da logística; nesta janela, 0,7373 contra 0,7257. Em média nenhum modelo passa da verdadeira; numa janela isolada pode (em 9 de 300 a logística supera a verdadeira).",
+    "leitura": "Ponte entre a PD original e a do cenário para 20 propostas, ao lado da ROC da janela; cada linha liga as posições exatas nos dois eixos, então só se cruza quando o par troca de ordem (zero cruzamentos na transformação crescente, 85 na fila embaralhada, 190 na invertida). No cenário PD verdadeira, a leitura usa as réplicas sintéticas da janela (os mesmos 737 proponentes com o desfecho sorteado de novo pela PD verdadeira; 300 sorteios, semente 20261033, só possível em base sintética): AUC média 0,7026 da PD verdadeira contra 0,6673 da logística; nesta janela, 0,7373 contra 0,7257. Em média nenhum modelo passa da verdadeira; numa réplica isolada pode (em 9 de 300 a logística supera a verdadeira).",
     "pergunta": "Duas carteiras com a mesma AUC precisam da mesma provisão?",
     "resposta": "Não. A AUC não diz o nível da PD; a provisão depende dele.",
     "erros": [
@@ -8832,29 +8832,29 @@
     "disc": 1
    },
    "origem": "rec",
-   "aprendizado": "Antecipar e verificar como AUC, KS, ganho e lift reagem a filas boas, aleatórias, invertidas e perturbadas.",
-   "apoio": "Responda à previsão sobre a fila invertida; depois troque o cenário e mova o nível das PDs, olhando os quatro gráficos ao mesmo tempo.",
+   "aprendizado": "Antecipar e verificar como AUC, KS, ganho e lift reagem a uma mudança de nível das PDs e a filas boas, aleatórias, invertidas e perturbadas.",
+   "apoio": "Responda à previsão sobre somar +1 em log odds a todas as PDs; depois troque o cenário e mova o nível e o ruído, olhando os quatro gráficos ao mesmo tempo.",
    "conexao": "Tudo até aqui mede a fila. Nada verifica se a PD está no nível certo.",
    "guia": {
     "funcao": "Consolidar a ordenação: todas as métricas se movem juntas quando a fila muda.",
     "pre": "Slides 5 a 14.",
-    "conducao": "Título: só a ordem move AUC, KS, ganho e lift. Peça a previsão da fila invertida; a resposta certa (1 − 0,73 = 0,27) libera cenários e o nível. Ao lado, as quatro medidas da logística e do cenário. Na invertida, a AUC vira 0,2743 e o KS cai a 0,003 só pela convenção (maior TPR − FPR); com o módulo seria 0,362: o número do KS não tem valor absoluto. Com o nível em +0,8, a PD média vai a 18,5% e as quatro ficam paradas. Lembre que, entre modelos cujas ROC se cruzam, AUC e KS podem discordar.",
+    "conducao": "Título: só a ordem move AUC, KS, ganho e lift. Peça a previsão: somar +1 em log odds a todas as PDs leva a PD média de 9,7% a 21,4%; o que acontece com as quatro? Nada, porque ninguém troca de lugar na fila. A resposta certa abre o controle de nível já em +1,0, com a tabela ao lado (0,7257 → 0,7257; 0,362 → 0,362; 22 → 22; 2,7× → 2,7×), e libera os cenários. Os retornos errados nomeiam a confusão: nível com ordem; corte na fila com corte de PD; calibração com ordenação. Na invertida, a AUC vira 0,2743 e o KS, pela convenção (maior TPR − FPR), cai a 0,003; medido por |TPR − FPR|, seria 0,362, o mesmo da logística: KS baixo não separa fila invertida de fila sem informação, e a AUC abaixo de 0,5 separa. Com ruído σ = 3, a AUC cai a 0,6249, ainda acima da faixa do acaso (0,44 a 0,56). Lembre que, entre modelos cujas ROC se cruzam, AUC e KS podem discordar.",
     "leitura": "Seletor de foco (ROC, KS, ganho, lift), quatro indicadores e o controle de ruído.",
     "pergunta": "Ruído em log odds muda o nível médio da PD?",
     "resposta": "Pouco; o que ele estraga é a ordem.",
     "erros": [
      {
-      "alt": "Achar que fila invertida dá AUC zero e é inútil",
-      "confusao": "Esquece que basta inverter a regra.",
-      "intervencao": "Mostre 1 menos AUC."
+      "alt": "Achar que somar uma constante em log odds a todas as PDs melhora AUC, KS, ganho e lift",
+      "confusao": "Confunde o nível da PD com a ordem.",
+      "intervencao": "Mova o nível de −1,5 a +1,5: a PD média muda e a tabela não."
      }
     ],
-    "interacao": "Previsão com retorno; cenários (logística, aleatória, invertida, com ruído), controle de ruído e controle de nível em log odds abrem com a resposta certa. Restaurar volta à logística, ruído 1 e nível 0.",
+    "interacao": "Previsão com retorno por alternativa e Tentar outra; a resposta certa abre o controle de nível já em +1,0 e libera os cenários (logística, aleatória, invertida, com ruído) e o controle de ruído. Trocar de cenário volta o nível a 0. Restaurar volta à logística, ruído 1, nível 0 e previsão em aberto.",
     "verificacao": "O aluno antecipa o efeito do ruído nas quatro métricas.",
     "transicao": "Uma boa fila ainda pode cobrar o risco errado."
    },
-   "html": "<div class=\"painel\"><p>Antecipar e verificar como AUC, KS, ganho e lift reagem a filas boas, aleatórias, invertidas e perturbadas.</p><p class=\"nota\">Quadro interativo do capítulo 7 na plataforma.</p></div>",
-   "text": "Antecipar e verificar como AUC, KS, ganho e lift reagem a filas boas, aleatórias, invertidas e perturbadas.\n\nQuadro interativo do capítulo 7 na plataforma.",
+   "html": "<div class=\"painel\"><p>Antecipar e verificar como AUC, KS, ganho e lift reagem a uma mudança de nível das PDs e a filas boas, aleatórias, invertidas e perturbadas.</p><p class=\"nota\">Quadro interativo do capítulo 7 na plataforma.</p></div>",
+   "text": "Antecipar e verificar como AUC, KS, ganho e lift reagem a uma mudança de nível das PDs e a filas boas, aleatórias, invertidas e perturbadas.\n\nQuadro interativo do capítulo 7 na plataforma.",
    "controls": [],
    "interactive": false,
    "svgs": 0,
@@ -9005,7 +9005,7 @@
       "intervencao": "Use o botão das metades."
      }
     ],
-    "interacao": "Seletor de modelo, controle de compressão e previsão com retorno; as metades e a tabela abrem com a resposta certa. Restaurar volta ao comprimido com b = 0,30 e previsão em aberto.",
+    "interacao": "Previsão com retorno e controle de compressão; as metades, a tabela e o seletor de modelo (comprimido ou logística) abrem com a resposta certa, e a leitura sempre fala do modelo na tela. Tentar outra e Restaurar voltam ao comprimido com b = 0,30 e previsão em aberto.",
     "verificacao": "O aluno explica a compensação de erros.",
     "transicao": "Faixa a faixa: a curva de confiabilidade."
    },
@@ -9190,7 +9190,7 @@
    "guia": {
     "funcao": "Distinguir erro de nível e erro de inclinação pela curva e pela regressão de calibração.",
     "pre": "Slide 19.",
-    "conducao": "Quatro distorções da mesma PD verdadeira, em miniaturas largas na mesma escala, com slope e intercepto numa linha abaixo. Só a resposta certa (probabilidades extremas) revela os slopes. Na frequência esperada, erro de nível dá slope 1 e erro de inclinação dá 1 ÷ b. No quadro ampliado, mova a e b: a leitura da distorção do aluno compõe nível (intercepto com slope 1 e PD média contra 11,6% da verdadeira) e inclinação (slope). Com a = 0,70 e b = 2,20: PD média 4,4%, intercepto com slope 1 de 1,33 (risco subestimado) e slope 0,45 (PDs extremas demais): os dois erros juntos. Deitada e em pé valem na escala de log odds.",
+    "conducao": "Quatro distorções da mesma PD verdadeira, em miniaturas largas na mesma escala, com slope e intercepto numa linha abaixo. Só a resposta certa (probabilidades extremas) revela os slopes. Na frequência esperada, erro de nível dá slope 1 e erro de inclinação dá 1 ÷ b. No quadro ampliado, mova a e b: a leitura da distorção do aluno compõe nível (intercepto com slope 1 e PD média contra 11,6% da verdadeira) e inclinação (slope). Com a = 0,70 e b = 2,20: PD média 4,4%, intercepto com slope 1 de 1,33 (risco subestimado) e slope 0,45 (PDs extremas demais): os dois erros juntos. Deitada e em pé valem na escala de log odds. A fonte define as réplicas sintéticas da janela, que entram no slide 27: os mesmos 737 proponentes com o desfecho sorteado de novo pela PD verdadeira; 300 sorteios, só possível em base sintética.",
     "leitura": "Quatro miniaturas sobre a PD verdadeira da base sintética e o detalhe da escolhida.",
     "pergunta": "A logística da janela tem slope 1,12 e intercepto com slope 1 de 0,145. Qual assinatura é essa?",
     "resposta": "Nível baixo, com leve falta de confiança.",
@@ -9483,23 +9483,28 @@
    },
    "origem": "rec",
    "aprendizado": "Situar treino, escolha, calibração e teste final na linha do tempo, sem vazamento.",
-   "apoio": "Leia as duas definições do painel (intercepto e Platt), responda à previsão sobre o atalho e compare, na tabela, a log loss na janela com a perda esperada em janelas novas.",
+   "apoio": "Leia as duas definições do painel, responda à previsão sobre o atalho e compare, na tabela, a log loss na janela com a esperada nas réplicas sintéticas da janela; depois abra Safras e veja o nível ajustado em safras anteriores.",
    "conexao": "A correção mais simples mexe só no nível.",
    "guia": {
     "funcao": "Fixar o protocolo: o calibrador é ajustado numa amostra e avaliado em outra.",
     "pre": "Slide 26.",
-    "conducao": "Antes da tabela, o painel define os dois calibradores em uma linha cada: o intercepto soma a ao log odds e corrige só o nível (slide 28); o Platt, σ(a + b · logit p), corrige nível e inclinação (slide 29). Os dois são ajustados na amostra de calibração. Protocolo: Platt na calibração, log loss na janela 0,3167 contra 0,3149 sem calibrar; com 81 defaults, a diferença de 0,0018 é ruído. Pela PD verdadeira, a perda esperada é 0,3409 com o Platt, 0,3419 só com intercepto e 0,3439 sem calibrar; o Platt vence sem calibrar em 249 de 300 janelas novas. Atalho: ajustado e medido na janela, 0,3136, menor por construção; em janelas novas, 0,3437. A amostra de calibração tem a população da própria janela, sem deriva: o ganho esperado é um teto. Numa carteira real, a calibração viria de safras com desfecho maturado, posteriores ao treino e anteriores à janela.",
-    "leitura": "Linha do tempo das partições e tabela com a log loss na janela e a esperada em janelas novas.",
+    "conducao": "O painel define os dois calibradores em uma linha cada: o intercepto soma a ao log odds e corrige só o nível (slide 28); o Platt, σ(a + b · logit p), corrige nível e inclinação (slide 29). Protocolo: Platt na calibração, log loss na janela 0,3167 contra 0,3149 sem calibrar; com 81 defaults, 0,0018 é ruído. Defina réplicas sintéticas da janela antes de seguir: os mesmos 737 proponentes com o desfecho sorteado de novo pela PD verdadeira, 300 sorteios, só possível em base sintética. Nelas, a perda esperada é 0,3409 com o Platt, 0,3419 só com intercepto e 0,3439 sem calibrar; o Platt vence sem calibrar em 249 das 300. Atalho: ajustado e medido na janela, 0,3136, menor por construção; nas réplicas, 0,3437. A amostra de calibração tem a população da própria janela, sem deriva: o ganho é um teto. Abra Safras: numa carteira real, o nível viria de safras anteriores, e a taxa de default oscila (9,6% no treino, 13,2% na validação, 11,0% na janela). O intercepto ajustado só na validação leva a PD média da janela a 12,9% (O/E 0,850): o erro troca de lado. Com treino e validação juntos (301 defaults em 2.863, 10,5%), a PD média vai a 10,6% (O/E 1,038). Treino e validação só existem agregados; o intercepto sai da diferença de logits entre a taxa e a PD média. Lição: o nível se ancora em várias safras e se confere na seguinte.",
+    "leitura": "Linha do tempo das partições; tabela com a log loss na janela e a esperada nas réplicas; no modo Safras, a PD média da janela com o intercepto ajustado em cada amostra.",
     "pergunta": "Se o Platt da calibração piora a log loss na janela, devemos descartá-lo?",
-    "resposta": "Não com esta evidência: 0,0018 numa janela de 81 defaults é ruído. Em expectativa, pela PD verdadeira, ele é o melhor dos três (0,3409 contra 0,3419 do intercepto e 0,3439 sem calibrar) e vence em 249 de 300 janelas novas. A janela não escolhe entre os calibradores; uma janela nova confirma.",
+    "resposta": "Não com esta evidência: 0,0018 numa janela de 81 defaults é ruído. Nas réplicas, pela PD verdadeira, ele é o melhor dos três (0,3409 contra 0,3419 do intercepto e 0,3439 sem calibrar) e vence em 249 das 300. A janela não escolhe entre os calibradores; numa carteira real, o ajuste viria de várias safras maturadas e a confirmação, da safra seguinte.",
     "erros": [
      {
       "alt": "Reportar a melhora do atalho",
       "confusao": "Usa a prova para ajustar.",
       "intervencao": "Mostre a etapa do teste em vermelho no modo atalho."
+     },
+     {
+      "alt": "Ajustar o nível só na safra mais recente",
+      "confusao": "Toma uma safra como o nível da carteira.",
+      "intervencao": "Abra Safras: só a validação leva a PD média da janela a 12,9% contra 11,0% observados."
      }
     ],
-    "interacao": "Previsão com três alternativas e Tentar outra; o atalho só abre depois da resposta certa, e então o seletor alterna protocolo e atalho, movendo as setas ajusta e mede. Restaurar volta ao protocolo com a previsão aberta; ao voltar ao slide, o mesmo.",
+    "interacao": "Previsão com três alternativas e Tentar outra; o atalho só abre depois da resposta certa, e então o seletor alterna protocolo, atalho e safras, movendo as setas ajusta e mede. Restaurar volta ao protocolo com a previsão aberta; ao voltar ao slide, o mesmo.",
     "verificacao": "O aluno descreve onde cada etapa acontece.",
     "transicao": "O ajuste mais simples, só de nível: o intercepto, primeiro na logística."
    },
@@ -9546,15 +9551,15 @@
    },
    "origem": "rec",
    "aprendizado": "Estimar um ajuste de intercepto na amostra de calibração e verificar no teste que a fila não muda.",
-   "apoio": "Responda à previsão sobre o Brier; a janela abre na logística, com a PD média antes e depois, a taxa observada e a perda esperada em janelas novas; depois troque para o boosting.",
+   "apoio": "Responda à previsão sobre o Brier; a janela abre na logística, com a PD média antes e depois, a taxa observada e a perda esperada nas réplicas sintéticas da janela; depois troque para o boosting.",
    "conexao": "Quando também a inclinação está errada, entram dois parâmetros.",
    "guia": {
     "funcao": "Estimar a correção de nível por intercepto e ler seu efeito no teste.",
     "pre": "Slide 27.",
-    "conducao": "A PD média antes (9,72% na logística) cabe no IC de Wilson da janela e o teste de Jeffreys não rejeita (p = 0,12): a correção vem dos 3.000 casos da calibração, e a evidência de que ela melhora é a log loss esperada, de 0,3439 para 0,3419. Feche com a pergunta que leva ao slide 29: e se a inclinação também estiver errada?",
+    "conducao": "Antes da previsão, a tabela de Newton mostra a raiz da equação na amostra de calibração. Depois do acerto, a leitura justifica: o Brier na janela vai de 0,09128 para 0,09092, porque o intercepto move só o nível e a ordem fica (AUC 0,7257). A PD média antes (9,72%) cabe no IC de Wilson da janela e o teste de Jeffreys não rejeita (p = 0,12): a correção vem dos 3.000 casos da calibração, e a evidência de que ela melhora é a log loss esperada nas réplicas, de 0,3439 para 0,3419. Os marcadores ▲ do gráfico são a média da janela inteira (737 propostas), não das 20 desenhadas. Feche com a pergunta que leva ao slide 29: e se a inclinação também estiver errada?",
     "leitura": "Linhas ligando a PD antes e depois para 20 propostas; tabela de iterações; indicadores no teste.",
     "pergunta": "Se a PD média de 9,72% já cabia no intervalo da janela, por que corrigir o nível?",
-    "resposta": "Porque a janela, com 81 defaults, não tem poder para provar o desvio, mas a amostra de calibração, com 3.000 casos e 345 defaults, estima o nível com mais precisão; em janelas novas da mesma população, a log loss esperada cai de 0,3439 para 0,3419. A mesma lógica vale para o boosting. O intercepto é o Platt com b = 1, o caso do slide 29.",
+    "resposta": "Porque a janela, com 81 defaults, não tem poder para provar o desvio, mas a amostra de calibração, com 3.000 casos e 345 defaults, estima o nível com mais precisão; nas réplicas sintéticas da janela, a log loss esperada cai de 0,3439 para 0,3419. A mesma lógica vale para o boosting. O intercepto é o Platt com b = 1, o caso do slide 29.",
     "erros": [
      {
       "alt": "Somar a diferença das médias em PD",
@@ -9608,7 +9613,7 @@
    "guia": {
     "funcao": "Aplicar Platt e ler nível e inclinação no teste.",
     "pre": "Slide 28.",
-    "conducao": "Enquanto a previsão está aberta, o título é a pergunta (Platt muda a fila?) e o subtítulo só dá a forma σ(a + b · logit p); depois do acerto, voltam o título e o subtítulo do roteiro. Na janela, com 81 defaults, o slope não prova a correção (0,88 sem calibrar, IC 0,55 a 1,21). Pela PD verdadeira, o slope sem calibrar é 0,80 e passa a 1,09 com o Platt do curso e 1,11 com o da calibração; a log loss esperada cai de 0,3458 para 0,3441 e 0,3430; a AUC fica em 0,6958 nas três versões.",
+    "conducao": "Enquanto a previsão está aberta, o título é a pergunta (Platt muda a fila?) e o subtítulo só dá a forma σ(a + b · logit p); depois do acerto, voltam o título e o subtítulo do roteiro. Na janela, com 81 defaults, o slope não prova a correção (0,88 sem calibrar, IC 0,55 a 1,21). Pela PD verdadeira, o slope sem calibrar é 0,80 e passa a 1,09 com o Platt do curso e 1,11 com o da calibração: passou de 1, mais perto dele que antes; a log loss esperada cai de 0,3458 para 0,3441 e 0,3430; a AUC fica em 0,6958 nas três versões.",
     "leitura": "Transformação desenhada, curva de confiabilidade e tabela com seis métricas.",
     "pergunta": "Se o Platt do curso piora a log loss na janela, o título está errado?",
     "resposta": "Fica igual: com b > 0, a transformação é estritamente crescente e não troca ninguém de lugar.",
@@ -9706,7 +9711,7 @@
    "guia": {
     "funcao": "Comparar isotônica e Platt e mostrar empates e ruído.",
     "pre": "Slide 29.",
-    "conducao": "A escada é a peça principal; os pares viram uma faixa fina embaixo. Com 3.000 casos, a isotônica reduz 727 PDs distintas a 16 degraus; o maior degrau (9,1%) junta 203 propostas e 16 × 187 = 2.992 empates; no total, 8.063 empates e a AUC cai de 0,6958 para 0,6911. Calibradores se comparam pela perda esperada, não pela janela: 0,3430 no Platt e 0,3446 na isotônica. Nos blocos de 300, a isotônica dá PD 0% a regiões inteiras: no bloco 2, a 151 propostas, 6 delas defaults; cada previsão que dá 0% ao que aconteceu é cortada em 10⁻¹⁵ e soma 34,5 à log loss, que vai a 0,5754 (esperada 0,6735 contra 0,3445 do Platt). Lição de crédito: com poucos dados, a isotônica exige piso de PD.",
+    "conducao": "A escada é a peça principal; os pares viram uma faixa fina embaixo. Com 3.000 casos, a isotônica reduz 727 PDs distintas a 16 degraus; o maior degrau (9,1%) junta 203 propostas e 16 × 187 = 2.992 empates; 8.061 empates novos (havia 2 sem calibrar), 8.063 no total, e a AUC cai de 0,6958 para 0,6911. Calibradores se comparam pela perda esperada, não pela janela: 0,3430 no Platt e 0,3446 na isotônica. Nos blocos de 300, a isotônica dá PD 0% a regiões inteiras: no bloco 2, a 151 propostas, 6 delas defaults; cada previsão que dá 0% ao que aconteceu é cortada em 10⁻¹⁵ e soma 34,5 à log loss, que vai a 0,5754 (esperada 0,6735 contra 0,3445 do Platt). Lição de crédito: com poucos dados, a isotônica exige piso de PD.",
     "leitura": "Curvas das duas transformações e barras de pares certos, empatados e invertidos.",
     "pergunta": "Quando preferir a isotônica?",
     "resposta": "Com muitos dados e distorção que não é reta em log odds.",
@@ -9746,23 +9751,28 @@
    },
    "origem": "rec",
    "aprendizado": "Distinguir o que a recalibração preserva (fila, AUC) do que ela muda (nível, perdas, decisões com corte fixo de PD).",
-   "apoio": "Compare a mesma regra de corte de PD com a mesma fração recusada; mova o corte.",
+   "apoio": "Responda à previsão sobre quantas decisões mudam com o mesmo corte; depois compare a mesma regra de corte de PD com a mesma fração recusada e mova o corte.",
    "conexao": "O corte não sai da PD sozinha: depende de perdas, receita e custos.",
    "guia": {
     "funcao": "Ligar recalibração à decisão: corte fixo de PD muda aprovações.",
     "pre": "Slides 29 e 11.",
-    "conducao": "Com o mesmo corte de 14%, 121 decisões mudam e a fila não muda. O Platt do curso foi estimado na validação, com 13,2% de default, e por isso leva a PD média a 13,2% contra 11,0% observados. O realizado de 81 defaults é ruidoso; pela PD verdadeira, os aprovados valem R$ 446 mil sem calibrar e R$ 462 mil com o Platt. Com a mesma fração recusada, nenhuma decisão muda: o quadro Muda passa a dizer PD média, Brier, log loss e a promessa; decisões, só com corte fixo de PD.",
+    "conducao": "Abra pela previsão: com o mesmo corte de 14%, quantas das 737 decisões mudam? O subtítulo pergunta e as linhas que mudam ficam cinza até a resposta. Nenhuma confunde fila com corte; umas dez subestima o deslocamento, porque o Platt sobe a PD de quase toda a carteira (média de 9,8% para 13,2%). Revelado: 121 decisões mudam, todas para recusa (604 aprovados viram 483), e a fila não muda. O Platt do curso foi estimado na validação, com 13,2% de default. Pela PD verdadeira, os aprovados valem R$ 462 mil com o Platt e R$ 446 mil sem; o Platt promete R$ 328 mil, R$ 134 mil abaixo do que entrega. Veredito: com corte fixo, recalibrar muda a política; o nível estimado na validação erra a promessa. Com a mesma fração recusada, nenhuma decisão muda e só a promessa muda.",
     "leitura": "Linhas de cada proposta entre as duas escalas, em âmbar as que mudam; tabela de aprovados e resultados.",
     "pergunta": "Recalibrar muda a política?",
     "resposta": "Só se a política é um corte de PD; com corte por fração, muda o resultado prometido, não as decisões.",
     "erros": [
+     {
+      "alt": "Nenhuma decisão muda",
+      "confusao": "Confunde fila com corte.",
+      "intervencao": "Mostre as linhas âmbar que atravessam o corte."
+     },
      {
       "alt": "Achar que recalibrar não tem efeito porque a AUC é igual",
       "confusao": "Ignora o corte fixo.",
       "intervencao": "Aponte o contador de decisões."
      }
     ],
-    "interacao": "Seletor de regra e controle de corte. Ao voltar, mesmo corte de 14%.",
+    "interacao": "Previsão com três alternativas e Tentar outra; depois dela, seletor de regra e controle de corte. Restaurar e o retorno ao slide voltam à previsão, com corte de 14%.",
     "verificacao": "O aluno explica por que a mesma fração preserva as decisões.",
     "transicao": "No slide 31 o corte de 14% era dado; no 32 ele sai da conta."
    },
@@ -9860,15 +9870,15 @@
    },
    "origem": "rec",
    "aprendizado": "Ler a variação de uma métrica por reamostragem pareada e delimitar o que ela cobre.",
-   "apoio": "Leia as 100 réplicas já sorteadas, complete as 1.000 e responda à previsão sobre as janelas novas.",
+   "apoio": "Leia as 100 réplicas já sorteadas, complete as 1.000 e responda à previsão sobre as réplicas sintéticas da janela.",
    "conexao": "Com incerteza declarada, a comparação entre modelos pode ser justa.",
    "guia": {
     "funcao": "Dar incerteza à AUC e à diferença entre modelos.",
     "pre": "Slide 6.",
-    "conducao": "O quadro abre com 100 réplicas pareadas (semente 20260501): diferença entre 0,0068 e 0,0579. Com 1.000: 0,0008 a 0,0587, 25 réplicas em zero ou abaixo; DeLong, 0,0001 a 0,0596. Antes de revelar as janelas novas, peça a previsão (as alternativas não trazem o número da resposta): a vantagem esperada em 300 janelas novas é 0,0067, perto de um quarto da observada (0,0299), e só 17 repetem a observada. O bootstrap herda a sorte da janela: p = 0,049 nesta janela não prova que a logística seja melhor em outra. Ponte: o slide 34 põe os dois modelos nos mesmos casos, com este intervalo.",
+    "conducao": "O quadro abre com 100 réplicas pareadas (semente 20260501): diferença entre 0,0068 e 0,0579. Com 1.000: 0,0008 a 0,0587, 25 réplicas em zero ou abaixo; DeLong, 0,0001 a 0,0596. Antes de revelar as réplicas sintéticas da janela (os mesmos 737 proponentes com o desfecho sorteado de novo pela PD verdadeira; 300 sorteios, semente 20261033, só possível em base sintética), peça a previsão (as alternativas não trazem o número da resposta): a vantagem esperada nas 300 réplicas é 0,0067, perto de um quarto da observada (0,0299), e só 17 repetem a observada. O bootstrap herda a sorte da janela: p = 0,049 nesta janela não prova que a logística seja melhor em outra. Ponte: o slide 34 põe os dois modelos nos mesmos casos, com este intervalo.",
     "leitura": "Histograma das réplicas com intervalo e linha do zero; indicadores e nota sobre o pareamento.",
     "pergunta": "O limite inferior positivo prova que a logística é melhor?",
-    "resposta": "Prova que nesta janela a diferença dificilmente é zero; as janelas novas mostram que ela é menor do que parece.",
+    "resposta": "Prova que nesta janela a diferença dificilmente é zero; as réplicas sintéticas da janela mostram que ela é menor do que parece.",
     "erros": [
      {
       "alt": "Comparar dois intervalos separados",
@@ -9910,7 +9920,7 @@
    "guia": {
     "funcao": "Fixar as condições de uma comparação justa entre modelos.",
     "pre": "Slide 33.",
-    "conducao": "A peça da janela traz a diferença pareada com o IC de DeLong: 0,0299, de 0,0001 a 0,0596. Os ICs de cada modelo ficam esmaecidos: eles se sobrepõem, e ler isso como empate é o erro, porque os dois modelos erram nos mesmos casos (correlação 0,86) e a diferença tem erro padrão menor que o de cada AUC. Em janelas novas (slide 33), a vantagem esperada é 0,0067 e o boosting empata ou vence em 102 de 300.",
+    "conducao": "A peça da janela traz a diferença pareada com o IC de DeLong: 0,0299, de 0,0001 a 0,0596. Os ICs de cada modelo ficam esmaecidos: eles se sobrepõem, e ler isso como empate é o erro, porque os dois modelos erram nos mesmos casos (correlação 0,86) e a diferença tem erro padrão menor que o de cada AUC. Nas réplicas sintéticas da janela (os mesmos 737 proponentes com o desfecho sorteado de novo pela PD verdadeira, 300 sorteios), a vantagem esperada é 0,0067 e o boosting empata ou vence em 102. O veredito tem níveis: os dois na janela, justa (verde, ✓); os dois no treino, viciada, porque o boosting aprendeu ali (vinho, ✕); os dois na validação, otimista para o escolhido, porque ela serviu para escolher o boosting (âmbar, !); amostras diferentes, injusta (vinho, ✕).",
     "leitura": "Halteres de AUC por amostra, com intervalo na janela; tabela de métricas.",
     "pergunta": "Qual número usar para escolher o modelo?",
     "resposta": "Mesma amostra para os dois modelos e o intervalo da diferença pareada, não a comparação de dois intervalos separados.",
@@ -9921,7 +9931,7 @@
       "intervencao": "Mostre a primeira comparação injusta."
      }
     ],
-    "interacao": "Dois seletores de amostra, um por modelo, com veredito de comparação justa ou injusta. Restaurar volta aos dois na janela.",
+    "interacao": "Dois seletores de amostra, um por modelo, com veredito em quatro níveis: justa, otimista, viciada e injusta. Restaurar volta aos dois na janela.",
     "verificacao": "O aluno lista as condições de comparação justa.",
     "transicao": "Por que a janela só vale uma vez."
    },
@@ -9993,7 +10003,7 @@
    "id": "c7p17",
    "cap": 7,
    "n": 35,
-   "titulo": "OOT: a prova depois de congelar as escolhas",
+   "titulo": "Janela fora do tempo: a prova depois de congelar as escolhas",
    "nivel": "essencial",
    "nivel120": "essencial",
    "min": 4,
@@ -10004,12 +10014,12 @@
    },
    "origem": "esq",
    "aprendizado": "Congelar o protocolo antes do teste final e reconhecer deriva, segmentos, maturação e seleção como ameaças ao resultado.",
-   "apoio": "Responda à previsão; depois reabra a janela até 20 vezes e compare a AUC do escolhido na janela com a esperada em janelas novas.",
+   "apoio": "Responda à previsão; depois reabra a janela até 20 vezes e compare a AUC do escolhido na janela com a esperada nas réplicas sintéticas da janela.",
    "conexao": "Agora, um caso inteiro para decidir.",
    "guia": {
     "funcao": "Mostrar o otimismo de escolher olhando a janela final.",
     "pre": "Slides 27 e 34.",
-    "conducao": "A AUC na janela do escolhido está na cor de ordenação; a esperada em janelas novas, no verde de validação; as linhas da logística são referência em cinza. Depois de 20 reaberturas, o escolhido marca 0,7286 na janela e esperaria 0,6565; o otimismo dele (0,0721) soma a sorte da janela, que a logística também tem (0,0584), e 0,0138 de seleção. O slide 36 leva tudo ao comitê.",
+    "conducao": "Antes da previsão, só a AUC na janela aparece; a escada tracejada do escolhido nas réplicas e os indicadores de otimismo abrem depois do acerto, e a leitura convida a reabrir. A AUC na janela do escolhido está na cor de ordenação; a esperada nas réplicas, no verde de validação; as linhas da logística são referência em cinza. Depois de 20 reaberturas, o escolhido marca 0,7286 na janela e esperaria 0,6565; o otimismo dele (0,0721) soma a sorte da janela, que a logística também tem (0,0584), e 0,0138 de seleção. O slide 36 leva tudo ao comitê.",
     "leitura": "Trajetória do escolhido nas duas medidas; lista do que fica congelado.",
     "pergunta": "Escolher o corte olhando a janela também é reabrir?",
     "resposta": "Sim: qualquer escolha feita com ela a transforma em validação.",
@@ -10054,10 +10064,10 @@
    "guia": {
     "funcao": "Integrar as quatro perguntas numa decisão de comitê.",
     "pre": "Slides 3 a 35.",
-    "conducao": "Nas miniaturas Decisão e Probabilidade, os números saíram de cima das curvas para uma coluna ao lado; slope e ICs foram para a leitura do cartão (slopes 1,12 e 1,20, os dois ICs com 1). Decisão: no corte de 14,0%, o candidato promete R$ 328 mil; pela PD verdadeira, os aprovados valem R$ 462 mil no candidato e R$ 472 mil na logística, quase empate; o realizado (R$ 569 mil e R$ 588 mil) é ruidoso. Decisão do comitê: manter a logística, recalibrar o nível em amostra própria e confirmar numa janela nova.",
-    "leitura": "Quatro miniaturas sempre visíveis (AUC com IC de DeLong, confiabilidade sobreposta, resultado por corte, AUC no treino, validação e janela); decisão bloqueada até três consultas.",
+    "conducao": "1. Abra com a pergunta do título e peça um voto rápido, antes de qualquer cartão: quem aprovaria o boosting? 2. Abra os cartões na ordem das perguntas do capítulo. Ordenação: qual modelo ordena melhor, e a diferença se sustenta? O cartão dá 0,7257 contra 0,6958 (p = 0,049), e nas réplicas a vantagem esperada é 0,0067. Probabilidade: qual dos dois erra o nível, e para que lado? O candidato superestima (O/E 0,832); a logística subestima sem prova (p = 0,12). Decisão: o candidato vale mais no corte de 14%? Pela PD verdadeira, R$ 462 mil contra R$ 472 mil, e ele prometia R$ 328 mil. Validação: por que a AUC do boosting cai de 0,8196 no treino para 0,6958 na janela? Sobreajuste e mudança de safra; o Platt dele já usou a validação. 3. Com três cartões abertos, peça a decisão. Se a turma escolher B (recalibrar o boosting na janela e aprovar), não corrija de imediato: pergunte com que amostra se mediria depois o boosting recalibrado; volte ao atalho do slide 27 (0,3136 prometido, 0,3437 nas réplicas) e lembre que recalibrar não muda a AUC de 0,6958. 4. Depois do acerto, pergunte de onde viria a amostra do nível numa carteira real: das safras maturadas antes da janela. Mostre a deriva (9,6% no treino, 13,2% na validação, 11,0% na janela): ancorado só na validação, a PD média da janela iria a 12,9%; em treino e validação (301 defaults em 2.863, 10,5%), a 10,6%. Feche: manter a logística, ancorar o nível em várias safras, monitorar cada safra com Jeffreys e confirmar nas safras de 2024, quando maturarem.",
+    "leitura": "Quatro miniaturas sempre visíveis (AUC com IC de DeLong, confiabilidade sobreposta, resultado por corte, AUC no treino, validação e janela); decisão bloqueada até três consultas; a leitura da decisão diz de onde vem a amostra do nível.",
     "pergunta": "Que evidência mudaria a decisão a favor do boosting?",
-    "resposta": "Vantagem de ordenação numa janela nova, com calibrador ajustado em amostra própria e resultado econômico melhor. A mesma janela nova confirma qual calibrador fica na logística.",
+    "resposta": "Vantagem de ordenação nas safras de 2024, com calibrador ajustado em safras maturadas anteriores e resultado econômico melhor pela mesma conta. As mesmas safras conferem o nível ancorado da logística.",
     "erros": [
      {
       "alt": "Aprovar o boosting com Platt",
@@ -10067,17 +10077,22 @@
      {
       "alt": "Recalibrar o boosting na janela e aprovar",
       "confusao": "Usa a prova para ajustar.",
-      "intervencao": "Volte ao slide 27: o atalho promete 0,3136 e entrega 0,3437 em janelas novas."
+      "intervencao": "Volte ao slide 27: o atalho promete 0,3136 e entrega 0,3437 nas réplicas."
      },
      {
       "alt": "Trocar: a diferença de AUC é pequena",
       "confusao": "Lê diferença pequena como equivalência.",
-      "intervencao": "O ônus é de quem substitui; em janelas novas, a vantagem esperada (0,0067) ainda é da logística."
+      "intervencao": "O ônus é de quem substitui; nas réplicas, a vantagem esperada (0,0067) ainda é da logística."
+     },
+     {
+      "alt": "Recalibrar o nível só com a última safra",
+      "confusao": "Toma a validação (13,2% de default) como o nível da carteira.",
+      "intervencao": "Mostre o modo Safras do slide 27: PD média da janela de 12,9% contra 11,0% observados."
      }
     ],
     "interacao": "Cartões que se consultam com um toque e decisão com retorno por alternativa e nova tentativa. Ao voltar, nada consultado.",
     "verificacao": "O aluno justifica a decisão com três tipos de evidência.",
-    "transicao": "As quatro respostas, em síntese."
+    "transicao": "As quatro respostas, em síntese, e o procedimento para amanhã."
    },
    "html": "<div class=\"painel\"><p>Tomar uma decisão sobre um modelo combinando evidência de discriminação, de probabilidade e de validação.</p><p class=\"nota\">Quadro interativo do capítulo 7 na plataforma.</p></div>",
    "text": "Tomar uma decisão sobre um modelo combinando evidência de discriminação, de probabilidade e de validação.\n\nQuadro interativo do capítulo 7 na plataforma.",
@@ -10108,10 +10123,10 @@
    "guia": {
     "funcao": "Fechar o capítulo com as quatro respostas e um fluxo de diagnóstico.",
     "pre": "Todo o capítulo.",
-    "conducao": "Leia as quatro respostas com as miniaturas: AUC 0,7257 com IC e 0,6673 esperada em janelas novas (a janela foi favorável); PD média 9,7% contra 11,0% (IC 8,9% a 13,5%), Jeffreys p = 0,12; corte de 14,0% contra o KS em 9,7%; diferença de 0,0299 com IC de 0,0001 a 0,0596, e 0,0067 em janelas novas. A síntese repete a decisão do slide 36: a logística fica, o nível é recalibrado em amostra própria (log loss esperada 0,3439 para 0,3419) e uma janela nova confirma. Sem sintoma escolhido, o painel mostra o procedimento para amanhã; depois peça sintomas da prática da turma.",
-    "leitura": "Quatro cartões de resposta com miniatura e o que falta; diagnóstico por sintoma com links e, sem sintoma, o procedimento.",
+    "conducao": "Leia as quatro respostas com as miniaturas: AUC 0,7257 com IC e 0,6673 esperada nas réplicas sintéticas da janela (a janela foi favorável); PD média 9,7% contra 11,0% (IC 8,9% a 13,5%), Jeffreys p = 0,12; corte de 14,0% contra o KS em 9,7%; diferença de 0,0299 com IC de 0,0001 a 0,0596, e 0,0067 nas réplicas. A síntese repete a decisão do slide 36: a logística fica, o nível se ancora em várias safras maturadas (10,5% em treino e validação, não os 13,2% da última), é monitorado por safra com Jeffreys e se confirma nas safras de 2024. Sem sintoma escolhido, o painel mostra o procedimento para amanhã em seis passos: ordenação, probabilidade, recalibrar (intercepto ancorado em várias safras maturadas, medido na seguinte; refazer se Jeffreys rejeitar em duas safras seguidas), segmentos (curva e O/E por segmento relevante), decisão e validação. Depois peça sintomas da prática da turma.",
+    "leitura": "Quatro cartões de resposta com miniatura e o que falta; diagnóstico por sintoma com links e, sem sintoma, o procedimento em seis passos.",
     "pergunta": "Qual das quatro respostas é a mais fraca para a logística?",
-    "resposta": "Validação: uma janela, 81 defaults e limite inferior do IC de 0,0001; em janelas novas, a vantagem esperada é 0,0067.",
+    "resposta": "Validação: uma janela, 81 defaults e limite inferior do IC de 0,0001; nas réplicas, a vantagem esperada é 0,0067. A confirmação vem das safras de 2024.",
     "erros": [
      {
       "alt": "Concluir que o modelo está pronto",
@@ -10165,17 +10180,17 @@
    },
    "origem": "doc",
    "aprendizado": "Consultar fórmulas, métricas que ficam fora do protocolo e as referências do capítulo.",
-   "apoio": "Consulte fórmulas, métricas fora do protocolo, fronteira e regulação, referências e dados de reprodução.",
+   "apoio": "Consulte fórmulas para medir, fórmulas para comparar e decidir, métricas fora do protocolo, fronteira e regulação, referências e dados de reprodução.",
    "conexao": "Capítulo 8: da previsão à decisão econômica.",
    "guia": {
     "funcao": "Material de consulta, fora do percurso da aula.",
     "pre": "Nenhum.",
-    "conducao": "Seis abas. Fórmulas para medir (AUC, KS, ganho e lift, Wilson, Brier e Murphy, log loss, calibração, Platt) e Para comparar e decidir: a perda esperada pela PD verdadeira (log loss e Brier), que decide os slides 27 a 29, com a nota de que Brier e log loss são regras de pontuação próprias (Gneiting e Raftery, 2007); E(c) do motor do slide 32; o erro padrão de DeLong e o bootstrap pareado com intervalo percentil (slide 33). Na fronteira, a beta calibration diz quando usar (distorção diferente nas duas caudas) e o benefício líquido avisa que o capítulo não o calcula. As referências se agrupam por tema (ordenação, medir a probabilidade, calibrar, decisão e validação, regulação e software), cada uma com o que sustenta e o slide que a usa; entrou Engelmann, Hayden e Tasche (2003), referência de AR em crédito.",
-    "leitura": "Cinco abas de consulta: fórmulas, métricas fora do protocolo, fronteira e regulação, referências e reprodução.",
+    "conducao": "Seis abas. Fórmulas para medir (AUC, KS, ganho e lift, Wilson, Brier e Murphy, log loss, calibração, Platt) e Para comparar e decidir: a perda esperada pela PD verdadeira (log loss e Brier), que decide os slides 27 a 29, com a nota de que Brier e log loss são regras de pontuação próprias (Gneiting e Raftery, 2007); E(c) do motor do slide 32; o erro padrão de DeLong e o bootstrap pareado com intervalo percentil (slide 33). Na fronteira, a beta calibration diz quando usar (distorção diferente nas duas caudas) e o benefício líquido avisa que o capítulo não o calcula. As referências se agrupam por tema (ordenação, medir a probabilidade, calibrar, decisão e validação, regulação e software), cada uma com o que sustenta e o slide que a usa; entrou Engelmann, Hayden e Tasche (2003), referência de AR em crédito. Na fronteira, o ajuste ao ciclo se liga ao slide 36: o nível ancorado em várias safras, não só na última, segue a mesma ideia.",
+    "leitura": "Seis abas de consulta: fórmulas para medir, fórmulas para comparar e decidir, métricas fora do protocolo, fronteira e regulação, referências e reprodução.",
     "pergunta": "Como converter AUC em Gini?",
     "resposta": "Gini = 2 × AUC menos 1: 0,4514 na janela.",
     "erros": [],
-    "interacao": "Cinco abas, com links para os slides em que cada método aparece. Ao voltar, fórmulas.",
+    "interacao": "Seis abas, com links para os slides em que cada método aparece. Ao voltar, fórmulas.",
     "verificacao": "Não se aplica.",
     "transicao": "Fim do capítulo 7."
    },

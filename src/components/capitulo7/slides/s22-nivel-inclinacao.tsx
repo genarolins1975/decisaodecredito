@@ -53,12 +53,6 @@ const leituraComposta = (a: number, b: number, e: Medida) => {
   if (!nivel && !incl) return `nível e inclinação perto do ideal (PD média ${pct(pm, 1)} contra ${pct(PD_VERD, 1)})`;
   return `erro ${[nivel, incl].filter(Boolean).join(" e ")}; corrige-se ${nivel && incl ? "o intercepto e b" : nivel ? "o intercepto" : "b"}`;
 };
-const assinaturaDe = (e: Medida) => {
-  const partes: string[] = [];
-  if (Math.abs(e.i1) >= 0.1) partes.push(`pontos ${e.acima >= 5 ? "acima" : "abaixo"} da diagonal em ${Math.max(e.acima, 10 - e.acima)} das 10 faixas`);
-  if (Math.abs(e.slope - 1) >= 0.05) partes.push(`em log odds, curva mais ${e.slope < 1 ? "deitada" : "em pé"} que a diagonal`);
-  return partes.length ? partes.join(" e, ") : "curva sobre a diagonal";
-};
 /** Miniatura larga: a curva ocupa o cartão; mesma escala (0% a 55%) nos quatro. */
 function Mini({ faixas, nome }: { faixas: Faixa[]; nome: string }) {
   return (
@@ -98,14 +92,15 @@ export function S22NivelInclinacao({ pagina }: { pagina?: Pagina }) {
   const base = CASOS.find((x) => x.id === (foco ?? sel))!;
   const proprio = useMemo(() => { if (!aj) return null; const r = medir(aj.a, aj.b); return { id: "sua", nome: "Sua distorção", a: aj.a, b: aj.b, leitura: leituraComposta(aj.a, aj.b, r.esperada), ...r }; }, [aj]);
   const c = foco && proprio ? proprio : base; const m = c[freq];
-  const assinatura = c.id === "sua" ? assinaturaDe(c.esperada) : Math.abs(c.b - 1) < 0.025 ? `pontos ${m.acima >= 5 ? "acima" : "abaixo"} da diagonal em ${Math.max(m.acima, 10 - m.acima)} das 10 faixas` : c.b > 1 ? "em log odds, curva mais deitada que a diagonal" : "em log odds, curva mais em pé que a diagonal";
+  // na distorção do aluno, a leitura composta (nível e inclinação) já descreve a forma
+  const assinatura = c.id === "sua" ? null : Math.abs(c.b - 1) < 0.025 ? `pontos ${m.acima >= 5 ? "acima" : "abaixo"} da diagonal em ${Math.max(m.acima, 10 - m.acima)} das 10 faixas` : c.b > 1 ? "em log odds, curva mais deitada que a diagonal" : "em log odds, curva mais em pé que a diagonal";
   const abrir = (id: string) => { setSel(id); setFoco(id); setAj(null); };
   const verQuatro = <Botao onClick={() => { setFoco(null); setAj(null); }}>Ver os quatro</Botao>;
   return (
     <Quadro slug="c7p32" pagina={pagina} layout="gl"
-      conclusao={!revelado ? <>Quatro distorções da mesma PD verdadeira, cada uma com a sua forma na curva. Antes dos números: qual delas tem slope abaixo de 1?</>
-        : <><b>{c.nome}</b> (a = {num(c.a, 2)}, b = {num(c.b, 2)}): {assinatura}. Slope {num(m.slope, 2)}{m.ic ? ` (intervalo de 95%: ${num(m.ic[0], 2)} a ${num(m.ic[1], 2)})` : ""}, intercepto com slope 1 de {num(m.i1, 2)}: {c.leitura}.{freq === "observada" ? ` Com o ruído da janela, a referência já tem slope ${num(REF.slope, 2)}.` : ""}</>}
-      fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults. Base: PD verdadeira do gerador; sorteando de novo o desfecho por ela, os mesmos ${int(N)} proponentes formam as réplicas sintéticas da janela do slide ${SLIDE.c7p16.n} (${N_JANELAS} sorteios, só possível em base sintética). Frequência esperada: média da PD verdadeira na faixa (sem ruído de amostra; só existe porque o gerador é conhecido). Observada: defaults da janela; nela a PD verdadeira tem intercepto ${num(REF.intercepto, 2)} e slope ${num(REF.slope, 2)}. Faixas: decis de PD prevista.`}>
+      conclusao={!revelado ? <>Quatro distorções da mesma PD verdadeira, cada uma com a sua forma. Qual delas tem slope abaixo de 1?</>
+        : <><b>{c.nome}</b> (a = {num(c.a, 2)}, b = {num(c.b, 2)}): {assinatura ? <>{assinatura}. Slope</> : "slope"} {num(m.slope, 2)}{m.ic ? ` (intervalo de 95%: ${num(m.ic[0], 2)} a ${num(m.ic[1], 2)})` : ""}, intercepto com slope 1 de {num(m.i1, 2)}: {c.leitura}.{freq === "observada" ? ` Com o ruído da janela, a referência já tem slope ${num(REF.slope, 2)}.` : ""}</>}
+      fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults. Base: PD verdadeira do gerador; sorteando de novo o desfecho por ela, os mesmos ${int(N)} proponentes formam as réplicas sintéticas da janela do slide ${SLIDE.c7p16.n} (${N_JANELAS} sorteios, só possível em base sintética). Esperada: média da PD verdadeira na faixa, sem ruído de amostra. Observada: defaults da janela; nela a PD verdadeira tem intercepto ${num(REF.intercepto, 2)} e slope ${num(REF.slope, 2)}. Faixas: decis de PD prevista.`}>
       <Painel titulo={foco ? `Em foco: ${c.nome}` : "Quatro jeitos de errar a probabilidade · clique num quadro para ampliar"}>
         {foco ? (
           <div className="q7-g2-s22-foco"><div className="q7-g2-quad"><Confiabilidade titulo={`y: frequência ${freq}`} sub="x: PD média prevista" semTitulos anotar={false} rotulo={`Curva de confiabilidade: ${c.nome}, frequência ${freq}`} max={0.55} ticks={[0, 0.1, 0.2, 0.3, 0.4, 0.5]} series={[{ faixas: m.faixas, classe: "prob", linha: true, ic: freq === "observada" }]}
@@ -128,7 +123,7 @@ export function S22NivelInclinacao({ pagina }: { pagina?: Pagina }) {
               <div key={x.id} role="button" tabIndex={0} className="q7-s22-m q7-g2-s22-m" data-on={sel === x.id ? "1" : "0"} onClick={() => abrir(x.id)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); abrir(x.id); } }} aria-label={`Ampliar: ${x.nome}`}>
                 <span className="q7-s22-t">{x.nome}</span>
                 <Mini faixas={x[freq].faixas} nome={x.nome} />
-                <span className="q7-s22v3-v"><b>slope {revelado ? num(x[freq].slope, 2) : "?"}</b><span>intercepto com slope 1: {num(x[freq].i1, 2)}</span></span>
+                <span className="q7-s22v3-v"><b>slope {revelado ? num(x[freq].slope, 2) : "?"}</b><span>intercepto (slope 1): {num(x[freq].i1, 2)}</span></span>
               </div>
             ))}
           </div>
@@ -138,7 +133,7 @@ export function S22NivelInclinacao({ pagina }: { pagina?: Pagina }) {
         <Previsao pergunta="Qual quadro tem slope de calibração abaixo de 1?" opcoes={OPS} escolha={esc} onEscolha={(i) => { setEsc(i); if (i !== null && OPS[i].certa) setSel("extremas"); }} recolher />
         <div className="q7-s21-l"><p className="q7-k">Frequência de cada faixa</p><Botao sec onClick={() => { setFoco(null); setSel(CASOS[0].id); setEsc(null); setFreq("esperada"); setAj(null); }}>Restaurar</Botao></div>
         <Seg rotulo="Frequência" opcoes={[{ v: "esperada" as Freq, r: "Esperada, sem ruído" }, { v: "observada" as Freq, r: "Observada na janela" }]} valor={freq} onChange={setFreq} />
-        <p className="q7-nota">Ideal: intercepto 0 e slope 1 juntos. Ampliada, a observada traz o intervalo de cada faixa (slide {SLIDE.c7p31.n}); o slide {SLIDE.c7p33.n} resume o erro num número.</p>
+        <p className="q7-nota">Ideal: intercepto 0 e slope 1. Ampliada, a observada mostra intervalos (slide {SLIDE.c7p31.n}); o slide {SLIDE.c7p33.n} resume o erro num número.</p>
         <Expandir resumo="Como se estimam">
           <Formula f={String.raw`\operatorname{logit} P(Y=1)=\alpha+\beta\,\operatorname{logit}(\mathrm{PD})`} simbolos={[[String.raw`\beta`, "slope de calibração (ideal 1)"], [String.raw`\alpha`, "intercepto da regressão livre"]]} />
           <p className="q7-nota">O intercepto com slope fixado em 1 é outra regressão: só α, com logit(PD) como deslocamento fixo. Ele mede o erro de nível no agregado; o α da regressão livre não tem essa leitura sozinho. Os dois foram conferidos contra o statsmodels.</p>

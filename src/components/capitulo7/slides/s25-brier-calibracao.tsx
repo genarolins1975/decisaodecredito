@@ -81,7 +81,7 @@ export function S25BrierCalibracao({ pagina }: { pagina?: Pagina }) {
       fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. A: σ(logit p + a) sobre a logística. B: PD constante de ${pct(TAXA, 2)}, a taxa da janela. MCB na própria amostra tem viés para cima; banda: 5% a 95% de ${REPLICAS} réplicas com desfechos sorteados da própria PD (semente ${SEMENTE_BANDA}). CORP: Dimitriadis, Gneiting e Jordan (2021).`}>
       <Painel>
         <div className="q7-g2-s25 q7-s25v3">
-          <div className="q7-g2-quad"><Confiabilidade titulo={a === 0 ? "A: a logística" : "A: boa fila, nível deslocado"} sub={`AUC ${num(aucPorPares(Y, PA).auc!, 3)}`} rotulo={`Curva de confiabilidade do modelo A por decil; o modelo B é um único ponto em ${pct(TAXA, 1)}`} max={0.5} ticks={[0, 0.25, 0.5]} series={[{ faixas: FA, classe: "prob", linha: true, ic: true }]} anotar={false}
+          <div className="q7-g2-quad"><Confiabilidade titulo={a === 0 ? "A: a logística" : "A: boa fila, nível deslocado"} sub={`AUC ${num(aucPorPares(Y, PA).auc!, 4)}`} rotulo={`Curva de confiabilidade do modelo A por decil; o modelo B é um único ponto em ${pct(TAXA, 1)}`} max={0.5} ticks={[0, 0.25, 0.5]} series={[{ faixas: FA, classe: "prob", linha: true, ic: true }]} anotar={false}
             extra={(x, y, d) => { const bx = x(FB[0].pdMedia!), by = y(FB[0].obs!), lx = x(0.015), ly = y(0.4); return <g>
               <line x1={bx - d.fs * 0.2} y1={by - d.fs * 0.45} x2={lx + d.fs * 1.2} y2={ly + d.fs * 0.3} stroke="#00205B" strokeWidth={1.5} />
               <rect x={bx - d.fs * 0.42} y={by - d.fs * 0.42} width={d.fs * 0.84} height={d.fs * 0.84} fill="#fff" stroke="#00205B" strokeWidth={2.5} />

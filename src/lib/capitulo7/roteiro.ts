@@ -49,7 +49,7 @@ export const ROTEIRO: Slide[] = [
   { slug: "c7p18", n: 32, pergunta: "decisao", titulo: "A probabilidade não escolhe sozinha a política", sub: "O corte econômico depende de perda, receita e custo, e raramente coincide com o KS.", nivel: "essencial", min: 4 },
   { slug: "c7p14", n: 33, pergunta: "validacao", titulo: "A métrica também é uma estatística", sub: "Reamostrar a janela mostra quanto a AUC e a diferença entre modelos variam.", nivel: "aprofundamento", min: 3 },
   { slug: "c7p15", n: 34, pergunta: "validacao", titulo: "Comparação justa: mesmos casos, mesma pergunta", sub: "Os modelos na mesma janela, com a diferença e o seu intervalo.", nivel: "essencial", min: 4 },
-  { slug: "c7p17", n: 35, pergunta: "validacao", titulo: "OOT: a prova depois de congelar as escolhas", sub: "Tudo é decidido antes de abrir a janela final; reabrir para escolher a transforma em validação.", nivel: "essencial", min: 4 },
+  { slug: "c7p17", n: 35, pergunta: "validacao", titulo: "Janela fora do tempo: a prova depois de congelar as escolhas", sub: "Tudo é decidido antes de abrir a janela final; reabrir para escolher a transforma em validação.", nivel: "essencial", min: 4 },
   { slug: "c7p38", n: 36, pergunta: "todas", titulo: "Você colocaria este modelo em produção?", sub: "Um dossiê, quatro decisões possíveis e a evidência que cada uma exige.", nivel: "essencial", min: 6 },
   { slug: "c7p20", n: 37, pergunta: "todas", titulo: "Confiar no modelo exige quatro respostas", sub: "Ordenar bem, prever probabilidades adequadas, decidir com hipóteses claras e provar fora da amostra.", nivel: "essencial", min: 4 },
   { slug: "c7p19", n: 38, pergunta: "apoio", titulo: "Apêndice: fórmulas, métricas fora do protocolo e referências", sub: "Material de consulta; o percurso da aula termina no slide anterior.", nivel: "apendice", min: 3 },
@@ -68,6 +68,6 @@ export const CURTO: Record<string, string> = {
   c7p28: "Boa fila, risco errado", c7p9: "PD de um grupo", c7p29: "Calibração global", c7p10: "Confiabilidade", c7p30: "Faixas",
   c7p31: "Wilson", c7p32: "Nível e inclinação", c7p33: "Brier", c7p34: "Log loss", c7p11: "Brier e calibração",
   c7p35: "Laboratório de calibração", c7p16: "Amostra própria", c7p12: "Intercepto", c7p13: "Platt", c7p36: "Isotônica",
-  c7p37: "Depois de recalibrar", c7p18: "Corte econômico", c7p14: "Bootstrap", c7p15: "Comparação justa", c7p17: "OOT congelado",
+  c7p37: "Depois de recalibrar", c7p18: "Corte econômico", c7p14: "Bootstrap", c7p15: "Comparação justa", c7p17: "Janela fora do tempo",
   c7p38: "Caso integrador", c7p20: "Conclusão", c7p19: "Apêndice",
 };

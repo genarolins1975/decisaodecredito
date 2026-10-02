@@ -277,7 +277,7 @@
     "funcao": "Delimitar a AUC: mede a ordem, não o nível, o corte ou a perda.",
     "pre": "Slide 9, a ROC.",
     "conducao": "Até a escolha, o subtítulo é pergunta e a leitura só dá a instrução: peça a frase antes de mostrar os cenários. Depois teste: transformação crescente, nenhuma linha se cruza e a AUC fica igual; fila embaralhada, AUC perto de 0,5; orientação invertida, 1 menos AUC. Feche com o que a AUC não diz: o nível da PD (slide 19), o corte e a perda (slide 32).",
-    "leitura": "Ponte entre a PD original e a do cenário para 20 propostas, ao lado da ROC da janela. No cenário PD verdadeira, a leitura usa janelas novas (300 sorteios do desfecho pela PD verdadeira, semente 20261033): AUC média 0,7026 da PD verdadeira contra 0,6673 da logística; nesta janela, 0,7373 contra 0,7257. Em média nenhum modelo passa da verdadeira; numa janela isolada pode (em 9 de 300 a logística supera a verdadeira).",
+    "leitura": "Ponte entre a PD original e a do cenário para 20 propostas, ao lado da ROC da janela; cada linha liga as posições exatas nos dois eixos, então só se cruza quando o par troca de ordem (zero cruzamentos na transformação crescente, 85 na fila embaralhada, 190 na invertida). No cenário PD verdadeira, a leitura usa as réplicas sintéticas da janela (os mesmos 737 proponentes com o desfecho sorteado de novo pela PD verdadeira; 300 sorteios, semente 20261033, só possível em base sintética): AUC média 0,7026 da PD verdadeira contra 0,6673 da logística; nesta janela, 0,7373 contra 0,7257. Em média nenhum modelo passa da verdadeira; numa réplica isolada pode (em 9 de 300 a logística supera a verdadeira).",
     "pergunta": "Duas carteiras com a mesma AUC precisam da mesma provisão?",
     "resposta": "Não. A AUC não diz o nível da PD; a provisão depende dele.",
     "erros": [
@@ -414,24 +414,24 @@
     "prat": 3,
     "disc": 1
    },
-   "aprendizado": "Antecipar e verificar como AUC, KS, ganho e lift reagem a filas boas, aleatórias, invertidas e perturbadas.",
-   "apoio": "Responda à previsão sobre a fila invertida; depois troque o cenário e mova o nível das PDs, olhando os quatro gráficos ao mesmo tempo.",
+   "aprendizado": "Antecipar e verificar como AUC, KS, ganho e lift reagem a uma mudança de nível das PDs e a filas boas, aleatórias, invertidas e perturbadas.",
+   "apoio": "Responda à previsão sobre somar +1 em log odds a todas as PDs; depois troque o cenário e mova o nível e o ruído, olhando os quatro gráficos ao mesmo tempo.",
    "conexao": "Tudo até aqui mede a fila. Nada verifica se a PD está no nível certo.",
    "guia": {
     "funcao": "Consolidar a ordenação: todas as métricas se movem juntas quando a fila muda.",
     "pre": "Slides 5 a 14.",
-    "conducao": "Título: só a ordem move AUC, KS, ganho e lift. Peça a previsão da fila invertida; a resposta certa (1 − 0,73 = 0,27) libera cenários e o nível. Ao lado, as quatro medidas da logística e do cenário. Na invertida, a AUC vira 0,2743 e o KS cai a 0,003 só pela convenção (maior TPR − FPR); com o módulo seria 0,362: o número do KS não tem valor absoluto. Com o nível em +0,8, a PD média vai a 18,5% e as quatro ficam paradas. Lembre que, entre modelos cujas ROC se cruzam, AUC e KS podem discordar.",
+    "conducao": "Título: só a ordem move AUC, KS, ganho e lift. Peça a previsão: somar +1 em log odds a todas as PDs leva a PD média de 9,7% a 21,4%; o que acontece com as quatro? Nada, porque ninguém troca de lugar na fila. A resposta certa abre o controle de nível já em +1,0, com a tabela ao lado (0,7257 → 0,7257; 0,362 → 0,362; 22 → 22; 2,7× → 2,7×), e libera os cenários. Os retornos errados nomeiam a confusão: nível com ordem; corte na fila com corte de PD; calibração com ordenação. Na invertida, a AUC vira 0,2743 e o KS, pela convenção (maior TPR − FPR), cai a 0,003; medido por |TPR − FPR|, seria 0,362, o mesmo da logística: KS baixo não separa fila invertida de fila sem informação, e a AUC abaixo de 0,5 separa. Com ruído σ = 3, a AUC cai a 0,6249, ainda acima da faixa do acaso (0,44 a 0,56). Lembre que, entre modelos cujas ROC se cruzam, AUC e KS podem discordar.",
     "leitura": "Seletor de foco (ROC, KS, ganho, lift), quatro indicadores e o controle de ruído.",
     "pergunta": "Ruído em log odds muda o nível médio da PD?",
     "resposta": "Pouco; o que ele estraga é a ordem.",
     "erros": [
      {
-      "alt": "Achar que fila invertida dá AUC zero e é inútil",
-      "confusao": "Esquece que basta inverter a regra.",
-      "intervencao": "Mostre 1 menos AUC."
+      "alt": "Achar que somar uma constante em log odds a todas as PDs melhora AUC, KS, ganho e lift",
+      "confusao": "Confunde o nível da PD com a ordem.",
+      "intervencao": "Mova o nível de −1,5 a +1,5: a PD média muda e a tabela não."
      }
     ],
-    "interacao": "Previsão com retorno; cenários (logística, aleatória, invertida, com ruído), controle de ruído e controle de nível em log odds abrem com a resposta certa. Restaurar volta à logística, ruído 1 e nível 0.",
+    "interacao": "Previsão com retorno por alternativa e Tentar outra; a resposta certa abre o controle de nível já em +1,0 e libera os cenários (logística, aleatória, invertida, com ruído) e o controle de ruído. Trocar de cenário volta o nível a 0. Restaurar volta à logística, ruído 1, nível 0 e previsão em aberto.",
     "verificacao": "O aluno antecipa o efeito do ruído nas quatro métricas.",
     "transicao": "Uma boa fila ainda pode cobrar o risco errado."
    }
@@ -517,7 +517,7 @@
       "intervencao": "Use o botão das metades."
      }
     ],
-    "interacao": "Seletor de modelo, controle de compressão e previsão com retorno; as metades e a tabela abrem com a resposta certa. Restaurar volta ao comprimido com b = 0,30 e previsão em aberto.",
+    "interacao": "Previsão com retorno e controle de compressão; as metades, a tabela e o seletor de modelo (comprimido ou logística) abrem com a resposta certa, e a leitura sempre fala do modelo na tela. Tentar outra e Restaurar voltam ao comprimido com b = 0,30 e previsão em aberto.",
     "verificacao": "O aluno explica a compensação de erros.",
     "transicao": "Faixa a faixa: a curva de confiabilidade."
    }
@@ -627,7 +627,7 @@
    "guia": {
     "funcao": "Distinguir erro de nível e erro de inclinação pela curva e pela regressão de calibração.",
     "pre": "Slide 19.",
-    "conducao": "Quatro distorções da mesma PD verdadeira, em miniaturas largas na mesma escala, com slope e intercepto numa linha abaixo. Só a resposta certa (probabilidades extremas) revela os slopes. Na frequência esperada, erro de nível dá slope 1 e erro de inclinação dá 1 ÷ b. No quadro ampliado, mova a e b: a leitura da distorção do aluno compõe nível (intercepto com slope 1 e PD média contra 11,6% da verdadeira) e inclinação (slope). Com a = 0,70 e b = 2,20: PD média 4,4%, intercepto com slope 1 de 1,33 (risco subestimado) e slope 0,45 (PDs extremas demais): os dois erros juntos. Deitada e em pé valem na escala de log odds.",
+    "conducao": "Quatro distorções da mesma PD verdadeira, em miniaturas largas na mesma escala, com slope e intercepto numa linha abaixo. Só a resposta certa (probabilidades extremas) revela os slopes. Na frequência esperada, erro de nível dá slope 1 e erro de inclinação dá 1 ÷ b. No quadro ampliado, mova a e b: a leitura da distorção do aluno compõe nível (intercepto com slope 1 e PD média contra 11,6% da verdadeira) e inclinação (slope). Com a = 0,70 e b = 2,20: PD média 4,4%, intercepto com slope 1 de 1,33 (risco subestimado) e slope 0,45 (PDs extremas demais): os dois erros juntos. Deitada e em pé valem na escala de log odds. A fonte define as réplicas sintéticas da janela, que entram no slide 27: os mesmos 737 proponentes com o desfecho sorteado de novo pela PD verdadeira; 300 sorteios, só possível em base sintética.",
     "leitura": "Quatro miniaturas sobre a PD verdadeira da base sintética e o detalhe da escolhida.",
     "pergunta": "A logística da janela tem slope 1,12 e intercepto com slope 1 de 0,145. Qual assinatura é essa?",
     "resposta": "Nível baixo, com leve falta de confiança.",
@@ -774,23 +774,28 @@
     "disc": 1
    },
    "aprendizado": "Situar treino, escolha, calibração e teste final na linha do tempo, sem vazamento.",
-   "apoio": "Leia as duas definições do painel (intercepto e Platt), responda à previsão sobre o atalho e compare, na tabela, a log loss na janela com a perda esperada em janelas novas.",
+   "apoio": "Leia as duas definições do painel, responda à previsão sobre o atalho e compare, na tabela, a log loss na janela com a esperada nas réplicas sintéticas da janela; depois abra Safras e veja o nível ajustado em safras anteriores.",
    "conexao": "A correção mais simples mexe só no nível.",
    "guia": {
     "funcao": "Fixar o protocolo: o calibrador é ajustado numa amostra e avaliado em outra.",
     "pre": "Slide 26.",
-    "conducao": "Antes da tabela, o painel define os dois calibradores em uma linha cada: o intercepto soma a ao log odds e corrige só o nível (slide 28); o Platt, σ(a + b · logit p), corrige nível e inclinação (slide 29). Os dois são ajustados na amostra de calibração. Protocolo: Platt na calibração, log loss na janela 0,3167 contra 0,3149 sem calibrar; com 81 defaults, a diferença de 0,0018 é ruído. Pela PD verdadeira, a perda esperada é 0,3409 com o Platt, 0,3419 só com intercepto e 0,3439 sem calibrar; o Platt vence sem calibrar em 249 de 300 janelas novas. Atalho: ajustado e medido na janela, 0,3136, menor por construção; em janelas novas, 0,3437. A amostra de calibração tem a população da própria janela, sem deriva: o ganho esperado é um teto. Numa carteira real, a calibração viria de safras com desfecho maturado, posteriores ao treino e anteriores à janela.",
-    "leitura": "Linha do tempo das partições e tabela com a log loss na janela e a esperada em janelas novas.",
+    "conducao": "O painel define os dois calibradores em uma linha cada: o intercepto soma a ao log odds e corrige só o nível (slide 28); o Platt, σ(a + b · logit p), corrige nível e inclinação (slide 29). Protocolo: Platt na calibração, log loss na janela 0,3167 contra 0,3149 sem calibrar; com 81 defaults, 0,0018 é ruído. Defina réplicas sintéticas da janela antes de seguir: os mesmos 737 proponentes com o desfecho sorteado de novo pela PD verdadeira, 300 sorteios, só possível em base sintética. Nelas, a perda esperada é 0,3409 com o Platt, 0,3419 só com intercepto e 0,3439 sem calibrar; o Platt vence sem calibrar em 249 das 300. Atalho: ajustado e medido na janela, 0,3136, menor por construção; nas réplicas, 0,3437. A amostra de calibração tem a população da própria janela, sem deriva: o ganho é um teto. Abra Safras: numa carteira real, o nível viria de safras anteriores, e a taxa de default oscila (9,6% no treino, 13,2% na validação, 11,0% na janela). O intercepto ajustado só na validação leva a PD média da janela a 12,9% (O/E 0,850): o erro troca de lado. Com treino e validação juntos (301 defaults em 2.863, 10,5%), a PD média vai a 10,6% (O/E 1,038). Treino e validação só existem agregados; o intercepto sai da diferença de logits entre a taxa e a PD média. Lição: o nível se ancora em várias safras e se confere na seguinte.",
+    "leitura": "Linha do tempo das partições; tabela com a log loss na janela e a esperada nas réplicas; no modo Safras, a PD média da janela com o intercepto ajustado em cada amostra.",
     "pergunta": "Se o Platt da calibração piora a log loss na janela, devemos descartá-lo?",
-    "resposta": "Não com esta evidência: 0,0018 numa janela de 81 defaults é ruído. Em expectativa, pela PD verdadeira, ele é o melhor dos três (0,3409 contra 0,3419 do intercepto e 0,3439 sem calibrar) e vence em 249 de 300 janelas novas. A janela não escolhe entre os calibradores; uma janela nova confirma.",
+    "resposta": "Não com esta evidência: 0,0018 numa janela de 81 defaults é ruído. Nas réplicas, pela PD verdadeira, ele é o melhor dos três (0,3409 contra 0,3419 do intercepto e 0,3439 sem calibrar) e vence em 249 das 300. A janela não escolhe entre os calibradores; numa carteira real, o ajuste viria de várias safras maturadas e a confirmação, da safra seguinte.",
     "erros": [
      {
       "alt": "Reportar a melhora do atalho",
       "confusao": "Usa a prova para ajustar.",
       "intervencao": "Mostre a etapa do teste em vermelho no modo atalho."
+     },
+     {
+      "alt": "Ajustar o nível só na safra mais recente",
+      "confusao": "Toma uma safra como o nível da carteira.",
+      "intervencao": "Abra Safras: só a validação leva a PD média da janela a 12,9% contra 11,0% observados."
      }
     ],
-    "interacao": "Previsão com três alternativas e Tentar outra; o atalho só abre depois da resposta certa, e então o seletor alterna protocolo e atalho, movendo as setas ajusta e mede. Restaurar volta ao protocolo com a previsão aberta; ao voltar ao slide, o mesmo.",
+    "interacao": "Previsão com três alternativas e Tentar outra; o atalho só abre depois da resposta certa, e então o seletor alterna protocolo, atalho e safras, movendo as setas ajusta e mede. Restaurar volta ao protocolo com a previsão aberta; ao voltar ao slide, o mesmo.",
     "verificacao": "O aluno descreve onde cada etapa acontece.",
     "transicao": "O ajuste mais simples, só de nível: o intercepto, primeiro na logística."
    }
@@ -801,15 +806,15 @@
     "ex": 1
    },
    "aprendizado": "Estimar um ajuste de intercepto na amostra de calibração e verificar no teste que a fila não muda.",
-   "apoio": "Responda à previsão sobre o Brier; a janela abre na logística, com a PD média antes e depois, a taxa observada e a perda esperada em janelas novas; depois troque para o boosting.",
+   "apoio": "Responda à previsão sobre o Brier; a janela abre na logística, com a PD média antes e depois, a taxa observada e a perda esperada nas réplicas sintéticas da janela; depois troque para o boosting.",
    "conexao": "Quando também a inclinação está errada, entram dois parâmetros.",
    "guia": {
     "funcao": "Estimar a correção de nível por intercepto e ler seu efeito no teste.",
     "pre": "Slide 27.",
-    "conducao": "A PD média antes (9,72% na logística) cabe no IC de Wilson da janela e o teste de Jeffreys não rejeita (p = 0,12): a correção vem dos 3.000 casos da calibração, e a evidência de que ela melhora é a log loss esperada, de 0,3439 para 0,3419. Feche com a pergunta que leva ao slide 29: e se a inclinação também estiver errada?",
+    "conducao": "Antes da previsão, a tabela de Newton mostra a raiz da equação na amostra de calibração. Depois do acerto, a leitura justifica: o Brier na janela vai de 0,09128 para 0,09092, porque o intercepto move só o nível e a ordem fica (AUC 0,7257). A PD média antes (9,72%) cabe no IC de Wilson da janela e o teste de Jeffreys não rejeita (p = 0,12): a correção vem dos 3.000 casos da calibração, e a evidência de que ela melhora é a log loss esperada nas réplicas, de 0,3439 para 0,3419. Os marcadores ▲ do gráfico são a média da janela inteira (737 propostas), não das 20 desenhadas. Feche com a pergunta que leva ao slide 29: e se a inclinação também estiver errada?",
     "leitura": "Linhas ligando a PD antes e depois para 20 propostas; tabela de iterações; indicadores no teste.",
     "pergunta": "Se a PD média de 9,72% já cabia no intervalo da janela, por que corrigir o nível?",
-    "resposta": "Porque a janela, com 81 defaults, não tem poder para provar o desvio, mas a amostra de calibração, com 3.000 casos e 345 defaults, estima o nível com mais precisão; em janelas novas da mesma população, a log loss esperada cai de 0,3439 para 0,3419. A mesma lógica vale para o boosting. O intercepto é o Platt com b = 1, o caso do slide 29.",
+    "resposta": "Porque a janela, com 81 defaults, não tem poder para provar o desvio, mas a amostra de calibração, com 3.000 casos e 345 defaults, estima o nível com mais precisão; nas réplicas sintéticas da janela, a log loss esperada cai de 0,3439 para 0,3419. A mesma lógica vale para o boosting. O intercepto é o Platt com b = 1, o caso do slide 29.",
     "erros": [
      {
       "alt": "Somar a diferença das médias em PD",
@@ -833,7 +838,7 @@
    "guia": {
     "funcao": "Aplicar Platt e ler nível e inclinação no teste.",
     "pre": "Slide 28.",
-    "conducao": "Enquanto a previsão está aberta, o título é a pergunta (Platt muda a fila?) e o subtítulo só dá a forma σ(a + b · logit p); depois do acerto, voltam o título e o subtítulo do roteiro. Na janela, com 81 defaults, o slope não prova a correção (0,88 sem calibrar, IC 0,55 a 1,21). Pela PD verdadeira, o slope sem calibrar é 0,80 e passa a 1,09 com o Platt do curso e 1,11 com o da calibração; a log loss esperada cai de 0,3458 para 0,3441 e 0,3430; a AUC fica em 0,6958 nas três versões.",
+    "conducao": "Enquanto a previsão está aberta, o título é a pergunta (Platt muda a fila?) e o subtítulo só dá a forma σ(a + b · logit p); depois do acerto, voltam o título e o subtítulo do roteiro. Na janela, com 81 defaults, o slope não prova a correção (0,88 sem calibrar, IC 0,55 a 1,21). Pela PD verdadeira, o slope sem calibrar é 0,80 e passa a 1,09 com o Platt do curso e 1,11 com o da calibração: passou de 1, mais perto dele que antes; a log loss esperada cai de 0,3458 para 0,3441 e 0,3430; a AUC fica em 0,6958 nas três versões.",
     "leitura": "Transformação desenhada, curva de confiabilidade e tabela com seis métricas.",
     "pergunta": "Se o Platt do curso piora a log loss na janela, o título está errado?",
     "resposta": "Fica igual: com b > 0, a transformação é estritamente crescente e não troca ninguém de lugar.",
@@ -860,7 +865,7 @@
    "guia": {
     "funcao": "Comparar isotônica e Platt e mostrar empates e ruído.",
     "pre": "Slide 29.",
-    "conducao": "A escada é a peça principal; os pares viram uma faixa fina embaixo. Com 3.000 casos, a isotônica reduz 727 PDs distintas a 16 degraus; o maior degrau (9,1%) junta 203 propostas e 16 × 187 = 2.992 empates; no total, 8.063 empates e a AUC cai de 0,6958 para 0,6911. Calibradores se comparam pela perda esperada, não pela janela: 0,3430 no Platt e 0,3446 na isotônica. Nos blocos de 300, a isotônica dá PD 0% a regiões inteiras: no bloco 2, a 151 propostas, 6 delas defaults; cada previsão que dá 0% ao que aconteceu é cortada em 10⁻¹⁵ e soma 34,5 à log loss, que vai a 0,5754 (esperada 0,6735 contra 0,3445 do Platt). Lição de crédito: com poucos dados, a isotônica exige piso de PD.",
+    "conducao": "A escada é a peça principal; os pares viram uma faixa fina embaixo. Com 3.000 casos, a isotônica reduz 727 PDs distintas a 16 degraus; o maior degrau (9,1%) junta 203 propostas e 16 × 187 = 2.992 empates; 8.061 empates novos (havia 2 sem calibrar), 8.063 no total, e a AUC cai de 0,6958 para 0,6911. Calibradores se comparam pela perda esperada, não pela janela: 0,3430 no Platt e 0,3446 na isotônica. Nos blocos de 300, a isotônica dá PD 0% a regiões inteiras: no bloco 2, a 151 propostas, 6 delas defaults; cada previsão que dá 0% ao que aconteceu é cortada em 10⁻¹⁵ e soma 34,5 à log loss, que vai a 0,5754 (esperada 0,6735 contra 0,3445 do Platt). Lição de crédito: com poucos dados, a isotônica exige piso de PD.",
     "leitura": "Curvas das duas transformações e barras de pares certos, empatados e invertidos.",
     "pergunta": "Quando preferir a isotônica?",
     "resposta": "Com muitos dados e distorção que não é reta em log odds.",
@@ -883,23 +888,28 @@
     "disc": 1
    },
    "aprendizado": "Distinguir o que a recalibração preserva (fila, AUC) do que ela muda (nível, perdas, decisões com corte fixo de PD).",
-   "apoio": "Compare a mesma regra de corte de PD com a mesma fração recusada; mova o corte.",
+   "apoio": "Responda à previsão sobre quantas decisões mudam com o mesmo corte; depois compare a mesma regra de corte de PD com a mesma fração recusada e mova o corte.",
    "conexao": "O corte não sai da PD sozinha: depende de perdas, receita e custos.",
    "guia": {
     "funcao": "Ligar recalibração à decisão: corte fixo de PD muda aprovações.",
     "pre": "Slides 29 e 11.",
-    "conducao": "Com o mesmo corte de 14%, 121 decisões mudam e a fila não muda. O Platt do curso foi estimado na validação, com 13,2% de default, e por isso leva a PD média a 13,2% contra 11,0% observados. O realizado de 81 defaults é ruidoso; pela PD verdadeira, os aprovados valem R$ 446 mil sem calibrar e R$ 462 mil com o Platt. Com a mesma fração recusada, nenhuma decisão muda: o quadro Muda passa a dizer PD média, Brier, log loss e a promessa; decisões, só com corte fixo de PD.",
+    "conducao": "Abra pela previsão: com o mesmo corte de 14%, quantas das 737 decisões mudam? O subtítulo pergunta e as linhas que mudam ficam cinza até a resposta. Nenhuma confunde fila com corte; umas dez subestima o deslocamento, porque o Platt sobe a PD de quase toda a carteira (média de 9,8% para 13,2%). Revelado: 121 decisões mudam, todas para recusa (604 aprovados viram 483), e a fila não muda. O Platt do curso foi estimado na validação, com 13,2% de default. Pela PD verdadeira, os aprovados valem R$ 462 mil com o Platt e R$ 446 mil sem; o Platt promete R$ 328 mil, R$ 134 mil abaixo do que entrega. Veredito: com corte fixo, recalibrar muda a política; o nível estimado na validação erra a promessa. Com a mesma fração recusada, nenhuma decisão muda e só a promessa muda.",
     "leitura": "Linhas de cada proposta entre as duas escalas, em âmbar as que mudam; tabela de aprovados e resultados.",
     "pergunta": "Recalibrar muda a política?",
     "resposta": "Só se a política é um corte de PD; com corte por fração, muda o resultado prometido, não as decisões.",
     "erros": [
+     {
+      "alt": "Nenhuma decisão muda",
+      "confusao": "Confunde fila com corte.",
+      "intervencao": "Mostre as linhas âmbar que atravessam o corte."
+     },
      {
       "alt": "Achar que recalibrar não tem efeito porque a AUC é igual",
       "confusao": "Ignora o corte fixo.",
       "intervencao": "Aponte o contador de decisões."
      }
     ],
-    "interacao": "Seletor de regra e controle de corte. Ao voltar, mesmo corte de 14%.",
+    "interacao": "Previsão com três alternativas e Tentar outra; depois dela, seletor de regra e controle de corte. Restaurar e o retorno ao slide voltam à previsão, com corte de 14%.",
     "verificacao": "O aluno explica por que a mesma fração preserva as decisões.",
     "transicao": "No slide 31 o corte de 14% era dado; no 32 ele sai da conta."
    }
@@ -938,15 +948,15 @@
     "ex": 1
    },
    "aprendizado": "Ler a variação de uma métrica por reamostragem pareada e delimitar o que ela cobre.",
-   "apoio": "Leia as 100 réplicas já sorteadas, complete as 1.000 e responda à previsão sobre as janelas novas.",
+   "apoio": "Leia as 100 réplicas já sorteadas, complete as 1.000 e responda à previsão sobre as réplicas sintéticas da janela.",
    "conexao": "Com incerteza declarada, a comparação entre modelos pode ser justa.",
    "guia": {
     "funcao": "Dar incerteza à AUC e à diferença entre modelos.",
     "pre": "Slide 6.",
-    "conducao": "O quadro abre com 100 réplicas pareadas (semente 20260501): diferença entre 0,0068 e 0,0579. Com 1.000: 0,0008 a 0,0587, 25 réplicas em zero ou abaixo; DeLong, 0,0001 a 0,0596. Antes de revelar as janelas novas, peça a previsão (as alternativas não trazem o número da resposta): a vantagem esperada em 300 janelas novas é 0,0067, perto de um quarto da observada (0,0299), e só 17 repetem a observada. O bootstrap herda a sorte da janela: p = 0,049 nesta janela não prova que a logística seja melhor em outra. Ponte: o slide 34 põe os dois modelos nos mesmos casos, com este intervalo.",
+    "conducao": "O quadro abre com 100 réplicas pareadas (semente 20260501): diferença entre 0,0068 e 0,0579. Com 1.000: 0,0008 a 0,0587, 25 réplicas em zero ou abaixo; DeLong, 0,0001 a 0,0596. Antes de revelar as réplicas sintéticas da janela (os mesmos 737 proponentes com o desfecho sorteado de novo pela PD verdadeira; 300 sorteios, semente 20261033, só possível em base sintética), peça a previsão (as alternativas não trazem o número da resposta): a vantagem esperada nas 300 réplicas é 0,0067, perto de um quarto da observada (0,0299), e só 17 repetem a observada. O bootstrap herda a sorte da janela: p = 0,049 nesta janela não prova que a logística seja melhor em outra. Ponte: o slide 34 põe os dois modelos nos mesmos casos, com este intervalo.",
     "leitura": "Histograma das réplicas com intervalo e linha do zero; indicadores e nota sobre o pareamento.",
     "pergunta": "O limite inferior positivo prova que a logística é melhor?",
-    "resposta": "Prova que nesta janela a diferença dificilmente é zero; as janelas novas mostram que ela é menor do que parece.",
+    "resposta": "Prova que nesta janela a diferença dificilmente é zero; as réplicas sintéticas da janela mostram que ela é menor do que parece.",
     "erros": [
      {
       "alt": "Comparar dois intervalos separados",
@@ -971,7 +981,7 @@
    "guia": {
     "funcao": "Fixar as condições de uma comparação justa entre modelos.",
     "pre": "Slide 33.",
-    "conducao": "A peça da janela traz a diferença pareada com o IC de DeLong: 0,0299, de 0,0001 a 0,0596. Os ICs de cada modelo ficam esmaecidos: eles se sobrepõem, e ler isso como empate é o erro, porque os dois modelos erram nos mesmos casos (correlação 0,86) e a diferença tem erro padrão menor que o de cada AUC. Em janelas novas (slide 33), a vantagem esperada é 0,0067 e o boosting empata ou vence em 102 de 300.",
+    "conducao": "A peça da janela traz a diferença pareada com o IC de DeLong: 0,0299, de 0,0001 a 0,0596. Os ICs de cada modelo ficam esmaecidos: eles se sobrepõem, e ler isso como empate é o erro, porque os dois modelos erram nos mesmos casos (correlação 0,86) e a diferença tem erro padrão menor que o de cada AUC. Nas réplicas sintéticas da janela (os mesmos 737 proponentes com o desfecho sorteado de novo pela PD verdadeira, 300 sorteios), a vantagem esperada é 0,0067 e o boosting empata ou vence em 102. O veredito tem níveis: os dois na janela, justa (verde, ✓); os dois no treino, viciada, porque o boosting aprendeu ali (vinho, ✕); os dois na validação, otimista para o escolhido, porque ela serviu para escolher o boosting (âmbar, !); amostras diferentes, injusta (vinho, ✕).",
     "leitura": "Halteres de AUC por amostra, com intervalo na janela; tabela de métricas.",
     "pergunta": "Qual número usar para escolher o modelo?",
     "resposta": "Mesma amostra para os dois modelos e o intervalo da diferença pareada, não a comparação de dois intervalos separados.",
@@ -982,7 +992,7 @@
       "intervencao": "Mostre a primeira comparação injusta."
      }
     ],
-    "interacao": "Dois seletores de amostra, um por modelo, com veredito de comparação justa ou injusta. Restaurar volta aos dois na janela.",
+    "interacao": "Dois seletores de amostra, um por modelo, com veredito em quatro níveis: justa, otimista, viciada e injusta. Restaurar volta aos dois na janela.",
     "verificacao": "O aluno lista as condições de comparação justa.",
     "transicao": "Por que a janela só vale uma vez."
    }
@@ -994,12 +1004,12 @@
     "disc": 1
    },
    "aprendizado": "Congelar o protocolo antes do teste final e reconhecer deriva, segmentos, maturação e seleção como ameaças ao resultado.",
-   "apoio": "Responda à previsão; depois reabra a janela até 20 vezes e compare a AUC do escolhido na janela com a esperada em janelas novas.",
+   "apoio": "Responda à previsão; depois reabra a janela até 20 vezes e compare a AUC do escolhido na janela com a esperada nas réplicas sintéticas da janela.",
    "conexao": "Agora, um caso inteiro para decidir.",
    "guia": {
     "funcao": "Mostrar o otimismo de escolher olhando a janela final.",
     "pre": "Slides 27 e 34.",
-    "conducao": "A AUC na janela do escolhido está na cor de ordenação; a esperada em janelas novas, no verde de validação; as linhas da logística são referência em cinza. Depois de 20 reaberturas, o escolhido marca 0,7286 na janela e esperaria 0,6565; o otimismo dele (0,0721) soma a sorte da janela, que a logística também tem (0,0584), e 0,0138 de seleção. O slide 36 leva tudo ao comitê.",
+    "conducao": "Antes da previsão, só a AUC na janela aparece; a escada tracejada do escolhido nas réplicas e os indicadores de otimismo abrem depois do acerto, e a leitura convida a reabrir. A AUC na janela do escolhido está na cor de ordenação; a esperada nas réplicas, no verde de validação; as linhas da logística são referência em cinza. Depois de 20 reaberturas, o escolhido marca 0,7286 na janela e esperaria 0,6565; o otimismo dele (0,0721) soma a sorte da janela, que a logística também tem (0,0584), e 0,0138 de seleção. O slide 36 leva tudo ao comitê.",
     "leitura": "Trajetória do escolhido nas duas medidas; lista do que fica congelado.",
     "pergunta": "Escolher o corte olhando a janela também é reabrir?",
     "resposta": "Sim: qualquer escolha feita com ela a transforma em validação.",
@@ -1027,10 +1037,10 @@
    "guia": {
     "funcao": "Integrar as quatro perguntas numa decisão de comitê.",
     "pre": "Slides 3 a 35.",
-    "conducao": "Nas miniaturas Decisão e Probabilidade, os números saíram de cima das curvas para uma coluna ao lado; slope e ICs foram para a leitura do cartão (slopes 1,12 e 1,20, os dois ICs com 1). Decisão: no corte de 14,0%, o candidato promete R$ 328 mil; pela PD verdadeira, os aprovados valem R$ 462 mil no candidato e R$ 472 mil na logística, quase empate; o realizado (R$ 569 mil e R$ 588 mil) é ruidoso. Decisão do comitê: manter a logística, recalibrar o nível em amostra própria e confirmar numa janela nova.",
-    "leitura": "Quatro miniaturas sempre visíveis (AUC com IC de DeLong, confiabilidade sobreposta, resultado por corte, AUC no treino, validação e janela); decisão bloqueada até três consultas.",
+    "conducao": "1. Abra com a pergunta do título e peça um voto rápido, antes de qualquer cartão: quem aprovaria o boosting? 2. Abra os cartões na ordem das perguntas do capítulo. Ordenação: qual modelo ordena melhor, e a diferença se sustenta? O cartão dá 0,7257 contra 0,6958 (p = 0,049), e nas réplicas a vantagem esperada é 0,0067. Probabilidade: qual dos dois erra o nível, e para que lado? O candidato superestima (O/E 0,832); a logística subestima sem prova (p = 0,12). Decisão: o candidato vale mais no corte de 14%? Pela PD verdadeira, R$ 462 mil contra R$ 472 mil, e ele prometia R$ 328 mil. Validação: por que a AUC do boosting cai de 0,8196 no treino para 0,6958 na janela? Sobreajuste e mudança de safra; o Platt dele já usou a validação. 3. Com três cartões abertos, peça a decisão. Se a turma escolher B (recalibrar o boosting na janela e aprovar), não corrija de imediato: pergunte com que amostra se mediria depois o boosting recalibrado; volte ao atalho do slide 27 (0,3136 prometido, 0,3437 nas réplicas) e lembre que recalibrar não muda a AUC de 0,6958. 4. Depois do acerto, pergunte de onde viria a amostra do nível numa carteira real: das safras maturadas antes da janela. Mostre a deriva (9,6% no treino, 13,2% na validação, 11,0% na janela): ancorado só na validação, a PD média da janela iria a 12,9%; em treino e validação (301 defaults em 2.863, 10,5%), a 10,6%. Feche: manter a logística, ancorar o nível em várias safras, monitorar cada safra com Jeffreys e confirmar nas safras de 2024, quando maturarem.",
+    "leitura": "Quatro miniaturas sempre visíveis (AUC com IC de DeLong, confiabilidade sobreposta, resultado por corte, AUC no treino, validação e janela); decisão bloqueada até três consultas; a leitura da decisão diz de onde vem a amostra do nível.",
     "pergunta": "Que evidência mudaria a decisão a favor do boosting?",
-    "resposta": "Vantagem de ordenação numa janela nova, com calibrador ajustado em amostra própria e resultado econômico melhor. A mesma janela nova confirma qual calibrador fica na logística.",
+    "resposta": "Vantagem de ordenação nas safras de 2024, com calibrador ajustado em safras maturadas anteriores e resultado econômico melhor pela mesma conta. As mesmas safras conferem o nível ancorado da logística.",
     "erros": [
      {
       "alt": "Aprovar o boosting com Platt",
@@ -1040,17 +1050,22 @@
      {
       "alt": "Recalibrar o boosting na janela e aprovar",
       "confusao": "Usa a prova para ajustar.",
-      "intervencao": "Volte ao slide 27: o atalho promete 0,3136 e entrega 0,3437 em janelas novas."
+      "intervencao": "Volte ao slide 27: o atalho promete 0,3136 e entrega 0,3437 nas réplicas."
      },
      {
       "alt": "Trocar: a diferença de AUC é pequena",
       "confusao": "Lê diferença pequena como equivalência.",
-      "intervencao": "O ônus é de quem substitui; em janelas novas, a vantagem esperada (0,0067) ainda é da logística."
+      "intervencao": "O ônus é de quem substitui; nas réplicas, a vantagem esperada (0,0067) ainda é da logística."
+     },
+     {
+      "alt": "Recalibrar o nível só com a última safra",
+      "confusao": "Toma a validação (13,2% de default) como o nível da carteira.",
+      "intervencao": "Mostre o modo Safras do slide 27: PD média da janela de 12,9% contra 11,0% observados."
      }
     ],
     "interacao": "Cartões que se consultam com um toque e decisão com retorno por alternativa e nova tentativa. Ao voltar, nada consultado.",
     "verificacao": "O aluno justifica a decisão com três tipos de evidência.",
-    "transicao": "As quatro respostas, em síntese."
+    "transicao": "As quatro respostas, em síntese, e o procedimento para amanhã."
    }
   },
   "c7p20": {
@@ -1064,10 +1079,10 @@
    "guia": {
     "funcao": "Fechar o capítulo com as quatro respostas e um fluxo de diagnóstico.",
     "pre": "Todo o capítulo.",
-    "conducao": "Leia as quatro respostas com as miniaturas: AUC 0,7257 com IC e 0,6673 esperada em janelas novas (a janela foi favorável); PD média 9,7% contra 11,0% (IC 8,9% a 13,5%), Jeffreys p = 0,12; corte de 14,0% contra o KS em 9,7%; diferença de 0,0299 com IC de 0,0001 a 0,0596, e 0,0067 em janelas novas. A síntese repete a decisão do slide 36: a logística fica, o nível é recalibrado em amostra própria (log loss esperada 0,3439 para 0,3419) e uma janela nova confirma. Sem sintoma escolhido, o painel mostra o procedimento para amanhã; depois peça sintomas da prática da turma.",
-    "leitura": "Quatro cartões de resposta com miniatura e o que falta; diagnóstico por sintoma com links e, sem sintoma, o procedimento.",
+    "conducao": "Leia as quatro respostas com as miniaturas: AUC 0,7257 com IC e 0,6673 esperada nas réplicas sintéticas da janela (a janela foi favorável); PD média 9,7% contra 11,0% (IC 8,9% a 13,5%), Jeffreys p = 0,12; corte de 14,0% contra o KS em 9,7%; diferença de 0,0299 com IC de 0,0001 a 0,0596, e 0,0067 nas réplicas. A síntese repete a decisão do slide 36: a logística fica, o nível se ancora em várias safras maturadas (10,5% em treino e validação, não os 13,2% da última), é monitorado por safra com Jeffreys e se confirma nas safras de 2024. Sem sintoma escolhido, o painel mostra o procedimento para amanhã em seis passos: ordenação, probabilidade, recalibrar (intercepto ancorado em várias safras maturadas, medido na seguinte; refazer se Jeffreys rejeitar em duas safras seguidas), segmentos (curva e O/E por segmento relevante), decisão e validação. Depois peça sintomas da prática da turma.",
+    "leitura": "Quatro cartões de resposta com miniatura e o que falta; diagnóstico por sintoma com links e, sem sintoma, o procedimento em seis passos.",
     "pergunta": "Qual das quatro respostas é a mais fraca para a logística?",
-    "resposta": "Validação: uma janela, 81 defaults e limite inferior do IC de 0,0001; em janelas novas, a vantagem esperada é 0,0067.",
+    "resposta": "Validação: uma janela, 81 defaults e limite inferior do IC de 0,0001; nas réplicas, a vantagem esperada é 0,0067. A confirmação vem das safras de 2024.",
     "erros": [
      {
       "alt": "Concluir que o modelo está pronto",
@@ -1085,17 +1100,17 @@
     "exp": 3
    },
    "aprendizado": "Consultar fórmulas, métricas que ficam fora do protocolo e as referências do capítulo.",
-   "apoio": "Consulte fórmulas, métricas fora do protocolo, fronteira e regulação, referências e dados de reprodução.",
+   "apoio": "Consulte fórmulas para medir, fórmulas para comparar e decidir, métricas fora do protocolo, fronteira e regulação, referências e dados de reprodução.",
    "conexao": "Capítulo 8: da previsão à decisão econômica.",
    "guia": {
     "funcao": "Material de consulta, fora do percurso da aula.",
     "pre": "Nenhum.",
-    "conducao": "Seis abas. Fórmulas para medir (AUC, KS, ganho e lift, Wilson, Brier e Murphy, log loss, calibração, Platt) e Para comparar e decidir: a perda esperada pela PD verdadeira (log loss e Brier), que decide os slides 27 a 29, com a nota de que Brier e log loss são regras de pontuação próprias (Gneiting e Raftery, 2007); E(c) do motor do slide 32; o erro padrão de DeLong e o bootstrap pareado com intervalo percentil (slide 33). Na fronteira, a beta calibration diz quando usar (distorção diferente nas duas caudas) e o benefício líquido avisa que o capítulo não o calcula. As referências se agrupam por tema (ordenação, medir a probabilidade, calibrar, decisão e validação, regulação e software), cada uma com o que sustenta e o slide que a usa; entrou Engelmann, Hayden e Tasche (2003), referência de AR em crédito.",
-    "leitura": "Cinco abas de consulta: fórmulas, métricas fora do protocolo, fronteira e regulação, referências e reprodução.",
+    "conducao": "Seis abas. Fórmulas para medir (AUC, KS, ganho e lift, Wilson, Brier e Murphy, log loss, calibração, Platt) e Para comparar e decidir: a perda esperada pela PD verdadeira (log loss e Brier), que decide os slides 27 a 29, com a nota de que Brier e log loss são regras de pontuação próprias (Gneiting e Raftery, 2007); E(c) do motor do slide 32; o erro padrão de DeLong e o bootstrap pareado com intervalo percentil (slide 33). Na fronteira, a beta calibration diz quando usar (distorção diferente nas duas caudas) e o benefício líquido avisa que o capítulo não o calcula. As referências se agrupam por tema (ordenação, medir a probabilidade, calibrar, decisão e validação, regulação e software), cada uma com o que sustenta e o slide que a usa; entrou Engelmann, Hayden e Tasche (2003), referência de AR em crédito. Na fronteira, o ajuste ao ciclo se liga ao slide 36: o nível ancorado em várias safras, não só na última, segue a mesma ideia.",
+    "leitura": "Seis abas de consulta: fórmulas para medir, fórmulas para comparar e decidir, métricas fora do protocolo, fronteira e regulação, referências e reprodução.",
     "pergunta": "Como converter AUC em Gini?",
     "resposta": "Gini = 2 × AUC menos 1: 0,4514 na janela.",
     "erros": [],
-    "interacao": "Cinco abas, com links para os slides em que cada método aparece. Ao voltar, fórmulas.",
+    "interacao": "Seis abas, com links para os slides em que cada método aparece. Ao voltar, fórmulas.",
     "verificacao": "Não se aplica.",
     "transicao": "Fim do capítulo 7."
    }

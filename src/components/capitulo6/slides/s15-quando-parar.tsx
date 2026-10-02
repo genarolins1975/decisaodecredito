@@ -77,7 +77,7 @@ export function S15QuandoParar({ pagina }: { pagina?: Pagina }) {
   const ops = [
     { texto: `Todas as ${MAXA}: cada uma reduziu a perda de ajuste`, certa: false, retorno: <>O ajuste não sabe parar. Com {MAXA} árvores, a perda de validação é {num(c.pv[MAXA], 4)}, contra {num(vmin, 4)} no mínimo.</> },
     { texto: "Cerca de 100: corta só o fim da curva", certa: false, retorno: <>Supõe que o dano está no fim, mas depois de {faixa[1]} árvores a validação já passa de {num(TOL, 3)} acima do mínimo; com 100, {num(c.pv[100], 4)} contra {num(vmin, 4)}.</> },
-    { texto: `Menos de ${teto}`, certa: true, retorno: <>Isso: mínimo em {imin} árvores. Até a {faixa[1]}, a perda fica a menos de {num(TOL, 3)} dele, o que equivale; depois da {faixa[1]}, passa da faixa{volta ? "" : " e não volta"}: as árvores seguintes só decoram o ajuste.</> },
+    { texto: `Menos de ${teto}`, certa: true, retorno: <>Isso: mínimo em {imin}; até a {faixa[1]}, equivale (a menos de {num(TOL, 3)}). Depois, passa da faixa{volta ? "" : " e não volta"}.</> },
   ];
   const revelado = esc !== null && ops[esc].certa;
   const escolher = (i: number | null) => { setEsc(i); if (i !== null && ops[i].certa) { setM(imin); setAte(60); } };
@@ -87,7 +87,7 @@ export function S15QuandoParar({ pagina }: { pagina?: Pagina }) {
       titulo={revelado ? undefined : `Das ${MAXA} árvores, quantas a validação manda manter?`}
       sub={revelado ? undefined : "A perda de ajuste cai até a última. Preveja antes de ver a validação."}
       conclusao={revelado
-        ? <>Parando em {m}: perda de validação {num(c.pv[m], 4)}{m === imin ? ", o mínimo" : ` (${num(c.pv[m] - vmin, 4)} acima do mínimo)`}; a AUC de ajuste segue até <b>{num(c.aa[MAXA], 3)}</b> em {MAXA}. <b>Só a validação diz onde parar</b>, e de {faixa[0]} a {faixa[1]} árvores tanto faz (a {num(TOL, 3)} do mínimo). A amostra que escolheu o ponto não o mede sem viés: por isso a janela fora do tempo segue fechada. <LinkSlide slug="c6p17">Slide 17</LinkSlide>: contra a logística.</>
+        ? <>Parando em {m}: perda de validação {num(c.pv[m], 4)}{m === imin ? ", o mínimo" : ` (${num(c.pv[m] - vmin, 4)} acima do mínimo)`}; a AUC de ajuste segue até <b>{num(c.aa[MAXA], 3)}</b> em {MAXA}. <b>Só a validação diz onde parar</b>, e de {faixa[0]} a {faixa[1]} tanto faz; escolhido nesta amostra, o ponto não se mede sem viés. <LinkSlide slug="c6p17">Slide 17</LinkSlide>: contra a logística.</>
         : <>No ajuste, a perda cai de {num(c.pa[0], 3)} a {num(c.pa[MAXA], 3)} e a AUC sobe de {num(c.aa[0], 2)} a {num(c.aa[MAXA], 3)} nas {MAXA} árvores do <LinkSlide slug="c6p11">slide 11</LinkSlide>: nenhuma das duas avisa quando parar.</>}
       fonte={`Ajuste: ${int(NA)} propostas, ${DA} defaults; validação sorteada: ${int(NV)}, ${DV} defaults. η ${num(CFG_CARTEIRA.eta, 1)}, profundidade ${CFG_CARTEIRA.profundidade}, mínimo ${CFG_CARTEIRA.minFolha}, até ${MAXA} árvores (gbm.ts).`}>
       <Painel>
@@ -113,9 +113,9 @@ export function S15QuandoParar({ pagina }: { pagina?: Pagina }) {
               <tbody>
                 <tr><th>Para na árvore</th>{pacs.map((p) => <td key={p.k}>{p.para}</td>)}</tr>
                 <tr data-on="1"><th>Guarda a</th>{pacs.map((p) => <td key={p.k}>{p.guarda === imin ? <b>{p.guarda}</b> : p.guarda}</td>)}</tr>
+                <tr><th>{pacs.every((p) => c.pv[p.guarda] <= vmin + TOL) ? "Do mínimo: equivale" : "Acima do mínimo"}</th>{pacs.map((p) => <td key={p.k}>{p.guarda === imin ? "0" : `+${num(c.pv[p.guarda] - vmin, 4)}`}</td>)}</tr>
               </tbody>
             </table>
-            {pacs[0].guarda !== imin && <p className="q7-nota">Com k = {pacs[0].k}, guarda a árvore {pacs[0].guarda}, {num(c.pv[pacs[0].guarda] - vmin, 4)} acima do mínimo: {c.pv[pacs[0].guarda] <= vmin + TOL ? `equivalente, dentro da faixa de ${num(TOL, 3)}` : "fora da faixa, um mínimo local que engana"}.</p>}
           </div>
         )}
       </Painel>

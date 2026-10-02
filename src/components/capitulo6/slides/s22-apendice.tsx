@@ -38,7 +38,7 @@ const REFS_METODO: Ref[] = [
   ["Friedman (2002). Stochastic gradient boosting. Computational Statistics & Data Analysis 38(4).", doi("10.1016/S0167-9473(01)00065-2")],
   ["Hastie, Tibshirani e Friedman (2009). The Elements of Statistical Learning, 2ª ed., cap. 10.", doi("10.1007/978-0-387-84858-7")],
   ["Chen e Guestrin (2016). XGBoost: a scalable tree boosting system. KDD.", doi("10.1145/2939672.2939785")],
-  ["Ke et al. (2017). LightGBM: a highly efficient gradient boosting decision tree. NeurIPS.", "https://papers.nips.cc/paper_files/paper/2017"],
+  ["Ke et al. (2017). LightGBM: A Highly Efficient Gradient Boosting Decision Tree. NeurIPS 30.", "https://papers.nips.cc/paper/6907-lightgbm-a-highly-efficient-gradient-boosting-decision-tree"],
   ["Prokhorenkova et al. (2018). CatBoost: unbiased boosting with categorical features. NeurIPS.", "https://arxiv.org/abs/1706.09516"],
   ["Lou, Caruana, Gehrke e Hooker (2013). Accurate intelligible models with pairwise interactions. KDD.", doi("10.1145/2487575.2487579")],
   ["Nori, Jenkins, Koch e Caruana (2019). InterpretML. arXiv:1909.09223.", "https://arxiv.org/abs/1909.09223"],
@@ -48,15 +48,15 @@ const REFS_METODO: Ref[] = [
 const REFS_VALIDACAO: Ref[] = [
   ["BCBS (2005). Studies on the Validation of Internal Rating Systems. Working Paper 14.", "https://www.bis.org/publ/bcbs_wp14.htm"],
   ["Niculescu-Mizil e Caruana (2005). Predicting good probabilities with supervised learning. ICML.", doi("10.1145/1102351.1102430")],
-  ["Lessmann, Baesens, Seow e Thomas (2015). Benchmarking state-of-the-art classification algorithms for credit scoring. EJOR 247(1).", doi("10.1016/j.ejor.2015.05.030")],
+  ["Lessmann, Baesens, Seow e Thomas (2015). Benchmarking state-of-the-art classification algorithms for credit scoring: An update of research. European Journal of Operational Research 247(1).", doi("10.1016/j.ejor.2015.05.030")],
   ["Lundberg et al. (2020). From local explanations to global understanding with explainable AI for trees. Nature Machine Intelligence 2(1).", doi("10.1038/s42256-019-0138-9")],
   ["Shapley (1953). A value for n-person games. Contributions to the Theory of Games II.", doi("10.1515/9781400881970-018")],
   ["Wachter, Mittelstadt e Russell (2018). Counterfactual explanations without opening the black box. Harvard JOLT 31(2).", doi("10.2139/ssrn.3063289")],
   ["Wilson (1927). Probable inference, the law of succession, and statistical inference. JASA 22(158).", doi("10.1080/01621459.1927.10502953")],
   ["Hanley e McNeil (1982). The meaning and use of the area under a ROC curve. Radiology 143(1).", doi("10.1148/radiology.143.1.7063747")],
   ["DeLong, DeLong e Clarke-Pearson (1988). Comparing the areas under two or more correlated ROC curves. Biometrics 44(3).", doi("10.2307/2531595")],
-  ["CMN (2017). Resolução 4.557: gerenciamento de riscos e de capital.", "https://www.bcb.gov.br/estabilidadefinanceira/buscanormas"],
-  ["EBA (2023). Machine learning for IRB models: follow-up report.", "https://www.eba.europa.eu"],
+  ["CMN (2017). Resolução 4.557, de 23 de fevereiro de 2017: estrutura de gerenciamento de riscos e de capital.", "https://normativos.bcb.gov.br/Lists/Normativos/Attachments/50344/Res_4557_v1_O.pdf"],
+  ["EBA (2023). Follow-up report on machine learning for IRB models.", "https://www.eba.europa.eu/sites/default/files/document_library/Publications/Reports/2023/1061483/Follow-up%20report%20on%20machine%20learning%20for%20IRB%20models.pdf"],
 ];
 const REPRO: [string, string][] = [
   ["Base do curso", "gerador sintético, semente 20260501; treino das safras 2022-01 a 2023-02"],

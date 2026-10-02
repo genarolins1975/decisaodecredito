@@ -10,8 +10,9 @@ import { int, num, pct } from "@/lib/capitulo7/formato";
  * 33 · c7p14 · Bootstrap pareado da janela: cada réplica sorteia 737 propostas com reposição e calcula, nas mesmas
  * propostas, a AUC da logística e a do boosting sem recalibrar. Semente 20260501, 1.000 réplicas, intervalo percentil
  * (quantis 2,5% e 97,5%, tipo 7). O quadro abre com as 100 primeiras réplicas já sorteadas (a mesma sequência das
- * 1.000), para que o histograma prove o título sem clique. Depois, uma previsão antes de revelar as janelas novas de
- * janelas.ts (as mesmas dos slides 35 e 36): o bootstrap reamostra a janela que temos e herda a sorte dela.
+ * 1.000), para que o histograma prove o título sem clique. Depois, uma previsão antes de revelar as réplicas sintéticas
+ * da janela de janelas.ts (os mesmos proponentes com o desfecho sorteado de novo pela PD verdadeira; as mesmas dos
+ * slides 35 e 36): o bootstrap reamostra a janela que temos e herda a sorte dela.
  */
 const SEMENTE = 20260501, REPLICAS = 1000, INICIAIS = 100;
 const DL = delong(Y, PL, PGR);
@@ -34,7 +35,7 @@ function Histograma({ v, dom, passo, ic, ref0, d, real, xt, novas }: { v: number
       {ref0 && <><line x1={x(0)} x2={x(0)} y1={m.t} y2={y(0)} stroke="#5B6475" strokeWidth={2.5} /><text className="q7-rot q7-rot--peq" x={x(0) - d.fs * 0.4} y={m.t + d.fs * 0.6} textAnchor="end" style={{ fill: "#5B6475", fontWeight: 700 }}>diferença zero</text></>}
       <line x1={x(real)} x2={x(real)} y1={m.t - d.fs * 0.6} y2={y(0)} stroke="#00205B" strokeWidth={2.5} strokeDasharray="6 4" />
       <text className="q7-rot--peq" x={x(real)} y={m.t - d.fs * 0.8} textAnchor="middle" style={{ fill: "#00205B", fontWeight: 700 }}>na janela {num(real, 4)}</text>
-      {novas !== null && <><line x1={x(novas)} x2={x(novas)} y1={m.t} y2={y(0)} stroke="#2E6B4F" strokeWidth={3} /><text className="q7-rot--peq" x={x(novas) + d.fs * 0.35} y={m.t + d.fs * 0.9} textAnchor="start" style={{ fill: "#2E6B4F", fontWeight: 700, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em" }}>▲ janelas novas {num(novas, 4)}</text></>}
+      {novas !== null && <><line x1={x(novas)} x2={x(novas)} y1={m.t} y2={y(0)} stroke="#2E6B4F" strokeWidth={3} /><text className="q7-rot--peq" x={x(novas) + d.fs * 0.35} y={m.t + d.fs * 0.9} textAnchor="start" style={{ fill: "#2E6B4F", fontWeight: 700, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em" }}>▲ média nas réplicas {num(novas, 4)}</text></>}
     </g>
   );
 }
@@ -55,13 +56,13 @@ export function S33Bootstrap({ pagina }: { pagina?: Pagina }) {
   const icDif = (() => { const o = bs.dif.slice(0, k).sort((a, b) => a - b); return [quantil(o, 0.025), quantil(o, 0.975)] as [number, number]; })();
   return (
     <Quadro slug="c7p14" pagina={pagina} layout="gl"
-      conclusao={revelado ? <>A base sintética permite repetir a janela: em {N_JANELAS} janelas novas, a vantagem esperada da logística é <b>{num(sint.vantagem, 4)}</b>, não {num(sint.obs, 4)}, e só {sint.acima} repetem a observada. O bootstrap herda a sorte da janela: <b>p = {num(DL.p, 3)} nesta janela não prova que a logística seja melhor em outra.</b> O <LinkSlide slug="c7p15">slide 34</LinkSlide> põe os dois modelos nos mesmos casos, com este intervalo.</>
+      conclusao={revelado ? <>A base sintética permite repetir a janela: nas {N_JANELAS} réplicas sintéticas da janela, a vantagem esperada da logística é <b>{num(sint.vantagem, 4)}</b>, não {num(sint.obs, 4)}, e só {sint.acima} repetem a observada. O bootstrap herda a sorte da janela: <b>p = {num(DL.p, 3)} nesta janela não prova que a logística seja melhor em outra.</b> O <LinkSlide slug="c7p15">slide 34</LinkSlide> põe os dois modelos nos mesmos casos, com este intervalo.</>
         : k < REPLICAS ? <>{int(k)} réplicas pareadas: a diferença entre os modelos vai de <b>{num(icDif[0], 4)} a {num(icDif[1], 4)}</b> (percentil 95%), em torno dos {num(AUC1 - AUC2, 4)} observados. Complete as {int(REPLICAS)} e responda à previsão.</>
           : <>Com {int(REPLICAS)} réplicas, a diferença fica entre <b>{num(icDif[0], 4)} e {num(icDif[1], 4)}</b>; {abaixo0} réplicas ficam em zero ou abaixo. DeLong dá [{num(DL.ic[0], 4)}; {num(DL.ic[1], 4)}], p = {num(DL.p, 3)}: nesta janela a vantagem existe, com margem estreita. Agora a previsão.</>}
-      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. Bootstrap pareado por proposta, até ${int(REPLICAS)} réplicas, semente ${SEMENTE}; intervalo percentil. DeLong (1988) com a covariância entre os dois modelos. Janelas novas: ${N_JANELAS} sorteios do desfecho pela PD verdadeira para os mesmos proponentes (semente ${SEMENTE_JANELAS}), só possível em base sintética.`}>
+      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. Bootstrap pareado por proposta, até ${int(REPLICAS)} réplicas, semente ${SEMENTE}; intervalo percentil. DeLong (1988) com a covariância entre os dois modelos. Réplicas sintéticas da janela: os mesmos ${int(N)} proponentes com o desfecho sorteado de novo pela PD verdadeira; ${N_JANELAS} sorteios, semente ${SEMENTE_JANELAS}, só possível em base sintética.`}>
       <Painel>
         <Seg rotulo="Distribuição" opcoes={[{ v: "dif" as Vista, r: "Diferença entre os modelos" }, { v: "auc" as Vista, r: "AUC da logística" }]} valor={vista} onChange={setVista} cor />
-        <Grafico rotulo={`Histograma de ${k} réplicas bootstrap; intervalo percentil ${ic ? `${num(ic[0], 4)} a ${num(ic[1], 4)}` : "ainda indefinido"}${revelado && vista === "dif" ? `; vantagem média em janelas novas ${num(sint.vantagem, 4)}` : ""}`} arCelular="4 / 3">
+        <Grafico rotulo={`Histograma de ${k} réplicas bootstrap; intervalo percentil ${ic ? `${num(ic[0], 4)} a ${num(ic[1], 4)}` : "ainda indefinido"}${revelado && vista === "dif" ? `; vantagem média nas réplicas sintéticas da janela ${num(sint.vantagem, 4)}` : ""}`} arCelular="4 / 3">
           {(d) => vista === "dif" ? <Histograma v={v} dom={[-0.04, 0.1]} passo={0.004} ic={ic} ref0 d={d} real={AUC1 - AUC2} xt={[-0.04, -0.02, 0, 0.02, 0.04, 0.06, 0.08, 0.1]} novas={revelado ? sint.vantagem : null} /> : <Histograma v={v} dom={[0.62, 0.82]} passo={0.005} ic={ic} ref0={false} d={d} real={AUC1} xt={[0.62, 0.66, 0.7, 0.74, 0.78, 0.82]} novas={null} />}
         </Grafico>
         <div className="q7-botoes">
@@ -77,9 +78,9 @@ export function S33Bootstrap({ pagina }: { pagina?: Pagina }) {
           <Kpi rotulo="Diferença ≤ 0" valor={pct(abaixo0 / k, 1)} detalhe={`${abaixo0} de ${int(k)} réplicas`} tam="mini" />
         </div>
         {revelado ? (
-          <p className="q7-p q7-s33-sint">Em {N_JANELAS} janelas novas dos mesmos proponentes, a AUC média é {num(sint.l, 4)} na logística e {num(sint.g, 4)} no boosting: vantagem de <b>{num(sint.vantagem, 4)}</b>. Só {sint.acima} de {N_JANELAS} ficam com vantagem igual ou maior que a observada.</p>
+          <p className="q7-p q7-s33-sint">Nas {N_JANELAS} réplicas sintéticas da janela (mesmos proponentes, desfecho sorteado de novo pela PD verdadeira), a AUC média é {num(sint.l, 4)} na logística e {num(sint.g, 4)} no boosting: vantagem de <b>{num(sint.vantagem, 4)}</b>. Só {sint.acima} de {N_JANELAS} ficam com vantagem igual ou maior que a observada.</p>
         ) : (
-          <Previsao pergunta="Em janelas novas dos mesmos proponentes (desfecho sorteado de novo), a vantagem média da logística fica perto de..." escolha={prev} onEscolha={setPrev} recolher
+          <Previsao pergunta={`Nas réplicas sintéticas da janela (os mesmos ${int(N)} proponentes, desfecho sorteado de novo pela PD verdadeira), a vantagem média da logística fica perto de...`} escolha={prev} onEscolha={setPrev} recolher
             opcoes={[
               { certa: false, texto: `A da janela, ${num(sint.obs, 3)}`, retorno: "Confunde a janela com a população: o bootstrap reamostra a janela que temos e herda a sorte dela; o histograma se centra no observado, não no esperado." },
               { texto: `Bem menos: perto de ${Math.round(sint.obs / sint.vantagem) === 4 ? "um quarto" : `1/${Math.round(sint.obs / sint.vantagem)}`} da observada`, certa: true, retorno: `Isso: ${num(sint.vantagem, 4)}.` },
