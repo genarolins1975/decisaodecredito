@@ -43,7 +43,7 @@ export function S19Confiabilidade({ pagina }: { pagina?: Pagina }) {
         <Painel titulo="A conta de cada ponto" className="q7-s19-t">
           <table className="q7-tab">
             <thead><tr><th className="q7-t-l">Faixa</th><th>n</th><th>Defaults</th><th>PD média</th><th>Observado</th></tr></thead>
-            <tbody>{F.map((ff) => <tr key={ff.j} data-on={ff.j === k ? "1" : undefined}><th>F{ff.j}</th>{ff.j <= k ? <><td>{ff.n}</td><td>{ff.d}</td><td>{pct(ff.pdMedia!, 1)}</td><td>{pct(ff.obs!, 1)}</td></> : <td colSpan={4} className="q7-t-l" style={{ color: "#9AA1AD" }}>ainda não calculada</td>}</tr>)}</tbody>
+            <tbody>{F.map((ff) => <tr key={ff.j} data-on={ff.j === k ? "1" : undefined}><th>F{ff.j}</th>{ff.j <= k ? <><td>{ff.n}</td><td>{ff.d}</td><td>{pct(ff.pdMedia!, 1)}</td><td>{pct(ff.obs!, 1)}</td></> : <td colSpan={4} className="q7-t-l" style={{ color: "#6B7280" }}>ainda não calculada</td>}</tr>)}</tbody>
           </table>
           <div className="q7-botoes"><Botao prim onClick={() => setK(Math.min(10, k + 1))} desab={k >= 10}>Próxima faixa</Botao><Botao onClick={() => setK(10)} desab={k >= 10}>Todas</Botao><Botao sec onClick={() => setK(0)}>Restaurar</Botao></div>
         </Painel>

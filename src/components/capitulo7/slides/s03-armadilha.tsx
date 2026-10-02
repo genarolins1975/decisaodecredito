@@ -29,7 +29,7 @@ export function S03Armadilha({ pagina }: { pagina?: Pagina }) {
   const prev = d / N;
   return (
     <Quadro slug="c7p2" pagina={pagina} layout="gl"
-      conclusao={revelado ? <>Aprovar todos acerta <b>{pct(acc, 1)}</b> sem recusar nenhum default. A acurácia não é inútil, mas com evento raro é insuficiente: precisa de referência e não mede a ordem entre clientes.</> : "Escolha uma alternativa à direita antes de ver a matriz."}
+      conclusao={revelado ? <>Aprovar todos acerta <b>{pct(acc, 1)}</b> sem recusar nenhum default. A acurácia não é inútil, mas com evento raro é insuficiente: precisa de referência e não mede a ordem entre clientes.</> : "Escolha uma alternativa antes de ver a matriz."}
       fonte={<>Janela fora do tempo do curso: {int(N)} propostas aprovadas, safras de 2023-08 a 2023-12, {int(REAL)} defaults em 12 meses. Com o controle, o total fica em {int(N)} e muda só o número de defaults (cenário ilustrativo). Recusa quando PD ≥ corte.</>}>
       <Painel titulo={revelado ? `Regra trivial: aprovar todas as ${int(N)} propostas` : "Cada marca é 1% da carteira"} className="q7-s03-esq">
         <div className="q7-s03-vis">

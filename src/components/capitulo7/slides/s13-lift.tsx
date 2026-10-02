@@ -34,7 +34,7 @@ export function S13Lift({ pagina }: { pagina?: Pagina }) {
               <line x1={x(0)} x2={x(1)} y1={y(1)} y2={y(1)} stroke="#5B6475" strokeWidth={2} strokeDasharray="7 6" />
               <path className="q7-linha q7-linha--ord" d={caminho(LIFTS.map((p) => ({ x: x(p.q), y: y(p.l) })))} />
               <line className="q7-corte" x1={x(q)} x2={x(q)} y1={y(0)} y2={y(g.lift!)} />
-              <circle cx={x(q)} cy={y(g.lift!)} r={d.fs * 0.42} fill="#B8640F" stroke="#fff" strokeWidth={2.5} />
+              <circle cx={x(q)} cy={y(g.lift!)} r={d.fs * 0.42} fill="#A85A0C" stroke="#fff" strokeWidth={2.5} />
               <text className="q7-corte-t" x={x(q) + d.fs * 0.6} y={y(g.lift!) - d.fs * 0.4}>{vezes(g.lift!)}</text>
               <text className="q7-rot--peq" x={x(0.62)} y={y(1) + d.fs * 1.1} style={{ fill: "#5B6475" }}>ao acaso: 1×</text>
             </g>

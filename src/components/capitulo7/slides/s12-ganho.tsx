@@ -28,7 +28,7 @@ export function S12Ganho({ pagina }: { pagina?: Pagina }) {
           const x = escala([0, 1], [m.l, d.w - m.r]), y = escala([0, 1], [d.h - m.b, m.t]);
           return (
             <g>
-              <Eixos x={x} y={y} xt={[0, 0.2, 0.4, 0.6, 0.8, 1]} yt={[0, 0.25, 0.5, 0.75, 1]} fx={(v) => pct(v, 0)} fy={(v) => pct(v, 0)} xTit="Fração da carteira examinada, dos piores para os melhores" yTit={`Defaults alcançados, de ${D}`} />
+              <Eixos x={x} y={y} xt={[0, 0.2, 0.4, 0.6, 0.8, 1]} yt={[0, 0.25, 0.5, 0.75, 1]} fx={(v) => pct(v, 0)} fy={(v) => pct(v, 0)} xTit="Fração examinada, dos piores aos melhores" yTit={`Defaults alcançados, de ${D}`} />
               <line className="q7-diag" x1={x(0)} y1={y(0)} x2={x(1)} y2={y(1)} />
               <path className="q7-linha q7-linha--mudo q7-linha--fina" strokeDasharray="2 6" d={caminho([{ x: x(0), y: y(0) }, { x: x(PI), y: y(1) }, { x: x(1), y: y(1) }])} />
               <text className="q7-rot--peq" x={x(PI) + 8} y={y(1) + d.fs * 1.1} style={{ fill: "#5B6475" }}>fila perfeita</text>
@@ -36,7 +36,7 @@ export function S12Ganho({ pagina }: { pagina?: Pagina }) {
               <path className="q7-area" fill="#3D5A8A" d={`${caminho(CURVA.filter((p) => p.x <= q).map((p) => ({ x: x(p.x), y: y(p.y) })))}L${x(q)} ${y(0)}L${x(0)} ${y(0)}Z`} />
               <path className="q7-linha q7-linha--ord" d={caminho(CURVA.map((p) => ({ x: x(p.x), y: y(p.y) })))} />
               <line className="q7-corte" x1={x(q)} x2={x(q)} y1={y(0)} y2={y(g.ganho!)} />
-              <circle cx={x(q)} cy={y(g.ganho!)} r={d.fs * 0.42} fill="#B8640F" stroke="#fff" strokeWidth={2.5} />
+              <circle cx={x(q)} cy={y(g.ganho!)} r={d.fs * 0.42} fill="#A85A0C" stroke="#fff" strokeWidth={2.5} />
               <text className="q7-corte-t" x={x(q) + d.fs * 0.6} y={y(g.ganho!) + d.fs * 0.35}>{pct(g.ganho!, 1)}</text>
             </g>
           );

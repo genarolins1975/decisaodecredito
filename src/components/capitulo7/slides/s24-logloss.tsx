@@ -25,7 +25,7 @@ function Curva({ y, p, tipo, d }: { y: Yv; p: number; tipo: "brier" | "log"; d: 
     <g>
       <Eixos x={x} y={yy} xt={[0, 0.5, 1]} yt={tipo === "brier" ? [0, 0.5, 1] : [0, 2, 4, 6]} fx={(t) => pct(t, 0)} fy={(t) => num(t, tipo === "brier" ? 1 : 0)} xTit="PD dada ao cliente" yTit={tipo === "brier" ? "(p − y)²" : "−ln(prob. dada ao que aconteceu)"} />
       <path className={`q7-linha ${tipo === "brier" ? "q7-linha--prob" : "q7-linha--def"}`} d={caminho(pts)} />
-      <circle cx={x(p)} cy={yy(Math.min(ymax, v))} r={d.fs * 0.42} fill="#B8640F" stroke="#fff" strokeWidth={2.5} />
+      <circle cx={x(p)} cy={yy(Math.min(ymax, v))} r={d.fs * 0.42} fill="#A85A0C" stroke="#fff" strokeWidth={2.5} />
       <text className="q7-corte-t" x={x(p) + (p > 0.5 ? -d.fs * 0.6 : d.fs * 0.6)} y={yy(Math.min(ymax, v)) - d.fs * 0.5} textAnchor={p > 0.5 ? "end" : "start"}>{num(v, 3)}{v > ymax ? " (fora do eixo)" : ""}</text>
     </g>
   );

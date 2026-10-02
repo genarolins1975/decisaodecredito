@@ -36,7 +36,7 @@ export function S14PrecisaoRecall({ pagina }: { pagina?: Pagina }) {
               <line x1={x(0)} x2={x(1)} y1={y(PI)} y2={y(PI)} stroke="#5B6475" strokeWidth={2} strokeDasharray="7 6" />
               <text className="q7-rot--peq" x={x(0.3)} y={y(PI) + d.fs * 1.15} style={{ fill: "#5B6475" }}>ao acaso: precisão = prevalência, {pct(PI, 1)}</text>
               <path className="q7-linha q7-linha--ord" d={caminho(PR.map((p) => ({ x: x(p.recall), y: y(p.precisao) })))} />
-              {c.precisao !== null && <><circle cx={x(tpr)} cy={y(c.precisao)} r={d.fs * 0.42} fill="#B8640F" stroke="#fff" strokeWidth={2.5} /><text className="q7-corte-t" x={x(tpr) + d.fs * 0.6} y={y(c.precisao) - d.fs * 0.4}>corte {pct(t, 1)}</text></>}
+              {c.precisao !== null && <><circle cx={x(tpr)} cy={y(c.precisao)} r={d.fs * 0.42} fill="#A85A0C" stroke="#fff" strokeWidth={2.5} /><text className="q7-corte-t" x={x(tpr) + d.fs * 0.6} y={y(c.precisao) - d.fs * 0.4}>corte {pct(t, 1)}</text></>}
             </g>
           );
         }}

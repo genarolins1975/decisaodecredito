@@ -24,6 +24,9 @@ const VERS: Record<V, { nome: string; a: number | null; b: number | null; p: rea
 };
 const MET = Object.fromEntries((Object.keys(VERS) as V[]).map((k) => { const p = VERS[k].p; return [k, { media: media(p)!, auc: aucPorPares(Y, p).auc!, brier: brier(Y, p), ll: logLoss(Y, p).valor, slope: interceptoESlope(Y, p).slope }]; })) as Record<V, { media: number; auc: number; brier: number; ll: number; slope: number }>;
 
+/** Índice da alternativa certa da previsão: a comparação só abre depois dela; errar mostra o retorno e pede nova tentativa. */
+const CERTA = 1;
+
 export function S29Platt({ pagina }: { pagina?: Pagina }) {
   const [v, setV] = useState<V>("bruto");
   const [prev, setPrev] = useState<number | null>(null);
@@ -31,7 +34,7 @@ export function S29Platt({ pagina }: { pagina?: Pagina }) {
   const curvas = (Object.keys(VERS) as V[]).filter((k) => k !== "bruto");
   return (
     <Quadro slug="c7p13" pagina={pagina} layout="gl"
-      conclusao={prev === null ? <>Antes de comparar as três versões: o que Platt faz com a ordenação?</>
+      conclusao={prev !== CERTA ? <>Antes de comparar as três versões: o que Platt faz com a ordenação?</>
         : v === "bruto" ? <>O boosting sem calibrar tem PD média {pct(m.media, 2)} contra {pct(D / N, 2)} observados e slope de calibração {num(m.slope, 2)} na janela: PDs um pouco extremas demais. Escolha um calibrador.</>
           : <>{VERS[v].nome}: a = {num(VERS[v].a!, 3)}, b = {num(VERS[v].b!, 3)}. PD média {pct(m.media, 2)}, Brier {num(m.brier, 5)} (sem calibrar {num(MET.bruto.brier, 5)}), log loss {num(m.ll, 4)} ({num(MET.bruto.ll, 4)}). A AUC continua <b>{num(m.auc, 4)}</b>. Com b {"<"} 1 Platt comprime as PDs; na janela o slope passa a {num(m.slope, 2)}: comprimiu além do necessário.</>}
       fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. Amostra de calibração simulada: ${int(CAL.n)} casos, semente ${CAL.semente}. Platt do curso: parâmetros do capítulo 6, estimados na validação. Slope: coeficiente de logit p numa logística de y na janela.`}>
@@ -58,7 +61,7 @@ export function S29Platt({ pagina }: { pagina?: Pagina }) {
         <Legenda itens={[{ mk: "linha prob", r: "Platt da amostra de calibração" }, { mk: "trac dec", r: "Platt do curso" }, { mk: "linha mudo", r: "sem calibrar" }, { mk: "", r: `tracinhos no eixo: as ${N} PDs da janela` }]} />
       </Painel>
       <Painel>
-        {prev === null ? (
+        {prev !== CERTA ? (
           <Previsao pergunta="Platt com b positivo é aplicado às PDs do boosting. O que acontece com a AUC na janela?" escolha={prev} onEscolha={setPrev} recolher
             opcoes={[
               { texto: "Sobe, porque as PDs ficam mais corretas", retorno: "Confunde calibração com ordenação. Uma função estritamente crescente não troca ninguém de lugar; a AUC só depende da ordem." },

@@ -26,7 +26,7 @@ const CARTOES: Cartao[] = [
     leitura: "Candidato ordena pior nesta janela; a margem é estreita." },
   { k: "prob", t: "Probabilidade", cor: "#176C73", s: "▲", linhas: [["PD média (obs. " + pct(D / N, 1) + ")", pct(CAL_G.pdMedia!, 1), pct(CAL_L.pdMedia!, 1)], ["Observado ÷ esperado", num(CAL_G.razaoOE!, 3), num(CAL_L.razaoOE!, 3)], ["Slope; log loss", `${num(SL_G, 2)}; ${num(LL_G, 4)}`, `${num(SL_L, 2)}; ${num(LL_L, 4)}`]],
     leitura: "Candidato superestima o risco e comprime demais; a logística subestima o nível, mas a forma está mais perto." },
-  { k: "dec", t: "Decisão", cor: "#B8640F", s: "◆", linhas: [["Corte econômico", pct(OT_G.corte, 1), pct(OT_L.corte, 1)], ["Resultado prometido", fmtReais(OT_G.parcelas.total), fmtReais(OT_L.parcelas.total)], ["Realizado na janela", fmtReais(real(PG, OT_G.corte)), fmtReais(real(PL, OT_L.corte))]],
+  { k: "dec", t: "Decisão", cor: "#A85A0C", s: "◆", linhas: [["Corte econômico", pct(OT_G.corte, 1), pct(OT_L.corte, 1)], ["Resultado prometido", fmtReais(OT_G.parcelas.total), fmtReais(OT_L.parcelas.total)], ["Realizado na janela", fmtReais(real(PG, OT_G.corte)), fmtReais(real(PL, OT_L.corte))]],
     leitura: "Os dois erram a promessa, em sentidos opostos: erro de nível vira erro de orçamento." },
   { k: "val", t: "Validação", cor: "#2E6B4F", s: "■", linhas: [["AUC no treino", num(RES.gbm_treino.auc, 4), num(RES.logit_treino.auc, 4)], ["Calibrador ajustado em", "validação", "não há"], ["Defaults na janela", String(D), String(D)]],
     leitura: "Sobreajuste forte no treino; a validação serviu para hiperparâmetros e para o Platt; só aprovados." },

@@ -22,6 +22,9 @@ function ajustes(n: number) {
 const AJ: Record<Tam, ReturnType<typeof ajustes>> = { grande: ajustes(CAL.n), pequena: ajustes(CAL.nPequena) };
 const BRUTO = { distintos: valoresDistintos(PGR), pares: aucPorPares(Y, PGR) };
 
+/** Índice da alternativa certa da previsão: a comparação só abre depois dela; errar mostra o retorno e pede nova tentativa. */
+const CERTA = 1;
+
 export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
   const [t, setT] = useState<Tam>("grande");
   const [prev, setPrev] = useState<number | null>(null);
@@ -33,7 +36,7 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
   ];
   return (
     <Quadro slug="c7p36" pagina={pagina} layout="gl"
-      conclusao={prev === null ? <>Primeiro a previsão: a isotônica também é crescente.</>
+      conclusao={prev !== CERTA ? <>Primeiro a previsão: a isotônica também é crescente.</>
         : t === "grande" ? <>Com {int(a.n)} casos, a isotônica reduz as {int(BRUTO.distintos)} PDs distintas da janela a <b>{a.isot.distintos}</b> degraus: {int(a.isot.pares.empates)} pares viram empates e a AUC cai de {num(BRUTO.pares.auc!, 4)} para <b>{num(a.isot.pares.auc!, 4)}</b>. Platt mantém a AUC e, aqui, tem Brier e log loss menores.</>
           : <>Com {int(a.n)} casos ({a.defaults} defaults, {pct(a.defaults / a.n, 1)}), as duas erram o nível: PD média {pct(a.platt.media, 1)} (Platt) e {pct(a.isot.media, 1)} (isotônica) contra {pct(D / N, 1)} observados. A isotônica fica com {a.isot.distintos} degraus e AUC {num(a.isot.pares.auc!, 4)}. A amostra pequena tinha mais defaults que a janela, e as duas aprenderam esse nível: <b>com pouco dado, nenhum calibrador é confiável.</b></>}
       fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults, ${int(BRUTO.pares.pares)} pares default × adimplente. Amostra de calibração simulada (semente ${CAL.semente}); a pequena são os ${CAL.nPequena} primeiros casos da mesma amostra. Empate conta meio par na AUC.`}>
@@ -62,7 +65,7 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
               const x = escala([0, BRUTO.pares.pares], [d.fs * 0.5, d.w - d.fs * 0.5]); const lh = (d.h - d.fs * 1) / barras.length;
               return (
                 <g>
-                  {barras.map((b, k) => { const y0 = k * lh + d.fs * 2.4, h = lh - d.fs * 3.6; const seg = [{ v: b.c.corretos, c: "#2E6B4F" }, { v: b.c.empates, c: "#B8640F" }, { v: b.c.invertidos, c: "#8C2332" }]; let acc = 0; return (
+                  {barras.map((b, k) => { const y0 = k * lh + d.fs * 2.4, h = lh - d.fs * 3.6; const seg = [{ v: b.c.corretos, c: "#2E6B4F" }, { v: b.c.empates, c: "#A85A0C" }, { v: b.c.invertidos, c: "#8C2332" }]; let acc = 0; return (
                     <g key={b.nome}>
                       <text className="q7-rot" x={x(0)} y={y0 - d.fs * 0.6}>{b.nome}<tspan className="q7-rot--peq" dx="8" style={{ fill: "#5B6475" }}>{int(b.dist)} PDs distintas · AUC {num(b.c.auc!, 4)}</tspan></text>
                       {seg.map((s, i) => { const r = <rect key={i} x={x(acc)} y={y0} width={Math.max(0, x(acc + s.v) - x(acc))} height={h} fill={s.c} />; acc += s.v; return r; })}
@@ -77,7 +80,7 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
         <Legenda itens={[{ mk: "linha prob", r: "Platt" }, { mk: "linha dec", r: "isotônica" }, { mk: "", r: "barras: verde certos, âmbar empates, vinho invertidos" }]} />
       </Painel>
       <Painel>
-        {prev === null ? (
+        {prev !== CERTA ? (
           <Previsao pergunta="A isotônica nunca inverte a ordem de duas propostas. Na janela, a AUC depois dela..." escolha={prev} onEscolha={setPrev} recolher
             opcoes={[
               { texto: "Fica igual, como em Platt", retorno: "Ela não inverte, mas junta: é não decrescente, não estritamente crescente. Propostas diferentes no mesmo degrau ficam empatadas, e empate conta meio par." },

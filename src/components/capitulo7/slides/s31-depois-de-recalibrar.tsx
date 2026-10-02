@@ -51,7 +51,7 @@ export function S31DepoisDeRecalibrar({ pagina }: { pagina?: Pagina }) {
                 <text className="q7-eixo-t" x={x(0)} y={yB + d.fs * 2.7}>PD com Platt</text>
                 {[yA, yB].map((yy, k) => <g key={k}><line className="q7-eixo" x1={x(0)} x2={x(0.4)} y1={yy} y2={yy} />{[0, 0.1, 0.2, 0.3, 0.4].map((t) => <text key={t} className="q7-tick" x={x(t)} y={yy} dy={k ? "1.2em" : "-.5em"} textAnchor="middle">{pct(t, 0)}</text>)}</g>)}
                 {PGR.map((p, i) => (PGR[i] < c) === (PG[i] < c2) ? <line key={i} x1={x(cl(p))} y1={yA} x2={x(cl(PG[i]))} y2={yB} stroke="#9AA1AD" strokeOpacity={0.18} /> : null)}
-                {PGR.map((p, i) => (PGR[i] < c) !== (PG[i] < c2) ? <line key={`m${i}`} x1={x(cl(p))} y1={yA} x2={x(cl(PG[i]))} y2={yB} stroke="#B8640F" strokeWidth={2} strokeOpacity={0.85} /> : null)}
+                {PGR.map((p, i) => (PGR[i] < c) !== (PG[i] < c2) ? <line key={`m${i}`} x1={x(cl(p))} y1={yA} x2={x(cl(PG[i]))} y2={yB} stroke="#A85A0C" strokeWidth={2} strokeOpacity={0.85} /> : null)}
                 <line className="q7-corte" x1={x(c)} x2={x(c)} y1={yA - d.fs * 1.2} y2={yA + d.fs * 1.2} />
                 <line className="q7-corte" x1={x(cl(c2))} x2={x(cl(c2))} y1={yB - d.fs * 1.2} y2={yB + d.fs * 1.2} />
                 <text className="q7-corte-t" x={x(c) + d.fs * 0.4} y={yA + d.fs * 1.9}>corte {pct(c, 1)}</text>

@@ -92,7 +92,7 @@ export function S34ComparacaoJusta({ pagina }: { pagina?: Pagina }) {
         <p className="q7-k">Duas comparações injustas</p>
         <ul className="q7-nota q7-s34-inj">
           <li>Boosting no treino ({num(RES.gbm_treino.auc, 4)}) contra logística na janela: amostras diferentes.</li>
-          <li>Janela com recusados ({num(RES.logit_populacao_completa_oot.auc, 4)}, default {pct(RES.prevalencia.populacao_oot, 1)}) contra só aprovados ({num(RES.logit_oot.auc, 4)}, {pct(RES.prevalencia.aprovados_oot, 1)}): populações diferentes.</li>
+          <li>Com recusados ({num(RES.logit_populacao_completa_oot.auc, 4)}) contra só aprovados ({num(RES.logit_oot.auc, 4)}): populações diferentes.</li>
         </ul>
         {onde !== "oot" && <div className="q7-botoes"><Botao sec onClick={() => setOnde("oot")}>Restaurar</Botao></div>}
       </Painel>

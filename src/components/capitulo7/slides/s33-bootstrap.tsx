@@ -31,7 +31,7 @@ function Histograma({ v, dom, passo, ic, ref0, d, real, xt }: { v: number[]; dom
       {ic && <rect x={x(ic[0])} y={m.t} width={x(ic[1]) - x(ic[0])} height={d.h - m.b - m.t} fill="#176C73" fillOpacity={0.1} />}
       {cont.map((c, k) => c ? <rect key={k} x={x(dom[0] + k * passo) + 1} y={y(c)} width={Math.max(1, x(dom[0] + (k + 1) * passo) - x(dom[0] + k * passo) - 2)} height={y(0) - y(c)} fill="#3D5A8A" /> : null)}
       {ref0 && <><line x1={x(0)} x2={x(0)} y1={m.t} y2={y(0)} stroke="#8C2332" strokeWidth={2.5} /><text className="q7-rot q7-rot--peq" x={x(0) - d.fs * 0.4} y={m.t + d.fs * 0.6} textAnchor="end" style={{ fill: "#8C2332", fontWeight: 700 }}>diferença zero</text></>}
-      <line x1={x(real)} x2={x(real)} y1={m.t - d.fs * 0.6} y2={y(0)} stroke="#B8640F" strokeWidth={2.5} strokeDasharray="6 4" />
+      <line x1={x(real)} x2={x(real)} y1={m.t - d.fs * 0.6} y2={y(0)} stroke="#A85A0C" strokeWidth={2.5} strokeDasharray="6 4" />
       <text className="q7-corte-t" x={x(real)} y={m.t - d.fs * 0.8} textAnchor="middle">na janela {num(real, 4)}</text>
     </g>
   );

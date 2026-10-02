@@ -53,7 +53,7 @@ export function S02Contrato({ pagina }: { pagina?: Pagina }) {
                     <text className="q7-rot q7-rot--peq" x={(x(p.ate + 1) + x(p.ate + 13)) / 2} y={cy} dy=".35em" textAnchor="middle">até {String(ate % 12 + 1).padStart(2, "0")}/{Math.floor(ate / 12)}</text>
                   </g>
                 ); })}
-                <line x1={x(REF)} x2={x(REF)} y1={0} y2={d.h - d.fs * 2.4} stroke="#B8640F" strokeWidth={2.5} />
+                <line x1={x(REF)} x2={x(REF)} y1={0} y2={d.h - d.fs * 2.4} stroke="#A85A0C" strokeWidth={2.5} />
                 <text className="q7-corte-t" x={x(REF) - d.fs * 0.4} y={d.h - d.fs * 0.1} textAnchor="end">base fechada em 31/01/2025</text>
               </g>
             );

@@ -16,7 +16,7 @@ const pe = (p: readonly number[]) => p.reduce((s, x, i) => s + x * LGD * EAD[i],
 const REAL = Y.reduce((s, y, i) => s + y * LGD * EAD[i], 0);
 const M = [
   { nome: "Modelo A", sub: "logística como estimada", pd: PL, cor: "#176C73" },
-  { nome: "Modelo B", sub: "a mesma, +0,8 em log odds", pd: PB, cor: "#B8640F" },
+  { nome: "Modelo B", sub: "a mesma, +0,8 em log odds", pd: PB, cor: "#A85A0C" },
 ].map((m) => ({ ...m, auc: aucPorPares(Y, m.pd).auc!, esp: soma(m.pd), media: soma(m.pd) / N, pe: pe(m.pd) }));
 const OPS = [
   { texto: "A, porque está mais perto do observado", certa: false, retorno: <>A está mais perto no agregado ({num(M[0].esp, 1)} esperados contra {D}), mas ainda subestima. E perto no total não garante perto em cada faixa: é o que os próximos slides verificam.</> },

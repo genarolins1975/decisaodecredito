@@ -60,7 +60,7 @@ export function S04TresObjetos({ pagina }: { pagina?: Pagina }) {
                           {mudouPd && <circle cx={cx0} cy={yA} r={r * 0.75} fill="none" stroke="#B5BAC4" strokeDasharray="3 3" strokeWidth={2} />}
                           <circle cx={cx} cy={yA} r={r} className={c.y ? "q7-pt-def" : "q7-pt-adi"} />
                           <text className="q7-rot--peq" x={cx} y={yA + (acima ? -r * 1.6 : -r * 1.6)} textAnchor="middle" dy={acima ? 0 : -d.fs * 0.9}>#{c.id} · {pct(pds[i], 1)}</text>
-                          <circle cx={cx} cy={yB} r={r} fill={rec[i] ? "#B8640F" : "#fff"} stroke={rec[i] ? "#B8640F" : "#5B6475"} strokeWidth={2.4} />
+                          <circle cx={cx} cy={yB} r={r} fill={rec[i] ? "#A85A0C" : "#fff"} stroke={rec[i] ? "#A85A0C" : "#5B6475"} strokeWidth={2.4} />
                         </g>
                       );
                     })}

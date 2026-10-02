@@ -28,7 +28,7 @@ export function S20Faixas({ pagina }: { pagina?: Pagina }) {
         <div className="q7-flex1">
           <Confiabilidade rotulo={`Curva de confiabilidade com ${k} faixas ${tipo === "fixas" ? "de largura fixa" : "de mesmo tamanho"}`} max={0.5} series={[{ faixas: F, classe: "prob", linha: true }]} anotar={false} />
         </div>
-        <Grafico titulo="Ocupação" sub="propostas em cada faixa" rotulo={`Ocupação das ${k} faixas: ${F.map((f) => f.n).join(", ")}`} estilo={{ flex: "0 0 auto", height: "8.5cqw" }} arCelular="5 / 1">
+        <Grafico titulo="Ocupação" sub="propostas em cada faixa" rotulo={`Ocupação das ${k} faixas: ${F.map((f) => f.n).join(", ")}`} estilo={{ flex: "0 0 auto", height: "max(8.5cqw, 72px)" }} arCelular="5 / 1">
           {(d) => {
             const x = escala([0, k], [d.fs * 2.4, d.w]); const y = escala([0, nmax], [d.h - d.fs * 1.4, d.fs * 0.9]); const bw = (x(1) - x(0)) * 0.78;
             return <g>{F.map((f, i) => <g key={f.j}><rect x={x(i) + 1} y={y(f.n)} width={bw} height={Math.max(0, y(0) - y(f.n))} fill={f.n === 0 ? "none" : f.n < 30 ? "#E5B48A" : "#9FC7C9"} stroke={f.n === 0 ? "#9AA1AD" : "none"} strokeDasharray="3 3" /><text className="q7-rot--peq" x={x(i) + bw / 2} y={y(f.n) - 4} textAnchor="middle" style={{ fill: "#2A3342" }}>{f.n}</text></g>)}<line className="q7-eixo" x1={x(0)} x2={x(k)} y1={y(0)} y2={y(0)} /></g>;

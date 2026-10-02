@@ -20,7 +20,7 @@ export function Matriz({ vp, fp, fn, vn, destaque, compacta, rotulos = true, ocu
   );
   return (
     <div className={`q7-mx ${compacta ? "q7-mx--compacta" : ""}`} role="table" aria-label={oculta ? "Matriz de confusão com os valores ocultos até a previsão" : `Matriz de confusão: ${vp} defaults recusados, ${fp} adimplentes recusados, ${fn} defaults aprovados, ${vn} adimplentes aprovados, total ${n}`}>
-      <div className="q7-mx-h" role="row"><span role="columnheader" /><span role="columnheader">Deu default <small>{int(d)}</small></span><span role="columnheader">Pagou <small>{int(a)}</small></span></div>
+      <div className="q7-mx-h" role="row"><span role="columnheader"><span className="q7-sr">Decisão do modelo</span></span><span role="columnheader">Deu default <small>{int(d)}</small></span><span role="columnheader">Pagou <small>{int(a)}</small></span></div>
       <div className="q7-mx-r" role="row"><span className="q7-mx-l" role="rowheader">Recusa <small>prevê default · {q(vp + fp)}</small></span>{cel("vp", vp, "VP", "default evitado", "ok")}{cel("fp", fp, "FP", "bom cliente recusado", "erro")}</div>
       <div className="q7-mx-r" role="row"><span className="q7-mx-l" role="rowheader">Aprova <small>prevê pagamento · {q(fn + vn)}</small></span>{cel("fn", fn, "FN", "default aprovado", "erro")}{cel("vn", vn, "VN", "bom cliente aprovado", "ok")}</div>
     </div>

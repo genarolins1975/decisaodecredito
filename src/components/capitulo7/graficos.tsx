@@ -85,7 +85,7 @@ export function Roc({ series, rotulo, titulo, sub, ponto, xTit = "Adimplentes re
                 <path className={`q7-linha q7-linha--${s.classe}`} d={caminho(pts)} />
               </g>;
             })}
-            {ponto && <g><circle cx={x(ponto.fpr)} cy={y(ponto.tpr)} r={d.fs * 0.5} fill="#B8640F" stroke="#fff" strokeWidth={2.5} />{ponto.rot && <text className="q7-corte-t" x={x(ponto.fpr) + d.fs * 0.7} y={y(ponto.tpr) + d.fs * 0.35}>{ponto.rot}</text>}</g>}
+            {ponto && <g><circle cx={x(ponto.fpr)} cy={y(ponto.tpr)} r={d.fs * 0.5} fill="#A85A0C" stroke="#fff" strokeWidth={2.5} />{ponto.rot && <text className="q7-corte-t" x={x(ponto.fpr) + d.fs * 0.7} y={y(ponto.tpr) + d.fs * 0.35}>{ponto.rot}</text>}</g>}
             {extra?.(x, y, d)}
           </g>
         );

@@ -117,7 +117,7 @@ Quatro perguntas organizam o capítulo e voltam na abertura, nas transições e 
 | 05 | c7p4 | Ordenação | A fila de risco é o que as métricas de ordenação leem | essencial | 3 |
 | 06 | c7p5 | Ordenação | AUC é uma disputa entre um default e um adimplente | essencial | 4 |
 | 07 | c7p22 | Ordenação | A AUC exata conta todos os pares, com meio ponto por empate | aprofundamento | 4 |
-| 08 | c7p23 | Ordenação | Cada corte transforma a fila em uma matriz de confusão | essencial | 4 |
+| 08 | c7p23 | Ordenação | Cada corte transforma a fila numa matriz de confusão | essencial | 4 |
 | 09 | c7p6 | Ordenação | A ROC percorre todos os cortes da fila | essencial | 4 |
 | 10 | c7p24 | Ordenação | O que a AUC responde e o que deixa em aberto | essencial | 4 |
 | 11 | c7p7 | Ordenação | KS: onde as duas distribuições mais se separam? | essencial | 3 |
@@ -149,13 +149,38 @@ Quatro perguntas organizam o capítulo e voltam na abertura, nas transições e 
 | 37 | c7p20 | todas | Confiar no modelo exige quatro respostas | essencial | 4 |
 | 38 | c7p19 | apoio | Apêndice: fórmulas, métricas fora do protocolo e referências | apêndice | 3 |
 
-Percurso essencial: 28 páginas, 104 minutos de sala em ritmo de leitura ativa; o professor pode cortar para 95 minutos pulando as perguntas de discussão de 15 e 26. Percurso completo com os aprofundamentos: 141 minutos. O capítulo 8 completa a Aula 3.
+Percurso essencial: 29 slides, 107 minutos. Aprofundamentos: 8 slides, 27 minutos; percurso completo, 134 minutos. O apêndice (slide 38) é consulta e fica fora do tempo de aula. Os tempos somam a divisão exposição, exemplo, prática e discussão de cada página em content/capitulo7/paginas.json, conferida por tests/capitulo7-roteiro.test.ts.
 
 ## 6. Regras de interação
 
-- Todo quadro abre num estado inicial interpretável e volta a ele por "Restaurar". Ao sair e voltar a um slide, o estado reinicia: a regra é a mesma em todo o capítulo e não depende do navegador.
+- Todo quadro abre num estado inicial interpretável e volta a ele por "Restaurar" (ou pelo próprio seletor, quando o estado é só a escolha dele). Ao sair e voltar a um slide, o estado reinicia: a regra é a mesma em todo o capítulo e não depende do navegador. Exceção única e documentada: a fração da carteira examinada é compartilhada entre os slides 12 (ganho) e 13 (lift), na memória da aba, para a turma comparar os dois números no mesmo ponto (`src/components/capitulo7/estado.ts`).
 - Sorteios (pares, amostras repetidas) usam semente exibida no quadro; "Restaurar" volta à primeira semente e repete a mesma sequência.
 - Nenhuma leitura depende de passar o mouse: valores essenciais ficam escritos no quadro.
 - Controles com rótulo, valor e unidade; teclado e toque; foco visível; setas dentro de um controle não trocam de slide.
 - Movimento só para mostrar sequência ou causa, desligado com `prefers-reduced-motion`; todo passo animado tem avanço manual.
 - Questões com veredito ficam no estudo, abaixo do quadro, com correção no servidor; no palco o professor as publica pela sessão ao vivo. Previsões dentro do quadro ("antes de revelar") servem à aula e não são nota: a resposta delas é o próprio gráfico.
+- Expansões (fórmula, detalhe técnico) abrem uma por vez em cada painel. Se o conteúdo aberto não cabe, ele sobe sobre o painel como um cartão, em vez de empurrar o resto para fora do quadro; em tela estreita fica no fluxo da página.
+- O mapa (slide 1) e a conclusão (slide 37) levam a outros slides no mesmo modo em que estão (apresentação ou estudo). Na sessão ao vivo os links viram texto, para o aluno não sair da sessão.
+- Cada gráfico tem rótulo acessível com os números essenciais; quando há tabela de dados, ela é a descrição do gráfico para leitor de tela (`aria-describedby`), oculta na tela.
+
+## 7. Registro dos dados e dos exemplos
+
+Uma fonte só: `src/lib/capitulo7/base.json`, gerado por `scripts/content/visuais-dados.mjs` a partir do gerador do curso, e lido por `src/lib/capitulo7/dados.ts`. Nenhum quadro digita número: todos saem de `src/lib/capitulo7/metricas.ts`, conferida contra a referência em Python (`scripts/capitulo7/referencia.py`, `tests/capitulo7-metricas.test.ts`).
+
+| Exemplo | Origem e população | Horizonte e evento | Semente e partição | Procedimento | Limitações |
+|---|---|---|---|---|---|
+| Janela fora do tempo | base sintética do curso; 737 propostas aprovadas das safras 2023-08 a 2023-12, uma por cliente | 12 meses, atraso de 90 dias ou mais; base fechada em 31/01/2025 | gerador 20260501; treino 2022-01 a 2023-02 (2.103), validação 2023-03 a 2023-07 (760) | PDs por proposta da logística (capítulo 4), do boosting sem recalibrar e com o Platt do curso (capítulo 6) | só aprovados (viés de seleção); 81 defaults, intervalos largos; árvore do capítulo 5 sem previsões salvas na janela |
+| Mini-base | 20 propostas da janela: 5 defaults e 15 adimplentes, sorteados (PCG64 do NumPy, semente 3) | o da janela | ids fixos em `dados.ts` | PD da logística arredondada a pontos inteiros, como num relatório | denominadores próprios (75 pares); cria um empate (#179 e #64) que some em precisão plena |
+| Três cenários | logística na janela | o da janela | embaralhamento com semente 7 | boa fila e nível errado (+0,8 em log odds); boa fila e nível certo; fila fraca e média certa (PDs embaralhadas) | ilustrativos, construídos a partir da logística |
+| Amostra de calibração | 3.000 sorteios das propostas da janela, desfecho novo pela PD verdadeira | o da janela | 20261001; a pequena são os 300 primeiros | intercepto, Platt e isotônica ajustados nela | existe só porque a base é sintética; prevalência 11,5% (pequena: 16,3%) |
+| Janelas novas | mesmas 737 propostas, desfecho sorteado de novo pela PD verdadeira | o da janela | 20261033 (300 janelas); 20261036 (100 janelas) | AUC esperada fora da janela observada; otimismo de seleção | só em base sintética; mede variação do desfecho, não deriva de população |
+| Candidatos da reabertura | logística com ruído normal de desvio 0,3 em log odds | o da janela | 20261035 | o melhor na janela é escolhido a cada reabertura | ilustrativo do otimismo de seleção |
+| Sorteios didáticos | pares, amostras de 100, ruído do laboratório | o da janela | 20261006, 20261017 + k, 20261015 | convergência e variação amostral | sequência fixa; "Restaurar" repete a mesma |
+| Bootstrap | janela, reamostrada por proposta | o da janela | 20260501, 1.000 réplicas | pareado, intervalo percentil | supõe propostas independentes; cobertura aproximada com 81 defaults |
+| Motor econômico | parâmetros do capítulo 8 | o da janela | não se aplica | receita 28%, perda 65% no default, funding 12%, R$ 120 de operação, capital 2% | resultado realizado usa o desfecho e só existe depois da janela |
+
+Arredondamentos e convenções: recusa quando PD ≥ corte; faixas e ganho com ⌊x + ½⌋; empate vale meio par; quantis do tipo 7; log natural com limite de 10⁻¹⁵ (nenhuma previsão da janela precisou dele).
+
+## 8. Verificação
+
+O relatório completo (numérico, funcional e visual), a rubrica por slide e a avaliação do capítulo estão em `docs/capitulo7/RELATORIO_VALIDACAO.md` e `docs/capitulo7/RUBRICA.md`.

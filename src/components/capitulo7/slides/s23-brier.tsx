@@ -23,9 +23,9 @@ export function S23Brier({ pagina }: { pagina?: Pagina }) {
   const perda = perdaBrier1(p, y);
   const itens = [
     { nome: "Logística", v: BS, cor: "#176C73", nota: "a avaliada" },
-    { nome: `Constante ${pct(PREVALENCIA.treino, 2)}`, v: REF_TREINO, cor: "#9AA1AD", nota: "prevalência do treino: referência honesta" },
-    { nome: `Constante ${pct(D / N, 2)}`, v: REF_JANELA, cor: "#C9CDD5", nota: "taxa da própria janela: só se conhece depois" },
-    { nome: "PD verdadeira", v: BS_PT, cor: "#00205B", nota: "existe só na base sintética" },
+    { nome: `Constante ${pct(PREVALENCIA.treino, 2)}`, v: REF_TREINO, cor: "#9AA1AD", nota: "treino: referência honesta" },
+    { nome: `Constante ${pct(D / N, 2)}`, v: REF_JANELA, cor: "#C9CDD5", nota: "taxa da janela: só depois" },
+    { nome: "PD verdadeira", v: BS_PT, cor: "#00205B", nota: "só na base sintética" },
   ];
   return (
     <Quadro slug="c7p33" pagina={pagina} layout="gg"
@@ -41,8 +41,8 @@ export function S23Brier({ pagina }: { pagina?: Pagina }) {
               <g>
                 <Eixos x={x} y={yy} xt={[0, 0.25, 0.5, 0.75, 1]} yt={[0, 0.25, 0.5, 0.75, 1]} fx={(v) => pct(v, 0)} fy={(v) => num(v, 2)} xTit="PD dada ao cliente" yTit="Perda (p − y)²" />
                 <path className="q7-linha q7-linha--prob" d={caminho(pts)} />
-                <line x1={x(p)} x2={x(p)} y1={yy(0)} y2={yy(perda)} stroke="#B8640F" strokeWidth={2.5} strokeDasharray="5 4" />
-                <circle cx={x(p)} cy={yy(perda)} r={d.fs * 0.45} fill="#B8640F" stroke="#fff" strokeWidth={2.5} />
+                <line x1={x(p)} x2={x(p)} y1={yy(0)} y2={yy(perda)} stroke="#A85A0C" strokeWidth={2.5} strokeDasharray="5 4" />
+                <circle cx={x(p)} cy={yy(perda)} r={d.fs * 0.45} fill="#A85A0C" stroke="#fff" strokeWidth={2.5} />
                 <text className="q7-corte-t" x={x(p) + (p > 0.6 ? -d.fs * 0.6 : d.fs * 0.6)} y={yy(perda) - d.fs * 0.5} textAnchor={p > 0.6 ? "end" : "start"}>{num(perda, 4)}</text>
               </g>
             );
@@ -57,7 +57,7 @@ export function S23Brier({ pagina }: { pagina?: Pagina }) {
             return (
               <g>
                 {[0.088, 0.091, 0.094, 0.097, 0.1].map((v) => <g key={v}><line className="q7-grade" x1={x(v)} x2={x(v)} y1={0} y2={d.h - d.fs * 2.4} /><text className="q7-tick" x={x(v)} y={d.h - d.fs * 2.4} dy="1.2em" textAnchor="middle">{num(v, 3)}</text></g>)}
-                <text className="q7-tick" x={x(0.1)} y={d.h} textAnchor="end">Brier (menor é melhor), eixo cortado em 0,088: distâncias, não comprimentos</text>
+                <text className="q7-tick" x={x(0.088)} y={d.h}>Brier, menor é melhor; eixo começa em 0,088</text>
                 {itens.map((it, k) => { const cy = lh * k + lh * 0.62; return (
                   <g key={it.nome}>
                     <text className="q7-rot" x={x(0.088)} y={cy - d.fs * 0.85}>{it.nome}<tspan className="q7-rot--peq" style={{ fill: "#5B6475" }} dx="8">{it.nota}</tspan></text>

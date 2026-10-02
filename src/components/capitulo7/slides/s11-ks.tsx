@@ -43,7 +43,7 @@ export function S11Ks({ pagina }: { pagina?: Pagina }) {
               <text className="q7-rot" x={x(KS.limiar) - 10} y={y((KS.tpr + KS.fpr) / 2)} textAnchor="end" style={{ fill: "#00205B" }}>KS {num(KS.ks, 4)}</text>
               <line className="q7-corte" x1={x(ECON)} x2={x(ECON)} y1={y(0)} y2={y(1)} strokeDasharray="6 5" />
               <text className="q7-corte-t" x={x(ECON) + 6} y={y(0.97)}>corte econômico {pct(ECON, 1)}</text>
-              <line x1={x(t)} x2={x(t)} y1={y(fpr)} y2={y(tpr)} stroke="#B8640F" strokeWidth={3} />
+              <line x1={x(t)} x2={x(t)} y1={y(fpr)} y2={y(tpr)} stroke="#A85A0C" strokeWidth={3} />
               <circle cx={x(t)} cy={y(tpr)} r={d.fs * 0.32} fill="#8C2332" /><circle cx={x(t)} cy={y(fpr)} r={d.fs * 0.32} fill="#fff" stroke="#5B6475" strokeWidth={2.4} />
             </g>
           );
