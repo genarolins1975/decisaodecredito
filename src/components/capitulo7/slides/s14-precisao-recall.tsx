@@ -85,7 +85,7 @@ export function S14PrecisaoRecall({ pagina }: { pagina?: Pagina }) {
           {icP && <div data-tom="mudo"><dt>Intervalo de 95% da precisão</dt><dd>{pct(icP.lo, 1)} a {pct(icP.hi, 1)}</dd></div>}
           <div><dt>Recall = VP ÷ (VP + FN)</dt><dd>{c.vp} ÷ {D} = {pct(tpr, 1)}</dd></div>
         </dl>
-        <Previsao pergunta={`Mesma fila, corte de ${pct(T0, 0)}, numa carteira com ${pct(PI2, 0)} de default. A precisão:`} opcoes={OPS} escolha={esc} onEscolha={escolher} recolher />
+        <Previsao pergunta={`Corte de ${pct(T0, 0)}, carteira com ${pct(PI2, 0)} de default. A precisão:`} opcoes={OPS} escolha={esc} onEscolha={escolher} recolher />
         <Expandir resumo="AP não é a área trapezoidal">
           <Formula f={String.raw`\mathrm{AP}=\sum_k (R_k-R_{k-1})\,P_k`} simbolos={[["R_k", "recall no k-ésimo corte distinto"], ["P_k", "precisão no mesmo corte"]]} />
           <p className="q7-nota">Na janela: AP {num(AP, 4)} (como average_precision_score) e área trapezoidal {num(TRAP, 4)}. Aqui a trapezoidal fica {TRAP < AP ? "abaixo" : "acima"} da AP; a diferença muda de sinal conforme a curva, por isso o protocolo fixa a AP e compara sempre na mesma população.</p>

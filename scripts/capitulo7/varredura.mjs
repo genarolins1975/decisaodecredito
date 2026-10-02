@@ -17,7 +17,7 @@ for (const m of modosArg.split(",")) {
     const errs = []; const onErr = (e) => errs.push(String(e)); const onCon = (c) => { if (c.type() === "error") errs.push(c.text()); };
     page.on("pageerror", onErr); page.on("console", onCon);
     await page.goto(`http://localhost:3000/${modo === "palco" ? "apresentacao" : "aulas"}/${slug}`, { waitUntil: "networkidle" });
-    await page.waitForTimeout(700);
+    await page.waitForTimeout(2000); // espera a hidratação: com o servidor ocupado, 700 ms mediam SVG ainda no tamanho padrão
     if (abrir) { await page.evaluate(() => document.querySelectorAll("figure.q7 details").forEach((d) => (d.open = true))); await page.waitForTimeout(250); }
     const r = await page.evaluate(() => {
       const f = document.querySelector("figure.q7"); if (!f) return { semQuadro: true };

@@ -1,55 +1,38 @@
 "use client";
 import type { ComponentType } from "react";
+import dynamic from "next/dynamic";
 import type { Pagina } from "@/components/capitulo7/base";
 import { ProvedorC6 } from "./provedor";
-import { S01Mapa } from "./slides/s01-mapa";
-import { S02TresEstrategias } from "./slides/s02-tres-estrategias";
-import { S03Palpite } from "./slides/s03-palpite";
-import { S04ErroAlvo } from "./slides/s04-erro-alvo";
-import { S05PrimeiraArvore } from "./slides/s05-primeira-arvore";
-import { S06PassoNewton } from "./slides/s06-passo-newton";
-import { S07Taxa } from "./slides/s07-taxa";
-import { S08PerdaCai } from "./slides/s08-perda-cai";
-import { S09Parcelas } from "./slides/s09-parcelas";
-import { S10Formula } from "./slides/s10-formula";
-import { S11Carteira } from "./slides/s11-carteira";
-import { S12Profundidade } from "./slides/s12-profundidade";
-import { S13QuatroControles } from "./slides/s13-quatro-controles";
-import { S14TaxaArvores } from "./slides/s14-taxa-arvores";
-import { S15QuandoParar } from "./slides/s15-quando-parar";
-import { S16Subamostra } from "./slides/s16-subamostra";
-import { S17Logistica } from "./slides/s17-logistica";
-import { S18Nivel } from "./slides/s18-nivel";
-import { S19Contribuicoes } from "./slides/s19-contribuicoes";
-import { S20Monotonia } from "./slides/s20-monotonia";
-import { S21Candidato } from "./slides/s21-candidato";
-import { S22Apendice } from "./slides/s22-apendice";
 
-/** Quadros do capítulo 6 por página, cada um dentro do provedor do roteiro do capítulo. */
-const BRUTO: Record<string, ComponentType<{ pagina?: Pagina }>> = {
-  c6p1: S01Mapa,
-  c6p2: S02TresEstrategias,
-  c6p3: S03Palpite,
-  c6p4: S04ErroAlvo,
-  c6p5: S05PrimeiraArvore,
-  c6p6: S06PassoNewton,
-  c6p7: S07Taxa,
-  c6p8: S08PerdaCai,
-  c6p9: S09Parcelas,
-  c6p10: S10Formula,
-  c6p11: S11Carteira,
-  c6p12: S12Profundidade,
-  c6p13: S13QuatroControles,
-  c6p14: S14TaxaArvores,
-  c6p15: S15QuandoParar,
-  c6p16: S16Subamostra,
-  c6p17: S17Logistica,
-  c6p18: S18Nivel,
-  c6p19: S19Contribuicoes,
-  c6p20: S20Monotonia,
-  c6p21: S21Candidato,
-  c6p22: S22Apendice,
+/**
+ * Quadros do capítulo 6 por página, cada um dentro do provedor do roteiro do capítulo. Cada quadro é carregado sob
+ * demanda (next/dynamic, com renderização no servidor): os quadros ajustam modelos de boosting, e importar todos de
+ * uma vez faria qualquer página pagar essa conta. A versão estática fica em registro-estatico.tsx, para os testes.
+ */
+const SOB_DEMANDA: Record<string, ComponentType<{ pagina?: Pagina }>> = {
+  c6p1: dynamic(() => import("./slides/s01-mapa").then((m) => m.S01Mapa)),
+  c6p2: dynamic(() => import("./slides/s02-tres-estrategias").then((m) => m.S02TresEstrategias)),
+  c6p3: dynamic(() => import("./slides/s03-palpite").then((m) => m.S03Palpite)),
+  c6p4: dynamic(() => import("./slides/s04-erro-alvo").then((m) => m.S04ErroAlvo)),
+  c6p5: dynamic(() => import("./slides/s05-primeira-arvore").then((m) => m.S05PrimeiraArvore)),
+  c6p6: dynamic(() => import("./slides/s06-passo-newton").then((m) => m.S06PassoNewton)),
+  c6p7: dynamic(() => import("./slides/s07-taxa").then((m) => m.S07Taxa)),
+  c6p8: dynamic(() => import("./slides/s08-perda-cai").then((m) => m.S08PerdaCai)),
+  c6p9: dynamic(() => import("./slides/s09-parcelas").then((m) => m.S09Parcelas)),
+  c6p10: dynamic(() => import("./slides/s10-formula").then((m) => m.S10Formula)),
+  c6p11: dynamic(() => import("./slides/s11-carteira").then((m) => m.S11Carteira)),
+  c6p12: dynamic(() => import("./slides/s12-profundidade").then((m) => m.S12Profundidade)),
+  c6p13: dynamic(() => import("./slides/s13-quatro-controles").then((m) => m.S13QuatroControles)),
+  c6p14: dynamic(() => import("./slides/s14-taxa-arvores").then((m) => m.S14TaxaArvores)),
+  c6p15: dynamic(() => import("./slides/s15-quando-parar").then((m) => m.S15QuandoParar)),
+  c6p16: dynamic(() => import("./slides/s16-subamostra").then((m) => m.S16Subamostra)),
+  c6p17: dynamic(() => import("./slides/s17-logistica").then((m) => m.S17Logistica)),
+  c6p18: dynamic(() => import("./slides/s18-nivel").then((m) => m.S18Nivel)),
+  c6p19: dynamic(() => import("./slides/s19-contribuicoes").then((m) => m.S19Contribuicoes)),
+  c6p20: dynamic(() => import("./slides/s20-monotonia").then((m) => m.S20Monotonia)),
+  c6p21: dynamic(() => import("./slides/s21-candidato").then((m) => m.S21Candidato)),
+  c6p22: dynamic(() => import("./slides/s22-apendice").then((m) => m.S22Apendice)),
 };
 export const QUADROS_C6: Record<string, ComponentType<{ pagina?: Pagina }>> = Object.fromEntries(
-  Object.entries(BRUTO).map(([slug, C]) => { const Q = ({ pagina }: { pagina?: Pagina }) => <ProvedorC6><C pagina={pagina} /></ProvedorC6>; Q.displayName = `QuadroC6(${slug})`; return [slug, Q]; }),
+  Object.entries(SOB_DEMANDA).map(([slug, C]) => { const Q = ({ pagina }: { pagina?: Pagina }) => <ProvedorC6><C pagina={pagina} /></ProvedorC6>; Q.displayName = `QuadroC6(${slug})`; return [slug, Q]; }),
 );

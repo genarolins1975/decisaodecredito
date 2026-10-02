@@ -54,9 +54,9 @@ describe("roteiro do capítulo 6", () => {
   it("cada quadro renderiza no servidor com o título do roteiro do capítulo 6 e sem número quebrado", async () => {
     const { createElement } = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const { QUADROS_C6 } = await import("@/components/capitulo6/registro");
+    const { QUADROS_C6_ESTATICOS } = await import("@/components/capitulo6/registro-estatico");
     for (const s of ROTEIRO) {
-      const html = renderToStaticMarkup(createElement(QUADROS_C6[s.slug], {}));
+      const html = renderToStaticMarkup(createElement(QUADROS_C6_ESTATICOS[s.slug], {}));
       const texto = html.replace(/<style[\s\S]*?<\/style>/g, "").replace(/<[^>]+>/g, " ").replace(/&[a-z]+;/g, " ");
       expect(html, s.slug).toContain(`id="${s.slug}-tit"`);
       expect(html, s.slug).toContain("Mecanismo");

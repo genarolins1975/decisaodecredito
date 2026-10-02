@@ -66,10 +66,10 @@ export function S19Confiabilidade({ pagina }: { pagina?: Pagina }) {
             </g>} />
         </Painel>
         <div className="q7-g2-s19-dir">
-          {completa ? <Painel titulo="Padrão ou ruído?" className="q7-g2-s19-r">
+          {completa ? <Painel className="q7-g2-s19-r">
+            <div className="q7-s21-l"><p className="q7-k">Padrão ou ruído?</p><Botao sec onClick={() => { setK(0); setPalpites([]); setEsc(null); }}>Restaurar</Botao></div>
             {!ic && <div className="q7-g2-s19-prev"><Previsao pergunta="Com o intervalo de 95% de cada faixa, em quantas das 10 a PD média cabe nele?" opcoes={OPS} escolha={esc} onEscolha={setEsc} recolher /></div>}
             {ic && <p className="q7-g2-s19-fb" data-ok="1" aria-live="polite">Acertou: a PD cabe no intervalo em {COMPATIVEIS} das 10 faixas; o intervalo de cada uma tem de {pp(LMIN, 0).replace("+", "")} a {pp(LMAX, 0).replace("+", "")} de largura.</p>}
-            <div className="q7-botoes"><Botao sec onClick={() => { setK(0); setPalpites([]); setEsc(null); }}>Restaurar</Botao></div>
           </Painel> : <Painel titulo={`As ${int(N)} PDs em ordem crescente, cortadas em dez faixas`} className="q7-g2-s19-r">
             <Grafico rotulo="Faixa destacada na régua de PDs ordenadas" arCelular="5 / 1">
               {(d) => {
