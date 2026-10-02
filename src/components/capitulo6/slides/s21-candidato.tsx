@@ -167,8 +167,9 @@ function MiniEscolha({ vistas, revelado }: { vistas: G[]; revelado: boolean }) {
   if (!revelado) return <MiniEnviadas vistas={vistas} />;
   const x = lin([PIOR.auc_val - 0.003, BEST.auc_val + 0.003], [8, W - 8]);
   const pts = [...GRID].sort((a, b) => a.auc_val - b.auc_val);
-  let ult = -1e9, alt = 0;
-  const pos = pts.map((g) => { const px = x(g.auc_val); alt = px - ult < 6 ? 1 - alt : 0; ult = px; return { g, px, py: alt ? 16 : 23.5 }; });
+  // pontos a menos de 6 px do anterior alternam de altura para não se sobrepor
+  const pos: { g: G; px: number; py: number }[] = [];
+  for (let i = 0, ult = -1e9, alt = 0; i < pts.length; i++) { const g = pts[i], px = x(g.auc_val); alt = px - ult < 6 ? 1 - alt : 0; ult = px; pos.push({ g, px, py: alt ? 16 : 23.5 }); }
   return (
     <Mini h={42} rotulo={`AUC de validação das ${NCEL} células, de ${num(PIOR.auc_val, 4)} a ${num(BEST.auc_val, 4)}; ${N_1EP} de ${NCEL} a menos de um erro padrão (${num(EP, 3)}) da melhor, ${BEST.max_iter} árvores e ${BEST.max_leaf_nodes} folhas`}>
       <line x1={8} x2={W - 8} y1={31} y2={31} stroke="var(--q7-borda)" strokeWidth={1.5} />
