@@ -85,7 +85,7 @@ function Curvas({ d, e, ver }: { d: Dim; e: ReturnType<typeof estado>; ver: bool
       <rect x={x(30.5)} y={m.t} width={x(60) - x(30.5)} height={d.h - m.b - m.t} fill="#F5F4F0" />
       <text className="q7-rot--peq" x={x(45)} y={m.t} dy="1.1em" textAnchor="middle" style={{ fill: "#5B6475" }}>31 a 60 dias: {ALTA.n} propostas no ajuste</text>
       <Eixos x={x} y={y} xt={[0, 10, 20, 30, 40, 50, 60]} yt={yt} fx={(v) => String(v)} fy={(v) => pct(v, 0)} yTit="PD (dependência parcial) e default observado" />
-      {OBS.map((o, i) => <text key={o.a} className="q7-rot--peq" x={estreito && o.a === 0 ? x(0) + d.fs * 0.9 : x((o.a + o.b) / 2)} y={d.h - m.b} dy={estreito && i % 2 ? "3.7em" : "2.55em"} textAnchor={o.a === 0 ? (estreito ? "end" : "start") : "middle"} style={{ fill: "#8C2332", fontWeight: o.a === ALTA.a ? 700 : 500 }}>{o.d}/{o.n}</text>)}
+      {OBS.map((o, i) => <text key={o.a} className="q7-rot--peq" x={o.a === 0 ? x(0) + d.fs * 0.9 : x((o.a + o.b) / 2)} y={d.h - m.b} dy={estreito && i % 2 ? "3.7em" : "2.55em"} textAnchor={o.a === 0 ? "end" : "middle"} style={{ fill: "#8C2332", fontWeight: o.a === ALTA.a ? 700 : 500 }}>{o.d}/{o.n}</text>)}
       <text className="q7-eixo-t" x={(m.l + d.w - m.r) / 2} y={d.h - m.b} dy={estreito ? "4.9em" : "3.85em"} textAnchor="middle">{estreito ? "Atraso (dias); ■ defaults/propostas" : "Atraso máximo em 6 meses (dias); ■ defaults/propostas no ajuste"}</text>
       {OBS.map((o) => {
         const cx = x((o.a + o.b) / 2), w = Math.max(d.fs * 0.6, x(o.b + 0.5) - x(o.a - 0.5));

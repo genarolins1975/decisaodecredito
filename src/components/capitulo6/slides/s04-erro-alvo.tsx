@@ -71,8 +71,8 @@ export function S04ErroAlvo({ pagina }: { pagina?: Pagina }) {
                   <path d={tang(1)} stroke="#3D5A8A" strokeWidth={5} strokeLinecap="round" />
                   <path d={tang(0)} stroke="#3D5A8A" strokeWidth={5} strokeLinecap="round" />
                   {/* rótulo de cada inclinação na ponta alta da sua tangente */}
-                  <text className="q7-rot--peq" x={Math.max(x(-4), x(F - 0.95))} y={y(perda1(1, F) + (1 - p) * 0.9)} dy="-.5em" textAnchor="middle" style={{ fill: "#3D5A8A", fontWeight: 700, ...halo }}>● inclinação {num(p - 1, 2)}</text>
-                  <text className="q7-rot--peq" x={Math.min(x(4), x(F + 0.95))} y={y(perda1(0, F) + p * 0.9)} dy="-.5em" textAnchor="middle" style={{ fill: "#3D5A8A", fontWeight: 700, ...halo }}>○ inclinação {num(p, 2)}</text>
+                  <text className="q7-rot--peq" x={Math.max(x(-4), x(F - 0.95))} y={y(perda1(1, F) + (1 - p) * 0.9)} dx={perda1(1, F) + (1 - p) * 0.9 > 3.3 ? "1.2em" : 0} dy={perda1(1, F) + (1 - p) * 0.9 > 3.3 ? "1.4em" : "-.5em"} textAnchor={F - 0.95 < -2.6 ? "start" : "middle"} style={{ fill: "#3D5A8A", fontWeight: 700, ...halo }}>● inclinação {num(p - 1, 2)}</text>
+                  <text className="q7-rot--peq" x={Math.min(x(4), x(F + 0.95))} y={y(perda1(0, F) + p * 0.9)} dx={perda1(0, F) + p * 0.9 > 3.3 ? "-1.2em" : 0} dy={perda1(0, F) + p * 0.9 > 3.3 ? "1.4em" : "-.5em"} textAnchor={F + 0.95 > 2.6 ? "end" : "middle"} style={{ fill: "#3D5A8A", fontWeight: 700, ...halo }}>○ inclinação {num(p, 2)}</text>
                 </>}
                 {/* resíduos das 16 */}
                 <text className="q7-eixo-t" x={m.l} y={base} dy="-.95em">erro de cada proposta, y − p</text>
@@ -84,7 +84,7 @@ export function S04ErroAlvo({ pagina }: { pagina?: Pagina }) {
                     <g key={q.id}>
                       {rev ? <>
                         <rect className="q7-anim-d" x={cx - passo * 0.3} y={Math.min(ry(r), mid)} width={passo * 0.6} height={Math.abs(ry(r) - mid)} fill={q.y ? "#00205B" : "#9AA1AD"} />
-                        <text className="q7-rot--peq" x={cx} y={ry(r)} dy={r > 0 ? "-.35em" : "1.05em"} textAnchor="middle" style={{ fontSize: ".78em" }}>{sinal(r)}</text>
+                        <text className="q7-rot--peq" x={cx} y={r > 0 ? ry(r) : mid} dy="-.35em" textAnchor="middle" style={{ fontSize: ".78em" }}>{sinal(r)}</text>
                       </> : <text className="q7-rot--peq" x={cx} y={mid} dy="-.6em" textAnchor="middle" style={{ fill: "#9AA1AD" }}>?</text>}
                       <Marca x={cx} y={r0 + d.fs * 0.9} r={d.fs * 0.36} def={q.y === 1} />
                       <text className="q7-tick" x={cx} y={r0 + d.fs * 0.9} dy="1.6em" textAnchor="middle" style={{ fontSize: ".78em" }}>{q.id}</text>
