@@ -148,7 +148,7 @@ export function S22NivelInclinacao({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c7p32" pagina={pagina} layout="gl"
       conclusao={!revelado ? <>Quatro distorções da mesma PD verdadeira, cada uma com a sua forma. Qual delas tem slope abaixo de 1?</>
-        : <><b>{c.nome}</b> (a = {num(c.a, 2)}, b = {num(c.b, 2)}): {assinatura ? <>{assinatura}. Slope</> : "slope"} {nr(m.slope)}{m.ic ? ` (intervalo de 95%: ${nr(m.ic[0])} a ${nr(m.ic[1])})` : ""}, intercepto com slope 1 de {nr(m.i1)}{freq === "observada" ? "; pela frequência esperada, sem ruído" : ""}: {c.leitura}.{freq === "observada" ? ` Com o ruído da janela, a referência já tem slope ${num(REF.slope, 2)}.` : ""}</>}
+        : <><b>{c.nome}</b> (a = {num(c.a, 2)}, b = {num(c.b, 2)}): {assinatura ? <>{assinatura}. Slope</> : "slope"} {nr(m.slope)}{m.ic ? ` (intervalo de 95%: ${nr(m.ic[0])} a ${nr(m.ic[1])})` : ""}, intercepto com slope 1 de {nr(m.i1)}{freq === "observada" ? "; na esperada" : ""}: {c.leitura}.{freq === "observada" ? ` Na janela, a PD verdadeira tem slope ${num(REF.slope, 2)}.` : ""}</>}
       fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults. Base: PD verdadeira do gerador (só existe em base sintética). Esperada: média da PD verdadeira na faixa, a frequência esperada nas réplicas sintéticas da janela (slides ${SLIDE.c7p24.n} e ${SLIDE.c7p16.n}: desfecho sorteado de novo pela PD verdadeira), sem ruído de amostra. Observada: defaults da janela; nela a PD verdadeira tem intercepto ${num(REF.intercepto, 2)} e slope ${num(REF.slope, 2)}. Faixas: decis de PD prevista.`}>
       <Painel titulo={foco ? `Em foco: ${c.nome}` : "Quatro jeitos de errar a probabilidade · clique num quadro para ampliar"}>
         {foco ? (

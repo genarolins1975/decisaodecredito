@@ -33,15 +33,16 @@ const pareada = (p: readonly number[], q: readonly number[]) => {
 };
 /**
  * Alternativas da previsão. O retorno da certa lê o estado atual: depois da resposta o controle de nível muda a
- * logística, e a comparação com a constante honesta acompanha (em +1,00 ela fica acima da referência).
+ * logística, e a comparação com a constante honesta acompanha, com o mesmo intervalo pareado da leitura (em +1,00 ela
+ * fica 5,4% acima, sem descartar empate).
  */
-const ops = (nome: string, bs: number, dif: { lo: number; hi: number }) => [
+const ops = (bs: number, dif: { lo: number; hi: number }) => [
   { texto: "Sim: está perto de zero, o mínimo", certa: false, retorno: <>Perto de zero não diz nada sozinho: com evento raro, até uma PD constante, que não separa ninguém, tem Brier pequeno. Confunde a escala absoluta com qualidade.</> },
-  { texto: "Depende de uma referência na mesma amostra", certa: true, retorno: <>Isso: contra a constante honesta do treino ({num(REF_TREINO, 5)}), {nome} tem Brier {num(bs, 5)}, {pct(Math.abs(1 - bs / REF_TREINO), 1)} {bs <= REF_TREINO ? "abaixo" : "acima"}{dif.hi < 0 ? ": melhor, com intervalo pareado que não contém o zero" : dif.lo > 0 ? ": pior, com intervalo pareado que não contém o zero" : ", mas o intervalo pareado contém o zero: não descarta empate"}.</> },
+  { texto: "Depende de uma referência na mesma amostra", certa: true, retorno: <>Isso: contra a constante do treino, o Brier da logística fica {pct(Math.abs(1 - bs / REF_TREINO), 1)} {bs <= REF_TREINO ? "abaixo" : "acima"}{dif.lo <= 0 && dif.hi >= 0 ? ", sem descartar empate" : ""}.</> },
   { texto: "Não: acima de 0,05 já é ruim", certa: false, retorno: <>Não há limiar universal: uma constante c tem Brier <span style={{ whiteSpace: "nowrap" }}>π(1 − π) + (c − π)²</span>, com π a taxa da amostra (a constante do treino, {pct(PREVALENCIA.treino, 2)}, dá {num(BC_TREINO, 5)}). Confunde o Brier com uma nota absoluta.</> },
 ];
 /** Só a posição da certa importa fora do componente (o estado revelado). */
-const CERTA = ops("", BS0, { lo: 0, hi: 0 }).findIndex((o) => o.certa);
+const CERTA = ops(BS0, { lo: 0, hi: 0 }).findIndex((o) => o.certa);
 
 export function S23Brier({ pagina }: { pagina?: Pagina }) {
   const [y, setY] = useState<Yv>(0);
@@ -55,7 +56,7 @@ export function S23Brier({ pagina }: { pagina?: Pagina }) {
   const dif = useMemo(() => pareada(PA, REF_TREINO_P), [PA]);
   const dec = useMemo(() => corp(Y, PA), [PA]);
   const sn = (v: number) => `${v > 0 ? "+" : v < 0 ? "−" : ""}${num(Math.abs(v), 2)}`;
-  const OPS = ops(nivel === 0 ? "a logística" : `a logística no nível ${sn(nivel)}`, BS, dif);
+  const OPS = ops(BS, dif);
   const itens = [
     { nome: nivel === 0 ? "Logística" : `Logística, nível ${sn(nivel)}`, v: BS, cor: "#176C73", nota: "a avaliada", oculto: false },
     { nome: `Constante ${pct(PREVALENCIA.treino, 2)}`, v: REF_TREINO, cor: "#9AA1AD", nota: "treino: referência honesta", oculto: !revelado },
@@ -73,11 +74,11 @@ export function S23Brier({ pagina }: { pagina?: Pagina }) {
           <div className="q7-flex1">
             <Grafico rotulo={itens.map((it) => it.oculto ? `${it.nome}: oculto até a previsão` : `${it.nome}: ${num(it.v, 5)}`).join("; ")} arCelular="4 / 3">
               {(d) => {
-                const x = escala([0.088, 0.1], [d.fs * 1, d.w - d.fs * 1]); const lh = (d.h - d.fs * 2.6) / itens.length; const xv = (v: number) => x(Math.max(0.088, Math.min(0.1, v)));
+                const x = escala([0.088, 0.1], [d.fs * 1.6, d.w - d.fs * 1.6]); const lh = (d.h - d.fs * 2.6) / itens.length; const xv = (v: number) => x(Math.max(0.088, Math.min(0.1, v)));
                 return (
                   <g>
                     {[0.088, 0.091, 0.094, 0.097, 0.1].map((v) => <g key={v}><line className="q7-grade" x1={x(v)} x2={x(v)} y1={0} y2={d.h - d.fs * 2.4} /><text className="q7-tick" x={x(v)} y={d.h - d.fs * 2.4} dy="1.2em" textAnchor="middle">{num(v, 3)}</text></g>)}
-                    <text className="q7-tick" x={x(0.088)} y={d.h}>Brier, menor é melhor; eixo começa em 0,088</text>
+                    <text className="q7-tick" x={x(0.088)} y={d.h - d.fs * 0.3}>Brier, menor é melhor; eixo começa em 0,088</text>
                     {itens.map((it, k) => { const cy = lh * k + lh * 0.62; return (
                       <g key={k}>
                         <text className="q7-rot" x={x(0.088)} y={cy - d.fs * 0.85}>{it.nome}<tspan className="q7-rot--peq" style={{ fill: "#5B6475" }} dx="8">{it.nota}</tspan></text>
@@ -111,7 +112,7 @@ export function S23Brier({ pagina }: { pagina?: Pagina }) {
           <div className="q7-s21-l"><p className="q7-k">Um cliente, uma perda</p><Seg rotulo="Desfecho do cliente" opcoes={[{ v: 0 as Yv, r: "Pagou" }, { v: 1 as Yv, r: "Default" }]} valor={y} onChange={setY} /></div>
           <Grafico rotulo={`Perda quadrática para y = ${y}: ${num(perda, 4)} com PD ${pct(p, 0)}`} arCelular="16 / 9">
             {(d) => {
-              const m = margens(d.fs, { l: 2.4, b: 1.6, t: 0.6, r: 0.8 }); const x = escala([0, 1], [m.l, d.w - m.r]), yy = escala([0, 1], [d.h - m.b, m.t]);
+              const m = margens(d.fs, { l: 2.4, b: 1.6, t: 0.6, r: 1.4 }); const x = escala([0, 1], [m.l, d.w - m.r]), yy = escala([0, 1], [d.h - m.b, m.t]);
               const pts = Array.from({ length: 101 }, (_, i) => ({ x: x(i / 100), y: yy(perdaBrier1(i / 100, y)) }));
               return (
                 <g>
