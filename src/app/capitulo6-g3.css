@@ -71,3 +71,4 @@ a.q6-s22-l { text-decoration: underline; text-decoration-thickness: 1px; text-un
 }
 .q6-rola { min-width: 0; }
 @container q7 (max-width: 820px) { .q6-rola { overflow-x: auto; } }
+.q7 .q7-slide .q6-s17-tab thead th { white-space: normal; line-height: 1.1; vertical-align: bottom; }

@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "3c5bd0111c65ab2244b0eaa88a88757de8bc8036418ecccd9dfaa3360b6c5acc",
- "extractedAt": "2026-10-02T11:39:07.754Z",
+ "sourceSha256": "c50f37c06c98d6aff359104e05204c1ff92b5a379b21fe31259db28cb2463bf1",
+ "extractedAt": "2026-10-02T11:50:19.890Z",
  "meta": {
   "capitulos": [
    {
@@ -7039,51 +7039,51 @@
      "slug": "c6p8q",
      "id": "c6p8q",
      "rot": "Por que aqui",
-     "pergunta": "A primeira árvore cortou em x igual a 4,5 e a segunda corta em x igual a 7,5. Por quê?",
+     "pergunta": "Nas 16 propostas, a segunda árvore mantém a raiz em utilização ≤ 57,5%, mas o ramo da direita passa a cortar em atraso ≤ 2,5 dias, e não mais em utilização ≤ 87,5%. Por quê?",
      "alt": [
-      "Porque o algoritmo percorre os cortes candidatos em ordem crescente",
-      "Porque depois da primeira correção o maior resíduo restante ficou concentrado em x igual a 8",
-      "Porque cada ponto de corte só pode ser usado uma vez"
+      "Porque o algoritmo alterna as variáveis de uma árvore para a outra",
+      "Porque depois da primeira correção o erro y − p mudou, e o melhor corte para o erro que sobrou passou a ser o do atraso",
+      "Porque cada corte só pode ser usado uma vez"
      ],
      "certa": 1,
-     "porqueCerta": "A segunda árvore não vê o alvo original: ela vê o resíduo deixado pela primeira. O maior resíduo restante está em x igual a 8, e é ali que ela corta. A busca é a mesma do capítulo 5, aplicada a um alvo novo.",
+     "porqueCerta": "A segunda árvore não vê o default: vê o erro deixado pela primeira, y − p com a nova PD. A busca de cortes é a mesma do capítulo 5, aplicada a esse alvo novo; onde o erro restante se separa melhor, ali ela corta.",
      "erros": [
       {
-       "confusao": "A sequência de cortes foi lida como varredura do eixo, e não como resposta ao que sobrou. O algoritmo não caminha pelo eixo: ele procura onde está o erro atual.",
-       "conceito": "Cada árvore é ajustada ao resíduo do momento. Como o resíduo muda a cada passo, o corte escolhido muda junto, e ele pode voltar para regiões já visitadas.",
-       "exemplo": "<table><thead><tr><th>Árvore</th><th>Corte</th><th>Maior resíduo em módulo antes dela</th></tr></thead><tbody>\n    <tr><th scope=\"row\">1</th>\n     <td class=\"num\">4,5</td>\n     <td class=\"num\">x = 8</td></tr><tr><th scope=\"row\">2</th>\n     <td class=\"num\">7,5</td>\n     <td class=\"num\">x = 8</td></tr><tr><th scope=\"row\">3</th>\n     <td class=\"num\">2,5</td>\n     <td class=\"num\">x = 1</td></tr><tr><th scope=\"row\">4</th>\n     <td class=\"num\">5,5</td>\n     <td class=\"num\">x = 8</td></tr>\n    </tbody></table>\n    <p class=\"nota\" style=\"margin-top:7px\">A terceira volta para x igual a 2,5, uma região já coberta\n    pela primeira. Não existe ordem no eixo, existe ordem de tamanho do erro.</p>",
-       "seu": "imaginar uma varredura ordenada do eixo",
-       "adequado": "seguir o resíduo: a árvore corta onde o erro atual é maior",
+       "confusao": "A sequência foi lida como rodízio de variáveis. Não há rodízio: a raiz da segunda árvore é a mesma variável e o mesmo corte da primeira.",
+       "conceito": "Cada árvore escolhe o melhor corte para o erro do momento; a variável muda só quando o erro restante se separa melhor por outra.",
+       "exemplo": "<p>Árvore 1: raiz em utilização ≤ 57,5; ramo direito em utilização ≤ 87,5. Árvore 2: raiz em utilização ≤ 57,5; ramo direito em atraso ≤ 2,5.</p>",
+       "seu": "supor um rodízio entre variáveis",
+       "adequado": "seguir o erro restante, que define o melhor corte",
        "novaQuestao": {
         "rot": "Outra vez",
-        "pergunta": "A terceira árvore corta em x igual a 2,5, região já tratada pela primeira. Isso é erro?",
+        "pergunta": "O que muda entre a busca da árvore 1 e a da árvore 2?",
         "alt": [
-         "Sim, é sinal de que o método está em laço",
-         "Não, porque o resíduo naquela região voltou a ser o maior",
-         "Sim, cada região só deve ser corrigida uma vez"
+         "O conjunto de cortes candidatos",
+         "O alvo que a árvore tenta prever",
+         "As variáveis disponíveis"
         ],
         "certa": 1,
-        "porqueCerta": "Nada impede que uma região volte a ser a pior. O critério é o resíduo atual, e ele muda a cada passo.",
+        "porqueCerta": "Candidatos e variáveis são os mesmos; o alvo passa a ser o erro y − p deixado pela árvore anterior.",
         "erros": []
        }
       },
       null,
       {
-       "confusao": "Foi importada da regressão a intuição de que cada variável ou cada corte entra uma vez só. No boosting, e já na árvore do capítulo 5, a mesma variável e até o mesmo ponto podem reaparecer.",
-       "conceito": "O conjunto de cortes candidatos é recalculado a cada árvore, e nenhum deles é removido depois de usado. O que muda é o alvo, e por isso a pontuação de cada candidato muda.",
-       "exemplo": "<table><thead><tr><th>Sequência de cortes</th><th>Repetição</th></tr></thead><tbody>\n    <tr><th scope=\"row\">4,5 · 7,5 · 2,5 · 5,5</th>\n     <td>nenhum corte se repete aqui, mas nada impediria</td></tr>\n    <tr><th scope=\"row\">Árvore do capítulo 5</th><td>utilização aparece na raiz e nos dois nós do nível 2</td></tr></tbody></table>",
-       "seu": "supor que corte usado não volta",
-       "adequado": "entender que o candidato é reavaliado a cada passo contra um alvo novo",
+       "confusao": "Foi importada a ideia de que corte usado não volta. A própria segunda árvore desmente: a raiz repete utilização ≤ 57,5.",
+       "conceito": "Os candidatos são reavaliados a cada árvore contra o alvo novo, e nenhum é retirado depois de usado.",
+       "exemplo": "<p>Árvores 1, 2, 3 e 4: todas com raiz em utilização ≤ 57,5.</p>",
+       "seu": "supor que corte usado sai da lista",
+       "adequado": "entender que o mesmo corte pode voltar se ainda separa o erro",
        "novaQuestao": {
         "rot": "Outra vez",
-        "pergunta": "O que muda entre a busca da árvore 1 e a busca da árvore 2?",
+        "pergunta": "A terceira árvore volta a cortar a raiz em utilização ≤ 57,5. Isso é defeito?",
         "alt": [
-         "O conjunto de cortes candidatos",
-         "O alvo que a árvore tenta prever",
-         "A variável disponível"
+         "Sim, o método entrou em laço",
+         "Não: o erro restante ainda se separa melhor nesse corte",
+         "Sim, cada região só deve ser corrigida uma vez"
         ],
         "certa": 1,
-        "porqueCerta": "Os candidatos e as variáveis são os mesmos. O alvo passa de y para o resíduo deixado pela árvore anterior.",
+        "porqueCerta": "O critério é o erro atual; se ele ainda se separa melhor ali, o corte volta.",
         "erros": []
        }
       }
@@ -7349,52 +7349,52 @@
     {
      "slug": "c6p12q",
      "id": "c6p12q",
-     "rot": "O alvo da árvore",
-     "pergunta": "Na terceira iteração, uma proposta já bem prevista tem y − p próximo de zero. Que efeito isso tem sobre a árvore seguinte?",
+     "rot": "Profundidade",
+     "pergunta": "Com tocos (profundidade 1), a soma que a utilização faz na log odds é a mesma em qualquer score; com profundidade 2, ela muda conforme o score. Por quê?",
      "alt": [
-      "Ela é removida da amostra para não atrapalhar",
-      "Ela continua na amostra e quase não influencia a árvore, porque seu alvo é quase zero",
-      "Ela recebe peso maior, para que o modelo não esqueça o que já aprendeu"
+      "Porque com tocos o modelo tem menos árvores",
+      "Porque cada toco corta uma variável só, então a parcela da utilização não depende do score; com dois níveis, um corte de utilização pode ficar abaixo de um corte de score",
+      "Porque a taxa de aprendizagem dos tocos é menor"
      ],
      "certa": 1,
-     "porqueCerta": "Nenhuma observação sai da amostra. O que muda é o alvo: uma proposta bem prevista tem alvo próximo de zero e por isso contribui pouco para a média de qualquer folha. A realocação de atenção é automática e não exige reponderação explícita.",
+     "porqueCerta": "Um toco é uma pergunta sobre uma variável: a soma de tocos é aditiva, sem interação. Com profundidade 2, a folha depende de duas perguntas encadeadas, e o efeito de uma variável passa a depender da outra. Profundidade é a ordem de interação.",
      "erros": [
       {
-       "confusao": "Supôs-se um descarte de observações, que nenhum passo do procedimento executa. As cinco linhas do procedimento não incluem remoção.",
-       "conceito": "A árvore é ajustada sobre todas as observações, com o alvo y − p. Quem está bem previsto tem alvo perto de zero e puxa pouco a média das folhas. Remover observações introduziria viés de seleção, que o capítulo 2 já tratou.",
-       "exemplo": "<table><thead><tr><th>Situação</th><th>y − p</th><th>Influência na média da folha</th></tr></thead><tbody>\n    <tr><th scope=\"row\">Default previsto com PD de 90%</th><td class=\"num\">0,10</td><td>pequena</td></tr>\n    <tr><th scope=\"row\">Default previsto com PD de 20%</th><td class=\"num\">0,80</td><td>grande</td></tr>\n    <tr><th scope=\"row\">Pagou, previsto com PD de 15%</th><td class=\"num\">−0,15</td><td>pequena</td></tr></tbody></table>\n    <p class=\"nota\" style=\"margin-top:7px\">Todas as três permanecem na amostra. Só o peso efetivo difere.</p>",
-       "seu": "remover quem já está bem previsto",
-       "adequado": "manter todos e deixar que o alvo próximo de zero reduza a influência sozinho",
+       "confusao": "A diferença foi atribuída à quantidade de árvores. Os dois modelos têm o mesmo número de árvores; muda o que cada árvore pode perguntar.",
+       "conceito": "O número de árvores controla quanto o modelo ajusta; a profundidade controla quantas variáveis cada correção combina.",
+       "exemplo": "<p>Mesmo número de árvores, profundidades 1 e 2: as curvas por score são paralelas com tocos e se afastam com profundidade 2.</p>",
+       "seu": "confundir quantidade de árvores com ordem de interação",
+       "adequado": "ler a profundidade como o número de variáveis combinadas por correção",
        "novaQuestao": {
         "rot": "Outra vez",
-        "pergunta": "Quantas observações saem da amostra ao longo das quatro iterações do boosting?",
+        "pergunta": "Que profundidade permite que o efeito da utilização dependa do score e do atraso ao mesmo tempo?",
         "alt": [
-         "As bem previstas",
-         "Nenhuma",
-         "As que têm resíduo negativo"
+         "1",
+         "2",
+         "3"
         ],
-        "certa": 1,
-        "porqueCerta": "O procedimento não remove observação alguma. A amostra é integral em todas as iterações.",
+        "certa": 2,
+        "porqueCerta": "Para combinar três variáveis numa mesma folha são precisos três cortes encadeados: profundidade 3.",
         "erros": []
        }
       },
       null,
       {
-       "confusao": "A ideia de reponderação explícita, típica de outros métodos de combinação, foi atribuída ao gradient boosting. Aqui a mudança de atenção vem do alvo, e não de um peso separado.",
-       "conceito": "O peso implícito é o próprio valor de y − p. Quem está mal previsto tem alvo grande e domina a média das folhas da árvore seguinte. Não existe vetor de pesos mantido à parte.",
-       "exemplo": "<table><thead><tr><th>Método</th><th>Como realoca atenção</th></tr></thead><tbody>\n    <tr><th scope=\"row\">Gradient boosting</th><td>pelo valor do alvo y − p de cada observação</td></tr>\n    <tr><th scope=\"row\">Reponderação explícita</th><td>por um vetor de pesos atualizado a cada passo</td></tr>\n    <tr><th scope=\"row\">Média de modelos independentes</th><td>não realoca: cada modelo vê o problema inteiro</td></tr></tbody></table>",
-       "seu": "procurar um vetor de pesos",
-       "adequado": "olhar a coluna do alvo, que já é o peso",
+       "confusao": "A taxa foi tomada como causa. Ela encolhe todas as parcelas igualmente e não cria nem remove interação.",
+       "conceito": "A taxa multiplica cada correção por η; a forma das correções vem da árvore.",
+       "exemplo": "<p>Com tocos, mudar η muda o tamanho das parcelas, e as curvas continuam paralelas.</p>",
+       "seu": "atribuir interação à taxa",
+       "adequado": "atribuir interação à profundidade",
        "novaQuestao": {
         "rot": "Outra vez",
-        "pergunta": "O que dá mais influência a uma observação na árvore seguinte?",
+        "pergunta": "Dobrar a taxa com tocos torna o modelo capaz de interação?",
         "alt": [
-         "Um peso atribuído explicitamente",
-         "Um valor grande de y − p",
-         "A ordem dela na tabela"
+         "Sim",
+         "Não",
+         "Só com muitas árvores"
         ],
         "certa": 1,
-        "porqueCerta": "O alvo da árvore é y − p. Valor grande em módulo significa contribuição grande para a média da folha em que a observação cair.",
+        "porqueCerta": "Não: cada toco continua perguntando uma variável só, e a soma continua aditiva.",
         "erros": []
        }
       }
@@ -7664,7 +7664,7 @@
    },
    "origem": "obs",
    "aprendizado": "Comparar o boosting com a logística nas mesmas variáveis e nas mesmas amostras, e reconhecer que o ganho no ajuste não garante ganho na validação.",
-   "apoio": "Com utilização, atraso e score de bureau, a logística valida melhor que o boosting em qualquer número de árvores: AUC de validação 0,7006 contra 0,6553 do boosting parado em 16 árvores, e log loss 0,2932 contra 0,2955. No ajuste, o boosting passa a logística com 4 árvores e chega a 0,8740 com 300. A diferença de AUC na validação, 0,045, tem IC de DeLong de 0,020 a 0,070: não é ruído. O boosting só ganha quando há interação ou forma curva que a reta na log odds não captura (Lessmann et al., 2015).",
+   "apoio": "Preveja se, em algum número de árvores, o boosting supera a logística na validação; depois mova o número de árvores e compare AUC e log loss de ajuste e de validação dos dois modelos.",
    "conexao": "Fecha a parte de controles (slides 13 a 16) com a referência linear e abre o exame das probabilidades do boosting no slide 18.",
    "guia": {
     "funcao": "Pôr a logística como referência obrigatória do boosting: mesma amostra, mesmas variáveis, mesma validação.",
@@ -7699,52 +7699,52 @@
     {
      "slug": "c6p17q",
      "id": "c6p17q",
-     "rot": "O que reportar",
-     "pergunta": "A configuração com maior AUC de treino da grade atinge 0,9927 e tem AUC fora do tempo de 0,6376, a pior da grade. O que levar ao comitê?",
+     "rot": "O que levar ao comitê",
+     "pergunta": "Na validação, a logística das três variáveis tem AUC 0,7006, e o boosting parado em 16 árvores tem 0,6553; o intervalo de 95% de DeLong da diferença vai de 0,020 a 0,070. O que levar ao comitê?",
      "alt": [
-      "A AUC de treino de 0,9927, por ser a melhor medida da capacidade do modelo",
-      "A AUC fora do tempo da configuração escolhida na validação, declarando a grade inteira e o critério de escolha",
-      "A média entre a AUC de treino e a de fora do tempo, para equilibrar as duas leituras"
+      "O boosting, porque no ajuste chega a 0,8740 com 300 árvores",
+      "A logística como referência, com a diferença e o intervalo; o boosting só entra se superar a referência na validação",
+      "Os dois como equivalentes, porque a diferença é pequena"
      ],
      "certa": 1,
-     "porqueCerta": "A configuração escolhida pela validação tem 60 árvores e 8 folhas, com AUC de validação de 0,6476. O número que se reporta é o de fora do tempo dessa configuração, e a grade inteira vai junto para que a escolha possa ser auditada.",
+     "porqueCerta": "A comparação justa é na mesma amostra que nenhum dos dois viu. Ali a logística valida melhor, e o intervalo da diferença não contém o zero. O ganho do boosting no ajuste mede quanto ele se adapta às propostas que já viu.",
      "erros": [
       {
-       "confusao": "A AUC de treino foi tomada como medida de capacidade. Ela mede aderência à amostra em que o modelo foi ajustado, e cresce com a complexidade por construção.",
-       "conceito": "Aderência ao treino e desempenho fora da amostra andam juntos até certo ponto e se separam depois. Nesta grade eles já estão anticorrelacionados: a configuração com maior AUC de treino é a pior fora do tempo.",
-       "exemplo": "<table><thead><tr><th>Configuração</th><th>Treino</th><th>Validação</th><th>Fora do tempo</th></tr></thead><tbody>\n    <tr><th scope=\"row\">240 árvores, 16 folhas</th>\n      <td class=\"num\">0,9927</td><td class=\"num\">0,6063</td>\n      <td class=\"num\">0,6376</td></tr><tr style=\"background:#FBF3DE\"><th scope=\"row\">60 árvores, 8 folhas</th>\n      <td class=\"num\">0,8196</td><td class=\"num\">0,6476</td>\n      <td class=\"num\">0,6958</td></tr></tbody></table>\n    <p class=\"nota\" style=\"margin-top:7px\">A segunda linha é a escolhida. Ela perde no treino e ganha\n    nas duas amostras que importam.</p>",
-       "seu": "reportar o número da amostra em que o modelo foi ajustado",
-       "adequado": "reportar o número da amostra que não participou de nenhuma escolha",
+       "confusao": "O ajuste foi tomado como prova. A AUC de ajuste sobe com qualquer árvore a mais e não diz nada sobre propostas novas.",
+       "conceito": "Só a validação, com as mesmas propostas para os dois modelos, compara capacidade de generalizar.",
+       "exemplo": "<p>Boosting: AUC de ajuste 0,8740 com 300 árvores; na validação, o melhor ponto da perda fica em 16 árvores, com 0,6553.</p>",
+       "seu": "escolher pelo ajuste",
+       "adequado": "escolher pela validação, com a mesma amostra para os dois",
        "novaQuestao": {
         "rot": "Outra vez",
-        "pergunta": "Qual amostra serve para reportar desempenho?",
+        "pergunta": "Que número do boosting entra na comparação com a logística?",
         "alt": [
-         "Treino",
-         "Validação",
-         "A que não participou do ajuste nem da escolha de hiperparâmetro"
+         "A AUC de ajuste com 300 árvores",
+         "A AUC de validação no ponto escolhido pela perda de validação",
+         "A maior AUC de validação em qualquer número de árvores"
         ],
-        "certa": 2,
-        "porqueCerta": "Treino estima parâmetros e validação escolhe hiperparâmetros. Só a terceira amostra continua livre para estimar desempenho.",
+        "certa": 1,
+        "porqueCerta": "O ponto de parada é escolhido pela perda de validação antes de comparar; escolher o máximo olhando a própria comparação favorece o boosting.",
         "erros": []
        }
       },
       null,
       {
-       "confusao": "Média entre um número otimista e um número honesto foi tratada como equilíbrio. Ela apenas produz um número que não corresponde a nenhuma situação real.",
-       "conceito": "As duas amostras respondem a perguntas diferentes. A média das duas não responde a nenhuma delas, e nenhum destinatário do relatório sabe interpretá-la. O procedimento defensável é reportar o número fora do tempo e declarar o de treino separadamente, para que a distância entre eles fique visível.",
-       "exemplo": "<table><thead><tr><th>Apresentação</th><th>O que o leitor entende</th></tr></thead><tbody>\n    <tr><th scope=\"row\">Só treino</th><td>desempenho superestimado</td></tr>\n    <tr><th scope=\"row\">Média das duas</th><td>número sem significado operacional</td></tr>\n    <tr><th scope=\"row\">As duas, separadas e nomeadas</th><td>desempenho esperado e o tamanho do otimismo</td></tr></tbody></table>",
-       "seu": "buscar um meio termo entre as duas medidas",
-       "adequado": "apresentar as duas com nome, e usar a de fora do tempo como resultado",
+       "confusao": "Diferença pequena foi lida como equivalência. O intervalo de 0,020 a 0,070 não contém o zero.",
+       "conceito": "Equivalência exige um intervalo estreito em torno de zero; aqui o intervalo inteiro favorece a logística.",
+       "exemplo": "<p>Diferença de AUC na validação: 0,045, intervalo de 95% de 0,020 a 0,070.</p>",
+       "seu": "ler diferença pequena como empate",
+       "adequado": "ler o intervalo da diferença",
        "novaQuestao": {
         "rot": "Outra vez",
-        "pergunta": "Para que serve reportar também a AUC de treino?",
+        "pergunta": "Se o intervalo da diferença fosse de −0,010 a 0,040, o que se poderia dizer?",
         "alt": [
-         "Para melhorar o número apresentado",
-         "Para tornar visível a distância entre aderência e desempenho",
-         "Não serve para nada"
+         "A logística é melhor",
+         "A amostra não distingue os dois",
+         "O boosting é melhor"
         ],
         "certa": 1,
-        "porqueCerta": "A distância entre treino e fora do tempo é um diagnóstico de sobreajuste. Ela é informação de governança, não de desempenho.",
+        "porqueCerta": "Com o zero dentro do intervalo, a validação não separa os modelos; a referência mais simples fica até prova em contrário.",
         "erros": []
        }
       }
@@ -7768,7 +7768,7 @@
    },
    "origem": "esq",
    "aprendizado": "Distinguir a PD média da carteira da calibração por faixa e ler o slope de calibração com o seu intervalo.",
-   "apoio": "Parado em 16 árvores, o boosting tem PD média de 9,3% na validação, contra 9,8% observados (62 de 631; Wilson de 7,7% a 12,4%). Em cinco faixas pela fila de PD, a PD média cabe no intervalo de Wilson em 3, e o slope de calibração é 1,19 (IC de 0,80 a 1,58): 631 propostas não provam desvio. Com todas as 300 árvores, a PD média quase não muda (8,9%), mas a faixa 1 recebe 1,4% contra 7,9% observados e a faixa 5, 22,9% contra 15,1%; slope 0,42 (IC de 0,18 a 0,66): PDs extremas demais. Média certa não é PD certa; o capítulo 7 mede na janela e recalibra (Niculescu-Mizil e Caruana, 2005).",
+   "apoio": "Preveja se a média das PDs basta para dizer que o nível está certo; depois compare a curva por faixa, com intervalo de Wilson, no boosting parado e com mais árvores.",
    "conexao": "Usa o boosting parado dos slides 15 e 17 e prepara o capítulo 7, que mede a calibração na janela fora do tempo e recalibra.",
    "guia": {
     "funcao": "Mostrar que o número de árvores mexe na dispersão das PDs sem mexer na média, e que a média da carteira não confere a calibração.",
@@ -7836,7 +7836,7 @@
    },
    "origem": "esq",
    "aprendizado": "Decompor a log odds de uma proposta em contribuições de Shapley que somam exatamente o escore, e saber o que a importância por ganho não diz.",
-   "apoio": "No boosting parado em 16 árvores, a proposta da validação com utilização de 75,8%, atraso de 10 dias e score 756 tem PD de 9,8%. Partindo do valor esperado do modelo, −2,38 em log odds (8,5%), a utilização soma −0,04, o atraso 0,00 (nenhuma árvore corta no atraso) e o score +0,20: escore −2,22, exatamente. A importância por ganho põe o score em 89%, a utilização em 11% e o atraso em 0% para a carteira, sem sinal; só a contribuição diz direção e tamanho para uma proposta (Lundberg et al., 2020).",
+   "apoio": "Preveja qual variável mais pesa na PD da proposta escolhida; depois leia a cascata das contribuições até o escore, troque de proposta, edite as variáveis e compare com a importância por ganho.",
    "conexao": "Explica as PDs cujo nível o slide 18 conferiu; o atraso com contribuição zero prepara o slide 20, em que o atraso entra no modelo na direção errada.",
    "guia": {
     "funcao": "Dar ao aluno a explicação por proposta que o validador e o cliente recusado podem pedir.",
@@ -7904,7 +7904,7 @@
    },
    "origem": "rec",
    "aprendizado": "Reconhecer quando o modelo livre contraria a lógica de crédito em trechos com poucos dados e medir o custo de impor monotonia.",
-   "apoio": "Na amostra de ajuste, as 11 propostas com 31 a 60 dias de atraso não tiveram default, mas zero em 11 cabe numa taxa de até 25,9% (Wilson). Com 300 árvores e mínimo de 10 por folha, a dependência parcial do modelo livre vai de 14,6% com 30 dias para 3,4% a partir de 34 dias e cai em 10 trechos; com monotonia (utilização +1, atraso +1, score −1), nenhum trecho cai. Na validação, a restrição não custou: AUC 0,6756 contra 0,5979 (IC da diferença de 0,035 a 0,121); parados pela validação, com mínimo de 40 por folha, 0,6828 contra 0,6553 (IC de 0,007 a 0,048).",
+   "apoio": "Preveja o que o modelo livre aprende das propostas com atraso alto e nenhum default; depois compare a dependência parcial do atraso com e sem restrição monotônica e o custo na validação.",
    "conexao": "Usa a dependência parcial e a explicação do slide 19 e leva a monotonia à lista do comitê no slide 21.",
    "guia": {
     "funcao": "Mostrar que o modelo não conhece a lógica de crédito e que a restrição monotônica a impõe, com custo medido.",
@@ -7953,7 +7953,7 @@
    },
    "origem": "rec",
    "aprendizado": "Escolher os hiperparâmetros pela validação e montar a lista de evidências que um validador independente exige antes do comitê.",
-   "apoio": "O candidato do comitê é o boosting completo do gerador, com sete variáveis. Na grade de 12 combinações, a AUC de treino sobe sempre com árvores e folhas, de 0,7588 a 0,9927; a de validação (760 propostas de 2023-03 a 2023-07) é maior com 60 árvores e 8 folhas, 0,6476, e menor justamente onde o treino é máximo, 0,6063. A lista do validador, com as provas do capítulo: referência linear (0,7006 contra 0,6553), parada pela validação (16 árvores), monotonia (0,6828 contra 0,6553), nível conferido (9,3% contra 9,8%), explicação por proposta (soma exata) e janela fora do tempo congelada (737 propostas de 2023-08 a 2023-12). Resolução CMN 4.557/2017 e EBA (2023).",
+   "apoio": "Escolha a combinação de árvores e folhas que levaria ao comitê antes de ver a validação; depois leia a grade de treino e validação e a lista do que o validador independente confere.",
    "conexao": "Fecha o capítulo voltando ao gancho do slide 1 (0,8196 no treino, 0,6476 na validação) e entrega o candidato ao comitê do capítulo 7.",
    "guia": {
     "funcao": "Transformar o capítulo num procedimento: regra de escolha e lista de adoção.",

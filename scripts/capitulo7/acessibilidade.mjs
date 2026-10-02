@@ -1,8 +1,9 @@
-// Acessibilidade (axe-core) de cada quadro do capítulo 7, no estudo. Uso: node scripts/capitulo7/acessibilidade.mjs
+// Acessibilidade (axe-core) de cada quadro de um capítulo, no estudo. Uso: node scripts/capitulo7/acessibilidade.mjs [N] (padrão 7; grava tmp/axeN.json)
 import { chromium } from "@playwright/test";
 import fs from "node:fs";
-const roteiro = fs.readFileSync("src/lib/capitulo7/roteiro.ts", "utf8");
-const SLUGS = [...roteiro.matchAll(/slug: "(c7p\d+)", n: (\d+)/g)].sort((a, b) => +a[2] - +b[2]).map((m) => m[1]);
+const N = process.argv[2] ?? "7";
+const roteiro = fs.readFileSync(`src/lib/capitulo${N}/roteiro.ts`, "utf8");
+const SLUGS = [...roteiro.matchAll(/slug: "(c\d+p\d+)", n: (\d+)/g)].sort((a, b) => +a[2] - +b[2]).map((m) => m[1]);
 const axe = fs.readFileSync("node_modules/axe-core/axe.min.js", "utf8");
 const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
 const ctx = await browser.newContext({ viewport: { width: 1366, height: 900 } });
@@ -16,5 +17,5 @@ for (const slug of SLUGS) {
   tudo[slug] = r;
   console.log(slug.padEnd(6), r.length ? r.map((v) => `${v.id}(${v.impact},${v.n})`).join(" ") : "ok");
 }
-fs.mkdirSync("tmp", { recursive: true }); fs.writeFileSync("tmp/axe7.json", JSON.stringify(tudo, null, 1));
+fs.mkdirSync("tmp", { recursive: true }); fs.writeFileSync(`tmp/axe${N}.json`, JSON.stringify(tudo, null, 1));
 await browser.close();
