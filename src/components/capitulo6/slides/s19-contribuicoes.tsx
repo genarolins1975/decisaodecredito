@@ -136,7 +136,7 @@ export function S19Contribuicoes({ pagina }: { pagina?: Pagina }) {
         </Grafico>
       </Painel>
       <Painel>
-        {!revelado && <Previsao rotulo="Antes de revelar" pergunta="Qual variável mais move esta PD, para cima ou para baixo?" opcoes={OPS} escolha={esc} onEscolha={setEsc} />}
+        {!revelado && <Previsao rotulo="Antes de revelar" pergunta="Qual variável mais move esta PD, para cima ou para baixo?" opcoes={OPS} escolha={esc} onEscolha={setEsc} recolher />}
         {revelado && <>
           <p className="q7-k">Escolha ou edite a proposta</p>
           <div className="q7-botoes q6-s19-props" role="group" aria-label="Propostas da validação">{PROPOSTAS.map((p, i) => <button key={p.r} type="button" className="q7-btn" aria-pressed={ip === i && !editada} onClick={() => escolher(i)}>{p.r}</button>)}<Botao sec onClick={restaurar}>Restaurar</Botao></div>

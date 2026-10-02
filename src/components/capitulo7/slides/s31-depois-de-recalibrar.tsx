@@ -26,8 +26,10 @@ const transporta = (c: number) => sig(PLATT.a + PLATT.b * Math.log(c / (1 - c)))
 const AUC = aucPorPares(Y, PGR).auc!, KS = ks(Y, PGR).ks;
 const PM = media(PG)!;
 const P = PARAMETROS;
-/** erro da promessa: esperado pela PD menos realizado na janela, em palavras */
-const erro = (e: number, r: number) => `${fmtReais(Math.abs(e - r))} ${e > r ? "acima" : "abaixo"}`;
+/** diferença entre dois valores exibidos em mil reais, feita sobre os arredondados, para a conta da tela fechar */
+const difMil = (a: number, b: number) => (Math.round(a / 1e3) - Math.round(b / 1e3)) * 1e3;
+/** erro da promessa: esperado pela PD menos o que os aprovados valem pela PD verdadeira, em palavras */
+const erro = (e: number, r: number) => { const d = difMil(e, r); return `${fmtReais(Math.abs(d))} ${d > 0 ? "acima" : "abaixo"}`; };
 const C0 = 0.14;
 /** decisões que mudam com o mesmo corte de PD: de aprovada para recusada e o contrário */
 function mudancas(c: number, c2: number) {
@@ -66,7 +68,7 @@ export function S31DepoisDeRecalibrar({ pagina }: { pagina?: Pagina }) {
     { r: "Pela PD verdadeira", a: fmtReais(antes.verdadeiro), d: fmtReais(depois.verdadeiro), on: true },
   ];
   const direcao = mu.aprova === 0 ? <>o Platt recusa {mu.recusa} a mais ({int(antes.aprovados)} aprovados viram {int(depois.aprovados)})</> : mu.recusa === 0 ? <>o Platt aprova {mu.aprova} a mais</> : <>{mu.recusa} viram recusa e {mu.aprova} viram aprovação</>;
-  const vale = depois.verdadeiro - antes.verdadeiro;
+  const vale = difMil(depois.verdadeiro, antes.verdadeiro);
   return (
     <Quadro slug="c7p37" pagina={pagina} layout="gl"
       sub={revelado ? undefined : <>A fila fica e o nível muda. E a decisão, com o mesmo corte de PD?</>}
