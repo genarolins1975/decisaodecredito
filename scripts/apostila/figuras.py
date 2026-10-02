@@ -99,7 +99,7 @@ for _ in range(1000):
     ii = np.array([int(np.floor(r_() * n)) for _ in range(n)]); dif.append(auc_(y[ii], p_hat[ii]) - auc_(y[ii], p_gb[ii]))
 dif = np.array(dif); q1, q2 = np.quantile(dif, [0.025, 0.975])
 a = axs[1, 1]; a.hist(dif, bins=np.arange(-0.04, 0.1001, 0.004), color=B, alpha=0.85); a.axvline(0, color=O, lw=1.5); a.axvspan(q1, q2, color=A, alpha=0.12)
-a.set_title(f"Validação: diferença de AUC, bootstrap ({q1:.4f} a {q2:.4f})".replace(".", ","), fontsize=9.5, loc="left"); a.set_xlabel("AUC logística menos AUC boosting"); a.set_ylabel("réplicas")
+a.set_title(f"Validação: diferença de AUC, reamostragens ({q1:.4f} a {q2:.4f})".replace(".", ","), fontsize=9.5, loc="left"); a.set_xlabel("AUC logística menos AUC boosting"); a.set_ylabel("reamostragens")
 fig.tight_layout(); salvar(fig, "conceito-c7-validacao")
 
 # c8 · política: limiar, faixa manual e capacidade
