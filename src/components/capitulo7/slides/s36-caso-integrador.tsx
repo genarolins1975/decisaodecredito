@@ -172,8 +172,9 @@ function ReguaNivel({ d }: { d: Dim }) {
       {ticks.map((t) => <text key={t} className="q7-tick" x={x(t)} y={d.h - fs * 0.2} textAnchor="middle">{pct(t, 0)}</text>)}
       <line x1={x(AN.ptJanela)} x2={x(AN.ptJanela)} y1={fs * 0.3} y2={cy + fs * 0.6} stroke="#00205B" strokeWidth={2} strokeDasharray="6 4" />
       <text className="q7-rot--peq" x={x(AN.ptJanela) + fs * 0.3} y={fs * 1} style={{ fill: "#00205B", fontWeight: 700 }}>PD verdadeira {pct(AN.ptJanela, 1)}</text>
-      <line x1={x(OBS)} x2={x(OBS)} y1={cy - fs * 0.6} y2={cy + fs * 0.6} stroke="#5B6475" strokeWidth={2.5} />
-      <text className="q7-rot--peq" x={x(OBS) - fs * 0.3} y={filas[0]} textAnchor="end" style={{ fill: "#5B6475" }}>observado {pct(OBS, 1)}</text>
+      {/* a taxa observada sobe até a fileira do topo, à esquerda da PD verdadeira: nunca disputa espaço com os rótulos das âncoras */}
+      <line x1={x(OBS)} x2={x(OBS)} y1={fs * 0.3} y2={cy + fs * 0.6} stroke="#5B6475" strokeWidth={2} />
+      <text className="q7-rot--peq" x={x(OBS) - fs * 0.3} y={fs * 1} textAnchor="end" style={{ fill: "#5B6475" }}>observado {pct(OBS, 1)}</text>
       {ordem.map(({ l: [r, a, on] }, k) => { const xv = x(a.pdMedia); return (
         <g key={r}>
           <circle cx={xv} cy={cy} r={fs * 0.42} fill={on ? COR.prob : "#fff"} stroke={COR.prob} strokeWidth={2.5} />
