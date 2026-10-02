@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
 import { Botao, LinkSlide, Painel, Quadro, Seg, type Pagina } from "../base";
-import { D, EAD, N, PGR, PL, PREVALENCIA, Y } from "@/lib/capitulo7/dados";
-import { brier, calibracaoGlobal, delong, ganho, interceptoESlope, ks } from "@/lib/capitulo7/metricas";
+import { D, EAD, N, PGR, PL, Y } from "@/lib/capitulo7/dados";
+import { calibracaoGlobal, delong, ganho, interceptoESlope, ks } from "@/lib/capitulo7/metricas";
 import { CURTO } from "@/lib/capitulo7/roteiro";
 import { curva, GRADE_CORTES, otimo } from "@/lib/visuais/economia";
 import { int, num, pct } from "@/lib/capitulo7/formato";
@@ -14,14 +14,12 @@ import { int, num, pct } from "@/lib/capitulo7/formato";
  */
 type Sint = "auc" | "cal" | "dec" | "oot";
 const DL = delong(Y, PL, PGR), KS_ = ks(Y, PL), G10 = ganho(Y, PL, 0.1), G = calibracaoGlobal(Y, PL), SL = interceptoESlope(Y, PL).slope;
-const BS = brier(Y, PL), BS0 = brier(Y, PL.map(() => PREVALENCIA.treino));
 const ECON = otimo(curva(PL as number[], EAD as number[], GRADE_CORTES)).corte;
-const Z = 1.959963984540054;
 const RESPOSTAS = [
-  { p: "ordenacao", s: "●", t: "Ordena?", r: "Sim, de forma moderada.", ev: `AUC ${num(DL.auc1, 4)} (IC ${num(DL.auc1 - Z * DL.ep1, 3)} a ${num(DL.auc1 + Z * DL.ep1, 3)}); os 10% piores concentram ${pct(G10.ganho!, 0)} dos defaults.`, falta: "Estabilidade da ordem por segmento e no tempo." },
-  { p: "probabilidade", s: "▲", t: "Prevê bem a probabilidade?", r: "O nível está baixo.", ev: `PD média ${pct(G.pdMedia!, 1)} contra ${pct(D / N, 1)}; observado ÷ esperado ${num(G.razaoOE!, 2)}; slope ${num(SL, 2)}; Brier ${num(BS, 4)} contra ${num(BS0, 4)} da constante.`, falta: "Correção de nível em amostra própria, avaliada em outra." },
-  { p: "decisao", s: "◆", t: "Sustenta a decisão?", r: "Com hipóteses explícitas.", ev: `Corte econômico de ${pct(ECON, 1)} com as hipóteses do capítulo 8; o KS (${pct(KS_.limiar, 1)}) não é política.`, falta: "Sensibilidade a perda, receita e capacidade." },
-  { p: "validacao", s: "■", t: "Prova fora da amostra?", r: "Uma vez, com margem estreita.", ev: `Janela aberta uma vez, ${D} defaults; vantagem sobre o boosting de ${num(DL.dif, 4)}, IC de ${num(DL.ic[0], 4)} a ${num(DL.ic[1], 4)}.`, falta: "Nova janela para qualquer escolha feita depois desta." },
+  { p: "ordenacao", s: "●", t: "Ordena?", r: "Sim, de forma moderada.", ev: `AUC ${num(DL.auc1, 4)}; os 10% piores têm ${pct(G10.ganho!, 0)} dos defaults.`, falta: "Estabilidade da ordem por segmento e no tempo." },
+  { p: "probabilidade", s: "▲", t: "Prevê bem a probabilidade?", r: "O nível está baixo.", ev: `PD média ${pct(G.pdMedia!, 1)} contra ${pct(D / N, 1)} observados; slope ${num(SL, 2)}.`, falta: "Correção de nível em amostra própria, avaliada em outra." },
+  { p: "decisao", s: "◆", t: "Sustenta a decisão?", r: "Com hipóteses explícitas.", ev: `Corte econômico de ${pct(ECON, 1)}; o KS (${pct(KS_.limiar, 1)}) não é política.`, falta: "Sensibilidade a perda, receita e capacidade." },
+  { p: "validacao", s: "■", t: "Prova fora da amostra?", r: "Uma vez, com margem estreita.", ev: `${D} defaults; vantagem de ${num(DL.dif, 4)} sobre o boosting, IC de ${num(DL.ic[0], 4)} a ${num(DL.ic[1], 4)}.`, falta: "Nova janela para qualquer escolha feita depois desta." },
 ];
 const SINTOMAS: Record<Sint, { r: string; diag: string; voltar: string[] }> = {
   auc: { r: "AUC baixa", diag: "Problema de ordenação: as variáveis ou a forma do modelo não separam. Recalibrar não resolve; volte à modelagem.", voltar: ["c7p5", "c7p6", "c7p27"] },
@@ -35,7 +33,7 @@ export function S37Conclusao({ pagina }: { pagina?: Pagina }) {
   const x = s ? SINTOMAS[s] : null;
   return (
     <Quadro slug="c7p20" pagina={pagina} layout="gl" rotuloConclusao="Síntese"
-      conclusao={<>Uma métrica responde a uma pergunta só. A logística ordena de forma moderada, tem o nível de PD baixo, sustenta um corte com hipóteses explícitas e passou uma vez pela janela final: <b>confiar exige as quatro respostas, cada uma com a sua evidência.</b></>}
+      conclusao={<>Uma métrica responde a uma pergunta só: <b>confiar exige as quatro respostas, cada uma com a sua evidência.</b></>}
       fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults; logística do capítulo 4. IC da AUC por DeLong. Corte econômico com o motor do capítulo 8.`}>
       <Painel titulo="As quatro respostas, para a logística da janela">
         <div className="q7-s37-r">

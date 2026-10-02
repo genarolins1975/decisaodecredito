@@ -148,6 +148,7 @@ export type Dim = { w: number; h: number; fs: number };
  */
 export function Grafico({ titulo, sub, rotulo, children, tabela, arCelular, estilo }: { titulo?: ReactNode; sub?: ReactNode; rotulo: string; children: (d: Dim) => ReactNode; tabela?: ReactNode; arCelular?: string; estilo?: React.CSSProperties }) {
   const ref = useRef<HTMLDivElement>(null);
+  const idTabela = useId();
   const [d, setD] = useState<Dim>({ w: 900, h: 480, fs: 21.5 });
   useLayoutEffect(() => {
     const el = ref.current; if (!el) return;
@@ -161,9 +162,10 @@ export function Grafico({ titulo, sub, rotulo, children, tabela, arCelular, esti
     <div className="q7-graf" style={estilo}>
       {titulo && <p className="q7-graf-t">{titulo}{sub && <small>{sub}</small>}</p>}
       <div className="q7-gw" ref={ref} style={arCelular ? ({ ["--q7-ar-cel" as string]: arCelular }) : undefined}>
-        <svg className="q7-svg" viewBox={`0 0 ${d.w} ${d.h}`} width={d.w} height={d.h} style={{ width: d.w, height: d.h }} role="img" aria-label={rotulo}>{children(d)}</svg>
+        <svg className="q7-svg" viewBox={`0 0 ${d.w} ${d.h}`} width={d.w} height={d.h} style={{ width: d.w, height: d.h }} role="img" aria-label={rotulo} aria-describedby={tabela ? idTabela : undefined}>{children(d)}</svg>
       </div>
-      {tabela && <div className="q7-sr">{tabela}</div>}
+      {/* a tabela de dados é a descrição do gráfico para leitor de tela; oculta na tela, lida via aria-describedby */}
+      {tabela && <div hidden id={idTabela}>{tabela}</div>}
     </div>
   );
 }

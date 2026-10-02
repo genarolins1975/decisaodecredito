@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Botao, Expandir, Kpi, Painel, Quadro, Seg, type Pagina } from "../base";
+import { Expandir, Kpi, Painel, Quadro, Seg, type Pagina } from "../base";
 import { CAL, CAL_PL, META, PL, Y } from "@/lib/capitulo7/dados";
 import { ajustarPlatt, logLoss, transformar } from "@/lib/capitulo7/metricas";
 import { int, num } from "@/lib/capitulo7/formato";
@@ -30,7 +30,7 @@ export function S27AmostraPropria({ pagina }: { pagina?: Pagina }) {
     <Quadro slug="c7p16" pagina={pagina} layout="gl"
       conclusao={certo ? <>Calibrador ajustado na amostra de calibração e medido na janela que ele nunca viu: log loss <b>{num(LL_CERTO, 4)}</b>. Esse é o número que vale como evidência{LL_CERTO > LL_SEM ? <>, e ele mostra que aqui o calibrador <b>piora</b> a logística ({num(LL_SEM, 4)} sem calibrar): recalibrar não é melhora garantida</> : null}.</>
         : <>Ajustado e medido na mesma janela: log loss <b>{num(LL_ATALHO, 4)}</b>, menor que o honesto ({num(LL_CERTO, 4)}). Não é melhora: é o ajuste lendo as respostas da prova. <b>Nunca reporte a qualidade de um calibrador na amostra em que ele foi ajustado.</b></>}
-      fonte={`Base do curso: ${int(META.nTreino)} propostas de treino, ${int(META.nVal)} de validação e ${int(META.nOot)} fora do tempo, desfecho em 12 meses, data de referência ${META.dataReferencia.split("-").reverse().join("/")}. Amostra de calibração simulada: ${int(CAL.n)} propostas sorteadas da janela com desfecho novo tirado da PD verdadeira (semente ${CAL.semente}); existe só porque a base é sintética.`}>
+      fonte={`Base do curso: treino, validação e janela de ${int(META.nOot)} propostas, desfecho em 12 meses. Amostra de calibração simulada da PD verdadeira (${int(CAL.n)} casos, semente ${CAL.semente}).`}>
       <Painel titulo="A linha do tempo da base e o lugar de cada ajuste">
         <div className="q7-s27-tl" role="list">
           {ETAPAS.map((e) => {
@@ -45,10 +45,6 @@ export function S27AmostraPropria({ pagina }: { pagina?: Pagina }) {
             );
           })}
         </div>
-        <div className="q7-s27-mat">
-          <span>Maturação: cada safra precisa de 12 meses completos de observação.</span>
-          <span>Última safra do teste: dezembro de 2023, observada até dezembro de 2024; base fechada em {META.dataReferencia.split("-").reverse().join("/")}.</span>
-        </div>
         <Expandir resumo="E sem amostra própria? Validação cruzada">
           <p className="q7-nota">Com poucos dados, o calibrador pode ser ajustado por validação cruzada: o modelo é treinado em k − 1 partes e prevê a parte de fora; o calibrador aprende só dessas previsões fora da amostra. O teste final continua fechado. Na base do curso, a validação serviu para escolher hiperparâmetros e, pela documentação, também para o Platt do boosting: reutilizar a mesma amostra para as duas escolhas é um atalho que deve ser declarado.</p>
         </Expandir>
@@ -61,7 +57,6 @@ export function S27AmostraPropria({ pagina }: { pagina?: Pagina }) {
           <Kpi rotulo="Log loss do atalho" valor={certo ? "?" : num(LL_ATALHO, 4)} detalhe={certo ? "escolha Atalho para ver" : `a = ${num(PLATT_OOT.a, 3)}, b = ${num(PLATT_OOT.b, 3)}`} tom="def" />
           <Kpi rotulo="Sem calibrador" valor={num(LL_SEM, 4)} detalhe="a logística como estimada" />
         </div>
-        <div className="q7-botoes"><Botao sec onClick={() => setModo("certo")}>Restaurar</Botao></div>
       </Painel>
     </Quadro>
   );

@@ -40,7 +40,7 @@ export function S31DepoisDeRecalibrar({ pagina }: { pagina?: Pagina }) {
       conclusao={modo === "fixo"
         ? <>Mesmo corte de {pct(c, 1)} nas duas escalas: <b>{mudam} decisões mudam</b> sem que a fila mude (AUC {num(AUC, 4)} nas duas). A PD também entra no preço: o resultado esperado sem calibrar é {fmtReais(antes.esperado)} e a janela entrega {fmtReais(antes.realizado)}; com Platt, {fmtReais(depois.esperado)} esperados e {fmtReais(depois.realizado)} entregues.</>
         : <>Recusando a mesma fração, o corte de {pct(c, 1)} vira <b>{pct(c2, 2)}</b> na escala do Platt e {mudam === 0 ? "nenhuma decisão muda" : `${mudam} decisões mudam`}: a recalibração só trocou a régua. O que muda é o resultado que se promete à diretoria: {fmtReais(antes.esperado)} contra {fmtReais(depois.esperado)}, para os mesmos {int(antes.aprovados)} aprovados.</>}
-      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. Platt do curso: a = ${num(PLATT.a, 4)}, b = ${num(PLATT.b, 4)}, estimados antes da janela. Aprova quando PD < corte. Motor econômico do capítulo 8: receita 28%, perda 65% no default, funding 12%, R$ 120 de operação, capital 2%.`}>
+      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. Platt do curso (a = ${num(PLATT.a, 4)}, b = ${num(PLATT.b, 4)}), estimado antes da janela. Motor econômico do capítulo 8.`}>
       <Painel titulo="Cada proposta, antes e depois do Platt">
         <Grafico rotulo={`${N} propostas ligadas da PD sem calibrar à PD com Platt; ${mudam} mudam de decisão no corte`} arCelular="4 / 3">
           {(d) => {
@@ -72,8 +72,8 @@ export function S31DepoisDeRecalibrar({ pagina }: { pagina?: Pagina }) {
           <tbody>{lin.map((l) => <tr key={l.r}><th>{l.r}</th><td>{l.a}</td><td>{l.d}</td></tr>)}</tbody>
         </table>
         <div className="q7-s31-dois">
-          <div><p className="q7-k">Não muda</p><p className="q7-p">AUC {num(AUC, 4)}, KS {num(KS, 4)}, ganho e lift: tudo o que só depende da ordem.</p></div>
-          <div><p className="q7-k">Muda</p><p className="q7-p">PD média ({pct(media(PGR)!, 1)} para {pct(media(PG)!, 1)}), confiabilidade, Brier, log loss, perda esperada e as decisões com corte fixo.</p></div>
+          <div><p className="q7-k">Não muda</p><p className="q7-p">AUC {num(AUC, 4)}, KS {num(KS, 4)}, ganho e lift.</p></div>
+          <div><p className="q7-k">Muda</p><p className="q7-p">PD média ({pct(media(PGR)!, 1)} para {pct(media(PG)!, 1)}), Brier, log loss e decisões com corte fixo.</p></div>
         </div>
         <div className="q7-botoes"><Botao onClick={() => setModo(modo === "fixo" ? "fracao" : "fixo")}>{modo === "fixo" ? "Ver com a mesma fração" : "Ver com o mesmo corte"}</Botao><Botao sec onClick={() => { setModo("fixo"); setC(0.14); }}>Restaurar</Botao></div>
       </Painel>

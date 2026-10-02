@@ -21,7 +21,7 @@ const NUMERO: Record<P, string> = {
   validacao: `Vantagem de AUC ${num(DL.dif, 4)}, IC 95% de ${num(DL.ic[0], 4)} a ${num(DL.ic[1], 4)}`,
 };
 const SIMB: Record<P, string> = { ordenacao: "●", probabilidade: "▲", decisao: "◆", validacao: "■" };
-const TAMBEM: Partial<Record<P, string[]>> = { decisao: ["c7p23", "c7p7", "c7p28"] };
+const TAMBEM: Partial<Record<P, string[]>> = { decisao: ["c7p28"] };
 const slides = (p: P) => [...ROTEIRO.filter((s) => TAMBEM[p]?.includes(s.slug)), ...ROTEIRO.filter((s) => s.pergunta === p)];
 
 function Cartao({ p }: { p: P }) {
@@ -30,8 +30,8 @@ function Cartao({ p }: { p: P }) {
     <section className="q7-s01-c" data-p={p} aria-labelledby={`s01-${p}`}>
       <h3 id={`s01-${p}`}><span aria-hidden="true">{SIMB[p]}</span>{q.nome}</h3>
       <p className="q7-s01-f">{q.frase}</p>
-      <p className="q7-s01-n"><span>Na nossa janela</span>{NUMERO[p]}</p>
-      {p === "decisao" && <p className="q7-s01-x">Resultado esperado de uma proposta aprovada: receita × (1 − PD) − perda no default × PD − custos. A PD entra no preço; o corte sai da conta, não da PD sozinha.</p>}
+      <p className="q7-s01-n">{NUMERO[p]}</p>
+      {p === "decisao" && <p className="q7-s01-x">Resultado esperado = receita × (1 − PD) − perda × PD − custos.</p>}
       <ul className="q7-s01-l">{slides(p).map((s) => <li key={s.slug}><LinkSlide slug={s.slug} className="q7-s01-k" rotulo={`Slide ${s.n}: ${s.titulo}`}><b>{s.n}</b>{CURTO[s.slug]}</LinkSlide></li>)}</ul>
     </section>
   );
@@ -40,7 +40,7 @@ function Cartao({ p }: { p: P }) {
 export function S01Mapa({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c7p1" pagina={pagina} layout="um"
-      fonte={`Janela fora do tempo: ${N} propostas aprovadas, safras de 2023-08 a 2023-12, ${D} defaults em 12 meses; logística do capítulo 4. Percurso essencial: ${minutos("essencial")} minutos; com aprofundamentos, ${minutos()} minutos.`}>
+      fonte={`Números da logística na janela fora do tempo: ${N} propostas, ${D} defaults. Percurso essencial de ${minutos("essencial")} minutos; completo, ${minutos()}.`}>
       <div className="q7-s01">
         <div className="q7-s01-fluxo">
           <Cartao p="ordenacao" />
@@ -51,8 +51,8 @@ export function S01Mapa({ pagina }: { pagina?: Pagina }) {
         </div>
         <div className="q7-s01-val"><Cartao p="validacao" /></div>
         <nav className="q7-s01-pe" aria-label="Atalhos do capítulo">
-          <LinkSlide slug="c7p21" className="q7-s01-ir q7-s01-ir--prim">Começar o percurso: slide 2</LinkSlide>
-          <LinkSlide slug="c7p38" className="q7-s01-ir">Caso integrador: slide 36</LinkSlide>
+          <LinkSlide slug="c7p21" className="q7-s01-ir q7-s01-ir--prim">Começar: slide 2</LinkSlide>
+          <LinkSlide slug="c7p38" className="q7-s01-ir">Caso: slide 36</LinkSlide>
           <LinkSlide slug="c7p20" className="q7-s01-ir">Conclusão: slide 37</LinkSlide>
           <LinkSlide slug="c7p19" className="q7-s01-ir">Apêndice: slide 38</LinkSlide>
         </nav>

@@ -61,16 +61,15 @@ export function S32Politica({ pagina }: { pagina?: Pagina }) {
         <Legenda itens={[{ mk: "linha prob", r: "esperado, pela PD do modelo" }, { mk: "trac ink", r: "realizado na janela (depois)" }, { mk: "trac dec", r: "corte de maior resultado esperado" }, { mk: "trac ord", r: "corte do KS" }]} />
       </Painel>
       <Painel>
-        <Seg rotulo="Modelo" opcoes={(Object.keys(MOD) as M[]).map((k) => ({ v: k, r: k === "pl" ? "Logística" : k === "pgr" ? "Boosting" : "Boosting + Platt" }))} valor={m} onChange={setM} cor />
+        <div className="q7-linha-ctl"><Seg rotulo="Modelo" opcoes={(Object.keys(MOD) as M[]).map((k) => ({ v: k, r: k === "pl" ? "Logística" : k === "pgr" ? "Boosting" : "Com Platt" }))} valor={m} onChange={setM} cor /><Botao sec onClick={() => { setM("pl"); setLgd(PARAMETROS.lgd); setRec(PARAMETROS.receita); }}>Restaurar</Botao></div>
         <Controle rotulo="Perda no default (fração da exposição)" valor={lgd} min={0.3} max={0.9} passo={0.05} onChange={setLgd} mostrar={pct(lgd, 0)} />
         <Controle rotulo="Receita se pagar (fração da exposição)" valor={rec} min={0.15} max={0.4} passo={0.01} onChange={setRec} mostrar={pct(rec, 0)} />
         <div className="q7-kpis q7-kpis--2">
           <Kpi rotulo="Corte econômico" valor={pct(otE.c, 1)} detalhe={`realizado ${fmtReais(realizadoNo(p, otE.c, pr))}`} tom="dec" tam="mini" />
           <Kpi rotulo="Corte do KS" valor={pct(cKs, 1)} detalhe={`realizado ${fmtReais(realKs)}`} tam="mini" />
           <Kpi rotulo="Esperado no ótimo" valor={fmtReais(otE.esp)} detalhe="o que a PD promete" tom="prob" tam="mini" />
-          <Kpi rotulo="Melhor corte, visto depois" valor={pct(otR.c, 1)} detalhe={`${fmtReais(otR.real)}; não existe na decisão`} tam="mini" />
+          <Kpi rotulo="Melhor corte depois" valor={pct(otR.c, 1)} detalhe={`${fmtReais(otR.real)}, só depois`} tam="mini" />
         </div>
-        <div className="q7-botoes"><Botao sec onClick={() => { setM("pl"); setLgd(PARAMETROS.lgd); setRec(PARAMETROS.receita); }}>Restaurar</Botao></div>
       </Painel>
     </Quadro>
   );

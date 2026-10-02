@@ -9,9 +9,9 @@ export type Slide = { slug: string; n: number; pergunta: Pergunta; titulo: strin
 
 export const PERGUNTAS: { id: Exclude<Pergunta, "todas" | "apoio">; nome: string; frase: string }[] = [
   { id: "ordenacao", nome: "Ordenação", frase: "O modelo põe os clientes mais arriscados antes dos menos arriscados?" },
-  { id: "probabilidade", nome: "Probabilidade", frase: "Entre clientes com PD perto de 10%, cerca de 10% dão default no horizonte?" },
+  { id: "probabilidade", nome: "Probabilidade", frase: "Entre clientes com PD de 10%, cerca de 10% dão default no horizonte?" },
   { id: "decisao", nome: "Decisão", frase: "Como a PD vira ação, com perdas, receita, capacidade e política?" },
-  { id: "validacao", nome: "Validação", frase: "O resultado se sustenta em dados independentes, no tempo e nos segmentos?" },
+  { id: "validacao", nome: "Validação", frase: "O resultado se sustenta fora da amostra, no tempo e nos segmentos?" },
 ];
 
 export const ROTEIRO: Slide[] = [
@@ -63,11 +63,11 @@ export const minutos = (nivel?: Nivel) => ROTEIRO.filter((s) => (nivel ? s.nivel
 /** Rótulo curto de cada slide, para o mapa do slide 1 e a conclusão. */
 export const CURTO: Record<string, string> = {
   c7p1: "Mapa", c7p21: "Evento, população e horizonte", c7p2: "Armadilha da acurácia", c7p3: "Ordenar, prever, decidir",
-  c7p4: "Fila de risco", c7p5: "AUC como disputa", c7p22: "AUC exata e empates", c7p23: "Matriz de confusão", c7p6: "ROC",
+  c7p4: "Fila de risco", c7p5: "AUC como disputa", c7p22: "AUC exata", c7p23: "Matriz de confusão", c7p6: "ROC",
   c7p24: "Limites da AUC", c7p7: "KS", c7p8: "Ganho acumulado", c7p25: "Lift", c7p26: "Precisão e recall", c7p27: "Laboratório de ordenação",
-  c7p28: "Boa fila, risco errado", c7p9: "PD de um grupo", c7p29: "Calibração global", c7p10: "Confiabilidade", c7p30: "Escolha das faixas",
-  c7p31: "Incerteza de Wilson", c7p32: "Nível e inclinação", c7p33: "Brier", c7p34: "Log loss", c7p11: "Brier e calibração",
+  c7p28: "Boa fila, risco errado", c7p9: "PD de um grupo", c7p29: "Calibração global", c7p10: "Confiabilidade", c7p30: "Faixas",
+  c7p31: "Wilson", c7p32: "Nível e inclinação", c7p33: "Brier", c7p34: "Log loss", c7p11: "Brier e calibração",
   c7p35: "Laboratório de calibração", c7p16: "Amostra própria", c7p12: "Intercepto", c7p13: "Platt", c7p36: "Isotônica",
-  c7p37: "Depois de recalibrar", c7p18: "Política e corte econômico", c7p14: "Bootstrap", c7p15: "Comparação justa", c7p17: "OOT congelado",
+  c7p37: "Depois de recalibrar", c7p18: "Corte econômico", c7p14: "Bootstrap", c7p15: "Comparação justa", c7p17: "OOT congelado",
   c7p38: "Caso integrador", c7p20: "Conclusão", c7p19: "Apêndice",
 };
