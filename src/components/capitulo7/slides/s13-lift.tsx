@@ -29,7 +29,7 @@ export function S13Lift({ pagina }: { pagina?: Pagina }) {
           const bw = (x(0.1) - x(0)) * 0.72;
           return (
             <g>
-              <Eixos x={x} y={y} xt={[0, 0.2, 0.4, 0.6, 0.8, 1]} yt={[0, 1, 2, 3, 4]} fx={(v) => pct(v, 0)} fy={(v) => `${num(v, 0)}×`} xTit="Fração da carteira examinada, dos piores para os melhores" yTit="Lift" />
+              <Eixos x={x} y={y} xt={[0, 0.2, 0.4, 0.6, 0.8, 1]} yt={[0, 1, 2, 3, 4]} fx={(v) => pct(v, 0)} fy={(v) => `${num(v, 0)}×`} xTit="Fração examinada, dos piores aos melhores" yTit="Lift" />
               {BANDAS.map((b) => <g key={b.j}><rect x={x(b.j / 10 + 0.05) - bw / 2} y={y(b.lift!)} width={bw} height={y(0) - y(b.lift!)} fill={b.j / 10 < q - 1e-9 ? "#C9D8F2" : "#EEF0F3"} /><text className="q7-rot--peq" x={x(b.j / 10 + 0.05)} y={y(b.lift!) - 6} textAnchor="middle" style={{ fill: "#5B6475" }}>{num(b.lift!, 1)}</text></g>)}
               <line x1={x(0)} x2={x(1)} y1={y(1)} y2={y(1)} stroke="#5B6475" strokeWidth={2} strokeDasharray="7 6" />
               <path className="q7-linha q7-linha--ord" d={caminho(LIFTS.map((p) => ({ x: x(p.q), y: y(p.l) })))} />

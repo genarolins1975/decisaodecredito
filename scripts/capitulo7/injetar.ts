@@ -17,6 +17,7 @@ const HTML = path.join(RAIZ, "content/original/apresentacao-curso-pd.html");
 const PAG = JSON.parse(fs.readFileSync(path.join(RAIZ, "content/capitulo7/paginas.json"), "utf8")) as {
   paginas: Record<string, { aprendizado: string; apoio: string; conexao: string; t: Record<string, number>; resumo?: string; guia?: Record<string, unknown> }>;
   questoes?: Record<string, Record<string, unknown>>;
+  capitulo?: Record<string, string>;
 };
 const INI = "/* ==== capitulo7ReconstruidoV18: início (gerado por scripts/capitulo7/injetar.ts; não editar à mão) ==== */";
 const FIM = "/* ==== capitulo7ReconstruidoV18: fim ==== */";
@@ -43,6 +44,7 @@ function capitulo7ReconstruidoV18(){
   if(d.guia)p.guia=Object.assign({},d.guia);
  }
 ${Object.entries(PAG.questoes ?? {}).map(([nome, o]) => ` Object.assign(${nome},${JSON.stringify(o)});`).join("\n")}
+${PAG.capitulo ? ` Object.assign(CAPITULOS.find((c)=>c.id==='c7'),${JSON.stringify(PAG.capitulo)});` : ""}
 }
 ${FIM}`;
 

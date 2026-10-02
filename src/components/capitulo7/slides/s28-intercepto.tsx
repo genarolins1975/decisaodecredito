@@ -42,7 +42,7 @@ export function S28Intercepto({ pagina }: { pagina?: Pagina }) {
             );
           }}
         </Grafico>
-        <Formula f={String.raw`p'=\sigma\big(\operatorname{logit}(p)+a\big)\quad\text{com}\quad \sum_i \sigma\big(\operatorname{logit}(p_i)+a\big)=\sum_i y_i`} />
+        <Formula f={String.raw`\begin{aligned}p'&=\sigma\big(\operatorname{logit}(p)+a\big)\\ \textstyle\sum_i y_i&=\textstyle\sum_i \sigma\big(\operatorname{logit}(p_i)+a\big)\end{aligned}`} />
         <Expandir resumo="Por que não a diferença de logits das médias?">
           <p className="q7-nota">logit(média de y) − logit(média de p) = {num(INGENUO, 4)}. Como σ não é linear, somar esse valor a cada logit não leva a média das PDs à taxa observada: dá {num(somaCom(INGENUO), 1)} esperados contra {ALVO}. A equação precisa de uma raiz numérica, aqui por Newton.</p>
         </Expandir>

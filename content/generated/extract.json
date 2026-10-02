@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "c7290713d678aa785dd78745937e3c6b0c65bd048f7bc2fdc5f83362ab16869e",
- "extractedAt": "2026-10-02T00:17:36.177Z",
+ "sourceSha256": "680af2366582abac15bf9335211177ea4b939ef60ae3ce5155e340bcefe92f63",
+ "extractedAt": "2026-10-02T00:57:11.234Z",
  "meta": {
   "capitulos": [
    {
@@ -74,11 +74,11 @@
     "n": 7,
     "id": "c7",
     "nome": "Avaliação e calibração",
-    "pergunta": "Como saber se o modelo ordena e estima bem o risco?",
+    "pergunta": "Que quatro perguntas um modelo de PD precisa responder antes de merecer confiança?",
     "prereq": "Capítulos 2 e 4: probabilidade, perda e generalização.",
-    "aprende": "Ordenação, AUC por pares, curva ROC, KS, ganho e alavancagem, calibração por faixa, incerteza de proporção, Brier e log loss.",
-    "motiva": "Dois modelos com a mesma ordenação podem estimar níveis de risco muito diferentes.",
-    "atividade": "Contar pares à mão e construir a curva de calibração ponto a ponto.",
+    "aprende": "Ordenação (AUC por pares, ROC, KS, ganho, lift, precisão e recall), probabilidade (calibração global e por faixa, intervalo de Wilson, Brier, log loss, recalibração por intercepto, Platt e isotônica), decisão (corte econômico) e validação (bootstrap, comparação justa, janela fora do tempo congelada).",
+    "motiva": "Dois modelos com a mesma ordenação podem estimar níveis de risco muito diferentes, e uma janela usada para escolher deixa de provar.",
+    "atividade": "Prever antes de cada revelação e terminar decidindo, com evidência das quatro perguntas, se um modelo candidato vai para produção.",
     "usa": "Fornece os critérios de escolha usados nos capítulos 8 e 10."
    },
    {

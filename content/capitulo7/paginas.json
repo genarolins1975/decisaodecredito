@@ -1066,5 +1066,11 @@
    ],
    "porqueCerta": "Dividir todas as PDs por dez é uma transformação estritamente crescente. Se a PD do default era maior que a do adimplente, continua maior; o empate continua empate. Nenhum par muda de resultado e a AUC permanece 0,8067. É por isso que a AUC não enxerga o nível: ela depende apenas da ordem."
   }
+ },
+ "capitulo": {
+  "pergunta": "Que quatro perguntas um modelo de PD precisa responder antes de merecer confiança?",
+  "aprende": "Ordenação (AUC por pares, ROC, KS, ganho, lift, precisão e recall), probabilidade (calibração global e por faixa, intervalo de Wilson, Brier, log loss, recalibração por intercepto, Platt e isotônica), decisão (corte econômico) e validação (bootstrap, comparação justa, janela fora do tempo congelada).",
+  "motiva": "Dois modelos com a mesma ordenação podem estimar níveis de risco muito diferentes, e uma janela usada para escolher deixa de provar.",
+  "atividade": "Prever antes de cada revelação e terminar decidindo, com evidência das quatro perguntas, se um modelo candidato vai para produção."
  }
 }
