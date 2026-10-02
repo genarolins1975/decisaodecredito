@@ -36,7 +36,11 @@ function Histograma({ v, dom, passo, ic, ref0, d, real, xt, novas }: { v: number
       {ref0 && <><line x1={x(0)} x2={x(0)} y1={m.t} y2={y(0)} stroke="#5B6475" strokeWidth={2.5} /><text className="q7-rot q7-rot--peq" x={x(0) - d.fs * 0.4} y={m.t + d.fs * 0.6} textAnchor="end" style={{ fill: "#5B6475", fontWeight: 700 }}>diferença zero</text></>}
       <line x1={x(real)} x2={x(real)} y1={m.t - d.fs * 0.6} y2={y(0)} stroke="#00205B" strokeWidth={2.5} strokeDasharray="6 4" />
       <text className="q7-rot--peq" x={x(real)} y={m.t - d.fs * 0.8} textAnchor="middle" style={{ fill: "#00205B", fontWeight: 700 }}>na janela {num(real, 4)}</text>
-      {novas !== null && <><line x1={x(novas)} x2={x(novas)} y1={m.t} y2={y(0)} stroke="#2E6B4F" strokeWidth={3} /><text className="q7-rot--peq" x={x(novas) + d.fs * 0.35} y={m.t + d.fs * 0.9} textAnchor="start" style={{ fill: "#2E6B4F", fontWeight: 700, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em" }}>▲ média nas réplicas sintéticas da janela {num(novas, 4)}</text></>}
+      {novas !== null && (() => {
+        // rótulo com fundo branco: passa sobre a linha tracejada da janela sem ser cortado por ela (largura estimada pela letra)
+        const txt = `▲ média nas réplicas sintéticas da janela ${num(novas, 4)}`, lw = txt.length * d.fs * 0.86 * 0.54, lx = x(novas) + d.fs * 0.35, ly = m.t + d.fs * 0.9;
+        return <><line x1={x(novas)} x2={x(novas)} y1={m.t} y2={y(0)} stroke="#2E6B4F" strokeWidth={3} /><rect x={lx - d.fs * 0.2} y={ly - d.fs * 0.85} width={lw + d.fs * 0.4} height={d.fs * 1.15} rx={d.fs * 0.2} fill="#fff" fillOpacity={0.94} /><text className="q7-rot--peq" x={lx} y={ly} textAnchor="start" style={{ fill: "#2E6B4F", fontWeight: 700 }}>{txt}</text></>;
+      })()}
     </g>
   );
 }
