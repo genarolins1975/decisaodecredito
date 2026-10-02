@@ -23,7 +23,7 @@
 .q6-s10 { list-style: none; margin: 0; padding: 0; display: grid; gap: .5cqw; flex: 1; align-content: space-evenly; }
 .q6-s10-l { display: grid; grid-template-columns: 2.2cqw minmax(0, 36fr) minmax(0, 27fr) minmax(0, 33fr); gap: 1cqw; align-items: center; padding: .45cqw .6cqw; border-radius: .6cqw; background: var(--q7-papel2); border: 1px solid var(--q7-borda); }
 .q6-s10-n { width: 2.1cqw; height: 2.1cqw; border-radius: 50%; background: var(--q7-ink); color: #fff; display: grid; place-items: center; font-size: 1.25cqw; font-weight: 700; }
-.q6-s10-f { font-size: 1.45cqw; color: var(--q7-ink); overflow: hidden; }
+.q6-s10-f { font-size: 1.45cqw; color: var(--q7-ink); padding-top: .2cqw; }
 .q6-s10-o { font-size: 1.35cqw; color: var(--q7-texto); line-height: 1.25; }
 .q7 .q7-slide .q6-s10-ln { color: var(--q7-ord); font-weight: 700; white-space: nowrap; }
 .q6-s10-e { font-size: 1.35cqw; color: var(--q7-texto); font-variant-numeric: tabular-nums; line-height: 1.25; }
@@ -74,4 +74,5 @@
 .q6-s12-ctl > div > .q7-seg, .q6-s13-ctl > div > .q7-seg, .q6-s14-ctl > div > .q7-seg, .q6-s16-ctl > div > .q7-seg { justify-self: start; }
 
 /* 16 · subamostra */
+.q6-s16-ctl { display: flex; justify-content: space-between; align-items: flex-end; gap: 1cqw; flex-wrap: wrap; }
 .q6-s16-ctl > div { display: grid; gap: .25cqw; }

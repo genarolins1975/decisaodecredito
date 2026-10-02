@@ -85,7 +85,7 @@ export function S16Subamostra({ pagina }: { pagina?: Pagina }) {
         <Curvas c0={c0} cs={cs} revelado={revelado} f={f} />
       </Painel>
       <Painel>
-        <div className="q6-s16-ctl"><div><p className="q7-k">Fração sorteada por árvore{revelado ? "" : ": depois da previsão"}</p><Seg rotulo="Fração sorteada por árvore" opcoes={FRACS.map((v) => ({ v, r: pct(v, 0) }))} valor={f} onChange={setF} cor desab={!revelado} /></div></div>
+        <div className="q6-s16-ctl"><div><p className="q7-k">Fração sorteada por árvore{revelado ? "" : ": depois da previsão"}</p><Seg rotulo="Fração sorteada por árvore" opcoes={FRACS.map((v) => ({ v, r: pct(v, 0) }))} valor={f} onChange={setF} cor desab={!revelado} /></div><Botao sec onClick={() => { setF(0.5); setEsc(null); }}>Restaurar</Botao></div>
         {revelado && (
           <table className="q7-tab">
             <thead><tr><th className="q7-t-l">Perda de validação</th><th>No mínimo</th><th>Com {T} árvores</th></tr></thead>
@@ -97,7 +97,6 @@ export function S16Subamostra({ pagina }: { pagina?: Pagina }) {
           </table>
         )}
         <Previsao pergunta={`Com subamostra de ${pct(0.5, 0)} e ${T} árvores, a perda de validação...`} opcoes={ops} escolha={esc} onEscolha={setEsc} recolher />
-        <div className="q7-botoes q6-fim"><Botao sec onClick={() => { setF(0.5); setEsc(null); }}>Restaurar</Botao></div>
       </Painel>
     </Quadro>
   );
