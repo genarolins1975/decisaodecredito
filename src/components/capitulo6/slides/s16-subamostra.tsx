@@ -51,12 +51,8 @@ function fila(tit: string, ref: number, Fref: number[], ss: Sem[], L: (s: Sem) =
   const g = ss.map((s) => ref - L(s)); const ev = ganhoMedioPareado(Fref, ss.map(F), YV).ep, m = media(g);
   return { tit, g, m, se: dp(g) / Math.sqrt(g.length), ev, z: m / ev, ganham: g.filter((v) => v > 0).length };
 }
-/** Veredito entre sementes: a faixa de 95% da média de dez toca o zero? */
-const entreSementes = (q: Fila) => (q.m - TS * q.se > 0 ? "consistente entre sementes" : q.m + TS * q.se < 0 ? "piora consistente entre sementes" : "sem sinal consistente entre sementes");
+/** Veredito da validação: |z| abaixo do t de 630 graus cabe na faixa de 95%; perto dele (90% ou mais), no limite. */
 const cabe = (q: Fila) => Math.abs(q.z) < TV;
-/** Veredito da validação, pela mesma faixa de 95%: |z| abaixo do t cabe; perto dele (90% ou mais), no limite. */
-const naValidacao = (q: Fila) => (cabe(q) ? (Math.abs(q.z) >= 0.9 * TV ? "cabe, no limite, na faixa da validação" : "cabe na faixa da validação") : "passa da faixa da validação");
-const curto = (q: Fila) => (cabe(q) ? (Math.abs(q.z) >= 0.9 * TV ? "cabe, no limite" : "cabe") : "passa");
 /** Faixa de 95% entre sementes da média de dez. */
 const faixaS = (q: Fila): [number, number] => [q.m - TS * q.se, q.m + TS * q.se];
 /** Sinal entre sementes: ganho, nulo ou piora, pela faixa de 95% da média. */

@@ -59,7 +59,7 @@ function calcular() {
   const OPS = [0, 1, 2].map((j) => ({
     texto: VARIAVEIS[j],
     certa: j === J_MAX,
-    retorno: j === J_MAX ? <>{VARIAVEIS[j]}: {sinal(C_PREV.phi[j], 2)} na log odds, {num(Math.abs(C_PREV.phi[j] / C_PREV.phi[J_SEG]), 1)} vezes o que {ART0[J_SEG]} move. A carteira corta mais no {VARIAVEIS[J_GANHO].toLowerCase()}; esta proposta depende mais {DE[j]}.</>
+    retorno: j === J_MAX ? <>{ART0[j]} move {sinal(C_PREV.phi[j], 2)} na log odds, {num(Math.abs(C_PREV.phi[j] / C_PREV.phi[J_SEG]), 1)} vezes o que {ART0[J_SEG]} move. A carteira corta mais no {VARIAVEIS[J_GANHO].toLowerCase()}; esta proposta depende mais {DE[j]}.</>
       : j === 1 && SEM_ATRASO ? <>Confunde valor alarmante com contribuição: nenhuma das {K_PARADA} árvores corta no atraso, então {int(XV[I_PREV][1])} dias não movem esta PD nem nenhuma outra.</>
         : j === J_GANHO ? <>Confunde importância na carteira com peso na proposta: o ganho soma cortes em todas as propostas, sem sinal; o que conta aqui é onde caem os valores desta proposta, como {ART0[j]} de {fmtV(j, XV[I_PREV][j])}, nos cortes das árvores.</>
           : <>Confunde valor alarmante com contribuição: a contribuição mede o uso que o modelo faz do valor desta proposta, não o valor em si.</>,
@@ -112,7 +112,7 @@ function Cascata({ d, base, phi, ver }: { d: Dim; base: number; phi: number[]; v
       })}
       {ver && <line x1={cx(3) + bw / 2} x2={cx(4) - bw / 2} y1={y(fim)} y2={y(fim)} stroke="#9AA1AD" strokeWidth={1.5} strokeDasharray="4 4" />}
       <circle cx={cx(4)} cy={y(fim)} r={fs * 0.5} fill="#176C73" stroke="#fff" strokeWidth={2.5} />
-      <text className="q7-rot" x={cx(4)} y={y(fim)} dy={y(fim) - fs * 1.9 < 0 ? "1.7em" : "-.9em"} textAnchor="middle" style={{ fill: "#176C73" }}>{num(fim, 2)} ({pct(sigmoide(fim), 1)})</text>
+      {(() => { const t = `${num(fim, 2)} (${pct(sigmoide(fim), 1)})`, enc = cx(4) + (t.length * fs * 0.58) / 2 > d.w - 2; return <text className="q7-rot" x={enc ? d.w - 2 : cx(4)} y={y(fim)} dy={y(fim) - fs * 1.9 < 0 ? "1.7em" : "-.9em"} textAnchor={enc ? "end" : "middle"} style={{ fill: "#176C73" }}>{t}</text>; })()}
     </g>
   );
 }
