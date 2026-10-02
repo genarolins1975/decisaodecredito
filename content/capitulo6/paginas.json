@@ -1,0 +1,473 @@
+{
+ "fonte": "Textos das 22 páginas do capítulo 6 reconstruído. Título, ordem, nível e minutos vêm de src/lib/capitulo6/roteiro.ts. Gerado na origem por scripts/capitulo6/injetar.ts.",
+ "paginas": {
+  "c6p1": {
+   "t": {
+    "exp": 3,
+    "disc": 1
+   },
+   "aprendizado": "Como se forma um modelo assim, e onde o ganho virou decoreba? O comitê do capítulo 7 vai julgá-lo.",
+   "apoio": "Provisório: o quadro está em reconstrução.",
+   "conexao": "Escolher, votar ou corrigir: o boosting corrige em sequência",
+   "guia": {
+    "funcao": "Provisório.",
+    "pre": "Capítulo 5.",
+    "conducao": "Provisório.",
+    "leitura": "Provisório.",
+    "pergunta": "Provisório.",
+    "resposta": "Provisório.",
+    "erros": [],
+    "interacao": "Provisório.",
+    "verificacao": "Provisório.",
+    "transicao": "Escolher, votar ou corrigir: o boosting corrige em sequência"
+   }
+  },
+  "c6p2": {
+   "t": {
+    "exp": 2,
+    "disc": 1
+   },
+   "aprendizado": "Três maneiras de combinar árvores; só uma usa o erro da anterior.",
+   "apoio": "Provisório: o quadro está em reconstrução.",
+   "conexao": "O palpite inicial são as log odds da carteira",
+   "guia": {
+    "funcao": "Provisório.",
+    "pre": "Slide 1.",
+    "conducao": "Provisório.",
+    "leitura": "Provisório.",
+    "pergunta": "Provisório.",
+    "resposta": "Provisório.",
+    "erros": [],
+    "interacao": "Provisório.",
+    "verificacao": "Provisório.",
+    "transicao": "O palpite inicial são as log odds da carteira"
+   }
+  },
+  "c6p3": {
+   "t": {
+    "exp": 2,
+    "disc": 1
+   },
+   "aprendizado": "Dezesseis propostas, as mesmas dos capítulos 4 e 5, e um único número para todas.",
+   "apoio": "Provisório: o quadro está em reconstrução.",
+   "conexao": "O erro de cada proposta vira o alvo da próxima árvore",
+   "guia": {
+    "funcao": "Provisório.",
+    "pre": "Slide 2.",
+    "conducao": "Provisório.",
+    "leitura": "Provisório.",
+    "pergunta": "Provisório.",
+    "resposta": "Provisório.",
+    "erros": [],
+    "interacao": "Provisório.",
+    "verificacao": "Provisório.",
+    "transicao": "O erro de cada proposta vira o alvo da próxima árvore"
+   }
+  },
+  "c6p4": {
+   "t": {
+    "exp": 3,
+    "disc": 1
+   },
+   "aprendizado": "Em log loss, menos o gradiente na escala de log odds é y − p.",
+   "apoio": "Provisório: o quadro está em reconstrução.",
+   "conexao": "A primeira árvore separa onde o palpite errou",
+   "guia": {
+    "funcao": "Provisório.",
+    "pre": "Slide 3.",
+    "conducao": "Provisório.",
+    "leitura": "Provisório.",
+    "pergunta": "Provisório.",
+    "resposta": "Provisório.",
+    "erros": [],
+    "interacao": "Provisório.",
+    "verificacao": "Provisório.",
+    "transicao": "A primeira árvore separa onde o palpite errou"
+   }
+  },
+  "c6p5": {
+   "t": {
+    "exp": 3,
+    "disc": 1
+   },
+   "aprendizado": "Ela não prevê default: prevê o erro, e agrupa propostas com erros parecidos.",
+   "apoio": "Provisório: o quadro está em reconstrução.",
+   "conexao": "O valor da folha é um passo de Newton, não a média do erro",
+   "guia": {
+    "funcao": "Provisório.",
+    "pre": "Slide 4.",
+    "conducao": "Provisório.",
+    "leitura": "Provisório.",
+    "pergunta": "Provisório.",
+    "resposta": "Provisório.",
+    "erros": [],
+    "interacao": "Provisório.",
+    "verificacao": "Provisório.",
+    "transicao": "O valor da folha é um passo de Newton, não a média do erro"
+   }
+  },
+  "c6p6": {
+   "t": {
+    "exp": 2,
+    "disc": 1
+   },
+   "aprendizado": "A soma dos erros dividida pela soma de p(1 − p): é o que o scikit-learn usa.",
+   "apoio": "Provisório: o quadro está em reconstrução.",
+   "conexao": "Somar só um pedaço da correção: a taxa de aprendizagem",
+   "guia": {
+    "funcao": "Provisório.",
+    "pre": "Slide 5.",
+    "conducao": "Provisório.",
+    "leitura": "Provisório.",
+    "pergunta": "Provisório.",
+    "resposta": "Provisório.",
+    "erros": [],
+    "interacao": "Provisório.",
+    "verificacao": "Provisório.",
+    "transicao": "Somar só um pedaço da correção: a taxa de aprendizagem"
+   }
+  },
+  "c6p7": {
+   "t": {
+    "exp": 2,
+    "disc": 1
+   },
+   "aprendizado": "No ajuste, a correção inteira desce mais rápido; a taxa pequena paga na validação.",
+   "apoio": "Provisório: o quadro está em reconstrução.",
+   "conexao": "Árvore a árvore, a perda de treino cai",
+   "guia": {
+    "funcao": "Provisório.",
+    "pre": "Slide 6.",
+    "conducao": "Provisório.",
+    "leitura": "Provisório.",
+    "pergunta": "Provisório.",
+    "resposta": "Provisório.",
+    "erros": [],
+    "interacao": "Provisório.",
+    "verificacao": "Provisório.",
+    "transicao": "Árvore a árvore, a perda de treino cai"
+   }
+  },
+  "c6p8": {
+   "t": {
+    "exp": 3,
+    "disc": 1
+   },
+   "aprendizado": "Quatro correções nas dezesseis propostas, com a PD de cada uma se movendo.",
+   "apoio": "Provisório: o quadro está em reconstrução.",
+   "conexao": "A PD final se decompõe em parcelas rastreáveis",
+   "guia": {
+    "funcao": "Provisório.",
+    "pre": "Slide 7.",
+    "conducao": "Provisório.",
+    "leitura": "Provisório.",
+    "pergunta": "Provisório.",
+    "resposta": "Provisório.",
+    "erros": [],
+    "interacao": "Provisório.",
+    "verificacao": "Provisório.",
+    "transicao": "A PD final se decompõe em parcelas rastreáveis"
+   }
+  },
+  "c6p9": {
+   "t": {
+    "exp": 2,
+    "disc": 1
+   },
+   "aprendizado": "Palpite mais η vezes cada folha, em log odds; a sigmoide só no fim.",
+   "apoio": "Provisório: o quadro está em reconstrução.",
+   "conexao": "A fórmula depois da história",
+   "guia": {
+    "funcao": "Provisório.",
+    "pre": "Slide 8.",
+    "conducao": "Provisório.",
+    "leitura": "Provisório.",
+    "pergunta": "Provisório.",
+    "resposta": "Provisório.",
+    "erros": [],
+    "interacao": "Provisório.",
+    "verificacao": "Provisório.",
+    "transicao": "A fórmula depois da história"
+   }
+  },
+  "c6p10": {
+   "t": {
+    "exp": 2,
+    "disc": 1
+   },
+   "aprendizado": "Cada termo do algoritmo de Friedman é uma peça já vista.",
+   "apoio": "Provisório: o quadro está em reconstrução.",
+   "conexao": "O mesmo algoritmo em 1.472 propostas: o treino sempre melhora",
+   "guia": {
+    "funcao": "Provisório.",
+    "pre": "Slide 9.",
+    "conducao": "Provisório.",
+    "leitura": "Provisório.",
+    "pergunta": "Provisório.",
+    "resposta": "Provisório.",
+    "erros": [],
+    "interacao": "Provisório.",
+    "verificacao": "Provisório.",
+    "transicao": "O mesmo algoritmo em 1.472 propostas: o treino sempre melhora"
+   }
+  },
+  "c6p11": {
+   "t": {
+    "exp": 3,
+    "disc": 1
+   },
+   "aprendizado": "Utilização, atraso e score de bureau; a validação são 631 propostas que o modelo não viu.",
+   "apoio": "Provisório: o quadro está em reconstrução.",
+   "conexao": "Profundidade é a ordem de interação",
+   "guia": {
+    "funcao": "Provisório.",
+    "pre": "Slide 10.",
+    "conducao": "Provisório.",
+    "leitura": "Provisório.",
+    "pergunta": "Provisório.",
+    "resposta": "Provisório.",
+    "erros": [],
+    "interacao": "Provisório.",
+    "verificacao": "Provisório.",
+    "transicao": "Profundidade é a ordem de interação"
+   }
+  },
+  "c6p12": {
+   "t": {
+    "exp": 2,
+    "disc": 1
+   },
+   "aprendizado": "Com tocos, cada variável age sozinha; com profundidade 2, o efeito de uma depende da outra.",
+   "apoio": "Provisório: o quadro está em reconstrução.",
+   "conexao": "Quatro controles mexem na mesma complexidade",
+   "guia": {
+    "funcao": "Provisório.",
+    "pre": "Slide 11.",
+    "conducao": "Provisório.",
+    "leitura": "Provisório.",
+    "pergunta": "Provisório.",
+    "resposta": "Provisório.",
+    "erros": [],
+    "interacao": "Provisório.",
+    "verificacao": "Provisório.",
+    "transicao": "Quatro controles mexem na mesma complexidade"
+   }
+  },
+  "c6p13": {
+   "t": {
+    "exp": 3,
+    "disc": 1
+   },
+   "aprendizado": "Taxa, número de árvores, profundidade e mínimo por folha, medidos no ajuste e na validação.",
+   "apoio": "Provisório: o quadro está em reconstrução.",
+   "conexao": "Metade da taxa pede o dobro de árvores",
+   "guia": {
+    "funcao": "Provisório.",
+    "pre": "Slide 12.",
+    "conducao": "Provisório.",
+    "leitura": "Provisório.",
+    "pergunta": "Provisório.",
+    "resposta": "Provisório.",
+    "erros": [],
+    "interacao": "Provisório.",
+    "verificacao": "Provisório.",
+    "transicao": "Metade da taxa pede o dobro de árvores"
+   }
+  },
+  "c6p14": {
+   "t": {
+    "exp": 2,
+    "disc": 1
+   },
+   "aprendizado": "Taxa e número de árvores andam juntos: escolher um sem o outro não faz sentido.",
+   "apoio": "Provisório: o quadro está em reconstrução.",
+   "conexao": "A validação diz quando parar",
+   "guia": {
+    "funcao": "Provisório.",
+    "pre": "Slide 13.",
+    "conducao": "Provisório.",
+    "leitura": "Provisório.",
+    "pergunta": "Provisório.",
+    "resposta": "Provisório.",
+    "erros": [],
+    "interacao": "Provisório.",
+    "verificacao": "Provisório.",
+    "transicao": "A validação diz quando parar"
+   }
+  },
+  "c6p15": {
+   "t": {
+    "exp": 3,
+    "disc": 1
+   },
+   "aprendizado": "A perda de validação desce e volta a subir; o ponto mais baixo escolhe o número de árvores.",
+   "apoio": "Provisório: o quadro está em reconstrução.",
+   "conexao": "Sortear propostas a cada árvore também regulariza",
+   "guia": {
+    "funcao": "Provisório.",
+    "pre": "Slide 14.",
+    "conducao": "Provisório.",
+    "leitura": "Provisório.",
+    "pergunta": "Provisório.",
+    "resposta": "Provisório.",
+    "erros": [],
+    "interacao": "Provisório.",
+    "verificacao": "Provisório.",
+    "transicao": "Sortear propostas a cada árvore também regulariza"
+   }
+  },
+  "c6p16": {
+   "t": {
+    "exp": 2,
+    "disc": 1
+   },
+   "aprendizado": "O boosting estocástico de Friedman (2002): cada árvore vê só uma parte do ajuste.",
+   "apoio": "Provisório: o quadro está em reconstrução.",
+   "conexao": "Com três variáveis, a logística valida melhor",
+   "guia": {
+    "funcao": "Provisório.",
+    "pre": "Slide 15.",
+    "conducao": "Provisório.",
+    "leitura": "Provisório.",
+    "pergunta": "Provisório.",
+    "resposta": "Provisório.",
+    "erros": [],
+    "interacao": "Provisório.",
+    "verificacao": "Provisório.",
+    "transicao": "Com três variáveis, a logística valida melhor"
+   }
+  },
+  "c6p17": {
+   "t": {
+    "exp": 2,
+    "disc": 1
+   },
+   "aprendizado": "O boosting só ganha quando há interação ou forma que a logística não captura.",
+   "apoio": "Provisório: o quadro está em reconstrução.",
+   "conexao": "As PDs do boosting saem fora de nível",
+   "guia": {
+    "funcao": "Provisório.",
+    "pre": "Slide 16.",
+    "conducao": "Provisório.",
+    "leitura": "Provisório.",
+    "pergunta": "Provisório.",
+    "resposta": "Provisório.",
+    "erros": [],
+    "interacao": "Provisório.",
+    "verificacao": "Provisório.",
+    "transicao": "As PDs do boosting saem fora de nível"
+   }
+  },
+  "c6p18": {
+   "t": {
+    "exp": 2,
+    "disc": 1
+   },
+   "aprendizado": "Ordenar bem não garante probabilidade certa; o capítulo 7 mede e corrige.",
+   "apoio": "Provisório: o quadro está em reconstrução.",
+   "conexao": "Por que esta PD? A contribuição de cada variável",
+   "guia": {
+    "funcao": "Provisório.",
+    "pre": "Slide 17.",
+    "conducao": "Provisório.",
+    "leitura": "Provisório.",
+    "pergunta": "Provisório.",
+    "resposta": "Provisório.",
+    "erros": [],
+    "interacao": "Provisório.",
+    "verificacao": "Provisório.",
+    "transicao": "Por que esta PD? A contribuição de cada variável"
+   }
+  },
+  "c6p19": {
+   "t": {
+    "exp": 3,
+    "disc": 1
+   },
+   "aprendizado": "Contribuições de Shapley pelo caminho das árvores somam exatamente a log odds da proposta.",
+   "apoio": "Provisório: o quadro está em reconstrução.",
+   "conexao": "PD que cai quando o atraso sobe? Restrição monotônica",
+   "guia": {
+    "funcao": "Provisório.",
+    "pre": "Slide 18.",
+    "conducao": "Provisório.",
+    "leitura": "Provisório.",
+    "pergunta": "Provisório.",
+    "resposta": "Provisório.",
+    "erros": [],
+    "interacao": "Provisório.",
+    "verificacao": "Provisório.",
+    "transicao": "PD que cai quando o atraso sobe? Restrição monotônica"
+   }
+  },
+  "c6p20": {
+   "t": {
+    "exp": 2,
+    "disc": 1
+   },
+   "aprendizado": "O modelo livre pode contrariar a lógica de crédito em trechos com poucos dados.",
+   "apoio": "Provisório: o quadro está em reconstrução.",
+   "conexao": "O candidato do comitê: o que o boosting precisa provar",
+   "guia": {
+    "funcao": "Provisório.",
+    "pre": "Slide 19.",
+    "conducao": "Provisório.",
+    "leitura": "Provisório.",
+    "pergunta": "Provisório.",
+    "resposta": "Provisório.",
+    "erros": [],
+    "interacao": "Provisório.",
+    "verificacao": "Provisório.",
+    "transicao": "O candidato do comitê: o que o boosting precisa provar"
+   }
+  },
+  "c6p21": {
+   "t": {
+    "exp": 3,
+    "disc": 1
+   },
+   "aprendizado": "Sete variáveis, hiperparâmetros escolhidos na validação, e a lista que o validador independente confere.",
+   "apoio": "Provisório: o quadro está em reconstrução.",
+   "conexao": "Apêndice: fórmulas, fronteira e referências",
+   "guia": {
+    "funcao": "Provisório.",
+    "pre": "Slide 20.",
+    "conducao": "Provisório.",
+    "leitura": "Provisório.",
+    "pergunta": "Provisório.",
+    "resposta": "Provisório.",
+    "erros": [],
+    "interacao": "Provisório.",
+    "verificacao": "Provisório.",
+    "transicao": "Apêndice: fórmulas, fronteira e referências"
+   }
+  },
+  "c6p22": {
+   "t": {
+    "exp": 2,
+    "disc": 1
+   },
+   "aprendizado": "Material de consulta; o percurso da aula termina no slide anterior.",
+   "apoio": "Provisório: o quadro está em reconstrução.",
+   "conexao": "Fim do capítulo.",
+   "guia": {
+    "funcao": "Provisório.",
+    "pre": "Slide 21.",
+    "conducao": "Provisório.",
+    "leitura": "Provisório.",
+    "pergunta": "Provisório.",
+    "resposta": "Provisório.",
+    "erros": [],
+    "interacao": "Provisório.",
+    "verificacao": "Provisório.",
+    "transicao": "Capítulo 7."
+   }
+  }
+ },
+ "capitulo": {
+  "pergunta": "Como somar árvores pequenas, cada uma corrigindo o erro das anteriores, produz uma PD, e quando esse ganho é real?",
+  "aprende": "Mecanismo (palpite em log odds, pseudo-resíduo y − p, valor da folha por Newton, taxa de aprendizagem), controle (número de árvores, profundidade, mínimo por folha, subamostra), prova (validação, parada, logística como referência) e probabilidade (nível das PDs, contribuições de Shapley, restrição monotônica).",
+  "motiva": "O boosting que o comitê julga no capítulo 7 ordenou o treino com AUC 0,8196 e a validação com 0,6476.",
+  "atividade": "Fazer o algoritmo à mão em 16 propostas, rodá-lo em 2.103 e terminar com a lista do que o candidato precisa provar ao comitê."
+ }
+}

@@ -4,6 +4,9 @@ import "./capitulo7.css";
 import "./capitulo7-g1.css";
 import "./capitulo7-g2.css";
 import "./capitulo7-g3.css";
+import "./capitulo6-g1.css";
+import "./capitulo6-g2.css";
+import "./capitulo6-g3.css";
 import "katex/dist/katex.min.css";
 import "../../content/generated/legacy-scoped.css";
 
