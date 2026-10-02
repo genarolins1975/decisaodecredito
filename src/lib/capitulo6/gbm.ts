@@ -174,3 +174,41 @@ function esperado(no: No, x: Vetor, S: number): number {
 export function dependenciaParcial(mod: Modelo, X: Matriz, v: number, grade: Vetor): number[] {
   return grade.map((g) => { let s = 0; for (const x of X) { const z = x.slice(); z[v] = g; s += pd(mod, z); } return s / X.length; });
 }
+
+/**
+ * Importância por ganho, como o feature_importances_ do scikit-learn: em cada nó, a redução do erro quadrático dos
+ * pseudo-resíduos daquela árvore, n_e·n_d ÷ n · (média_e − média_d)², somada por variável e normalizada para somar 1.
+ * Diz quanto cada variável foi usada para cortar, não quanto pesa numa proposta (para isso, contribuicoes).
+ */
+export function importanciaGanho(mod: Modelo, X: Matriz, y: Vetor): number[] {
+  const F = estagios(mod, X); const imp = new Array(X[0].length).fill(0);
+  mod.arvores.forEach((arv, m) => {
+    const r = y.map((v, i) => v - sigmoide(F[m][i]));
+    const desce = (no: No, ids: number[]) => {
+      if (no.folha) return;
+      const e: number[] = [], d: number[] = [];
+      for (const i of ids) (Math.fround(X[i][no.variavel]) <= no.corte ? e : d).push(i);
+      const me = e.reduce((s, i) => s + r[i], 0) / e.length, md = d.reduce((s, i) => s + r[i], 0) / d.length;
+      imp[no.variavel] += ((e.length * d.length) / ids.length) * (me - md) ** 2;
+      desce(no.esq, e); desce(no.dir, d);
+    };
+    desce(arv, X.map((_, i) => i));
+  });
+  const t = imp.reduce((a, b) => a + b, 0); return imp.map((v) => (t > 0 ? v / t : 0));
+}
+
+/** Cortes que as árvores fazem na variável v, em ordem crescente (entre dois cortes, a previsão não muda com v). */
+export function cortesDe(mod: Modelo, v: number): number[] {
+  const c = new Set<number>(); const w = (n: No) => { if (n.folha) return; if (n.variavel === v) c.add(n.corte); w(n.esq); w(n.dir); };
+  mod.arvores.forEach(w); return [...c].sort((a, b) => a - b);
+}
+/**
+ * A mesma dependência parcial de dependenciaParcial, calculada uma vez por intervalo entre cortes da variável: pontos da
+ * grade no mesmo intervalo têm a mesma previsão em toda proposta, então recebem o mesmo valor.
+ */
+export function dependenciaParcialRapida(mod: Modelo, X: Matriz, v: number, grade: Vetor): number[] {
+  const cs = cortesDe(mod, v); const chave = (g: number) => cs.filter((c) => Math.fround(g) > c).length;
+  const rep = new Map<number, number>(); for (const g of grade) if (!rep.has(chave(g))) rep.set(chave(g), g);
+  const reps = [...rep.entries()]; const vals = dependenciaParcial(mod, X, v, reps.map(([, g]) => g));
+  const por = new Map(reps.map(([k], i) => [k, vals[i]])); return grade.map((g) => por.get(chave(g))!);
+}

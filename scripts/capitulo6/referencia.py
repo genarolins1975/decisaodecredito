@@ -60,6 +60,7 @@ for nome, cfg in CONFIGS.items():
         "auc": {str(k): {"ajuste": roc_auc_score(ya, Sa[k - 1]), "validacao": roc_auc_score(yv, Sv[k - 1]), "oot": roc_auc_score(yo, So[k - 1])} for k in marcos},
         "logloss": {str(k): {"ajuste": log_loss(ya, 1 / (1 + np.exp(-Sa[k - 1]))), "validacao": log_loss(yv, 1 / (1 + np.exp(-Sv[k - 1]))), "oot": log_loss(yo, 1 / (1 + np.exp(-So[k - 1])))} for k in marcos},
     }
+    ref["modelos"][nome]["importancia"] = m.feature_importances_.tolist()
     if nome == "base":
         ex = shap.TreeExplainer(m, feature_perturbation="tree_path_dependent", model_output="raw")
         sv = ex.shap_values(Xo[:10])

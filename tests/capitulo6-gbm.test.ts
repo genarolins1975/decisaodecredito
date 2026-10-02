@@ -36,6 +36,16 @@ describe("capítulo 6: gradient boosting contra o scikit-learn", () => {
         perto(G.perdaLog(ea[k], base.ajuste.y), l.ajuste, 1e-9); perto(G.perdaLog(ev[k], base.validacao.y), l.validacao, 1e-9); perto(G.perdaLog(eo[k], base.oot.y), l.oot, 1e-9);
       }
     });
+    it(`${nome}: importância por ganho igual ao feature_importances_ do scikit-learn`, () => {
+      G.importanciaGanho(mod, XA, base.ajuste.y).forEach((v, j) => perto(v, (r as { importancia: number[] }).importancia[j], 1e-12));
+    });
+    it(`${nome}: dependência parcial rápida igual à ponto a ponto`, () => {
+      for (const v of [0, 1, 2]) {
+        const xs = [...new Set(XA.map((x) => x[v]))].sort((a, b) => a - b); const grade = xs.filter((_, i) => i % Math.ceil(xs.length / 25) === 0);
+        const lenta = G.dependenciaParcial(mod, XA.slice(0, 150), v, grade), rapida = G.dependenciaParcialRapida(mod, XA.slice(0, 150), v, grade);
+        rapida.forEach((x, i) => perto(x, lenta[i], 1e-15));
+      }
+    });
     if ("shap" in r) it(`${nome}: contribuições por variável iguais às do shap.TreeExplainer e somando o escore`, () => {
       const s = r.shap as { base: number; phi: number[][]; escore: number[] };
       XO.slice(0, 10).forEach((x, i) => {
