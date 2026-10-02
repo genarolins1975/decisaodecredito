@@ -82,11 +82,11 @@ export function S28Intercepto({ pagina }: { pagina?: Pagina }) {
       </Painel>
       <Painel>
         <div className="q7-linha-ctl"><Seg rotulo="Modelo" opcoes={[{ v: "logistica" as Mod, r: "Logística" }, { v: "boosting" as Mod, r: "Boosting" }]} valor={mod} onChange={setMod} cor /><Botao sec onClick={() => { setPrev(null); setMod("logistica"); }}>Restaurar</Botao></div>
-        {!aberto && <table className="q7-tab">
+        {prev === null && <table className="q7-tab">
           <thead><tr><th className="q7-t-l">Newton, na calibração</th><th>a</th><th>Defaults esperados</th></tr></thead>
           <tbody>{r.iter.slice(0, 3).map((it) => <tr key={it.k}><th>{it.k}</th><td>{num(it.a, 4)}</td><td>{num(it.soma, 2)}</td></tr>)}<tr data-on="1"><th>alvo</th><td></td><td>{ALVO}</td></tr></tbody>
         </table>}
-        {aberto && <p className="q7-nota">Newton, na calibração: a = {num(r.A, 4)}, {num(r.iter[r.iter.length - 1].soma, 2)} defaults esperados para {ALVO} observados.</p>}
+        {prev !== null && <p className="q7-nota">Newton, na calibração: a = {num(r.A, 4)}, {num(r.iter[r.iter.length - 1].soma, 2)} defaults esperados para {ALVO} observados.</p>}
         {aberto ? (
           <>
             <Kpi rotulo="PD média na janela" valor={pct(r.pm1, 2)} detalhe={`antes ${pct(r.pm0, 2)}, Jeffreys p = ${num(r.j0, 2)} · observado ${pct(OBS.p, 2)}`} tom="prob" tam="mini" />
@@ -103,7 +103,7 @@ export function S28Intercepto({ pagina }: { pagina?: Pagina }) {
         ) : (
           <Previsao pergunta="Só o nível é corrigido. Na janela, o Brier..." escolha={prev} onEscolha={setPrev} recolher
             opcoes={[
-              { certa: false, texto: "Cai muito: a PD média chega ao observado", retorno: `O intercepto só pode tirar do Brier a parte de calibração, e aqui ela é pequena: MCB ${num(r.mcb0, 4)} num Brier de ${num(r.bs0, 4)} (slide 25). Com o nível muito errado, como na logística deslocada em +${num(DESLOC, 1)} do slide 25, o mesmo ajuste levaria o Brier de ${num(CONTRA.bs0, 5)} a ${num(CONTRA.bs1, 5)}. Superestima o erro de nível desta carteira.` },
+              { certa: false, texto: "Cai muito: a PD média chega ao observado", retorno: `O intercepto só tira do Brier a parte de calibração, e aqui ela é pequena: MCB ${num(r.mcb0, 4)} num Brier de ${num(r.bs0, 4)} (slide 25). Com o nível muito errado, como na logística deslocada em +${num(DESLOC, 1)} do slide 25, o mesmo ajuste levaria o Brier de ${num(CONTRA.bs0, 5)} a ${num(CONTRA.bs1, 5)}. Superestima o erro de nível desta carteira.` },
               { texto: "Quase não muda", certa: true, retorno: `Isso: o intercepto só mexe na parte de calibração do Brier (MCB ${num(r.mcb0, 4)}), que já era pequena; a separação fica onde estava.` },
               { certa: false, texto: `Piora: a calibração teve ${pct(ALVO / CAL.n, 1)} de defaults, a janela não`, retorno: `Seria um risco se a calibração viesse de outra população. Aqui ela sai da mesma PD verdadeira, e ${pct(ALVO / CAL.n, 1)} cabe no intervalo da janela (${pct(OBS.lo, 1)} a ${pct(OBS.hi, 1)}): diferença de nível desse tamanho é ruído.` },
             ]} />

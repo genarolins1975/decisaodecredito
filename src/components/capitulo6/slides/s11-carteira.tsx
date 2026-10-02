@@ -75,10 +75,12 @@ function Painel2({ c, m, revelado, kmin, passa, kauc }: { c: Curvas; m: number; 
           return (
             <g>
               <Eixos x={x} y={y} xt={XT} yt={yt} fx={(v) => (tipo === "auc" ? int(v) : "")} fy={fy} xTit={tipo === "auc" ? "número de árvores somadas (escala log)" : undefined} />
+              {/* cursor antes das anotações: o halo dos rótulos o cobre onde se cruzam */}
+              <line x1={x(m)} x2={x(m)} y1={tipo === "perda" && revelado ? topo + d.fs * 0.45 : g.t} y2={d.h - g.b} stroke="#5B6475" strokeWidth={1.8} strokeDasharray="3 4" />
               {tipo === "perda" && revelado && <g>
                 <line x1={x(0)} x2={x(MAXA)} y1={y(c.pv[0])} y2={y(c.pv[0])} stroke="#2E6B4F" strokeWidth={1.6} strokeDasharray="2 4" />
                 <text className="q7-rot--peq" x={x(0) + d.fs * 0.5} y={y(c.pv[0])} dy="-.45em" style={{ fill: "#2E6B4F", fontWeight: 700, ...halo }}>palpite na validação {num(c.pv[0], 3)}</text>
-                <line x1={x(kmin)} x2={x(kmin)} y1={y(c.pv[kmin]) - r * 1.6} y2={topo + d.fs * 0.3} stroke="#2E6B4F" strokeWidth={1.2} strokeDasharray="2 3" />
+                <line x1={x(kmin)} x2={x(kmin)} y1={y(c.pv[kmin]) - r * 1.6} y2={topo + d.fs * 0.45} stroke="#2E6B4F" strokeWidth={1.2} strokeDasharray="2 3" />
                 <circle cx={x(kmin)} cy={y(c.pv[kmin])} r={r * 1.7} fill="none" stroke="#2E6B4F" strokeWidth={2} />
                 <text className="q7-rot--peq" x={x(kmin)} y={topo} textAnchor="middle" style={{ fill: "#2E6B4F", fontWeight: 700, ...halo }}>mínimo {num(c.pv[kmin], 3)} em {kmin}</text>
                 {/* o cruzamento é anotado abaixo do ponto, entre as duas curvas, para deixar o alto livre ao valor do cursor */}
@@ -90,7 +92,6 @@ function Painel2({ c, m, revelado, kmin, passa, kauc }: { c: Curvas; m: number; 
                 <circle cx={x(kauc)} cy={y(c.av[kauc])} r={r * 1.7} fill="none" stroke="#2E6B4F" strokeWidth={2} />
                 <text className="q7-rot--peq" x={x(kauc) + r * 1.7} y={y(c.av[kauc]) + r * 1.7} dy="1.1em" textAnchor="end" style={{ fill: "#2E6B4F", fontWeight: 700, ...halo }}>pico {num(c.av[kauc], 3)} em {kauc}</text>
               </g>}
-              <line x1={x(m)} x2={x(m)} y1={g.t} y2={d.h - g.b} stroke="#5B6475" strokeWidth={1.8} strokeDasharray="3 4" />
               <path className="q7-linha q7-linha--ink" d={caminho(pts(sa))} />
               {revelado && <path className="q7-linha q7-linha--val" strokeDasharray="9 6" d={caminho(pts(sv))} />}
               {!fora && <circle cx={x(m)} cy={y(sa[m])} r={r} fill="#00205B" stroke="#fff" strokeWidth={2} />}

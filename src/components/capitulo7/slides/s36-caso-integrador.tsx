@@ -4,7 +4,7 @@ import { Botao, caminho, escala, Grafico, LinkSlide, Painel, Previsao, Quadro, t
 import { ANCORA, D, EAD, N, PG, PL, PT, RES, Y } from "@/lib/capitulo7/dados";
 import { calibracaoGlobal, delong, faixasQuantis, jeffreys, slopeComIntervalo, Z95 } from "@/lib/capitulo7/metricas";
 import { curva, esperado, fmtReais, GRADE_CORTES, otimo, realizado } from "@/lib/visuais/economia";
-import { int, num, pct } from "@/lib/capitulo7/formato";
+import { num, pct, pp } from "@/lib/capitulo7/formato";
 import { N_JANELAS, SEMENTE_JANELAS, vantagemEmJanelasNovas } from "@/lib/capitulo7/janelas";
 
 /**
@@ -26,7 +26,13 @@ import { N_JANELAS, SEMENTE_JANELAS, vantagemEmJanelasNovas } from "@/lib/capitu
  * safras maturadas antes da janela (treino e validação, ANCORA de dados.ts) leva a PD média da janela perto do
  * observado, e o ancorado só na validação passa do observado. Decisão: manter a logística, ancorar o nível em várias
  * safras, monitorar cada safra com Jeffreys e confirmar nas safras de 2024 quando maturarem. As janelas novas viram
- * réplicas sintéticas da janela.
+ * réplicas sintéticas da janela. Rodada 5: a âncora do nível não se escolhe pela janela. Pela PD verdadeira média da
+ * janela (só na base sintética), o intercepto da última safra e o de várias safras erram por cerca de 1 ponto, em
+ * lados opostos; a amostra sai da finalidade, declarada antes (provisão pela 4.966: nível corrente, a safra maturada
+ * mais recente; capital: média de várias safras). Ação: monitorar o O/E por safra com Jeffreys (definido no cartão
+ * Probabilidade) e recalibrar o intercepto só quando o teste rejeitar em duas safras seguidas no mesmo sentido
+ * (regra do slide 37). O cartão Validação liga os 13,2% do candidato
+ * ao Platt ajustado na validação.
  */
 type P = "ord" | "prob" | "dec" | "val";
 const DL = delong(Y, PL, PG);
@@ -84,10 +90,9 @@ function MiniProb({ d }: { d: Dim }) {
       {pts(F_L).map((p, i) => <circle key={`l${i}`} cx={p.x} cy={p.y} r={fs * 0.22} fill={COR.prob} />)}
       {pts(F_G).map((p, i) => <rect key={`g${i}`} x={p.x - fs * 0.2} y={p.y - fs * 0.2} width={fs * 0.4} height={fs * 0.4} fill="#fff" stroke={COR.prob} strokeWidth={2} />)}
       {tx + fs * 6 < d.w && <>
-        <text className="q7-rot--peq" x={tx} y={fs * 1.3} style={{ fill: "#2A3342" }}>PD média</text>
-        <text className="q7-rot--peq" x={tx} y={fs * 2.6} style={{ fill: COR.prob, fontWeight: 700 }}>● logística {pct(CAL_L.pdMedia!, 1)}</text>
-        <text className="q7-rot--peq" x={tx} y={fs * 3.8} style={{ fill: COR.prob, fontWeight: 700 }}>□ candidato {pct(CAL_G.pdMedia!, 1)}</text>
-        <text className="q7-rot--peq" x={tx} y={fs * 5.1} style={{ fill: "#2A3342" }}>observado {pct(OBS, 1)}</text>
+        <text className="q7-rot--peq" x={tx} y={fs * 1.2} style={{ fill: COR.prob, fontWeight: 700 }}>● logística: PD {pct(CAL_L.pdMedia!, 1)}</text>
+        <text className="q7-rot--peq" x={tx} y={fs * 2.45} style={{ fill: COR.prob, fontWeight: 700 }}>□ candidato: PD {pct(CAL_G.pdMedia!, 1)}</text>
+        <text className="q7-rot--peq" x={tx} y={fs * 3.7} style={{ fill: "#2A3342" }}>observado: {pct(OBS, 1)}</text>
       </>}
     </g>
   );
@@ -95,7 +100,7 @@ function MiniProb({ d }: { d: Dim }) {
 function MiniDec({ d }: { d: Dim }) {
   const fs = d.fs; const vals = [...CV_L, ...CV_G].map((q) => q.parcelas.total); const lo = Math.min(0, ...vals), hi = Math.max(...vals, R_L, R_G);
   // a curva fica à esquerda; os números do corte, numa coluna à direita, longe das linhas
-  const largo = d.w > fs * 22, xR = largo ? d.w - fs * 10.2 : d.w - fs * 0.6;
+  const largo = d.w > fs * 22, xR = largo ? d.w - fs * 10.6 : d.w - fs * 0.6;
   const x = escala([0, 0.4], [fs * 3.4, xR]), y = escala([lo, hi * 1.08], [d.h - fs * 1.6, fs * 0.5]);
   const c = OT_L.corte, tx = xR + fs * 0.9;
   const mil = (v: number) => fmtReais(v).replace("R$ ", "").replace(" mil", "");
@@ -151,17 +156,17 @@ export function S36CasoIntegrador({ pagina }: { pagina?: Pagina }) {
   const liberado = vistos.length >= 3;
   const consultar = (k: P) => { if (!vistos.includes(k)) setVistos([...vistos, k]); };
   const leitura: Record<P, ReactNode> = {
-    ord: <>Logística melhor nesta janela (p = {num(DL.p, 3)}); nas {N_JANELAS} réplicas da janela, a vantagem esperada cai a {num(jn.vantagem, 4)}.</>,
-    prob: <>Candidato: O/E {num(CAL_G.razaoOE!, 3)} (Jeffreys 1 − p = {num(J_G, 3)}). Logística: p = {num(J_L, 2)}. Slopes {num(SL_L.slope, 2)} e {num(SL_G.slope, 2)}, {COM1 ? "ICs com 1" : "IC sem o 1"}.</>,
+    ord: <>Logística melhor nesta janela (p = {num(DL.p, 3)}); nas {N_JANELAS} réplicas sintéticas da janela, a vantagem esperada cai a {num(jn.vantagem, 4)}.</>,
+    prob: <>Jeffreys (unilateral, PD média contra os defaults observados, priori de Jeffreys, BCE): candidato O/E {num(CAL_G.razaoOE!, 3)}, 1 − p = {num(J_G, 3)}; logística p = {num(J_L, 2)}. Slopes {num(SL_L.slope, 2)} e {num(SL_G.slope, 2)}, {COM1 ? "ICs com 1" : "IC sem o 1"}.</>,
     dec: <>Corte {pct(OT_L.corte, 1)}, pela PD verdadeira: □ {fmtReais(V_G)}, ● {fmtReais(V_L)}. O □ prometia {fmtReais(OT_G.parcelas.total)}.</>,
-    val: <>Treino {num(AUCS.g[0], 4)}, janela {num(AUCS.g[2], 4)}: sobreajuste e safra (a logística sobe a {num(AUCS.l[2], 4)}); Platt na validação gasta.</>,
+    val: <>Treino {num(AUCS.g[0], 4)}, janela {num(AUCS.g[2], 4)}: sobreajuste e safra. O Platt foi ajustado na validação, que teve {pct(RES.gbm_val.obs, 1)} de default: por isso o candidato prevê {pct(CAL_G.pdMedia!, 1)}.</>,
   };
   return (
     <Quadro slug="c7p38" pagina={pagina} layout="gl"
       conclusao={esc === null ? <>O comitê recebe o boosting com Platt para substituir a logística. Leia as quatro miniaturas e consulte pelo menos três cartões antes de decidir. {vistos.length ? `Consultados: ${vistos.length} de 4.` : ""}</>
-        : esc === 2 ? <>Candidato: AUC {num(DL.auc2, 4)} contra {num(DL.auc1, 4)} (p = {num(DL.p, 3)}), O/E {num(CAL_G.razaoOE!, 3)}. <b>Manter a logística e ancorar o nível nas safras maturadas antes da janela</b> (treino e validação: {AN.variasSafras.defaults} defaults em {int(AN.variasSafras.n)}, {pct(AN.variasSafras.taxa, 1)}), não só na última ({pct(AN.validacao.taxa, 1)}): a PD média da janela iria a {pct(AN.variasSafras.pdMedia, 1)}, não a {pct(AN.soValidacao.pdMedia, 1)} (<LinkSlide slug="c7p16">slide 27</LinkSlide>). <b>Monitorar cada safra com Jeffreys; confirmar nas safras de 2024, quando maturarem.</b></>
+        : esc === 2 ? <><b>Manter a logística</b>: AUC {num(DL.auc1, 4)} contra {num(DL.auc2, 4)} (p = {num(DL.p, 3)}); o candidato superestima (O/E {num(CAL_G.razaoOE!, 3)}). Pela PD verdadeira ({pct(AN.ptJanela, 1)}), as âncoras da última safra ({pct(AN.soValidacao.pdMedia, 1)}) e de várias ({pct(AN.variasSafras.pdMedia, 1)}) erram {pp(AN.soValidacao.pdMedia - AN.ptJanela)} e {pp(AN.variasSafras.pdMedia - AN.ptJanela)}. <b>Monitorar o O/E por safra com Jeffreys; recalibrar se rejeitar em duas safras seguidas no mesmo sentido; confirmar nas safras de 2024.</b></>
           : <>Revise a evidência: a decisão escolhida ignora pelo menos uma das quatro perguntas. Tente outra.</>}
-      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. IC de DeLong; Jeffreys com a PD média (o do BCE testa subestimação; a cauda oposta, para o candidato, é adaptação); slope com IC de Wald; motor do slide 32. Réplicas: ${N_JANELAS} sorteios do desfecho pela PD verdadeira (semente ${SEMENTE_JANELAS}). Nível: diferença de logits entre taxa e PD média de treino e validação.`}>
+      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. IC de DeLong; Jeffreys com a PD média (o do BCE testa subestimação; a cauda oposta, para o candidato, é adaptação); slope com IC de Wald; motor do slide 32. Réplicas sintéticas da janela: ${N_JANELAS} sorteios do desfecho pela PD verdadeira (semente ${SEMENTE_JANELAS}). Âncoras: intercepto aproximado do slide 27.`}>
       <Painel titulo="Dossiê: logística (● cheio) contra candidato (□ vazado)">
         <div className="q7-s36-m">
           {CARTOES.map((c) => {
@@ -178,14 +183,14 @@ export function S36CasoIntegrador({ pagina }: { pagina?: Pagina }) {
           })}
         </div>
       </Painel>
-      <Painel>
+      <Painel className="q7-s36-dir">
         {liberado ? (
           <Previsao rotulo="Sua decisão" pergunta="O que o comitê deve fazer?" escolha={esc} onEscolha={setEsc}
             opcoes={[
               { certa: false, texto: "Aprovar o boosting com Platt", retorno: <>Confunde modelo novo com modelo melhor: AUC {num(DL.auc2, 4)} contra {num(DL.auc1, 4)} e PD média {pct(CAL_G.pdMedia!, 1)} contra {pct(OBS, 1)} observados.</> },
               { certa: false, texto: "Recalibrar o boosting na janela e aprovar", retorno: <>Usa a prova para ajustar (<LinkSlide slug="c7p16">slide 27</LinkSlide>): depois, a janela não mede mais nada. E recalibrar não tira a AUC de {num(DL.auc2, 4)}.</> },
-              { texto: "Manter a logística, ancorar o nível em safras", certa: true, retorno: "Isso: o candidato não ganha na ordem e erra o nível; a logística fica, com o nível ancorado em várias safras." },
-              { certa: false, texto: "Trocar: a diferença de AUC é pequena", retorno: <>Diferença pequena não prova equivalência, e o ônus é de quem substitui; nas réplicas da janela, a vantagem esperada ({num(jn.vantagem, 4)}) ainda é da logística.</> },
+              { texto: "Manter a logística e vigiar o nível por safra", certa: true, retorno: <>Isso. A finalidade escolhe a amostra do nível antes da janela: provisão (Res. CMN 4.966), a safra maturada mais recente; capital, várias safras (<LinkSlide slug="c7p16">slide 27</LinkSlide>).</> },
+              { certa: false, texto: "Trocar: a diferença de AUC é pequena", retorno: <>Diferença pequena não prova equivalência, e o ônus é de quem substitui; nas réplicas sintéticas da janela, a vantagem esperada ({num(jn.vantagem, 4)}) ainda é da logística.</> },
             ]} />
         ) : (
           <div className="q7-s36-trava">
@@ -194,7 +199,7 @@ export function S36CasoIntegrador({ pagina }: { pagina?: Pagina }) {
             <ul className="q7-nota">{CARTOES.map((c) => <li key={c.k}>{vistos.includes(c.k) ? "■" : "□"} {c.t}</li>)}</ul>
           </div>
         )}
-        <div className="q7-botoes"><Botao sec onClick={() => { setVistos([]); setEsc(null); }}>Restaurar</Botao></div>
+        <div className="q7-botoes q7-s36-rest"><Botao sec onClick={() => { setVistos([]); setEsc(null); }}>Restaurar</Botao></div>
       </Painel>
     </Quadro>
   );

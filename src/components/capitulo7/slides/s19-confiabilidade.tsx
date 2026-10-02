@@ -15,8 +15,9 @@ import { int, num, pct, pp } from "@/lib/capitulo7/formato";
  * em uma frase (o slide 21 o apresenta). "6 de 10 acima" se compara com o acaso: supondo faixas independentes, cada
  * uma acima com probabilidade de cerca de 1/2, a cauda binomial sai da beta regularizada da biblioteca (aproximação).
  * A curva é a peça principal, larga (eixos em escalas próprias, diagonal rotulada no canto vazio de baixo, à direita,
- * com uma amostra do traço), com defaults/n em cada ponto; à direita ficam a régua das faixas e a conta da faixa
- * corrente.
+ * com uma amostra do traço), com defaults/n em cada ponto, posto por busca num lugar que não toca a diagonal, a curva,
+ * outro ponto nem outro rótulo; com os intervalos, os rótulos saem do desenho (não cabem entre os traços das faixas de
+ * PD baixa) e ficam no título de cada ponto e na tabela. À direita ficam a régua das faixas e a conta da faixa corrente.
  */
 const F = faixasQuantis(Y, PL, 10);
 const ACIMA = F.filter((f) => f.obs! > f.pdMedia!).length;
@@ -36,21 +37,62 @@ const OPS = [
 ];
 
 const XMAX = 0.3;
+type Caixa = { x0: number; x1: number; y0: number; y1: number };
+const cruza = (a: Caixa, b: Caixa) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
+/** O segmento (x1, y1) a (x2, y2) passa pela caixa? Recorte de Liang e Barsky. */
+function segCruza(c: Caixa, x1: number, y1: number, x2: number, y2: number) {
+  let t0 = 0, t1 = 1; const dx = x2 - x1, dy = y2 - y1;
+  for (const [p, q] of [[-dx, x1 - c.x0], [dx, c.x1 - x1], [-dy, y1 - c.y0], [dy, c.y1 - y1]]) {
+    if (p === 0) { if (q < 0) return false; continue; }
+    const t = q / p; if (p < 0) { if (t > t1) return false; if (t > t0) t0 = t; } else { if (t < t0) return false; if (t < t1) t1 = t; }
+  }
+  return true;
+}
+type Lugar = { x: number; y: number; anc: "start" | "middle" | "end" };
 /**
- * Onde vai o rótulo defaults/n de cada ponto, fora do caminho da curva: pico rotulado acima, vale abaixo, pontas para
- * fora; nos demais, alternando acima à esquerda e abaixo à direita (a curva sobe da esquerda para a direita).
+ * Onde vai o rótulo defaults/n de cada ponto: o primeiro lugar livre, começando pelo lado do ponto longe da diagonal
+ * (acima para ponto acima dela, abaixo para ponto abaixo), depois os lados e as diagonais do ponto. Livre quer dizer
+ * que o rótulo, com o halo, não toca a diagonal, a curva, outro ponto, outro rótulo, as anotações dos cantos nem a
+ * borda. Se algum rótulo pedido não tiver lugar, nenhum é desenhado: o valor fica no título do ponto e na tabela.
  */
-function lugar(j: number): { dx: number; dy: number; anc: "start" | "middle" | "end" } {
-  const i = j - 1, o = (t: number) => F[t].obs!;
-  if (i === 0) return { dx: -1.4, dy: 0.9, anc: "end" };
-  if (i === F.length - 1) return { dx: 1.5, dy: 0.9, anc: "start" };
-  if (o(i) > o(i - 1) && o(i) > o(i + 1)) return { dx: 0, dy: -1.5, anc: "middle" };
-  if (o(i) < o(i - 1) && o(i) < o(i + 1)) return { dx: 0, dy: 3, anc: "middle" };
-  return j % 2 === 1 ? { dx: -1.4, dy: -0.7, anc: "end" } : { dx: 1.3, dy: 2.9, anc: "start" };
+function lugares(pts: { cx: number; cy: number; acima: boolean; txt: string; rot: boolean }[], r: number, fs: number, area: Caixa, linhas: [number, number, number, number][], fixos: Caixa[]): (Lugar | null)[] {
+  // largura pelo desenho dos algarismos (0,56 em) e da barra (0,28 em), com 8% de folga
+  const h = fs * 0.86, halo = h * 0.18, larg = (t: string) => [...t].reduce((a, ch) => a + (ch === "/" ? 0.28 : 0.56), 0) * h * 1.08;
+  const bolas: Caixa[] = pts.map((p) => ({ x0: p.cx - r * 1.35, x1: p.cx + r * 1.35, y0: p.cy - r * 1.35, y1: p.cy + r * 1.35 }));
+  // lugares possíveis de cada rótulo, já livres do que é fixo (borda, pontos, anotações, diagonal, curva), em ordem de preferência
+  const opcoes = pts.map((p) => {
+    if (!p.rot) return null;
+    const w = larg(p.txt);
+    // folgas que deixam a caixa do rótulo (com o halo) fora da caixa do próprio ponto, de raio 1,35 r
+    const sobe = p.cy - r * 1.35 - h * 0.5, desce = p.cy + r * 1.35 + h * 1.2, gx = r * 1.35 + h * 0.25;
+    const cima: [number, number, Lugar["anc"]][] = [[p.cx, sobe, "middle"], [p.cx + r * 0.5, sobe, "start"], [p.cx - r * 0.5, sobe, "end"], [p.cx, sobe - h * 1.2, "middle"]];
+    const baixo: [number, number, Lugar["anc"]][] = [[p.cx, desce, "middle"], [p.cx + r * 0.5, desce, "start"], [p.cx - r * 0.5, desce, "end"], [p.cx, desce + h * 1.2, "middle"]];
+    const lados: [number, number, Lugar["anc"]][] = [[p.cx + gx, p.cy + h * 0.35, "start"], [p.cx - gx, p.cy + h * 0.35, "end"], [p.cx + gx, p.cy - h * 0.5, "start"], [p.cx - gx, p.cy - h * 0.5, "end"], [p.cx + gx, p.cy + h * 1.2, "start"], [p.cx - gx, p.cy + h * 1.2, "end"]];
+    return [...(p.acima ? cima : baixo), ...lados, ...(p.acima ? baixo : cima)].map(([x, y, anc]) => {
+      const x0 = anc === "start" ? x : anc === "end" ? x - w : x - w / 2;
+      return { l: { x, y, anc } as Lugar, c: { x0: x0 - halo, x1: x0 + w + halo, y0: y - h * 0.95 - halo, y1: y + h * 0.25 + halo } as Caixa };
+    }).filter(({ c }) => !(c.x0 < area.x0 || c.x1 > area.x1 || c.y0 < area.y0 || c.y1 > area.y1)
+      && ![...bolas, ...fixos].some((b) => cruza(c, b)) && !linhas.some(([a1, b1, a2, b2]) => segCruza(c, a1, b1, a2, b2)));
+  });
+  // busca com retrocesso: cada rótulo no primeiro lugar que não toca os já postos; se travar, volta e tenta o seguinte
+  const escolha: (Lugar | null)[] = pts.map(() => null); const postos: Caixa[] = []; let passos = 0;
+  const busca = (i: number): boolean => {
+    if (i === pts.length) return true;
+    const ops = opcoes[i]; if (!ops) return busca(i + 1);
+    for (const o of ops) {
+      if (++passos > 50000) return false;
+      if (postos.some((b) => cruza(o.c, b))) continue;
+      postos.push(o.c); escolha[i] = o.l;
+      if (busca(i + 1)) return true;
+      postos.pop(); escolha[i] = null;
+    }
+    return false;
+  };
+  return busca(0) ? escolha : pts.map(() => null);
 }
 /**
- * Defaults/n de cada ponto, alternando os lados para não encostar no vizinho. Com os intervalos ligados, os rótulos
- * saem do desenho (ficam no título de cada ponto e na tabela), para nenhum cruzar um traço de intervalo ou a diagonal.
+ * A curva, com defaults/n em cada ponto, em lugar livre. Com os intervalos ligados, os rótulos saem do desenho (ficam no
+ * título de cada ponto e na tabela), para nenhum cruzar um traço de intervalo ou a diagonal.
  */
 function Curva({ k, ic, completa }: { k: number; ic: boolean; completa: boolean }) {
   const ymax = ic ? 0.45 : 0.3;
@@ -65,29 +107,40 @@ function Curva({ k, ic, completa }: { k: number; ic: boolean; completa: boolean 
         const r = d.fs * 0.42;
         const yt = ic ? [0, 0.1, 0.2, 0.3, 0.4] : [0, 0.1, 0.2, 0.3];
         const traco = Math.max(2, d.fs * 0.14);
+        // anotações fixas dos cantos (caixas pela largura estimada do texto), a diagonal e a curva: o que um rótulo não pode tocar
+        const hp = d.fs * 0.86, lw = (t: string) => t.length * hp * 0.6;
+        const yl = y(ymax * 0.03) - d.fs * 1.35;
+        const fixos: Caixa[] = [
+          { x0: x(0.006), x1: x(0.006) + lw("▲ acima: risco subestimado"), y0: y(ymax * 0.93) - hp, y1: y(ymax * 0.93) + hp * 0.3 },
+          { x0: x(XMAX) - d.fs * 2.3 - lw("diagonal: previsto = observado"), x1: x(XMAX), y0: yl - hp, y1: yl + hp * 0.3 },
+          { x0: x(XMAX) - lw("▼ abaixo: superestimado"), x1: x(XMAX), y0: y(ymax * 0.03) - hp, y1: y(ymax * 0.03) + hp * 0.3 },
+        ];
+        const linhas: [number, number, number, number][] = [[x(0), y(0), x(XMAX), y(XMAX)]];
+        vis.forEach((f, i) => { if (i) linhas.push([x(vis[i - 1].pdMedia!), y(vis[i - 1].obs!), x(f.pdMedia!), y(f.obs!)]); });
+        // com os intervalos, os rótulos saem: nas faixas de PD baixa os traços ficam a cerca de 25 px um do outro, menos
+        // que a largura de um rótulo, e a busca (com os traços como obstáculo) não acha lugar livre para todos
+        const lug = ic ? null : lugares(vis.map((f) => ({ cx: x(f.pdMedia!), cy: y(f.obs!), acima: f.obs! > f.pdMedia!, txt: `${f.d}/${f.n}`, rot: completa || f.j === k })), r, d.fs, { x0: x(0), x1: d.w, y0: 0, y1: y(0) }, linhas, fixos);
         return (
           <g>
             <Eixos x={x} y={y} xt={[0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3]} yt={yt} fx={(v) => pct(v, 0)} fy={(v) => pct(v, 0)} xTit="PD média prevista na faixa" yTit="Default observado na faixa" />
             <line className="q7-diag q7-s19-diag" x1={x(0)} y1={y(0)} x2={x(XMAX)} y2={y(XMAX)} />
             <text className="q7-rot--peq" x={x(0.006)} y={y(ymax * 0.93)} style={{ fill: "#5B6475" }}>▲ acima: risco subestimado</text>
             {/* a diagonal se identifica no canto vazio de baixo, à direita (PD de 20% a 30%, longe dos pontos e dos intervalos) */}
-            {(() => { const yl = y(ymax * 0.03) - d.fs * 1.35, xf = x(XMAX); return <g>
+            {(() => { const xf = x(XMAX); return <g>
               <text className="q7-rot--peq" x={xf - d.fs * 2.3} y={yl} textAnchor="end" style={{ fill: "#5B6475" }}>diagonal: previsto = observado</text>
               <line className="q7-diag" x1={xf - d.fs * 1.9} x2={xf} y1={yl - d.fs * 0.28} y2={yl - d.fs * 0.28} />
             </g>; })()}
             <text className="q7-rot--peq" x={x(XMAX)} y={y(ymax * 0.03)} textAnchor="end" style={{ fill: "#5B6475" }}>▼ abaixo: superestimado</text>
             {vis.length > 1 && <path className="q7-linha q7-linha--fina q7-linha--prob" d={caminho(vis.map((f) => ({ x: x(f.pdMedia!), y: y(f.obs!) })))} />}
             {vis.map((f) => {
-              const cx = x(f.pdMedia!), cy = y(f.obs!); const on = !completa && f.j === k; const esq = f.j % 2 === 1;
+              const cx = x(f.pdMedia!), cy = y(f.obs!); const on = !completa && f.j === k;
               return (
                 <g key={f.j} opacity={!completa && !on ? 0.6 : 1}>
                   <title>{`F${f.j}: ${f.d} defaults em ${f.n}, observado ${pct(f.obs!, 1)} contra PD média de ${pct(f.pdMedia!, 1)}${ic ? `; intervalo de 95% de ${pct(f.ic!.lo, 1)} a ${pct(f.ic!.hi, 1)}` : ""}`}</title>
                   {ic && <line className="q7-s19-ic q7-linha q7-linha--fina q7-linha--prob" x1={cx} x2={cx} y1={y(f.ic!.lo)} y2={y(f.ic!.hi)} strokeOpacity={0.55} strokeWidth={traco} />}
                   <circle cx={cx} cy={cy} r={on ? r * 1.35 : r} className="q7-ptc q7-ptc--prob" />
-                  {/* com os intervalos, os rótulos defaults/n saem: nas faixas de PD baixa os traços ficam a cerca de 25 px
-                      um do outro, menos que a largura de um rótulo, e qualquer lugar cruzaria um traço; o valor fica no
-                      título de cada ponto (dica ao passar o mouse) e na tabela acessível */}
-                  {!ic && (completa || on) && (() => { const L = lugar(f.j); return <text className="q7-rot--peq q7-s19-rot" x={cx + L.dx * r} y={cy + L.dy * r} textAnchor={L.anc} style={{ fill: "#2A3342", fontWeight: on ? 700 : 500, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em", strokeLinejoin: "round" }}>{f.d}/{f.n}</text>; })()}
+                  {/* sem lugar livre (e sempre com os intervalos), o valor fica no título do ponto e na tabela acessível */}
+                  {lug && (() => { const L = lug[f.j - 1]; return L && <text className="q7-rot--peq q7-s19-rot" x={L.x} y={L.y} textAnchor={L.anc} style={{ fill: "#2A3342", fontWeight: on ? 700 : 500, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em", strokeLinejoin: "round" }}>{f.d}/{f.n}</text>; })()}
                 </g>
               );
             })}

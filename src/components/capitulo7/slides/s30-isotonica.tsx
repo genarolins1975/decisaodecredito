@@ -1,5 +1,5 @@
 "use client";
-import { useId, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Botao, caminho, Controle, Eixos, escala, Expandir, Grafico, Legenda, LinkSlide, Painel, Previsao, Quadro, Seg, margens, type Pagina } from "../base";
 import { CAL, CAL_PGR, D, N, PGR, PT, Y } from "@/lib/capitulo7/dados";
 import { ajustarIsotonica, ajustarPlatt, aplicarIsotonica, aucPorPares, EPS_LOG, eventosPorBloco, logit, logLoss, media, perdaEsperada, sigmoide, transformar, valoresDistintos } from "@/lib/capitulo7/metricas";
@@ -15,7 +15,7 @@ import { int, num, pct } from "@/lib/capitulo7/formato";
  * cortada no limite de 10⁻¹⁵ (logLoss conta as limitadas), e é isso que leva a log loss da isotônica a 0,5 ou mais: a
  * lição de crédito é o piso de PD. Calibradores se comparam pela perda esperada pela PD verdadeira (perdaEsperada), não
  * pela janela de 81 defaults (slide 27). Rodada 4: a leitura conta só os empates novos (depois menos antes).
- * Rodada 5: o eixo vertical vai a 50% e as curvas são recortadas na borda (clipPath), não achatadas; onde uma curva sai
+ * Rodada 5: o eixo vertical vai a 50% e as curvas são recortadas na borda (recortar), não achatadas; onde uma curva sai
  * do quadro, uma seta ▲ diz até onde ela vai (75% com 3.000 casos, 100% em vários blocos). A leitura dos blocos é
  * montada por leituraBloco, que só cita PD 0% ou 100% quando elas existem (conferida por script em todos os blocos).
  */
@@ -54,6 +54,16 @@ function saidaDoQuadro(g: (q: number) => number, teto: number, xmax: number): nu
   for (let k = 1; k <= 2000; k++) { const q = k * passo; if (g(q) > teto) { let lo = ant, hi = q; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (g(m) > teto) hi = m; else lo = m; } return hi; } ant = q; }
   return null;
 }
+/** Trechos da poligonal com y ≤ teto, cortados exatamente na borda (sem clipPath, que deixaria a caixa do SVG fora do painel). */
+function recortar(pts: { x: number; y: number }[], teto: number) {
+  const runs: { x: number; y: number }[][] = [[]];
+  pts.forEach((p, i) => {
+    const q = pts[i - 1], dentro = p.y <= teto;
+    if (q && (q.y <= teto) !== dentro) { const t = (teto - q.y) / (p.y - q.y); runs[runs.length - 1].push({ x: q.x + t * (p.x - q.x), y: teto }); if (!dentro) runs.push([]); }
+    if (dentro) runs[runs.length - 1].push(p);
+  });
+  return runs.filter((r) => r.length > 1);
+}
 const nProp = (n: number) => `${int(n)} ${n === 1 ? "proposta" : "propostas"}`;
 /** Leitura de um bloco de 300: cita PD 0% e 100% só quando existem; piso se um default levou PD 0%, teto se um adimplente levou PD 100%. */
 export function leituraBloco(a: ReturnType<typeof ajustes>, bloco: number): ReactNode {
@@ -75,7 +85,6 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
   const [t, setT] = useState<Tam>("grande");
   const [bloco, setBloco] = useState(1);
   const [prev, setPrev] = useState<number | null>(null);
-  const clipId = useId().replace(/:/g, "");
   const a = t === "grande" ? GRANDE : BLOCOS[bloco - 1];
   const revelado = prev === CERTA;
   const barras = [
@@ -118,17 +127,17 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
                 <Eixos x={x} y={y} xt={[0, 0.1, 0.2, 0.3, 0.4, 0.5]} yt={[0, 0.1, 0.2, 0.3, 0.4, 0.5]} fx={(v) => pct(v, 0)} fy={(v) => pct(v, 0)} xTit="PD sem calibrar" yTit="PD calibrada" />
                 <line className="q7-diag" x1={x(0)} y1={y(0)} x2={x(0.5)} y2={y(0.5)} />
                 {a.x.map((q, i) => <line key={i} x1={x(q)} x2={x(q)} y1={y(0)} y2={y(0) - fs * 0.45} stroke="#5B6475" strokeOpacity={a.n > 1000 ? 0.1 : 0.3} />)}
-                <defs><clipPath id={clipId}><rect x={x(0) - fs} y={y(0.5)} width={x(0.55) - x(0) + fs * 2} height={y(0) - y(0.5) + fs} /></clipPath></defs>
-                <g clipPath={`url(#${clipId})`}>
-                  <path className="q7-linha q7-linha--prob" d={caminho(qs.map((q) => ({ x: x(q), y: y(platt(q)) })))} />
-                  <path className="q7-linha q7-linha--ink" d={caminho(isoPts.map((q) => ({ x: x(q.x), y: y(q.y) })))} />
-                </g>
-                {saidas.map((sx, k) => { const ax = x(sx.q), fim = ax > d.w - fs * 10; const ty = k === 0 ? y(0.5) - fs * 0.45 : y(0.5) + fs * 1.1; return (
-                  <g key={sx.nome}>
-                    <path d={`M${ax} ${y(0.5) - fs * 0.75}l${fs * 0.42} ${fs * 0.7}h${-fs * 0.84}z`} fill={sx.cor} />
-                    <text className="q7-rot q7-rot--peq q7-s30-lbl" x={ax + (fim ? -fs * 0.6 : fs * 0.6)} y={ty} textAnchor={fim ? "end" : "start"} style={{ fill: sx.cor, fontWeight: 700 }}>▲ {sx.nome} sobe até {pct(sx.max, 0)}, fora do eixo</text>
-                  </g>
-                ); })}
+                {recortar(qs.map((q) => ({ x: q, y: platt(q) })), 0.5).map((run, i) => <path key={`p${i}`} className="q7-linha q7-linha--prob" d={caminho(run.map((q) => ({ x: x(q.x), y: y(q.y) })))} />)}
+                {recortar(isoPts, 0.5).map((run, i) => <path key={`i${i}`} className="q7-linha q7-linha--ink" d={caminho(run.map((q) => ({ x: x(q.x), y: y(q.y) })))} />)}
+                {saidas.map((sx, k) => {
+                  const ax = x(sx.q), txt = `${sx.nome} até ${pct(sx.max, 0)}`, fim = ax + fs * (0.8 + txt.length * 0.55) > d.w; const ty = k === 0 ? y(0.5) - fs * 0.35 : y(0.5) + fs * 1.1;
+                  return (
+                    <g key={sx.nome}>
+                      <path d={`M${ax} ${y(0.5) - fs * 0.75}l${fs * 0.42} ${fs * 0.7}h${-fs * 0.84}z`} fill={sx.cor} />
+                      <text className="q7-rot q7-rot--peq q7-s30-lbl" x={ax + (fim ? -fs * 0.6 : fs * 0.6)} y={ty} textAnchor={fim ? "end" : "start"} style={{ fill: sx.cor, fontWeight: 700 }}>{txt}</text>
+                    </g>
+                  );
+                })}
                 {revelado && <g>
                   <line x1={gx0} x2={Math.max(gx1, gx0 + fs * 0.4)} y1={gy} y2={gy} stroke="#5B6475" strokeWidth={fs * 0.55} strokeOpacity={0.45} strokeLinecap="round" />
                   <path d={`M${rx + fs * 1.2} ${ry2 + fs * 0.6}L${rx + fs * 1.2} ${gy - fs * 1.4}L${mx} ${gy - fs * 0.4}`} fill="none" stroke="#5B6475" strokeWidth={1.5} />
@@ -139,7 +148,6 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
                   {zerosDef.map((v, i) => <circle key={i} cx={x(cl(v))} cy={y(0) - fs * 0.05} r={fs * 0.3} className="q7-pt-def" />)}
                   <text className="q7-rot q7-rot--peq q7-s30-lbl" x={x(cl(Math.max(...zerosDef))) + fs * 0.6} y={y(0) - fs * 0.9} style={{ fill: "#8C2332", fontWeight: 700 }}>● {zerosDef.length} {zerosDef.length === 1 ? "default" : "defaults"} da janela com PD 0%</text>
                 </g>}
-                {revelado && I.uns > 0 && <text className="q7-rot q7-rot--peq q7-s30-lbl" x={x(0.55)} y={y(0.05)} textAnchor="end" style={{ fill: "#2A3342" }}>e {nProp(I.uns)} da janela com PD 100% (▲ acima do eixo)</text>}
                 {barras.map((b, k) => {
                   const y0 = faixaTopo + k * (faixaH + faixaGap) + faixaGap;
                   const nome = <text className="q7-rot--peq" x={0} y={estreito ? y0 - fs * 0.45 : y0 + faixaH / 2} dy=".35em" style={{ fill: "#2A3342", fontWeight: 600 }}>{b.nome}{k === ISO && !revelado ? "" : <tspan style={{ fill: "#5B6475", fontWeight: 500 }}>: AUC {num(b.c.auc!, 4)}{b.c.empates > BRUTO.pares.empates ? ` · ${int(b.c.empates)} empates` : ""}</tspan>}</text>;
@@ -181,7 +189,7 @@ export function S30Isotonica({ pagina }: { pagina?: Pagina }) {
                 <tr><th>Log loss esperada</th><td>{num(a.platt.esp, 4)}</td><td>{num(I.esp, 4)}</td></tr>
               </tbody>
             </table>
-            <p className="q7-nota">{cortadas ? <>Entre parênteses: previsões que deram 0% ao que aconteceu.</> : <>Esperada: pela PD verdadeira. A janela tem {D} defaults e não separa calibradores (<LinkSlide slug="c7p16">slide 27</LinkSlide>).</>}</p>
+            <p className="q7-nota">{cortadas ? <>Entre parênteses: previsões cortadas em 10⁻¹⁵.</> : <>Esperada: pela PD verdadeira (<LinkSlide slug="c7p16">slide 27</LinkSlide>).</>}</p>
           </>
         )}
         <Expandir resumo="Quando cada uma">
