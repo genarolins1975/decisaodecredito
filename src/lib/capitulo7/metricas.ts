@@ -279,6 +279,29 @@ export const perdaBrier1 = (p: number, y: 0 | 1) => (p - y) ** 2;
 export const perdaLog1 = (p: number, y: 0 | 1) => -Math.log(y ? Math.max(p, EPS_LOG) : Math.max(1 - p, EPS_LOG));
 
 /**
+ * Perdas esperadas de uma previsão quando a PD verdadeira de cada proposta é conhecida (só em base sintética): a média,
+ * sobre as propostas, da esperança da perda com y ~ Bernoulli(pt). É o limite da média das perdas em infinitas janelas
+ * novas dos mesmos proponentes, sem o ruído de nenhuma janela. Log loss: −[pt ln p + (1 − pt) ln(1 − p)];
+ * Brier: pt (1 − p)² + (1 − pt) p². O EPS_LOG é o mesmo do logLoss.
+ */
+export function perdaEsperada(pt: Vetor, pd: Vetor): { logLoss: number; brier: number } {
+  let ll = 0, bs = 0;
+  for (let i = 0; i < pd.length; i++) {
+    const p = pd[i], t = pt[i];
+    ll -= t * Math.log(Math.max(p, EPS_LOG)) + (1 - t) * Math.log(Math.max(1 - p, EPS_LOG));
+    bs += t * (1 - p) ** 2 + (1 - t) * p * p;
+  }
+  return { logLoss: ll / pd.length, brier: bs / pd.length };
+}
+
+/** Eventos por bloco consecutivo de tamanho fixo (o último bloco pode ser menor): quantos defaults cada fatia da amostra teve. */
+export function eventosPorBloco(y: Vetor, tamanho: number): number[] {
+  const out: number[] = [];
+  for (let i = 0; i < y.length; i += tamanho) { let s = 0; for (let j = i; j < Math.min(i + tamanho, y.length); j++) s += y[j]; out.push(s); }
+  return out;
+}
+
+/**
  * Decomposição de Murphy (1973) por faixas: Brier = confiabilidade − resolução + incerteza + resíduo. O resíduo só é
  * zero quando a PD é constante dentro de cada faixa; com PD contínua ele mede o que a média da faixa esconde
  * (Stephenson, Coelho e Jolliffe, 2008). O quadro mostra o resíduo em vez de omiti-lo.
@@ -300,7 +323,7 @@ export const ajustarIntercepto = (yCal: Vetor, pdCal: Vetor) => interceptoComSlo
 export function ajustarPlatt(yCal: Vetor, pdCal: Vetor) { const r = logisticaNewton(yCal, logits(pdCal), pdCal.map(() => 0)); return { a: r.a, b: r.b }; }
 
 /**
- * Platt com a suavização de alvos do artigo original (Platt, 1999), a convenção do CalibratedClassifierCV
+ * Platt com a suavização de alvos do artigo original (Platt, 2000), a convenção do CalibratedClassifierCV
  * (method="sigmoid") do scikit-learn: o default vale (N₁ + 1)/(N₁ + 2) e o adimplente 1/(N₀ + 2), e a logística é
  * ajustada nesses alvos fracionários por máxima verossimilhança. Devolve a e b na convenção do capítulo,
  * p' = σ(a + b · logit p); o scikit-learn escreve 1/(1 + exp(A f + B)), com A = −b e B = −a.

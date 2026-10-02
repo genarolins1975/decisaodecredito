@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
-import { Botao, caminho, escala, Formula, Legenda, Painel, Previsao, Quadro, Seg, type Pagina } from "../base";
+import { Botao, caminho, escala, Formula, Legenda, LinkSlide, Painel, Previsao, Quadro, Seg, type Pagina } from "../base";
 import { Confiabilidade } from "../graficos";
 import { CAL, CAL_PGR, D, N, PG, PGR, PLATT, Y } from "@/lib/capitulo7/dados";
+import { calibradores } from "@/lib/capitulo7/janelas";
 import { ajustarPlatt, ajustarPlattSuavizado, aucPorPares, brier, faixasQuantis, logit, logLoss, media, sigmoide, slopeComIntervalo, transformar } from "@/lib/capitulo7/metricas";
 import { int, num, pct } from "@/lib/capitulo7/formato";
 
@@ -10,10 +11,13 @@ import { int, num, pct } from "@/lib/capitulo7/formato";
  * 29 · c7p13 · Platt: σ(a + b · logit p) sobre o boosting sem recalibrar. Três versões na mesma janela: sem calibrar,
  * o Platt do curso (parâmetros estimados antes da janela, na validação) e o Platt ajustado na amostra de calibração.
  * O ajuste aqui é máxima verossimilhança simples; o scikit-learn (CalibratedClassifierCV, method="sigmoid") usa a
- * suavização de alvos de Platt (1999) e escreve 1/(1 + exp(A f + B)); a nota mostra esse ajuste, calculado por
+ * suavização de alvos de Platt (2000) e escreve 1/(1 + exp(A f + B)); a nota mostra esse ajuste, calculado por
  * ajustarPlattSuavizado e conferido contra o _sigmoid_calibration do scikit-learn 1.9.1. A peça principal é a curva de
  * confiabilidade na janela, com a transformação em miniatura ao lado; a AUC aparece sobre o gráfico depois da previsão.
  * O slope de calibração vem com o intervalo de Wald da logística (slopeComIntervalo): com 81 defaults, ele é largo.
+ * Rodada 2: a janela de 81 defaults não distingue as versões (o Platt do curso até piora a log loss nela); a tabela e a
+ * leitura trazem a perda esperada pela PD verdadeira em janelas novas (calibradores de janelas.ts), em que as duas
+ * versões de Platt melhoram, e a ponte com o slide 28 (o intercepto é o Platt com b = 1).
  */
 type V = "bruto" | "curso" | "cal";
 const PC = ajustarPlatt(CAL.y, CAL_PGR);
@@ -25,7 +29,9 @@ const VERS: Record<V, { nome: string; a: number | null; b: number | null; p: rea
   cal: { nome: "Platt da calibração", a: PC.a, b: PC.b, p: P_CAL, classe: "prob" },
 };
 const ORDEM: V[] = ["bruto", "curso", "cal"];
-const MET = Object.fromEntries(ORDEM.map((k) => { const p = VERS[k].p; return [k, { media: media(p)!, auc: aucPorPares(Y, p).auc!, brier: brier(Y, p), ll: logLoss(Y, p).valor, sl: slopeComIntervalo(Y, p) }]; })) as Record<V, { media: number; auc: number; brier: number; ll: number; sl: ReturnType<typeof slopeComIntervalo> }>;
+const CB = calibradores("pgr");
+const ESP: Record<V, number> = { bruto: CB.sem!.esperada.logLoss, curso: CB.curso!.esperada.logLoss, cal: CB.platt!.esperada.logLoss };
+const MET = Object.fromEntries(ORDEM.map((k) => { const p = VERS[k].p; return [k, { media: media(p)!, auc: aucPorPares(Y, p).auc!, brier: brier(Y, p), ll: logLoss(Y, p).valor, sl: slopeComIntervalo(Y, p), esp: ESP[k] }]; })) as Record<V, { media: number; auc: number; brier: number; ll: number; sl: ReturnType<typeof slopeComIntervalo>; esp: number }>;
 const FAIXAS = Object.fromEntries(ORDEM.map((k) => [k, faixasQuantis(Y, VERS[k].p, 10)])) as Record<V, ReturnType<typeof faixasQuantis>>;
 const ic = (k: V) => `${num(MET[k].sl.ic[0], 2)} a ${num(MET[k].sl.ic[1], 2)}`;
 
@@ -42,8 +48,8 @@ export function S29Platt({ pagina }: { pagina?: Pagina }) {
     <Quadro slug="c7p13" pagina={pagina} layout="gl"
       conclusao={!revelado ? <>Antes de comparar as três versões: o que Platt faz com a ordenação?</>
         : v === "bruto" ? <>O boosting sem calibrar tem PD média {pct(m.media, 2)} contra {pct(D / N, 2)} observados e slope de calibração {num(m.sl.slope, 2)} na janela, com IC de {ic("bruto")}: compatível com 1, com {D} defaults. Escolha um calibrador e veja a curva se mover sem que a AUC mude.</>
-          : <>{VERS[v].nome}: a = {num(VERS[v].a!, 3)}, b = {num(VERS[v].b!, 3)}. PD média {pct(m.media, 2)}, Brier {num(m.brier, 5)} (sem calibrar {num(MET.bruto.brier, 5)}), log loss {num(m.ll, 4)} ({num(MET.bruto.ll, 4)}); a AUC continua <b>{num(m.auc, 4)}</b>. Com b {"<"} 1 Platt comprime as PDs; o slope na janela passa a {num(m.sl.slope, 2)} (IC {ic(v)}), <b>ainda compatível com 1</b> com {D} defaults.</>}
-      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults, decis da PD. Calibração sintética: ${int(CAL.n)} sorteios dos proponentes da janela, desfecho da PD verdadeira (semente ${CAL.semente}). Platt do curso: capítulo 6, estimado na validação. Slope: coeficiente de logit p numa logística de y na janela, IC de Wald de 95%.`}>
+          : <>{VERS[v].nome} (a = {num(VERS[v].a!, 3)}, b = {num(VERS[v].b!, 3)}): na janela, log loss {num(m.ll, 4)} contra {num(MET.bruto.ll, 4)} e slope {num(m.sl.slope, 2)} (IC {ic(v)}); com {D} defaults, <b>a janela não mostra a correção</b>. Em janelas novas, a log loss esperada cai de {num(MET.bruto.esp, 4)} para <b>{num(m.esp, 4)}</b>, e a AUC continua {num(m.auc, 4)}. O <LinkSlide slug="c7p12">slide 28</LinkSlide> era este caso com b = 1.</>}
+      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults, decis da PD. Calibração sintética: ${int(CAL.n)} sorteios dos proponentes da janela, desfecho da PD verdadeira (semente ${CAL.semente}). Platt do curso: capítulo 6, estimado na validação. Slope: coeficiente de logit p numa logística de y na janela, IC de Wald de 95%. Esperada: média exata pela PD verdadeira.`}>
       <Painel>
         <Confiabilidade titulo="Confiabilidade na janela" sub="decis da PD; ao lado, a transformação" rotulo={`Curva de confiabilidade por decis: sem calibrar${v === "bruto" ? "" : ` e ${VERS[v].nome}`}${revelado ? `; AUC ${num(m.auc, 4)} nas três versões` : ""}`} max={0.3} ticks={[0, 0.1, 0.2, 0.3]} anotar={false} arCelular="4 / 3"
           series={[{ faixas: FAIXAS.bruto, classe: "mudo", linha: true }, ...(v === "bruto" ? [] : [{ faixas: FAIXAS[v], classe: VERS[v].classe, linha: true }])]}
@@ -74,7 +80,7 @@ export function S29Platt({ pagina }: { pagina?: Pagina }) {
           <>
             <p className="q7-k">A fórmula e a convenção do scikit-learn</p>
             <Formula compacta f={String.raw`\begin{aligned}\text{aqui: }p'&=\sigma\big(a+b\,\operatorname{logit}p\big)\\ \text{scikit-learn: }p'&=\frac{1}{1+e^{A\,\operatorname{logit}p+B}}\\ \Rightarrow\ A&=-b,\ \ B=-a\end{aligned}`} />
-            <p className="q7-nota">Aqui, máxima verossimilhança simples: b = {num(PC.b, 4)}, a = {num(PC.a, 4)}. O scikit-learn (CalibratedClassifierCV, method=&quot;sigmoid&quot;) suaviza os alvos como Platt (1999): o default vale (N₁ + 1)/(N₁ + 2) e o adimplente 1/(N₀ + 2). Na mesma amostra, isso dá b = {num(SK.b, 4)} e a = {num(SK.a, 4)}.</p>
+            <p className="q7-nota">Aqui, máxima verossimilhança simples: b = {num(PC.b, 4)}, a = {num(PC.a, 4)}. O scikit-learn (CalibratedClassifierCV, method=&quot;sigmoid&quot;) suaviza os alvos como Platt (2000): o default vale (N₁ + 1)/(N₁ + 2) e o adimplente 1/(N₀ + 2). Na mesma amostra, isso dá b = {num(SK.b, 4)} e a = {num(SK.a, 4)}.</p>
           </>
         ) : !revelado ? (
           <Previsao pergunta="Platt com b positivo é aplicado às PDs do boosting. O que acontece com a AUC na janela?" escolha={prev} onEscolha={setPrev} recolher
@@ -86,16 +92,16 @@ export function S29Platt({ pagina }: { pagina?: Pagina }) {
         ) : (
           <>
             <Seg rotulo="Versão" opcoes={ORDEM.map((k) => ({ v: k, r: k === "bruto" ? "Sem calibrar" : k === "curso" ? "Curso" : "Calibração" }))} valor={v} onChange={setV} cor />
-            <table className="q7-tab">
-              <thead><tr><th className="q7-t-l">Na janela</th><th>Sem</th><th>Curso</th><th>Calibração</th></tr></thead>
+            <table className="q7-tab q7-tab--comp">
+              <thead><tr><th className="q7-t-l">Medida</th><th>Sem</th><th>Curso</th><th>Calibração</th></tr></thead>
               <tbody>
-                <tr><th>a ; b</th><td>·</td><td>{num(PLATT.a, 3)} ; {num(PLATT.b, 3)}</td><td>{num(PC.a, 3)} ; {num(PC.b, 3)}</td></tr>
-                {([["PD média", (k: V) => pct(MET[k].media, 2)], ["AUC", (k: V) => num(MET[k].auc, 4)], ["Brier", (k: V) => num(MET[k].brier, 5)], ["Log loss", (k: V) => num(MET[k].ll, 4)], ["Slope", (k: V) => num(MET[k].sl.slope, 2)], ["IC 95% do slope", ic]] as const).map(([r, f]) => (
+                <tr><th>a ; b</th><td>·</td><td>{num(PLATT.a, 2)} ; {num(PLATT.b, 2)}</td><td>{num(PC.a, 2)} ; {num(PC.b, 2)}</td></tr>
+                {([["PD média", (k: V) => pct(MET[k].media, 2)], ["AUC", (k: V) => num(MET[k].auc, 4)], ["Brier", (k: V) => num(MET[k].brier, 5)], ["Log loss", (k: V) => num(MET[k].ll, 4)], ["Slope", (k: V) => num(MET[k].sl.slope, 2)], ["IC 95% do slope", ic], ["Esperada", (k: V) => num(MET[k].esp, 4)]] as const).map(([r, f]) => (
                   <tr key={r}><th>{r}</th>{ORDEM.map((k) => <td key={k} data-on={k === v ? "1" : undefined}>{f(k)}</td>)}</tr>
                 ))}
               </tbody>
             </table>
-            <p className="q7-nota">Observado na janela: {pct(D / N, 2)}. Nenhuma das versões foi ajustada nela.</p>
+            <p className="q7-nota">Observado: {pct(D / N, 2)}; nenhuma versão foi ajustada na janela. Esperada: log loss em janelas novas.</p>
           </>
         )}
         <div className="q7-botoes"><Botao onClick={() => setFormula(!formula)}>{formula ? "Voltar" : "A fórmula e o scikit-learn"}</Botao><Botao sec onClick={() => { setV("bruto"); setPrev(null); setFormula(false); }}>Restaurar</Botao></div>

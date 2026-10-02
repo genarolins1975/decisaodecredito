@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Botao, caminho, Controle, Eixos, escala, Expandir, Formula, Grafico, Painel, Previsao, Quadro, margens, type Pagina } from "../base";
 import { D, A, N, PL, Y } from "@/lib/capitulo7/dados";
-import { areaTrapezio, confusao, curvaPR, curvaRoc, precisaoMedia } from "@/lib/capitulo7/metricas";
+import { areaTrapezio, confusao, curvaPR, curvaRoc, precisaoMedia, wilson } from "@/lib/capitulo7/metricas";
 import { num, pct, vezes } from "@/lib/capitulo7/formato";
 
 /**
@@ -10,7 +10,8 @@ import { num, pct, vezes } from "@/lib/capitulo7/formato";
  * precisão de sinalizar ao acaso). Depois da previsão, o segundo controle aplica as mesmas taxas TPR e FPR de cada corte
  * a uma carteira com outra prevalência (cálculo, não dado observado): precisão = TPR·π ÷ (TPR·π + FPR·(1 − π)). A curva
  * inteira é redesenhada sob essa prevalência; a ROC não muda. A precisão média segue average_precision_score e não é a
- * área trapezoidal; nesta janela a trapezoidal fica abaixo da AP, e o sinal da diferença depende da curva.
+ * área trapezoidal; nesta janela a trapezoidal fica abaixo da AP, e o sinal da diferença depende da curva. A curva
+ * hipotética só aparece com a resposta certa; a precisão no corte traz o intervalo de Wilson com o n de sinalizadas.
  */
 const PR = curvaPR(Y, PL);
 const ROC = curvaRoc(Y, PL).slice(1);
@@ -35,7 +36,9 @@ export function S14PrecisaoRecall({ pagina }: { pagina?: Pagina }) {
   const c = confusao(Y, PL, t); const tpr = c.vp / D, fpr = c.fp / A;
   const precHip = precisaoEm(tpr, fpr, pi);
   const real = Math.abs(pi - PI) < 1e-9;
-  const escolher = (i: number | null) => { setEsc(i); if (i !== null) { setT(T0); setPi(PI2); } };
+  const liberado = esc !== null && OPS[esc].certa;
+  const escolher = (i: number | null) => { setEsc(i); if (i !== null && OPS[i].certa) { setT(T0); setPi(PI2); } else setPi(PI); };
+  const icP = c.vp + c.fp > 0 ? wilson(c.vp, c.vp + c.fp) : null;
   return (
     <Quadro slug="c7p26" pagina={pagina} layout="gl"
       conclusao={c.vp + c.fp === 0 ? "Nenhuma proposta sinalizada: a precisão não existe (denominador zero)."
@@ -71,15 +74,15 @@ export function S14PrecisaoRecall({ pagina }: { pagina?: Pagina }) {
         }}
       </Grafico>
       <div className="q7-g2-linha">
-        {esc !== null ? <Controle rotulo="Prevalência de outra carteira (hipótese)" valor={pi} min={0.01} max={0.3} passo={0.005} onChange={setPi} mostrar={real ? `${pct(pi, 1)} (janela)` : pct(pi, 1)} escala={["1%", "30%"]} /> : <span />}
-        <div className="q7-botoes">{esc !== null && !real && <Botao onClick={() => setPi(PI)}>Voltar à janela</Botao>}<Botao sec onClick={() => { setT(T0); setPi(PI); setEsc(null); }}>Restaurar</Botao></div>
+        {liberado ? <Controle rotulo="Prevalência de outra carteira (hipótese)" valor={pi} min={0.01} max={0.3} passo={0.005} onChange={setPi} mostrar={real ? `${pct(pi, 1)} (janela)` : pct(pi, 1)} escala={["1%", "30%"]} /> : <span />}
+        <div className="q7-botoes">{liberado && !real && <Botao onClick={() => setPi(PI)}>Voltar à janela</Botao>}<Botao sec onClick={() => { setT(T0); setPi(PI); setEsc(null); }}>Restaurar</Botao></div>
       </div>
       </div>
       <Painel>
         <Controle rotulo="Corte de PD para sinalizar" valor={t} min={0.04} max={0.4} passo={0.005} onChange={setT} mostrar={pct(t, 1)} />
         <dl className="q7-lista">
-          <div data-tom="mudo"><dt>Sinalizadas: VP + FP</dt><dd>{c.vp} + {c.fp} = {c.vp + c.fp}</dd></div>
-          <div><dt>Precisão = VP ÷ (VP + FP)</dt><dd>{c.precisao === null ? "não existe" : pct(c.precisao, 1)}</dd></div>
+          <div><dt>Precisão = VP ÷ (VP + FP)</dt><dd>{c.vp} ÷ {c.vp + c.fp} = {c.precisao === null ? "não existe" : pct(c.precisao, 1)}</dd></div>
+          {icP && <div data-tom="mudo"><dt>Intervalo de 95% da precisão</dt><dd>{pct(icP.lo, 1)} a {pct(icP.hi, 1)}</dd></div>}
           <div><dt>Recall = VP ÷ (VP + FN)</dt><dd>{c.vp} ÷ {D} = {pct(tpr, 1)}</dd></div>
         </dl>
         <Previsao pergunta={`Mesma fila, corte de ${pct(T0, 0)}, numa carteira com ${pct(PI2, 0)} de default. A precisão:`} opcoes={OPS} escolha={esc} onEscolha={escolher} recolher />

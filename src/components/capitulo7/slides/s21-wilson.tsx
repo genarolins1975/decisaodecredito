@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Botao, Controle, escala, Expandir, Formula, Grafico, Kpi, Painel, Previsao, Quadro, Seg, type Pagina } from "../base";
+import { Botao, Controle, escala, Expandir, Formula, Grafico, Painel, Previsao, Quadro, Seg, type Pagina } from "../base";
 import { D, N, PL, Y } from "@/lib/capitulo7/dados";
 import { diferencaProporcoes, faixasQuantis, jeffreys, media, wald, wilson } from "@/lib/capitulo7/metricas";
 import { int, num, pct, pp } from "@/lib/capitulo7/formato";
@@ -10,9 +10,9 @@ import { int, num, pct, pp } from "@/lib/capitulo7/formato";
  * passa por n múltiplos de 20, em que 5% é um número inteiro de defaults). Antes de liberar o controle, a turma prevê o
  * intervalo de 5 em 100; as alternativas erradas são o intervalo de 50 em 1.000 e o da aproximação normal. O intervalo
  * de Wilson encolhe com √n e nunca sai de [0, 1]; a aproximação normal (Wald), com poucos casos, dá limite inferior
- * negativo. O nível de confiança é escolhido no quadro (z de 1,645, 1,960 ou 2,576). Na expansão, duas faixas
- * vizinhas da logística comparadas pelo intervalo da diferença, e não pela sobreposição dos dois intervalos. Na
- * terceira expansão, o teste de Jeffreys que o BCE pede no backtesting de PD, na carteira e por decil.
+ * negativo. O nível de confiança é escolhido no quadro (z de 1,645, 1,960 ou 2,576). Abaixo do gráfico, a ponte com
+ * o slide 19: as faixas vizinhas F8 e F9 da logística, com o intervalo de cada uma e o da diferença (e não a
+ * sobreposição dos dois intervalos). Na expansão, o teste de Jeffreys que o BCE pede no backtesting de PD.
  */
 const NS = [20, 40, 60, 100, 140, 200, 300, 500, 740, 1000, 2000];
 const Z = { "90": 1.6448536269514722, "95": 1.959963984540054, "99": 2.5758293035489004 } as const;
@@ -40,19 +40,21 @@ export function S21Wilson({ pagina }: { pagina?: Pagina }) {
   const linhas = [{ rot: `${d} em ${int(n)} (controle)`, n, d, on: true, oculto: false }, { rot: "5 em 100", n: 100, d: 5, oculto: !liberado }, { rot: "50 em 1.000", n: 1000, d: 50, oculto: false }];
   return (
     <Quadro slug="c7p31" pagina={pagina} layout="gl"
-      conclusao={!liberado ? <>1 default em 20: intervalo de 95% de <b>{faixa(wilson(1, 20)!)}</b>; 50 em 1.000: {faixa(W1000)}. Antes de mover o número de casos, preveja o intervalo de 5 em 100.</> : <>{d} default{d === 1 ? "" : "s"} em {int(n)} casos: frequência de {pct(d / n, 1)}, intervalo de {nivel}% de <b>{pct(w.lo, 1)} a {pct(w.hi, 1)}</b>. {wa.lo < 0 ? <>A aproximação normal daria limite inferior negativo ({pct(wa.lo, 1)}), sem sentido para uma frequência.</> : n >= 500 ? "Com muitos casos, os dois métodos quase coincidem." : "Mais casos, intervalo mais estreito."}</>}
+      conclusao={!liberado ? <>1 default em 20: intervalo de 95% de <b>{faixa(wilson(1, 20)!)}</b>; 50 em 1.000: {faixa(W1000)}. Antes de mover o número de casos, preveja o intervalo de 5 em 100.</> : <>{d} default{d === 1 ? "" : "s"} em {int(n)} casos: frequência de {pct(d / n, 1)}, intervalo de {nivel}% de <b>{pct(w.lo, 1)} a {pct(w.hi, 1)}</b>. {wa.lo < 0 ? <>A aproximação normal daria limite inferior negativo ({pct(wa.lo, 1)}).</> : n >= 500 ? "Com muitos casos, os dois métodos quase coincidem." : "Mais casos, intervalo mais estreito."} As faixas do slide 19 têm cerca de {F8.n} casos: F8 observou {F8.d} em {F8.n}, intervalo de {pct(F8.ic!.lo, 1)} a {pct(F8.ic!.hi, 1)}.</>}
       fonte={`Wilson (1927) para uma proporção binomial, com o denominador real de cada linha; nível de confiança de ${nivel}%. Exemplos ilustrativos com frequência de 5%; a comparação de faixas usa a janela fora do tempo (logística).`}>
       <Painel titulo="A mesma frequência observada, 5%, com números de casos diferentes">
         <Grafico rotulo={linhas.map((l) => { const ww = wilson(l.d, l.n, z)!; return l.oculto ? `${l.rot}: oculto até a previsão` : `${l.rot}: ${pct(ww.lo, 1)} a ${pct(ww.hi, 1)}`; }).join("; ")} arCelular="4 / 3">
           {(dm) => {
-            const x = escala([-0.05, 0.25], [dm.fs * 0.6, dm.w - dm.fs * 0.6]); const lh = (dm.h - dm.fs * 3.2) / linhas.length;
+            const x = escala([-0.05, 0.25], [dm.fs * 0.6, dm.w - dm.fs * 0.6]);
+            // cada linha precisa do rótulo acima e da aproximação normal abaixo; a última fica acima dos rótulos do eixo
+            const topo = dm.fs * 2.7, fundo = dm.h - dm.fs * 4.1; const passo = (fundo - topo) / (linhas.length - 1);
             return (
               <g>
                 <rect x={x(-0.05)} y={0} width={x(0) - x(-0.05)} height={dm.h - dm.fs * 2.4} fill="#FBF2F3" />
-                <text className="q7-rot--peq" x={x(-0.025)} y={dm.fs * 1.2} textAnchor="middle" style={{ fill: "#8C2332" }}>abaixo de 0%</text>
+                <text className="q7-rot--peq" x={x(-0.025)} y={dm.h - dm.fs * 2.4} dy="1.35em" textAnchor="middle" style={{ fill: "#8C2332" }}>abaixo de 0%</text>
                 {[0, 0.05, 0.1, 0.15, 0.2, 0.25].map((v) => <g key={v}><line className="q7-grade" x1={x(v)} x2={x(v)} y1={0} y2={dm.h - dm.fs * 2.4} /><text className="q7-tick" x={x(v)} y={dm.h - dm.fs * 2.4} dy="1.2em" textAnchor="middle">{pct(v, 0)}</text></g>)}
                 <line x1={x(0.05)} x2={x(0.05)} y1={0} y2={dm.h - dm.fs * 2.4} stroke="#176C73" strokeWidth={2} strokeDasharray="6 5" />
-                {linhas.map((l, k) => { const ww = wilson(l.d, l.n, z)!, wd = wald(l.d, l.n, z)!; const cy = dm.fs * 2.6 + lh * k + lh * 0.35; return l.oculto ? (
+                {linhas.map((l, k) => { const ww = wilson(l.d, l.n, z)!, wd = wald(l.d, l.n, z)!; const cy = topo + passo * k; return l.oculto ? (
                   <g key={l.rot}>
                     <text className="q7-rot" x={x(-0.05)} y={cy - dm.fs * 0.9}>{l.rot}</text>
                     <rect x={x(0)} y={cy - dm.fs * 0.5} width={x(0.2) - x(0)} height={dm.fs * 1.9} rx={6} fill="none" stroke="#9AA1AD" strokeWidth={2} strokeDasharray="6 5" />
@@ -72,10 +74,12 @@ export function S21Wilson({ pagina }: { pagina?: Pagina }) {
             );
           }}
         </Grafico>
-        <div className="q7-kpis q7-kpis--2">
-          <Kpi rotulo="Largura do intervalo (controle)" valor={pp(w.hi - w.lo, 1).replace("+", "")} detalhe={`${pct(w.lo, 1)} a ${pct(w.hi, 1)}`} tom="prob" tam="mini" />
-          <Kpi rotulo="Limite inferior normal (controle)" valor={pct(wa.lo, 1)} detalhe={wa.lo < 0 ? "⚠ negativo: sem sentido" : "dentro de [0, 1]"} tam="mini" />
-        </div>
+        <p className="q7-k">Ponte com o slide 19: F9 tem PD maior que F8 e observou menos</p>
+        <dl className="q7-lista q7-g2-s21-l">
+          <div><dt>F8: {F8.d} em {F8.n} = {pct(F8.obs!, 1)}</dt><dd>{pct(F8.ic!.lo, 1)} a {pct(F8.ic!.hi, 1)}</dd></div>
+          <div><dt>F9: {F9.d} em {F9.n} = {pct(F9.obs!, 1)}</dt><dd>{pct(F9.ic!.lo, 1)} a {pct(F9.ic!.hi, 1)}</dd></div>
+          <div data-tom={DIF.ic[0] < 0 && DIF.ic[1] > 0 ? "mudo" : undefined}><dt>Diferença F8 − F9: {pp(DIF.dif, 1)}; {DIF.ic[0] < 0 && DIF.ic[1] > 0 ? "contém o zero, a inversão é ruído" : "não contém o zero"}</dt><dd>{pp(DIF.ic[0], 1)} a {pp(DIF.ic[1], 1)}</dd></div>
+        </dl>
       </Painel>
       <Painel>
         <Previsao pergunta="Com 5 defaults em 100 casos, o intervalo de 95% para a frequência vai:" opcoes={OPS} escolha={esc} onEscolha={(k) => { setEsc(k); if (k !== null) setNivel("95"); }} recolher />
@@ -84,9 +88,6 @@ export function S21Wilson({ pagina }: { pagina?: Pagina }) {
         <Expandir resumo="Fórmula e o que o intervalo cobre">
           <Formula f={String.raw`\frac{\hat p+\frac{z^2}{2n}\pm z\sqrt{\frac{\hat p(1-\hat p)}{n}+\frac{z^2}{4n^2}}}{1+\frac{z^2}{n}}`} simbolos={[[String.raw`\hat p`, "frequência observada d ÷ n"], ["z", `quantil da normal: ${num(Z[nivel], 3)} para ${nivel}%`]]} />
           <p className="q7-nota">O procedimento, repetido em muitas amostras, cobre a frequência verdadeira em cerca de {nivel}% delas; não é a probabilidade de um parâmetro fixo estar dentro deste intervalo. Supõe casos independentes com a mesma probabilidade; não inclui a incerteza do treino do modelo nem a dependência entre clientes.</p>
-        </Expandir>
-        <Expandir resumo="Faixas vizinhas: a diferença tem intervalo">
-          <p className="q7-nota">Logística, faixas F8 e F9: {F8.d} em {F8.n} ({pct(F8.obs!, 1)}) contra {F9.d} em {F9.n} ({pct(F9.obs!, 1)}). A faixa de PD maior observou menos. Diferença {pp(DIF.dif, 1)}, intervalo de 95% de {pp(DIF.ic[0], 1)} a {pp(DIF.ic[1], 1)}: contém o zero, a inversão é compatível com ruído. Sobrepor dois intervalos não é teste.</p>
         </Expandir>
         <Expandir resumo="Como o supervisor testa a PD: Jeffreys">
           <Formula compacta f={String.raw`p=F_{\mathrm{Beta}}\big(\mathrm{PD};\ d+\tfrac12,\ n-d+\tfrac12\big)`} />

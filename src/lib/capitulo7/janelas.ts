@@ -5,8 +5,8 @@
  * números. Calculadas sob demanda (nunca no carregamento do módulo) e guardadas em cache; conferidas contra o
  * roc_auc_score do scikit-learn, com o mesmo gerador portado, em tests/capitulo7-metricas.test.ts.
  */
-import { PGR, PL, PT, Y } from "./dados";
-import { aucPorPostos, mulberry32, postosMedios, type Vetor } from "./metricas";
+import { CAL, CAL_PGR, CAL_PL, PG, PGR, PL, PLATT, PT, Y } from "./dados";
+import { ajustarIntercepto, ajustarPlatt, aucPorPostos, brier, logLoss, mulberry32, perdaEsperada, postosMedios, transformar, type Vetor } from "./metricas";
 
 export const SEMENTE_JANELAS = 20261033;
 export const N_JANELAS = 300;
@@ -38,4 +38,43 @@ export function vantagemEmJanelasNovas() {
   let acima = 0; for (let b = 0; b < al.length; b++) if (al[b] - ag[b] >= obs) acima++;
   const l = aucEsperada(PL), g = aucEsperada(PGR);
   return { l, g, vantagem: l - g, obs, acima };
+}
+
+/**
+ * Calibradores em janelas novas (slides 27, 28, 29, 36 e 37). Para a logística e o boosting sem recalibrar: sem
+ * calibrar, intercepto e Platt estimados na amostra de calibração, o atalho (Platt ajustado na própria janela) e, no
+ * boosting, o Platt do curso. Para cada um, a perda na janela observada (81 defaults) e a perda esperada exata pela PD
+ * verdadeira (perdaEsperada, a média sobre os proponentes): contas baratas, sem sorteio. A log loss em cada uma das
+ * N_JANELAS janelas novas, para contar em quantas um calibrador vence outro, só é calculada quando pedida
+ * (llEmJanelasNovas, vitorias), nunca no carregamento do módulo. Conferido contra log_loss e brier_score_loss do
+ * scikit-learn com pesos em tests/capitulo7-metricas.test.ts.
+ */
+export type IdCalibrador = "sem" | "intercepto" | "platt" | "atalho" | "curso";
+export type Calibrado = { id: IdCalibrador; a: number | null; b: number | null; pd: number[]; janela: { logLoss: number; brier: number }; esperada: { logLoss: number; brier: number } };
+const cacheCal = new Map<"pl" | "pgr", Partial<Record<IdCalibrador, Calibrado>>>();
+export function calibradores(modelo: "pl" | "pgr"): Partial<Record<IdCalibrador, Calibrado>> {
+  const c = cacheCal.get(modelo); if (c) return c;
+  const pd = modelo === "pl" ? PL : PGR, pc = modelo === "pl" ? CAL_PL : CAL_PGR;
+  const ai = ajustarIntercepto(CAL.y, pc), pp = ajustarPlatt(CAL.y, pc), pa = ajustarPlatt(Y, pd);
+  const def: [IdCalibrador, number | null, number | null][] = [["sem", null, null], ["intercepto", ai, 1], ["platt", pp.a, pp.b], ["atalho", pa.a, pa.b]];
+  if (modelo === "pgr") def.push(["curso", PLATT.a, PLATT.b]);
+  const out: Partial<Record<IdCalibrador, Calibrado>> = {};
+  for (const [id, a, b] of def) {
+    const q = id === "curso" ? PG.slice() : a === null || b === null ? pd.slice() : transformar(pd, a, b);
+    out[id] = { id, a, b, pd: q, janela: { logLoss: logLoss(Y, q).valor, brier: brier(Y, q) }, esperada: perdaEsperada(PT, q) };
+  }
+  cacheCal.set(modelo, out); return out;
+}
+const cacheLl = new Map<string, number[]>();
+/** Log loss do calibrador em cada uma das N_JANELAS janelas novas (sob demanda, com cache). */
+export function llEmJanelasNovas(modelo: "pl" | "pgr", id: IdCalibrador): number[] {
+  const k = `${modelo}:${id}`; const c = cacheLl.get(k); if (c) return c;
+  const q = calibradores(modelo)[id]!.pd; const v = janelasNovas().map((y) => logLoss(y, q).valor);
+  cacheLl.set(k, v); return v;
+}
+/** Em quantas das N_JANELAS janelas novas a log loss de x fica abaixo da de y. */
+export function vitorias(modelo: "pl" | "pgr", x: IdCalibrador, y: IdCalibrador): number {
+  const lx = llEmJanelasNovas(modelo, x), ly = llEmJanelasNovas(modelo, y); let v = 0;
+  for (let b = 0; b < lx.length; b++) if (lx[b] < ly[b]) v++;
+  return v;
 }

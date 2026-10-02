@@ -197,7 +197,7 @@ for nome, p in MOD.items():
     lo, hi = r.conf_int(alpha=0.05)[1]
     ref["slopeEp"][nome] = {"slope": float(r.params[1]), "epIntercepto": float(r.bse[0]), "epSlope": float(r.bse[1]), "lo": float(lo), "hi": float(hi)}
 
-# Platt com alvos suavizados (Platt, 1999): o _sigmoid_calibration do scikit-learn (otimizador numérico) e o GLM
+# Platt com alvos suavizados (Platt, 2000): o _sigmoid_calibration do scikit-learn (otimizador numérico) e o GLM
 # binomial do statsmodels nos mesmos alvos fracionários (máxima verossimilhança exata). Convenção do capítulo: a = −B, b = −A.
 from sklearn.calibration import _sigmoid_calibration
 ref["plattSuavizado"] = {}
@@ -224,15 +224,39 @@ for nome, p in MOD.items():
     ref["melhorCorte"][nome] = best
 
 # janelas novas: os mesmos proponentes, desfecho sorteado da PD verdadeira (mesmo gerador do TypeScript, semente 20261033)
-r = mulberry32(20261033); pt = MOD["pt"]; aucs = {k: [] for k in ("pl", "pgr", "pg")}
+r = mulberry32(20261033); pt = MOD["pt"]; aucs = {k: [] for k in ("pl", "pgr", "pg")}; ybs = []
 for b in range(300):
-    yb = np.array([1 if r() < q else 0 for q in pt])
+    yb = np.array([1 if r() < q else 0 for q in pt]); ybs.append(yb)
     for k in aucs:
         aucs[k].append(roc_auc_score(yb, MOD[k]))
 obs = roc_auc_score(y, MOD["pl"]) - roc_auc_score(y, MOD["pgr"])
 ref["janelasNovas"] = {"semente": 20261033, "n": 300, "media": {k: float(np.mean(v)) for k, v in aucs.items()},
                        "primeiras": {k: v[:5] for k, v in aucs.items()},
                        "acima": int(sum(1 for u, v in zip(aucs["pl"], aucs["pgr"]) if u - v >= obs))}
+
+# perdas esperadas dos calibradores pela PD verdadeira: cada proposta entra duas vezes, como default com peso pt e como
+# adimplente com peso 1 − pt; log_loss e brier_score_loss do scikit-learn com sample_weight dão a média da esperança.
+# Parâmetros do GLM do statsmodels (amostra de calibração, ou a própria janela no atalho). Em cada janela nova, a log loss
+# de cada calibrador pelo log_loss do scikit-learn, para contar vitórias.
+def esperadas(q):
+    yy = np.concatenate([np.ones(len(pt)), np.zeros(len(pt))]); qq = np.concatenate([q, q]); w = np.concatenate([pt, 1 - pt])
+    return {"logloss": float(log_loss(yy, qq, sample_weight=w)), "brier": float(brier_score_loss(yy, qq, sample_weight=w))}
+ref["calibradores"] = {}
+for nome in ("pl", "pgr"):
+    po = MOD[nome]; pc = po[ci]
+    a0 = float(glm(cy, np.ones((len(cy), 1)), offset=lg(pc)).params[0])
+    pp = glm(cy, sm.add_constant(lg(pc))).params; pa = glm(y, sm.add_constant(lg(po))).params
+    vers = {"sem": po, "intercepto": sig(lg(po) + a0), "platt": sig(pp[0] + pp[1] * lg(po)), "atalho": sig(pa[0] + pa[1] * lg(po))}
+    if nome == "pgr":
+        vers["curso"] = MOD["pg"]
+    lls = {k: np.array([log_loss(yb, q, labels=[0, 1]) for yb in ybs]) for k, q in vers.items()}
+    ref["calibradores"][nome] = {
+        "esperada": {k: esperadas(q) for k, q in vers.items()},
+        "janela": {k: {"logloss": float(log_loss(y, q)), "brier": float(brier_score_loss(y, q))} for k, q in vers.items()},
+        "vitorias": {"platt_sem": int((lls["platt"] < lls["sem"]).sum()), "platt_intercepto": int((lls["platt"] < lls["intercepto"]).sum()), "intercepto_sem": int((lls["intercepto"] < lls["sem"]).sum())},
+        "llJanelasPrimeiras": {k: v[:5].tolist() for k, v in lls.items()},
+    }
+ref["blocosCalibracao"] = cy.reshape(10, -1).sum(axis=1).tolist() if len(cy) % 10 == 0 else None
 
 saida = RAIZ / "tests/fixtures/capitulo7-referencia.json"
 saida.parent.mkdir(parents=True, exist_ok=True)

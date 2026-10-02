@@ -41,8 +41,8 @@ const FRONTEIRA: [string, string, string?][] = [
 ];
 const REFS: string[] = [
   "Banco Central Europeu (ECB) (2019). Instructions for reporting the validation results of internal models: IRB Pillar I models for credit risk. ECB Banking Supervision, versão de fevereiro de 2019 (teste de Jeffreys).",
-  "Brier, G. W. (1950). Verification of forecasts expressed in terms of probability. Monthly Weather Review, 78(1).",
-  "Cox, D. R. (1958). Two further applications of a model for binary regression. Biometrika, 45(3/4).",
+  "Brier, G. W. (1950). Verification of forecasts expressed in terms of probability. Monthly Weather Review, 78(1), 1 a 3.",
+  "Cox, D. R. (1958). Two further applications of a model for binary regression. Biometrika, 45(3/4), 562 a 565.",
   "DeLong, E. R.; DeLong, D. M.; Clarke-Pearson, D. L. (1988). Comparing the areas under two or more correlated receiver operating characteristic curves: a nonparametric approach. Biometrics, 44(3).",
   "Dimitriadis, T.; Gneiting, T.; Jordan, A. I. (2021). Stable reliability diagrams for probabilistic classifiers. PNAS, 118(8), e2016191118.",
   "EBA (2017). Guidelines on PD estimation, LGD estimation and the treatment of defaulted exposures. EBA/GL/2017/16.",
@@ -55,10 +55,10 @@ const REFS: string[] = [
   "Hosmer, D. W.; Lemeshow, S. (1980). Goodness of fit tests for the multiple logistic regression model. Communications in Statistics: Theory and Methods, 9(10).",
   "Hébert-Johnson, U.; Kim, M. P.; Reingold, O.; Rothblum, G. N. (2018). Multicalibration: calibration for the (computationally-identifiable) masses. ICML.",
   "Kull, M.; Silva Filho, T. M.; Flach, P. (2017). Beta calibration: a well-founded and easily implemented improvement on logistic calibration for binary classifiers. AISTATS.",
-  "Murphy, A. H. (1973). A new vector partition of the probability score. Journal of Applied Meteorology, 12(4).",
+  "Murphy, A. H. (1973). A new vector partition of the probability score. Journal of Applied Meteorology, 12(4), 595 a 600.",
   "Naeini, M. P.; Cooper, G. F.; Hauskrecht, M. (2015). Obtaining well calibrated probabilities using Bayesian binning. AAAI.",
   "Niculescu-Mizil, A.; Caruana, R. (2005). Predicting good probabilities with supervised learning. ICML.",
-  "Platt, J. (1999). Probabilistic outputs for support vector machines and comparisons to regularized likelihood methods. Advances in Large Margin Classifiers, MIT Press.",
+  "Platt, J. C. (2000). Probabilistic outputs for support vector machines and comparisons to regularized likelihood methods. Em Smola, A. J.; Bartlett, P.; Schölkopf, B.; Schuurmans, D. (orgs.), Advances in Large Margin Classifiers, MIT Press, 61 a 74 (relatório técnico de 1999).",
   "Saito, T.; Rehmsmeier, M. (2015). The precision-recall plot is more informative than the ROC plot when evaluating binary classifiers on imbalanced datasets. PLoS ONE, 10(3).",
   "Stephenson, D. B.; Coelho, C. A. S.; Jolliffe, I. T. (2008). Two extra components in the Brier score decomposition. Weather and Forecasting, 23(4).",
   "Sun, X.; Xu, W. (2014). Fast implementation of DeLong's algorithm for comparing the areas under correlated receiver operating characteristic curves. IEEE Signal Processing Letters, 21(11).",

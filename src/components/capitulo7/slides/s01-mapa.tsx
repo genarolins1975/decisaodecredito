@@ -2,14 +2,15 @@
 import { LinkSlide, Quadro, type Pagina } from "../base";
 import { D, EAD, N, PGR, PL, Y } from "@/lib/capitulo7/dados";
 import { calibracaoGlobal, delong, ks } from "@/lib/capitulo7/metricas";
-import { CURTO, PERGUNTAS, ROTEIRO, type Pergunta } from "@/lib/capitulo7/roteiro";
+import { CURTO, PERGUNTAS, ROTEIRO, SLIDE, type Pergunta } from "@/lib/capitulo7/roteiro";
 import { curva, GRADE_CORTES, otimo } from "@/lib/visuais/economia";
-import { num, pct } from "@/lib/capitulo7/formato";
+import { int, num, pct } from "@/lib/capitulo7/formato";
 
 /**
  * 01 · c7p1 · Mapa do capítulo: as quatro perguntas como infográfico navegável. Ordenação, probabilidade e decisão em
  * fluxo; validação como faixa que atravessa as três. Cada pergunta traz a frase que ela responde, um número da nossa
- * janela e os slides que a tratam, como links no mesmo modo (apresentação ou estudo). Números calculados aqui.
+ * janela e os slides que a tratam, como links no mesmo modo (apresentação ou estudo). Números calculados aqui. O cartão
+ * Validação não antecipa quem vence a comparação (slides 33 e 34): mostra só o tamanho da janela que decide.
  */
 type P = Exclude<Pergunta, "todas" | "apoio">;
 const KS_ = ks(Y, PL), G = calibracaoGlobal(Y, PL), DL = delong(Y, PL, PGR);
@@ -18,10 +19,13 @@ const NUMERO: Record<P, string> = {
   ordenacao: `AUC ${num(DL.auc1, 4)} · KS ${num(KS_.ks, 4)}`,
   probabilidade: `PD média ${pct(G.pdMedia!, 1)} contra ${pct(D / N, 1)} observados`,
   decisao: `Corte econômico ${pct(ECON, 1)}; KS em ${pct(KS_.limiar, 1)}`,
-  validacao: `Logística menos boosting sem recalibrar: AUC +${num(DL.dif, 4)} (IC 95% de DeLong, ${num(DL.ic[0], 4)} a ${num(DL.ic[1], 4)})`,
+  validacao: `Logística ou boosting? Decidem ${int(N)} propostas e só ${D} defaults`,
 };
 const SIMB: Record<P, string> = { ordenacao: "●", probabilidade: "▲", decisao: "◆", validacao: "■" };
 const TAMBEM: Partial<Record<P, string[]>> = { decisao: ["c7p28"] };
+/** A sigla OOT não aparece no mapa: o slide 35 entra pelo nome da janela. */
+const curto = (slug: string) => (slug === "c7p17" ? "Janela fora do tempo" : CURTO[slug]);
+const titulo = (t: string) => t.replace(/^OOT:/, "Janela fora do tempo (OOT):");
 const slides = (p: P) => [...ROTEIRO.filter((s) => TAMBEM[p]?.includes(s.slug)), ...ROTEIRO.filter((s) => s.pergunta === p)];
 
 /** Régua do cartão Decisão: onde o KS e o resultado esperado põem o corte, na mesma escala de PD. */
@@ -45,7 +49,7 @@ function Cartao({ p }: { p: P }) {
       <p className="q7-s01-f">{q.frase}</p>
       <p className="q7-s01-n">{NUMERO[p]}</p>
       {p === "decisao" && <Regua />}
-      <ul className="q7-s01-l">{slides(p).map((s) => <li key={s.slug}><LinkSlide slug={s.slug} className={`q7-s01-k${s.nivel === "aprofundamento" ? " q7-s01-k--ap" : ""}`} rotulo={`Slide ${s.n}${s.nivel === "aprofundamento" ? ", aprofundamento" : ""}: ${s.titulo}`}><b>{s.n}</b>{s.nivel === "aprofundamento" ? null : CURTO[s.slug]}</LinkSlide></li>)}</ul>
+      <ul className="q7-s01-l">{slides(p).map((s) => <li key={s.slug}><LinkSlide slug={s.slug} className={`q7-s01-k${s.nivel === "aprofundamento" ? " q7-s01-k--ap" : ""}`} rotulo={`Slide ${s.n}${s.nivel === "aprofundamento" ? ", aprofundamento" : ""}: ${titulo(s.titulo)}`}><b>{s.n}</b>{s.nivel === "aprofundamento" ? null : curto(s.slug)}</LinkSlide></li>)}</ul>
     </section>
   );
 }
@@ -53,8 +57,8 @@ function Cartao({ p }: { p: P }) {
 export function S01Mapa({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c7p1" pagina={pagina} layout="um"
-      conclusao={<>A logística ordena (AUC {num(DL.auc1, 4)}), mas prevê {pct(G.pdMedia!, 1)} de default contra {pct(D / N, 1)}, e <b>o KS e a economia apontam cortes diferentes</b>.</>}
-      fonte={`Base sintética, semente 20260501; janela 2023-08 a 2023-12: ${N} propostas, ${D} defaults. Corte econômico: hipóteses do capítulo 8. Tracejado: aprofundamento.`}>
+      conclusao={<>A logística ordena (AUC {num(DL.auc1, 4)}), mas prevê {pct(G.pdMedia!, 1)} de default contra {pct(D / N, 1)}, e <b>o KS e a economia apontam cortes diferentes</b>. Primeiro, a pergunta: slide {SLIDE.c7p21.n}.</>}
+      fonte={`Base sintética, semente 20260501; janela fora do tempo, safras 2023-08 a 2023-12: ${int(N)} propostas, ${D} defaults. Corte econômico: slide ${SLIDE.c7p18.n}. Tracejado: aprofundamento.`}>
       <div className="q7-s01">
         <div className="q7-s01-fluxo">
           <Cartao p="ordenacao" />

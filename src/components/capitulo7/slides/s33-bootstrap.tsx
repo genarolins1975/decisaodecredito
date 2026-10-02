@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Botao, Eixos, escala, Expandir, Grafico, Kpi, Painel, Previsao, Quadro, Seg, margens, type Pagina } from "../base";
+import { Botao, Eixos, escala, Expandir, Grafico, Kpi, LinkSlide, Painel, Previsao, Quadro, Seg, margens, type Pagina } from "../base";
 import { D, N, PGR, PL, Y } from "@/lib/capitulo7/dados";
 import { N_JANELAS, SEMENTE_JANELAS, vantagemEmJanelasNovas } from "@/lib/capitulo7/janelas";
 import { aucPorPares, bootstrapPareado, delong, quantil, Z95 } from "@/lib/capitulo7/metricas";
@@ -34,7 +34,7 @@ function Histograma({ v, dom, passo, ic, ref0, d, real, xt, novas }: { v: number
       {ref0 && <><line x1={x(0)} x2={x(0)} y1={m.t} y2={y(0)} stroke="#5B6475" strokeWidth={2.5} /><text className="q7-rot q7-rot--peq" x={x(0) - d.fs * 0.4} y={m.t + d.fs * 0.6} textAnchor="end" style={{ fill: "#5B6475", fontWeight: 700 }}>diferença zero</text></>}
       <line x1={x(real)} x2={x(real)} y1={m.t - d.fs * 0.6} y2={y(0)} stroke="#00205B" strokeWidth={2.5} strokeDasharray="6 4" />
       <text className="q7-rot--peq" x={x(real)} y={m.t - d.fs * 0.8} textAnchor="middle" style={{ fill: "#00205B", fontWeight: 700 }}>na janela {num(real, 4)}</text>
-      {novas !== null && <><line x1={x(novas)} x2={x(novas)} y1={m.t + d.fs * 0.9} y2={y(0)} stroke="#2E6B4F" strokeWidth={3} /><text className="q7-rot--peq" x={x(novas) - d.fs * 0.3} y={m.t + d.fs * 2.6} textAnchor="end" style={{ fill: "#2E6B4F", fontWeight: 700, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em" }}>▲ janelas novas {num(novas, 4)}</text></>}
+      {novas !== null && <><line x1={x(novas)} x2={x(novas)} y1={m.t} y2={y(0)} stroke="#2E6B4F" strokeWidth={3} /><text className="q7-rot--peq" x={x(novas) + d.fs * 0.35} y={m.t + d.fs * 0.9} textAnchor="start" style={{ fill: "#2E6B4F", fontWeight: 700, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em" }}>▲ janelas novas {num(novas, 4)}</text></>}
     </g>
   );
 }
@@ -55,8 +55,8 @@ export function S33Bootstrap({ pagina }: { pagina?: Pagina }) {
   const icDif = (() => { const o = bs.dif.slice(0, k).sort((a, b) => a - b); return [quantil(o, 0.025), quantil(o, 0.975)] as [number, number]; })();
   return (
     <Quadro slug="c7p14" pagina={pagina} layout="gl"
-      conclusao={revelado ? <>A base sintética permite repetir a janela: em {N_JANELAS} janelas novas, a vantagem esperada da logística é <b>{num(sint.vantagem, 4)}</b>, não {num(sint.obs, 4)}, e só {sint.acima} repetem a observada. O bootstrap herda a sorte da janela: <b>p = {num(DL.p, 3)} nesta janela não prova que a logística seja melhor em outra.</b></>
-        : k < REPLICAS ? <>{int(k)} réplicas pareadas da janela: a diferença entre os modelos vai de <b>{num(icDif[0], 4)} a {num(icDif[1], 4)}</b> (percentil 95%), em torno dos {num(AUC1 - AUC2, 4)} observados. Complete as {int(REPLICAS)} e responda à previsão ao lado.</>
+      conclusao={revelado ? <>A base sintética permite repetir a janela: em {N_JANELAS} janelas novas, a vantagem esperada da logística é <b>{num(sint.vantagem, 4)}</b>, não {num(sint.obs, 4)}, e só {sint.acima} repetem a observada. O bootstrap herda a sorte da janela: <b>p = {num(DL.p, 3)} nesta janela não prova que a logística seja melhor em outra.</b> O <LinkSlide slug="c7p15">slide 34</LinkSlide> põe os dois modelos nos mesmos casos, com este intervalo.</>
+        : k < REPLICAS ? <>{int(k)} réplicas pareadas: a diferença entre os modelos vai de <b>{num(icDif[0], 4)} a {num(icDif[1], 4)}</b> (percentil 95%), em torno dos {num(AUC1 - AUC2, 4)} observados. Complete as {int(REPLICAS)} e responda à previsão.</>
           : <>Com {int(REPLICAS)} réplicas, a diferença fica entre <b>{num(icDif[0], 4)} e {num(icDif[1], 4)}</b>; {abaixo0} réplicas ficam em zero ou abaixo. DeLong dá [{num(DL.ic[0], 4)}; {num(DL.ic[1], 4)}], p = {num(DL.p, 3)}: nesta janela a vantagem existe, com margem estreita. Agora a previsão.</>}
       fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. Bootstrap pareado por proposta, até ${int(REPLICAS)} réplicas, semente ${SEMENTE}; intervalo percentil. DeLong (1988) com a covariância entre os dois modelos. Janelas novas: ${N_JANELAS} sorteios do desfecho pela PD verdadeira para os mesmos proponentes (semente ${SEMENTE_JANELAS}), só possível em base sintética.`}>
       <Painel>
@@ -81,8 +81,8 @@ export function S33Bootstrap({ pagina }: { pagina?: Pagina }) {
         ) : (
           <Previsao pergunta="Em janelas novas dos mesmos proponentes (desfecho sorteado de novo), a vantagem média da logística fica perto de..." escolha={prev} onEscolha={setPrev} recolher
             opcoes={[
-              { certa: false, texto: `${num(sint.obs, 3)}, a da janela`, retorno: "Confunde a janela com a população: o bootstrap reamostra a janela que temos e herda a sorte dela; o histograma se centra no observado, não no esperado." },
-              { texto: `${num(sint.vantagem, 3)}, bem menos`, certa: true, retorno: "Isso." },
+              { certa: false, texto: `A da janela, ${num(sint.obs, 3)}`, retorno: "Confunde a janela com a população: o bootstrap reamostra a janela que temos e herda a sorte dela; o histograma se centra no observado, não no esperado." },
+              { texto: `Bem menos: perto de ${Math.round(sint.obs / sint.vantagem) === 4 ? "um quarto" : `1/${Math.round(sint.obs / sint.vantagem)}`} da observada`, certa: true, retorno: `Isso: ${num(sint.vantagem, 4)}.` },
               { certa: false, texto: "Zero: a diferença era só sorte", retorno: "O intervalo do bootstrap mal toca zero e a logística ordena melhor em média; a sorte exagerou a vantagem, não a criou." },
             ]} />
         )}

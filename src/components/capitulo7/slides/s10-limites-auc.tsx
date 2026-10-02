@@ -13,6 +13,8 @@ import { num, pct } from "@/lib/capitulo7/formato";
  * fila embaralhada as linhas se cruzam e a AUC cai para perto de 0,5; na orientação invertida tudo se cruza e a AUC
  * vira 1 − AUC. Até a turma escolher a frase, o subtítulo é pergunta e a leitura só dá a instrução; o que a AUC não
  * informa aparece depois da escolha. Pontos que se sobrepõem na ponte ganham um deslocamento vertical determinístico.
+ * Na ROC, a logística fica em cinza largo por baixo; na transformação crescente o cenário vem tracejado por cima, e o
+ * cinza aparecendo entre os traços mostra que as duas curvas coincidem.
  */
 /** Empilha marcas próximas no mesmo eixo: cada ponto vai ao primeiro nível livre (0, 1, 2...) sem encostar em outro. */
 function niveis(xs: number[], dist: number) {
@@ -53,7 +55,7 @@ export function S10LimitesAuc({ pagina }: { pagina?: Pagina }) {
       conclusao={esc === null ? "Escolha uma frase ao lado e depois teste nos quatro cenários." : cen === "crescente" ? <>A PD mudou de nível e <b>nenhuma linha se cruzou</b>: a AUC continua {num(auc, 4)}. A AUC só lê a ordem; e não existe um valor universal de &ldquo;bom modelo&rdquo;.</>
         : cen === "invertida" ? <>Tudo se cruza: a AUC vira 1 − {num(AUC0, 4)} = {num(auc, 4)}. Abaixo de 0,5 quase sempre é sentido trocado do escore, não um modelo &ldquo;pior que o acaso&rdquo;.</>
         : cen === "embaralhada" ? <>{cruz} cruzamentos entre {PARES} pares de propostas: a AUC cai para {num(auc, 4)}, perto do sorteio, com a mesma média de PD.</>
-        : <>Até a PD verdadeira do gerador tem AUC {num(auc, 4)}: propostas com as mesmas características podem terminar diferente. Nenhum modelo chega a 1.</>}
+        : <>Até a PD verdadeira do gerador tem AUC {num(auc, 4)}, só {num(auc - AUC0, 3)} acima da logística: propostas com as mesmas características podem terminar diferente. Nesta janela, esse é o teto prático; nenhum modelo chega a 1.</>}
       fonte="Ponte: as 20 propostas da mini-base com a PD da logística em precisão plena. ROC e AUC: janela fora do tempo, 737 propostas e 81 defaults. Transformação estritamente crescente: σ(1 + 0,5 · logit p).">
       <Painel>
         <Seg rotulo="Cenário" opcoes={(Object.keys(CEN) as Cen[]).map((k) => ({ v: k, r: CEN[k].nome }))} valor={cen} onChange={setCen} />
@@ -76,7 +78,7 @@ export function S10LimitesAuc({ pagina }: { pagina?: Pagina }) {
               );
             }}
           </Grafico>
-          <Roc titulo="ROC na janela" sub={`AUC ${num(auc, 4)}`} rotulo={`ROC da logística e do cenário ${c.nome}`} series={[{ pts: curvaRoc(Y, PL), classe: "mudo" }, { pts: curvaRoc(Y, c.janela), classe: cen === "crescente" ? "prob" : "ord" }]} xTit="Falso positivo" yTit="Verdadeiro positivo" />
+          <Roc titulo="ROC na janela" sub={`cenário: AUC ${num(auc, 4)} · cinza: logística`} rotulo={`ROC da logística e do cenário ${c.nome}`} series={[{ pts: curvaRoc(Y, PL), classe: "mudo q7-s10-ref" }, { pts: curvaRoc(Y, c.janela), classe: cen === "crescente" ? "prob q7-s10-trac" : "ord" }]} xTit="Falso positivo" yTit="Verdadeiro positivo" />
         </div>
       </Painel>
       <Painel>

@@ -77,3 +77,42 @@
 
 /* matriz compacta no celular (slides 8 e 9): o valor segue o tamanho do celular, não o cqw */
 @container q7 (max-width: 820px) { [data-q7="c7p6"] .q7-mx--compacta .q7-mx-v, [data-q7="c7p23"] .q7-mx--compacta .q7-mx-v { font-size: 22px; } }
+
+/* rodada 2 · 04 · c7p3: controles num fieldset que só abre depois da previsão */
+fieldset.q7-s04-ctl { border: 0; margin: 0; padding: 0; min-width: 0; }
+fieldset.q7-s04-ctl:disabled { opacity: .45; }
+.q7-s04-lat { gap: .8cqw; }
+
+/* rodada 2 · 07 · c7p22: o zero (inversão) em cinza escuro com borda; vinho fica só para default */
+.q7 .q7-slide .q7-s07-c[data-v="0"] { background: #fff; border: .18cqw solid #5B6475; color: #3F4755; }
+.q7 .q7-slide .q7-s07-c[data-v="0.5"] { border-style: dashed; }
+
+/* rodada 2 · 08 · c7p23: aposta curta na precisão, na própria linha da taxa */
+.q7-s08-ops { display: flex; gap: .6cqw; flex-basis: 100%; }
+.q7-s08-ops .q7-btn { min-width: 6cqw; }
+.q7 .q7-slide .q7-s08-ret { flex: 1 1 0; border-left: .3cqw solid var(--q7-def); padding-left: .6cqw; }
+@container q7 (max-width: 820px) { .q7-s08-ops .q7-btn { min-width: 64px; } }
+
+/* rodada 2 · 09 · c7p6: na janela, controle de corte, matriz e taxas ocupam o painel */
+.q7-s09-j { display: grid; gap: 1.2cqw; align-content: start; flex: 1; min-height: 0; }
+.q7-s09-j .q7-s09-c { align-items: center; }
+
+/* rodada 2 · 10 · c7p24: a ROC da logística larga e cinza por baixo; na transformação crescente o cenário vem tracejado */
+.q7 .q7-slide path.q7-s10-ref { stroke: #B5BAC4; stroke-width: 7; }
+.q7 .q7-slide path.q7-s10-trac { stroke-dasharray: 12 9; }
+.q7-s04-rec { margin: 0; }
+
+/* rodada 2 · 05 · c7p4: os quatro clientes do slide 4, sublinhados na fila */
+.q7 .q7-slide .q7-ficha[data-quatro="1"] .q7-ficha-id { color: var(--q7-ink); font-weight: 800; text-decoration: underline; text-underline-offset: .18em; }
+
+/* rodada 2 · 06 · c7p5: o par da mini-base numa linha só, para a expansão abrir no fluxo sem cobrir as contagens */
+.q7-s06-man { align-items: end; }
+.q7-s06-man label { grid-auto-flow: column; align-items: center; gap: .5cqw; }
+/* 09 · c7p6: a fila da mini-base numa linha, com a fronteira do corte, sob a aposta e a matriz */
+.q7-s09-fila { grid-column: 1 / -1; display: grid; gap: .5cqw; }
+.q7 .q7-slide .q7-s09-fila .q7-fila { grid-template-columns: repeat(20, minmax(0, 1fr)); gap: .2cqw; }
+.q7 .q7-slide .q7-s09-fila .q7-ficha-pos, .q7 .q7-slide .q7-s09-fila .q7-ficha-id { display: none; }
+.q7 .q7-slide .q7-s09-fila .q7-ficha { padding: .35cqw 0; gap: .2cqw; }
+.q7 .q7-slide .q7-s09-fila .q7-ficha-pd { font-size: 1.32cqw; letter-spacing: -.02em; }
+.q7 .q7-slide .q7-s09-fila .q7-ficha-mk { width: 1.5cqw; height: 1.5cqw; font-size: .9cqw; }
+@container q7 (max-width: 820px) { .q7 .q7-slide .q7-s09-fila .q7-fila { grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 12px 4px; } .q7 .q7-slide .q7-s09-fila .q7-ficha-pd { font-size: 13px; } .q7 .q7-slide .q7-s09-fila .q7-ficha-mk { width: 18px; height: 18px; font-size: 10px; } }

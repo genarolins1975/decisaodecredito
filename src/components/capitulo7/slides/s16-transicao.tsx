@@ -11,6 +11,7 @@ import { int, num, pct, reais } from "@/lib/capitulo7/formato";
  * esperados e perda esperada respondem ao nível. Perda esperada ilustrativa = Σ PD × LGD × EAD, com LGD de 65%
  * (hipótese do capítulo 8) e EAD igual ao valor de cada proposta. O deslocamento que iguala esperados e observados é
  * estimado nesta mesma janela só para mostrar que ele existe; o slide 27 explica por que isso exige amostra própria.
+ * A linha de referência é a perda com os defaults observados, sob a mesma LGD hipotética (hipóteses no slide 32).
  */
 const LGD = 0.65, INICIO = 0.8;
 const pe = (p: readonly number[]) => p.reduce((s, x, i) => s + x * LGD * EAD[i], 0);
@@ -34,8 +35,8 @@ export function S16Transicao({ pagina }: { pagina?: Pagina }) {
   const M = [A, B];
   return (
     <Quadro slug="c7p28" pagina={pagina} layout="gl"
-      conclusao={<>Mesma fila (AUC {num(AUC, 4)} nos dois), e a perda esperada vai de <b>{reais(A.pe)}</b> a <b>{reais(B.pe)}</b> contra {reais(REAL)} realizados. A provisão parte dessa conta: <b>o nível importa</b>, e a AUC não o vê.</>}
-      fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults. Perda = Σ PD (ou default) × 65% × EAD; LGD hipotética do capítulo 8. Provisão por perda esperada desde 1/1/2025: Res. CMN 4.966/2021 e Res. BCB 352/2023.`}>
+      conclusao={<>Mesma fila (AUC {num(AUC, 4)} nos dois), e a perda esperada vai de <b>{reais(A.pe)}</b> a <b>{reais(B.pe)}</b>, contra {reais(REAL)} com os defaults observados (LGD hipotética; as hipóteses estão no slide 32). Provisão e preço partem dessa conta: <b>o nível importa</b>, e a AUC não o vê.</>}
+      fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults. Perda = Σ PD (ou default) × 65% × EAD, LGD hipotética. Provisão por perda esperada desde 1/1/2025: Res. CMN 4.966/2021 e Res. BCB 352/2023.`}>
       <Painel titulo="Dois modelos com a mesma fila">
         <div className="q7-s16-mod">
           {M.map((m) => (
@@ -48,14 +49,14 @@ export function S16Transicao({ pagina }: { pagina?: Pagina }) {
             </div>
           ))}
         </div>
-        <Grafico titulo="Defaults esperados e perda esperada" sub="barras: modelos · linha: realizado na janela" rotulo={`Defaults esperados: A ${num(M[0].esp, 1)}, B ${num(M[1].esp, 1)}, observados ${D}. Perda esperada: A ${reais(M[0].pe)}, B ${reais(M[1].pe)}, realizada ${reais(REAL)}`} arCelular="16 / 9">
+        <Grafico titulo="Defaults esperados e perda esperada" sub="barras: modelos · linha: com os defaults observados" rotulo={`Defaults esperados: A ${num(M[0].esp, 1)}, B ${num(M[1].esp, 1)}, observados ${D}. Perda esperada: A ${reais(M[0].pe)}, B ${reais(M[1].pe)}, com os defaults observados ${reais(REAL)}`} arCelular="16 / 9">
           {(d) => {
             const meio = d.w / 2, alt = d.h - d.fs * 3.2, base = d.h - d.fs * 2;
             const bloco = (x0: number, w: number, vals: number[], real: number, fmt: (v: number) => string, tit: string) => {
               const mx = Math.max(...vals, real) * 1.18; const y = escala([0, mx], [base, base - alt + d.fs * 1.4]); const bw = w * 0.24; const bx = (i: number) => x0 + w * (0.08 + i * 0.32);
-              return <g>{vals.map((v, i) => <g key={i}><rect x={bx(i)} y={y(v)} width={bw} height={base - y(v)} fill={i ? "url(#q7-s16-hachura)" : M[i].cor} stroke={M[i].cor} strokeWidth={i ? 2.5 : 0} />{(() => { const dentro = Math.abs(y(v) - d.fs * 0.8 - y(real)) < d.fs * 1.1 && base - y(v) > d.fs * 2; return <text className="q7-rot" x={bx(i) + bw / 2} y={dentro ? y(v) + d.fs * 1.3 : y(v) - d.fs * 0.4} textAnchor="middle" style={{ fill: dentro && !i ? "#fff" : M[i].cor, fontWeight: 700, paintOrder: "stroke", stroke: dentro && i ? "#fff" : "none", strokeWidth: dentro && i ? "0.3em" : 0 }}>{fmt(v)}</text>; })()}<text className="q7-tick" x={bx(i) + bw / 2} y={base} dy="1.2em" textAnchor="middle">{M[i].nome}</text></g>)}
+              return <g>{vals.map((v, i) => <g key={i}><rect x={bx(i)} y={y(v)} width={bw} height={base - y(v)} fill={i ? "url(#q7-s16-hachura)" : M[i].cor} stroke={M[i].cor} strokeWidth={i ? 2.5 : 0} />{(() => { const perto = Math.abs(y(v) - y(real)) < d.fs * 1.4; return <text className="q7-rot" x={bx(i) + bw / 2} y={(perto ? Math.min(y(v), y(real)) : y(v)) - d.fs * 0.45} textAnchor="middle" style={{ fill: M[i].cor, fontWeight: 700, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em", strokeLinejoin: "round" }}>{fmt(v)}</text>; })()}<text className="q7-tick" x={bx(i) + bw / 2} y={base} dy="1.2em" textAnchor="middle">{M[i].nome}</text></g>)}
                 <line x1={x0 + w * 0.04} x2={x0 + w * 0.7} y1={y(real)} y2={y(real)} stroke="#8C2332" strokeWidth={3} strokeDasharray="8 5" />
-                <text className="q7-rot--peq" x={x0 + w * 0.72} y={y(real)} style={{ fill: "#8C2332" }}><tspan x={x0 + w * 0.72} dy="-.2em">realizado</tspan><tspan x={x0 + w * 0.72} dy="1.15em" style={{ fontWeight: 700 }}>{fmt(real)}</tspan></text>
+                <text className="q7-rot--peq" x={x0 + w * 0.72} y={y(real)} style={{ fill: "#8C2332" }}><tspan x={x0 + w * 0.72} dy="-.2em">observado</tspan><tspan x={x0 + w * 0.72} dy="1.15em" style={{ fontWeight: 700 }}>{fmt(real)}</tspan></text>
                 <text className="q7-eixo-t" x={x0 + w * 0.04} y={d.fs * 0.9}>{tit}</text>
                 <line className="q7-eixo" x1={x0 + w * 0.04} x2={x0 + w * 0.7} y1={base} y2={base} /></g>;
             };

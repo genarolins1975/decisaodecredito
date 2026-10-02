@@ -26,7 +26,7 @@ const SENT = AUC_P < AUC_I ? 1 : AUC_P > AUC_I ? 0 : 2; // índice da alternativ
 const PAR = EMP ? <>#{EMP.d.id} ({fp2(EMP.d)}) contra #{EMP.a.id} ({fp2(EMP.a)})</> : null;
 const OPCOES: Opcao[] = [
   { texto: "A AUC sobe", certa: SENT === 0, retorno: <>Confunde precisão com acerto: mais casas não melhoram a ordem. Em precisão plena, {PAR}: o empate vira inversão.</> },
-  { texto: "A AUC cai", certa: SENT === 1, retorno: <>Isso. Em precisão plena, {PAR}: o empate (½) vira inversão (0).</> },
+  { texto: "A AUC cai", certa: SENT === 1, retorno: <>Isso. Em precisão plena, {PAR}: o empate (½) vira 0.</> },
   { texto: "Fica igual", certa: SENT === 2, retorno: <>O arredondamento parecia inofensivo, mas criou um empate. Em precisão plena, {PAR}: o ½ vira 0.</> },
 ];
 
@@ -42,7 +42,7 @@ export function S07Pares({ pagina }: { pagina?: Pagina }) {
   const s = sel ? { d: DS[sel[0]], a: AS[sel[1]] } : null; const v = s ? valor(pdv(s.d), pdv(s.a)) : null;
   return (
     <Quadro slug="c7p22" pagina={pagina} layout="glx"
-      conclusao={modo === "todos" || plena ? <>Soma {num(c.corretos + 0.5 * c.empates, 1)} sobre {c.pares} pares: <b>AUC {num(c.auc!, 4)} nestes 20 casos</b>{plena ? `, contra ${num(AUC_I, 4)} em pontos inteiros` : ""}. Na janela, a AUC é {num(AUC_J, 4)}: a diferença é a variação de uma amostra de 20. A conta <b>mede ordenação, não nível</b>.</>
+      conclusao={modo === "todos" || plena ? <>Soma {num(c.corretos + 0.5 * c.empates, 1)} sobre {c.pares} pares: <b>AUC {num(c.auc!, 4)} nestes 20 casos</b>{plena ? `, contra ${num(AUC_I, 4)} em pontos inteiros` : ""}{plena && AUC_I !== AUC_P ? <>: <b>arredondar a PD {AUC_I > AUC_P ? "inflou" : "reduziu"} a AUC</b></> : ""}. Na janela, {num(AUC_J, 4)}: a diferença é a variação de uma amostra de 20. A conta mede ordenação, não nível.</>
         : s ? <>#{s.d.id} ({fmtPd(s.d)}) contra #{s.a.id} ({fmtPd(s.a)}): {v === 1 ? "o default ficou acima, vale 1" : v === 0.5 ? "empate, vale ½" : "o adimplente ficou acima, vale 0"}.</>
         : <>A linha do #{DS[0].id} já está preenchida: soma {num(somaLinha[0], 1)} de {AS.length}. Clique numa célula: cada uma é um par, um default contra um adimplente.</>}
       fonte="Mini-base de 20 propostas da janela fora do tempo (5 defaults, 15 adimplentes), PD da logística. As mesmas propostas aparecem em vários pares: os 75 pares não são observações independentes.">
@@ -66,7 +66,7 @@ export function S07Pares({ pagina }: { pagina?: Pagina }) {
         <dl className="q7-lista q7-s07-l">
           <div><dt>C: valem 1</dt><dd>{modo === "todos" || plena ? c.corretos : "?"}</dd></div>
           <div data-tom="mudo"><dt>E: empates</dt><dd>{modo === "todos" || plena ? c.empates : "?"}</dd></div>
-          <div data-tom="def"><dt>Valem 0</dt><dd>{modo === "todos" || plena ? c.invertidos : "?"}</dd></div>
+          <div><dt>Valem 0</dt><dd>{modo === "todos" || plena ? c.invertidos : "?"}</dd></div>
           <div><dt>AUC</dt><dd>{modo === "todos" || plena ? num(c.auc!, 4) : "?"}</dd></div>
         </dl>
         <Formula compacta f={String.raw`\mathrm{AUC}=\frac{C+\tfrac12\,E}{n_D\times n_A}=\frac{C+\tfrac12\,E}{${DS.length}\times ${AS.length}}`} />

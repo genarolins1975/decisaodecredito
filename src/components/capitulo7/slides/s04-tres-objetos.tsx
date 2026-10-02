@@ -1,23 +1,37 @@
 "use client";
 import { useState } from "react";
-import { Botao, Controle, escala, Grafico, Painel, Quadro, type Pagina } from "../base";
+import { Botao, Controle, escala, Grafico, Painel, Previsao, Quadro, type Opcao, type Pagina } from "../base";
 import { QUATRO } from "@/lib/capitulo7/dados";
 import { logit, sigmoide } from "@/lib/capitulo7/metricas";
 import { num, pct } from "@/lib/capitulo7/formato";
 
 /**
- * 04 · c7p3 · Ordenar, prever e decidir. Os mesmos quatro clientes (propostas reais da janela, que voltam na fila do
- * slide 5) numa fila, numa escala de PD e diante de um corte. Mudar o nível das PDs (somar δ em log odds) mexe na
- * escala e preserva a fila; mudar o corte mexe nas decisões e preserva as PDs. O painel separa o efeito do nível (PDs
- * novas contra as originais, no corte atual) do efeito do corte (PDs originais, corte atual contra o inicial).
+ * 04 · c7p3 · Ordenar, prever e decidir. Os mesmos quatro clientes (propostas da base sintética, que voltam na fila do
+ * slide 5) numa fila, numa escala de PD e diante de um corte. Antes de mexer, a turma prevê o que acontece com a fila e
+ * com as decisões se todas as PDs subirem δ = +0,8 em log odds; os controles só abrem no acerto, que já aplica o δ.
+ * Mudar o nível mexe na escala e preserva a fila; mudar o corte mexe nas decisões e preserva as PDs. O painel separa o
+ * efeito do nível (PDs novas contra as originais, no corte atual) do efeito do corte (PDs originais, corte atual
+ * contra o inicial). A alternativa certa é calculada: depende de alguma decisão cruzar o corte com o δ do exemplo.
  */
 const BASE = QUATRO.map((c) => ({ ...c, pd: c.pd }));
 const CORTE0 = 0.12;
+const D_EX = 0.8;
 const ordem = (pds: number[]) => pds.map((_, i) => i).sort((a, b) => pds[b] - pds[a]).join(",");
+const PD_EX = BASE.map((c) => sigmoide(logit(c.pd) + D_EX));
+const CRUZA = BASE.filter((c, i) => (PD_EX[i] >= CORTE0) !== (c.pd >= CORTE0));
+const FILA_MUDA = ordem(PD_EX) !== ordem(BASE.map((c) => c.pd));
+const ids = (v: typeof BASE) => v.map((c) => `#${c.id}`).join(" e ");
+const OPCOES: Opcao[] = [
+  { texto: "A fila muda e as decisões também", certa: FILA_MUDA && CRUZA.length > 0, retorno: <>Confunde <b>nível com ordem</b>: somar o mesmo δ às log odds de todos preserva quem vem antes. A fila não se move.</> },
+  { texto: "A fila fica igual; alguma decisão muda", certa: !FILA_MUDA && CRUZA.length > 0, retorno: <>Isso. Ninguém troca de lugar, mas {ids(CRUZA)} passa{CRUZA.length > 1 ? "m" : ""} de {CRUZA.map((c) => pct(c.pd, 0)).join(" e ")} para {CRUZA.map((c) => pct(PD_EX[BASE.indexOf(c)], 1)).join(" e ")} e cruza o corte.</> },
+  { texto: "Nada muda: fila e decisões iguais", certa: !FILA_MUDA && CRUZA.length === 0, retorno: <>Confunde <b>ordenar com decidir</b>: a fila fica, mas o corte é em PD, e uma PD mais alta pode cruzá-lo.</> },
+];
 
 export function S04TresObjetos({ pagina }: { pagina?: Pagina }) {
   const [delta, setDelta] = useState(0);
   const [corte, setCorte] = useState(CORTE0);
+  const [esc, setEsc] = useState<number | null>(null);
+  const livre = esc !== null && !!OPCOES[esc].certa; // os controles abrem no acerto
   const pds = BASE.map((c) => sigmoide(logit(c.pd) + delta));
   const ord = BASE.map((_, i) => i).sort((a, b) => pds[b] - pds[a]);
   const mudouOrdem = ordem(pds) !== ordem(BASE.map((c) => c.pd));
@@ -28,13 +42,13 @@ export function S04TresObjetos({ pagina }: { pagina?: Pagina }) {
   const peloCorte = BASE.filter((_, i) => recOrig[i] !== recIni[i]);
   const mudouNivel = pelaPd.length > 0, mudouCorte = peloCorte.length > 0;
   const nRec = rec.filter(Boolean).length;
-  const ids = (v: typeof BASE) => v.map((c) => `#${c.id}`).join(" e ");
   const estado = (m: boolean, papel: "ord" | "prob" | "dec") => <b data-mudou={m ? "1" : "0"} data-papel={papel} className="q7-s04-est">{m ? "mudou" : "igual"}</b>;
   return (
     <Quadro slug="c7p3" pagina={pagina} layout="glx"
-      conclusao={!mudouPd && corte === CORTE0 ? "Mexa no nível ou no corte. A fila só mudaria se a ordem entre as PDs mudasse, e somar δ em log odds nunca muda essa ordem."
+      conclusao={!livre ? (esc === null ? "Antes de mexer, preveja ao lado o que acontece com a fila e com as decisões." : "Tente outra alternativa: os controles abrem no acerto.")
+        : !mudouPd && corte === CORTE0 ? "Mexa no nível ou no corte e veja qual das três tarefas cada controle afeta."
         : mudouPd && !mudouNivel ? <>As PDs andaram {delta > 0 ? "para cima" : "para baixo"} e a fila ficou igual: <b>uma boa ordenação não garante o nível certo</b>.</>
-        : mudouPd ? <>Mesma fila, PDs em outro nível: no corte de {pct(corte, 0)}, só o nível mudou a decisão de {ids(pelaPd)}. <b>O nível importa quando o corte é em PD</b>.</>
+        : mudouPd ? <>{delta === D_EX && corte === CORTE0 ? "Acertou: " : ""}Mesma fila, PDs em outro nível: no mesmo corte de {pct(corte, 0)}, o nível mudou a decisão de {ids(pelaPd)}{mudouCorte ? `; o corte, sozinho, mudou a de ${ids(peloCorte)}` : ""}. <b>O nível importa quando o corte é em PD</b>; a fila do slide 5 só lê a ordem.</>
         : <>As PDs são as mesmas; só o corte andou{mudouCorte ? `, e mudou a decisão de ${ids(peloCorte)}` : ""}. Decidir é uma escolha separada de ordenar e de prever.</>}
       fonte="Quatro propostas da janela fora do tempo, que voltam na fila do slide 5; PD da logística em pontos inteiros. Nível alterado por δ em log odds: p' = σ(logit p + δ). Recusa quando PD ≥ corte.">
       <Painel titulo="Os mesmos quatro clientes, três tarefas">
@@ -64,7 +78,7 @@ export function S04TresObjetos({ pagina }: { pagina?: Pagina }) {
                         <g key={c.id}>
                           {mudouPd && <circle cx={cx0} cy={yA} r={r * 0.75} fill="none" stroke="#B5BAC4" strokeDasharray="3 3" strokeWidth={2} />}
                           <circle cx={cx} cy={yA} r={r} className={c.y ? "q7-pt-def" : "q7-pt-adi"} />
-                          <text className="q7-rot--peq" x={cx} y={yA + (acima ? -r * 1.6 : -r * 1.6)} textAnchor="middle" dy={acima ? 0 : -d.fs * 0.9}>#{c.id} · {pct(pds[i], 1)}</text>
+                          <text className="q7-rot--peq" x={cx} y={yA - r * 2.1} textAnchor="middle" dy={acima ? 0 : -d.fs * 1.0}>#{c.id} · {pct(pds[i], 1)}</text>
                           <circle cx={cx} cy={yB} r={r} fill={rec[i] ? "#A85A0C" : "#fff"} stroke={rec[i] ? "#A85A0C" : "#5B6475"} strokeWidth={2.4} />
                         </g>
                       );
@@ -76,20 +90,27 @@ export function S04TresObjetos({ pagina }: { pagina?: Pagina }) {
             </Grafico>
           </div>
         </div>
-        <div className="q7-s04-ctl">
+        <fieldset className="q7-s04-ctl" disabled={!livre} aria-label={livre ? "Controles de nível e corte" : "Controles de nível e corte, liberados depois da previsão"}>
           <Controle rotulo="Nível das PDs (δ em log odds)" valor={delta} min={-1.5} max={1.5} passo={0.1} onChange={setDelta} mostrar={`${delta > 0 ? "+" : ""}${num(delta, 1)}`} escala={["mais baixo", "mais alto"]} />
           <Controle rotulo="Corte de recusa" valor={corte} min={0.05} max={0.3} passo={0.01} onChange={setCorte} mostrar={pct(corte, 0)} escala={["5%", "30%"]} />
-        </div>
+        </fieldset>
       </Painel>
-      <Painel titulo="O que mudou desde o início">
-        <dl className="q7-s04-tab">
+      <Painel titulo={livre ? "O que mudou desde o início" : undefined} className="q7-s04-lat">
+        {!livre && <Previsao rotulo="Antes de mexer" pergunta={<>Se todas as PDs subirem δ = +{num(D_EX, 1)} em log odds, com o corte em {pct(CORTE0, 0)}:</>} opcoes={OPCOES} escolha={esc}
+          onEscolha={(i) => { setEsc(i); setCorte(CORTE0); setDelta(i !== null && OPCOES[i].certa ? D_EX : 0); }} recolher />}
+        {livre && <dl className="q7-s04-tab">
           <div><dt>A fila (quem vem antes)</dt><dd>{estado(mudouOrdem, "ord")}</dd></div>
           <div><dt>As PDs (o nível)</dt><dd>{estado(mudouPd, "prob")}</dd></div>
           <div><dt>Decisões, pelo nível</dt><dd>{estado(mudouNivel, "dec")}</dd></div>
           <div><dt>Decisões, pelo corte</dt><dd>{estado(mudouCorte, "dec")}</dd></div>
-        </dl>
-        <p className="q7-p">Ordenar pede só a <b>posição</b>. Prever pede o <b>valor</b> da PD. Decidir pede um <b>corte</b>, escolhido por critério econômico.</p>
-        <div className="q7-botoes"><Botao sec onClick={() => { setDelta(0); setCorte(CORTE0); }}>Restaurar</Botao><Botao sec onClick={() => setDelta(0.8)}>Exemplo: PDs altas demais</Botao></div>
+        </dl>}
+        {livre && <dl className="q7-lista q7-s04-rec">
+          <div><dt>Recusas agora</dt><dd>{nRec} de 4</dd></div>
+          <div><dt>PDs originais, corte de {pct(corte, 0)}</dt><dd>{recOrig.filter(Boolean).length} de 4</dd></div>
+          <div><dt>Início: PDs originais, {pct(CORTE0, 0)}</dt><dd>{recIni.filter(Boolean).length} de 4</dd></div>
+        </dl>}
+        <p className="q7-p">Ordenar pede a <b>posição</b>; prever, o <b>valor</b> da PD; decidir, um <b>corte</b>.</p>
+        <div className="q7-botoes"><Botao sec onClick={() => { setDelta(0); setCorte(CORTE0); setEsc(null); }}>Restaurar</Botao></div>
       </Painel>
     </Quadro>
   );

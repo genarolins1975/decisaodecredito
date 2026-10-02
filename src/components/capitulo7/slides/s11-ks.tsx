@@ -5,13 +5,17 @@ import { D, A, EAD, N, PL, Y } from "@/lib/capitulo7/dados";
 import { confusao, curvaRoc, ks } from "@/lib/capitulo7/metricas";
 import { curva, GRADE_CORTES, otimo } from "@/lib/visuais/economia";
 import { int, num, pct } from "@/lib/capitulo7/formato";
+import { SLIDE } from "@/lib/capitulo7/roteiro";
 
 /**
  * 11 · c7p7 · KS. Para cada corte t, a fração dos defaults e a fração dos adimplentes com PD ≥ t (as acumuladas lidas
  * do pior escore para o melhor). O KS é a maior distância vertical entre as duas, igual ao maior TPR − FPR. A turma
- * responde antes se o corte de maior separação coincide com o de maior resultado esperado; só então a barra do KS e o
- * corte econômico do capítulo 8 (mesmo motor, src/lib/visuais/economia.ts) aparecem no gráfico.
+ * responde antes se o corte de maior separação coincide com o de maior resultado esperado; só no acerto a barra do KS e o
+ * corte econômico do capítulo 8 (mesmo motor, src/lib/visuais/economia.ts) aparecem no gráfico. O retorno da
+ * alternativa A dá o peso implícito do KS: maximizar TPR − FPR é minimizar FN/D + FP/A, isto é, um default aprovado vale
+ * A/D bons clientes recusados (656/81, cerca de 8), relação que não vem da economia da carteira (slide 32).
  */
+const PESO = A / D; // bons clientes recusados que o KS iguala a um default aprovado
 const ROC = curvaRoc(Y, PL);
 const KS = ks(Y, PL);
 const ECON = otimo(curva(PL as number[], EAD as number[], GRADE_CORTES)).corte;
@@ -19,7 +23,7 @@ const MAXX = 0.4;
 const FIM = confusao(Y, PL, MAXX);
 const T0 = 0.15;
 const OPCOES: Opcao[] = [
-  { texto: "Sim: separação máxima dá resultado máximo", retorno: <>Confunde <b>separação com valor</b>. O KS pesa igual um default aprovado e um bom cliente recusado; o resultado esperado pesa cada erro pelo que ele custa.</> },
+  { texto: "Sim: separação máxima dá resultado máximo", retorno: <>Confunde <b>separação com valor</b>. O KS trata as taxas de erro como iguais, o que dá a um default aprovado o peso de cerca de <b>{num(PESO, 0)} bons clientes recusados</b> ({A} ÷ {D}), relação que não vem da economia da carteira; a conta econômica está no slide {SLIDE.c7p18.n}.</> },
   { texto: "Não necessariamente: o KS ignora perda, receita e custo", certa: true, retorno: <>Isso. O KS está em {pct(KS.limiar, 2)}; o resultado esperado é máximo em {pct(ECON, 1)}. <b>KS não é corte.</b></> },
   { texto: "Sim, se a AUC do modelo for alta", retorno: <>A AUC também ignora custos. Um modelo melhor separa mais, mas o corte de maior resultado depende de <b>quanto custa cada erro</b>.</> },
 ];
@@ -27,15 +31,15 @@ const OPCOES: Opcao[] = [
 export function S11Ks({ pagina }: { pagina?: Pagina }) {
   const [t, setT] = useState(T0);
   const [esc, setEsc] = useState<number | null>(null);
-  const rev = esc !== null;
+  const rev = esc !== null && !!OPCOES[esc].certa; // KS e corte econômico só aparecem no acerto
   const c = confusao(Y, PL, t); const tpr = c.vp / D, fpr = c.fp / A;
   const noMax = Math.abs(t - KS.limiar) < 0.0025;
   return (
     <Quadro slug="c7p7" pagina={pagina} layout="gl"
-      conclusao={noMax && rev ? <>No corte de {pct(KS.limiar, 2)} ({int(KS.recusados)} recusadas) a separação é máxima: <b>KS = {num(KS.ks, 4)}</b>. O resultado esperado, com as hipóteses do capítulo 8, é máximo em <b>{pct(ECON, 1)}</b>: o KS não sabe quanto custa cada erro.</>
+      conclusao={noMax && rev ? <>No corte de {pct(KS.limiar, 2)} ({int(KS.recusados)} recusadas) a separação é máxima: <b>KS = {num(KS.ks, 4)}</b>, a maior distância vertical da ROC do slide {SLIDE.c7p6.n} à diagonal. O resultado esperado é máximo em <b>{pct(ECON, 1)}</b> (slide {SLIDE.c7p18.n}): o KS não sabe quanto custa cada erro.</>
         : noMax ? <>No corte de {pct(KS.limiar, 2)} a separação é máxima: <b>KS = {num(KS.ks, 4)}</b>. É também o melhor corte para recusar? Responda ao lado.</>
-        : <>No corte de {pct(t, 1)}: {pct(tpr, 1)} dos defaults e {pct(fpr, 1)} dos adimplentes têm PD acima dele; distância de <b>{num(tpr - fpr, 4)}</b>{rev ? `, contra o máximo de ${num(KS.ks, 4)}.` : ". Onde ela é maior?"}</>}
-      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults e ${A} adimplentes; PD da logística. Corte econômico: máximo do resultado esperado na grade de 0,5% a 60%, com receita de 28%, perda de 65% no default, funding de 12%, R$ 120 de operação e 2% de capital (capítulo 8).`}>
+        : <>No corte de {pct(t, 1)}: {pct(tpr, 1)} dos defaults e {pct(fpr, 1)} dos adimplentes têm PD acima dele; distância de <b>{num(tpr - fpr, 4)}</b>{rev ? `, contra o máximo de ${num(KS.ks, 4)}, a maior distância da ROC do slide ${SLIDE.c7p6.n} à diagonal.` : ". Onde ela é maior?"}</>}
+      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults e ${A} adimplentes; PD da logística. Corte econômico: máximo do resultado esperado (slide ${SLIDE.c7p18.n}).`}>
       <div className="q7-flex1 q7-gap">
       <Grafico titulo="Fração de cada classe com PD acima do corte" sub="as acumuladas, lidas do maior risco para o menor" rotulo={`Curvas acumuladas; no corte de ${pct(t, 1)}, ${pct(tpr, 1)} dos defaults e ${pct(fpr, 1)} dos adimplentes${rev ? `; KS ${num(KS.ks, 4)} em PD ${pct(KS.limiar, 2)}; corte econômico ${pct(ECON, 1)}` : ""}`} arCelular="4 / 3">
         {(d) => {
@@ -64,7 +68,7 @@ export function S11Ks({ pagina }: { pagina?: Pagina }) {
         <Legenda itens={[{ mk: "linha def2", r: `● defaults acima (TPR, de ${D})` }, { mk: "linha mudo", r: `○ adimplentes acima (FPR, de ${A})` }, ...(rev ? [{ mk: "linha ink", r: "KS" }, { mk: "trac dec", r: "corte econômico" }] : [])]} />
       </div>
       <Painel className="q7-s11-p">
-        <Controle rotulo="Corte de PD" valor={t} min={0.02} max={MAXX} passo={0.0025} onChange={setT} mostrar={pct(t, 1)} escala={[pct(0.02, 0), pct(MAXX, 0)]} />
+        <Controle rotulo="Corte de PD" valor={t} min={0.02} max={MAXX} passo={0.0025} onChange={setT} mostrar={pct(t, 1)} />
         <div className="q7-botoes"><Botao onClick={() => setT(KS.limiar)}>Ir ao máximo</Botao>{rev && <Botao onClick={() => setT(ECON)}>Corte econômico</Botao>}<Botao sec onClick={() => { setT(T0); setEsc(null); }}>Restaurar</Botao></div>
         <dl className="q7-lista">
           <div className="q7-s11-conta"><dt><span className="q7-s11-d">● {pct(tpr, 1)} · {c.vp} de {D}</span> − <span className="q7-s11-a">○ {pct(fpr, 1)} · {c.fp} de {A}</span></dt><dd>= {num(tpr - fpr, 4)}</dd></div>

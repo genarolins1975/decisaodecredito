@@ -1,9 +1,10 @@
 "use client";
 import { useState } from "react";
-import { Botao, escala, Grafico, Legenda, Painel, Quadro, Seg, type Pagina } from "../base";
+import { Botao, escala, Grafico, Legenda, LinkSlide, Painel, Quadro, Seg, type Pagina } from "../base";
 import { D, N, PG, PGR, PL, RES, Y } from "@/lib/capitulo7/dados";
 import { calibracaoGlobal, delong, interceptoESlope } from "@/lib/capitulo7/metricas";
 import { num, pct } from "@/lib/capitulo7/formato";
+import { vantagemEmJanelasNovas } from "@/lib/capitulo7/janelas";
 
 /**
  * 34 · c7p15 · Comparação justa. Logística e boosting medidos no treino, na validação e na janela fora do tempo, com
@@ -11,7 +12,9 @@ import { num, pct } from "@/lib/capitulo7/formato";
  * intervalo). Na janela, as métricas são recalculadas aqui a partir das PDs por proposta, com intervalo de DeLong. A
  * árvore do capítulo 5 não tem previsões salvas na janela e fica fora da tabela: limitação declarada, não omissão.
  * O quadro é um experimento: o aluno escolhe em que amostra cada modelo é medido e vê a diferença comparada mudar;
- * só a escolha da mesma amostra para os dois é marcada como comparação justa.
+ * só a escolha da mesma amostra para os dois é marcada como comparação justa. Rodada 2: o boosting deixa o petróleo
+ * (papel da probabilidade) e passa ao cinza de modelo, com o quadrado como símbolo; a leitura da janela traz a vantagem
+ * esperada em janelas novas do slide 33 (vantagemEmJanelasNovas de janelas.ts).
  */
 type Onde = "treino" | "val" | "oot";
 const Z = 1.959963984540054;
@@ -31,6 +34,7 @@ const OOT = [
 export function S34ComparacaoJusta({ pagina }: { pagina?: Pagina }) {
   const [ol, setOl] = useState<Onde>("oot");
   const [og, setOg] = useState<Onde>("oot");
+  const [jn] = useState(() => vantagemEmJanelasNovas());
   const justa = ol === og, L = AGG[ol].l, G = AGG[og].g, dif = L.auc - G.auc;
   const ops = (["treino", "val", "oot"] as Onde[]).map((o) => ({ v: o, r: o === "oot" ? "Janela" : ROT[o] }));
   return (
@@ -38,7 +42,7 @@ export function S34ComparacaoJusta({ pagina }: { pagina?: Pagina }) {
       conclusao={!justa ? <>Comparação injusta: logística em {ROT[ol].toLowerCase()} ({num(L.auc, 4)}) contra boosting em {ROT[og].toLowerCase()} ({num(G.auc, 4)}). A diferença de <b>{num(dif, 4)}</b> mistura o modelo com a amostra; nos mesmos casos da janela, ela é {num(DL.dif, 4)}.</>
         : ol === "treino" ? <>No treino, o boosting parece muito melhor: AUC {num(G.auc, 4)} contra {num(L.auc, 4)}. É a amostra em que ele aprendeu; a distância mede sobreajuste, não qualidade.</>
         : ol === "val" ? <>Na validação, os dois quase empatam ({num(G.auc, 4)} contra {num(L.auc, 4)}) e o boosting foi escolhido. A taxa de default dessa amostra ({pct(L.obs, 1)}) é bem maior que a do treino: as safras mudaram.</>
-          : <>Na janela, com os mesmos {N} casos e a mesma pergunta, a logística ordena melhor: diferença de <b>{num(DL.dif, 4)}</b>, IC 95% de DeLong [{num(DL.ic[0], 4)}; {num(DL.ic[1], 4)}], p = {num(DL.p, 3)}. Também tem Brier menor. A ordem entre os modelos mudou de amostra para amostra.</>}
+          : <>Na janela, com os mesmos {N} casos e a mesma pergunta, a logística ordena melhor: diferença de <b>{num(DL.dif, 4)}</b>, IC 95% de DeLong [{num(DL.ic[0], 4)}; {num(DL.ic[1], 4)}], p = {num(DL.p, 3)}. Mas o <LinkSlide slug="c7p14">slide 33</LinkSlide> mostrou que, em janelas novas, a vantagem esperada é só <b>{num(jn.vantagem, 4)}</b>: a ordem entre os modelos muda de amostra para amostra.</>}
       fonte={`Treino e validação: resultados agregados do gerador do curso (semente 20260501), sem vetores por proposta. Janela: ${N} propostas, ${D} defaults, métricas recalculadas e conferidas com scikit-learn. IC da AUC de cada modelo: AUC ± 1,96 × erro padrão de DeLong. Árvore do capítulo 5: sem previsões salvas na janela, fica fora da comparação.`}>
       <Painel titulo="AUC dos dois modelos em cada amostra">
         <Grafico rotulo={`${(["treino", "val", "oot"] as Onde[]).map((o) => `${ROT[o]}: logística ${num(AGG[o].l.auc, 4)}, boosting ${num(AGG[o].g.auc, 4)}`).join("; ")}. Comparados agora: logística em ${ROT[ol]}, boosting em ${ROT[og]}`} arCelular="4 / 3">
@@ -52,9 +56,9 @@ export function S34ComparacaoJusta({ pagina }: { pagina?: Pagina }) {
                 {linhas.map((o) => { const y0 = cy(o); const la = AGG[o].l.auc, ga = AGG[o].g.auc; const usaL = o === ol, usaG = o === og; return (
                   <g key={o}>
                     <text className="q7-rot" x={0} y={y0} dy=".35em" style={{ fontWeight: usaL || usaG ? 700 : 400, opacity: usaL || usaG ? 1 : 0.5 }}>{ROT[o].replace("Janela fora do tempo", "Janela")}</text>
-                    {o === "oot" && <><line x1={x(la - Z * DL.ep1)} x2={x(la + Z * DL.ep1)} y1={y0 - d.fs * 0.5} y2={y0 - d.fs * 0.5} stroke="#00205B" strokeWidth={2.5} opacity={usaL ? 1 : 0.3} /><line x1={x(ga - Z * DL.ep2)} x2={x(ga + Z * DL.ep2)} y1={y0 + d.fs * 0.5} y2={y0 + d.fs * 0.5} stroke="#176C73" strokeWidth={2.5} opacity={usaG ? 1 : 0.3} /></>}
+                    {o === "oot" && <><line x1={x(la - Z * DL.ep1)} x2={x(la + Z * DL.ep1)} y1={y0 - d.fs * 0.5} y2={y0 - d.fs * 0.5} stroke="#00205B" strokeWidth={2.5} opacity={usaL ? 1 : 0.3} /><line x1={x(ga - Z * DL.ep2)} x2={x(ga + Z * DL.ep2)} y1={y0 + d.fs * 0.5} y2={y0 + d.fs * 0.5} stroke="#5B6475" strokeWidth={2.5} opacity={usaG ? 1 : 0.3} /></>}
                     <circle cx={x(la)} cy={y0} r={d.fs * 0.5} fill="#00205B" stroke="#fff" strokeWidth={2} opacity={usaL ? 1 : 0.3} />
-                    <rect x={x(ga) - d.fs * 0.45} y={y0 - d.fs * 0.45} width={d.fs * 0.9} height={d.fs * 0.9} fill="#176C73" stroke="#fff" strokeWidth={2} opacity={usaG ? 1 : 0.3} />
+                    <rect x={x(ga) - d.fs * 0.45} y={y0 - d.fs * 0.45} width={d.fs * 0.9} height={d.fs * 0.9} fill="#5B6475" stroke="#fff" strokeWidth={2} opacity={usaG ? 1 : 0.3} />
                   </g>
                 ); })}
                 <line x1={x(L.auc)} y1={cy(ol)} x2={x(G.auc)} y2={cy(og)} stroke={justa ? "#2E6B4F" : "#8C2332"} strokeWidth={3} strokeDasharray={justa ? undefined : "8 5"} />
@@ -63,7 +67,7 @@ export function S34ComparacaoJusta({ pagina }: { pagina?: Pagina }) {
             );
           }}
         </Grafico>
-        <Legenda itens={[{ mk: "circ ink", r: "logística" }, { mk: "quad prob", r: "boosting" }, { mk: "", r: "barras na janela: IC 95% de DeLong" }]} />
+        <Legenda itens={[{ mk: "circ ink", r: "logística" }, { mk: "quad mudo", r: "boosting" }, { mk: "", r: "barras na janela: IC 95% de DeLong" }]} />
       </Painel>
       <Painel>
         <div className="q7-s34-sel"><span className="q7-k" aria-hidden="true">● Logística em</span><Seg rotulo="Logística medida em" opcoes={ops} valor={ol} onChange={setOl} /></div>

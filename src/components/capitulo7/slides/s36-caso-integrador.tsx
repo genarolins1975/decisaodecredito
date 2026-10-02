@@ -5,7 +5,7 @@ import { D, EAD, N, PG, PL, RES, Y } from "@/lib/capitulo7/dados";
 import { calibracaoGlobal, delong, faixasQuantis, jeffreys, slopeComIntervalo, Z95 } from "@/lib/capitulo7/metricas";
 import { curva, fmtReais, GRADE_CORTES, otimo, realizado } from "@/lib/visuais/economia";
 import { num, pct } from "@/lib/capitulo7/formato";
-import { N_JANELAS, vantagemEmJanelasNovas } from "@/lib/capitulo7/janelas";
+import { calibradores, N_JANELAS, vantagemEmJanelasNovas } from "@/lib/capitulo7/janelas";
 
 /**
  * 36 · c7p38 · Caso integrador. O comitê recebe o boosting com Platt como candidato a substituir a logística. O dossiê
@@ -14,7 +14,11 @@ import { N_JANELAS, vantagemEmJanelasNovas } from "@/lib/capitulo7/janelas";
  * janela. Consultar um cartão abre a leitura com os números; a decisão só abre depois de três consultas, e cada
  * alternativa errada devolve a confusão que revela, com os números dos cartões. No cartão Probabilidade, o teste de
  * Jeffreys dos dois modelos: para a logística, a cauda de subestimação (p = F_Beta(PD)); para o candidato, que
- * superestima, a cauda oposta (1 − p). As janelas novas são as de janelas.ts, as mesmas dos slides 33 e 35.
+ * superestima, a cauda oposta (1 − p), uma adaptação declarada na tela. As janelas novas são as de janelas.ts, as
+ * mesmas dos slides 33 e 35. Rodada 2: a decisão certa é manter a logística, recalibrar o nível em amostra própria e
+ * confirmar numa janela nova; a evidência é a perda esperada dos calibradores (calibradores de janelas.ts): intercepto e
+ * Platt melhoram em expectativa e a janela de 81 defaults não escolhe entre eles. Na miniatura de decisão, os dois
+ * realizados ficam lado a lado no corte, com rótulo direto.
  */
 type P = "ord" | "prob" | "dec" | "val";
 const DL = delong(Y, PL, PG);
@@ -29,6 +33,8 @@ const OT_L = otimo(CV_L), OT_G = otimo(CV_G);
 const R_L = real(PL, OT_L.corte), R_G = real(PG, OT_G.corte);
 const OBS = D / N;
 const AUCS = { l: [RES.logit_treino.auc, RES.logit_val.auc, DL.auc1], g: [RES.gbm_treino.auc, RES.gbm_val.auc, DL.auc2] };
+const CL = calibradores("pl");
+const E_SEM = CL.sem!.esperada.logLoss, E_INT = CL.intercepto!.esperada.logLoss, E_PLATT = CL.platt!.esperada.logLoss;
 const COR: Record<P, string> = { ord: "#3D5A8A", prob: "#176C73", dec: "#A85A0C", val: "#2E6B4F" };
 
 /* miniaturas: logística sempre traço cheio e disco; candidato tracejado e quadrado vazado, na cor da pergunta */
@@ -69,8 +75,8 @@ function MiniProb({ d }: { d: Dim }) {
         <text className="q7-rot--peq" x={tx} y={fs * 1.1} style={{ fill: "#2A3342" }}>PD média, obs. {pct(OBS, 1)}</text>
         <text className="q7-rot--peq" x={tx} y={fs * 2.3} style={{ fill: COR.prob, fontWeight: 700 }}>● logística {pct(CAL_L.pdMedia!, 1)}</text>
         <text className="q7-rot--peq" x={tx} y={fs * 3.4} style={{ fill: COR.prob, fontWeight: 700 }}>□ candidato {pct(CAL_G.pdMedia!, 1)}</text>
-        <text className="q7-rot--peq" x={tx} y={fs * 4.7} style={{ fill: "#2A3342" }}>slope {num(SL_L.slope, 2)} (●) e {num(SL_G.slope, 2)} (□)</text>
-        <text className="q7-rot--peq" x={tx} y={fs * 5.8} style={{ fill: "#2A3342" }}>ICs {num(SL_L.ic[0], 2)} a {num(SL_L.ic[1], 2)} e {num(SL_G.ic[0], 2)} a {num(SL_G.ic[1], 2)}</text>
+        {d.h > fs * 5.2 && <text className="q7-rot--peq" x={tx} y={fs * 4.7} style={{ fill: "#2A3342" }}>slope {num(SL_L.slope, 2)} (●) e {num(SL_G.slope, 2)} (□)</text>}
+        {d.h > fs * 6.3 && <text className="q7-rot--peq" x={tx} y={fs * 5.8} style={{ fill: "#2A3342" }}>ICs {num(SL_L.ic[0], 2)} a {num(SL_L.ic[1], 2)} e {num(SL_G.ic[0], 2)} a {num(SL_G.ic[1], 2)}</text>}
       </>}
     </g>
   );
@@ -88,8 +94,12 @@ function MiniDec({ d }: { d: Dim }) {
       <path className="q7-linha q7-linha--fina q7-linha--prob" strokeDasharray="6 4" d={caminho(CV_G.map((q) => ({ x: x(q.corte), y: y(q.parcelas.total) })))} />
       <line className="q7-corte" x1={x(c)} x2={x(c)} y1={y(lo)} y2={fs * 0.3} />
       <text className="q7-corte-t" x={x(c) + fs * 0.35} y={y(lo) - fs * 0.4}>corte {pct(c, 1)}</text>
-      {[{ v: R_L, l: true }, { v: R_G, l: false }].map((r) => <path key={String(r.l)} d={`M${x(c)} ${y(r.v) - fs * 0.38}l${fs * 0.38} ${fs * 0.38}l${-fs * 0.38} ${fs * 0.38}l${-fs * 0.38} ${-fs * 0.38}z`} fill={r.l ? "#00205B" : "#fff"} stroke="#00205B" strokeWidth={2} />)}
-      <text className="q7-rot--peq" x={x(c) - fs * 0.7} y={y(Math.max(R_L, R_G))} dy=".35em" textAnchor="end" style={{ fill: "#00205B", fontWeight: 700 }}>realizado ◆</text>
+      {[{ v: R_L, l: true }, { v: R_G, l: false }].map((r) => { const cx = x(c) + (r.l ? -fs * 0.5 : fs * 0.5); return (
+        <g key={String(r.l)}>
+          <path d={`M${cx} ${y(r.v) - fs * 0.38}l${fs * 0.38} ${fs * 0.38}l${-fs * 0.38} ${fs * 0.38}l${-fs * 0.38} ${-fs * 0.38}z`} fill={r.l ? "#00205B" : "#fff"} stroke="#00205B" strokeWidth={2} />
+          <text className="q7-rot--peq" x={cx + (r.l ? -fs * 0.6 : fs * 0.6)} y={y(r.v)} dy={r.l ? "-.1em" : ".8em"} textAnchor={r.l ? "end" : "start"} style={{ fill: "#00205B", fontWeight: 700, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em" }}>{r.l ? "realizado L" : "C"} {fmtReais(r.v).replace("R$ ", "").replace(" mil", "")}</text>
+        </g>
+      ); })}
       <text className="q7-rot--peq" x={x(0.4)} y={y(CV_L[CV_L.length - 1].parcelas.total) - fs * 0.5} textAnchor="end" style={{ fill: COR.prob }}>esperado pela PD</text>
     </g>
   );
@@ -127,17 +137,17 @@ export function S36CasoIntegrador({ pagina }: { pagina?: Pagina }) {
   const liberado = vistos.length >= 3;
   const consultar = (k: P) => { if (!vistos.includes(k)) setVistos([...vistos, k]); };
   const leitura: Record<P, ReactNode> = {
-    ord: <>A logística ordena melhor nesta janela (p = {num(DL.p, 3)}); em {N_JANELAS} janelas novas, a vantagem cai a {num(jn.vantagem, 4)}.</>,
-    prob: <>Candidato superestima: O/E {num(CAL_G.razaoOE!, 3)}, Jeffreys na cauda oposta, 1 − p = {num(J_G, 3)}. Logística baixa, sem prova: p = {num(J_L, 2)}.</>,
-    dec: <>Mesmo corte: o candidato promete {fmtReais(OT_G.parcelas.total)} e realiza {fmtReais(R_G)}; a logística, {fmtReais(OT_L.parcelas.total)} e {fmtReais(R_L)}.</>,
-    val: <>Do treino ({num(AUCS.g[0], 4)}) à janela ({num(AUCS.g[2], 4)}): sobreajuste; o Platt usou a validação já gasta.</>,
+    ord: <>Logística melhor nesta janela (p = {num(DL.p, 3)}); em {N_JANELAS} janelas novas, a vantagem cai a {num(jn.vantagem, 4)}.</>,
+    prob: <>Candidato alto: O/E {num(CAL_G.razaoOE!, 3)}, Jeffreys na cauda oposta 1 − p = {num(J_G, 3)}. Logística: p = {num(J_L, 2)}, sem prova.</>,
+    dec: <>Corte {pct(OT_L.corte, 1)}: candidato promete {fmtReais(OT_G.parcelas.total)} e realiza {fmtReais(R_G)}; logística, {fmtReais(OT_L.parcelas.total).replace(" mil", "")} e {fmtReais(R_L)}.</>,
+    val: <>Treino {num(AUCS.g[0], 4)}, janela {num(AUCS.g[2], 4)}: sobreajuste e safra (a logística sobe a {num(AUCS.l[2], 4)}); Platt na validação gasta.</>,
   };
   return (
     <Quadro slug="c7p38" pagina={pagina} layout="gl"
       conclusao={esc === null ? <>O comitê recebe o boosting com Platt para substituir a logística. Leia as quatro miniaturas e consulte pelo menos três cartões antes de decidir. {vistos.length ? `Consultados: ${vistos.length} de 4.` : ""}</>
-        : esc === 2 ? <>Com os números da tela: AUC {num(DL.auc2, 4)} contra {num(DL.auc1, 4)} (p = {num(DL.p, 3)}); O/E {num(CAL_G.razaoOE!, 3)} no candidato; no corte de {pct(OT_L.corte, 1)}, {fmtReais(R_G)} realizados contra {fmtReais(R_L)}; Platt ajustado na validação já usada. <b>Manter a logística, corrigir o nível dela (<LinkSlide slug="c7p12">slide 28</LinkSlide>) e reavaliar o boosting numa janela nova.</b></>
+        : esc === 2 ? <>AUC {num(DL.auc2, 4)} contra {num(DL.auc1, 4)} (p = {num(DL.p, 3)}); O/E {num(CAL_G.razaoOE!, 3)} no candidato; no corte de {pct(OT_L.corte, 1)}, {fmtReais(R_G)} contra {fmtReais(R_L)}; Platt na validação já usada. <b>Manter a logística, recalibrar o nível em amostra própria e confirmar numa janela nova</b>: intercepto e Platt melhoram a log loss esperada ({num(E_SEM, 4)} para {num(E_INT, 4)} e {num(E_PLATT, 4)}); a janela não escolhe entre eles (<LinkSlide slug="c7p12">slides 28</LinkSlide> e <LinkSlide slug="c7p13">29</LinkSlide>).</>
           : <>Revise a evidência: a decisão escolhida ignora pelo menos uma das quatro perguntas. Tente outra.</>}
-      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. Candidato: boosting com Platt do capítulo 6; incumbente: logística do capítulo 4. IC de DeLong; Jeffreys com a PD média da carteira; slope com IC de Wald. Motor econômico do capítulo 8. Janelas novas: ${N_JANELAS} sorteios do desfecho pela PD verdadeira para os mesmos proponentes, só em base sintética.`}>
+      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. IC de DeLong; Jeffreys com a PD média da carteira (o do BCE testa subestimação; a cauda oposta, para o candidato, é adaptação); slope com IC de Wald. Motor econômico do slide 32. Janelas novas: ${N_JANELAS} sorteios do desfecho pela PD verdadeira; log loss esperada: média exata por ela; só em base sintética.`}>
       <Painel titulo="Dossiê: logística (● cheio) contra candidato (□ vazado)">
         <div className="q7-s36-m">
           {CARTOES.map((c) => {
@@ -160,7 +170,7 @@ export function S36CasoIntegrador({ pagina }: { pagina?: Pagina }) {
             opcoes={[
               { certa: false, texto: "Aprovar o boosting com Platt", retorno: <>Confunde modelo novo com modelo melhor: AUC {num(DL.auc2, 4)} contra {num(DL.auc1, 4)} e PD média {pct(CAL_G.pdMedia!, 1)} contra {pct(OBS, 1)} observados.</> },
               { certa: false, texto: "Recalibrar o boosting na janela e aprovar", retorno: <>Usa a prova para ajustar (<LinkSlide slug="c7p16">slide 27</LinkSlide>): depois, a janela não mede mais nada. E recalibrar não tira a AUC de {num(DL.auc2, 4)}.</> },
-              { texto: "Manter a logística, corrigir o nível dela em amostra própria e reavaliar o boosting numa janela nova", certa: true, retorno: "Isso: ordenação sem ganho, probabilidade do candidato fora de nível, janela já usada." },
+              { texto: "Manter a logística, recalibrar o nível em amostra própria e confirmar numa janela nova", certa: true, retorno: "Isso: o candidato não ganha na ordem e erra o nível; a logística recalibrada melhora em expectativa." },
               { certa: false, texto: "Trocar, porque a diferença de AUC é pequena", retorno: <>Diferença pequena não prova equivalência, e o ônus é de quem substitui; em janelas novas, a vantagem esperada ({num(jn.vantagem, 4)}) ainda é da logística.</> },
             ]} />
         ) : (

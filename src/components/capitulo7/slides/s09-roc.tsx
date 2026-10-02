@@ -1,18 +1,22 @@
 "use client";
 import { useEffect, useState, type ReactNode } from "react";
-import { Botao, caminho, Eixos, escala, Grafico, margens, Painel, Previsao, Quadro, Seg, useMovimentoReduzido, type Opcao, type Pagina } from "../base";
-import { Matriz } from "../pecas";
-import { MINI, PL, Y, N, D } from "@/lib/capitulo7/dados";
-import { aucPorPares, curvaRoc, type PontoRoc } from "@/lib/capitulo7/metricas";
+import { Botao, caminho, Controle, Eixos, escala, Grafico, margens, Painel, Previsao, Quadro, Seg, useMovimentoReduzido, type Opcao, type Pagina } from "../base";
+import { Fila, Matriz } from "../pecas";
+import { A, MINI, PL, Y, N, D } from "@/lib/capitulo7/dados";
+import { aucPorPares, confusao, curvaRoc, type PontoRoc } from "@/lib/capitulo7/metricas";
+import { SLIDE } from "@/lib/capitulo7/roteiro";
 import { int, num, pct } from "@/lib/capitulo7/formato";
 
 /**
  * 09 · c7p6 · A ROC construída corte a corte. Na mini-base, cada clique baixa o corte até a próxima PD distinta: um
  * default recusado sobe a curva 1/5; um adimplente a desloca 1/15 para a direita; um empate entre os dois desenha a
  * diagonal do degrau. Antes de cada passo a turma pode apostar o movimento (escolher já revela o passo; "Tentar outra"
- * desfaz). A matriz acompanha o passo: cada ponto é uma matriz como a do slide 8. Na janela (737), a curva inteira.
+ * desfaz). A matriz acompanha o passo: cada ponto é uma matriz como a do slide 8. Na janela (737), a curva inteira e um
+ * controle de corte que põe o ponto e a matriz da janela na curva: o mesmo gesto da mini-base, com 81 e 656.
  */
+const CJ0 = 0.12;
 const MY = MINI.map((m) => m.y), MP = MINI.map((m) => m.pd);
+const FILA = [...MINI].sort((a, b) => b.pd - a.pd || a.id - b.id); // a fila do slide 8, na mesma ordem
 const PTS = curvaRoc(MY, MP);
 const ND = MY.filter(Boolean).length, NA = MY.length - ND;
 const AUC_MINI = aucPorPares(MY, MP).auc!;
@@ -88,26 +92,27 @@ export function S09Roc({ pagina }: { pagina?: Pagina }) {
   const [s, setS] = useState(0);
   const [esc, setEsc] = useState<number | null>(null);
   const [tocando, setTocando] = useState(false);
+  const [cj, setCj] = useState(CJ0); // corte na janela
+  const cJ = confusao(Y, PL, cj);
   const reduzido = useMovimentoReduzido();
   const rodando = tocando && !reduzido && s < ULT;
   useEffect(() => { if (!rodando) return; const t = setTimeout(() => setS((v) => Math.min(ULT, v + 1)), 750); return () => clearTimeout(t); }, [rodando, s]);
   const ir = (k: number) => { setEsc(null); setS(Math.max(0, Math.min(ULT, k))); };
   const p = PTS[s];
-  const novos = s ? passoDe(s).novos : [];
   const alvo = esc !== null ? s : s + 1; // o passo sobre o qual a aposta é feita
   const mini = base === "mini";
   return (
     <Quadro slug="c7p6" pagina={pagina} layout="qd"
       conclusao={mini ? (s < ULT ? frase(s) : <>Todos os cortes percorridos. A área sob a curva é <b>{num(AUC_MINI, 4)}</b>, a mesma AUC da contagem de pares (slide 7). O canto superior esquerdo seria recusar todos os defaults sem recusar nenhum adimplente.</>)
-        : <>Na janela, {int(PTS_J.length - 1)} cortes distintos desenham a curva; AUC {num(AUC_J, 4)} na mesma amostra. A ROC não sabe quanto custa cada erro: ela não escolhe o corte.</>}
+        : <>Na janela, {int(PTS_J.length - 1)} cortes distintos desenham a curva (AUC {num(AUC_J, 4)}); no corte de {pct(cj, 0)}, o ponto recusa <b>{cJ.vp} de {D} defaults e {cJ.fp} de {int(A)} adimplentes</b>. A ROC não sabe quanto custa cada erro; o slide {SLIDE.c7p7.n} mede nela a maior separação, o KS.</>}
       fonte={mini ? `Mini-base de ${MINI.length} propostas (${ND} defaults, ${NA} adimplentes), PD da logística em pontos inteiros; um ponto por PD distinta. Recusa quando PD ≥ corte.` : `Janela fora do tempo: ${N} propostas, ${D} defaults; PD da logística em precisão plena; um ponto por PD distinta.`}>
       <RocS09 sub={mini ? `denominadores: ${ND} defaults, ${NA} adimplentes` : `${D} defaults, ${N - D} adimplentes`} rotulo={mini ? `Curva ROC da mini-base até o corte ${s}` : "Curva ROC da logística na janela"}
           pts={mini ? PTS.slice(0, s + 1) : PTS_J} area={!mini}
-          ponto={mini ? { fpr: p.fpr, tpr: p.tpr, rot: s ? `corte ${pct(p.limiar, 0)}` : "início: nenhuma recusa" } : null}
+          ponto={mini ? { fpr: p.fpr, tpr: p.tpr, rot: s ? `corte ${pct(p.limiar, 0)}` : "início: nenhuma recusa" } : { fpr: cJ.fp / A, tpr: cJ.vp / D, rot: `corte ${pct(cj, 0)}` }}
           xTit={mini ? `Adimplentes recusados, de ${NA}` : "Adimplentes recusados (falso positivo)"} yTit={mini ? `Defaults recusados, de ${ND}` : "Defaults recusados (verdadeiro positivo)"} />
       <Painel className="q7-s09-p">
         <div className="q7-s09-topo">
-          <Seg rotulo="Base" opcoes={[{ v: "mini" as Base, r: `Mini-base (${MINI.length})` }, { v: "janela" as Base, r: `Janela (${N})` }]} valor={base} onChange={(v) => { setBase(v); setTocando(false); }} />
+          <Seg rotulo="Base" opcoes={[{ v: "mini" as Base, r: `Mini-base (${MINI.length})` }, { v: "janela" as Base, r: `Janela (${N})` }]} valor={base} onChange={(v) => { setBase(v); setTocando(false); setCj(CJ0); }} />
           {mini && <div className="q7-botoes"><Botao prim onClick={() => ir(s + 1)} desab={s >= ULT}>Baixar o corte</Botao><Botao onClick={() => ir(s - 1)} desab={s === 0}>Voltar</Botao>{!reduzido && <Botao onClick={() => { setEsc(null); if (s >= ULT) setS(0); setTocando(!rodando); }}>{rodando ? "Pausar" : "Reproduzir"}</Botao>}<Botao sec onClick={() => { ir(0); setTocando(false); }}>Restaurar</Botao></div>}
         </div>
         {mini ? (
@@ -122,11 +127,24 @@ export function S09Roc({ pagina }: { pagina?: Pagina }) {
               <p className="q7-k">Matriz neste corte{s ? ` (PD ≥ ${pct(p.limiar, 0)})` : ""}</p>
               <Matriz vp={p.vp} fp={p.fp} fn={ND - p.vp} vn={NA - p.fp} compacta />
               <dl className="q7-lista"><div><dt>TPR = VP ÷ {ND}</dt><dd>{pct(p.tpr, 0)}</dd></div><div><dt>FPR = FP ÷ {NA}</dt><dd>{pct(p.fpr, 1)}</dd></div></dl>
-              {novos.length > 0 && <p className="q7-nota">Recusadas neste passo: {novos.map((m) => `#${m.id} (${m.y ? "default" : "pagou"})`).join(", ")}.</p>}
+            </div>
+            <div className="q7-s09-fila">
+              <p className="q7-k">A fila do slide {SLIDE.c7p23.n}: à esquerda da fronteira, recusadas</p>
+              <Fila itens={FILA} revelado compacta corteK={p.vp + p.fp > 0 && p.vp + p.fp < FILA.length ? p.vp + p.fp : null} />
             </div>
           </div>
         ) : (
-          <dl className="q7-lista"><div><dt>Cortes distintos</dt><dd>{int(PTS_J.length - 1)}</dd></div><div><dt>AUC (mesma amostra)</dt><dd>{num(AUC_J, 4)}</dd></div><div><dt>Diagonal</dt><dd>sorteio</dd></div></dl>
+          <div className="q7-s09-j">
+            <Controle rotulo="Corte de PD na janela" valor={cj} min={0.02} max={0.4} passo={0.01} onChange={setCj} mostrar={`${pct(cj, 0)} · recusa ${cJ.vp + cJ.fp} de ${int(N)}`} escala={["2%", "40%"]} />
+            <div className="q7-s09-c">
+              <div className="q7-s09-mx">
+                <p className="q7-k">Matriz neste corte (PD ≥ {pct(cj, 0)})</p>
+                <Matriz vp={cJ.vp} fp={cJ.fp} fn={cJ.fn} vn={cJ.vn} compacta />
+              </div>
+              <dl className="q7-lista"><div><dt>TPR = VP ÷ {D}</dt><dd>{pct(cJ.vp / D, 1)}</dd></div><div><dt>FPR = FP ÷ {int(A)}</dt><dd>{pct(cJ.fp / A, 1)}</dd></div><div><dt>Cortes distintos</dt><dd>{int(PTS_J.length - 1)}</dd></div><div><dt>AUC (mesma amostra)</dt><dd>{num(AUC_J, 4)}</dd></div></dl>
+            </div>
+            <div className="q7-botoes"><Botao sec onClick={() => setCj(CJ0)}>Restaurar</Botao></div>
+          </div>
         )}
       </Painel>
     </Quadro>

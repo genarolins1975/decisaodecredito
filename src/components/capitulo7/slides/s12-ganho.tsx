@@ -4,7 +4,8 @@ import { Botao, caminho, Controle, Eixos, escala, Grafico, Kpi, Painel, Previsao
 import { useCompartilhado } from "../estado";
 import { D, FILA_PL, N, PL, Y } from "@/lib/capitulo7/dados";
 import { curvaGanho, ganho } from "@/lib/capitulo7/metricas";
-import { int, pct } from "@/lib/capitulo7/formato";
+import { int, num, pct } from "@/lib/capitulo7/formato";
+import { SLIDE } from "@/lib/capitulo7/roteiro";
 
 /**
  * 12 · c7p8 · Ganho acumulado. A turma estima primeiro que parcela dos 81 defaults está nos 10% mais arriscados; só
@@ -31,10 +32,12 @@ export function S12Ganho({ pagina }: { pagina?: Pagina }) {
   const rev = esc !== null;
   const g = ganho(Y, PL, q, FILA_PL);
   const faixa = FAIXAS[Math.min(9, Math.ceil(q * 10 - 1e-9) - 1)] ?? FAIXAS[0];
+  const rf = faixa.d / faixa.n / PI; // taxa da faixa contra a da carteira: "só" apenas abaixo dela
+  const nomeFaixa = `de ${pct(faixa.j / 10, 0)} a ${pct((faixa.j + 1) / 10, 0)}`;
   return (
     <Quadro slug="c7p8" pagina={pagina} layout="gl"
       conclusao={!rev ? "No gráfico, só as referências: o acaso (diagonal) e a fila perfeita (pontilhado). A curva da logística fica entre as duas; estime onde."
-        : <>Examinando os {pct(q, 0)} mais arriscados ({int(g.examinados)} propostas), a equipe alcança <b>{g.capturados} dos {D} defaults: ganho de {pct(g.ganho!, 1)}</b>. Ao acaso, alcançaria cerca de {pct(q, 0)}; na faixa de {pct(faixa.j / 10, 0)} a {pct((faixa.j + 1) / 10, 0)}, só {faixa.d} de {faixa.n}.</>}
+        : <>Os {pct(q, 0)} mais arriscados ({int(g.examinados)} propostas) alcançam <b>{g.capturados} dos {D} defaults: ganho de {pct(g.ganho!, 1)}</b>; ao acaso, cerca de {pct(q, 0)}. Na faixa {nomeFaixa}, {rf >= 1 ? `${faixa.d} de ${faixa.n}, ${num(rf, 1)} vezes a taxa da carteira` : `só ${faixa.d} de ${faixa.n}, abaixo da taxa da carteira`}. O slide {SLIDE.c7p25.n} traduz o ganho em lift.</>}
       fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults; fila pela PD da logística, desempate pela ordem da base. Examinar a fração q é olhar as ⌊q·${N} + ½⌋ primeiras posições.`}>
       <Grafico titulo="Curva de ganho acumulado" sub="fração da carteira examinada contra fração dos defaults alcançados" rotulo={rev ? `Curva de ganho; em ${pct(q, 0)} da carteira, ${pct(g.ganho!, 1)} dos defaults; barras com os defaults de cada faixa de 10%: ${FAIXAS.map((f) => f.d).join(", ")}` : "Curva de ganho oculta até a estimativa; à vista, o acaso e a fila perfeita"} arCelular="4 / 3">
         {(d) => {

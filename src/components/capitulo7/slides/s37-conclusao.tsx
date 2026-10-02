@@ -1,9 +1,9 @@
 "use client";
 import { useState, type ReactNode } from "react";
 import { Botao, caminho, escala, Grafico, LinkSlide, Painel, Quadro, Seg, type Dim, type Pagina } from "../base";
-import { CAL, CAL_PL, D, EAD, N, PGR, PL, Y } from "@/lib/capitulo7/dados";
-import { ajustarIntercepto, calibracaoGlobal, delong, ganho, jeffreys, ks, logLoss, slopeComIntervalo, transformar, wilson, Z95 } from "@/lib/capitulo7/metricas";
-import { N_JANELAS, vantagemEmJanelasNovas } from "@/lib/capitulo7/janelas";
+import { D, EAD, N, PGR, PL, Y } from "@/lib/capitulo7/dados";
+import { calibracaoGlobal, delong, ganho, jeffreys, ks, slopeComIntervalo, wilson, Z95 } from "@/lib/capitulo7/metricas";
+import { calibradores, N_JANELAS, vantagemEmJanelasNovas } from "@/lib/capitulo7/janelas";
 import { CURTO } from "@/lib/capitulo7/roteiro";
 import { curva, fmtReais, GRADE_CORTES, otimo } from "@/lib/visuais/economia";
 import { int, num, pct } from "@/lib/capitulo7/formato";
@@ -13,16 +13,19 @@ import { int, num, pct } from "@/lib/capitulo7/formato";
  * sustenta (AUC com IC de DeLong; PD média contra a taxa observada com Wilson; curva de resultado com o corte econômico
  * e o KS; diferença para o boosting com IC e a vantagem em janelas novas) e o que ainda falta. À direita, o fluxo de
  * diagnóstico: escolhido o sintoma, o quadro diz o que ele indica e para quais slides voltar; sem sintoma, o
- * procedimento que se aplica a uma carteira real. Números das mesmas funções dos slides anteriores.
+ * procedimento que se aplica a uma carteira real. Números das mesmas funções dos slides anteriores. Rodada 2: a
+ * resposta "Ordena?" traz a AUC esperada em janelas novas ao lado da janela; a de probabilidade, a perda esperada dos
+ * calibradores (calibradores de janelas.ts); a síntese repete a decisão do slide 36 (manter, recalibrar o nível em
+ * amostra própria, confirmar numa janela nova); o rótulo do KS sai de baixo da curva.
  */
 type Sint = "auc" | "cal" | "dec" | "oot";
 const DL = delong(Y, PL, PGR), KS_ = ks(Y, PL), G10 = ganho(Y, PL, 0.1), G = calibracaoGlobal(Y, PL), SL = slopeComIntervalo(Y, PL);
 const JC = jeffreys(D, N, G.pdMedia!), OBS = wilson(D, N)!;
 const CV = curva(PL as number[], EAD as number[], GRADE_CORTES.filter((c) => c <= 0.4)); const OT = otimo(CV);
-const LL0 = logLoss(Y, PL).valor, LL1 = logLoss(Y, transformar(PL, ajustarIntercepto(CAL.y, CAL_PL), 1)).valor;
+const CL = calibradores("pl"); const E0 = CL.sem!.esperada.logLoss, E1 = CL.intercepto!.esperada.logLoss;
 const COR = { ord: "#3D5A8A", prob: "#176C73", dec: "#A85A0C", val: "#2E6B4F" };
 
-function MiniOrd({ d }: { d: Dim }) {
+function MiniOrd({ d, esperada }: { d: Dim; esperada: number }) {
   const fs = d.fs, x = escala([0.6, 0.85], [fs * 0.6, d.w - fs * 0.8]), cy = fs * 2.1, lo = DL.auc1 - Z95 * DL.ep1, hi = DL.auc1 + Z95 * DL.ep1;
   return (
     <g>
@@ -31,7 +34,7 @@ function MiniOrd({ d }: { d: Dim }) {
       <line x1={x(lo)} x2={x(hi)} y1={cy} y2={cy} stroke={COR.ord} strokeWidth={4} strokeLinecap="round" />
       <circle cx={x(DL.auc1)} cy={cy} r={fs * 0.45} fill={COR.ord} stroke="#fff" strokeWidth={2} />
       <text className="q7-rot--peq" x={x(DL.auc1)} y={cy - fs * 0.8} textAnchor="middle" style={{ fill: COR.ord, fontWeight: 700 }}>AUC {num(DL.auc1, 4)}, IC {num(lo, 3)} a {num(hi, 3)}</text>
-      <text className="q7-rot--peq" x={x(0.6)} y={cy + fs * 3.1} style={{ fill: "#2A3342" }}>10% piores: {pct(G10.ganho!, 0)} dos defaults</text>
+      <text className="q7-rot--peq" x={x(0.6)} y={cy + fs * 3.1} style={{ fill: "#2A3342" }}>em {N_JANELAS} janelas novas: {num(esperada, 4)}</text>
     </g>
   );
 }
@@ -59,7 +62,7 @@ function MiniDec({ d }: { d: Dim }) {
       {[0, 0.2, 0.4].map((t) => <text key={t} className="q7-tick" x={x(t)} y={y(0)} dy="1em" textAnchor={t === 0 ? "start" : t === 0.4 ? "end" : "middle"}>{pct(t, 0)}</text>)}
       <path className="q7-linha q7-linha--fina q7-linha--prob" d={caminho(CV.map((q) => ({ x: x(q.corte), y: y(q.parcelas.total) })))} />
       <line x1={x(KS_.limiar)} x2={x(KS_.limiar)} y1={y(0)} y2={fs * 0.2} stroke={COR.ord} strokeWidth={2} strokeDasharray="3 4" />
-      <text className="q7-corte-t q7-corte-t--ord" x={x(KS_.limiar) - fs * 0.3} y={y(0) - fs * 0.4} textAnchor="end">KS {pct(KS_.limiar, 1)}</text>
+      <text className="q7-corte-t q7-corte-t--ord" x={x(KS_.limiar)} y={y(0)} dy="1em" textAnchor="middle">KS {pct(KS_.limiar, 1)}</text>
       <line className="q7-corte" x1={x(OT.corte)} x2={x(OT.corte)} y1={y(0)} y2={fs * 0.2} />
       <text className="q7-corte-t" x={x(OT.corte) + fs * 0.3} y={y(0) - fs * 0.4}>corte {pct(OT.corte, 1)}</text>
       <text className="q7-rot--peq" x={x(0.4)} y={y(CV[CV.length - 1].parcelas.total) - fs * 0.5} textAnchor="end" style={{ fill: COR.prob }}>esperado, máximo {fmtReais(OT.parcelas.total)}</text>
@@ -88,7 +91,7 @@ const SINTOMAS: Record<Sint, { r: string; diag: string; voltar: string[] }> = {
   oot: { r: "Bom na validação, ruim na janela", diag: "Problema de validação: sobreajuste, seleção feita olhando a janela ou mudança de população. Congele e use uma janela nova.", voltar: ["c7p15", "c7p17", "c7p14"] },
 };
 const PASSOS: [string, string][] = [
-  ["Ordenação", "AUC com IC pareado contra o modelo atual"],
+  ["Ordenação", "AUC com IC pareado contra o atual"],
   ["Probabilidade", "O/E e Jeffreys por grau, slope com IC"],
   ["Decisão", "corte pela conta, com sensibilidade"],
   ["Validação", "escolhas congeladas antes da janela"],
@@ -99,15 +102,15 @@ export function S37Conclusao({ pagina }: { pagina?: Pagina }) {
   const [jn] = useState(() => vantagemEmJanelasNovas());
   const x = s ? SINTOMAS[s] : null;
   const RESPOSTAS: { p: keyof typeof COR; s: string; t: string; r: string; mini: (d: Dim) => ReactNode; rot: string; falta: ReactNode }[] = [
-    { p: "ord", s: "●", t: "Ordena?", r: "Sim, de forma moderada.", mini: (d) => <MiniOrd d={d} />, rot: `AUC ${num(DL.auc1, 4)} com IC de DeLong; 10% piores com ${pct(G10.ganho!, 0)} dos defaults`, falta: "estabilidade por segmento e tempo." },
-    { p: "prob", s: "▲", t: "Prevê bem a probabilidade?", r: "Nível baixo, ainda sem prova.", mini: (d) => <MiniProb d={d} />, rot: `PD média ${pct(G.pdMedia!, 1)} contra ${pct(OBS.p, 1)} observados, IC ${pct(OBS.lo, 1)} a ${pct(OBS.hi, 1)}; Jeffreys p = ${num(JC, 2)}`, falta: <>corrigir o nível (<LinkSlide slug="c7p12">slide 28</LinkSlide>: log loss {num(LL0, 4)} para {num(LL1, 4)}) em calibração real.</> },
+    { p: "ord", s: "●", t: "Ordena?", r: "Sim, moderadamente.", mini: (d) => <MiniOrd d={d} esperada={jn.l} />, rot: `AUC ${num(DL.auc1, 4)} com IC de DeLong; esperada em janelas novas ${num(jn.l, 4)}; 10% piores com ${pct(G10.ganho!, 0)} dos defaults`, falta: "estabilidade por segmento e tempo." },
+    { p: "prob", s: "▲", t: "Prevê bem a probabilidade?", r: "Nível baixo, ainda sem prova.", mini: (d) => <MiniProb d={d} />, rot: `PD média ${pct(G.pdMedia!, 1)} contra ${pct(OBS.p, 1)} observados, IC ${pct(OBS.lo, 1)} a ${pct(OBS.hi, 1)}; Jeffreys p = ${num(JC, 2)}`, falta: <>recalibrar o nível (<LinkSlide slug="c7p12">slide 28</LinkSlide>) e confirmar.</> },
     { p: "dec", s: "◆", t: "Sustenta a decisão?", r: "Com hipóteses explícitas.", mini: (d) => <MiniDec d={d} />, rot: `Corte econômico ${pct(OT.corte, 1)}, KS ${pct(KS_.limiar, 1)}`, falta: "sensibilidade a perda, receita e capacidade." },
-    { p: "val", s: "■", t: "Prova fora da amostra?", r: "Uma vez, com margem estreita.", mini: (d) => <MiniVal d={d} novas={jn.vantagem} />, rot: `Diferença para o boosting ${num(DL.dif, 4)}, IC ${num(DL.ic[0], 4)} a ${num(DL.ic[1], 4)}; ${num(jn.vantagem, 4)} em janelas novas`, falta: "janela nova para cada escolha posterior." },
+    { p: "val", s: "■", t: "Prova fora da amostra?", r: "Uma vez, com margem estreita.", mini: (d) => <MiniVal d={d} novas={jn.vantagem} />, rot: `Diferença para o boosting ${num(DL.dif, 4)}, IC ${num(DL.ic[0], 4)} a ${num(DL.ic[1], 4)}; ${num(jn.vantagem, 4)} em janelas novas`, falta: "janela nova a cada escolha." },
   ];
   return (
     <Quadro slug="c7p20" pagina={pagina} layout="gl" rotuloConclusao="Síntese"
-      conclusao={<><b>A logística fica:</b> ordena (AUC {num(DL.auc1, 4)}), tem nível baixo sem prova (Jeffreys p = {num(JC, 2)}), sustenta o corte de {pct(OT.corte, 1)} sob hipóteses e passou uma prova única com margem de {num(DL.ic[0], 4)}. <b>O boosting só volta numa janela nova.</b></>}
-      fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults; logística do capítulo 4. DeLong, Wilson e Jeffreys; motor do capítulo 8; ${N_JANELAS} janelas novas sintéticas.`}>
+      conclusao={<><b>A logística fica:</b> ordena (AUC {num(DL.auc1, 4)}, esperada {num(jn.l, 4)}), nível baixo sem prova (p = {num(JC, 2)}), sustenta o corte de {pct(OT.corte, 1)} sob hipóteses e passou uma prova única (limite inferior do IC: {num(DL.ic[0], 4)}). <b>Recalibrar o nível em amostra própria (log loss esperada {num(E0, 4)} para {num(E1, 4)}) e confirmar numa janela nova.</b></>}
+      fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults. DeLong, Wilson e Jeffreys; motor do slide 32; ${N_JANELAS} janelas novas e perda esperada, sintéticas.`}>
       <Painel titulo="As quatro respostas, para a logística da janela">
         <div className="q7-s37-r">
           {RESPOSTAS.map((r) => (

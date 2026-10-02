@@ -1,8 +1,9 @@
 "use client";
 import { useId, useState } from "react";
-import { Botao, Expandir, Grafico, Kpi, LinkSlide, Painel, Previsao, Quadro, Seg, escala, type Pagina } from "../base";
-import { CAL, CAL_PL, META, PL, Y } from "@/lib/capitulo7/dados";
-import { ajustarIntercepto, ajustarPlatt, logLoss, transformar, valoresDistintos } from "@/lib/capitulo7/metricas";
+import { Botao, Grafico, LinkSlide, Painel, Previsao, Quadro, Seg, escala, type Pagina } from "../base";
+import { CAL, D, META } from "@/lib/capitulo7/dados";
+import { calibradores, N_JANELAS, vitorias } from "@/lib/capitulo7/janelas";
+import { valoresDistintos } from "@/lib/capitulo7/metricas";
 import { int, num } from "@/lib/capitulo7/formato";
 
 /**
@@ -11,15 +12,17 @@ import { int, num } from "@/lib/capitulo7/formato";
  * aprende e onde é avaliado. O atalho (ajustar o Platt na janela fora do tempo e medir nela mesma) só abre depois da
  * previsão. A amostra de calibração é sintética: os mesmos proponentes da janela, sorteados com reposição (3.000
  * sorteios), com desfecho novo sorteado da PD verdadeira; não existe em dados reais, e a fonte e o desenho dizem isso.
- * Números: ajustarPlatt, ajustarIntercepto e logLoss de metricas.ts.
+ * Rodada 2: a janela tem 81 defaults e não distingue os calibradores (o Platt fica 0,0018 acima de sem calibrar); a
+ * tabela mostra, ao lado da log loss na janela, a perda esperada pela PD verdadeira em janelas novas da mesma população
+ * (calibradores de janelas.ts), em que o Platt da calibração é o melhor dos três e o atalho promete mais do que entrega.
  */
 type Modo = "certo" | "atalho";
-const PLATT_CAL = ajustarPlatt(CAL.y, CAL_PL);
-const PLATT_OOT = ajustarPlatt(Y, PL);
-const LL_CERTO = logLoss(Y, transformar(PL, PLATT_CAL.a, PLATT_CAL.b)).valor;
-const LL_ATALHO = logLoss(Y, transformar(PL, PLATT_OOT.a, PLATT_OOT.b)).valor;
-const LL_SEM = logLoss(Y, PL).valor;
-const LL_INT = logLoss(Y, transformar(PL, ajustarIntercepto(CAL.y, CAL_PL), 1)).valor;
+const C = calibradores("pl");
+const PLATT_CAL = { a: C.platt!.a!, b: C.platt!.b! };
+const PLATT_OOT = { a: C.atalho!.a!, b: C.atalho!.b! };
+const LL_CERTO = C.platt!.janela.logLoss, LL_ATALHO = C.atalho!.janela.logLoss, LL_SEM = C.sem!.janela.logLoss;
+/** diferença entre os valores exibidos com quatro casas, para a conta da tela fechar */
+const DIF = Math.round(LL_CERTO * 1e4) / 1e4 - Math.round(LL_SEM * 1e4) / 1e4;
 const DISTINTOS = valoresDistintos(CAL.indices);
 const CERTA = 2;
 
@@ -96,22 +99,28 @@ function Linha({ atalho }: { atalho: boolean }) {
   );
 }
 
+const LINHAS: { id: "sem" | "intercepto" | "platt" | "atalho"; r: string }[] = [
+  { id: "sem", r: "Sem calibrar" },
+  { id: "intercepto", r: "Intercepto, na calibração" },
+  { id: "platt", r: "Platt, na calibração" },
+  { id: "atalho", r: "Atalho: Platt na janela" },
+];
+
 export function S27AmostraPropria({ pagina }: { pagina?: Pagina }) {
   const [modo, setModo] = useState<Modo>("certo");
   const [prev, setPrev] = useState<number | null>(null);
+  // vitórias em janelas novas: sorteio sob demanda, ao abrir o slide (nunca no carregamento do módulo)
+  const [VENCE] = useState(() => vitorias("pl", "platt", "sem"));
   const aberto = prev === CERTA;
   const atalho = aberto && modo === "atalho";
   const escolher = (i: number | null) => { setPrev(i); setModo(i === CERTA ? "atalho" : "certo"); };
   return (
     <Quadro slug="c7p16" pagina={pagina} layout="gl"
-      conclusao={!atalho ? <>Platt ajustado na calibração e medido na janela fora do tempo: log loss <b>{num(LL_CERTO, 4)}</b>, pior que a logística sem calibrar ({num(LL_SEM, 4)}). O slope estimado (b = {num(PLATT_CAL.b, 3)}) achata as PDs; no <LinkSlide slug="c7p12">slide 28</LinkSlide>, só o nível é corrigido, e a log loss melhora ({num(LL_SEM, 4)} para {num(LL_INT, 4)}).</>
-        : <>Ajustado e medido na mesma janela: <b>{num(LL_ATALHO, 4)}</b>, menor que o protocolo ({num(LL_CERTO, 4)}) e que sem calibrar ({num(LL_SEM, 4)}) por construção, porque o ajuste minimiza a perda que vai reportar. <b>Nunca reporte um calibrador na amostra em que ele foi ajustado.</b></>}
-      fonte={`Base do curso: treino, validação e janela fora do tempo (${int(META.nOot)} propostas), desfecho em 12 meses. Calibração sintética: ${int(CAL.n)} sorteios com reposição dos mesmos proponentes da janela (${int(DISTINTOS)} distintos), com desfecho novo sorteado da PD verdadeira (semente ${CAL.semente}); o calibrador não viu os desfechos da janela, mas viu os proponentes. Não existe em dados reais.`}>
+      conclusao={!atalho ? <>Protocolo: Platt ajustado na calibração e medido na janela, log loss {num(LL_CERTO, 4)} contra {num(LL_SEM, 4)} sem calibrar. A diferença de {num(DIF, 4)}, com {D} defaults, é ruído: em janelas novas da mesma população, o Platt da calibração é <b>o melhor dos três ({num(C.platt!.esperada.logLoss, 4)})</b> e vence sem calibrar em {VENCE} de {N_JANELAS}. O <LinkSlide slug="c7p12">slide 28</LinkSlide> começa pela correção mais simples, só o nível.</>
+        : <>Ajustado e medido na mesma janela: <b>{num(LL_ATALHO, 4)}</b>, menor que o protocolo ({num(LL_CERTO, 4)}) por construção. Em janelas novas, o atalho entrega {num(C.atalho!.esperada.logLoss, 4)}, pior que o protocolo ({num(C.platt!.esperada.logLoss, 4)}): aprendeu a sorte da janela. <b>Nunca reporte um calibrador na amostra em que ele foi ajustado.</b></>}
+      fonte={`Base do curso: treino, validação e janela fora do tempo (${int(META.nOot)} propostas, ${D} defaults), desfecho em 12 meses. Calibração sintética: ${int(CAL.n)} sorteios com reposição dos mesmos proponentes da janela (${int(DISTINTOS)} distintos), desfecho novo da PD verdadeira (semente ${CAL.semente}). Esperada: média exata pela PD verdadeira, só possível em base sintética.`}>
       <Painel titulo="Onde o calibrador aprende e onde é medido">
         <Linha atalho={atalho} />
-        <Expandir resumo="E sem amostra própria? Validação cruzada">
-          <p className="q7-nota">Com poucos dados, o calibrador pode ser ajustado por validação cruzada: o modelo é treinado em k − 1 partes e prevê a parte de fora; o calibrador aprende só dessas previsões fora da amostra. A janela fora do tempo continua fechada. Na base do curso, a validação serviu para escolher hiperparâmetros e também para o Platt do boosting: reutilizar a mesma amostra para as duas escolhas é um atalho que deve ser declarado.</p>
-        </Expandir>
       </Painel>
       <Painel>
         {aberto ? (
@@ -125,11 +134,13 @@ export function S27AmostraPropria({ pagina }: { pagina?: Pagina }) {
             ]} />
         )}
         {aberto && <p className="q7-retorno" data-tom="certa">Isso: nos mesmos casos, o Platt minimiza a perda que vai reportar. Ler o número menor como calibrador melhor confunde ajuste com prova.</p>}
-        <div className={`q7-kpis ${aberto || prev === null ? "q7-kpis--col" : "q7-kpis--2"}`}>
-          <Kpi rotulo={prev === null || aberto ? "Protocolo: ajusta na calibração, mede na janela" : "Protocolo"} valor={num(LL_CERTO, 4)} detalhe={prev === null || aberto ? `a = ${num(PLATT_CAL.a, 3)}, b = ${num(PLATT_CAL.b, 3)}` : "ajusta na calibração"} tom="val" tam="mini" />
-          {aberto && <Kpi rotulo="Atalho: ajusta e mede na janela" valor={num(LL_ATALHO, 4)} detalhe={`a = ${num(PLATT_OOT.a, 3)}, b = ${num(PLATT_OOT.b, 3)}`} tom="def" tam="mini" />}
-          <Kpi rotulo="Sem calibrador" valor={num(LL_SEM, 4)} detalhe={prev === null || aberto ? "a logística como estimada" : "a logística"} tam="mini" />
-        </div>
+        <table className="q7-tab q7-s27-t">
+          <thead><tr><th className="q7-t-l">Log loss da logística</th><th>Na janela</th><th>Esperada</th></tr></thead>
+          <tbody>{LINHAS.filter((l) => aberto || l.id !== "atalho").map((l) => { const c = C[l.id]!; return (
+            <tr key={l.id} data-on={(atalho ? l.id === "atalho" : l.id === "platt") ? "1" : undefined}><th>{l.r}</th><td>{num(c.janela.logLoss, 4)}</td><td>{num(c.esperada.logLoss, 4)}</td></tr>
+          ); })}</tbody>
+        </table>
+        <p className="q7-nota">Esperada: média em janelas novas da mesma população. {atalho ? <>Atalho: a = {num(PLATT_OOT.a, 3)}, b = {num(PLATT_OOT.b, 3)}.</> : <>Platt: a = {num(PLATT_CAL.a, 3)}, b = {num(PLATT_CAL.b, 3)}.</>}</p>
       </Painel>
     </Quadro>
   );

@@ -24,10 +24,14 @@ const SERIES = Object.fromEntries(([["logistica", PL, FILA_PL], ["embaralhada", 
 }])) as Record<Fila, { pd: readonly number[]; ord: number[]; auc: number; lifts: { q: number; l: number }[]; bandas: ({ j: number } & ReturnType<typeof liftFaixa>)[] }>;
 
 const Q0 = 0.1;
+/** Ruído de faixa: a maior faixa embaralhada (depois da primeira) contra a primeira faixa da logística que fica abaixo dela. */
+const FE = SERIES.embaralhada.bandas.slice(1).reduce((a, b) => (b.lift! > a.lift! ? b : a));
+const FL = SERIES.logistica.bandas.find((b) => b.lift! < FE.lift!) ?? null;
+const faixaNome = (j: number) => `${pct(j / 10, 0)} a ${pct((j + 1) / 10, 0)}`;
 const LE = ganho(Y, CENARIOS.filaFracaMediaCerta, Q0, fila(CENARIOS.filaFracaMediaCerta)).lift!, LL = ganho(Y, PL, Q0, FILA_PL).lift!;
 const OPCOES: Opcao[] = [
   { texto: `Fica perto de ${vezes(LL, 1)}: as PDs são as mesmas`, retorno: <>Confunde o <b>nível das PDs com a ordem</b>. As PDs são as mesmas, mas quem fica no topo passa a ser sorteado: o lift vem da ordem.</> },
-  { texto: "Cai para perto de 1", certa: true, retorno: <>Isso. Embaralhada, a fila põe no topo um grupo qualquer: lift de <b>{vezes(LE)}</b> nos {pct(Q0, 0)}, ruído em torno de 1.</> },
+  { texto: "Cai para perto de 1", certa: true, retorno: <>Isso: embaralhada, a fila põe no topo um grupo qualquer, e o lift de <b>{vezes(LE)}</b> é ruído em torno de 1.</> },
   { texto: "Vai a zero", retorno: <>Zero seria um topo <b>sem nenhum default</b>. Ao acaso, o topo tem em média a taxa da carteira: lift perto de 1, não 0.</> },
 ];
 
@@ -39,7 +43,7 @@ export function S13Lift({ pagina }: { pagina?: Pagina }) {
   const g = ganho(Y, S.pd, q, S.ord);
   return (
     <Quadro slug="c7p25" pagina={pagina} layout="gl"
-      conclusao={f === "embaralhada" ? <>Com a fila embaralhada (AUC {num(S.auc, 4)}), os {pct(q, 0)} “mais arriscados” têm taxa de {pct(g.taxaGrupo!, 1)} contra {pct(PI, 1)} na carteira: <b>lift de {vezes(g.lift!)}</b>, ruído em torno de 1. <b>O lift vem da ordem</b>, não das PDs: são as mesmas, em outra ordem.</>
+      conclusao={f === "embaralhada" ? <>Embaralhada (AUC {num(S.auc, 4)}), os {pct(q, 0)} do topo têm {pct(g.taxaGrupo!, 1)} contra {pct(PI, 1)}: <b>lift de {vezes(g.lift!)}</b>. <b>O lift vem da ordem</b>, não das PDs.{FL ? ` E uma faixa de ${int(FE.n!)} casos oscila: embaralhada, a de ${faixaNome(FE.j)} chega a ${vezes(FE.lift!)}, acima da de ${faixaNome(FL.j)} da logística (${vezes(FL.lift!)}).` : ""}</>
         : <>Nos {pct(q, 0)} mais arriscados, a taxa de default é <b>{pct(g.taxaGrupo!, 1)}</b> contra {pct(PI, 1)} na carteira: <b>lift de {vezes(g.lift!)}</b>. São coisas diferentes: {pct(g.ganho!, 1)} dos defaults capturados e {pct(g.taxaGrupo!, 1)} de inadimplência entre os examinados.</>}
       fonte={`Janela fora do tempo: ${int(N)} propostas, ${D} defaults (taxa ${pct(PI, 2)}); fila pela PD da logística ou embaralhada (semente 7). Lift de faixa calculado em faixas de 10% da fila.`}>
       <Grafico titulo="Lift acumulado e lift de cada faixa de 10%" sub="barras e números no topo: cada faixa de 10%; linha: acumulado" rotulo={`Lift acumulado em ${pct(q, 0)}: ${num(g.lift!, 2)}`} arCelular="4 / 3">
@@ -67,7 +71,7 @@ export function S13Lift({ pagina }: { pagina?: Pagina }) {
         <Controle rotulo="Fração da carteira examinada" valor={q} min={0.05} max={1} passo={0.05} onChange={setQ} mostrar={`${pct(q, 0)} (${int(g.examinados)})`} />
         <dl className="q7-lista q7-s13-l">
           <div><dt>Taxa nos examinados</dt><dd>{g.capturados} ÷ {int(g.examinados)} = {pct(g.taxaGrupo!, 1)}</dd></div>
-          <div><dt>Lift = taxa ÷ {pct(PI, 1)} ({D} ÷ {int(N)})</dt><dd>{vezes(g.lift!)}</dd></div>
+          <div><dt>Lift = taxa ÷ {pct(PI, 2)} ({D} ÷ {int(N)})</dt><dd>{vezes(g.lift!)}</dd></div>
           <div><dt>Ganho: defaults capturados</dt><dd>{g.capturados} ÷ {D} = {pct(g.ganho!, 1)}</dd></div>
         </dl>
       </Painel>

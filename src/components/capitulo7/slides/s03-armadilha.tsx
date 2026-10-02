@@ -5,11 +5,12 @@ import { Pessoas } from "../pecas";
 import { confusao } from "@/lib/capitulo7/metricas";
 import { A, D, N, PL, Y } from "@/lib/capitulo7/dados";
 import { int, pct } from "@/lib/capitulo7/formato";
+import { SLIDE } from "@/lib/capitulo7/roteiro";
 
 /**
  * 03 · c7p2 · A armadilha da acurácia. A carteira tem o tamanho da janela (737 propostas); a turma prevê a acurácia
- * da regra "aprovar todas" na prevalência real (81 defaults) e só então o quadro revela a matriz e libera o controle
- * de prevalência. O total fica fixo; muda quantos deram default. A comparação com a logística no corte de 12% só existe
+ * da regra "aprovar todas" na prevalência real (81 defaults) e só no acerto o quadro revela a matriz e libera o
+ * controle de prevalência; até lá, título e subtítulo são pergunta. O total fica fixo; muda quantos deram default. A comparação com a logística no corte de 12% só existe
  * na prevalência real, porque usa os desfechos observados da janela.
  */
 const REAL = D;
@@ -36,8 +37,8 @@ const LOGIT12 = confusao(Y, PL, CORTE);
 const DMIN = Math.round(N * 0.01), DMAX = Math.round(N * 0.5), D2 = Math.round(N * 0.02);
 const PA = `${int(A)} de ${int(N)}`;
 const OPCOES = [
-  { texto: `Perto de ${pct(D / N, 0)}`, certa: false, retorno: <>{pct(D / N, 0)} é a <b>prevalência</b>, a fração que a regra erra. Ela aprova todos e acerta os outros: {PA}.</> },
-  { texto: "Perto de 50%", certa: false, retorno: <>50% seria um <b>sorteio</b>. A regra aprova todos e acerta todos os {int(A)} adimplentes.</> },
+  { texto: `Perto de ${pct(D / N, 0)}`, certa: false, retorno: <>{pct(D / N, 0)} é a <b>prevalência</b>, a fração de defaults: são esses que a regra erra. Quanto ela acerta?</> },
+  { texto: "Perto de 50%", certa: false, retorno: <>50% seria um <b>sorteio</b>. A regra não sorteia: aprova todos. Em quem ela acerta?</> },
   { texto: `Perto de ${pct(A / N, 0)}`, certa: true, retorno: <>Isso: <b>{PA}</b> pagaram, e a regra acerta exatamente esses.</> },
   { texto: "Não dá para saber sem um modelo", certa: false, retorno: <>Dá: a regra não olha o cliente, então a acurácia depende só de <b>quantos pagaram</b>.</> },
 ];
@@ -45,13 +46,15 @@ const OPCOES = [
 export function S03Armadilha({ pagina }: { pagina?: Pagina }) {
   const [escolha, setEscolha] = useState<number | null>(null);
   const [d, setD] = useState(REAL);
-  const revelado = escolha !== null;
+  // a matriz e o controle só abrem no acerto: o retorno de uma alternativa errada não pode trazer a resposta
+  const revelado = escolha !== null && OPCOES[escolha].certa;
   const a = N - d, acc = a / N, real = d === REAL;
   const prev = d / N;
   return (
     <Quadro slug="c7p2" pagina={pagina} layout="gl"
-      conclusao={revelado ? <>Aprovar todos acerta <b>{pct(acc, 1)}</b> sem recusar nenhum default. A acurácia não é inútil, mas com evento raro é insuficiente: precisa de referência e não mede a ordem entre clientes.</> : "Escolha uma alternativa antes de ver a matriz."}
-      fonte={<>Janela fora do tempo do curso: {int(N)} propostas aprovadas, safras de 2023-08 a 2023-12, {int(REAL)} defaults em 12 meses. Com o controle, o total fica em {int(N)} e muda só o número de defaults (cenário ilustrativo). Recusa quando PD ≥ corte.</>}>
+      titulo={revelado ? undefined : "Qual é a acurácia de aprovar todos?"} sub={revelado ? undefined : "Uma regra que ignora o risco, numa carteira em que o default é raro."}
+      conclusao={revelado ? <>Aprovar todos acerta <b>{pct(acc, 1)}</b> sem recusar nenhum default. Com evento raro, a acurácia precisa de referência e não mede a ordem entre clientes: o slide {SLIDE.c7p3.n} separa ordenar, prever e decidir.</> : escolha === null ? "Escolha uma alternativa antes de ver a matriz." : "Tente outra alternativa: a matriz abre no acerto."}
+      fonte={`Janela fora do tempo: ${int(N)} propostas aprovadas, ${int(REAL)} defaults em 12 meses. Com o controle, o total fica em ${int(N)} e muda só o número de defaults (cenário ilustrativo). Recusa quando PD ≥ corte.`}>
       <Painel titulo={revelado ? `Regra trivial: aprovar todas as ${int(N)} propostas` : `${int(REAL)} defaults em ${int(N)} propostas; cada marca é 1% da carteira`} className="q7-s03-esq">
         <div className="q7-s03-vis">
           <div className="q7-s03-pes">

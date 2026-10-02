@@ -38,7 +38,8 @@ export function S17PdColetiva({ pagina }: { pagina?: Pagina }) {
   const atual = useMemo(() => amostra(p, k), [p, k]);
   const contagens = useMemo(() => Array.from({ length: k }, (_, j) => amostra(p, j + 1).filter(Boolean).length), [p, k]);
   const mediaAm = contagens.reduce((a, b) => a + b, 0) / k;
-  const revelado = esc !== null;
+  // a binomial e as +50 amostras só abrem com a resposta certa; a errada pede nova tentativa
+  const revelado = esc !== null && OPS[esc].certa;
   const teor = useMemo(() => binom(100, p), [p]);
   const sim = modo === "simulacao";
   const obs = sim ? atual.filter(Boolean).length : PERTO_D;
@@ -46,14 +47,17 @@ export function S17PdColetiva({ pagina }: { pagina?: Pagina }) {
   const maxK = 5 * Math.ceil(Math.max(20, p * 100 + 4 * Math.sqrt(100 * p * (1 - p))) / 5);
   return (
     <Quadro slug="c7p9" pagina={pagina} layout="gl"
-      conclusao={sim ? <>PD de {pct(p, 0)} em 100 propostas: <b>espera-se {num(100 * p, 0)} defaults</b>; na amostra {k} saíram {obs}{k > 1 ? `, e a média das ${k} amostras é ${num(mediaAm, 1)}` : ""}. A PD promete a frequência média do grupo, não a contagem: por isso a calibração se mede em grupos, a partir do slide 18.</>
+      titulo={revelado || !sim ? undefined : `Com PD de ${pct(P0, 0)}, quantos defaults saem em 100 propostas?`}
+      sub={revelado || !sim ? undefined : "Cada amostra sorteia de novo os desfechos de 100 propostas com a mesma PD."}
+      conclusao={sim && !revelado ? <>PD de {pct(p, 0)} em 100 propostas: espera-se {num(100 * p, 0)} defaults; na amostra {k} saíram {obs}. Antes de sortear muitas amostras, preveja ao lado quanto essa contagem varia.</>
+        : sim ? <>PD de {pct(p, 0)} em 100 propostas: <b>espera-se {num(100 * p, 0)} defaults</b>; na amostra {k} saíram {obs}{k > 1 ? `, e a média das ${k} amostras é ${num(mediaAm, 1)}` : ""}. A PD promete a frequência média do grupo, não a contagem: por isso a calibração se mede em grupos, a partir do slide 18.</>
         : <>As 100 propostas com PD perto de 10% (de {pct(PERTO_FAIXA[0], 1)} a {pct(PERTO_FAIXA[1], 1)}, média {pct(PERTO_MEDIA, 1)}) tiveram <b>{PERTO_D} defaults</b>. Intervalo de 95% para a frequência: {pct(w.lo, 1)} a {pct(w.hi, 1)}.</>}
-      fonte={sim ? `Simulação: 100 propostas independentes com a mesma PD; amostra n usa a semente ${SEM} + n. Curva: binomial exata de cada contagem, multiplicada pelo número de amostras.` : "Janela fora do tempo: as 100 propostas cuja PD da logística está mais perto de 10%; desfecho observado em 12 meses."}>
+      fonte={sim ? `Simulação sintética feita no quadro, fora da base: 100 propostas independentes com a mesma PD; amostra n usa a semente ${SEM} + n. Curva: binomial exata de cada contagem, multiplicada pelo número de amostras.` : "Janela fora do tempo: as 100 propostas cuja PD da logística está mais perto de 10%; desfecho de default em 12 meses."}>
       <Painel titulo={sim ? `Amostra ${k}: 100 propostas com PD de ${pct(p, 0)}` : "Na janela: 100 propostas com PD perto de 10%"}>
         <div className="q7-s17 q7-g2-s17">
           <div className="q7-s17-pes">
             <Pessoas n={100} d={obs} esperados={100 * (sim ? p : PERTO_MEDIA)} rotulo={`${obs} defaults entre 100 propostas; a PD esperava ${num(100 * (sim ? p : PERTO_MEDIA), 1)}`} />
-            <Legenda itens={[{ mk: "def", r: "deu default" }, { mk: "adi", r: "pagou" }, { mk: "", r: "contorno verde: esperados" }]} />
+            <Legenda itens={[{ mk: "def", r: "deu default" }, { mk: "adi", r: "pagou" }, { mk: "esp", r: "contorno: os esperados" }]} />
           </div>
           {sim && (
             <Grafico titulo="Defaults por amostra" sub={`${k} amostra${k > 1 ? "s" : ""}${revelado ? "; curva: binomial" : ""}`} rotulo={`Distribuição dos defaults em ${k} amostras, contra a binomial com PD ${pct(p, 0)}`} arCelular="4 / 3">
@@ -94,10 +98,10 @@ export function S17PdColetiva({ pagina }: { pagina?: Pagina }) {
             </Grafico>
           )}
         </div>
-        <div className={`q7-kpis ${sim ? "q7-kpis--3" : "q7-kpis--2"}`}>
+        <div className={`q7-kpis ${sim && k > 1 ? "q7-kpis--3" : "q7-kpis--2"}`}>
           <Kpi rotulo="Defaults esperados" valor={num(100 * (sim ? p : PERTO_MEDIA), 1)} detalhe="100 × PD" tom="prob" tam="mini" />
           <Kpi rotulo="Observados" valor={String(obs)} detalhe={sim ? `amostra ${k}` : "na janela"} tom="def" tam="mini" />
-          {sim && <Kpi rotulo="Média das amostras" valor={num(mediaAm, 1)} detalhe={`${k} amostra${k > 1 ? "s" : ""}`} tam="mini" />}
+          {sim && k > 1 && <Kpi rotulo="Média das amostras" valor={num(mediaAm, 1)} detalhe={`${k} amostra${k > 1 ? "s" : ""}`} tam="mini" />}
         </div>
       </Painel>
       <Painel>
@@ -106,7 +110,7 @@ export function S17PdColetiva({ pagina }: { pagina?: Pagina }) {
           <Controle rotulo="PD das 100 propostas" valor={p} min={0.02} max={0.3} passo={0.01} onChange={(v) => { setP(v); setK(1); }} mostrar={pct(p, 0)} escala={["2%", "30%"]} />
           <div className="q7-botoes"><Botao prim onClick={() => setK(Math.min(500, k + 1))}>Nova amostra</Botao><Botao onClick={() => setK(Math.min(500, k + 50))} desab={!revelado}>+50 amostras</Botao><Botao sec onClick={() => { setK(1); setP(P0); setEsc(null); }}>Restaurar</Botao></div>
         </>}
-        {sim && <Previsao pergunta={`Em amostras de 100 propostas com PD de ${pct(P0, 0)}, quantos defaults saem?`} opcoes={OPS} escolha={esc} onEscolha={(i) => { setEsc(i); if (i !== null && k < 20) { setP(P0); setK(20); } }} recolher />}
+        {sim && <Previsao pergunta={`Em amostras de 100 propostas com PD de ${pct(P0, 0)}, quantos defaults saem?`} opcoes={OPS} escolha={esc} onEscolha={(i) => { setEsc(i); if (i !== null && OPS[i].certa && k < 20) { setP(P0); setK(20); } }} recolher />}
         {!sim && <p className="q7-p">A PD média do grupo, {pct(PERTO_MEDIA, 1)}, cai dentro do intervalo da frequência observada: o grupo não desmente a PD. A largura desse intervalo é o assunto do slide 21.</p>}
         <Expandir resumo="Definição">
           <Formula f={String.raw`P(Y=1 \mid \mathrm{PD}=p) = p`} simbolos={[["Y", "1 se deu default em 12 meses"], ["p", "a PD atribuída ao grupo"]]} />

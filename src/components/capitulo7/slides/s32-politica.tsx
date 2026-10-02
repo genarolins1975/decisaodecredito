@@ -1,17 +1,20 @@
 "use client";
 import { useMemo, useState } from "react";
-import { Botao, caminho, Controle, Eixos, escala, Grafico, Kpi, Legenda, Painel, Quadro, Seg, margens, type Pagina } from "../base";
-import { D, EAD, N, PG, PGR, PL, Y } from "@/lib/capitulo7/dados";
+import { Botao, caminho, Controle, Eixos, escala, Formula, Grafico, Kpi, Legenda, LinkSlide, Painel, Quadro, Seg, margens, type Pagina } from "../base";
+import { D, EAD, N, PG, PGR, PL, PT, Y } from "@/lib/capitulo7/dados";
 import { ks, melhorCorte } from "@/lib/capitulo7/metricas";
 import { esperado, fmtReais, PARAMETROS, parcelas, realizado, type Parametros } from "@/lib/visuais/economia";
-import { pct } from "@/lib/capitulo7/formato";
+import { num, pct } from "@/lib/capitulo7/formato";
 
 /**
  * 32 · c7p18 · A política sai da PD e das hipóteses econômicas. Para cada corte da grade de 0,5%, o resultado esperado
- * da carteira aprovada, calculado com a PD do modelo pelo motor do capítulo 8 (o corte econômico é escolhido antes, nessa
- * grade), e o resultado realizado na janela, com o desfecho observado (só existe depois). O melhor corte realizado é
- * procurado em todos os limiares distintos de PD (melhorCorte de metricas.ts), não na grade: nesta janela ele cai no
- * corte do KS, por acaso, e a leitura diz isso com os números e mostra o que acontece quando a receita sobe a 40%.
+ * da carteira aprovada, calculado com a PD do modelo pelo motor econômico (src/lib/visuais/economia; o corte econômico é
+ * escolhido antes, nessa grade), e o resultado realizado na janela, com o desfecho observado (só existe depois). O
+ * melhor corte realizado é procurado em todos os limiares distintos de PD (melhorCorte de metricas.ts), não na grade:
+ * nesta janela ele cai no corte do KS, por acaso, e a leitura diz isso com os números e mostra o que acontece quando a
+ * receita sobe a 40%. Rodada 2: a fórmula do resultado esperado com as cinco hipóteses do motor (receita e perda mudam
+ * com os controles), a ponte com o slide 31 (o corte de 14% era dado; aqui sai da conta) e, na fonte, o resultado
+ * esperado pela PD verdadeira nos dois cortes, que mostra que a vantagem do KS é sorte da janela.
  */
 type M = "pl" | "pgr" | "pg";
 const MOD: Record<M, { nome: string; p: readonly number[] }> = {
@@ -23,13 +26,16 @@ const GRADE = Array.from({ length: 80 }, (_, i) => (i + 1) * 0.005);
 const REC_ALTA = 0.4;
 const KS_CORTE = Object.fromEntries((Object.keys(MOD) as M[]).map((k) => [k, ks(Y, MOD[k].p).limiar])) as Record<M, number>;
 function realizadoNo(p: readonly number[], c: number, pr: Parametros) { let s = 0; for (let i = 0; i < N; i++) if (p[i] < c) s += realizado(Y[i], EAD[i], pr); return s; }
+/** Resultado esperado dos aprovados pelo modelo calculado com a PD verdadeira: o que o corte entrega em média, sem a sorte da janela. */
+function verdadeiroNo(p: readonly number[], c: number, pr: Parametros) { let s = 0; for (let i = 0; i < N; i++) if (p[i] < c) s += esperado(PT[i], EAD[i], pr); return s; }
+const dec = (v: number) => num(v, 2).replace(",", "{,}");
 /** Corte econômico (máximo do esperado na grade), o que ele realiza, o do KS e o melhor corte visto depois, em todos os limiares. */
 function cenario(p: readonly number[], pr: Parametros, cKs: number) {
   const esp = GRADE.map((c) => ({ c, esp: parcelas(p as number[], EAD as number[], c, pr).total }));
   const otE = esp.reduce((a, b) => (b.esp > a.esp ? b : a));
   const otR = melhorCorte(p, Y.map((y, i) => realizado(y, EAD[i], pr)));
   let regra = 0, nRegra = 0; for (let i = 0; i < N; i++) { const e = esperado(p[i], EAD[i], pr); if (e > 0) { regra += e; nRegra++; } }
-  return { esp, otE, realE: realizadoNo(p, otE.c, pr), realKs: realizadoNo(p, cKs, pr), otR, regra, nRegra };
+  return { esp, otE, realE: realizadoNo(p, otE.c, pr), realKs: realizadoNo(p, cKs, pr), verE: verdadeiroNo(p, otE.c, pr), verKs: verdadeiroNo(p, cKs, pr), otR, regra, nRegra };
 }
 
 export function S32Politica({ pagina }: { pagina?: Pagina }) {
@@ -47,8 +53,8 @@ export function S32Politica({ pagina }: { pagina?: Pagina }) {
   const ksGanha = realKs > realE;
   return (
     <Quadro slug="c7p18" pagina={pagina} layout="gl"
-      conclusao={<>{MOD[m].nome}{padrao ? ", hipóteses do capítulo 8" : `, perda ${pct(lgd, 0)} e receita ${pct(rec, 0)}`}: o corte econômico, escolhido antes, é <b>{pct(otE.c, 1)}</b> e realiza {fmtReais(realE)}; o KS ({pct(cKs, 1)}) realiza {fmtReais(realKs)}{ksGanha ? <>, <b>mais, por acaso</b>: ele não olha perda nem receita.</> : <>, menos: ele não se moveu com as hipóteses.</>}{ksGanha && alta ? <> Suba a receita para {pct(REC_ALTA, 0)}: o corte econômico vai a {pct(alta.otE.c, 1)} e realiza {fmtReais(alta.realE)}; o KS, parado, {fmtReais(alta.realKs)}.</> : <> O melhor corte visto depois ({pct(otR.corte, 1)}) não existia na hora de decidir.</>}</>}
-      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. Aprova quando PD < corte; corte econômico na grade de 0,5%; melhor corte realizado em todos os limiares. O corte único simplifica a regra por proposta (resultado esperado positivo: ${fmtReais(cen.regra)}, ${cen.nRegra} aprovados): com custo fixo de R$ ${PARAMETROS.operacao}, o equilíbrio depende da exposição. Motor do capítulo 8; realizado ruidoso, com ${D} defaults.`}>
+      conclusao={<>No <LinkSlide slug="c7p37">slide 31</LinkSlide>, o corte era dado; aqui sai da conta ao lado. {MOD[m].nome}{padrao ? "" : `, perda ${pct(lgd, 0)} e receita ${pct(rec, 0)}`}: o corte econômico, escolhido antes, é <b>{pct(otE.c, 1)}</b> e realiza {fmtReais(realE)}; o KS ({pct(cKs, 1)}) realiza {fmtReais(realKs)}{ksGanha ? <>, <b>mais, por acaso</b>: não olha perda nem receita.</> : <>, menos: não se moveu com as hipóteses.</>}{ksGanha && alta ? <> Suba a receita para {pct(REC_ALTA, 0)}: o econômico vai a {pct(alta.otE.c, 1)} e realiza {fmtReais(alta.realE)}; o KS, parado, {fmtReais(alta.realKs)}.</> : <> O melhor corte visto depois ({pct(otR.corte, 1)}) não existia na hora de decidir.</>}</>}
+      fonte={`Janela fora do tempo: ${N} propostas, ${D} defaults. Aprova quando PD < corte; corte econômico na grade de 0,5%, melhor realizado em todos os limiares; funding, custo e capital fixos. Realizado ruidoso: com a PD verdadeira, os aprovados valem ${fmtReais(cen.verE) === fmtReais(cen.verKs) ? `${fmtReais(cen.verE)} nos dois cortes` : `${fmtReais(cen.verE)} no corte econômico e ${fmtReais(cen.verKs)} no KS`}.`}>
       <Painel titulo="Resultado da carteira aprovada, por corte">
         <Grafico rotulo={`Resultado esperado e realizado por corte; ótimo esperado em ${pct(otE.c, 1)}, KS em ${pct(cKs, 2)}, melhor realizado em ${pct(otR.corte, 2)}`} arCelular="4 / 3">
           {(d) => {
@@ -77,13 +83,17 @@ export function S32Politica({ pagina }: { pagina?: Pagina }) {
       </Painel>
       <Painel>
         <div className="q7-linha-ctl"><Seg rotulo="Modelo" opcoes={(Object.keys(MOD) as M[]).map((k) => ({ v: k, r: k === "pl" ? "Logística" : k === "pgr" ? "Boosting" : "Com Platt" }))} valor={m} onChange={setM} cor /><Botao sec onClick={() => { setM("pl"); setLgd(PARAMETROS.lgd); setRec(PARAMETROS.receita); }}>Restaurar</Botao></div>
-        <Controle rotulo="Perda no default (fração da exposição)" valor={lgd} min={0.3} max={0.9} passo={0.05} onChange={setLgd} mostrar={pct(lgd, 0)} />
-        <Controle rotulo="Receita se pagar (fração da exposição)" valor={rec} min={0.15} max={0.4} passo={0.01} onChange={setRec} mostrar={pct(rec, 0)} />
+        <Controle rotulo="Perda no default (fração da exposição Xᵢ)" valor={lgd} min={0.3} max={0.9} passo={0.05} onChange={setLgd} mostrar={pct(lgd, 0)} />
+        <Controle rotulo="Receita se pagar (fração de Xᵢ)" valor={rec} min={0.15} max={0.4} passo={0.01} onChange={setRec} mostrar={pct(rec, 0)} />
+        <div className="q7-s32-f q7-s32-f--larga">
+          <Formula compacta f={String.raw`\begin{aligned}E(c)=\!\!\sum_{\mathrm{PD}_i<c}\!\Big[&\underbrace{${dec(rec)}\,X_i(1-\mathrm{PD}_i)}_{\text{receita}}-\underbrace{${dec(lgd)}\,X_i\,\mathrm{PD}_i}_{\text{perda}}\\&-\underbrace{${dec(PARAMETROS.funding)}\,X_i}_{\text{funding}}-\underbrace{${PARAMETROS.operacao}}_{\text{custo, R\$}}-\underbrace{${dec(PARAMETROS.capital)}\,X_i}_{\text{capital}}\Big]\end{aligned}`} />
+        </div>
+        <div className="q7-s32-f q7-s32-f--estreita">
+          <Formula compacta f={String.raw`\begin{aligned}E(c)=\!\!\sum_{\mathrm{PD}_i<c}\!\Big[&\underbrace{${dec(rec)}\,X_i(1-\mathrm{PD}_i)}_{\text{receita}}\\&-\underbrace{${dec(lgd)}\,X_i\,\mathrm{PD}_i}_{\text{perda}}-\underbrace{${dec(PARAMETROS.funding)}\,X_i}_{\text{funding}}\\&-\underbrace{${PARAMETROS.operacao}}_{\text{custo, R\$}}-\underbrace{${dec(PARAMETROS.capital)}\,X_i}_{\text{capital}}\Big]\end{aligned}`} />
+        </div>
         <div className="q7-kpis q7-kpis--2">
           <Kpi rotulo="Corte econômico" valor={pct(otE.c, 1)} detalhe={`realiza ${fmtReais(realE)}`} tom="dec" tam="mini" />
           <Kpi rotulo="Corte do KS" valor={pct(cKs, 1)} detalhe={`realiza ${fmtReais(realKs)}`} tam="mini" />
-          <Kpi rotulo="Prometido pela PD" valor={fmtReais(otE.esp)} detalhe="no corte econômico" tom="prob" tam="mini" />
-          <Kpi rotulo="Melhor corte, visto depois" valor={pct(otR.corte, 1)} detalhe={`${fmtReais(otR.total)}, só depois`} tam="mini" />
         </div>
       </Painel>
     </Quadro>

@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import { Botao, Kpi, Legenda, Painel, Previsao, Quadro, type Opcao, type Pagina } from "../base";
-import { MINI } from "@/lib/capitulo7/dados";
+import { MINI, QUATRO } from "@/lib/capitulo7/dados";
+import { SLIDE } from "@/lib/capitulo7/roteiro";
 import { int, num, pct } from "@/lib/capitulo7/formato";
 
 /**
@@ -33,7 +34,7 @@ function FilaS05({ itens, ordenada, rev }: { itens: Item[]; ordenada: boolean; r
           const vis = k < rev;
           return (
             <li key={it.id} className="q7-fila-li" data-topo={ordenada && k < NDEF ? "1" : undefined}>
-              <span className="q7-ficha" data-y={vis ? String(it.y) : "?"} aria-label={`${ordenada ? `Posição ${k + 1}, ` : ""}proposta ${it.id}, PD ${pct(it.pd, 0)}${vis ? (it.y ? ", deu default" : ", pagou") : ", desfecho oculto"}`}>
+              <span className="q7-ficha" data-y={vis ? String(it.y) : "?"} data-quatro={QUATRO.some((c) => c.id === it.id) ? "1" : undefined} aria-label={`${ordenada ? `Posição ${k + 1}, ` : ""}proposta ${it.id}, PD ${pct(it.pd, 0)}${vis ? (it.y ? ", deu default" : ", pagou") : ", desfecho oculto"}`}>
                 <span className="q7-ficha-pos" aria-hidden="true">{ordenada ? `${k + 1}º` : " "}</span>
                 <span className="q7-ficha-pd">{pct(it.pd, 0)}</span>
                 <span className="q7-ficha-mk" aria-hidden="true">{vis ? (it.y ? "D" : "") : "?"}</span>
@@ -66,8 +67,8 @@ export function S05Fila({ pagina }: { pagina?: Pagina }) {
         : esc === null ? `Antes de revelar: quantos dos ${NDEF} defaults estarão nas ${NDEF} primeiras posições?`
         : rev === 0 ? "Revele os desfechos de cima para baixo, uma posição por vez."
         : rev < itens.length ? `Revele de cima para baixo: ${vistos} default${vistos === 1 ? "" : "s"} em ${rev} posições até aqui.`
-        : <>Nas {NDEF} primeiras posições há <b>{TOPO} dos {NDEF}</b> defaults; a fila perfeita teria {NDEF} e uma ordem ao acaso, {num(ACASO, 2)} em média. A discriminação está na <b>relação entre a ordem e os desfechos</b>.</>}
-      fonte={`Mini-base: ${int(MINI.length)} propostas da janela fora do tempo, ${NDEF} defaults, sorteadas com semente 3; PD da logística em pontos inteiros. Denominadores próprios: não somar com os da janela (737).`}>
+        : <>Nas {NDEF} primeiras há <b>{TOPO} dos {NDEF}</b> defaults (perfeita: {NDEF}; acaso: {num(ACASO, 2)}): <b>discriminar é a ordem acompanhar os desfechos</b>. Os quatro clientes do slide {SLIDE.c7p3.n} estão nesta fila, sublinhados; no {SLIDE.c7p5.n}, cada par default × adimplente vira disputa.</>}
+      fonte={`Mini-base: ${int(MINI.length)} propostas da janela fora do tempo, ${NDEF} defaults, sorteadas com semente 3; PD da logística em pontos inteiros; empates na PD seguem o número da proposta. Denominadores próprios: não somar com os da janela (737).`}>
       <Painel titulo={ordenada ? "Do maior risco estimado para o menor →" : "Na ordem em que as propostas chegaram"} className="q7-s05-p">
         <FilaS05 itens={itens} ordenada={ordenada} rev={rev} />
         <Legenda itens={[{ mk: "def", r: "deu default em 12 meses" }, { mk: "adi", r: "pagou" }, { mk: "", r: "? desfecho oculto" }]} />

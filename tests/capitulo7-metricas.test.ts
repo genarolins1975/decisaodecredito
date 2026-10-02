@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import ref from "./fixtures/capitulo7-referencia.json";
 import * as M from "@/lib/capitulo7/metricas";
 import { CAL, EAD, MINI_PD, MINI_Y, PG, PGR, PL, PT, Y, CENARIOS, D, N } from "@/lib/capitulo7/dados";
-import { aucEsperada, aucsEmJanelasNovas, janelasNovas, vantagemEmJanelasNovas } from "@/lib/capitulo7/janelas";
+import { aucEsperada, aucsEmJanelasNovas, calibradores, janelasNovas, llEmJanelasNovas, vantagemEmJanelasNovas, vitorias, type IdCalibrador } from "@/lib/capitulo7/janelas";
 
 /**
  * O núcleo numérico do capítulo 7 contra uma referência independente: scikit-learn, statsmodels e SciPy, rodados por
@@ -118,6 +118,34 @@ describe("capítulo 7: funções da revisão (erro padrão do slope, Platt suavi
     const j = ref.janelasNovas; expect(janelasNovas()).toHaveLength(j.n);
     for (const [k, pd] of [["pl", PL], ["pgr", PGR], ["pg", PG]] as const) { perto(aucEsperada(pd), j.media[k], 1e-12); aucsEmJanelasNovas(pd).slice(0, 5).forEach((v, i) => perto(v, j.primeiras[k][i], 1e-12)); }
     const v = vantagemEmJanelasNovas(); expect(v.acima).toBe(j.acima); perto(v.vantagem, j.media.pl - j.media.pgr, 1e-12);
+  });
+});
+
+describe("capítulo 7: perdas esperadas dos calibradores pela PD verdadeira (rodada 2)", () => {
+  for (const nome of ["pl", "pgr"] as const) {
+    const r = ref.calibradores[nome];
+    it(`${nome}: perda esperada e perda na janela de cada calibrador iguais a log_loss e brier_score_loss com pesos`, () => {
+      const c = calibradores(nome);
+      for (const [k, e] of Object.entries(r.esperada)) {
+        const x = c[k as IdCalibrador]!; perto(x.esperada.logLoss, e.logloss, 1e-9); perto(x.esperada.brier, e.brier, 1e-12);
+        const j = r.janela[k as keyof typeof r.janela]; perto(x.janela.logLoss, j.logloss, 1e-9); perto(x.janela.brier, j.brier, 1e-12);
+        llEmJanelasNovas(nome, k as IdCalibrador).slice(0, 5).forEach((v, i) => perto(v, r.llJanelasPrimeiras[k as keyof typeof r.llJanelasPrimeiras][i], 1e-9));
+      }
+    });
+    it(`${nome}: vitórias em janelas novas iguais às contadas com o scikit-learn`, () => {
+      expect(vitorias(nome, "platt", "sem")).toBe(r.vitorias.platt_sem); expect(vitorias(nome, "platt", "intercepto")).toBe(r.vitorias.platt_intercepto); expect(vitorias(nome, "intercepto", "sem")).toBe(r.vitorias.intercepto_sem);
+    });
+  }
+  it("a ordem esperada desmente a janela: na logística, Platt < intercepto < sem calibrar em expectativa, e o Platt perde na janela", () => {
+    const c = calibradores("pl"); expect(c.platt!.esperada.logLoss).toBeLessThan(c.intercepto!.esperada.logLoss); expect(c.intercepto!.esperada.logLoss).toBeLessThan(c.sem!.esperada.logLoss);
+    expect(c.platt!.janela.logLoss).toBeGreaterThan(c.sem!.janela.logLoss);
+  });
+  it("perda esperada: casos à mão e limite da média em janelas", () => {
+    const e = M.perdaEsperada([0.5, 0.1], [0.5, 0.1]); perto(e.brier, (0.25 + 0.09) / 2, 1e-15); perto(e.logLoss, (Math.log(2) - (0.1 * Math.log(0.1) + 0.9 * Math.log(0.9))) / 2, 1e-15);
+    expect(M.perdaEsperada([1], [1]).logLoss).toBeCloseTo(0, 12); perto(M.perdaEsperada([0], [1]).logLoss, -Math.log(M.EPS_LOG), 1e-9);
+  });
+  it("eventos por bloco: dez blocos de 300 da calibração iguais ao reshape do NumPy; o último bloco pode ser menor", () => {
+    expect(M.eventosPorBloco(CAL.y, 300)).toEqual(ref.blocosCalibracao); expect(M.eventosPorBloco([1, 0, 1, 1, 1], 2)).toEqual([1, 2, 1]);
   });
 });
 
