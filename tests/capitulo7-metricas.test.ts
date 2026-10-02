@@ -232,3 +232,43 @@ describe("capítulo 7: Brier de uma PD constante (slide 23)", () => {
   });
   it("conta à mão: π = 0,1 e c = 0,2 dá 0,09 + 0,01", () => perto(M.brierConstante(0.2, 0.1), 0.1, 1e-15));
 });
+
+describe("capítulo 7: âncora do nível pela PD verdadeira e regra de controle do monitoramento (slides 27, 36 e 37)", () => {
+  it("O/E pela PD verdadeira: as duas âncoras erram em lados opostos, por cerca de 1 ponto", () => {
+    const pt = PT.reduce((a, b) => a + b, 0) / PT.length;
+    perto(ANCORA.ptJanela, pt, 1e-15);
+    perto(ANCORA.soValidacao.oeVerd, pt / ANCORA.soValidacao.pdMedia, 1e-15);
+    perto(ANCORA.variasSafras.oeVerd, pt / ANCORA.variasSafras.pdMedia, 1e-15);
+    expect(ANCORA.soValidacao.oeVerd).toBeLessThan(1); expect(ANCORA.variasSafras.oeVerd).toBeGreaterThan(1);
+    const erro = (p: number) => Math.abs(p - pt);
+    expect(erro(ANCORA.soValidacao.pdMedia)).toBeGreaterThan(0.009); expect(erro(ANCORA.soValidacao.pdMedia)).toBeLessThan(0.014);
+    expect(erro(ANCORA.variasSafras.pdMedia)).toBeGreaterThan(0.009); expect(erro(ANCORA.variasSafras.pdMedia)).toBeLessThan(0.014);
+    // sem recalibrar, a = 0: a mesma PD média da logística
+    perto(ANCORA.sem.pdMedia, PL.reduce((a, b) => a + b, 0) / PL.length, 1e-12);
+  });
+  it("no treino a PD média iguala a taxa por construção, e o treino pesa 2.103 de 2.863 na âncora", () => {
+    expect(Math.abs(ANCORA.treino.taxa - ANCORA.treino.pdMedia)).toBeLessThan(1e-4);
+    perto(ANCORA.pesoTreino, 2103 / 2863, 1e-15);
+  });
+  it("Jeffreys não rejeita nenhuma das âncoras na janela, nas duas caudas, a 5%", () => {
+    for (const a of [ANCORA.soValidacao, ANCORA.variasSafras]) expect(M.rejeicaoJeffreys(D, N, a.pdMedia)).toBe(0);
+    // a âncora da validação fica perto da cauda de superestimação: 1 − p entre 5% e 7%
+    const q = 1 - M.jeffreys(D, N, ANCORA.soValidacao.pdMedia); expect(q).toBeGreaterThan(0.05); expect(q).toBeLessThan(0.07);
+  });
+  it("sentido da rejeição: +1 subestima, −1 superestima, 0 não rejeita; confere com a cauda da Beta", () => {
+    expect(M.rejeicaoJeffreys(100, 760, 0.09723)).toBe(1);
+    expect(M.rejeicaoJeffreys(81, 737, 0.09721)).toBe(0);
+    expect(M.rejeicaoJeffreys(5, 200, 0.08)).toBe(-1);
+    expect(M.jeffreys(5, 200, 0.08)).toBeGreaterThan(0.95);
+  });
+  it("gatilho: duas rejeições seguidas no mesmo sentido; sentidos opostos ou um zero não disparam", () => {
+    expect(M.gatilhoSeguidas([1, 1])).toBe(true); expect(M.gatilhoSeguidas([0, -1, -1])).toBe(true);
+    expect(M.gatilhoSeguidas([1, 0])).toBe(false); expect(M.gatilhoSeguidas([1, -1])).toBe(false); expect(M.gatilhoSeguidas([0, 0])).toBe(false); expect(M.gatilhoSeguidas([1])).toBe(false);
+  });
+  it("falso alarme de duas rejeições seguidas a 5%: 0,25%, igual à simulação com safras independentes", () => {
+    perto(M.falsoAlarmeSeguidas(0.05, 2), 0.0025, 1e-15);
+    const r = M.mulberry32(20261002); let n = 0; const T = 400000;
+    for (let i = 0; i < T; i++) if (r() < 0.05 && r() < 0.05) n++;
+    expect(Math.abs(n / T - 0.0025)).toBeLessThan(0.0004);
+  });
+});

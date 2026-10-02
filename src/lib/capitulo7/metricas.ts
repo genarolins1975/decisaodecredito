@@ -489,6 +489,29 @@ export function betaRegularizada(x: number, a: number, b: number): number {
  * Beta(d + ½, n − d + ½) no ponto PD. H0: a PD não subestima a taxa verdadeira; p-valor pequeno indica subestimação.
  */
 export const jeffreys = (d: number, n: number, pd: number) => betaRegularizada(pd, d + 0.5, n - d + 0.5);
+/**
+ * Sentido em que o teste de Jeffreys rejeita a PD média numa safra, ao nível unilateral α: +1 quando a PD subestima
+ * (p < α), −1 quando superestima (1 − p < α, a cauda oposta), 0 quando não rejeita.
+ */
+export function rejeicaoJeffreys(d: number, n: number, pd: number, alfa = 0.05): -1 | 0 | 1 {
+  const p = jeffreys(d, n, pd);
+  return p < alfa ? 1 : 1 - p < alfa ? -1 : 0;
+}
+/**
+ * Regra de controle do monitoramento por safra (slides 36 e 37): recalibrar o intercepto só quando as k últimas safras
+ * rejeitam no mesmo sentido, para não recalibrar por ruído. Recebe os sentidos em ordem de safra (rejeicaoJeffreys).
+ */
+export function gatilhoSeguidas(sentidos: readonly number[], k = 2): boolean {
+  if (sentidos.length < k) return false;
+  const u = sentidos.slice(-k);
+  return u[0] !== 0 && u.every((s) => s === u[0]);
+}
+/**
+ * Probabilidade de o gatilho disparar por acaso com o modelo certo: cada safra rejeita num sentido com probabilidade
+ * α (nível do teste unilateral) e, com safras independentes, k rejeições seguidas nesse sentido têm probabilidade αᵏ.
+ * Com α = 5% e k = 2, 0,25%. É o nível nominal: com d discreto, o tamanho exato do teste numa safra fica perto de α.
+ */
+export const falsoAlarmeSeguidas = (alfa: number, k: number) => alfa ** k;
 /** Diferença entre duas proporções independentes com erro padrão próprio (teste de Wald da diferença). */
 export function diferencaProporcoes(d1: number, n1: number, d2: number, n2: number) {
   const p1 = d1 / n1, p2 = d2 / n2, ep = Math.sqrt((p1 * (1 - p1)) / n1 + (p2 * (1 - p2)) / n2), dif = p1 - p2;

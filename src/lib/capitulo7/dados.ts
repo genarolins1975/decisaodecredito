@@ -96,18 +96,27 @@ export const PL_4CASAS = arredondar(PL, 4);
  * (safras 2022-01 a 2023-02), validação (2023-03 a 2023-07) e janela (2023-08 a 2023-12). Treino e validação só
  * existem agregados em RES (n, taxa observada, PD média da logística), sem PD por proposta, então o intercepto é a
  * diferença de logits das médias (interceptoDasMedias), aproximação declarada na tela. Cada intercepto é somado ao log
- * odds das PDs da janela, e a PD média resultante se compara com a taxa da janela (O/E = observado ÷ esperado).
+ * odds das PDs da janela, e a PD média resultante se compara com a taxa da janela (O/E = observado ÷ esperado) e com a
+ * PD verdadeira média da janela (oeVerd = PD verdadeira média ÷ esperado), que só a base sintética tem: com 81
+ * defaults, a taxa observada é ruidosa, e a PD verdadeira mostra quanto cada âncora erra de fato. No treino, a PD
+ * média da logística iguala a taxa por construção (o modelo foi estimado ali, com intercepto); juntar o treino dilui a
+ * correção da validação, com o peso pesoTreino.
  */
 const taxaJanela = Y.reduce((a, b) => a + b, 0) / Y.length;
-function aplicar(a: number) { const pdMedia = media(transformar(PL, a, 1))!; return { a, pdMedia, oe: taxaJanela / pdMedia }; }
+const ptJanela = media(PT)!;
+function aplicar(a: number) { const pdMedia = media(transformar(PL, a, 1))!; return { a, pdMedia, oe: taxaJanela / pdMedia, oeVerd: ptJanela / pdMedia }; }
 const SAFRA_TREINO = { n: base.meta.nTreino, taxa: base.res.logit_treino.obs, pdMedia: base.res.logit_treino.pd_media };
 const SAFRA_VAL = { n: base.meta.nVal, taxa: base.res.logit_val.obs, pdMedia: base.res.logit_val.pd_media };
 const JUNTAS = juntarAmostras([SAFRA_TREINO, SAFRA_VAL]);
 export const ANCORA = {
   taxaJanela,
+  /** PD verdadeira média da janela: só existe porque a base é sintética */
+  ptJanela,
   treino: { ...SAFRA_TREINO, defaults: Math.round(SAFRA_TREINO.n * SAFRA_TREINO.taxa) },
   validacao: { ...SAFRA_VAL, defaults: Math.round(SAFRA_VAL.n * SAFRA_VAL.taxa) },
-  sem: { pdMedia: media(PL)!, oe: taxaJanela / media(PL)! },
+  sem: aplicar(0),
+  /** peso do treino na âncora de várias safras (n do treino ÷ n de treino e validação) */
+  pesoTreino: SAFRA_TREINO.n / JUNTAS.n,
   /** intercepto ajustado só na validação, a safra maturada mais recente antes da janela */
   soValidacao: aplicar(interceptoDasMedias(SAFRA_VAL.taxa, SAFRA_VAL.pdMedia)),
   /** treino e validação juntos: várias safras maturadas */

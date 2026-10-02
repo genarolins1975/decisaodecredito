@@ -29,6 +29,8 @@
 .q7-s31-lbl { paint-order: stroke; stroke: #fff; stroke-width: .3em; stroke-linejoin: round; }
 /* rodada 2 · 27: tabela de perdas na janela e esperadas */
 .q7 .q7-slide .q7-s27-t tbody th { font-size: 1.15cqw; }
+/* rodada 5 · 27: cabeçalhos podem quebrar linha; a tabela nunca passa da largura do painel */
+.q7 .q7-slide .q7-s27-t thead th { white-space: normal; vertical-align: bottom; line-height: 1.15; }
 /* rodada 2 · 32: fórmula do resultado esperado em duas linhas no palco e em três no celular */
 .q7-s32-f--estreita { display: none; }
 @container q7 (max-width: 820px) { .q7-s32-f--larga { display: none; } .q7-s32-f--estreita { display: block; } }
