@@ -100,7 +100,7 @@ export function S15QuandoParar({ pagina }: { pagina?: Pagina }) {
       </Painel>
       <Painel>
         <div className="q7-kpis q7-kpis--3">
-          <Kpi rotulo="Perda" valor={revelado ? num(c.pv[m], 4) : "·"} detalhe={revelado && m !== imin ? `validação, +${num(c.pv[m] - vmin, 4)}` : "validação"} tom="val" tam="mini" />
+          <Kpi rotulo="Perda" valor={revelado ? num(c.pv[m], 4) : "·"} detalhe="validação" tom="val" tam="mini" />
           <Kpi rotulo="AUC" valor={num(c.aa[m], 3)} detalhe="ajuste" tam="mini" />
           <Kpi rotulo="AUC" valor={revelado ? num(c.av[m], 3) : "·"} detalhe="validação" tom="val" tam="mini" />
         </div>

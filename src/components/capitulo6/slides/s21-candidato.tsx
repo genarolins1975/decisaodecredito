@@ -278,10 +278,13 @@ export function S21Candidato({ pagina }: { pagina?: Pagina }) {
     <Quadro slug="c6p21" pagina={pagina} layout="gl"
       conclusao={!revelado
         ? <>Qual célula valida melhor? Escolha e envie (tentativa {Math.min(tent + (enviado ? 0 : 1), TENTATIVAS)} de {TENTATIVAS}).</>
-        : <>O excesso de <b>{num(EXCESSO, 3)}</b> do <LinkSlide slug="c6p1">slide 1</LinkSlide> era otimismo do treino: na validação temporal os dois empatam (<b>{num(RES.gbm_val.auc, 4)}</b> contra {num(RES.logit_val.auc, 4)}) e erram a mesma safra (<b>{pct(RES.gbm_val.pd_media, 2)}</b> e {pct(RES.logit_val.pd_media, 2)} contra {pct(TAXA.p, 2)}). <b>Mecanismo:</b> F₀ = {num(F0, 2)} mais {HP.max_iter} árvores × {num(HP.learning_rate, 2)}. <b>Probabilidade:</b> em log odds, sigmoide no fim; recalibrar; cada PD se explica por contribuições quando houver as árvores (<LinkSlide slug="c6p19">slide 19</LinkSlide>). <b>Controle:</b> {BEST.max_iter} × {BEST.max_leaf_nodes}{NA_BORDA ? ", na borda" : ""}. <b>Prova:</b> só troca a logística se ganhar na janela futura (<LinkSlide slug="c7p1">capítulo 7</LinkSlide>).</>}
+        : <>O excesso de <b>{num(EXCESSO, 3)}</b> do <LinkSlide slug="c6p1">slide 1</LinkSlide> era otimismo do treino: na validação temporal os dois empatam (<b>{num(RES.gbm_val.auc, 4)}</b> contra {num(RES.logit_val.auc, 4)}) e erram a mesma safra (<b>{pct(RES.gbm_val.pd_media, 2)}</b> e {pct(RES.logit_val.pd_media, 2)} contra {pct(TAXA.p, 2)}). <b>Mecanismo:</b> F₀ = {num(F0, 2)} mais {HP.max_iter} × {num(HP.learning_rate, 2)} por folha. <b>Probabilidade:</b> em log odds, sigmoide no fim; cada PD se explica por contribuições quando as árvores estiverem disponíveis (<LinkSlide slug="c6p19">slide 19</LinkSlide>). <b>Controle:</b> {BEST.max_iter} × {BEST.max_leaf_nodes}. <b>Prova:</b> a janela futura decide (<LinkSlide slug="c7p1">capítulo 7</LinkSlide>).</>}
       fonte={`Base sintética (semente ${META.seed}). Candidato: ajustado nas ${int(META.n_treino)} propostas do treino (${periodo(META.treino)}) com ${VARS}; ${HP.max_iter} árvores de até ${HP.max_leaf_nodes} folhas, taxa ${num(HP.learning_rate, 2)}, mínimo ${HP.min_samples_leaf} por folha, L2 = ${num(HP.l2_regularization, 0)}. Validação temporal: ${int(NV)} propostas, ${DV} defaults, ${periodo(META.validacao)} (não o sorteio dos slides 11 a 20). Wilson; Hanley e McNeil (1982).`}>
       <Painel>
         <div className="q6-s21-cab">
+          <p className="q6-s21-sint">
+            <b>Base sintética:</b> dá a PD verdadeira da janela futura, intocada até o capítulo 7, que usa as duas: nenhuma carteira real dá isso. Sem as previsões do candidato nas {int(NV)}, o DeLong pareado fica com o validador.
+          </p>
           <Seg rotulo="O que a lista do validador mostra" opcoes={[{ v: "tem" as Modo, r: "Evidência" }, { v: "pede" as Modo, r: "O que pedir" }]} valor={modo} onChange={setModo} cor />
         </div>
         <ol className="q6-s21-lista">
@@ -320,9 +323,6 @@ export function S21Candidato({ pagina }: { pagina?: Pagina }) {
           <Botao sec onClick={restaurar}>Restaurar</Botao>
         </div>
         {retorno && <p className="q7-retorno" data-tom={certo ? "certa" : aceito ? undefined : "errada"} aria-live="polite">{retorno}</p>}
-        <p className="q6-s21-sint">
-          <b>Base sintética:</b> dá a PD verdadeira da janela futura, intocada até o capítulo 7, que usa as duas: nenhuma carteira real dá isso. Sem as previsões do candidato nas {int(NV)}, o DeLong pareado fica com o validador.
-        </p>
       </Painel>
     </Quadro>
   );
