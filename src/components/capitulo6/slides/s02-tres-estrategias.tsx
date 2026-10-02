@@ -120,7 +120,7 @@ export function S02TresEstrategias({ pagina }: { pagina?: Pagina }) {
             <div><dt>● Corrigir {num(L_COR[1], 3)}</dt><dd>mesmos grupos, mas o passo de Newton (<LinkSlide slug="c6p6">slide {SLIDE.c6p6.n}</LinkSlide>) a partir de {pct(P0, 0)} leva a folha pura a {pct(COR1_ETA1, 1)}, não a {pct(0, 0)}, e só η = {num(CFG_DIDATICA.eta, 1)} dele entra: PDs de {pct(COR1[0], 0)} e {pct(COR1[1], 0)}. Com η = 1, {num(L_COR1_ETA1, 3)}.</dd></div>
             <div><dt>■ Votar, sem limite</dt><dd>{ids(ERRADAS1)}, adimplentes, ficaram fora da primeira amostra e caíram numa folha só de defaults: PD {pct(1, 0)}.</dd></div>
           </dl>
-          <p className="q6-s02-fecho">Escolher vence com uma árvore porque usa todos os dados e vai a {pct(0, 0)} e {pct(1, 0)} nas folhas puras; votar e corrigir pagam na primeira para ganhar com muitas.</p>
+          <p className="q6-s02-fecho">Escolher vence com uma árvore porque usa todos os dados e vai a {pct(0, 0)} e {pct(1, 0)} nas folhas puras; votar e corrigir pagam na primeira árvore: no treino, corrigir passa escolher com mais árvores; votar fica acima, porque o ganho dele é fora da amostra.</p>
         </Expandir>
         </div>
         <div className="q7-botoes"><Botao sec onClick={() => { setEsc(null); setK(KMAX); setNExp((n) => n + 1); }}>Restaurar</Botao></div>
