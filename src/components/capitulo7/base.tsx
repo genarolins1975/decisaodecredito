@@ -112,7 +112,7 @@ export function Previsao({ pergunta, opcoes, escolha, onEscolha, rotulo = "Antes
   const so = recolher && escolha !== null;
   return (
     <div className="q7-prev">
-      <p className="q7-k">{so ? "Sua previsão" : rotulo}</p>
+      <p className="q7-k">{so && rotulo === "Antes de revelar" ? "Sua previsão" : rotulo}</p>
       {!so && <p className="q7-prev-q">{pergunta}</p>}
       <div className="q7-prev-ops" role="group" aria-label="Alternativas">
         {opcoes.map((op, i) => {

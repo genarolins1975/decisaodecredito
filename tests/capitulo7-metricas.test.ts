@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import ref from "./fixtures/capitulo7-referencia.json";
 import * as M from "@/lib/capitulo7/metricas";
-import { ANCORA, CAL, EAD, MINI_PD, MINI_Y, PG, PGR, PL, PT, Y, CENARIOS, D, N, PREVALENCIA, MESES_TOTAL, SAFRA_MEDIA, MONITOR, monitoramento } from "@/lib/capitulo7/dados";
+import { ANCORA, CAL, EAD, MINI_PD, MINI_Y, PG, PGR, PL, PT, Y, CENARIOS, D, N, PREVALENCIA, MESES_TOTAL, SAFRA_MEDIA, MONITOR, monitoramento, PRODUCAO, REPLICAS_ANCORA, ancoraEmReplicas } from "@/lib/capitulo7/dados";
+import { esperado, parcelas } from "@/lib/visuais/economia";
 import { aucEsperada, aucsEmJanelasNovas, calibradores, janelasNovas, llEmJanelasNovas, vantagemEmJanelasNovas, vitorias, type IdCalibrador } from "@/lib/capitulo7/janelas";
 
 /**
@@ -331,6 +332,67 @@ describe("capítulo 7: nível de produção nas safras recentes e monitoramento 
     expect(r.poderSafra - r.falsoSafra).toBeLessThan(0.03);
     expect(r.poderAcumulado).toBeGreaterThan(r.poderSafra);
     expect(monitoramento()).toBe(r);
+  });
+});
+
+describe("capítulo 7: sorte da janela na âncora, só a janela e corte refeito com a PD de produção (slides 2, 27, 36, 37 e 38)", () => {
+  const VAL = { n: 760, taxa: 0.13158, pdMedia: 0.09723 };
+  it("nivelEmReplicas: igual a refazer o intercepto em cada réplica, sem o cache por contagem; mesma semente, mesmo resultado", () => {
+    const r = M.nivelEmReplicas(PT, PL, [VAL], 40, 123);
+    const u = M.mulberry32(123);
+    for (let b = 0; b < 40; b++) {
+      const y: number[] = PT.map((p) => (u() < p ? 1 : 0));
+      expect(r.defaults[b]).toBe(y.reduce((a, c) => a + c, 0));
+      perto(r.pdMedias[b], M.media(M.transformar(PL, M.interceptoComAgregadas(y, PL, [VAL]), 1))!, 1e-12);
+    }
+    expect(M.nivelEmReplicas(PT, PL, [VAL], 40, 123).pdMedias).toEqual(r.pdMedias);
+    const o = r.pdMedias.slice().sort((a, b) => a - b);
+    perto(r.lo, M.quantil(o, 0.025), 1e-15); perto(r.hi, M.quantil(o, 0.975), 1e-15);
+  });
+  it("réplicas da âncora de validação e janela: a média dos defaults sorteados fica perto de Σ PD verdadeira; a âncora observada cabe na faixa", () => {
+    const r = ancoraEmReplicas();
+    expect(r.pdMedias).toHaveLength(REPLICAS_ANCORA.replicas);
+    const esp = PT.reduce((a, b) => a + b, 0), dm = r.defaults.reduce((a, b) => a + b, 0) / r.defaults.length;
+    const ep = Math.sqrt(PT.reduce((a, p) => a + p * (1 - p), 0) / r.defaults.length);
+    expect(Math.abs(dm - esp)).toBeLessThan(4 * ep);
+    expect(r.lo).toBeLessThan(ANCORA.recentes.pdMedia); expect(r.hi).toBeGreaterThan(ANCORA.recentes.pdMedia);
+    // conta independente da revisão (NumPy, outro gerador, 2.000 réplicas): média 12,32%, de 11,30% a 13,42%
+    expect(Math.abs(r.media - 0.1232)).toBeLessThan(0.002);
+    expect(Math.abs(r.lo - 0.1130)).toBeLessThan(0.003); expect(Math.abs(r.hi - 0.1342)).toBeLessThan(0.003);
+    // a janela observada teve menos defaults que a PD verdadeira espera: a âncora observada fica abaixo da média das réplicas
+    expect(D).toBeLessThan(esp); expect(ANCORA.recentes.pdMedia).toBeLessThan(r.media);
+    expect(ancoraEmReplicas()).toBe(r);
+  });
+  it("só a janela: o intercepto zera a equação de escore da janela, a PD média iguala a taxa observada", () => {
+    perto(ANCORA.soJanela.a, M.interceptoComSlope1(Y, PL), 1e-15);
+    perto(ANCORA.soJanela.pdMedia, D / N, 1e-9); perto(ANCORA.soJanela.oe, 1, 1e-9);
+    perto(ANCORA.soJanela.oeVerd, ANCORA.ptJanela / ANCORA.soJanela.pdMedia, 1e-15);
+  });
+  it("mudancasDeDecisao: conta à mão, com o mesmo corte e com corte novo", () => {
+    const a = [0.05, 0.12, 0.13, 0.2, 0.15], b = [0.06, 0.15, 0.12, 0.25, 0.13];
+    expect(M.mudancasDeDecisao(a, b, 0.14)).toEqual({ recusa: 1, aprova: 1, total: 2 });
+    expect(M.mudancasDeDecisao(a, b, 0.14, 0.16)).toEqual({ recusa: 0, aprova: 1, total: 1 });
+    expect(M.mudancasDeDecisao(a, a, 0.14).total).toBe(0);
+  });
+  it("corte refeito pelo motor do slide 32 com a PD de produção: busca completa na grade, promessa e PD verdadeira", () => {
+    const grade = Array.from({ length: 80 }, (_, i) => (i + 1) * 0.005);
+    const melhor = (pd: readonly number[]) => grade.reduce((m, c) => { const t = parcelas(pd as number[], EAD as number[], c).total; return t > m.t ? { c, t } : m; }, { c: 0, t: -Infinity });
+    const verd = (pd: readonly number[], c: number) => { let s = 0; for (let i = 0; i < N; i++) if (pd[i] < c) s += esperado(PT[i], EAD[i]); return s; };
+    for (const [pd, pol] of [[PL, PRODUCAO.sem], [PRODUCAO.pd, PRODUCAO.recalibrada]] as const) {
+      const m = melhor(pd); perto(pol.corte, m.c, 1e-12); perto(pol.promessa, m.t, 1e-6); perto(pol.verdadeiro, verd(pd, m.c), 1e-6);
+      expect(pol.aprovados).toBe(pd.filter((p) => p < m.c).length);
+    }
+    for (let i = 0; i < N; i++) perto(PRODUCAO.pd[i], M.transformar([PL[i]], ANCORA.recentes.a, 1)[0], 1e-15);
+    // conta independente da revisão (economia.ts sobre transformar(PL, a), conferida em Python): corte 13,5%, 492 contra 580 aprovados, 76 decisões mudam
+    perto(PRODUCAO.sem.corte, 0.14, 1e-12); perto(PRODUCAO.recalibrada.corte, 0.135, 1e-12);
+    expect(PRODUCAO.recalibrada.aprovados).toBe(492); expect(PRODUCAO.sem.aprovados).toBe(580);
+    expect(PRODUCAO.mudamNoCorteAntigo).toEqual(M.mudancasDeDecisao(PL, PRODUCAO.pd, PRODUCAO.sem.corte));
+    expect(PRODUCAO.mudamNoCorteAntigo.total).toBe(76); expect(PRODUCAO.mudamNoCorteAntigo.aprova).toBe(0);
+    expect(Math.round(PRODUCAO.recalibrada.promessa / 1e3)).toBe(496); expect(Math.round(PRODUCAO.recalibrada.verdadeiro / 1e3)).toBe(470);
+    expect(Math.round(PRODUCAO.sem.promessa / 1e3)).toBe(608); expect(Math.round(PRODUCAO.sem.verdadeiro / 1e3)).toBe(472);
+    // a fila é a mesma: o KS cai no mesmo ponto da fila, em outro número de PD
+    expect(M.ks(Y, PRODUCAO.pd).ks).toBeCloseTo(M.ks(Y, PL).ks, 12);
+    perto(PRODUCAO.ks, M.transformar([M.ks(Y, PL).limiar], ANCORA.recentes.a, 1)[0], 1e-12);
   });
 });
 

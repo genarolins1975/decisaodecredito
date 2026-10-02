@@ -44,8 +44,8 @@ const contrato = (pop: Pop): [string, string][] => [
  * olhar o resultado: na data da base, validação e janela (ANCORA.recentes de dados.ts).
  */
 const FINALIDADE: [string, ReactNode][] = [
-  ["Finalidade", <>provisão de estágio 1 (Res. CMN 4.966/2021) e corte do <LinkSlide slug="c7p18">slide {SLIDE.c7p18.n}</LinkSlide>, no nível corrente</>],
-  ["Regra do nível", "depois da prova, intercepto em todas as safras maturadas fora do treino"],
+  ["Finalidade", <>provisão de estágio 1 (Res. CMN 4.966/2021) e corte (<LinkSlide slug="c7p18">slide {SLIDE.c7p18.n}</LinkSlide>): nível corrente</>],
+  ["Regra do nível", "após a prova, intercepto em todas as safras maturadas fora do treino"],
 ];
 
 export function S02Contrato({ pagina }: { pagina?: Pagina }) {
@@ -54,16 +54,16 @@ export function S02Contrato({ pagina }: { pagina?: Pagina }) {
   const r = pop === "aprovados" ? RES.logit_oot : RES.logit_populacao_completa_oot;
   return (
     <Quadro slug="c7p21" pagina={pagina} layout="gl" sub={prev === null ? "Um número de outro banco serve de régua para o nosso?" : undefined}
-      conclusao={pop === "aprovados" ? <>A pergunta deste capítulo: entre propostas <b>aprovadas</b>, quem atrasa 90 dias ou mais em 12 meses? Na janela, {pct(D / N, 1)} atrasaram ({D} de {int(N)}) e a logística tem AUC {num(r.auc, 4)}. A finalidade e a regra do nível, declaradas aqui, decidem o slide {SLIDE.c7p38.n}. Com a pergunta fixa, o slide {SLIDE.c7p2.n} mostra a primeira armadilha: a acurácia.</>
+      conclusao={pop === "aprovados" ? <>Entre propostas <b>aprovadas</b>, quem atrasa 90 dias ou mais em 12 meses? Na janela, {pct(D / N, 1)}, AUC {num(r.auc, 4)}. Finalidade e regra do nível decidem o slide {SLIDE.c7p38.n}. Próximo: a armadilha da acurácia.</>
         : <>Mesma logística, outra pergunta: com os recusados (desfecho que só existe na base sintética), a taxa de default vai a {pct(r.obs, 1)} e a AUC a <b>{num(r.auc, 4)}</b>. Números de perguntas diferentes não se comparam.</>}
-      fonte={`Base sintética do curso, semente ${META.seed}; data de referência ${META.dataReferencia.split("-").reverse().join("/")}. Recusadas: o gerador publica só taxas (${pct(PREVALENCIA.populacao, 1)} no total, ${pct(PREVALENCIA.rejeitados, 1)} nelas); cerca de ${int(REC)} recusadas e aprovação perto de ${pct(N / (N + REC), 0)} na janela são aproximação calculada dessas taxas.`}>
+      fonte={`Base sintética, semente ${META.seed}; referência ${META.dataReferencia.split("-").reverse().join("/")}. O gerador publica só as taxas (${pct(PREVALENCIA.populacao, 1)} no total, ${pct(PREVALENCIA.rejeitados, 1)} nas recusadas); cerca de ${int(REC)} recusadas e aprovação perto de ${pct(N / (N + REC), 0)} são aproximação.`}>
       <Painel titulo="Cada safra precisa de 12 meses para ter desfecho">
         <Grafico rotulo="Linha do tempo: safras de treino, validação e janela fora do tempo, cada uma seguida de 12 meses de observação; data de referência em 31 de janeiro de 2025" arCelular="16 / 9">
           {(d) => {
             const g = d.fs * 11.5; const x = escala([INI, FIM], [g, d.w - d.fs * 0.5]); const lh = (d.h - d.fs * 2.6) / PARTES.length;
             return (
               <g>
-                {[2022, 2023, 2024, 2025].map((a) => <g key={a}><line className="q7-grade" x1={x(mes(a, 1))} x2={x(mes(a, 1))} y1={0} y2={d.h - d.fs * 2.4} /><text className="q7-tick" x={x(mes(a, 1)) + (a === 2025 ? -d.fs * 0.3 : d.fs * 0.3)} y={d.h - d.fs * 1.2} textAnchor={a === 2025 ? "end" : "start"}>{a}</text></g>)}
+                {[2022, 2023, 2024, 2025].map((a) => <g key={a}><line className="q7-grade" x1={x(mes(a, 1))} x2={x(mes(a, 1))} y1={0} y2={d.h - d.fs * 2.4} /><text className="q7-tick" x={x(mes(a, 1)) + (a === 2025 ? -d.fs * 0.3 : d.fs * 0.3)} y={d.h - d.fs * 1.3} textAnchor={a === 2025 ? "end" : "start"}>{a}</text></g>)}
                 {PARTES.map((p, k) => { const cy = k * lh + lh / 2, h = Math.min(lh * 0.55, d.fs * 2.2); const ate = p.ate + 12; return (
                   <g key={p.nome}>
                     <text className="q7-rot" x={0} y={cy - d.fs * 0.15} style={{ fontWeight: 700 }}>{p.nome}</text>
@@ -74,19 +74,21 @@ export function S02Contrato({ pagina }: { pagina?: Pagina }) {
                   </g>
                 ); })}
                 <line x1={x(REF)} x2={x(REF)} y1={0} y2={d.h - d.fs * 2.4} stroke="#A85A0C" strokeWidth={2.5} />
-                <text className="q7-corte-t" x={x(REF) - d.fs * 0.4} y={d.h - d.fs * 0.1} textAnchor="end">base fechada em 31/01/2025</text>
+                <text className="q7-corte-t" x={x(REF) - d.fs * 0.4} y={d.h - d.fs * 0.3} textAnchor="end">base fechada em 31/01/2025</text>
+                {/* legenda dentro da figura, na coluna dos rótulos */}
+                <text className="q7-rot q7-rot--peq" x={0} y={d.h - d.fs * 1.3} style={{ fill: "#5B6475" }}>barra cheia: safras</text>
+                <text className="q7-rot q7-rot--peq" x={0} y={d.h - d.fs * 0.3} style={{ fill: "#5B6475" }}>tracejada: 12 meses</text>
               </g>
             );
           }}
         </Grafico>
-        <p className="q7-nota">Barra cheia: safras. Tracejada: 12 meses de observação do atraso.</p>
         <dl className="q7-s02-ct">{contrato(pop).map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}{FINALIDADE.map(([k, v]) => <div key={k} className="q7-s02-fin"><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
       </Painel>
       <Painel>
         <Seg rotulo="População avaliada" opcoes={[{ v: "aprovados" as Pop, r: "Só aprovados" }, { v: "todos" as Pop, r: "Aprovados e recusados" }]} valor={pop} onChange={setPop} cor desab={prev === null} />
         <div className="q7-kpis q7-kpis--2">
           <Kpi rotulo="Taxa de default" valor={pct(r.obs, 1)} detalhe={pop === "aprovados" ? `${D} de ${int(N)}` : `recusados: cerca de ${int(REC_D)} de ${int(REC)} (${pct(PREVALENCIA.rejeitados, 1)})`} tom="def" tam="mini" />
-          <Kpi rotulo="AUC da logística" valor={num(r.auc, 4)} detalhe={pop === "aprovados" ? "a pergunta do capítulo" : "outra pergunta"} tam="mini" />
+          <Kpi rotulo="AUC da logística" valor={num(r.auc, 4)} detalhe={pop === "aprovados" ? "esta pergunta" : "outra pergunta"} tam="mini" />
         </div>
         <Previsao rotulo="Antes de seguir" pergunta="Outro banco reporta AUC de 0,80 para o seu modelo de cartão. O nosso, com 0,73, é pior?" escolha={prev} onEscolha={setPrev} recolher
           opcoes={[

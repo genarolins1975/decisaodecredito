@@ -649,27 +649,27 @@
    "pagina": "c7p16",
    "slug": "c7p16q",
    "rot": "Onde medir o calibrador",
-   "pergunta": "O Platt sobre a logística, ajustado e medido na janela final, dá log loss de 0,3136. Ajustado na amostra de calibração e medido na janela, 0,3167. Sem calibrador, 0,3149. Qual conclusão é defensável?",
+   "pergunta": "O Platt sobre a logística, ajustado e medido na janela final, dá log loss de 0,3136. Ajustado na amostra de calibração e medido na janela (81 defaults), 0,3167; sem calibrador, 0,3149. Nas 300 réplicas sintéticas da janela, pela PD verdadeira, o Platt da calibração dá 0,3409 e sem calibrar, 0,3439. Qual conclusão é defensável?",
    "alt": [
     "O calibrador melhora a log loss para 0,3136",
-    "Ajustado onde deve, o calibrador piora a log loss (0,3167 contra 0,3149); o 0,3136 não vale como evidência",
-    "Os três números são equivalentes, porque as diferenças são pequenas"
+    "A janela não distingue os dois: 0,0018 com 81 defaults é ruído, o 0,3136 não vale como evidência, e nas réplicas o Platt é melhor",
+    "Medido onde deve, o Platt piora a log loss (0,3167 contra 0,3149), então a logística não se recalibra"
    ],
    "certa": 1,
-   "porqueCerta": "O 0,3136 foi medido nos mesmos dados em que o calibrador foi ajustado: é otimista por construção. A evidência válida é a medida numa amostra que o calibrador não viu, e ali ele piora a logística. A decisão é não recalibrar a logística com Platt nesta janela.",
+   "porqueCerta": "O 0,3136 foi medido nos mesmos dados em que o calibrador foi ajustado: é otimista por construção. Medido fora da amostra de ajuste, o Platt fica 0,0018 acima de sem calibrar, diferença que uma janela de 81 defaults não distingue de ruído. Nas réplicas sintéticas da janela, pela PD verdadeira, o Platt é o melhor dos três (0,3409, contra 0,3419 do intercepto e 0,3439 sem calibrar) e vence sem calibrar em 249 de 300. A janela não escolhe entre calibradores; o nível da logística é recalibrado depois da prova, pela regra do contrato (slides 2 e 36), porque a validação já rejeitava o nível.",
    "erros": [
     {
      "confusao": "O ajuste foi avaliado na amostra em que foi estimado.",
      "conceito": "Todo ajuste estimado numa amostra se sai melhor nela do que em outra. Para servir de evidência, a medida precisa vir de dados que o ajuste não usou",
      "seu": "0,3136 é a melhora do calibrador",
-     "adequado": "0,3167, medido fora da amostra de ajuste, é a evidência"
+     "adequado": "0,3136 é otimista por construção; a medida fora da amostra de ajuste é 0,3167, e com 81 defaults ela também não decide sozinha"
     },
     null,
     {
-     "confusao": "Diferenças pequenas foram descartadas sem olhar a direção.",
-     "conceito": "O ponto não é o tamanho, é a direção: medido do jeito certo, o calibrador piora; medido do jeito errado, parece melhorar. Isso inverte a decisão",
-     "seu": "As diferenças são pequenas e não importam",
-     "adequado": "A direção da diferença decide se recalibrar"
+     "confusao": "Uma diferença de 0,0018 numa janela de 81 defaults foi lida como sinal.",
+     "conceito": "Tamanho importa, mas medido no lugar certo: a diferença se compara com a variação de uma janela para outra. Nas réplicas sintéticas, o Platt vence sem calibrar em 249 de 300 janelas, embora nesta fique 0,0018 acima",
+     "seu": "O Platt piora a log loss na janela, então não se recalibra",
+     "adequado": "0,0018 com 81 defaults é ruído; a recalibração do nível vem da validação, que já rejeitava o nível, e é feita depois da prova"
     }
    ]
   },

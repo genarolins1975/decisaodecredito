@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import { Formula, LinkSlide, Painel, Quadro, Seg, type Pagina } from "../base";
-import { D, MESES_TOTAL, META, MONITOR, N, PL, Y, monitoramento } from "@/lib/capitulo7/dados";
+import { CAL, D, MESES_TOTAL, META, MONITOR, N, PL, REPLICAS_ANCORA, Y, monitoramento } from "@/lib/capitulo7/dados";
+import { N_JANELAS, SEMENTE_JANELAS } from "@/lib/capitulo7/janelas";
 import { aucPorPares } from "@/lib/capitulo7/metricas";
 import { SLIDE } from "@/lib/capitulo7/roteiro";
 import { PARAMETROS } from "@/lib/visuais/economia";
@@ -16,6 +17,8 @@ import { int, num, pct } from "@/lib/capitulo7/formato";
  * Rodada 6: na Fronteira, o Jeffreys repetido no tempo (falso alarme do acumulado com e sem repartir o nível entre as
  * 12 safras, e o poder contra 1 ponto, de monitoramento em dados.ts) e o ajuste ao ciclo sem atribuir à 4.966 o que
  * ela não diz: a base cobre poucos meses para a média de longo prazo, que fica fora do capítulo.
+ * Rodada 7: na Reprodução, as sementes do monitoramento do nível e das réplicas da âncora de produção (com o número
+ * de sorteios), e a base lida de META; na Fronteira, a semente e os sorteios ao lado dos números simulados.
  */
 type Aba = "formulas" | "comparar" | "fora" | "fronteira" | "refs" | "repro";
 type Grupo = "ord" | "medir" | "calibrar" | "decval" | "reg";
@@ -47,7 +50,7 @@ const FORA: [string, string][] = [
 const PERIODO = `${META.treino.match(/\d{4}-\d{2}/)![0]} a ${META.oot.match(/\d{4}-\d{2}/g)![1]}`;
 const fronteira = (mon: ReturnType<typeof monitoramento>): [string, string, string?][] => [
   ["Diagrama CORP e decomposição MCB, DSC, UNC", "A isotônica escolhe os blocos no lugar do analista e separa o Brier em erro de calibração, discriminação e incerteza. Use para diagnosticar; não é calibrador para outra amostra.", "c7p30"],
-  ["Teste de Jeffreys por faixa e no tempo", `O teste do BCE no backtesting de PD: p = F_Beta(PD; d + ½, n − d + ½). Repetido a cada safra, o falso alarme acumula: ${MONITOR.safras} olhadas a ${pct(MONITOR.alfa, 0)} dão ${pct(mon.falsoSemRepartir, 1)}; com ${pct(MONITOR.alfa, 0)} repartido, ${pct(mon.falsoAcumulado, 1)}, e poder de ${pct(mon.poderAcumulado, 0)} contra 1 ponto (slide 37).`, "c7p31"],
+  ["Teste de Jeffreys por faixa e no tempo", `O teste do BCE no backtesting de PD, unilateral: p = F_Beta(PD; d + ½, n − d + ½). Repetido no acumulado a cada safra, o falso alarme acumula: ${MONITOR.safras} olhadas a ${pct(MONITOR.alfa, 0)} dão ${pct(mon.falsoSemRepartir, 1)}; com ${pct(MONITOR.alfa, 0)} repartido, ${pct(mon.falsoAcumulado, 1)}, e poder de ${pct(mon.poderAcumulado, 0)} contra 1 ponto. Simulação de ${int(MONITOR.sorteios)} sorteios, semente ${MONITOR.semente}; no monitoramento, as duas caudas (slide 37).`, "c7p31"],
   ["Beta calibration e temperature scaling", "Beta calibration: σ(c + a ln p − b ln(1 − p)); com a = b, recai no Platt sobre o logit. Use quando a curva de confiabilidade distorce de modo diferente nas duas caudas. Temperature scaling é o Platt sem intercepto, padrão em redes neurais."],
   ["Venn-Abers e predição conformal", "Calibradores com garantia de validade em amostra finita, supondo observações trocáveis (por exemplo, independentes e de mesma distribuição); entregam um par de probabilidades cuja distância mostra a incerteza do próprio calibrador. Use com amostra de calibração pequena, quando importa a incerteza da PD de cada grau."],
   ["Benefício líquido e curva de decisão", "Mede o valor do modelo em cada limiar: acertos menos falsos positivos ponderados por pt ÷ (1 − pt), a razão implícita no limiar. Ponte entre calibração e decisão quando não há custos completos; o capítulo não a calcula: usa o resultado esperado em reais."],
@@ -91,10 +94,10 @@ const REFS: { g: Grupo; quem: string; usa: string; onde: string; cit: string }[]
   { g: "reg", quem: "scikit-learn", usa: "a referência numérica das métricas", onde: "Reprodução", cit: "Probability calibration (scikit-learn.org/stable/modules/calibration.html); roc_auc_score, average_precision_score, brier_score_loss, log_loss." },
 ];
 const REPRO: [string, string][] = [
-  ["Base do curso", "gerador sintético, semente 20260501; data de referência 31/01/2025"],
+  ["Base do curso", `gerador sintético, semente ${META.seed}; data de referência ${META.dataReferencia.split("-").reverse().join("/")}`],
   ["Referência numérica", "Python 3.11, scikit-learn 1.9.1, SciPy 1.17.1, statsmodels 0.15.0, NumPy 2.4.6 (scripts/capitulo7/referencia.py)"],
   ["Conferência", "tests/capitulo7-metricas.test.ts compara cada função com a referência"],
-  ["Sementes", "amostra de calibração 20261001; disputa 20261006; laboratório 20261015; PD coletiva 20261017 + k; bootstrap 20260501; réplicas sintéticas da janela 20261033 (slides 27, 33, 34, 35, 36 e 37); candidatos da reabertura 20261035; embaralhamento 7"],
+  ["Sementes", `amostra de calibração ${CAL.semente}; disputa 20261006; laboratório 20261015; PD coletiva 20261017 + k; bootstrap 20260501; réplicas sintéticas da janela ${SEMENTE_JANELAS} (${N_JANELAS}; slides 27, 33, 34, 35, 36 e 37); candidatos da reabertura 20261035; réplicas da âncora de produção ${REPLICAS_ANCORA.semente} (${int(REPLICAS_ANCORA.replicas)}; slides 27 e 36); monitoramento do nível ${MONITOR.semente} (${int(MONITOR.sorteios)} sorteios; slides 37 e 38); embaralhamento 7`],
   ["Convenções", "recusa quando PD ≥ corte; faixas e ganho com ⌊x + ½⌋; empate vale meio par; log natural com limite de 10⁻¹⁵"],
 ];
 

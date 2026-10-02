@@ -96,6 +96,30 @@
 .q7-s36-conf .q7-graf { min-height: 6.6cqw; }
 /* slide 2 (rodada 7): finalidade e regra do nível em linhas inteiras do contrato, dt e dd na mesma linha */
 .q7 .q7-slide .q7-s02-ct .q7-s02-fin { grid-column: 1 / -1; display: flex; gap: .8cqw; align-items: baseline; }
-.q7 .q7-slide .q7-s02-ct .q7-s02-fin dt { flex: none; min-width: 13cqw; }
+.q7 .q7-slide .q7-s02-ct .q7-s02-fin dt { flex: none; min-width: 12cqw; }
+.q7 .q7-slide .q7-s02-ct .q7-s02-fin + .q7-s02-fin { border-top: 0; padding-top: 0; }
 .q7 .q7-slide .q7-s02-ct .q7-s02-fin a { color: inherit; text-decoration: underline; text-underline-offset: .2em; }
 @container q7 (max-width: 820px) { .q7 .q7-slide .q7-s02-ct .q7-s02-fin { display: grid; gap: 0; } }
+/* slide 36 (rodada 7): Restaurar no cabeçalho do quadro declarado, fora das alternativas */
+.q7-s36-cab { display: flex; align-items: center; justify-content: space-between; gap: .8cqw; }
+.q7 .q7-slide .q7-s36-cab .q7-k a { color: inherit; text-decoration: underline; text-underline-offset: .2em; }
+.q7 .q7-slide .q7-s36-cab .q7-btn { flex: none; }
+/* slide 27 (rodada 7): cinco âncoras e a linha da sorte da janela cabem no painel */
+.q7 .q7-slide .q7-s27-t--anc th, .q7 .q7-slide .q7-s27-t--anc td { padding-top: .12cqw; padding-bottom: .12cqw; }
+.q7 .q7-slide .q7-s27-sorte b { color: var(--q7-prob); }
+/* slide 36 (rodada 7): seletor Dossiê e Conferência no canto do painel, tabela da conferência mais baixa */
+.q7-s36-esq { position: relative; }
+.q7 .q7-slide .q7-s36-esq > .q7-s36-vista { position: absolute; top: .75cqw; right: 1.3cqw; margin: 0; }
+.q7 .q7-slide .q7-s36-esq > .q7-s36-vista .q7-btn { font-size: 1.15cqw; padding-top: .2cqw; padding-bottom: .2cqw; }
+.q7 .q7-slide .q7-s36-conf .q7-tab th, .q7 .q7-slide .q7-s36-conf .q7-tab td { padding-top: .14cqw; padding-bottom: .14cqw; }
+@container q7 (max-width: 820px) { .q7 .q7-slide .q7-s36-esq > .q7-s36-vista { position: static; margin-bottom: 6px; } .q7 .q7-slide .q7-s36-esq > .q7-s36-vista .q7-btn { font-size: 13px; } }
+/* slide 37 (rodada 7): sintomas em grade 2 × 2 e procedimento mais compacto, para o passo de monitorar caber */
+.q7 .q7-slide .q7-s37-seg .q7-seg { display: grid; grid-template-columns: 1fr 1fr; }
+.q7 .q7-slide .q7-s37-seg .q7-seg .q7-btn { border-bottom: 1px solid #C9CDD5; border-right: 1px solid #C9CDD5; font-size: 1.2cqw; padding: .35cqw .6cqw; }
+.q7 .q7-slide .q7-s37-seg .q7-seg .q7-btn:nth-child(2n) { border-right: 0; }
+.q7 .q7-slide .q7-s37-seg .q7-seg .q7-btn:nth-child(n + 3) { border-bottom: 0; }
+.q7 .q7-slide .q7-s37-pp.q7-s37-pp--6 { font-size: 1.25cqw; line-height: 1.2; gap: .05cqw; }
+@container q7 (max-width: 820px) { .q7 .q7-slide .q7-s37-seg .q7-seg .q7-btn { font-size: 13px; padding: 6px 8px; } .q7 .q7-slide .q7-s37-pp.q7-s37-pp--6 { font-size: 13.5px; } }
+.q7 .q7-slide .q7-s36-fin p:not(.q7-k) { font-size: 1.25cqw; line-height: 1.22; }
+@container q7 (max-width: 820px) { .q7 .q7-slide .q7-s36-fin p:not(.q7-k) { font-size: 13.5px; } }
+.q7 .q7-slide .q7-s36-fin { gap: .1cqw; }

@@ -127,7 +127,7 @@ function Linha({ modo, ancora }: { modo: Modo; ancora: Ancora }) {
             <path d={ajusta} fill="none" stroke="#176C73" strokeWidth={3} markerEnd={`url(#${id}p)`} />
             {!dentro && <path d={mede} fill="none" stroke="#2E6B4F" strokeWidth={3} markerEnd={`url(#${id}v)`} />}
             <text className="q7-rot--peq" x={varias ? x(14) + fs * 0.5 : recentes || soJ ? x(19) + fs * 0.5 : sxAj + fs * 0.2} y={yRotAj} style={{ fill: "#176C73", fontWeight: 700 }}>{safras && !estreito ? "ajusta o nível" : "ajusta"}</text>
-            {dentro ? <text className="q7-rot--peq" x={noX + noW} y={noY + noH / 2 + fs * 1.1} textAnchor="end" style={{ fill: "#2E6B4F", fontWeight: 700 }}>{estreito ? "prova: safras seguintes" : "prova: safras seguintes (slide 37)"}</text>
+            {dentro ? <text className="q7-rot--peq" x={noX + noW} y={noY + noH / 2 + fs * 1.1} textAnchor="end" style={{ fill: "#2E6B4F", fontWeight: 700 }}><tspan x={noX + noW}>prova: safras</tspan><tspan x={noX + noW} dy="1.15em">seguintes{estreito ? "" : " (slide 37)"}</tspan></text>
               : <text className="q7-rot--peq" x={sx + fs * 0.2} y={yRotMe} style={{ fill: "#2E6B4F", fontWeight: 700 }}>mede</text>}
             <rect x={noX} y={noY - noH / 2} width={noW} height={noH} rx={fs * 0.4} fill="#fff" stroke={atalho ? "#8C2332" : "#00205B"} strokeWidth={2} />
             <text className="q7-rot" x={noX + noW / 2} y={noY - fs * 0.15} textAnchor="middle" style={{ fill: "#00205B" }}>{safras ? "Nível" : "Platt"}</text>
@@ -175,7 +175,7 @@ export function S27AmostraPropria({ pagina }: { pagina?: Pagina }) {
       conclusao={safras ? <>As taxas oscilam: treino {pct(TAXA.treino, 1)}, validação {pct(TAXA.val, 1)}, janela {pct(TAXA.oot, 1)}. {LEITURA_ANC[ancora]} <b>A âncora não se escolhe por esta tabela: a regra está no contrato do <LinkSlide slug="c7p21">slide 2</LinkSlide></b>, e o <LinkSlide slug="c7p38">slide 36</LinkSlide> a aplica.</>
         : !atalho ? <>Platt da calibração, medido na janela: log loss {num(LL_CERTO, 4)} contra {num(LL_SEM, 4)} sem calibrar; com {D} defaults, {num(DIF, 4)} é ruído. Nas <b>réplicas sintéticas da janela</b> (os mesmos {int(META.nOot)} proponentes com o desfecho sorteado de novo pela PD verdadeira; {N_JANELAS} sorteios, só possível em base sintética), o Platt é <b>o melhor dos três ({num(C.platt!.esperada.logLoss, 4)})</b> e vence sem calibrar em {VENCE} delas.</>
         : <>Ajustado e medido na mesma janela: <b>{num(LL_ATALHO, 4)}</b>, menor que o protocolo ({num(LL_CERTO, 4)}) por construção. Nas réplicas sintéticas da janela, o atalho entrega {num(C.atalho!.esperada.logLoss, 4)}, pior que o protocolo ({num(C.platt!.esperada.logLoss, 4)}): aprendeu a sorte da janela. <b>Nunca reporte um calibrador na amostra em que ele foi ajustado.</b></>}
-      fonte={safras ? `Janela fora do tempo: ${int(META.nOot)} propostas, ${D} defaults; PD verdadeira média ${pct(PT_, 2)}, só na base sintética. Treino (${int(A.treino.n)} propostas, ${A.treino.defaults} defaults) e validação (${int(A.validacao.n)}, ${A.validacao.defaults}) só existem agregados: intercepto pela diferença de logits entre taxa e PD média (aproximação); em validação e janela, a equação de escore exata da janela somada à da validação agregada. Só a janela: equação de escore exata das 737. Perda esperada: Σ PD × ${pct(A.lgd, 0)} × EAD (motor do slide 32). Réplicas da âncora: ${int(REPLICAS_ANCORA.replicas)} sorteios do desfecho da janela pela PD verdadeira, validação fixa (semente ${REPLICAS_ANCORA.semente}).`
+      fonte={safras ? `Janela fora do tempo: ${int(META.nOot)} propostas, ${D} defaults; PD verdadeira média ${pct(PT_, 2)}, só na base sintética. Treino (${int(A.treino.n)} propostas, ${A.treino.defaults} defaults) e validação (${int(A.validacao.n)}, ${A.validacao.defaults}) só existem agregados: entram pela taxa e pela PD média (aproximação); a janela entra proposta a proposta. Perda esperada: Σ PD × ${pct(A.lgd, 0)} × EAD (motor do slide 32). Réplicas da âncora: ${int(REPLICAS_ANCORA.replicas)} sorteios do desfecho da janela pela PD verdadeira, validação fixa (semente ${REPLICAS_ANCORA.semente}).`
         : `Janela fora do tempo: ${int(META.nOot)} propostas, ${D} defaults. Calibração sintética: ${int(CAL.n)} sorteios com reposição dos ${int(META.nOot)} proponentes (${int(DISTINTOS)} aparecem), desfecho pela PD verdadeira (semente ${CAL.semente}), sem deriva: o ganho é um teto. Réplicas sintéticas da janela: semente ${SEMENTE_JANELAS}; esperada: média exata pela PD verdadeira.`}>
       <Painel titulo="Onde o calibrador aprende e onde é medido">
         <Linha modo={aberto ? modo : "certo"} ancora={ancora} />
@@ -197,7 +197,7 @@ export function S27AmostraPropria({ pagina }: { pagina?: Pagina }) {
         )}
         {aberto && !safras && <p className="q7-retorno" data-tom="certa">Isso: nos mesmos casos, o atalho escolhe a&nbsp;=&nbsp;{num(PLATT_OOT.a, 3)} e b&nbsp;=&nbsp;{num(PLATT_OOT.b, 3)} (protocolo: {num(PLATT_CAL.a, 3)} e {num(PLATT_CAL.b, 3)}) para minimizar a perda que vai reportar. Ler o número menor como calibrador melhor confunde ajuste com prova.</p>}
         {safras ? (<>
-          <p className="q7-k q7-s27-k">Conferência, não prova: a janela entra nas duas últimas âncoras</p>
+          <p className="q7-k q7-s27-k">Conferência, não prova</p>
           <table className="q7-tab q7-tab--comp q7-s27-t q7-s27-t--4 q7-s27-t--anc">
             <thead><tr><th className="q7-t-l">Âncora do nível</th><th>PD média</th><th>O/E obs.</th><th>O/E verd.</th><th>Perda, R$ mil</th></tr></thead>
             <tbody>
@@ -210,8 +210,8 @@ export function S27AmostraPropria({ pagina }: { pagina?: Pagina }) {
               <tr className="q7-s27-alvo"><th>PD verdadeira (sintética)</th><td>{pct(PT_, 1)}</td><td>{num(TAXA.oot / PT_, 3)}</td><td>{num(1, 3)}</td><td>{mil(A.perdaVerd)}</td></tr>
             </tbody>
           </table>
-          <p className="q7-nota">Escolha a âncora na tabela. O/E = taxa ÷ PD média, observada ({pct(TAXA.oot, 1)}, {D} defaults) ou verdadeira ({pct(PT_, 1)}). Validação e janela: {A.recentes.defaults} defaults em {int(A.recentes.n)} ({pct(A.recentes.taxa, 1)}).</p>
-          {rep && <p className="q7-nota q7-s27-sorte"><b>Sorte da janela:</b> em {int(REPLICAS_ANCORA.replicas)} réplicas sintéticas da janela, validação e janela dá PD média de {pct(rep.media, 1)} ({pct(rep.lo, 1)} a {pct(rep.hi, 1)}), contra {pct(A.recentes.pdMedia, 1)} aqui.</p>}
+          <p className="q7-nota">O/E = taxa ÷ PD média, observada ({pct(TAXA.oot, 1)}) ou verdadeira ({pct(PT_, 1)}); as duas últimas contêm a janela.</p>
+          {rep && <p className="q7-nota q7-s27-sorte"><b>Sorte da janela:</b> em {int(REPLICAS_ANCORA.replicas)} réplicas sintéticas da janela, validação e janela dá {pct(rep.media, 1)} em média ({pct(rep.lo, 1)} a {pct(rep.hi, 1)}); aqui, {pct(A.recentes.pdMedia, 1)}.</p>}
         </>) : <table className="q7-tab q7-tab--comp q7-s27-t">
           <thead><tr><th className="q7-t-l">Log loss da logística</th><th>Na janela</th><th>Esperada nas réplicas</th></tr></thead>
           <tbody>{LINHAS.filter((l) => aberto || l.id !== "atalho").map((l) => { const c = C[l.id]!; return (
