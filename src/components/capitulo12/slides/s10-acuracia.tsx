@@ -4,6 +4,10 @@ import { Botao, Kpi, Painel, Previsao, Quadro, Seg, type Pagina } from "@/compon
 import { cem, Marcas, type TipoMarca } from "../b2";
 import { CONTAGEM_DIGITOS, FONTE_MNIST, M_SGD, M_TRIVIAL } from "@/lib/capitulo12/dados";
 import { SLIDE } from "@/lib/capitulo12/roteiro";
+import { CORTE } from "@/lib/capitulo12/dados";
+
+/** O mesmo modelo trivial no caso de crédito (curto prazo): aprovar todos acerta os bons. */
+const CREDITO = CORTE.curto.politica;
 import { int, pct } from "@/lib/capitulo7/formato";
 
 /**
@@ -37,7 +41,7 @@ export function S10Acuracia({ pagina }: { pagina?: Pagina }) {
   const restaurar = () => { setEsc(null); setDig(5); };
   return (
     <Quadro slug="c12p10" pagina={pagina} layout="gl"
-      conclusao={ok ? <>Com classes desbalanceadas, a acurácia mede sobretudo a classe majoritária: <b>{pct(acc, 1)}</b> sem olhar imagem nenhuma{dig === 5 ? `, contra ${pct(M_SGD.acuracia, 1)} do detector` : ` com o ${dig} como positivo`}. A matriz de confusão (slide {SLIDE.c12p11.n}) separa cada tipo de erro.</>
+      conclusao={ok ? <>Com classes desbalanceadas, a acurácia mede sobretudo a classe majoritária: <b>{pct(acc, 1)}</b> sem olhar imagem nenhuma{dig === 5 ? `, contra ${pct(M_SGD.acuracia, 1)} do detector` : ` com o ${dig} como positivo`}. No crédito do bloco 4, aprovar todos acerta {pct(1 - CREDITO.taxaMaus, 1)} ({int(CREDITO.maus)} maus em {int(CREDITO.classificados)}). A matriz (slide {SLIDE.c12p11.n}) separa cada erro.</>
         : esc === null ? "Escolha uma alternativa: a acurácia do modelo trivial aparece no acerto." : "Tente outra alternativa: o número aparece no acerto."}
       fonte={`${FONTE_MNIST}. Acurácia = acertos ÷ 60.000. Modelo trivial: prevê sempre a classe negativa; com outro algarismo positivo, acerta 1 − (imagens do algarismo ÷ 60.000).`}>
       <Painel titulo={`${int(N)} imagens de treino · cada marca é 1% delas`} className="q12-s10-esq">

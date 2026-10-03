@@ -25,7 +25,7 @@ export function S31Fronteira({ pagina }: { pagina?: Pagina }) {
   const [conj, setConj] = useState<Conj>("teste");
   const t = conj === "teste";
   return (
-    <Quadro slug="c12p31" pagina={pagina} layout="gl"
+    <Quadro slug="c12p31" pagina={pagina} layout="glx"
       conclusao={t
         ? <>No teste, a árvore erra {int(ERROS.arvore.length)} pontos e o bagging, <b>{int(ERROS.bag500.length)}</b>. No treino a ordem se inverte ({pct(ARV.accTreino, 0)} contra {pct(BAG.accTreino, 1)}): o recorte que acerta o treino é variância. Quantas instâncias cada árvore deixa de fora: slide {SLIDE.c12p32.n}.</>
         : <>No treino, a árvore acerta <b>{pct(ARV.accTreino, 0)}</b> dos {int(N_TREINO_LUAS)} pontos: a região abre ilhas para acertar pontos isolados. O bagging acerta {pct(BAG.accTreino, 1)} e desenha uma fronteira mais lisa. Troque para o teste.</>}

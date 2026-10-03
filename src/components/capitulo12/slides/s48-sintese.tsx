@@ -22,9 +22,9 @@ const LINHAS: { frase: string; num: string; det: ReactNode; falta: ReactNode }[]
     falta: <>No crédito, o alvo muda o problema: {pct(K.politica.taxaMaus, 1)} de maus no curto prazo, {pct(L.politica.taxaMaus, 1)} no longo. Defina o alvo antes do modelo.</> },
   { frase: "Acurácia, precisão e recall respondem a perguntas distintas; o limiar escolhe o erro aceitável.", num: pct(M_SGD.acuracia, 1), det: <>de acurácia do detector, contra {pct(M_TRIVIAL.acuracia, 1)} do modelo que nunca diz 5</>,
     falta: <>O custo de cada erro em reais, que escolhe o limiar (slide {SLIDE.c12p16.n}): um mau aprovado e um bom recusado não custam o mesmo.</> },
-  { frase: "A combinação explora a diversidade de erros entre os modelos.", num: `${int(ACERTOS_LUAS.soft)} de ${int(N_TESTE_LUAS)}`, det: <>acertos do voto suave, contra {int(MELHOR)} do melhor modelo isolado</>,
+  { frase: "A combinação explora a diversidade de erros entre os modelos.", num: `${int(ACERTOS_LUAS.soft)} de ${int(N_TESTE_LUAS)}`, det: <>acertos do voto suave, contra {int(MELHOR)} do melhor isolado: diferença que 125 pontos não distinguem do acaso</>,
     falta: <>Um ensemble também precisa passar pela validação no tempo e ser explicado ao comitê: ganhar no teste não basta.</> },
-  { frase: "O limiar e a validação no tempo conectam o modelo à decisão.", num: pct(K.combinada.recall, 1), det: <>dos maus capturados pela combinação, recusando {pct(K.combinada.volume, 1)} da base (meta: menos de {pct(META_VOLUME, 0)})</>,
+  { frase: "O limiar e a validação no tempo conectam o modelo à decisão.", num: pct(K.combinada.recall, 1), det: <>dos maus capturados pela regra conjunta, recusando {pct(K.combinada.volume, 1)} da base (meta: menos de {pct(META_VOLUME, 0)})</>,
     falta: <>Separar sobreajuste de mudança na população (slide {SLIDE.c12p44.n}) antes de adotar o corte, e acompanhar as safras depois.</> },
 ];
 

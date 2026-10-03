@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Botao, Eixos, Grafico, Painel, Previsao, Quadro, Seg, escala, margens, type Pagina } from "@/components/capitulo7/base";
-import { CORTE, FONTE_CASO, META_VOLUME, REGRAS, type NomeRegra } from "@/lib/capitulo12/dados";
+import { CASO, CORTE, FONTE_CASO, META_VOLUME, REGRAS, type NomeRegra } from "@/lib/capitulo12/dados";
 import { HORIZONTES, HZ, RAZAO_RECALL, forcaIV, type Horizonte } from "@/lib/capitulo12/b4";
 import { SLIDE } from "@/lib/capitulo12/roteiro";
 import { int, num, pct, vezes } from "@/lib/capitulo7/formato";
@@ -16,11 +16,21 @@ import { int, num, pct, vezes } from "@/lib/capitulo7/formato";
  */
 const SIMB: Record<NomeRegra, string> = { politica: "●", never_paid: "▲", combinada: "◆" };
 const K = CORTE.curto;
+/**
+ * Razão de custos de equilíbrio, das contagens do caso (curto prazo): trocar a política pela regra mais ampla recusa
+ * mais bons e evita mais maus; ela só compensa se um mau aprovado custar mais que (bons a mais) ÷ (maus a mais) bons
+ * recusados. O volume de uma regra baseada em modelo é escolha de limiar (slides 17 e 18): 11,7% é o corte que o
+ * material usou, não uma propriedade do modelo.
+ */
+const R = CASO.curto.regras;
+const troca = (de: NomeRegra, para: NomeRegra) => { const b = R[para].corte[1] - R[de].corte[1], m = R[para].corte[2] - R[de].corte[2]; return { b, m, razao: b / m }; };
+const T_CONJ = troca("politica", "combinada"), T_NP = troca("politica", "never_paid");
+if (!(T_CONJ.m > 0 && T_NP.m > 0 && T_CONJ.razao < T_NP.razao)) throw new Error("razões de equilíbrio fora do esperado");
 const OPS = [
-  { texto: "Política BACEN", certa: true, retorno: <>É a única que cumpre a meta: recusa {pct(K.politica.volume, 1)} da base, com a maior precisão ({pct(K.politica.precisao, 1)}). O preço: captura só {pct(K.politica.recall, 1)} dos maus.</> },
-  { texto: "Never Paid", certa: false, retorno: <>Recusa {pct(K.never_paid.volume, 1)}: já passa da meta, com precisão menor que a da política ({pct(K.never_paid.precisao, 1)} contra {pct(K.politica.precisao, 1)}). Usar um modelo não basta para a regra caber na meta.</> },
-  { texto: "Política e modelo", certa: false, retorno: <>Captura mais maus ({pct(K.combinada.recall, 1)}), mas recusa {pct(K.combinada.volume, 1)} da base, acima da meta de {pct(META_VOLUME, 0)}. Só vale se o comitê aceitar recusar mais.</> },
-  { texto: "Depende do que o comitê aceita trocar", certa: true, retorno: <>Isso: com a meta de {pct(META_VOLUME, 0)}, só a política cabe; se o comitê aceitar recusar {pct(K.combinada.volume, 1)}, a combinação quase dobra o recall.</> },
+  { texto: "Política BACEN", certa: false, retorno: <>Cumpre a meta ({pct(K.politica.volume, 1)} da base), com a maior precisão, mas captura só {pct(K.politica.recall, 1)} dos maus. Escolher sem saber o custo de cada erro é escolher às cegas: compare com a razão de equilíbrio.</> },
+  { texto: "Never Paid", certa: false, retorno: <>No corte do material recusa {pct(K.never_paid.volume, 1)}, acima da meta; subir o limiar do modelo reduziria o volume, mas o material não traz o recall nesse corte. Contra a política, recusa {int(T_NP.b)} bons a mais para evitar {int(T_NP.m)} maus: só compensa se um mau custar mais que {num(T_NP.razao, 1)} bons.</> },
+  { texto: "Política e modelo", certa: false, retorno: <>Captura {pct(K.combinada.recall, 1)} dos maus, mas recusa {pct(K.combinada.volume, 1)} da base, acima da meta. Só vale se o comitê aceitar recusar mais e se o custo de um mau passar da razão de equilíbrio.</> },
+  { texto: "Depende de quanto custa um mau aprovado em bons recusados", certa: true, retorno: <>Isso: a regra conjunta recusa {int(T_CONJ.b)} bons a mais para evitar {int(T_CONJ.m)} maus. Se um mau aprovado custa mais que <b>{num(T_CONJ.razao, 1)} bons recusados</b>, ela vence a política; abaixo disso, a política vence e ainda cumpre a meta.</> },
 ];
 
 export function S47Exercicio({ pagina }: { pagina?: Pagina }) {
@@ -31,8 +41,8 @@ export function S47Exercicio({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c12p47" pagina={pagina} layout="gl"
       conclusao={!aberto ? <>Escolha antes de ver os números: o gráfico se preenche com a sua resposta.</>
-        : h === "curto" ? <>A combinação quase dobra o recall da política (<b>{pct(K.combinada.recall, 1)} contra {pct(K.politica.recall, 1)}</b>, {vezes(RAZAO_RECALL, 1)}), mas recusa <b>{pct(K.combinada.volume, 1)}</b> da base, acima da meta de {pct(META_VOLUME, 0)}. Só a política cumpre a meta. Síntese no slide {SLIDE.c12p48.n}.</>
-          : <>No longo prazo a ordem se mantém: a combinação lidera o recall (<b>{pct(C.combinada.recall, 1)}</b>) e recusa {pct(C.combinada.volume, 1)}; só a política (<b>{pct(C.politica.volume, 1)}</b>) cumpre a meta.</>}
+        : h === "curto" ? <>A regra conjunta quase dobra o recall da política (<b>{pct(K.combinada.recall, 1)} contra {pct(K.politica.recall, 1)}</b>, {vezes(RAZAO_RECALL, 1)}) e recusa {pct(K.combinada.volume, 1)} da base: compensa se um mau aprovado custar mais que <b>{num(T_CONJ.razao, 1)} bons recusados</b> (slide {SLIDE.c12p16.n}). No corte do material, só a política cabe na meta de {pct(META_VOLUME, 0)}.</>
+          : <>No longo prazo a ordem se mantém: a regra conjunta lidera o recall (<b>{pct(C.combinada.recall, 1)}</b>) e recusa {pct(C.combinada.volume, 1)}; só a política (<b>{pct(C.politica.volume, 1)}</b>) cumpre a meta.</>}
       fonte={`${FONTE_CASO}. ${HZ[h].nome}: alvo ${HZ[h].alvo}; ${int(C.politica.contratos)} contratos${C.politica.semClassificacao ? `, dos quais ${int(C.politica.semClassificacao)} sem classificação ficam fora de precisão e recall` : ""}. Volume sobre o total de contratos; IV pela régua de Siddiqi.`}>
       <Painel className="q12-s47-esq">
         <Grafico titulo="Volume do corte contra recall" sub={aberto ? HZ[h].nome.toLowerCase() : "os pontos aparecem com a sua escolha"}

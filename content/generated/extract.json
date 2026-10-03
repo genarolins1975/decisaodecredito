@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "770c81d1c58d25961cfbb8c7b761043655de34bf033c6882c69c89b6efbebf6c",
- "extractedAt": "2026-10-03T09:31:34.167Z",
+ "sourceSha256": "2a8b1f5f9694109133f16eedc9d37bcbf24bfd82406e70138ec7439a2c6b4c13",
+ "extractedAt": "2026-10-03T10:16:03.601Z",
  "meta": {
   "capitulos": [
    {
@@ -15044,7 +15044,7 @@
    "id": "c12p15",
    "cap": 12,
    "n": 15,
-   "titulo": "Só a acurácia faz o modelo trivial parecer razoável",
+   "titulo": "Uma métrica sozinha faz o modelo trivial parecer razoável",
    "nivel": "essencial",
    "nivel120": null,
    "min": 3,
@@ -15546,7 +15546,7 @@
    "id": "c12p25",
    "cap": 12,
    "n": 25,
-   "titulo": "Quatro formas de aproximar a independência",
+   "titulo": "Quatro formas de produzir erros diferentes",
    "nivel": "essencial",
    "nivel120": null,
    "min": 2,
@@ -15792,7 +15792,7 @@
    "id": "c12p30",
    "cap": 12,
    "n": 30,
-   "titulo": "Bagging com 500 árvores supera a árvore única",
+   "titulo": "Bagging com 500 árvores acerta 6 pontos de teste a mais que a árvore única, em 125",
    "nivel": "essencial",
    "nivel120": null,
    "min": 3,
@@ -15891,7 +15891,7 @@
    "id": "c12p32",
    "cap": 12,
    "n": 32,
-   "titulo": "Cada árvore deixa de fora cerca de 37% das instâncias",
+   "titulo": "Com amostras do tamanho do treino, cada árvore deixa de fora cerca de 37%",
    "nivel": "complementar",
    "nivel120": null,
    "min": 3,
@@ -15940,7 +15940,7 @@
    "id": "c12p33",
    "cap": 12,
    "n": 33,
-   "titulo": "A validação out of bag antecipa o teste",
+   "titulo": "A validação out of bag antecipa o teste?",
    "nivel": "essencial",
    "nivel120": null,
    "min": 3,
@@ -16390,7 +16390,7 @@
    "id": "c12p42",
    "cap": 12,
    "n": 42,
-   "titulo": "Fora do tempo, todo modelo perde discriminação",
+   "titulo": "Fora do tempo, os três modelos do caso perdem discriminação",
    "nivel": "essencial",
    "nivel120": null,
    "min": 3,
@@ -16439,7 +16439,7 @@
    "id": "c12p43",
    "cap": 12,
    "n": 43,
-   "titulo": "Sobreajuste: fora do tempo, as faixas se aproximam",
+   "titulo": "Fora do tempo, as faixas de score se aproximam",
    "nivel": "essencial",
    "nivel120": null,
    "min": 4,
@@ -16553,10 +16553,10 @@
    "guia": {
     "funcao": "Mostrar que as três regras concentram os maus; a diferença entre elas estará no volume.",
     "pre": "Slide 40 (precisão como taxa de maus no grupo recusado).",
-    "conducao": "Curto prazo (três primeiras parcelas, target_never_paid): o grupo removido tem 22,7% de maus na política BACEN, 18,0% no Never Paid e 17,8% na combinação, contra 5,1% a 6,0% no restante e 7,1% na base. A política recusa um grupo 3,8 vezes mais arriscado que o mantido. Longo prazo (target_60ever9p): 61,6%, 53,9% e 54,0% no corte, contra 30,1% a 31,6% no restante. Reforce que é comparação entre grupos observados, sem efeito causal. O volume fica de fora de propósito: é a pergunta do slide 47.",
+    "conducao": "Curto prazo (três primeiras parcelas, target_never_paid): o grupo removido tem 22,7% de maus na política BACEN, 18,0% no Never Paid e 17,8% na regra conjunta, contra 5,1% a 6,0% no restante e 7,1% na base. A política recusa um grupo 3,8 vezes mais arriscado que o mantido. Longo prazo (target_60ever9p): 61,6%, 53,9% e 54,0% no corte, contra 30,1% a 31,6% no restante. Reforce que é comparação entre grupos observados, sem efeito causal. O volume fica de fora de propósito: é a pergunta do slide 47.",
     "leitura": "Barras agrupadas por regra: corte em âmbar, restante em azul, referência da base na legenda; tabela da aula com as três taxas; a razão entre corte e restante da regra em foco.",
     "pergunta": "A regra com maior taxa de maus no corte é a que evita mais maus?",
-    "resposta": "Não necessariamente: a política tem a maior precisão, mas o número de maus evitados depende também de quantos ela recusa. O slide 47 mostra que a combinação captura mais.",
+    "resposta": "Não necessariamente: a política tem a maior precisão, mas o número de maus evitados depende também de quantos ela recusa. O slide 47 mostra que a regra conjunta captura mais.",
     "erros": [
      {
       "alt": "Ler a taxa no restante como recall",
@@ -16570,7 +16570,7 @@
      }
     ],
     "interacao": "Seletor de horizonte que redesenha as barras; clique numa regra na tabela ou no gráfico. Restaurar volta ao curto prazo com a política em foco.",
-    "verificacao": "O aluno calcula a razão entre corte e restante da combinação no curto prazo: 17,8% ÷ 5,1%, cerca de 3,5 vezes.",
+    "verificacao": "O aluno calcula a razão entre corte e restante da regra conjunta no curto prazo: 17,8% ÷ 5,1%, cerca de 3,5 vezes.",
     "transicao": "Que pergunta do comitê cada número responde?"
    },
    "html": "<div class=\"painel\"><p>Ler a taxa de maus no grupo removido contra a do grupo mantido nas três regras, nos dois horizontes.</p><p class=\"nota\">Quadro interativo do capítulo 12 na plataforma.</p></div>",
@@ -16652,15 +16652,15 @@
    "guia": {
     "funcao": "Exercício da aula: transformar as métricas em uma recomendação ao comitê.",
     "pre": "Slides 40, 45 e 46.",
-    "conducao": "Peça a escolha antes de revelar. Curto prazo: a política recusa 6,6% com precisão de 22,7% e recall de 21,2%; o Never Paid recusa 11,7%, com 18,0% e 29,6%; a combinação recusa 15,6%, com 17,8% e 38,9%. A combinação quase dobra o recall da política (1,8 vez), mas passa da meta. Só a política cumpre a meta de 10%. No longo prazo a ordem se mantém: política com 8,3% de volume, combinação com 16,9% e recall de 26,7%; 425 contratos sem classificação ficam fora de precisão e recall. IV: 0,240, 0,248 e 0,347 no curto prazo (médio, médio, forte pela régua de Siddiqi). A recomendação depende do que o comitê aceita trocar.",
+    "conducao": "Peça a escolha antes de revelar. Curto prazo: a política recusa 6,6% com precisão de 22,7% e recall de 21,2%; o Never Paid, no corte que o material usou, recusa 11,7%, com 18,0% e 29,6%; a regra conjunta (política e modelo) recusa 15,6%, com 17,8% e 38,9%. O volume de uma regra com modelo é escolha de limiar (slides 17 e 18): o Never Paid poderia cortar abaixo de 10%, mas o material não traz o recall nesse corte. A conta que decide: a regra conjunta recusa 6.325 bons a mais para evitar 1.036 maus a mais que a política; só compensa se um mau aprovado custar mais que 6,1 bons recusados (contra a política, o Never Paid pede 7,5). No corte do material, só a política cabe na meta de 10%. IV: 0,240, 0,248 e 0,347 no curto prazo.",
     "leitura": "Gráfico de volume do corte (x) contra recall (y), com a meta de 10% em âmbar e a região fora da meta sombreada; tabela com volume, precisão, recall, maus no restante e IV; seletor de horizonte.",
-    "pergunta": "Que argumento levaria o comitê a aceitar a combinação mesmo acima da meta?",
-    "resposta": "Um custo de mau aprovado alto o bastante para que os maus evitados a mais (recall de 38,9% contra 21,2%) compensem os bons recusados a mais; é a conta do slide 16 aplicada ao corte.",
+    "pergunta": "Que argumento levaria o comitê a aceitar a regra conjunta mesmo acima da meta?",
+    "resposta": "A razão de custos: se um mau aprovado custa mais que cerca de 6,1 bons recusados, a regra conjunta vence a política mesmo acima da meta; abaixo disso, a política vence e ainda cumpre a meta. É a conta do slide 16 aplicada ao corte.",
     "erros": [
      {
       "alt": "Never Paid, porque usa um modelo",
-      "confusao": "Toma o uso de modelo como garantia de regra melhor.",
-      "intervencao": "Mostre que ela passa da meta e tem precisão menor que a da política."
+      "confusao": "Toma o volume de 11,7% como propriedade do modelo, quando é escolha de limiar.",
+      "intervencao": "Lembre os slides 17 e 18: com outro limiar o modelo recusaria menos; compare as regras no mesmo volume ou pela razão de custos."
      },
      {
       "alt": "Política e modelo, porque tem o maior recall",
@@ -16701,7 +16701,7 @@
    "guia": {
     "funcao": "Síntese da aula, bloco a bloco.",
     "pre": "Os quatro blocos.",
-    "conducao": "Classificação: uma previsão precisa de alvo e amostra definidos; 9,0% das imagens de treino são 5 (5.421 de 60.000). Desempenho: acurácia, precisão e recall respondem a perguntas distintas; 95,7% contra 91,0% do trivial. Ensembles: a combinação explora a diversidade de erros; o voto suave acerta 114 de 125, contra 111 do melhor isolado. Crédito: o limiar e a validação no tempo conectam o modelo à decisão; a combinação captura 38,9% dos maus recusando 15,6%. Para cada linha, leia o que ainda falta: o alvo muda o problema (7,1% contra 34,1% de maus), o custo de cada erro em reais, a validação no tempo dos ensembles, a separação entre sobreajuste e população.",
+    "conducao": "Classificação: uma previsão precisa de alvo e amostra definidos; 9,0% das imagens de treino são 5 (5.421 de 60.000). Desempenho: acurácia, precisão e recall respondem a perguntas distintas; 95,7% contra 91,0% do trivial. Ensembles: a regra conjunta explora a diversidade de erros; o voto suave acerta 114 de 125, contra 111 do melhor isolado. Crédito: o limiar e a validação no tempo conectam o modelo à decisão; a regra conjunta captura 38,9% dos maus recusando 15,6%. Para cada linha, leia o que ainda falta: o alvo muda o problema (7,1% contra 34,1% de maus), o custo de cada erro em reais, a validação no tempo dos ensembles, a separação entre sobreajuste e população.",
     "leitura": "Quatro linhas com o número do bloco, a frase da aula e o número que a sustenta; à direita, o que ainda falta para a linha em foco e o link para o bloco.",
     "pergunta": "Qual das quatro respostas você menos confiaria numa carteira real, e por quê?",
     "resposta": "Resposta aberta; a mais frágil costuma ser a de crédito, porque a validação fora do tempo mostrou quedas de até 22,5% na AUC e a causa ainda não foi separada.",
@@ -16799,7 +16799,7 @@
    "guia": {
     "funcao": "Apêndice de conferência: todos os números do bloco saem destas contagens.",
     "pre": "Slides 45 e 47.",
-    "conducao": "No curto prazo, 82.458 contratos e 5.865 maus; a política remove 5.479 contratos (6,64%), com 1.245 maus; WoE de −1,35 no grupo removido e IV de 0,240. Refaça a precisão: 1.245 ÷ 5.479 = 22,7%. No longo prazo, 61.563 contratos, 20.856 maus entre 61.138 classificados; 425 contratos não são bons nem maus e ficam fora de precisão e recall, e o material não informa o motivo. IV pela régua de Siddiqi: fraco abaixo de 0,1, médio de 0,1 a 0,3, forte acima. No longo prazo, o Never Paid cai para fraco (0,099), e a combinação segue líder em recall (26,7%).",
+    "conducao": "No curto prazo, 82.458 contratos e 5.865 maus; a política remove 5.479 contratos (6,64%), com 1.245 maus; WoE de −1,35 no grupo removido e IV de 0,240. Refaça a precisão: 1.245 ÷ 5.479 = 22,7%. No longo prazo, 61.563 contratos, 20.856 maus entre 61.138 classificados; 425 contratos não são bons nem maus e ficam fora de precisão e recall, e o material não informa o motivo. IV pela régua de Siddiqi: fraco abaixo de 0,1, médio de 0,1 a 0,3, forte acima. No longo prazo, o Never Paid cai para fraco (0,099), e a regra conjunta segue líder em recall (26,7%).",
     "leitura": "Tabela por regra e grupo com contratos, bons, maus, população, WoE, taxa de maus e IV; tabela de corte com volume, precisão, recall, maus no restante e IV; régua de IV com as três regras.",
     "pergunta": "Por que o IV do Never Paid cai de médio para fraco no longo prazo?",
     "resposta": "Porque a regra foi feita para o alvo de curto prazo (não pagar as primeiras parcelas); no alvo de longo prazo, a separação entre bons e maus que ela produz é menor.",
@@ -16816,7 +16816,7 @@
      }
     ],
     "interacao": "Seletor de horizonte que troca as duas tabelas e a régua. Restaurar volta ao curto prazo.",
-    "verificacao": "O aluno refaz o recall da combinação no curto prazo: 2.281 ÷ 5.865 = 38,9%.",
+    "verificacao": "O aluno refaz o recall da regra conjunta no curto prazo: 2.281 ÷ 5.865 = 38,9%.",
     "transicao": "A figura por safra do exemplo de sobreajuste."
    },
    "html": "<div class=\"painel\"><p>Conferir, a partir das contagens do caso, volume, precisão, recall, WoE e IV de cada regra nos dois horizontes.</p><p class=\"nota\">Quadro interativo do capítulo 12 na plataforma.</p></div>",

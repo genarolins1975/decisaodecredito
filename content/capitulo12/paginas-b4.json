@@ -1,7 +1,9 @@
 {
  "paginas": {
   "c12p39": {
-   "t": { "exp": 2 },
+   "t": {
+    "exp": 2
+   },
    "aprendizado": "Reconhecer que a decisão de corte combina três pratos: discriminação do score, estabilidade no tempo e volume de recusas.",
    "apoio": "Observe a barra do caso (82.458 contratos, 7,1% de maus) e o limite de corte em 10%; abra um dos três pratos para ver onde ele é medido.",
    "conexao": "O slide 40 define o que o corte precisa acertar.",
@@ -13,8 +15,16 @@
     "pergunta": "Se o corte pode remover menos de 10% da base e 7,1% são maus, um corte perfeito evitaria todos os maus?",
     "resposta": "Em tese, um corte que recusasse exatamente os 5.865 maus caberia na meta; na prática o score erra, e parte do volume recusado são bons. Por isso precisão, recall e volume precisam ser lidos juntos.",
     "erros": [
-     { "alt": "Achar que basta a AUC para escolher o corte", "confusao": "Confunde ordenação com decisão.", "intervencao": "Aponte o terceiro prato: a mesma AUC admite cortes com volumes muito diferentes." },
-     { "alt": "Ler 7,1% como a parcela que o corte vai recusar", "confusao": "Confunde taxa de maus com volume do corte.", "intervencao": "Mostre que a barra vinho e a linha âmbar medem coisas diferentes." }
+     {
+      "alt": "Achar que basta a AUC para escolher o corte",
+      "confusao": "Confunde ordenação com decisão.",
+      "intervencao": "Aponte o terceiro prato: a mesma AUC admite cortes com volumes muito diferentes."
+     },
+     {
+      "alt": "Ler 7,1% como a parcela que o corte vai recusar",
+      "confusao": "Confunde taxa de maus com volume do corte.",
+      "intervencao": "Mostre que a barra vinho e a linha âmbar medem coisas diferentes."
+     }
     ],
     "interacao": "Slide de navegação: cada prato e cada passo do fluxo é um link para o slide em que o assunto é tratado.",
     "verificacao": "O aluno nomeia os três pratos e a métrica de cada um.",
@@ -22,7 +32,11 @@
    }
   },
   "c12p40": {
-   "t": { "exp": 1, "disc": 1, "prat": 1 },
+   "t": {
+    "exp": 1,
+    "disc": 1,
+    "prat": 1
+   },
    "aprendizado": "Ligar cada exigência do caso à métrica que a mede: concentrar o risco é precisão, remover menos de 10% é volume, evitar maus é recall.",
    "apoio": "Para cada exigência, escolha uma métrica; leia o retorno e, se errou, tente outra até as três ficarem certas.",
    "conexao": "Antes de comparar as regras, o slide 41 mostra como validar o modelo no tempo.",
@@ -34,9 +48,21 @@
     "pergunta": "Que métrica sobe quando o corte fica maior, e qual tende a cair?",
     "resposta": "O recall só pode subir ou ficar igual ao recusar mais; a precisão tende a cair, porque entram contratos de menor risco. O volume, por definição, sobe.",
     "erros": [
-     { "alt": "Concentrar o risco = recall", "confusao": "Confunde captura dos maus com pureza do grupo recusado.", "intervencao": "Lembre que recusar todos dá recall máximo e precisão igual à taxa da base, 7,1%." },
-     { "alt": "Remover menos de 10% = recall", "confusao": "Confunde o denominador: população contra maus.", "intervencao": "Escreva as duas contas: recusados ÷ contratos e maus recusados ÷ maus." },
-     { "alt": "Qualquer exigência = AUC", "confusao": "Confunde ordenação em todos os limiares com um corte específico.", "intervencao": "Mostre que a AUC não muda quando o corte muda; as três métricas, sim." }
+     {
+      "alt": "Concentrar o risco = recall",
+      "confusao": "Confunde captura dos maus com pureza do grupo recusado.",
+      "intervencao": "Lembre que recusar todos dá recall máximo e precisão igual à taxa da base, 7,1%."
+     },
+     {
+      "alt": "Remover menos de 10% = recall",
+      "confusao": "Confunde o denominador: população contra maus.",
+      "intervencao": "Escreva as duas contas: recusados ÷ contratos e maus recusados ÷ maus."
+     },
+     {
+      "alt": "Qualquer exigência = AUC",
+      "confusao": "Confunde ordenação em todos os limiares com um corte específico.",
+      "intervencao": "Mostre que a AUC não muda quando o corte muda; as três métricas, sim."
+     }
     ],
     "interacao": "Uma escolha por exigência, com retorno que nomeia a confusão e Tentar outra na linha errada. Restaurar limpa as três.",
     "verificacao": "O aluno escreve a conta de precisão, recall e volume com o mau como positivo.",
@@ -44,7 +70,11 @@
    }
   },
   "c12p41": {
-   "t": { "exp": 1, "disc": 1, "prat": 1 },
+   "t": {
+    "exp": 1,
+    "disc": 1,
+    "prat": 1
+   },
    "aprendizado": "Explicar por que a validação de crédito se faz em safras posteriores ao treino, e não em safras sorteadas.",
    "apoio": "Mova o início da validação e responda à previsão; no acerto, troque para validação sorteada e conte quantas safras de validação ficam antes da última safra de treino.",
    "conexao": "O slide 42 mede quanto a AUC cai nas safras fora do tempo.",
@@ -56,8 +86,16 @@
     "pergunta": "Por que não sortear a validação entre todas as safras?",
     "resposta": "Porque a validação sorteada fica no período do treino: mede o modelo numa população que ele já conhece e não testa se a ordenação sobrevive a safras futuras, que são as que a concessão vai receber.",
     "erros": [
-     { "alt": "Sobrariam poucas safras para o treino", "confusao": "Confunde quantidade com período.", "intervencao": "Mostre que o seletor sorteia o mesmo número de safras." },
-     { "alt": "O sorteio muda a taxa de maus da validação", "confusao": "Confunde amostra estratificada com amostra no tempo.", "intervencao": "Lembre que, em média, o sorteio preserva a proporção; o problema é a data." }
+     {
+      "alt": "Sobrariam poucas safras para o treino",
+      "confusao": "Confunde quantidade com período.",
+      "intervencao": "Mostre que o seletor sorteia o mesmo número de safras."
+     },
+     {
+      "alt": "O sorteio muda a taxa de maus da validação",
+      "confusao": "Confunde amostra estratificada com amostra no tempo.",
+      "intervencao": "Lembre que, em média, o sorteio preserva a proporção; o problema é a data."
+     }
     ],
     "interacao": "Controle do início da validação; previsão com retorno; no acerto, seletor entre fora do tempo e sorteada. Restaurar volta a 8 de 12 safras e à previsão aberta.",
     "verificacao": "O aluno desenha a divisão de treino e validação de uma carteira com 24 safras mensais.",
@@ -65,7 +103,10 @@
    }
   },
   "c12p42": {
-   "t": { "exp": 2, "disc": 1 },
+   "t": {
+    "exp": 2,
+    "disc": 1
+   },
    "aprendizado": "Ler a perda de AUC e de Gini fora do tempo e distinguir quedas moderadas (5,9% e 8,9%) da queda de 22,5% do exemplo de sobreajuste.",
    "apoio": "Compare os halteres de treino e validação; troque a medida para Gini e clique num modelo para ver as duas quedas dele.",
    "conexao": "O slide 43 abre o exemplo de 22,5%.",
@@ -77,8 +118,16 @@
     "pergunta": "O modelo com maior AUC no treino é o melhor para levar à concessão?",
     "resposta": "Não necessariamente: o exemplo BVS tem a maior AUC no treino (0,832) e termina abaixo do modelo de alta renda na validação (0,645 contra 0,665).",
     "erros": [
-     { "alt": "Comparar a queda do Gini de um modelo com a queda da AUC de outro", "confusao": "Mistura réguas com zeros diferentes.", "intervencao": "Mostre os dois números do BVS lado a lado: 22,5% e 56,3%." },
-     { "alt": "Concluir que todo modelo com queda é sobreajustado", "confusao": "Confunde perda esperada com sobreajuste.", "intervencao": "Compare 5,9% e 8,9% com 22,5%; o slide 44 discute outra causa possível." }
+     {
+      "alt": "Comparar a queda do Gini de um modelo com a queda da AUC de outro",
+      "confusao": "Mistura réguas com zeros diferentes.",
+      "intervencao": "Mostre os dois números do BVS lado a lado: 22,5% e 56,3%."
+     },
+     {
+      "alt": "Concluir que todo modelo com queda é sobreajustado",
+      "confusao": "Confunde perda esperada com sobreajuste.",
+      "intervencao": "Compare 5,9% e 8,9% com 22,5%; o slide 44 discute outra causa possível."
+     }
     ],
     "interacao": "Seletor AUC ou Gini que reescala o eixo e as quedas; clique num modelo na tabela. Restaurar volta a AUC com o BVS em foco.",
     "verificacao": "O aluno calcula o Gini de validação do modelo de baixa renda: 2 × 0,627 − 1 = 0,254.",
@@ -86,7 +135,11 @@
    }
   },
   "c12p43": {
-   "t": { "exp": 2, "disc": 1, "ex": 1 },
+   "t": {
+    "exp": 2,
+    "disc": 1,
+    "ex": 1
+   },
    "aprendizado": "Reconhecer o sobreajuste na taxa de maus por faixa: a escada íngreme do treino achata na validação.",
    "apoio": "Antes de ler a figura, preveja como seria a taxa de maus por faixa se o score ainda ordenasse bem; depois leia cada metade da figura.",
    "conexao": "O slide 44 pergunta se a queda é sobreajuste ou mudança na população.",
@@ -98,8 +151,16 @@
     "pergunta": "Uma escada com a mesma inclinação e todas as taxas mais baixas seria um problema de ordenação?",
     "resposta": "Não: a ordenação está na inclinação. Taxas uniformemente mais baixas com a mesma inclinação indicam mudança de nível, um problema de calibração.",
     "erros": [
-     { "alt": "Todas as faixas com a mesma taxa", "confusao": "Confunde ordenar bem com ser estável.", "intervencao": "Lembre que faixas iguais são um score de AUC 0,5." },
-     { "alt": "A mesma escada, mais baixa", "confusao": "Confunde ordenação com nível.", "intervencao": "Aponte a inclinação das barras verdes contra as azuis." }
+     {
+      "alt": "Todas as faixas com a mesma taxa",
+      "confusao": "Confunde ordenar bem com ser estável.",
+      "intervencao": "Lembre que faixas iguais são um score de AUC 0,5."
+     },
+     {
+      "alt": "A mesma escada, mais baixa",
+      "confusao": "Confunde ordenação com nível.",
+      "intervencao": "Aponte a inclinação das barras verdes contra as azuis."
+     }
     ],
     "interacao": "Previsão com retorno; no acerto, AUC de treino e validação e um seletor entre as duas metades da figura. Restaurar volta à previsão aberta.",
     "verificacao": "O aluno descreve, sem números, o que muda entre as barras azuis e verdes.",
@@ -107,7 +168,10 @@
    }
   },
   "c12p44": {
-   "t": { "disc": 2, "ex": 1 },
+   "t": {
+    "disc": 2,
+    "ex": 1
+   },
    "aprendizado": "Separar as hipóteses de sobreajuste e de mudança na população pelas evidências que cada uma prevê.",
    "apoio": "Escolha cada evidência, classifique como apoia sobreajuste, não separa ou apoia mudança na população, e leia o porquê.",
    "conexao": "Com as duas checagens em mente, o slide 45 volta às regras de corte.",
@@ -119,8 +183,16 @@
     "pergunta": "Que dado você pediria primeiro ao time de modelagem?",
     "resposta": "O desempenho de um modelo simples na mesma janela fora do tempo e o índice de estabilidade das variáveis de entrada: o primeiro isola o modelo, o segundo mede a população.",
     "erros": [
-     { "alt": "Faixas boas piorando provam mudança na população", "confusao": "Toma uma evidência compatível com as duas hipóteses como prova de uma.", "intervencao": "Pergunte o que um modelo que decorou o treino faria com as faixas boas fora dele." },
-     { "alt": "Queda parecida em todos os modelos é sobreajuste geral", "confusao": "Ignora a causa comum nos dados.", "intervencao": "Lembre que modelos simples sobreajustam pouco; queda igual aponta para os dados." }
+     {
+      "alt": "Faixas boas piorando provam mudança na população",
+      "confusao": "Toma uma evidência compatível com as duas hipóteses como prova de uma.",
+      "intervencao": "Pergunte o que um modelo que decorou o treino faria com as faixas boas fora dele."
+     },
+     {
+      "alt": "Queda parecida em todos os modelos é sobreajuste geral",
+      "confusao": "Ignora a causa comum nos dados.",
+      "intervencao": "Lembre que modelos simples sobreajustam pouco; queda igual aponta para os dados."
+     }
     ],
     "interacao": "Classificação de seis evidências com retorno específico por alternativa, Tentar outra e Próxima evidência; contagem na leitura. Restaurar limpa tudo.",
     "verificacao": "O aluno propõe uma evidência nova e diz qual hipótese ela apoia.",
@@ -128,28 +200,42 @@
    }
   },
   "c12p45": {
-   "t": { "exp": 2, "disc": 1 },
+   "t": {
+    "exp": 2,
+    "disc": 1
+   },
    "aprendizado": "Ler a taxa de maus no grupo removido contra a do grupo mantido nas três regras, nos dois horizontes.",
    "apoio": "Compare as barras de corte e restante; troque o horizonte e clique numa regra para ver quantas vezes o corte concentra os maus.",
    "conexao": "O slide 46 liga cada métrica a uma pergunta do comitê.",
    "guia": {
     "funcao": "Mostrar que as três regras concentram os maus; a diferença entre elas estará no volume.",
     "pre": "Slide 40 (precisão como taxa de maus no grupo recusado).",
-    "conducao": "Curto prazo (três primeiras parcelas, target_never_paid): o grupo removido tem 22,7% de maus na política BACEN, 18,0% no Never Paid e 17,8% na combinação, contra 5,1% a 6,0% no restante e 7,1% na base. A política recusa um grupo 3,8 vezes mais arriscado que o mantido. Longo prazo (target_60ever9p): 61,6%, 53,9% e 54,0% no corte, contra 30,1% a 31,6% no restante. Reforce que é comparação entre grupos observados, sem efeito causal. O volume fica de fora de propósito: é a pergunta do slide 47.",
+    "conducao": "Curto prazo (três primeiras parcelas, target_never_paid): o grupo removido tem 22,7% de maus na política BACEN, 18,0% no Never Paid e 17,8% na regra conjunta, contra 5,1% a 6,0% no restante e 7,1% na base. A política recusa um grupo 3,8 vezes mais arriscado que o mantido. Longo prazo (target_60ever9p): 61,6%, 53,9% e 54,0% no corte, contra 30,1% a 31,6% no restante. Reforce que é comparação entre grupos observados, sem efeito causal. O volume fica de fora de propósito: é a pergunta do slide 47.",
     "leitura": "Barras agrupadas por regra: corte em âmbar, restante em azul, referência da base na legenda; tabela da aula com as três taxas; a razão entre corte e restante da regra em foco.",
     "pergunta": "A regra com maior taxa de maus no corte é a que evita mais maus?",
-    "resposta": "Não necessariamente: a política tem a maior precisão, mas o número de maus evitados depende também de quantos ela recusa. O slide 47 mostra que a combinação captura mais.",
+    "resposta": "Não necessariamente: a política tem a maior precisão, mas o número de maus evitados depende também de quantos ela recusa. O slide 47 mostra que a regra conjunta captura mais.",
     "erros": [
-     { "alt": "Ler a taxa no restante como recall", "confusao": "Confunde taxa de maus do mantido com parcela dos maus capturada.", "intervencao": "Escreva as duas contas no quadro." },
-     { "alt": "Concluir que a política causa a inadimplência", "confusao": "Lê associação como efeito.", "intervencao": "Aponte a nota: grupos observados, sem efeito causal." }
+     {
+      "alt": "Ler a taxa no restante como recall",
+      "confusao": "Confunde taxa de maus do mantido com parcela dos maus capturada.",
+      "intervencao": "Escreva as duas contas no quadro."
+     },
+     {
+      "alt": "Concluir que a política causa a inadimplência",
+      "confusao": "Lê associação como efeito.",
+      "intervencao": "Aponte a nota: grupos observados, sem efeito causal."
+     }
     ],
     "interacao": "Seletor de horizonte que redesenha as barras; clique numa regra na tabela ou no gráfico. Restaurar volta ao curto prazo com a política em foco.",
-    "verificacao": "O aluno calcula a razão entre corte e restante da combinação no curto prazo: 17,8% ÷ 5,1%, cerca de 3,5 vezes.",
+    "verificacao": "O aluno calcula a razão entre corte e restante da regra conjunta no curto prazo: 17,8% ÷ 5,1%, cerca de 3,5 vezes.",
     "transicao": "Que pergunta do comitê cada número responde?"
    }
   },
   "c12p46": {
-   "t": { "exp": 2, "disc": 1 },
+   "t": {
+    "exp": 2,
+    "disc": 1
+   },
    "aprendizado": "Associar precisão, recall, AUC e Gini, validação fora do tempo e volume do corte às perguntas do comitê de crédito.",
    "apoio": "Clique em cada métrica para ver a conta em crédito, o valor no detector de 5 e o slide em que ela nasceu.",
    "conexao": "No slide 47, precisão, recall e volume escolhem a regra.",
@@ -161,8 +247,16 @@
     "pergunta": "Que métrica o comitê usaria para decidir quanto negócio está disposto a perder?",
     "resposta": "O volume do corte, lido junto com o recall: quanto se recusa e quantos maus isso evita.",
     "erros": [
-     { "alt": "AUC responde quantos maus o corte evita", "confusao": "Confunde ordenação com o resultado de um corte.", "intervencao": "Mostre que a AUC não depende do corte escolhido." },
-     { "alt": "Validação fora do tempo é uma métrica a mais", "confusao": "Confunde uma métrica com o lugar onde ela é medida.", "intervencao": "Diga que é a mesma AUC, medida em safras posteriores." }
+     {
+      "alt": "AUC responde quantos maus o corte evita",
+      "confusao": "Confunde ordenação com o resultado de um corte.",
+      "intervencao": "Mostre que a AUC não depende do corte escolhido."
+     },
+     {
+      "alt": "Validação fora do tempo é uma métrica a mais",
+      "confusao": "Confunde uma métrica com o lugar onde ela é medida.",
+      "intervencao": "Diga que é a mesma AUC, medida em safras posteriores."
+     }
     ],
     "interacao": "Seleção de linha na tabela, com detalhe e link para o slide de origem. Restaurar volta à precisão.",
     "verificacao": "O aluno escreve as três contas do corte com os nomes do crédito.",
@@ -170,20 +264,32 @@
    }
   },
   "c12p47": {
-   "t": { "ex": 2, "disc": 2, "exp": 1 },
+   "t": {
+    "ex": 2,
+    "disc": 2,
+    "exp": 1
+   },
    "aprendizado": "Escolher uma regra de corte pesando precisão, recall e volume contra a meta de remover menos de 10% da população.",
    "apoio": "Escolha uma regra antes de ver os números; depois leia o gráfico de volume contra recall, a tabela e troque o horizonte.",
    "conexao": "O slide 48 resume a aula com os números de cada bloco.",
    "guia": {
     "funcao": "Exercício da aula: transformar as métricas em uma recomendação ao comitê.",
     "pre": "Slides 40, 45 e 46.",
-    "conducao": "Peça a escolha antes de revelar. Curto prazo: a política recusa 6,6% com precisão de 22,7% e recall de 21,2%; o Never Paid recusa 11,7%, com 18,0% e 29,6%; a combinação recusa 15,6%, com 17,8% e 38,9%. A combinação quase dobra o recall da política (1,8 vez), mas passa da meta. Só a política cumpre a meta de 10%. No longo prazo a ordem se mantém: política com 8,3% de volume, combinação com 16,9% e recall de 26,7%; 425 contratos sem classificação ficam fora de precisão e recall. IV: 0,240, 0,248 e 0,347 no curto prazo (médio, médio, forte pela régua de Siddiqi). A recomendação depende do que o comitê aceita trocar.",
+    "conducao": "Peça a escolha antes de revelar. Curto prazo: a política recusa 6,6% com precisão de 22,7% e recall de 21,2%; o Never Paid, no corte que o material usou, recusa 11,7%, com 18,0% e 29,6%; a regra conjunta (política e modelo) recusa 15,6%, com 17,8% e 38,9%. O volume de uma regra com modelo é escolha de limiar (slides 17 e 18): o Never Paid poderia cortar abaixo de 10%, mas o material não traz o recall nesse corte. A conta que decide: a regra conjunta recusa 6.325 bons a mais para evitar 1.036 maus a mais que a política; só compensa se um mau aprovado custar mais que 6,1 bons recusados (contra a política, o Never Paid pede 7,5). No corte do material, só a política cabe na meta de 10%. IV: 0,240, 0,248 e 0,347 no curto prazo.",
     "leitura": "Gráfico de volume do corte (x) contra recall (y), com a meta de 10% em âmbar e a região fora da meta sombreada; tabela com volume, precisão, recall, maus no restante e IV; seletor de horizonte.",
-    "pergunta": "Que argumento levaria o comitê a aceitar a combinação mesmo acima da meta?",
-    "resposta": "Um custo de mau aprovado alto o bastante para que os maus evitados a mais (recall de 38,9% contra 21,2%) compensem os bons recusados a mais; é a conta do slide 16 aplicada ao corte.",
+    "pergunta": "Que argumento levaria o comitê a aceitar a regra conjunta mesmo acima da meta?",
+    "resposta": "A razão de custos: se um mau aprovado custa mais que cerca de 6,1 bons recusados, a regra conjunta vence a política mesmo acima da meta; abaixo disso, a política vence e ainda cumpre a meta. É a conta do slide 16 aplicada ao corte.",
     "erros": [
-     { "alt": "Never Paid, porque usa um modelo", "confusao": "Toma o uso de modelo como garantia de regra melhor.", "intervencao": "Mostre que ela passa da meta e tem precisão menor que a da política." },
-     { "alt": "Política e modelo, porque tem o maior recall", "confusao": "Ignora a restrição de volume.", "intervencao": "Aponte o ponto na região fora da meta." }
+     {
+      "alt": "Never Paid, porque usa um modelo",
+      "confusao": "Toma o volume de 11,7% como propriedade do modelo, quando é escolha de limiar.",
+      "intervencao": "Lembre os slides 17 e 18: com outro limiar o modelo recusaria menos; compare as regras no mesmo volume ou pela razão de custos."
+     },
+     {
+      "alt": "Política e modelo, porque tem o maior recall",
+      "confusao": "Ignora a restrição de volume.",
+      "intervencao": "Aponte o ponto na região fora da meta."
+     }
     ],
     "interacao": "Previsão com quatro alternativas; qualquer escolha revela o gráfico e a tabela; seletor de horizonte. Restaurar volta à previsão aberta no curto prazo.",
     "verificacao": "O aluno escreve uma recomendação de duas frases com volume, precisão e recall.",
@@ -191,20 +297,31 @@
    }
   },
   "c12p48": {
-   "t": { "exp": 2, "disc": 1 },
+   "t": {
+    "exp": 2,
+    "disc": 1
+   },
    "aprendizado": "Responder às quatro perguntas da aula com o número que sustenta cada resposta e o que ainda falta.",
    "apoio": "Clique em cada linha para ver o que ainda falta para a resposta valer numa carteira real e volte ao bloco pelo link.",
    "conexao": "O slide 49 volta à pergunta de abertura.",
    "guia": {
     "funcao": "Síntese da aula, bloco a bloco.",
     "pre": "Os quatro blocos.",
-    "conducao": "Classificação: uma previsão precisa de alvo e amostra definidos; 9,0% das imagens de treino são 5 (5.421 de 60.000). Desempenho: acurácia, precisão e recall respondem a perguntas distintas; 95,7% contra 91,0% do trivial. Ensembles: a combinação explora a diversidade de erros; o voto suave acerta 114 de 125, contra 111 do melhor isolado. Crédito: o limiar e a validação no tempo conectam o modelo à decisão; a combinação captura 38,9% dos maus recusando 15,6%. Para cada linha, leia o que ainda falta: o alvo muda o problema (7,1% contra 34,1% de maus), o custo de cada erro em reais, a validação no tempo dos ensembles, a separação entre sobreajuste e população.",
+    "conducao": "Classificação: uma previsão precisa de alvo e amostra definidos; 9,0% das imagens de treino são 5 (5.421 de 60.000). Desempenho: acurácia, precisão e recall respondem a perguntas distintas; 95,7% contra 91,0% do trivial. Ensembles: a regra conjunta explora a diversidade de erros; o voto suave acerta 114 de 125, contra 111 do melhor isolado. Crédito: o limiar e a validação no tempo conectam o modelo à decisão; a regra conjunta captura 38,9% dos maus recusando 15,6%. Para cada linha, leia o que ainda falta: o alvo muda o problema (7,1% contra 34,1% de maus), o custo de cada erro em reais, a validação no tempo dos ensembles, a separação entre sobreajuste e população.",
     "leitura": "Quatro linhas com o número do bloco, a frase da aula e o número que a sustenta; à direita, o que ainda falta para a linha em foco e o link para o bloco.",
     "pergunta": "Qual das quatro respostas você menos confiaria numa carteira real, e por quê?",
     "resposta": "Resposta aberta; a mais frágil costuma ser a de crédito, porque a validação fora do tempo mostrou quedas de até 22,5% na AUC e a causa ainda não foi separada.",
     "erros": [
-     { "alt": "Tomar o ganho do ensemble como ganho garantido em crédito", "confusao": "Generaliza das luas para a carteira.", "intervencao": "Lembre que o ganho foi de 3 acertos em 125, num problema sintético." },
-     { "alt": "Achar que a síntese dispensa o custo dos erros", "confusao": "Esquece que o limiar depende do custo.", "intervencao": "Volte ao slide 16." }
+     {
+      "alt": "Tomar o ganho do ensemble como ganho garantido em crédito",
+      "confusao": "Generaliza das luas para a carteira.",
+      "intervencao": "Lembre que o ganho foi de 3 acertos em 125, num problema sintético."
+     },
+     {
+      "alt": "Achar que a síntese dispensa o custo dos erros",
+      "confusao": "Esquece que o limiar depende do custo.",
+      "intervencao": "Volte ao slide 16."
+     }
     ],
     "interacao": "Seleção de linha com o que ainda falta e link para o bloco. Restaurar volta à linha de Crédito.",
     "verificacao": "O aluno cita um número de cada bloco.",
@@ -212,7 +329,10 @@
    }
   },
   "c12p49": {
-   "t": { "exp": 1, "disc": 2 },
+   "t": {
+    "exp": 1,
+    "disc": 2
+   },
    "aprendizado": "Responder à pergunta de abertura com três critérios: superar o trivial, limiar com custo e ordenação estável no tempo.",
    "apoio": "Clique em cada critério para ver o número e o slide que o provou; compare com a sua resposta do slide 1 e abra o teste guardado.",
    "conexao": "Os slides 50 e 51 trazem os dados do caso e a figura por safra.",
@@ -224,8 +344,16 @@
     "pergunta": "Por que a precisão no teste (66,2%) é tão diferente da validação cruzada (83,7%) com o mesmo limiar zero?",
     "resposta": "Porque o modelo do teste foi ajustado no treino inteiro e o limiar zero cai em outro ponto da troca entre precisão e recall; o limiar precisa ser escolhido pelo custo e conferido em dados novos.",
     "erros": [
-     { "alt": "O teste de 94,9% prova que o detector é bom", "confusao": "Confunde o primeiro critério com os três.", "intervencao": "Aponte o que o teste não diz: equilíbrio de erros e tempo." },
-     { "alt": "Comparar 94,9% com o trivial do treino, 91,0%", "confusao": "Mistura bases.", "intervencao": "Use o trivial do teste, 91,1%." }
+     {
+      "alt": "O teste de 94,9% prova que o detector é bom",
+      "confusao": "Confunde o primeiro critério com os três.",
+      "intervencao": "Aponte o que o teste não diz: equilíbrio de erros e tempo."
+     },
+     {
+      "alt": "Comparar 94,9% com o trivial do treino, 91,0%",
+      "confusao": "Mistura bases.",
+      "intervencao": "Use o trivial do teste, 91,1%."
+     }
     ],
     "interacao": "Seleção dos critérios com detalhe e links; botão que abre o teste. Restaurar fecha o teste e volta ao primeiro critério, sem apagar a resposta do slide 1.",
     "verificacao": "O aluno reescreve a resposta do slide 1 usando os três critérios.",
@@ -233,28 +361,42 @@
    }
   },
   "c12p50": {
-   "t": { "exp": 2, "disc": 1 },
+   "t": {
+    "exp": 2,
+    "disc": 1
+   },
    "aprendizado": "Conferir, a partir das contagens do caso, volume, precisão, recall, WoE e IV de cada regra nos dois horizontes.",
    "apoio": "Troque o horizonte e refaça uma das contas com as contagens da tabela; veja onde cada regra cai na régua de IV.",
    "conexao": "O slide 51 mostra a figura por safra do exemplo de sobreajuste.",
    "guia": {
     "funcao": "Apêndice de conferência: todos os números do bloco saem destas contagens.",
     "pre": "Slides 45 e 47.",
-    "conducao": "No curto prazo, 82.458 contratos e 5.865 maus; a política remove 5.479 contratos (6,64%), com 1.245 maus; WoE de −1,35 no grupo removido e IV de 0,240. Refaça a precisão: 1.245 ÷ 5.479 = 22,7%. No longo prazo, 61.563 contratos, 20.856 maus entre 61.138 classificados; 425 contratos não são bons nem maus e ficam fora de precisão e recall, e o material não informa o motivo. IV pela régua de Siddiqi: fraco abaixo de 0,1, médio de 0,1 a 0,3, forte acima. No longo prazo, o Never Paid cai para fraco (0,099), e a combinação segue líder em recall (26,7%).",
+    "conducao": "No curto prazo, 82.458 contratos e 5.865 maus; a política remove 5.479 contratos (6,64%), com 1.245 maus; WoE de −1,35 no grupo removido e IV de 0,240. Refaça a precisão: 1.245 ÷ 5.479 = 22,7%. No longo prazo, 61.563 contratos, 20.856 maus entre 61.138 classificados; 425 contratos não são bons nem maus e ficam fora de precisão e recall, e o material não informa o motivo. IV pela régua de Siddiqi: fraco abaixo de 0,1, médio de 0,1 a 0,3, forte acima. No longo prazo, o Never Paid cai para fraco (0,099), e a regra conjunta segue líder em recall (26,7%).",
     "leitura": "Tabela por regra e grupo com contratos, bons, maus, população, WoE, taxa de maus e IV; tabela de corte com volume, precisão, recall, maus no restante e IV; régua de IV com as três regras.",
     "pergunta": "Por que o IV do Never Paid cai de médio para fraco no longo prazo?",
     "resposta": "Porque a regra foi feita para o alvo de curto prazo (não pagar as primeiras parcelas); no alvo de longo prazo, a separação entre bons e maus que ela produz é menor.",
     "erros": [
-     { "alt": "Calcular a população % sobre os classificados no longo prazo", "confusao": "Usa o denominador errado.", "intervencao": "Mostre que volume e população usam o total de contratos." },
-     { "alt": "Ler WoE negativo como erro", "confusao": "Não reconhece o sinal da convenção.", "intervencao": "WoE = ln(% bons ÷ % maus): negativo onde há mais maus que bons, relativamente." }
+     {
+      "alt": "Calcular a população % sobre os classificados no longo prazo",
+      "confusao": "Usa o denominador errado.",
+      "intervencao": "Mostre que volume e população usam o total de contratos."
+     },
+     {
+      "alt": "Ler WoE negativo como erro",
+      "confusao": "Não reconhece o sinal da convenção.",
+      "intervencao": "WoE = ln(% bons ÷ % maus): negativo onde há mais maus que bons, relativamente."
+     }
     ],
     "interacao": "Seletor de horizonte que troca as duas tabelas e a régua. Restaurar volta ao curto prazo.",
-    "verificacao": "O aluno refaz o recall da combinação no curto prazo: 2.281 ÷ 5.865 = 38,9%.",
+    "verificacao": "O aluno refaz o recall da regra conjunta no curto prazo: 2.281 ÷ 5.865 = 38,9%.",
     "transicao": "A figura por safra do exemplo de sobreajuste."
    }
   },
   "c12p51": {
-   "t": { "exp": 1, "disc": 1 },
+   "t": {
+    "exp": 1,
+    "disc": 1
+   },
    "aprendizado": "Ler a figura por safra do exemplo de sobreajuste: volume por faixa e taxa de maus por faixa antes e depois da linha do período fora do tempo.",
    "apoio": "Alterne entre taxa de maus e volume e leia a descrição de cada metade; volte aos slides 43 e 44 pelos links.",
    "conexao": "Fim do apêndice do caso; o slide 52 traz as referências.",
@@ -266,8 +408,16 @@
     "pergunta": "Que dado ao lado desta figura ajudaria a separar sobreajuste de mudança na população?",
     "resposta": "O desempenho de um modelo simples nas mesmas safras e a distribuição das variáveis de entrada por safra.",
     "erros": [
-     { "alt": "Ler a figura como prova de sobreajuste", "confusao": "Ignora a subida antes da linha.", "intervencao": "Aponte a safra anterior à linha nas faixas de menor risco." },
-     { "alt": "Ler o aumento de volume como queda de qualidade", "confusao": "Confunde tamanho da carteira com perfil.", "intervencao": "A figura de volume não diz o perfil dos contratos novos." }
+     {
+      "alt": "Ler a figura como prova de sobreajuste",
+      "confusao": "Ignora a subida antes da linha.",
+      "intervencao": "Aponte a safra anterior à linha nas faixas de menor risco."
+     },
+     {
+      "alt": "Ler o aumento de volume como queda de qualidade",
+      "confusao": "Confunde tamanho da carteira com perfil.",
+      "intervencao": "A figura de volume não diz o perfil dos contratos novos."
+     }
     ],
     "interacao": "Seletor entre as duas metades da figura, com leitura própria; links de volta. Restaurar volta à taxa de maus.",
     "verificacao": "O aluno descreve o que acontece com as faixas de menor risco perto da linha.",

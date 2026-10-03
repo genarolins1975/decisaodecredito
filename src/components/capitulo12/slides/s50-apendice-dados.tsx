@@ -44,7 +44,7 @@ export function S50ApendiceDados({ pagina }: { pagina?: Pagina }) {
             );
           })}</tbody>
         </table>
-        <p className="q7-k">{h === "longo" ? "Corte no longo prazo: a combinação segue líder em recall" : "Corte no curto prazo"}</p>
+        <p className="q7-k">{h === "longo" ? "Corte no longo prazo: a regra conjunta segue líder em recall" : "Corte no curto prazo"}</p>
         <table className="q7-tab q12-s50-tab">
           <thead><tr><th className="q7-t-l">Regra</th><th>Volume</th><th>Precisão</th><th>Recall</th><th>Maus no restante</th><th>IV</th></tr></thead>
           <tbody>{REGRAS.map((r) => {
@@ -62,7 +62,8 @@ export function S50ApendiceDados({ pagina }: { pagina?: Pagina }) {
           {(d) => {
             const l = d.fs * 0.8, rr = d.fs * 0.8, max = 0.4;
             const x = escala([0, max], [l, d.w - rr]);
-            const yb = d.h * 0.42, hb = d.fs * 1.5;
+            // a régua desce o bastante para os três rótulos empilhados acima dela não invadirem o título
+            const hb = d.fs * 1.5, yb = Math.min(Math.max(d.h * 0.42, d.fs * 4.3), d.h - hb - d.fs * 1.7);
             const zonas = [{ de: 0, ate: IV_FRACO, r: "fraco", c: "#EEF0F3" }, { de: IV_FRACO, ate: IV_FORTE, r: "médio", c: "#E3EEF0" }, { de: IV_FORTE, ate: max, r: "forte", c: "#CFE3E5" }];
             const ord = [...REGRAS].sort((a, b) => C[a.id].iv - C[b.id].iv);
             return (
@@ -87,7 +88,7 @@ export function S50ApendiceDados({ pagina }: { pagina?: Pagina }) {
             );
           }}
         </Grafico>
-        <p className="q7-nota">Volume: contratos no corte ÷ total. Precisão: maus ÷ classificados no corte. Recall: maus no corte ÷ todos os maus.</p>
+        <p className="q7-nota">Precisão: maus ÷ classificados no corte. Recall: maus no corte ÷ todos os maus.</p>
         <p className="q7-nota">IV: fraco abaixo de {num(IV_FRACO, 1)}, médio de {num(IV_FRACO, 1)} a {num(IV_FORTE, 1)}, forte acima (Siddiqi).</p>
         <p className="q7-nota">{sem ? <>No longo prazo, <b>{int(sem)} contratos</b> (contratos − bons − maus) não são bons nem maus e ficam fora de precisão e recall; o material não informa o motivo.</> : <>No curto prazo, todo contrato é bom ou mau: contratos = bons + maus.</>}</p>
       </Painel>

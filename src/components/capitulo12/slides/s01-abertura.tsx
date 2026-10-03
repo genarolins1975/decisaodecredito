@@ -1,7 +1,7 @@
 "use client";
 import { Kpi, LinkSlide, Painel, Previsao, Quadro, type Pagina } from "@/components/capitulo7/base";
 import { BLOCOS, PERGUNTAS, SLIDE } from "@/lib/capitulo12/roteiro";
-import { EXEMPLOS, FONTE_MNIST, M_SGD } from "@/lib/capitulo12/dados";
+import { CORTE, EXEMPLOS, FONTE_MNIST, M_SGD } from "@/lib/capitulo12/dados";
 import { Digito } from "../pecas";
 import { useRespostaAbertura } from "../estado";
 import { int, pct } from "@/lib/capitulo7/formato";
@@ -30,7 +30,7 @@ export function S01Abertura({ pagina }: { pagina?: Pagina }) {
       <Painel className="q12-s01-esq">
         <div className="q12-s01-gancho">
           <Kpi rotulo="Detector de 5 no MNIST" valor={pct(M_SGD.acuracia, 1)} detalhe={`${int(M_SGD.vp + M_SGD.vn)} acertos em ${int(M_SGD.n)} imagens`} tam="grande" />
-          <p className="q7-p">Um classificador linear olha cada imagem de algarismo escrito à mão e diz se ela é um <b>5</b>. Ele acerta quase todas.</p>
+          <p className="q7-p">Um classificador linear olha cada algarismo escrito à mão e diz se é um <b>5</b>. No crédito, a mesma pergunta vale para quem não paga: aprovar todos acerta {pct(1 - CORTE.curto.politica.taxaMaus, 1)} no caso da aula.</p>
         </div>
         <ul className="q12-s01-fila" aria-label="Doze imagens da base: seis de 5 e seis de outros algarismos">
           {FILA.map((e) => <li key={e.i}><Digito px={e.px} rotulo={`Algarismo ${e.rotulo}`} /><span>{e.rotulo === 5 ? "5" : "não 5"}</span></li>)}

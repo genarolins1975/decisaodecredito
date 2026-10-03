@@ -13,9 +13,9 @@ import { int, pct } from "@/lib/capitulo7/formato";
  * erro abrem no acerto. O experimento é uma analogia declarada no detector de 5: perder um 5 custa c alarmes falsos
  * (c de 1 a 30); custo = c × FN + FP em todas as 602 bordas do histograma da validação cruzada (limiarDeMenorCusto
  * sobre HIST), com a curva de custo entre os scores −25.000 e 10.000 e o limiar 0 (a matriz do slide 11) contra o de
- * menor custo. Estado inicial: previsão em aberto, c = 1. "Restaurar" volta a ele.
+ * menor custo. Estado inicial: previsão em aberto, c = 10 (com c = 1 o custo vira contagem de erros e o ótimo é o de maior acurácia). "Restaurar" volta a ele.
  */
-const C0 = 1;
+const C0 = 10; // começa num custo desigual: com c = 1 o menor custo é só o limiar de maior acurácia
 const ZERO = confusaoNoIndice(HIST, INDICE_ZERO);
 const I_DE = HIST.bordas.findIndex((b) => b >= -25000), I_ATE = HIST.bordas.findIndex((b) => b >= 10000);
 const CONF = Array.from({ length: I_ATE - I_DE + 1 }, (_, k) => ({ t: HIST.bordas[I_DE + k], c: confusaoNoIndice(HIST, I_DE + k) }));
@@ -51,7 +51,8 @@ export function S16Custos({ pagina }: { pagina?: Pagina }) {
   const restaurar = () => { setEsc(null); setC(C0); };
   return (
     <Quadro slug="c12p16" pagina={pagina} layout="gl"
-      conclusao={<>O limiar ótimo depende da razão entre os dois custos, e não da acurácia: com um 5 perdido valendo <b>{int(c)}</b> alarme{c > 1 ? "s" : ""} falso{c > 1 ? "s" : ""}, o menor custo está no limiar <b>{sc(t)}</b>: {int(o.custo)} contra {int(custo0)} no limiar 0 ({pct(1 - o.custo / custo0, 0)} a menos). O slide {SLIDE.c12p17.n} mostra como o limiar vira decisão.</>}
+      conclusao={c === 1 ? <>Com custos iguais, o custo é só o número de erros: o limiar de menor custo, <b>{sc(t)}</b>, é o de maior acurácia. Suba c para ver o ótimo se mover.</>
+        : <>O limiar ótimo depende da razão entre os dois custos: com um 5 perdido valendo <b>{int(c)}</b> alarmes falsos, o menor custo está no limiar <b>{sc(t)}</b>: {int(o.custo)} contra {int(custo0)} no limiar 0 ({pct(1 - o.custo / custo0, 0)} a menos). No caso de crédito, a mesma conta decide a regra de corte (slide {SLIDE.c12p47.n}).</>}
       fonte={`${FONTE_MNIST}. Analogia: custo = c × FN + FP, procurado em todas as ${int(HIST.bordas.length)} bordas do histograma de scores (contagem exata em cada borda).`}>
       <Painel className="q12-s16-esq">
         <div className="q12-s16-g">
@@ -84,7 +85,7 @@ export function S16Custos({ pagina }: { pagina?: Pagina }) {
                 <g>
                   <clipPath id="q12-s16-clip"><rect x={m.l} y={m.t} width={d.w - m.l - m.r} height={d.h - m.t - m.b} /></clipPath>
                   <Eixos x={x} y={y} xt={[-20000, -10000, 0, 10000]} yt={yt} fx={sc} fy={(v) => int(v)} yTit="Custo total = c × FN + FP" />
-                  <path className="q7-linha q7-linha--def" d={abaixoDe(pts, ym).map((tr) => caminho(tr.map((p) => ({ x: x(p.t), y: y(p.v) })))).join("")} clipPath="url(#q12-s16-clip)" />
+                  <path className="q7-linha q7-linha--ink" d={abaixoDe(pts, ym).map((tr) => caminho(tr.map((p) => ({ x: x(p.t), y: y(p.v) })))).join("")} clipPath="url(#q12-s16-clip)" />
                   <circle cx={x(0)} cy={y(custo0)} r={d.fs * 0.45} fill="#fff" stroke={COR.lim} strokeWidth={3} />
                   <text className="q7-corte-t" x={x(0) + d.fs * 0.5} y={y(custo0)} dy="-.7em">limiar 0</text>
                   <circle cx={x(t)} cy={y(o.custo)} r={d.fs * 0.45} fill={COR.lim} stroke="#fff" strokeWidth={2} />

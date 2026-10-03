@@ -28,6 +28,7 @@ export function S51ApendiceSafras({ pagina }: { pagina?: Pagina }) {
       <div className="q12-s51">
         <Painel className="q12-s51-fig">
           <Figura src="bvs-safras" alt="Exemplo de alta renda (BVS), por safra de dezembro de 2018 a outubro de 2019, com uma linha azul tracejada em agosto de 2019 que delimita o período fora do tempo. À esquerda, área empilhada do volume de contratos por faixa de score de 0 a 5; o total cresce de maio a julho e segue alto. À direita, taxa de maus de cada faixa por safra: antes da linha, as faixas ficam separadas; perto dela, as faixas 0, 1 e 2 sobem, já a partir de julho, e a faixa 5 cai em agosto, e as linhas se aproximam." credito="Caso de crédito do material da aula: exemplo de alta renda (BVS), volume e taxa de maus por safra." />
+          <ul className="q12-chave" aria-label="Rótulos da figura em português"><li><b>safra</b> mês de concessão (dezembro de 2018 a outubro de 2019)</li><li><b>fx_SCORE 0 a 5</b> faixa de score, de 0 (menor risco) a 5</li><li><b>esquerda</b> contratos por faixa</li><li><b>direita</b> taxa de maus por faixa</li><li><b>linha azul</b> início do período fora do tempo</li></ul>
         </Painel>
         <Painel tom="suave" className="q12-s51-lei">
           <div className="q12-s51-ctl">

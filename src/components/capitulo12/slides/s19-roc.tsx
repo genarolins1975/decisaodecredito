@@ -36,12 +36,12 @@ export function S19Roc({ pagina }: { pagina?: Pagina }) {
             {(x, y, d) => {
               return (
                 <g>
-                  <path d={`${caminhoRoc(pts, x, y)}L${x(pts[0].fpr)} ${y(0)}L${x(0)} ${y(0)}Z`} fill={COR.pos} fillOpacity={0.1} />
+                  <path d={`${caminhoRoc(pts, x, y)}L${x(pts[0].fpr)} ${y(0)}Z`} fill={COR.pos} fillOpacity={0.1} />
                   <path className="q7-linha" stroke={COR.pos} d={caminhoRoc(pts, x, y)} />
                   <circle cx={x(P0.fpr)} cy={y(P0.tpr)} r={d.fs * 0.5} fill="#fff" stroke={COR.mudo} strokeWidth={2.5} />
                   <text className="q7-rot--peq" x={x(P0.fpr)} y={y(P0.tpr)} dx="1em" dy={zoom ? "-.6em" : "1.6em"} style={{ fill: COR.mudo, fontWeight: 600, paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em", strokeLinejoin: "round" }}>limiar 0: ({pct(P0.fpr, 1)}; {pct(P0.tpr, 1)})</text>
                   {p.fpr <= fx && <circle cx={x(p.fpr)} cy={y(p.tpr)} r={d.fs * 0.4} fill={COR.lim} stroke="#fff" strokeWidth={2} />}
-                  <text className="q7-rot" x={x(fx / 2)} y={y(0.12)} style={{ fill: COR.pos }} textAnchor="middle">AUC {num(AUC_SGD, 4)}: área sob a curva</text>
+                  {!zoom && <text className="q7-rot" x={x(fx / 2)} y={y(0.12)} style={{ fill: COR.pos }} textAnchor="middle">AUC {num(AUC_SGD, 4)}: área sob a curva</text>}
                 </g>
               );
             }}

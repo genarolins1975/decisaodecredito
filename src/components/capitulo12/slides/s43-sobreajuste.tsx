@@ -29,12 +29,13 @@ export function S43Sobreajuste({ pagina }: { pagina?: Pagina }) {
   const [metade, setMetade] = useState<Metade>("faixas");
   const liberado = esc !== null && OPS[esc].certa;
   return (
-    <Quadro slug="c12p43" pagina={pagina} layout="gl"
+    <Quadro slug="c12p43" pagina={pagina} layout="glx"
       conclusao={liberado ? <>No treino a escada é íngreme; na validação ela achata, e a AUC cai de <b>{num(BVS.treino, 3)} para {num(BVS.validacao, 3)}</b> ({pct(BVS.variacao, 1)}). O slide {SLIDE.c12p44.n} pergunta se isso é sobreajuste ou mudança na população.</>
         : <>Antes de ler a figura: o que seria ordenar bem na validação?</>}
       fonte="Caso de crédito do material da aula: exemplo de alta renda (BVS), figura original com a curva ROC e a taxa de maus por faixa de score (0 é a melhor, 5 a pior), treino contra validação fora do tempo; AUC conforme a figura.">
       <Painel className="q12-s43-fig">
         <Figura src="bvs-roc-faixas" alt={`Exemplo de alta renda (BVS). À esquerda, curvas ROC: a de treino, com AUC de ${num(BVS.treino, 3)}, fica bem acima da de validação, com AUC de ${num(BVS.validacao, 3)}, que se aproxima da diagonal. À direita, taxa de maus por faixa de score de 0 a 5: no treino, as barras sobem de quase zero na faixa 0 até a mais alta na faixa 5; na validação, as faixas boas têm taxas maiores e a pior, menor, e a subida é mais suave.`} credito="Caso de crédito do material da aula: exemplo de alta renda (BVS), treino contra validação." />
+        <ul className="q12-chave" aria-label="Rótulos da figura em português"><li><b>Train / Treino</b> treino (azul escuro)</li><li><b>Validation / Validacao</b> validação (laranja na ROC, verde nas barras)</li><li><b>Bad Rate</b> taxa de maus</li><li><b>fx_SCORE</b> faixa de score, de 0 (menor risco) a 5</li><li><b>True / False Positive Rate</b> TPR e FPR</li></ul>
       </Painel>
       <Painel>
         <Previsao pergunta="Se o score ainda ordenasse bem na validação, como seria a taxa de maus por faixa?" opcoes={OPS} escolha={esc} onEscolha={(i) => { setEsc(i); setMetade("faixas"); }} recolher />
