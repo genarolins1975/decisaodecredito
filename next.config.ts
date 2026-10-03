@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["@node-rs/argon2", "pg"],
   // os guias de capítulo em PDF são lidos do disco pela rota /api/materiais; sem isto a Vercel não os empacota
   outputFileTracingIncludes: {
-    "/api/materiais/[arquivo]": ["./content/materiais/**"],
+    "/api/materiais/[arquivo]": ["./content/materiais/**", "./content/trabalho-final/**"],
   },
   experimental: { serverActions: { bodySizeLimit: "2mb" } },
   async headers() {

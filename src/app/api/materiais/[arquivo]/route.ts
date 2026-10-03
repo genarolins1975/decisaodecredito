@@ -10,20 +10,32 @@ import { ApiError, listAccessibleClasses, requireActiveUser } from "@/lib/auth/g
  */
 const PASTA = path.join(process.cwd(), "content", "materiais");
 const NOME = /^capitulo-\d{2}-aluno\.pdf$/;
+/* Documentos comuns do trabalho final (content/trabalho-final/), iguais para as dez bases e sem gabarito. As bases,
+   o OOT e os rótulos não passam por aqui: saem do bucket privado depois de "Registrar pacote". */
+const TRABALHO: Record<string, [string, string]> = {
+  "trabalho-final-README.md": ["README.md", "text/markdown; charset=utf-8"],
+  "trabalho-final-definicao-default.md": ["definicao-default.md", "text/markdown; charset=utf-8"],
+  "trabalho-final-datas-e-maturacao.md": ["datas-e-maturacao.md", "text/markdown; charset=utf-8"],
+  "trabalho-final-TEMPLATE-MANIFESTO-MODELO.md": ["TEMPLATE-MANIFESTO-MODELO.md", "text/markdown; charset=utf-8"],
+  "trabalho-final-ROTEIRO-DE-TESTES.md": ["ROTEIRO-DE-TESTES.md", "text/markdown; charset=utf-8"],
+  "trabalho-final-guia-dados-e-missoes.xlsx": ["guia-dados-e-missoes.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
+};
 
 export async function GET(_req: Request, ctx: { params: Promise<{ arquivo: string }> }) {
   try {
     const { arquivo } = await ctx.params;
-    if (!NOME.test(arquivo)) throw new ApiError(404, "Material não encontrado", "not_found");
+    const trabalho = Object.hasOwn(TRABALHO, arquivo) ? TRABALHO[arquivo] : null;
+    if (!NOME.test(arquivo) && !trabalho) throw new ApiError(404, "Material não encontrado", "not_found");
     const user = await requireActiveUser();
     const turmas = await listAccessibleClasses(user);
     if (turmas.length === 0) throw new ApiError(403, "Material disponível para quem está matriculado", "forbidden");
-    const pdf = await readFile(path.join(PASTA, arquivo)).catch(() => null);
+    const origem = trabalho ? path.join(process.cwd(), "content", "trabalho-final", trabalho[0]) : path.join(PASTA, arquivo);
+    const pdf = await readFile(origem).catch(() => null);
     if (!pdf) throw new ApiError(404, "Material não encontrado", "not_found");
     return new NextResponse(new Uint8Array(pdf), {
       headers: {
-        "Content-Type": "application/pdf",
-        "Content-Disposition": `inline; filename="${arquivo}"`,
+        "Content-Type": trabalho ? trabalho[1] : "application/pdf",
+        "Content-Disposition": `${trabalho && !arquivo.endsWith(".md") ? "attachment" : "inline"}; filename="${trabalho ? trabalho[0] : arquivo}"`,
         "Cache-Control": "private, max-age=3600, must-revalidate",
         Vary: "Cookie",
       },

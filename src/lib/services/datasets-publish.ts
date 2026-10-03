@@ -20,7 +20,7 @@ export type Manifesto = {
   comum: { arquivo: Arquivo; titulo: string; descricao: string; kind: string; status: "published" | "professor" }[];
   bases: { codigo: string; nome: string; produto: string; populacao: string; enfase: string; versao: string; notas?: string; oot_ids: number; aluno_zip: Arquivo; dicionario: Arquivo; oot: Arquivo; rotulos: Arquivo; professor_zip: Arquivo }[];
 };
-const MIME: Record<string, string> = { zip: "application/zip", csv: "text/csv", md: "text/plain", ipynb: "application/json", json: "application/json", pdf: "application/pdf" };
+const MIME: Record<string, string> = { zip: "application/zip", csv: "text/csv", md: "text/plain", ipynb: "application/json", json: "application/json", pdf: "application/pdf", xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" };
 export const prefixo = (versao: string) => `bases/v${versao.replace(/[^\w.-]/g, "")}/`;
 
 export async function lerManifesto(versao: string): Promise<Manifesto> {
