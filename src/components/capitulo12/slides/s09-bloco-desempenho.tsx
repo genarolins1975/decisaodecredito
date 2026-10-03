@@ -41,7 +41,7 @@ export function S09BlocoDesempenho({ pagina }: { pagina?: Pagina }) {
             <Controle rotulo="Limiar do score" valor={i} min={I_MIN} max={I_MAX} passo={1} onChange={setI} mostrar={sc(t)} />
             <dl className="q12-s09-n">
               <div data-c="pos"><dt>5 acima do limiar</dt><dd>{int(c.vp)} <small>de {int(M_SGD.positivos)}</small></dd></div>
-              <div data-c="fp"><dt>não 5 acima: alarmes falsos</dt><dd>{int(c.fp)} <small>de {int(M_SGD.negativos)}</small></dd></div>
+              <div data-c="fp"><dt>não 5 acima: alarme falso</dt><dd>{int(c.fp)} <small>de {int(M_SGD.negativos)}</small></dd></div>
               <div data-c="fn"><dt>5 abaixo: cincos perdidos</dt><dd>{int(c.fn)}</dd></div>
             </dl>
             <Botao sec onClick={() => setI(INDICE_ZERO)} desab={zero}>Restaurar limiar 0</Botao>

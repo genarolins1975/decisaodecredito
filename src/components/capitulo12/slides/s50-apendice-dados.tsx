@@ -46,7 +46,7 @@ export function S50ApendiceDados({ pagina }: { pagina?: Pagina }) {
         </table>
         <p className="q7-k">{h === "longo" ? "Corte no longo prazo: a combinação segue líder em recall" : "Corte no curto prazo"}</p>
         <table className="q7-tab q12-s50-tab">
-          <thead><tr><th className="q7-t-l">Regra</th><th>Volume do corte</th><th>Precisão: maus no corte</th><th>Recall: maus capturados</th><th>Maus no restante</th><th>IV</th></tr></thead>
+          <thead><tr><th className="q7-t-l">Regra</th><th>Volume</th><th>Precisão</th><th>Recall</th><th>Maus no restante</th><th>IV</th></tr></thead>
           <tbody>{REGRAS.map((r) => {
             const c = C[r.id];
             return <tr key={r.id}><th className="q7-t-l">{SIMB[r.id]} {r.nome}</th><td data-fora={c.volume >= META_VOLUME ? "1" : undefined}>{pct(c.volume, 1)}</td><td>{pct(c.precisao, 1)}</td><td>{pct(c.recall, 1)}</td><td>{pct(c.mausNoResto, 1)}</td><td>{num(c.iv, 3)}</td></tr>;
@@ -87,6 +87,7 @@ export function S50ApendiceDados({ pagina }: { pagina?: Pagina }) {
             );
           }}
         </Grafico>
+        <p className="q7-nota">Volume: contratos no corte ÷ total. Precisão: maus ÷ classificados no corte. Recall: maus no corte ÷ todos os maus.</p>
         <p className="q7-nota">IV: fraco abaixo de {num(IV_FRACO, 1)}, médio de {num(IV_FRACO, 1)} a {num(IV_FORTE, 1)}, forte acima (Siddiqi).</p>
         <p className="q7-nota">{sem ? <>No longo prazo, <b>{int(sem)} contratos</b> (contratos − bons − maus) não são bons nem maus e ficam fora de precisão e recall; o material não informa o motivo.</> : <>No curto prazo, todo contrato é bom ou mau: contratos = bons + maus.</>}</p>
       </Painel>

@@ -21,6 +21,20 @@ const I_DE = HIST.bordas.findIndex((b) => b >= -25000), I_ATE = HIST.bordas.find
 const CONF = Array.from({ length: I_ATE - I_DE + 1 }, (_, k) => ({ t: HIST.bordas[I_DE + k], c: confusaoNoIndice(HIST, I_DE + k) }));
 // o ótimo de todo c do controle cai dentro da faixa desenhada
 for (let c = 1; c <= 30; c++) { const o = limiarDeMenorCusto(HIST, c, 1); if (o.i < I_DE || o.i > I_ATE) throw new Error(`s16: ótimo de c = ${c} fora da faixa desenhada`); }
+// a curva sai pelo topo do eixo: corta-a em trechos abaixo de ym (com o ponto exato de saída), para a geometria não
+// passar da área do gráfico
+function abaixoDe(pts: { t: number; v: number }[], ym: number) {
+  const trechos: { t: number; v: number }[][] = [];
+  let atual: { t: number; v: number }[] = [];
+  pts.forEach((p, k) => {
+    const a = pts[k - 1];
+    const corte = a && (a.v > ym) !== (p.v > ym) ? { t: a.t + ((ym - a.v) / (p.v - a.v)) * (p.t - a.t), v: ym } : null;
+    if (p.v <= ym) { if (corte) atual.push(corte); atual.push(p); }
+    else if (corte) { atual.push(corte); trechos.push(atual); atual = []; }
+  });
+  if (atual.length) trechos.push(atual);
+  return trechos;
+}
 
 const OPCOES = [
   { texto: "O falso positivo: recusar um bom pagador", certa: false, retorno: <>Esse custo existe (margem perdida, cliente na concorrência), mas é pouco visível e costuma ser menor que uma <b>perda de crédito</b>, que leva parte do saldo.</> },
@@ -70,7 +84,7 @@ export function S16Custos({ pagina }: { pagina?: Pagina }) {
                 <g>
                   <clipPath id="q12-s16-clip"><rect x={m.l} y={m.t} width={d.w - m.l - m.r} height={d.h - m.t - m.b} /></clipPath>
                   <Eixos x={x} y={y} xt={[-20000, -10000, 0, 10000]} yt={yt} fx={sc} fy={(v) => int(v)} yTit="Custo total = c × FN + FP" />
-                  <path className="q7-linha q7-linha--def" d={caminho(pts.map((p) => ({ x: x(p.t), y: y(p.v) })))} clipPath="url(#q12-s16-clip)" />
+                  <path className="q7-linha q7-linha--def" d={abaixoDe(pts, ym).map((tr) => caminho(tr.map((p) => ({ x: x(p.t), y: y(p.v) })))).join("")} clipPath="url(#q12-s16-clip)" />
                   <circle cx={x(0)} cy={y(custo0)} r={d.fs * 0.45} fill="#fff" stroke={COR.lim} strokeWidth={3} />
                   <text className="q7-corte-t" x={x(0) + d.fs * 0.5} y={y(custo0)} dy="-.7em">limiar 0</text>
                   <circle cx={x(t)} cy={y(o.custo)} r={d.fs * 0.45} fill={COR.lim} stroke="#fff" strokeWidth={2} />

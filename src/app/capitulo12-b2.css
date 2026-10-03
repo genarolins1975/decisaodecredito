@@ -19,10 +19,10 @@
 .q12-b2-marcas i[data-t="fn"] { background: #fff; border: .2cqw dashed #8C2332; border-radius: .2cqw; }
 
 /* 09 · c12p9 · abertura do bloco 2: histograma dos scores e limiar */
-.q7 .q7-slide .q12-s09 { flex-direction: row; gap: 1.4cqw; padding: .6cqw 1.2cqw; }
+.q7 .q7-slide .q12-s09 { flex-direction: row; gap: 1.4cqw; padding: .4cqw 1.2cqw; }
 .q12-s09-g { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .q12-s09-g .q7-graf { flex: 1; }
-.q12-s09-lado { flex: none; width: 23cqw; display: flex; flex-direction: column; gap: .5cqw; justify-content: center; }
+.q12-s09-lado { flex: none; width: 25cqw; display: flex; flex-direction: column; gap: .5cqw; justify-content: center; }
 .q12-s09-n { margin: 0; display: grid; gap: .2cqw; }
 .q12-s09-n > div { display: flex; justify-content: space-between; align-items: baseline; gap: .6cqw; border-bottom: 1px solid var(--q7-borda); padding-bottom: .15cqw; }
 .q12-s09-n dt { font-size: 1.25cqw; color: var(--q7-texto); }

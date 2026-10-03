@@ -96,7 +96,7 @@ export function S05BaseCodigo({ pagina }: { pagina?: Pagina }) {
       conclusao={<>X tem <b>{int(MN.n)} linhas e {int(MN.pixels)} colunas</b>: cada linha é uma imagem desdobrada em {int(MN.pixels)} números, que reshape({MN.lado}, {MN.lado}) dobra de volta; y guarda um rótulo por linha, na mesma ordem. O slide {SLIDE.c12p6.n} reduz y a 5 ou não 5.</>}
       fonte={`MNIST (OpenML mnist_784, versão 1), carregado com fetch_openml como na aula. Linhas mostradas: a primeira do treino e quatro da amostra gravada pela referência (índices de X); coluna realçada: o pixel ${int(COL)} (linha ${PC.lin}, coluna ${PC.col} da imagem).`}>
       <div className="q12-col q12-s05-esq">
-        <Codigo linhas={[...BASE, extra]} destaque={DESTAQUE[modo]} rotulo="Código: carregar o MNIST, separar X e y e conferir os formatos" />
+        <Codigo linhas={[...BASE, extra]} destaque={DESTAQUE[modo]} rotulo="Código: carregar o MNIST, separar X e y e conferir os formatos" compacto />
         <Painel className="q12-s05-ctl">
           <p className="q7-k">Leia o diagrama por</p>
           <Seg rotulo="Parte da base em destaque" opcoes={[{ v: "linha" as Modo, r: "Linha = imagem" }, { v: "coluna" as Modo, r: "Coluna = pixel" }, { v: "y" as Modo, r: "y = rótulos" }]} valor={modo} onChange={setModo} />

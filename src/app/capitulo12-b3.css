@@ -91,6 +91,9 @@
 .q12-s26-dir { min-height: 0; }
 .q12-s26-fig { flex: 1; }
 .q12-s26-fig .q12-fig { flex: 1; min-height: 6cqw; }
+/* 26 e 34: o plano das luas é limitado pela altura e sobra largura à esquerda; a coluna do código ganha espaço para não
+   quebrar linhas, e a figura com a lista cabem abaixo dele */
+.q7[data-q7="c12p26"] .q7-corpo.q7-l-gl, .q7[data-q7="c12p34"] .q7-corpo.q7-l-gl { grid-template-columns: minmax(0, 57fr) minmax(0, 43fr); }
 
 /* 27 · c12p27 · votação em código: linha acesa, seletor do modelo e região de decisão */
 .q12-s27-esq { gap: .9cqw; }

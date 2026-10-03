@@ -54,8 +54,8 @@ export function S34Floresta({ pagina }: { pagina?: Pagina }) {
         <Painel className="q12-s34-dir">
           <Figura src="floresta" alt="Ilustração de árvores coloridas sobre colinas: uma floresta de árvores de decisão." credito="Géron, Mãos à obra: aprendizado de máquina com Scikit-Learn, Keras e TensorFlow, cap. 7" fundo={false} />
           <ul className="q12-b3-lista q12-b3-lista--peq">
-            <li>Bagging de árvores, em geral com amostras bootstrap.</li>
-            <li>A cada divisão, um subconjunto aleatório de características: árvores menos correlacionadas.</li>
+            <li>Bagging de árvores, com amostras bootstrap.</li>
+            <li>Cada divisão sorteia as características: árvores menos correlacionadas.</li>
             <li>Nas luas, {int(N_CARAC)} características: cada divisão sorteia {int(POR_DIVISAO)}.</li>
           </ul>
         </Painel>
