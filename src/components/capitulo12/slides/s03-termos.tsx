@@ -2,8 +2,10 @@
 import { useState } from "react";
 import { Botao, Painel, Previsao, Quadro, type Pagina } from "@/components/capitulo7/base";
 import { Digito } from "../pecas";
-import { EXEMPLOS, FONTE_MNIST, MN } from "@/lib/capitulo12/dados";
+import { EXEMPLOS, MN } from "@/lib/capitulo12/dados";
 import { pixels } from "@/lib/capitulo12/metricas";
+import { pixelCentral } from "@/lib/capitulo12/b1";
+import { PixelAlvo } from "../b1";
 import { SLIDE } from "@/lib/capitulo12/roteiro";
 import { int } from "@/lib/capitulo7/formato";
 
@@ -12,7 +14,7 @@ import { int } from "@/lib/capitulo7/formato";
  * crédito. Prova que "positivo" é a classe que se quer detectar, não a desejável: a célula da classe positiva no
  * crédito fica "?" até a turma acertar a previsão (o retorno das erradas nomeia a confusão sem dar a resposta).
  * Cada linha da tabela é um botão: o painel embaixo ilustra o termo na primeira imagem do treino (EXEMPLOS[0], um 5),
- * com o pixel mais intenso realçado para "característica". Números: MN (70.000 imagens, 784 pixels, lado 28) e o
+ * com o pixel mais intenso da região central realçado para "característica". Números: MN (70.000 imagens, 784 pixels, lado 28) e o
  * pixel lido de EXEMPLOS[0].px. Estado inicial: linha "Instância" ativa, previsão em aberto; Restaurar volta a ele.
  */
 type Termo = "inst" | "car" | "rot" | "pos";
@@ -21,7 +23,8 @@ const NAO5 = EXEMPLOS.find((e) => e.tipo === "amostra" && e.rotulo !== 5)!;
 if (E0.rotulo !== 5) throw new Error("s03: EXEMPLOS[0] deveria ser um 5");
 if (MN.lado * MN.lado !== MN.pixels) throw new Error("s03: 28 × 28 deveria ser 784");
 const PX = pixels(E0.px);
-const P_MAX = PX.indexOf(Math.max(...PX));
+/** Pixel realçado: o mais intenso da região central, o mesmo que os slides 4 e 5 realçam. */
+const P_MAX = pixelCentral(E0.px);
 
 const LINHAS: { id: Termo; termo: string; mnist: string; credito: string }[] = [
   { id: "inst", termo: "Instância", mnist: "uma imagem de algarismo", credito: "uma proposta ou um contrato" },
@@ -52,7 +55,7 @@ function Ilustracao({ t }: { t: Termo }) {
   return (
     <div className="q12-s03-il">
       <div className="q12-s03-um" data-t={t}>
-        <Digito px={E0.px} grade={t === "car"} marca={t === "car" ? P_MAX : null} rotulo={t === "car" ? `Primeira imagem do treino, com o pixel da linha ${lin}, coluna ${col} realçado` : "Primeira imagem do treino: um 5 escrito à mão"} />
+        <PixelAlvo px={E0.px} sel={P_MAX} grade={t === "car"} marcar={t === "car"} rotulo={t === "car" ? `Primeira imagem do treino, com o pixel da linha ${lin}, coluna ${col} realçado` : "Primeira imagem do treino: um 5 escrito à mão"} />
         {t === "rot" && <span className="q12-s03-y" aria-hidden="true">y = {E0.rotulo}</span>}
       </div>
       {t === "inst" && <p className="q7-p">Uma <b>instância</b> é um exemplo inteiro: esta imagem é uma das <b>{int(MN.n)}</b> da base. No crédito, cada proposta é uma instância.</p>}
@@ -72,7 +75,7 @@ export function S03Termos({ pagina }: { pagina?: Pagina }) {
       conclusao={revelado
         ? <>Classe positiva é a que queremos <b>detectar</b>, e não a classe boa: o 5 no MNIST, o <b>mau pagador</b> no crédito. O slide {SLIDE.c12p4.n} abre as {int(MN.n)} instâncias do MNIST.</>
         : esc === null ? "Clique numa linha para ver o termo numa imagem real; depois responda: no crédito, qual é a classe positiva?" : "Tente outra alternativa: a célula do crédito abre no acerto."}
-      fonte={`${FONTE_MNIST}. Imagem: a primeira do treino (índice 0), rótulo ${E0.rotulo}; pixel realçado: o de maior intensidade.`}>
+      fonte={`MNIST (OpenML mnist_784, versão 1): ${int(MN.n)} imagens de ${MN.lado} × ${MN.lado} pixels. Imagem: a primeira do treino (índice 0), rótulo ${E0.rotulo}; pixel realçado: o mais intenso da região central. Crédito: termos do caso do material da aula.`}>
       <Painel className="q12-s03-esq">
         <table className="q7-tab q12-s03-tab">
           <caption className="q7-sr">Os quatro termos no MNIST e no crédito; clique numa linha para ilustrá-la</caption>
@@ -89,9 +92,10 @@ export function S03Termos({ pagina }: { pagina?: Pagina }) {
         </table>
         <Ilustracao t={t} />
       </Painel>
-      <Painel>
-        <Previsao pergunta="No crédito, qual é a classe positiva?" opcoes={OPCOES} escolha={esc} onEscolha={setEsc} />
-        <div className="q7-botoes q12-s03-rest"><Botao sec onClick={() => { setT("inst"); setEsc(null); }} desab={inicial}>Restaurar</Botao></div>
+      <Painel className="q12-s03-dir">
+        <Previsao pergunta="No crédito, qual é a classe positiva?" opcoes={OPCOES} escolha={esc} onEscolha={setEsc} recolher />
+        <p className="q7-nota q12-s03-nota">Precisão e recall (slides {SLIDE.c12p12.n} e {SLIDE.c12p13.n}) são calculados sobre a classe positiva: a escolha decide o que eles medem.</p>
+        <div className="q7-botoes"><Botao sec onClick={() => { setT("inst"); setEsc(null); }} desab={inicial}>Restaurar</Botao></div>
       </Painel>
     </Quadro>
   );

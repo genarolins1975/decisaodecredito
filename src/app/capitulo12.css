@@ -20,7 +20,7 @@
 /* código Python */
 .q7 .q7-slide .q12-cod { margin: 0; background: #F1F0EC; border: 1px solid var(--q7-borda); border-radius: 10px; padding: .8cqw 1.1cqw; font-family: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace; font-size: 1.22cqw; line-height: 1.45; color: #2A3342; overflow: auto; white-space: pre; min-height: 0; }
 .q7 .q7-slide .q12-cod--compacto { font-size: 1.1cqw; padding: .6cqw .9cqw; }
-.q12-cod code { font: inherit; }
+.q12-cod code { font: inherit; display: block; }
 .q12-cod-l { display: block; border-radius: .25cqw; margin: 0 -.5cqw; padding: 0 .5cqw; }
 .q12-cod-l[data-on="1"] { background: #FBF2E5; box-shadow: inset .3cqw 0 0 #A85A0C; }
 .q12-py-k { color: #00205B; font-weight: 700; } .q12-py-s { color: #2B5F86; } .q12-py-n { color: #A85A0C; } .q12-py-c { color: #6B7280; font-style: italic; }

@@ -4,7 +4,7 @@
  * que se obtém sorteando entre os dois limiares) e o sorteio de pares (5, não 5) a partir do histograma, que converge
  * para a AUC. Sem React; os quadros importam daqui.
  */
-import type { Histograma, PontoCurva } from "./metricas";
+import type { Histograma } from "./metricas";
 import { mulberry32 } from "../capitulo7/metricas";
 
 export type Barra = { de: number; ate: number; pos: number; neg: number; fPos: number; fNeg: number };
@@ -31,18 +31,20 @@ export function agruparHist(h: Histograma, de: number, ate: number, largura: num
   return bs;
 }
 
-/** Pontos da ROC em ordem crescente de FPR (a curva por limiar vem do limiar mais baixo, FPR 1, ao mais alto, FPR 0). */
-export const rocCrescente = (c: PontoCurva[]) => c.slice().sort((a, b) => a.fpr - b.fpr || a.tpr - b.tpr);
-/** TPR na FPR f, por interpolação linear entre os dois pontos vizinhos da ROC (pontos em ordem crescente de FPR). */
+/**
+ * Pontos da ROC em ordem crescente de FPR (a curva por limiar vem do limiar mais baixo, FPR 1, ao mais alto, FPR 0).
+ * Quando vários limiares têm a mesma FPR, fica o de TPR maior: é o ponto que se alcança com aquela FPR.
+ */
+export function rocCrescente(c: { fpr: number; tpr: number }[]) {
+  const o = c.slice().sort((a, b) => a.fpr - b.fpr || b.tpr - a.tpr);
+  return o.filter((p, i) => i === 0 || p.fpr !== o[i - 1].fpr);
+}
+/** TPR na FPR f, por interpolação linear entre os dois pontos vizinhos da ROC (pontos de rocCrescente). */
 export function tprEm(pts: { fpr: number; tpr: number }[], f: number): number {
   if (f <= pts[0].fpr) return pts[0].tpr;
   for (let i = 1; i < pts.length; i++) {
     const a = pts[i - 1], b = pts[i];
-    if (f <= b.fpr) {
-      if (b.fpr === a.fpr) return Math.max(a.tpr, b.tpr);
-      // no mesmo FPR pode haver vários pontos: fica o de TPR maior
-      return a.tpr + ((f - a.fpr) / (b.fpr - a.fpr)) * (b.tpr - a.tpr);
-    }
+    if (f <= b.fpr) return a.tpr + ((f - a.fpr) / (b.fpr - a.fpr)) * (b.tpr - a.tpr);
   }
   return pts[pts.length - 1].tpr;
 }

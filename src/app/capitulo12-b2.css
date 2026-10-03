@@ -9,3 +9,204 @@
 .q12-s11-ex li { display: grid; gap: .25cqw; justify-items: center; }
 .q12-s11-ex li span { font-size: 1.15cqw; color: var(--q7-mudo); font-variant-numeric: tabular-nums; white-space: nowrap; }
 @container q7 (max-width: 820px) { .q12-s11-num { font-size: 15px; } .q12-s11-num b { font-size: 26px; } .q12-s11-ex li span { font-size: 11.5px; } }
+
+/* peças comuns do bloco 2 (src/components/capitulo12/b2.tsx): grade de cem marcas */
+.q12-b2-marcas { display: grid; gap: .3cqw; align-content: center; }
+.q12-b2-marcas i { aspect-ratio: 1; box-sizing: border-box; display: block; border-radius: 50%; transition: background .3s ease, border-color .3s ease; }
+.q12-b2-marcas i[data-t="neg"], .q12-b2-marcas i[data-t="vn"] { background: #fff; border: .2cqw solid #3D5A8A; }
+.q12-b2-marcas i[data-t="pos"], .q12-b2-marcas i[data-t="vp"] { background: #176C73; border-radius: .2cqw; }
+.q12-b2-marcas i[data-t="fp"] { background: repeating-linear-gradient(45deg, #fff 0 .25cqw, #F3D9DD .25cqw .5cqw); border: .2cqw solid #8C2332; }
+.q12-b2-marcas i[data-t="fn"] { background: #fff; border: .2cqw dashed #8C2332; border-radius: .2cqw; }
+
+/* 09 · c12p9 · abertura do bloco 2: histograma dos scores e limiar */
+.q7 .q7-slide .q12-s09 { flex-direction: row; gap: 1.4cqw; padding: .6cqw 1.2cqw; }
+.q12-s09-g { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.q12-s09-g .q7-graf { flex: 1; }
+.q12-s09-lado { flex: none; width: 23cqw; display: flex; flex-direction: column; gap: .5cqw; justify-content: center; }
+.q12-s09-n { margin: 0; display: grid; gap: .2cqw; }
+.q12-s09-n > div { display: flex; justify-content: space-between; align-items: baseline; gap: .6cqw; border-bottom: 1px solid var(--q7-borda); padding-bottom: .15cqw; }
+.q12-s09-n dt { font-size: 1.15cqw; color: var(--q7-texto); }
+.q12-s09-n dd { margin: 0; font-size: 1.5cqw; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--q7-ink); }
+.q12-s09-n dd small { font-size: .75em; font-weight: 500; color: var(--q7-mudo); }
+.q12-s09-n > div[data-c="pos"] dd { color: #176C73; } .q12-s09-n > div[data-c="fp"] dd, .q12-s09-n > div[data-c="fn"] dd { color: var(--q7-def); }
+@container q7 (max-width: 820px) {
+  .q12-b2-marcas { gap: 3px; } .q12-b2-marcas i[data-t] { border-width: 2px; }
+  .q7 .q7-slide .q12-s09 { flex-direction: column; padding: 10px; }
+  .q12-s09-lado { width: auto; } .q12-s09-n dt { font-size: 13px; } .q12-s09-n dd { font-size: 16px; }
+}
+
+/* 10 · c12p10 · acurácia do modelo trivial: grade de cem marcas e dois números */
+.q12-s10-esq { justify-content: center; }
+.q12-s10-vis { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2cqw; align-items: center; flex: 1; min-height: 0; }
+.q12-s10-vis .q12-b2-marcas { height: 100%; max-height: 27cqw; aspect-ratio: 1; width: auto; min-height: 0; }
+.q12-s10-lado { display: flex; flex-direction: column; gap: .9cqw; min-width: 0; }
+.q12-s10-leg { flex-direction: column; align-items: flex-start; font-size: 1.35cqw; color: var(--q7-texto); }
+.q12-s10-mk { display: inline-block; width: 1.3cqw; height: 1.3cqw; box-sizing: border-box; border-radius: 50%; flex: none; }
+.q12-s10-mk[data-t="neg"], .q12-s10-mk[data-t="vn"] { background: #fff; border: .2cqw solid #3D5A8A; }
+.q12-s10-mk[data-t="pos"] { background: #176C73; border-radius: .2cqw; }
+.q12-s10-mk[data-t="fn"] { background: #fff; border: .2cqw dashed #8C2332; border-radius: .2cqw; }
+.q12-s10-lado .q7-kpi--grande .q7-kpi-v { font-size: 4cqw; }
+.q12-s10-dig { display: grid; gap: .6cqw; border-top: 1px solid var(--q7-borda); padding-top: .7cqw; }
+@container q7 (max-width: 820px) {
+  .q12-s10-vis { display: flex; flex-direction: column; align-items: stretch; }
+  .q12-s10-vis .q12-b2-marcas { height: auto; width: 100%; max-width: 280px; max-height: none; align-self: center; }
+  .q12-s10-leg { font-size: 13px; } .q12-s10-mk { width: 13px; height: 13px; border-width: 2px !important; }
+  .q12-s10-lado .q7-kpi--grande .q7-kpi-v { font-size: 28px; }
+  .q12-s10-dig .q7-seg { flex-wrap: wrap; }
+}
+
+/* 12 e 13 · c12p12, c12p13 · precisão e recall: matriz, fórmula, conta e resultado; grade e imagens no acerto */
+.q12-s12-esq { justify-content: center; }
+.q12-s12-vis { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 2cqw; align-items: center; }
+.q12-s12-f { display: flex; flex-direction: column; gap: .6cqw; min-width: 0; }
+.q12-s12-f .q7-formula { font-size: 2cqw; }
+.q12-s12-conta { margin: 0; font-size: 1.6cqw; font-variant-numeric: tabular-nums; color: var(--q7-texto); }
+.q12-s12-res { margin: 0; font-size: 5.4cqw; font-weight: 700; line-height: 1; color: var(--q7-mudo); font-variant-numeric: tabular-nums; }
+.q12-s12-res[data-ok="1"] { color: #176C73; }
+.q12-s12-grade { display: grid; gap: .5cqw; border-top: 1px solid var(--q7-borda); padding-top: .6cqw; }
+.q12-s12-gl { display: grid; grid-template-columns: 12.5cqw minmax(0, 1fr); gap: 1.2cqw; align-items: center; }
+.q12-s12-gl .q12-b2-marcas { gap: .2cqw; }
+.q12-s12-leg { flex-direction: column; align-items: flex-start; font-size: 1.35cqw; color: var(--q7-texto); }
+.q12-s12-mk { display: inline-block; width: 1.3cqw; height: 1.3cqw; box-sizing: border-box; border-radius: 50%; border: .2cqw solid #8C2332; background: repeating-linear-gradient(45deg, #fff 0 .25cqw, #F3D9DD .25cqw .5cqw); }
+.q12-s13-ex { display: grid; gap: .5cqw; border-top: 1px solid var(--q7-borda); padding-top: .6cqw; }
+.q12-s13-ex ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .7cqw; }
+.q12-s13-ex li { display: grid; gap: .25cqw; justify-items: center; }
+.q12-s13-ex li span { font-size: 1.15cqw; color: var(--q7-def); font-variant-numeric: tabular-nums; white-space: nowrap; }
+@container q7 (max-width: 820px) {
+  .q12-s12-vis { display: flex; flex-direction: column; align-items: stretch; }
+  .q12-s12-f .q7-formula { font-size: 18px; } .q12-s12-conta { font-size: 15px; } .q12-s12-res { font-size: 36px; }
+  .q12-s12-gl { grid-template-columns: 140px minmax(0, 1fr); } .q12-s12-leg { font-size: 13px; } .q12-s12-mk { width: 13px; height: 13px; border-width: 2px; }
+  .q12-s13-ex li span { font-size: 11.5px; }
+}
+.q12-s12-vis .q12-mx-v { font-size: 3cqw; } .q7 .q7-slide .q12-s12-vis .q12-mx-c { min-height: 8.5cqw; }
+.q12-s12-rest { justify-content: flex-end; }
+
+/* 14 · c12p14 · F1 contra média simples */
+.q12-s14-esq .q7-graf { flex: 1; }
+.q12-s14-ctl { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2cqw; }
+.q12-s14-conta { margin: 0; font-size: 1.35cqw; color: var(--q7-mudo); font-variant-numeric: tabular-nums; }
+.q12-s14-res { margin: 0; font-size: 5.4cqw; font-weight: 700; line-height: 1; color: #176C73; font-variant-numeric: tabular-nums; }
+@container q7 (max-width: 820px) { .q12-s14-ctl { grid-template-columns: minmax(0, 1fr); gap: 10px; } .q12-s14-conta { font-size: 13px; } .q12-s14-res { font-size: 36px; } }
+
+/* 15 · c12p15 · quatro métricas, detector contra modelo trivial */
+.q12-s15-tab { justify-content: center; }
+.q7 .q7-slide .q12-s15-tab .q7-tab { font-size: 1.55cqw; }
+.q7 .q7-slide .q12-s15-tab .q7-tab th, .q7 .q7-slide .q12-s15-tab .q7-tab td { padding: 1.1cqw .7cqw; vertical-align: middle; }
+.q7 .q7-slide .q12-s15-tab .q7-tab thead th { font-size: 1.2cqw; }
+.q7 .q7-slide .q12-s15-tab .q7-tab tbody th { font-size: 1.6cqw; }
+.q12-s15-perg { color: var(--q7-texto); font-size: 1.4cqw; }
+.q12-s15-v { width: 17cqw; }
+.q12-s15-v b { display: block; font-size: 2cqw; color: var(--q7-ink); }
+.q12-s15-v[data-tom="sgd"] b { color: #176C73; }
+.q12-s15-bar { display: block; height: .7cqw; background: #EEF0F3; border-radius: .35cqw; overflow: hidden; margin-bottom: .3cqw; }
+.q12-s15-bar i { display: block; height: 100%; background: #176C73; transition: width .4s ease; }
+.q12-s15-v[data-tom="cmp"] .q12-s15-bar i { background: #3D5A8A; }
+.q12-s15-ind { font-size: 1.35cqw; color: var(--q7-def); font-weight: 600; }
+.q12-s15-eng { display: inline-block; margin-left: .6cqw; font-size: 1.1cqw; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #fff; background: var(--q7-def); border-radius: .4cqw; padding: .1cqw .45cqw; vertical-align: .15em; }
+.q12-s15-txt { font-size: 1.45cqw; }
+@media (prefers-reduced-motion: reduce) { .q12-s15-bar i { transition: none; } }
+@container q7 (max-width: 820px) {
+  .q12-s15-tab { overflow-x: auto; display: block; }
+  .q7 .q7-slide .q12-s15-tab .q7-tab { font-size: 13px; min-width: 520px; }
+  .q7 .q7-slide .q12-s15-tab .q7-tab th, .q7 .q7-slide .q12-s15-tab .q7-tab td { padding: 8px 6px; }
+  .q7 .q7-slide .q12-s15-tab .q7-tab thead th { font-size: 12px; } .q7 .q7-slide .q12-s15-tab .q7-tab tbody th { font-size: 14px; }
+  .q12-s15-perg { font-size: 13px; } .q12-s15-v { width: 110px; } .q12-s15-v b { font-size: 16px; } .q12-s15-bar { height: 6px; }
+  .q12-s15-ind { font-size: 12px; } .q12-s15-eng { font-size: 10px; } .q12-s15-txt { font-size: 14.5px; }
+}
+
+/* 16 · c12p16 · custo dos dois erros: cartões e analogia de custo no detector */
+.q12-s16-esq { gap: .9cqw; }
+.q12-s16-g { display: grid; grid-template-columns: minmax(0, 33fr) minmax(0, 67fr); gap: 1.3cqw; flex: 1; min-height: 0; }
+.q12-s16-cart { display: grid; grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); gap: 1cqw; min-height: 0; }
+.q12-s16-c { border: 1px solid var(--q7-borda); border-top: .4cqw solid var(--q7-def); border-radius: 0 0 .8cqw .8cqw; padding: .6cqw .9cqw; display: grid; gap: .25cqw; align-content: start; background: var(--q7-papel2); }
+.q12-s16-c[data-c="fp"] { border-top-color: #3D5A8A; }
+.q12-s16-tit { margin: 0; font-size: 1.2cqw; font-weight: 700; color: var(--q7-mudo); text-transform: uppercase; letter-spacing: .05em; }
+.q12-s16-tit b { color: var(--q7-ink); margin-right: .4cqw; }
+.q12-s16-def { margin: 0; font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-size: 1.6cqw; font-weight: 700; color: var(--q7-ink); line-height: 1.1; }
+.q12-s16-c ul { margin: 0; padding-left: 1.2cqw; font-size: 1.25cqw; line-height: 1.28; display: grid; gap: .2cqw; }
+.q12-s16-exp { min-height: 0; display: flex; flex-direction: column; gap: .4cqw; }
+.q12-s16-exp .q7-graf { flex: 1; }
+.q7 .q7-slide .q12-s16-tab { font-size: 1.45cqw; }
+.q7 .q7-slide .q12-s16-tab td b { color: var(--q7-dec); }
+@container q7 (max-width: 820px) {
+  .q12-s16-g, .q12-s16-cart { display: flex; flex-direction: column; gap: 8px; }
+  .q12-s16-tit { font-size: 12px; } .q12-s16-def { font-size: 18px; } .q12-s16-c ul { font-size: 14px; padding-left: 18px; }
+  .q7 .q7-slide .q12-s16-tab { font-size: 14px; }
+}
+
+/* 17 · c12p17 · doze dígitos e o limiar */
+.q12-s17 { display: grid; grid-template-columns: minmax(0, 40fr) minmax(0, 22fr) minmax(0, 38fr); grid-template-rows: auto minmax(0, 1fr); gap: 1.1cqw 1.4cqw; height: 100%; min-height: 0; }
+.q12-s17-fita { grid-column: 1 / -1; gap: .5cqw; padding-top: 1.7cqw; }
+.q12-s17-ds { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)) .1fr; gap: .5cqw; }
+.q12-s17-ds li { position: relative; display: grid; justify-items: center; gap: .1cqw; padding: .3cqw 0 .35cqw; border-radius: .6cqw; background: #fff; border: .2cqw solid #3D5A8A; transition: background .25s ease, border-color .25s ease; }
+.q12-s17-d { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-size: 3.2cqw; font-weight: 700; line-height: 1; color: #3D5A8A; }
+.q12-s17-ds li small { font-size: 1.1cqw; color: var(--q7-mudo); white-space: nowrap; }
+.q12-s17-ds li[data-t="vp"] { background: #176C73; border-color: #176C73; border-radius: .25cqw; }
+.q12-s17-ds li[data-t="vp"] .q12-s17-d, .q12-s17-ds li[data-t="vp"] small { color: #fff; }
+.q12-s17-ds li[data-t="fp"] { background: repeating-linear-gradient(45deg, #fff 0 .35cqw, #F3D9DD .35cqw .7cqw); border-color: #8C2332; }
+.q12-s17-ds li[data-t="fp"] small, .q12-s17-ds li[data-t="fn"] small { color: var(--q7-def); font-weight: 700; }
+.q12-s17-ds li[data-t="fn"] { border: .2cqw dashed #8C2332; border-radius: .25cqw; }
+.q12-s17-ds li[data-t="fn"] .q12-s17-d { color: #176C73; }
+.q12-s17-ds li.q12-s17-fim { border: 0; background: transparent; padding: 0; }
+.q12-s17-ds li[data-lim="1"]::before { content: "limiar"; position: absolute; left: -.55cqw; top: -1.75cqw; transform: translateX(-50%); font-size: 1.1cqw; font-weight: 700; color: #A85A0C; white-space: nowrap; }
+.q12-s17-ds li[data-lim="1"]::after { content: ""; position: absolute; left: -.42cqw; top: -.4cqw; bottom: -.4cqw; width: .32cqw; transform: translateX(-50%); border-radius: .2cqw; background: #A85A0C; }
+.q12-s17-eixo { display: flex; justify-content: space-between; font-size: 1.2cqw; color: var(--q7-mudo); }
+.q12-s17-eixo b { color: var(--q7-ink); }
+.q12-s17-fig { justify-content: center; }
+.q12-s17-fig .q12-fig { flex: 1; min-height: 0; }
+.q12-s17-num { justify-content: center; }
+.q12-s17-tab { justify-content: center; }
+.q7 .q7-slide .q12-s17-tab .q7-tab { font-size: 1.4cqw; }
+.q7 .q7-slide .q12-s17-ir { font: inherit; font-weight: 600; color: var(--q7-ink); background: transparent; border: 1px solid #C9CDD5; border-radius: .5cqw; padding: .25cqw .6cqw; cursor: pointer; }
+.q7 .q7-slide .q12-s17-ir[aria-pressed="true"] { background: #A85A0C; border-color: #A85A0C; color: #fff; }
+@media (prefers-reduced-motion: reduce) { .q12-s17-ds li { transition: none; } }
+@container q7 (max-width: 820px) {
+  .q12-s17 { display: flex; flex-direction: column; gap: 12px; }
+  .q12-s17-fita { padding-top: 22px; }
+  .q12-s17-ds { grid-template-columns: repeat(6, minmax(0, 1fr)); row-gap: 24px; gap: 22px 6px; }
+  .q12-s17-ds li.q12-s17-fim { display: none; }
+  .q12-s17-d { font-size: 24px; } .q12-s17-ds li small { font-size: 9.5px; white-space: normal; text-align: center; line-height: 1.1; }
+  .q12-s17-ds li[data-lim="1"]::before { font-size: 11px; top: -17px; } .q12-s17-ds li[data-lim="1"]::after { width: 3px; left: -3px; }
+  .q12-s17-eixo { font-size: 12px; }
+  .q7 .q7-slide .q12-s17-tab .q7-tab { font-size: 13px; } .q7 .q7-slide .q12-s17-ir { min-height: 40px; }
+}
+
+/* 18 · c12p18 · precisão e recall contra o limiar */
+.q12-s18-esq { display: flex; flex-direction: column; gap: .5cqw; min-height: 0; background: var(--q7-papel); border: 1px solid var(--q7-borda); border-radius: 12px; padding: 1cqw 1.3cqw; }
+.q12-s18-esq .q7-graf { flex: 1; }
+.q12-s18-ctl { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1.2cqw; align-items: end; }
+.q12-s18-dir { gap: .6cqw; }
+.q12-s18-fig { flex: 1; min-height: 0; }
+.q12-s18-fig figcaption { font-size: 1.05cqw; }
+@container q7 (max-width: 820px) { .q12-s18-esq { padding: 12px; } .q12-s18-ctl { grid-template-columns: minmax(0, 1fr); } .q12-s18-fig .q12-fig-img { max-height: 220px; } }
+
+/* 19 · c12p19 · curva ROC do detector */
+.q12-s19 { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.4cqw; height: 100%; min-height: 0; }
+.q12-s19-g { height: 100%; aspect-ratio: 1.06; min-height: 0; display: flex; flex-direction: column; background: var(--q7-papel); border: 1px solid var(--q7-borda); border-radius: 12px; padding: .6cqw .8cqw; box-sizing: border-box; }
+.q12-s19-g .q7-graf { flex: 1; }
+.q12-s19-f { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1cqw; align-items: center; }
+.q12-s19-dir { justify-content: space-between; }
+@container q7 (max-width: 820px) {
+  .q12-s19 { display: flex; flex-direction: column; } .q12-s19-g { height: auto; aspect-ratio: auto; padding: 8px; }
+  .q12-s19-f { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* 21 · c12p21 · AUC e Gini: régua, tabela e pares sorteados */
+.q12-s21-esq { gap: .6cqw; }
+.q12-s21-esq .q7-graf { flex: 1; }
+.q12-s21-top { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.6cqw; align-items: center; }
+.q12-s21-top .q7-formula { font-size: 1.9cqw; }
+.q12-s21-ctl .q7-ctl-cab b { color: #A85A0C; }
+.q7 .q7-slide .q12-s21-tab { font-size: 1.4cqw; }
+.q12-s21-frac { margin: 0; font-size: 4.4cqw; font-weight: 700; line-height: 1; color: var(--q7-mudo); font-variant-numeric: tabular-nums; }
+.q12-s21-frac[data-on="1"] { color: #A85A0C; }
+@container q7 (max-width: 820px) {
+  .q12-s21-top { grid-template-columns: minmax(0, 1fr); } .q12-s21-top .q7-formula { font-size: 18px; }
+  .q7 .q7-slide .q12-s21-tab { font-size: 13px; } .q12-s21-frac { font-size: 32px; }
+}
+/* celular: a matriz compacta e as legendas de figura dos slides do bloco voltam a tamanhos legíveis em px */
+@container q7 (max-width: 820px) {
+  :is([data-q7="c12p15"], [data-q7="c12p18"]) .q12-mx--compacta .q12-mx-v { font-size: 20px; }
+  :is([data-q7="c12p15"], [data-q7="c12p18"]) .q12-mx--compacta .q12-mx-n { font-size: 12px; }
+  .q12-s18-fig figcaption { font-size: 12px; }
+}

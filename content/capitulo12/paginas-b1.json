@@ -1,0 +1,269 @@
+{
+ "paginas": {
+  "c12p1": {
+   "t": {
+    "exp": 2,
+    "disc": 2
+   },
+   "aprendizado": "Reconhecer que um número de acurácia sozinho não diz se um modelo é bom e registrar uma posição que a aula vai pôr à prova.",
+   "apoio": "Escolha uma das três respostas para a pergunta “Esse modelo é bom?”; o retorno diz em que slide ela será testada. Clique numa das quatro perguntas do percurso para ver onde cada bloco começa.",
+   "conexao": "A primeira pergunta é como o modelo transforma uma imagem num rótulo: o slide 2 abre o bloco.",
+   "guia": {
+    "funcao": "Gancho da aula: um detector de 5 com 95,7% de acurácia e a pergunta que ele provoca, com as quatro perguntas encadeadas que a aula responde.",
+    "pre": "Nenhum.",
+    "conducao": "Mostre o número grande: o detector acerta 95,7%, 57.422 de 60.000 imagens. Aponte as doze imagens embaixo: seis são 5, seis não são. Pergunte se o modelo é bom e peça que a turma escolha uma das três respostas antes de qualquer explicação. Não dê gabarito: as três posições são defensáveis e cada retorno diz onde a resposta será posta à prova (slide 10 para o modelo sem informação, slides 11 e 16 para os erros e seus custos). Feche apresentando o percurso: classificação, desempenho, ensembles e crédito, e diga que a resposta volta no slide 49.",
+    "leitura": "KPI de 95,7% com 57.422 acertos em 60.000 imagens; doze dígitos da base com o rótulo verdadeiro; a pergunta com três respostas; à direita, as quatro perguntas da aula com o slide em que cada bloco começa.",
+    "pergunta": "Errar menos de 5 em cada 100 basta para chamar o modelo de bom?",
+    "resposta": "Ainda não dá para saber: depende de quanto acertaria um modelo sem informação, de quais erros ele comete e de quanto cada erro custa. A aula responde com três critérios no slide 49.",
+    "erros": [
+     {
+      "alt": "Sim: 95,7% é alto",
+      "confusao": "Lê a acurácia sem referência, como se 50% fosse o ponto de partida.",
+      "intervencao": "Peça que guardem o número e anuncie que o slide 10 calcula a acurácia de um modelo que nunca diz 5."
+     },
+     {
+      "alt": "Não: todo modelo erra",
+      "confusao": "Confunde existir erro com o modelo ser ruim.",
+      "intervencao": "Pergunte qual erro importa mais: deixar passar um 5 ou acusar um 5 que não existe."
+     },
+     {
+      "alt": "Depende só do algoritmo usado",
+      "confusao": "Desloca a avaliação para a técnica, e não para os erros e seu custo.",
+      "intervencao": "Lembre que a mesma acurácia pode esconder erros muito diferentes; o slide 11 mostra a matriz."
+     }
+    ],
+    "interacao": "Previsão sem gabarito: a escolha fica guardada na aba e volta no slide 49; “Tentar outra” limpa. Os quatro cartões do percurso são links para a abertura de cada bloco.",
+    "verificacao": "Cada aluno sabe dizer qual resposta escolheu e por quê.",
+    "transicao": "Antes de medir, precisamos saber o que o modelo faz: uma imagem entra, um rótulo sai."
+   }
+  },
+  "c12p2": {
+   "t": {
+    "exp": 2
+   },
+   "aprendizado": "Ver a classificação como uma função que recebe 784 números e devolve um rótulo, e conhecer os quatro passos do bloco.",
+   "apoio": "Troque a imagem de entrada entre seis exemplos e veja os números do vetor mudarem; a saída continua “?” porque o modelo ainda não existe.",
+   "conexao": "Antes do modelo, os termos: instância, característica, rótulo e classe positiva (slide 3).",
+   "guia": {
+    "funcao": "Abertura do bloco 1: a função que o bloco ensina a aprender e o fluxo dados, rótulo binário, treino e teste, classificador.",
+    "pre": "Slide 1.",
+    "conducao": "Mostre a imagem de entrada: 28 por 28 pixels, que o computador lê como 784 números de 0 a 255; nove deles aparecem na tela, perto do primeiro pixel aceso. Troque a imagem: os números mudam e o rótulo verdadeiro aparece embaixo. A caixa f(x) é o classificador que ainda não temos; por isso a saída fica “5 ou não 5?” até o slide 8. Leia o fluxo de baixo: dados (slide 4), rótulo binário (slide 6), treino e teste (slide 7), classificador (slide 8).",
+    "leitura": "As quatro perguntas da aula com Classificação em destaque; imagem de entrada, vetor de 784 números, caixa f(x) e saída “5 ou não 5?”; o fluxo dos quatro passos com links.",
+    "pergunta": "O que o computador recebe quando “vê” esta imagem?",
+    "resposta": "Uma lista de 784 números, a intensidade de cada pixel, de 0 (fundo) a 255 (traço).",
+    "erros": [
+     {
+      "alt": "Ele recebe a forma do algarismo",
+      "confusao": "Atribui ao modelo uma percepção visual que ele não tem.",
+      "intervencao": "Aponte o vetor x: é só isso que entra em f(x)."
+     },
+     {
+      "alt": "Ele já sabe que é um 5",
+      "confusao": "Confunde o rótulo verdadeiro, anotado por uma pessoa, com a saída do modelo.",
+      "intervencao": "Mostre que a saída está em aberto e que o rótulo embaixo é a resposta certa, não a do modelo."
+     }
+    ],
+    "interacao": "Seletor de seis imagens (três 5 e três outros algarismos) que muda a entrada, o vetor e o rótulo verdadeiro; os passos do fluxo são links.",
+    "verificacao": "O aluno descreve a entrada e a saída da função em uma frase.",
+    "transicao": "Para falar dessa função com precisão, quatro termos que voltam a aula inteira."
+   }
+  },
+  "c12p3": {
+   "t": {
+    "exp": 1,
+    "disc": 1,
+    "prat": 1
+   },
+   "aprendizado": "Usar instância, característica, rótulo e classe positiva no MNIST e no crédito, e saber que a classe positiva é a que se quer detectar, não a desejável.",
+   "apoio": "Clique em cada linha da tabela para ver o termo na primeira imagem do treino; depois responda qual é a classe positiva no crédito. A célula do crédito só abre no acerto.",
+   "conexao": "Com os termos definidos, o slide 4 abre as 70.000 instâncias do MNIST.",
+   "guia": {
+    "funcao": "Fixar o vocabulário da aula e desmontar a confusão entre positivo e bom antes que precisão e recall apareçam.",
+    "pre": "Slide 2.",
+    "conducao": "Percorra a tabela clicando em cada linha. Instância: esta imagem é uma das 70.000 da base; no crédito, uma proposta. Característica: o pixel realçado, na linha 7 e coluna 9, vale 253 numa escala de 0 a 255; são 784 por imagem; no crédito, renda, prazo, histórico. Rótulo: esta imagem é um 5, anotado por uma pessoa; no crédito, bom ou mau pagador, que só se conhece depois do horizonte de observação. Classe positiva: no MNIST, o 5; os outros nove são a negativa. Agora peça a previsão do crédito antes de abrir a célula.",
+    "leitura": "Tabela Termo, No MNIST, No crédito, com a classe positiva do crédito oculta; embaixo, o termo ilustrado no dígito real; à direita, a previsão.",
+    "pergunta": "No crédito, qual é a classe positiva?",
+    "resposta": "O mau pagador: é o evento que o modelo quer detectar, como o 5 no MNIST. Precisão e recall do caso serão lidos com o mau como positivo.",
+    "erros": [
+     {
+      "alt": "O bom pagador",
+      "confusao": "Confunde positivo com bom.",
+      "intervencao": "Volte ao MNIST: o positivo é o 5 que se procura, não os outros nove. Qual evento o credor procura?"
+     },
+     {
+      "alt": "Tanto faz: é só uma convenção",
+      "confusao": "Trata a escolha como simétrica.",
+      "intervencao": "Diga que precisão e recall são calculados sobre a classe positiva (slides 12 e 13): trocar a classe muda o que eles medem."
+     }
+    ],
+    "interacao": "Linhas da tabela como botões que trocam a ilustração; previsão com retorno que nomeia a confusão e “Tentar outra”; Restaurar volta à linha Instância e à previsão em aberto.",
+    "verificacao": "O aluno completa a frase “a classe positiva é a que queremos...” com “detectar”.",
+    "transicao": "Instância é uma imagem: quantas são, e como cada uma é feita?"
+   }
+  },
+  "c12p4": {
+   "t": {
+    "exp": 1,
+    "disc": 1,
+    "prat": 1
+   },
+   "aprendizado": "Descrever o MNIST (70.000 imagens de 28 × 28 = 784 pixels) e ver que imagens com o mesmo rótulo têm pixels diferentes, o que obriga o modelo a generalizar.",
+   "apoio": "Clique num pixel do dígito (ou use as setas) e leia linha, coluna, índice e intensidade; troque entre as sete imagens de 5 e veja o mesmo pixel mudar de valor.",
+   "conexao": "Cada imagem vira uma linha de uma matriz: o slide 5 mostra a base em código.",
+   "guia": {
+    "funcao": "Apresentar a base e a ideia de generalização com o próprio dado: o rótulo é o mesmo, os pixels não.",
+    "pre": "Slide 3 (instância e característica).",
+    "conducao": "À esquerda, a figura do Géron com dez escritas de cada algarismo. Os dois números: 70.000 imagens e 784 características, 28 × 28. No dígito, o pixel marcado está na linha 7, coluna 9; no vetor de 784 ele é o índice 7 × 28 + 9 = 205 e vale 253. Agora troque a imagem: o mesmo pixel 205 vale 101 na segunda, 247 na terceira e 0 nas outras quatro. Só 3 das 7 imagens de 5 têm traço ali. Clique em outros pixels com a turma: em nenhum ponto as sete concordam por completo. O modelo não pode decorar pixels; precisa reconhecer o 5 em escritas que nunca viu.",
+    "leitura": "Figura original com algarismos de 0 a 9; dígito com a grade de 784 pixels e o pixel escolhido; linha, coluna, índice e intensidade; sete miniaturas de 5 com o valor do pixel em cada uma.",
+    "pergunta": "Se o pixel 205 vale 253 numa imagem de 5 e 0 noutra, ele serve para reconhecer o 5?",
+    "resposta": "Sozinho, não: nenhum pixel isolado define o algarismo. O modelo combina os 784 valores, e precisa funcionar em escritas que não viu.",
+    "erros": [
+     {
+      "alt": "O índice 205 é a 205ª imagem",
+      "confusao": "Confunde a posição do pixel na imagem com a posição da imagem na base.",
+      "intervencao": "Mostre que o índice vem de linha × 28 + coluna e que a imagem é a mesma."
+     },
+     {
+      "alt": "Se a intensidade muda, o rótulo deveria mudar",
+      "confusao": "Liga o rótulo a um pixel, e não à imagem inteira.",
+      "intervencao": "Troque entre as sete imagens: o rótulo continua 5 com valores bem diferentes."
+     }
+    ],
+    "interacao": "Clique ou setas escolhem o pixel; sete miniaturas trocam a imagem e mostram o valor do pixel em cada uma; Restaurar volta à primeira imagem e ao pixel 205.",
+    "verificacao": "O aluno calcula o índice de um pixel a partir da linha e da coluna.",
+    "transicao": "Como o computador guarda as 70.000 imagens de uma vez? Numa matriz."
+   }
+  },
+  "c12p5": {
+   "t": {
+    "exp": 2,
+    "prat": 1
+   },
+   "aprendizado": "Ler o formato da base no código: X com 70.000 linhas e 784 colunas, y com 70.000 rótulos, e o reshape que leva a linha de volta à imagem.",
+   "apoio": "Escolha uma linha de X e veja-a como uma faixa de 784 números e dobrada em 28 × 28; troque a leitura entre linha, coluna e y e acompanhe o que acende no diagrama e no código.",
+   "conexao": "Com y em mãos, o slide 6 reduz os dez algarismos a duas classes.",
+   "guia": {
+    "funcao": "Ligar o código da aula ao desenho da matriz, para que shape, linha, coluna e vetor de rótulos tenham sentido concreto.",
+    "pre": "Slide 4 (784 pixels por imagem, índice do pixel).",
+    "conducao": "Leia o código: fetch_openml baixa a base, X_digits recebe os dados e y_digits os rótulos convertidos para inteiro. X_digits.shape dá (70000, 784) e y_digits.shape dá (70000,). No diagrama, a linha 0 acende: são 784 números em fila, que a faixa embaixo mostra em 28 blocos de 28; reshape(28, 28) dobra a faixa e a imagem reaparece, com y = 5 ao lado. Troque a linha para 373, 756, 3.132 e 525. Depois mude a leitura para coluna: a coluna 205 é o mesmo pixel (linha 7, coluna 9) em todas as imagens. Por fim, y: um rótulo por linha de X, na mesma ordem, sem nenhum pixel.",
+    "leitura": "Código da aula com as linhas da parte escolhida realçadas e uma última linha que muda; diagrama de X (70.000 × 784) e y; a linha escolhida como faixa de 784 pixels; a mesma linha dobrada em 28 × 28 e o valor de y.",
+    "pergunta": "O que devolve X_digits[:, 205]?",
+    "resposta": "Um vetor de 70.000 números: a intensidade do pixel da linha 7, coluna 9 em cada imagem da base.",
+    "erros": [
+     {
+      "alt": "Devolve a imagem 205",
+      "confusao": "Troca linha por coluna.",
+      "intervencao": "Mude a leitura para coluna e mostre a faixa vertical atravessando todas as linhas."
+     },
+     {
+      "alt": "y faz parte de X",
+      "confusao": "Mistura características e rótulo.",
+      "intervencao": "Mostre y à parte no diagrama: o rótulo é o que o modelo deve prever, nunca uma entrada."
+     }
+    ],
+    "interacao": "Seletor de leitura (linha, coluna, y) que realça o diagrama e o código e troca a última linha do código; seletor de cinco linhas de X; Restaurar volta à linha 0 e à leitura por linha.",
+    "verificacao": "O aluno diz o que significam os dois números de X_digits.shape.",
+    "transicao": "y tem dez valores possíveis; para o detector de 5, precisamos de dois."
+   }
+  },
+  "c12p6": {
+   "t": {
+    "exp": 1,
+    "disc": 1,
+    "prat": 1
+   },
+   "aprendizado": "Construir o rótulo binário y_binary = (y_digits == 5) e perceber que, contra os outros nove, a classe positiva é rara (9,0% do treino).",
+   "apoio": "Clique num algarismo da barra para torná-lo positivo; o código, o destaque e a prevalência mudam. Volte ao 5 com Restaurar.",
+   "conexao": "Antes de treinar, separar treino e teste (slide 7); a raridade do 5 volta no slide 10.",
+   "guia": {
+    "funcao": "Passar de dez classes para duas e plantar a raridade da classe positiva, que derruba a acurácia como métrica no slide 10.",
+    "pre": "Slides 3 (classe positiva) e 5 (vetor y).",
+    "conducao": "A figura mostra as primeiras imagens do treino com o rótulo de cada uma. Uma linha de código troca o rótulo: y_binary = (y_digits == 5) dá True para o 5 e False para os outros nove. No treino, 5.421 das 60.000 imagens são 5: prevalência de 9,0%. A barra mostra os dez algarismos lado a lado: o 5 é o mais raro. Clique no 1: 6.742, 11,2%, o mais comum. Qualquer algarismo contra os outros nove fica entre 9,0% e 11,2%: a classe positiva é sempre minoria. No crédito, True seria o mau pagador, também minoria.",
+    "leitura": "Código do rótulo binário com o algarismo escolhido e a contagem no treino; barra das 60.000 imagens de treino por algarismo com o positivo em destaque; positivos e prevalência; figura original com os rótulos.",
+    "pergunta": "Se só 9,0% das imagens são True, quanto acertaria um modelo que responde False para tudo?",
+    "resposta": "91,0%. A turma guarda esse número: o slide 10 faz a conta com os 54.579 que não são 5.",
+    "erros": [
+     {
+      "alt": "True quer dizer acerto do modelo",
+      "confusao": "Confunde o rótulo binário com a previsão.",
+      "intervencao": "Mostre que y_binary sai só de y_digits, antes de qualquer modelo."
+     },
+     {
+      "alt": "Com outro algarismo, a classe deixaria de ser rara",
+      "confusao": "Supõe que a raridade é peculiar do 5.",
+      "intervencao": "Clique no 1, o mais comum: 11,2%, ainda minoria."
+     }
+    ],
+    "interacao": "Barra de algarismos como seletor do positivo, com código, destaque e prevalência que respondem; Restaurar volta ao 5.",
+    "verificacao": "O aluno escreve a linha de código para um detector de 7.",
+    "transicao": "Temos X e o rótulo binário; falta decidir em que parte da base o modelo aprende e em qual é avaliado."
+   }
+  },
+  "c12p7": {
+   "t": {
+    "exp": 1,
+    "disc": 1,
+    "prat": 1
+   },
+   "aprendizado": "Separar treino e teste e saber, com dado, que medir no treino superestima o desempenho.",
+   "apoio": "Clique em Treino e em Teste na barra para ver as linhas do código de cada parte; preveja quanto uma árvore sem limite acerta no próprio treino e no teste.",
+   "conexao": "Com o treino separado, o slide 8 ajusta o primeiro classificador nas 60.000 imagens.",
+   "guia": {
+    "funcao": "Justificar o teste guardado com um experimento: o modelo que decora o treino parece perfeito nele.",
+    "pre": "Slide 6 (rótulo binário). As duas luas são apresentadas no slide 26; aqui basta dizer que é um problema de duas classes com 375 pontos de treino e 125 de teste.",
+    "conducao": "Na barra, as 60.000 primeiras imagens são treino e as 10.000 últimas, teste: é a divisão da própria base. O código fatia X e y nos mesmos pontos e cria y_train_5 e y_test_5. Diga que as métricas do bloco 2 serão medidas no treino por validação cruzada, e que o teste só é usado uma vez, no slide 49. Por quê? Faça a previsão: uma árvore de decisão sem limite de profundidade, nas duas luas. No acerto: 100,0% no treino (375 de 375) e 85,6% no teste (107 de 125), uma diferença de 14,4 pontos percentuais. A árvore decorou os pontos que viu. A acurácia do MNIST no teste não aparece aqui de propósito.",
+    "leitura": "Barra de treino e teste que seleciona a parte; código com as linhas da parte realçadas; previsão sobre a árvore; no acerto, as barras de acurácia no treino e no teste.",
+    "pergunta": "Por que não usar o teste para escolher o modelo e depois relatar o mesmo teste?",
+    "resposta": "Porque o teste vira parte do ajuste e deixa de medir o desempenho em dados novos; a escolha usa validação cruzada no treino e o teste fica para uma medida única no fim.",
+    "erros": [
+     {
+      "alt": "O mesmo nos dois conjuntos",
+      "confusao": "Supõe que o treino mede o que o teste mede.",
+      "intervencao": "Pergunte o que acontece com uma árvore que pode abrir uma folha para cada ponto."
+     },
+     {
+      "alt": "Mais no teste, que tem menos pontos",
+      "confusao": "Confunde tamanho da amostra com dificuldade.",
+      "intervencao": "Lembre que os pontos do teste nunca foram vistos pela árvore."
+     }
+    ],
+    "interacao": "Barra de treino e teste como seletor que realça o código; previsão com resultado escondido até o acerto, retorno que nomeia a confusão e “Tentar outra”; Restaurar volta à parte de treino e à previsão em aberto.",
+    "verificacao": "O aluno explica por que 100,0% no treino não é boa notícia.",
+    "transicao": "O treino está separado; hora de ajustar o primeiro classificador."
+   }
+  },
+  "c12p8": {
+   "t": {
+    "exp": 2,
+    "disc": 1,
+    "prat": 1
+   },
+   "aprendizado": "Ajustar um classificador linear por SGD, ler o score de cada imagem e a regra score > 0, e ver que prever não é acertar.",
+   "apoio": "Clique nas doze imagens da reta de score para ver score, previsão e se o modelo acertou; conte os acertos com a turma.",
+   "conexao": "O modelo já prevê; o bloco 2 (slide 9) mede quanto podemos confiar nessas previsões.",
+   "guia": {
+    "funcao": "Fechar o bloco 1 com o primeiro modelo funcionando e abrir a pergunta que o bloco 2 responde.",
+    "pre": "Slides 6 (y_train_5) e 7 (X_train_digits).",
+    "conducao": "Leia o código: SGDClassifier com loss=\"hinge\" e random_state=42, ajustado em X_train_digits e y_train_5. SGD é o método de otimização: ajusta os pesos uma observação por vez e escala para bases grandes. hinge é a perda do SVM linear. predict devolve True ou False: True quando o score passa de 0; na primeira imagem, um 5, o score é 1.201. Na reta, as doze imagens estão no score da validação cruzada em três partes, o mesmo que forma a matriz do slide 11. A selecionada, um 5 com score 19.580, é acerto. Clique no 5 com score −1.063: passou perto, mas ficou abaixo do limiar. Conte: 8 acertos em 12, os 6 que não são 5 e só 2 dos 6 cincos. A amostra tem seis 5 de propósito, então não estima a acurácia da base.",
+    "leitura": "Código do classificador; três pontos sobre SGD, hinge e predict; reta de score com o limiar 0, as regiões “prevê 5” e “prevê não 5” e doze miniaturas com o rótulo verdadeiro e a marca de acerto; painel da imagem selecionada e contagem de acertos.",
+    "pergunta": "O 5 com score −1.063 seria encontrado se o limiar fosse −2.000?",
+    "resposta": "Sim: com limiar abaixo do score dele, o modelo diria 5. Mudar o limiar troca um tipo de erro pelo outro, o que os slides 17 e 18 medem.",
+    "erros": [
+     {
+      "alt": "O score é a probabilidade de ser 5",
+      "confusao": "Confunde distância à fronteira com probabilidade.",
+      "intervencao": "Mostre os valores na reta, de −31.799 a 19.580: não estão entre 0 e 1."
+     },
+     {
+      "alt": "8 de 12 quer dizer 67% de acurácia do modelo",
+      "confusao": "Generaliza de uma amostra que não tem a proporção da base.",
+      "intervencao": "Lembre que metade da amostra é 5, contra 9,0% na base; a acurácia vem da validação cruzada no slide 10."
+     }
+    ],
+    "interacao": "Doze imagens clicáveis na reta de score, com painel que mostra rótulo, score, previsão e acerto; contagem calculada do dado; Restaurar volta à imagem de score mais alto.",
+    "verificacao": "O aluno diz a previsão de uma imagem a partir do score e explica por que um 5 pode ser previsto como não 5.",
+    "transicao": "O modelo já prevê. Quanto podemos confiar nessas previsões? O bloco 2 abre as métricas."
+   }
+  }
+ }
+}
