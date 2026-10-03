@@ -156,7 +156,6 @@
 .q12-s34-dir .q12-fig { flex: 1; min-height: 9cqw; }
 
 /* 35 · c12p35 · importância na Iris: barras ocultas até a previsão */
-.q12-s35-dir { flex: 1; }
 
 /* 36 · c12p36 · boosting em código: etapa acesa, alvo e árvore da etapa */
 .q12-s36-cab { display: flex; justify-content: space-between; align-items: center; gap: .8cqw; flex-wrap: wrap; }

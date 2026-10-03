@@ -43,7 +43,6 @@ const SOB_DEMANDA: Record<string, ComponentType<{ pagina?: Pagina }>> = {
   c12p32: dynamic(() => import("./slides/s32-fora-37").then((m) => m.S32Fora37)),
   c12p33: dynamic(() => import("./slides/s33-oob").then((m) => m.S33Oob)),
   c12p34: dynamic(() => import("./slides/s34-floresta").then((m) => m.S34Floresta)),
-  c12p35: dynamic(() => import("./slides/s35-importancia").then((m) => m.S35Importancia)),
   c12p36: dynamic(() => import("./slides/s36-boosting-codigo").then((m) => m.S36BoostingCodigo)),
   c12p37: dynamic(() => import("./slides/s37-residuo").then((m) => m.S37Residuo)),
   c12p38: dynamic(() => import("./slides/s38-sintese-ensembles").then((m) => m.S38SinteseEnsembles)),

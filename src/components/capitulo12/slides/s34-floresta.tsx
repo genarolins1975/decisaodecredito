@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Botao, Painel, Quadro, Seg, type Pagina } from "@/components/capitulo7/base";
 import { Codigo, Figura, PlanoLuas } from "../pecas";
 import { LegendaLuas } from "../b3";
-import { ACERTOS_LUAS, FONTE_LUAS, IRIS, LUAS, N_TESTE_LUAS, N_TREINO_LUAS, type ModeloLua } from "@/lib/capitulo12/dados";
+import { ACERTOS_LUAS, FONTE_LUAS, LUAS, N_TESTE_LUAS, N_TREINO_LUAS, type ModeloLua } from "@/lib/capitulo12/dados";
 import { ERROS } from "@/lib/capitulo12/b3";
 import { SLIDE } from "@/lib/capitulo12/roteiro";
 import { int, num } from "@/lib/capitulo7/formato";
@@ -38,7 +38,7 @@ export function S34Floresta({ pagina }: { pagina?: Pagina }) {
   const dif = ACERTOS_LUAS.rf500 - ACERTOS_LUAS.bag500;
   return (
     <Quadro slug="c12p34" pagina={pagina} layout="gl"
-      conclusao={<>Floresta: <b>{num(LUAS.modelos.rf500.acc, 3)}</b> ({int(ACERTOS_LUAS.rf500)} de {int(N_TESTE_LUAS)}); bagging: {num(LUAS.modelos.bag500.acc, 3)} ({int(ACERTOS_LUAS.bag500)}). {int(Math.abs(dif))} {Math.abs(dif) === 1 ? "acerto" : "acertos"} de diferença, com outros hiperparâmetros também diferentes: aqui não se isola o efeito do sorteio. Na Iris, com {int(IRIS.nomes.length)} variáveis, a floresta também mede quais pesam mais (slide {SLIDE.c12p35.n}).</>}
+      conclusao={<>Floresta: <b>{num(LUAS.modelos.rf500.acc, 3)}</b> ({int(ACERTOS_LUAS.rf500)} de {int(N_TESTE_LUAS)}); bagging: {num(LUAS.modelos.bag500.acc, 3)} ({int(ACERTOS_LUAS.bag500)}). {int(Math.abs(dif))} {Math.abs(dif) === 1 ? "acerto" : "acertos"} de diferença, com outros hiperparâmetros também diferentes: aqui não se isola o efeito do sorteio.</>}
       fonte={`${FONTE_LUAS}. Floresta: max_leaf_nodes=16, amostras bootstrap de ${int(N_TREINO_LUAS)}; bagging: max_samples=100, árvores sem limite. max_features="sqrt": ${int(POR_DIVISAO)} de ${int(N_CARAC)} características por divisão.`}>
       <Painel>
         <PlanoLuas regiao={m.grade} conjunto="teste" erros={m.pred} titulo={o.nome} sub={`${num(m.acc, 3)} no teste · ${int(ACERTOS_LUAS[k])} de ${int(N_TESTE_LUAS)}`}

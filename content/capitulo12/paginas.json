@@ -22,8 +22,8 @@
    "conexao": "Fim do material de consulta do capítulo.",
    "guia": {
     "funcao": "Dar a cada método da aula a referência primária e apontar os métodos atuais que a aula não demonstra, com quando usar cada um.",
-    "pre": "Slides 1 a 50.",
-    "conducao": "Use como consulta, não como exposição. Em sala, mostre só o grupo Além da aula: a importância por impureza do slide 36 tem viés conhecido (Strobl et al., 2007) e deve ser conferida por permutação; SHAP explica cada contrato; XGBoost e LightGBM são o boosting que se usa hoje; stacking aprende a combinar os votos.",
+    "pre": "Slides 1 a 49.",
+    "conducao": "Use como consulta, não como exposição. Em sala, mostre só o grupo Além da aula: a importância por impureza das florestas tem viés conhecido (Strobl et al., 2007) e deve ser conferida por permutação; SHAP explica cada contrato; XGBoost e LightGBM são o boosting que se usa hoje; stacking aprende a combinar os votos.",
     "leitura": "Quatro grupos (Métricas, Ensembles, Crédito, Além da aula), cada referência com autor, obra, o que resolve e o slide da aula.",
     "pergunta": "Que método do grupo Além da aula você exigiria antes de levar um boosting ao comitê de crédito?",
     "resposta": "Uma explicação por contrato, como SHAP, e a importância por permutação para conferir a importância por impureza; os dois respondem à exigência de explicar a decisão ao cliente e ao validador.",
@@ -36,7 +36,7 @@
      {
       "alt": "Boosting moderno dispensa validação fora do tempo",
       "confusao": "Confunde potência do algoritmo com estabilidade no tempo.",
-      "intervencao": "Volte ao slide 43: todo modelo perde discriminação fora do tempo."
+      "intervencao": "Volte ao slide 42: todo modelo perde discriminação fora do tempo."
      }
     ],
     "interacao": "Seletor de grupo e links para os slides em que cada método aparece; Restaurar volta a Métricas.",

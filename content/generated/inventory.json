@@ -1,7 +1,7 @@
 {
  "source": "content/original/apresentacao-curso-pd.html",
- "sha256": "5133fcd74d70804a46ee81bc6b8abfe1d6971241498334029948e658036c4fe9",
- "extractedAt": "2026-10-03T11:14:27.704Z",
+ "sha256": "f7f1c642b3807d151389efa9c29493c10e3ea09f03d65752929ae7fd02026542",
+ "extractedAt": "2026-10-03T11:41:23.817Z",
  "edition": "2026",
  "units": [
   {
@@ -4635,25 +4635,6 @@
    "hasFormula": false
   },
   {
-   "source": "#/c12p35",
-   "slug": "c12p35",
-   "pageId": "afwmwh9b34arzzqm9tp05",
-   "chapter": 12,
-   "unit": 6,
-   "title": "Na Iris, as medidas da pétala somam 86% da importância",
-   "level": "essencial",
-   "minutes": 3,
-   "origin": "rec",
-   "rendering": "static",
-   "controls": 0,
-   "svgs": 0,
-   "tables": 0,
-   "questions": [],
-   "predictions": [],
-   "hasGuide": true,
-   "hasFormula": false
-  },
-  {
    "source": "#/c12p36",
    "slug": "c12p36",
    "pageId": "ce5hgfogx7wkb3smzqrx1",
@@ -4977,7 +4958,7 @@
    "hasFormula": false
   }
  ],
- "questions": 323,
+ "questions": 322,
  "rubrics": [
   {
    "slug": "comite",
@@ -5059,7 +5040,7 @@
  ],
  "rendering": {
   "legacy": 84,
-  "static": 149,
+  "static": 148,
   "native": 21
  },
  "resync": {
@@ -5068,20 +5049,7 @@
    "c5p3",
    "c12p1",
    "c12p7",
-   "c12p22",
-   "c12p23",
-   "c12p24",
    "c12p25",
-   "c12p26",
-   "c12p27",
-   "c12p28",
-   "c12p29",
-   "c12p30",
-   "c12p31",
-   "c12p32",
-   "c12p33",
-   "c12p34",
-   "c12p35",
    "c12p36",
    "c12p37",
    "c12p38",

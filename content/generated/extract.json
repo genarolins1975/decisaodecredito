@@ -1,7 +1,7 @@
 {
  "sourceFile": "content/original/apresentacao-curso-pd.html",
- "sourceSha256": "5133fcd74d70804a46ee81bc6b8abfe1d6971241498334029948e658036c4fe9",
- "extractedAt": "2026-10-03T11:14:27.704Z",
+ "sourceSha256": "f7f1c642b3807d151389efa9c29493c10e3ea09f03d65752929ae7fd02026542",
+ "extractedAt": "2026-10-03T11:41:23.817Z",
  "meta": {
   "capitulos": [
    {
@@ -823,7 +823,6 @@
    "c12p32",
    "c12p33",
    "c12p34",
-   "c12p35",
    "c12p36",
    "c12p37",
    "c12p38",
@@ -5300,8 +5299,8 @@
     "verificacao": "O aluno relaciona volume de faixa com incerteza da estimativa.",
     "transicao": "Fechamento."
    },
-   "html": "<div class=\"palcoflex\" data-colunas=\"dados\"><div class=\"esq\" style=\"flex: 0.48 1 0px;\"><div class=\"painel\">\n  <div class=\"rot\">A mesma variável, dois tratamentos</div>\n  <div class=\"rolax\" data-exploravel=\"tabela\"><table style=\"margin-top:8px\"><thead><tr><th></th><th>Contínua</th><th>Em quatro faixas</th></tr></thead><tbody>\n  <tr><th scope=\"row\">Parâmetros</th><td class=\"num\">1</td><td class=\"num\">3</td></tr>\n  <tr><th scope=\"row\">Forma permitida</th><td>monótona e linear em log odds</td>\n   <td>qualquer, inclusive não monótona</td></tr>\n  <tr><th scope=\"row\">Risco</th><td>erro sistemático se a forma não bate</td>\n   <td>variância maior e faixas com poucos casos</td></tr>\n  <tr><th scope=\"row\">Auditoria</th><td>um coeficiente por variável</td>\n   <td>um coeficiente por faixa, com fronteiras declaradas</td></tr></tbody></table></div>\n  <p class=\"nota\" style=\"margin-top:9px\">Com dezesseis propostas, quatro faixas deixam quatro casos por\n  faixa. O intervalo de Wilson do capítulo 2 mostra o que isso significa: nada afirmável.\n  Em base de 5.000, a mesma escolha é razoável.</p></div>\n  </div><div class=\"dir\" style=\"flex: 0.52 1 0px;\"><div class=\"painel\"><div class=\"rot\">Regras que uma faixa precisa respeitar</div>\n  <div class=\"rolax\"><table style=\"margin-top:8px\"><tbody>\n  <tr><th scope=\"row\">Volume mínimo</th><td>proporção da base por faixa suficiente para estimar a taxa\n   com intervalo utilizável</td></tr>\n  <tr><th scope=\"row\">Monotonicidade imposta</th><td>quando há hipótese econômica de direção, faixas fora\n   de ordem indicam ruído, não descoberta</td></tr>\n  <tr><th scope=\"row\">Estabilidade no tempo</th><td>fronteiras definidas no treino precisam continuar\n   representativas nas safras seguintes. É o índice de estabilidade do capítulo 9</td></tr>\n  <tr><th scope=\"row\">Fronteiras declaradas</th><td>faixas escolhidas olhando o alvo e não declaradas\n   são uma forma silenciosa de sobreajuste</td></tr></tbody></table></div>\n  <div class=\"revelacao\" style=\"margin-top:10px\"><h4>Relação com o WoE</h4>\n  O WoE, construído no capítulo 3, é exatamente este tratamento com uma escolha específica de valor por\n  faixa: o logaritmo da razão entre a distribuição dos bons e a dos maus. Ele mantém a variável em uma\n  única coluna e preserva a leitura por faixa.</div></div></div></div>\n   <div class=\"conexao\">Fechamento do capítulo.</div>\n   <div class=\"navrod\"><button class=\"botao sec\" id=\"ant\">← Anterior</button>\n    <span class=\"nota\">67 de 254</span>\n    <button class=\"botao\" id=\"prox\">Próxima →</button></div>",
-   "text": "A MESMA VARIÁVEL, DOIS TRATAMENTOS\n\tContínua\tEm quatro faixas\nParâmetros\t1\t3\nForma permitida\tmonótona e linear em log odds\tqualquer, inclusive não monótona\nRisco\terro sistemático se a forma não bate\tvariância maior e faixas com poucos casos\nAuditoria\tum coeficiente por variável\tum coeficiente por faixa, com fronteiras declaradas\n\nCom dezesseis propostas, quatro faixas deixam quatro casos por faixa. O intervalo de Wilson do capítulo 2 mostra o que isso significa: nada afirmável. Em base de 5.000, a mesma escolha é razoável.\n\nREGRAS QUE UMA FAIXA PRECISA RESPEITAR\nVolume mínimo\tproporção da base por faixa suficiente para estimar a taxa com intervalo utilizável\nMonotonicidade imposta\tquando há hipótese econômica de direção, faixas fora de ordem indicam ruído, não descoberta\nEstabilidade no tempo\tfronteiras definidas no treino precisam continuar representativas nas safras seguintes. É o índice de estabilidade do capítulo 9\nFronteiras declaradas\tfaixas escolhidas olhando o alvo e não declaradas são uma forma silenciosa de sobreajuste\nRelação com o WoE\nO WoE, construído no capítulo 3, é exatamente este tratamento com uma escolha específica de valor por faixa: o logaritmo da razão entre a distribuição dos bons e a dos maus. Ele mantém a variável em uma única coluna e preserva a leitura por faixa.\nFechamento do capítulo.\n← Anterior\n67 de 254\nPróxima →",
+   "html": "<div class=\"palcoflex\" data-colunas=\"dados\"><div class=\"esq\" style=\"flex: 0.48 1 0px;\"><div class=\"painel\">\n  <div class=\"rot\">A mesma variável, dois tratamentos</div>\n  <div class=\"rolax\" data-exploravel=\"tabela\"><table style=\"margin-top:8px\"><thead><tr><th></th><th>Contínua</th><th>Em quatro faixas</th></tr></thead><tbody>\n  <tr><th scope=\"row\">Parâmetros</th><td class=\"num\">1</td><td class=\"num\">3</td></tr>\n  <tr><th scope=\"row\">Forma permitida</th><td>monótona e linear em log odds</td>\n   <td>qualquer, inclusive não monótona</td></tr>\n  <tr><th scope=\"row\">Risco</th><td>erro sistemático se a forma não bate</td>\n   <td>variância maior e faixas com poucos casos</td></tr>\n  <tr><th scope=\"row\">Auditoria</th><td>um coeficiente por variável</td>\n   <td>um coeficiente por faixa, com fronteiras declaradas</td></tr></tbody></table></div>\n  <p class=\"nota\" style=\"margin-top:9px\">Com dezesseis propostas, quatro faixas deixam quatro casos por\n  faixa. O intervalo de Wilson do capítulo 2 mostra o que isso significa: nada afirmável.\n  Em base de 5.000, a mesma escolha é razoável.</p></div>\n  </div><div class=\"dir\" style=\"flex: 0.52 1 0px;\"><div class=\"painel\"><div class=\"rot\">Regras que uma faixa precisa respeitar</div>\n  <div class=\"rolax\"><table style=\"margin-top:8px\"><tbody>\n  <tr><th scope=\"row\">Volume mínimo</th><td>proporção da base por faixa suficiente para estimar a taxa\n   com intervalo utilizável</td></tr>\n  <tr><th scope=\"row\">Monotonicidade imposta</th><td>quando há hipótese econômica de direção, faixas fora\n   de ordem indicam ruído, não descoberta</td></tr>\n  <tr><th scope=\"row\">Estabilidade no tempo</th><td>fronteiras definidas no treino precisam continuar\n   representativas nas safras seguintes. É o índice de estabilidade do capítulo 9</td></tr>\n  <tr><th scope=\"row\">Fronteiras declaradas</th><td>faixas escolhidas olhando o alvo e não declaradas\n   são uma forma silenciosa de sobreajuste</td></tr></tbody></table></div>\n  <div class=\"revelacao\" style=\"margin-top:10px\"><h4>Relação com o WoE</h4>\n  O WoE, construído no capítulo 3, é exatamente este tratamento com uma escolha específica de valor por\n  faixa: o logaritmo da razão entre a distribuição dos bons e a dos maus. Ele mantém a variável em uma\n  única coluna e preserva a leitura por faixa.</div></div></div></div>\n   <div class=\"conexao\">Fechamento do capítulo.</div>\n   <div class=\"navrod\"><button class=\"botao sec\" id=\"ant\">← Anterior</button>\n    <span class=\"nota\">67 de 253</span>\n    <button class=\"botao\" id=\"prox\">Próxima →</button></div>",
+   "text": "A MESMA VARIÁVEL, DOIS TRATAMENTOS\n\tContínua\tEm quatro faixas\nParâmetros\t1\t3\nForma permitida\tmonótona e linear em log odds\tqualquer, inclusive não monótona\nRisco\terro sistemático se a forma não bate\tvariância maior e faixas com poucos casos\nAuditoria\tum coeficiente por variável\tum coeficiente por faixa, com fronteiras declaradas\n\nCom dezesseis propostas, quatro faixas deixam quatro casos por faixa. O intervalo de Wilson do capítulo 2 mostra o que isso significa: nada afirmável. Em base de 5.000, a mesma escolha é razoável.\n\nREGRAS QUE UMA FAIXA PRECISA RESPEITAR\nVolume mínimo\tproporção da base por faixa suficiente para estimar a taxa com intervalo utilizável\nMonotonicidade imposta\tquando há hipótese econômica de direção, faixas fora de ordem indicam ruído, não descoberta\nEstabilidade no tempo\tfronteiras definidas no treino precisam continuar representativas nas safras seguintes. É o índice de estabilidade do capítulo 9\nFronteiras declaradas\tfaixas escolhidas olhando o alvo e não declaradas são uma forma silenciosa de sobreajuste\nRelação com o WoE\nO WoE, construído no capítulo 3, é exatamente este tratamento com uma escolha específica de valor por faixa: o logaritmo da razão entre a distribuição dos bons e a dos maus. Ele mantém a variável em uma única coluna e preserva a leitura por faixa.\nFechamento do capítulo.\n← Anterior\n67 de 253\nPróxima →",
    "controls": [
     {
      "tag": "button",
@@ -5524,8 +5523,8 @@
     "verificacao": "O aluno usa as cinco palavras corretamente ao descrever a árvore.",
     "transicao": "O critério."
    },
-   "html": "<div class=\"palcoflex\" data-colunas=\"grafico\"><div class=\"esq\" style=\"flex: 1 1 58%;\"><div class=\"svgfit\" data-exploravel=\"grafico\">\n  <svg viewBox=\"0 0 640 350\" role=\"img\" aria-label=\"árvore de decisão\" style=\"font-family:system-ui,sans-serif\"><line x1=\"320\" y1=\"54\" x2=\"171\" y2=\"149\" stroke=\"#E2DFD6\" stroke-width=\"1.8\"></line>\n        <line x1=\"320\" y1=\"54\" x2=\"469\" y2=\"149\" stroke=\"#E2DFD6\" stroke-width=\"1.8\"></line>\n        <text x=\"239.5\" y=\"101.5\" text-anchor=\"end\" font-size=\"10.5\" fill=\"#5B6475\">sim</text>\n        <text x=\"400.5\" y=\"101.5\" font-size=\"10.5\" fill=\"#5B6475\">não</text><line x1=\"171\" y1=\"189\" x2=\"96.5\" y2=\"284\" stroke=\"#E2DFD6\" stroke-width=\"1.8\"></line>\n        <line x1=\"171\" y1=\"189\" x2=\"245.5\" y2=\"284\" stroke=\"#E2DFD6\" stroke-width=\"1.8\"></line>\n        <text x=\"127.75\" y=\"236.5\" text-anchor=\"end\" font-size=\"10.5\" fill=\"#5B6475\">sim</text>\n        <text x=\"214.25\" y=\"236.5\" font-size=\"10.5\" fill=\"#5B6475\">não</text><rect x=\"28\" y=\"282\" width=\"137\" height=\"52\" rx=\"5\" fill=\"#fff\" stroke=\"#9A6B10\" stroke-width=\"1.6\"></rect>\n        <text x=\"96.5\" y=\"298\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"#5B6475\">\n        2 propostas · 1 default</text>\n        <text x=\"96.5\" y=\"316\" text-anchor=\"middle\" font-size=\"16\" font-weight=\"700\" fill=\"#9A6B10\" font-family=\"monospace\">50%</text>\n        <rect x=\"177\" y=\"282\" width=\"137\" height=\"52\" rx=\"5\" fill=\"#fff\" stroke=\"#2E6B4F\" stroke-width=\"1.6\"></rect>\n        <text x=\"245.5\" y=\"298\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"#5B6475\">\n        6 propostas · 0 defaults</text>\n        <text x=\"245.5\" y=\"316\" text-anchor=\"middle\" font-size=\"16\" font-weight=\"700\" fill=\"#2E6B4F\" font-family=\"monospace\">0%</text>\n        <rect x=\"87\" y=\"149\" width=\"168\" height=\"40\" rx=\"5\" fill=\"#fff\" stroke=\"#00205B\" stroke-width=\"1.4\"></rect>\n        <text x=\"171\" y=\"165\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"700\" fill=\"#00205B\">Utilização do limite</text>\n        <text x=\"171\" y=\"181\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"700\" fill=\"#8C2332\">≤ 27,5 % do limite ?</text><line x1=\"469\" y1=\"189\" x2=\"394.5\" y2=\"284\" stroke=\"#E2DFD6\" stroke-width=\"1.8\"></line>\n        <line x1=\"469\" y1=\"189\" x2=\"543.5\" y2=\"284\" stroke=\"#E2DFD6\" stroke-width=\"1.8\"></line>\n        <text x=\"425.75\" y=\"236.5\" text-anchor=\"end\" font-size=\"10.5\" fill=\"#5B6475\">sim</text>\n        <text x=\"512.25\" y=\"236.5\" font-size=\"10.5\" fill=\"#5B6475\">não</text><rect x=\"326\" y=\"282\" width=\"137\" height=\"52\" rx=\"5\" fill=\"#fff\" stroke=\"#8C2332\" stroke-width=\"1.6\"></rect>\n        <text x=\"394.5\" y=\"298\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"#5B6475\">\n        6 propostas · 6 defaults</text>\n        <text x=\"394.5\" y=\"316\" text-anchor=\"middle\" font-size=\"16\" font-weight=\"700\" fill=\"#8C2332\" font-family=\"monospace\">100%</text>\n        <rect x=\"475\" y=\"282\" width=\"137\" height=\"52\" rx=\"5\" fill=\"#fff\" stroke=\"#9A6B10\" stroke-width=\"1.6\"></rect>\n        <text x=\"543.5\" y=\"298\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"#5B6475\">\n        2 propostas · 1 default</text>\n        <text x=\"543.5\" y=\"316\" text-anchor=\"middle\" font-size=\"16\" font-weight=\"700\" fill=\"#9A6B10\" font-family=\"monospace\">50%</text>\n        <rect x=\"385\" y=\"149\" width=\"168\" height=\"40\" rx=\"5\" fill=\"#fff\" stroke=\"#00205B\" stroke-width=\"1.4\"></rect>\n        <text x=\"469\" y=\"165\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"700\" fill=\"#00205B\">Utilização do limite</text>\n        <text x=\"469\" y=\"181\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"700\" fill=\"#8C2332\">≤ 87,5 % do limite ?</text><rect x=\"236\" y=\"14\" width=\"168\" height=\"40\" rx=\"5\" fill=\"#fff\" stroke=\"#00205B\" stroke-width=\"1.4\"></rect>\n        <text x=\"320\" y=\"30\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"700\" fill=\"#00205B\">Utilização do limite</text>\n        <text x=\"320\" y=\"46\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"700\" fill=\"#8C2332\">≤ 57,5 % do limite ?</text></svg></div>\n  <p class=\"nota\" style=\"margin-top:8px\">Cada caixa traz quantas propostas chegaram ali, quantas deram\n  default e a taxa correspondente. <span class=\"selo s-rec\">Recalculado aqui</span></p>\n  </div><div class=\"dir\" style=\"flex: 1 1 42%;\"><div class=\"painel\"><div class=\"rot\">As cinco palavras</div>\n  <div class=\"rolax\"><table style=\"margin-top:8px\"><tbody>\n  <tr><th scope=\"row\">Nó</th><td>um grupo de propostas. A raiz é o nó que contém todas as\n   16</td></tr>\n  <tr><th scope=\"row\">Regra</th><td>a pergunta que divide o nó. Sempre da forma variável menor ou igual\n   a valor</td></tr>\n  <tr><th scope=\"row\">Ramo</th><td>cada uma das duas saídas da regra. Sempre duas, nesta construção</td></tr>\n  <tr><th scope=\"row\">Folha</th><td>nó que não é mais dividido. É onde a previsão é produzida</td></tr>\n  <tr><th scope=\"row\">Profundidade</th><td>número de regras entre a raiz e a folha. Esta árvore tem\n   profundidade 2</td></tr></tbody></table></div>\n  <div class=\"revelacao\" style=\"margin-top:11px\"><h4>Duas propriedades que decorrem da forma</h4>\n  Toda proposta cai em exatamente uma folha, então as folhas particionam a população sem sobreposição e\n  sem buraco. E o caminho até a folha é a explicação completa da previsão daquela proposta, o que torna\n  a árvore auditável linha a linha.</div>\n  <p class=\"nota\" style=\"margin-top:10px\">Uma árvore com profundidade máxima d tem no máximo 2 elevado a\n  d folhas. Profundidade 3 chega a 8, profundidade 10 chega a 1.024. O número cresce rápido e é por isso\n  que a profundidade é o principal freio.</p></div></div></div>\n   <div class=\"conexao\">Falta o critério que escolhe a regra de cada nó.</div>\n   <div class=\"navrod\"><button class=\"botao sec\" id=\"ant\">← Anterior</button>\n    <span class=\"nota\">71 de 254</span>\n    <button class=\"botao\" id=\"prox\">Próxima →</button></div>",
-   "text": "sim\nnão\nsim\nnão\n2 propostas · 1 default\n50%\n6 propostas · 0 defaults\n0%\nUtilização do limite\n≤ 27,5 % do limite ?\nsim\nnão\n6 propostas · 6 defaults\n100%\n2 propostas · 1 default\n50%\nUtilização do limite\n≤ 87,5 % do limite ?\nUtilização do limite\n≤ 57,5 % do limite ?\n\nCada caixa traz quantas propostas chegaram ali, quantas deram default e a taxa correspondente. RECALCULADO AQUI\n\nAS CINCO PALAVRAS\nNó\tum grupo de propostas. A raiz é o nó que contém todas as 16\nRegra\ta pergunta que divide o nó. Sempre da forma variável menor ou igual a valor\nRamo\tcada uma das duas saídas da regra. Sempre duas, nesta construção\nFolha\tnó que não é mais dividido. É onde a previsão é produzida\nProfundidade\tnúmero de regras entre a raiz e a folha. Esta árvore tem profundidade 2\nDuas propriedades que decorrem da forma\nToda proposta cai em exatamente uma folha, então as folhas particionam a população sem sobreposição e sem buraco. E o caminho até a folha é a explicação completa da previsão daquela proposta, o que torna a árvore auditável linha a linha.\n\nUma árvore com profundidade máxima d tem no máximo 2 elevado a d folhas. Profundidade 3 chega a 8, profundidade 10 chega a 1.024. O número cresce rápido e é por isso que a profundidade é o principal freio.\n\nFalta o critério que escolhe a regra de cada nó.\n← Anterior\n71 de 254\nPróxima →",
+   "html": "<div class=\"palcoflex\" data-colunas=\"grafico\"><div class=\"esq\" style=\"flex: 1 1 58%;\"><div class=\"svgfit\" data-exploravel=\"grafico\">\n  <svg viewBox=\"0 0 640 350\" role=\"img\" aria-label=\"árvore de decisão\" style=\"font-family:system-ui,sans-serif\"><line x1=\"320\" y1=\"54\" x2=\"171\" y2=\"149\" stroke=\"#E2DFD6\" stroke-width=\"1.8\"></line>\n        <line x1=\"320\" y1=\"54\" x2=\"469\" y2=\"149\" stroke=\"#E2DFD6\" stroke-width=\"1.8\"></line>\n        <text x=\"239.5\" y=\"101.5\" text-anchor=\"end\" font-size=\"10.5\" fill=\"#5B6475\">sim</text>\n        <text x=\"400.5\" y=\"101.5\" font-size=\"10.5\" fill=\"#5B6475\">não</text><line x1=\"171\" y1=\"189\" x2=\"96.5\" y2=\"284\" stroke=\"#E2DFD6\" stroke-width=\"1.8\"></line>\n        <line x1=\"171\" y1=\"189\" x2=\"245.5\" y2=\"284\" stroke=\"#E2DFD6\" stroke-width=\"1.8\"></line>\n        <text x=\"127.75\" y=\"236.5\" text-anchor=\"end\" font-size=\"10.5\" fill=\"#5B6475\">sim</text>\n        <text x=\"214.25\" y=\"236.5\" font-size=\"10.5\" fill=\"#5B6475\">não</text><rect x=\"28\" y=\"282\" width=\"137\" height=\"52\" rx=\"5\" fill=\"#fff\" stroke=\"#9A6B10\" stroke-width=\"1.6\"></rect>\n        <text x=\"96.5\" y=\"298\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"#5B6475\">\n        2 propostas · 1 default</text>\n        <text x=\"96.5\" y=\"316\" text-anchor=\"middle\" font-size=\"16\" font-weight=\"700\" fill=\"#9A6B10\" font-family=\"monospace\">50%</text>\n        <rect x=\"177\" y=\"282\" width=\"137\" height=\"52\" rx=\"5\" fill=\"#fff\" stroke=\"#2E6B4F\" stroke-width=\"1.6\"></rect>\n        <text x=\"245.5\" y=\"298\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"#5B6475\">\n        6 propostas · 0 defaults</text>\n        <text x=\"245.5\" y=\"316\" text-anchor=\"middle\" font-size=\"16\" font-weight=\"700\" fill=\"#2E6B4F\" font-family=\"monospace\">0%</text>\n        <rect x=\"87\" y=\"149\" width=\"168\" height=\"40\" rx=\"5\" fill=\"#fff\" stroke=\"#00205B\" stroke-width=\"1.4\"></rect>\n        <text x=\"171\" y=\"165\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"700\" fill=\"#00205B\">Utilização do limite</text>\n        <text x=\"171\" y=\"181\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"700\" fill=\"#8C2332\">≤ 27,5 % do limite ?</text><line x1=\"469\" y1=\"189\" x2=\"394.5\" y2=\"284\" stroke=\"#E2DFD6\" stroke-width=\"1.8\"></line>\n        <line x1=\"469\" y1=\"189\" x2=\"543.5\" y2=\"284\" stroke=\"#E2DFD6\" stroke-width=\"1.8\"></line>\n        <text x=\"425.75\" y=\"236.5\" text-anchor=\"end\" font-size=\"10.5\" fill=\"#5B6475\">sim</text>\n        <text x=\"512.25\" y=\"236.5\" font-size=\"10.5\" fill=\"#5B6475\">não</text><rect x=\"326\" y=\"282\" width=\"137\" height=\"52\" rx=\"5\" fill=\"#fff\" stroke=\"#8C2332\" stroke-width=\"1.6\"></rect>\n        <text x=\"394.5\" y=\"298\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"#5B6475\">\n        6 propostas · 6 defaults</text>\n        <text x=\"394.5\" y=\"316\" text-anchor=\"middle\" font-size=\"16\" font-weight=\"700\" fill=\"#8C2332\" font-family=\"monospace\">100%</text>\n        <rect x=\"475\" y=\"282\" width=\"137\" height=\"52\" rx=\"5\" fill=\"#fff\" stroke=\"#9A6B10\" stroke-width=\"1.6\"></rect>\n        <text x=\"543.5\" y=\"298\" text-anchor=\"middle\" font-size=\"10.5\" fill=\"#5B6475\">\n        2 propostas · 1 default</text>\n        <text x=\"543.5\" y=\"316\" text-anchor=\"middle\" font-size=\"16\" font-weight=\"700\" fill=\"#9A6B10\" font-family=\"monospace\">50%</text>\n        <rect x=\"385\" y=\"149\" width=\"168\" height=\"40\" rx=\"5\" fill=\"#fff\" stroke=\"#00205B\" stroke-width=\"1.4\"></rect>\n        <text x=\"469\" y=\"165\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"700\" fill=\"#00205B\">Utilização do limite</text>\n        <text x=\"469\" y=\"181\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"700\" fill=\"#8C2332\">≤ 87,5 % do limite ?</text><rect x=\"236\" y=\"14\" width=\"168\" height=\"40\" rx=\"5\" fill=\"#fff\" stroke=\"#00205B\" stroke-width=\"1.4\"></rect>\n        <text x=\"320\" y=\"30\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"700\" fill=\"#00205B\">Utilização do limite</text>\n        <text x=\"320\" y=\"46\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"700\" fill=\"#8C2332\">≤ 57,5 % do limite ?</text></svg></div>\n  <p class=\"nota\" style=\"margin-top:8px\">Cada caixa traz quantas propostas chegaram ali, quantas deram\n  default e a taxa correspondente. <span class=\"selo s-rec\">Recalculado aqui</span></p>\n  </div><div class=\"dir\" style=\"flex: 1 1 42%;\"><div class=\"painel\"><div class=\"rot\">As cinco palavras</div>\n  <div class=\"rolax\"><table style=\"margin-top:8px\"><tbody>\n  <tr><th scope=\"row\">Nó</th><td>um grupo de propostas. A raiz é o nó que contém todas as\n   16</td></tr>\n  <tr><th scope=\"row\">Regra</th><td>a pergunta que divide o nó. Sempre da forma variável menor ou igual\n   a valor</td></tr>\n  <tr><th scope=\"row\">Ramo</th><td>cada uma das duas saídas da regra. Sempre duas, nesta construção</td></tr>\n  <tr><th scope=\"row\">Folha</th><td>nó que não é mais dividido. É onde a previsão é produzida</td></tr>\n  <tr><th scope=\"row\">Profundidade</th><td>número de regras entre a raiz e a folha. Esta árvore tem\n   profundidade 2</td></tr></tbody></table></div>\n  <div class=\"revelacao\" style=\"margin-top:11px\"><h4>Duas propriedades que decorrem da forma</h4>\n  Toda proposta cai em exatamente uma folha, então as folhas particionam a população sem sobreposição e\n  sem buraco. E o caminho até a folha é a explicação completa da previsão daquela proposta, o que torna\n  a árvore auditável linha a linha.</div>\n  <p class=\"nota\" style=\"margin-top:10px\">Uma árvore com profundidade máxima d tem no máximo 2 elevado a\n  d folhas. Profundidade 3 chega a 8, profundidade 10 chega a 1.024. O número cresce rápido e é por isso\n  que a profundidade é o principal freio.</p></div></div></div>\n   <div class=\"conexao\">Falta o critério que escolhe a regra de cada nó.</div>\n   <div class=\"navrod\"><button class=\"botao sec\" id=\"ant\">← Anterior</button>\n    <span class=\"nota\">71 de 253</span>\n    <button class=\"botao\" id=\"prox\">Próxima →</button></div>",
+   "text": "sim\nnão\nsim\nnão\n2 propostas · 1 default\n50%\n6 propostas · 0 defaults\n0%\nUtilização do limite\n≤ 27,5 % do limite ?\nsim\nnão\n6 propostas · 6 defaults\n100%\n2 propostas · 1 default\n50%\nUtilização do limite\n≤ 87,5 % do limite ?\nUtilização do limite\n≤ 57,5 % do limite ?\n\nCada caixa traz quantas propostas chegaram ali, quantas deram default e a taxa correspondente. RECALCULADO AQUI\n\nAS CINCO PALAVRAS\nNó\tum grupo de propostas. A raiz é o nó que contém todas as 16\nRegra\ta pergunta que divide o nó. Sempre da forma variável menor ou igual a valor\nRamo\tcada uma das duas saídas da regra. Sempre duas, nesta construção\nFolha\tnó que não é mais dividido. É onde a previsão é produzida\nProfundidade\tnúmero de regras entre a raiz e a folha. Esta árvore tem profundidade 2\nDuas propriedades que decorrem da forma\nToda proposta cai em exatamente uma folha, então as folhas particionam a população sem sobreposição e sem buraco. E o caminho até a folha é a explicação completa da previsão daquela proposta, o que torna a árvore auditável linha a linha.\n\nUma árvore com profundidade máxima d tem no máximo 2 elevado a d folhas. Profundidade 3 chega a 8, profundidade 10 chega a 1.024. O número cresce rápido e é por isso que a profundidade é o principal freio.\n\nFalta o critério que escolhe a regra de cada nó.\n← Anterior\n71 de 253\nPróxima →",
    "controls": [
     {
      "tag": "button",
@@ -14347,10 +14346,10 @@
    "guia": {
     "funcao": "Gancho da aula: um detector de 5 com 95,7% de acurácia e a pergunta que ele provoca, com as quatro perguntas encadeadas que a aula responde.",
     "pre": "Nenhum.",
-    "conducao": "Mostre o número grande: o detector acerta 95,7%, 57.422 de 60.000 imagens. Aponte as doze imagens embaixo: seis são 5, seis não são. Pergunte se o modelo é bom e peça que a turma escolha uma das três respostas antes de qualquer explicação. Não dê gabarito: as três posições são defensáveis e cada retorno diz onde a resposta será posta à prova (slide 10 para o modelo sem informação, slides 11 e 16 para os erros e seus custos). Feche apresentando o percurso: classificação, desempenho, ensembles e crédito, e diga que a resposta volta no slide 50.",
+    "conducao": "Mostre o número grande: o detector acerta 95,7%, 57.422 de 60.000 imagens. Aponte as doze imagens embaixo: seis são 5, seis não são. Pergunte se o modelo é bom e peça que a turma escolha uma das três respostas antes de qualquer explicação. Não dê gabarito: as três posições são defensáveis e cada retorno diz onde a resposta será posta à prova (slide 10 para o modelo sem informação, slides 11 e 16 para os erros e seus custos). Feche apresentando o percurso: classificação, desempenho, ensembles e crédito, e diga que a resposta volta no slide 49.",
     "leitura": "KPI de 95,7% com 57.422 acertos em 60.000 imagens; doze dígitos da base com o rótulo verdadeiro; a pergunta com três respostas; à direita, as quatro perguntas da aula com o slide em que cada bloco começa.",
     "pergunta": "Errar menos de 5 em cada 100 basta para chamar o modelo de bom?",
-    "resposta": "Ainda não dá para saber: depende de quanto acertaria um modelo sem informação, de quais erros ele comete e de quanto cada erro custa. A aula responde com três critérios no slide 50.",
+    "resposta": "Ainda não dá para saber: depende de quanto acertaria um modelo sem informação, de quais erros ele comete e de quanto cada erro custa. A aula responde com três critérios no slide 49.",
     "erros": [
      {
       "alt": "Sim: 95,7% é alto",
@@ -14368,7 +14367,7 @@
       "intervencao": "Lembre que a mesma acurácia pode esconder erros muito diferentes; o slide 11 mostra a matriz."
      }
     ],
-    "interacao": "Previsão sem gabarito: a escolha fica guardada na aba e volta no slide 50; “Tentar outra” limpa. Os quatro cartões do percurso são links para a abertura de cada bloco.",
+    "interacao": "Previsão sem gabarito: a escolha fica guardada na aba e volta no slide 49; “Tentar outra” limpa. Os quatro cartões do percurso são links para a abertura de cada bloco.",
     "verificacao": "Cada aluno sabe dizer qual resposta escolheu e por quê.",
     "transicao": "Antes de medir, precisamos saber o que o modelo faz: uma imagem entra, um rótulo sai."
    },
@@ -14649,7 +14648,7 @@
    "guia": {
     "funcao": "Justificar o teste guardado com um experimento: o modelo que decora o treino parece perfeito nele.",
     "pre": "Slide 6 (rótulo binário). As duas luas são apresentadas no slide 27; aqui basta dizer que é um problema de duas classes com 375 pontos de treino e 125 de teste.",
-    "conducao": "Na barra, as 60.000 primeiras imagens são treino e as 10.000 últimas, teste: é a divisão da própria base. O código fatia X e y nos mesmos pontos e cria y_train_5 e y_test_5. Diga que as métricas do bloco 2 serão medidas no treino por validação cruzada, e que o teste só é usado uma vez, no slide 50. Por quê? Faça a previsão: uma árvore de decisão sem limite de profundidade, nas duas luas. No acerto: 100,0% no treino (375 de 375) e 85,6% no teste (107 de 125), uma diferença de 14,4 pontos percentuais. A árvore decorou os pontos que viu. A acurácia do MNIST no teste não aparece aqui de propósito.",
+    "conducao": "Na barra, as 60.000 primeiras imagens são treino e as 10.000 últimas, teste: é a divisão da própria base. O código fatia X e y nos mesmos pontos e cria y_train_5 e y_test_5. Diga que as métricas do bloco 2 serão medidas no treino por validação cruzada, e que o teste só é usado uma vez, no slide 49. Por quê? Faça a previsão: uma árvore de decisão sem limite de profundidade, nas duas luas. No acerto: 100,0% no treino (375 de 375) e 85,6% no teste (107 de 125), uma diferença de 14,4 pontos percentuais. A árvore decorou os pontos que viu. A acurácia do MNIST no teste não aparece aqui de propósito.",
     "leitura": "Barra de treino e teste que seleciona a parte; código com as linhas da parte realçadas; previsão sobre a árvore; no acerto, as barras de acurácia no treino e no teste.",
     "pergunta": "Por que não usar o teste para escolher o modelo e depois relatar o mesmo teste?",
     "resposta": "Porque o teste vira parte do ajuste e deixa de medir o desempenho em dados novos; a escolha usa validação cruzada no treino e o teste fica para uma medida única no fim.",
@@ -15627,7 +15626,7 @@
       "intervencao": "A floresta é bagging com sorteio de características; as árvores são independentes."
      }
     ],
-    "interacao": "Previsão com retorno por alternativa e Tentar outra; cartões são links para os slides 24, 30, 35 e 37.",
+    "interacao": "Previsão com retorno por alternativa e Tentar outra; cartões são links para os slides 24, 30, 35 e 36.",
     "verificacao": "O aluno classifica as quatro técnicas em paralelas e sequencial.",
     "transicao": "O problema em que as quatro serão testadas."
    },
@@ -16086,59 +16085,9 @@
    "hasFormula": false
   },
   {
-   "id": "c12p35",
-   "cap": 12,
-   "n": 36,
-   "titulo": "Na Iris, as medidas da pétala somam 86% da importância",
-   "nivel": "essencial",
-   "nivel120": null,
-   "min": 3,
-   "t": {
-    "exp": 1,
-    "disc": 1,
-    "ex": 1
-   },
-   "origem": "rec",
-   "aprendizado": "Ler a importância das características de uma floresta e saber seus limites.",
-   "apoio": "Preveja quais medidas pesam mais; depois leia as barras.",
-   "conexao": "O boosting combina árvores de outro jeito: em sequência.",
-   "guia": {
-    "funcao": "Mostrar o primeiro diagnóstico que uma floresta oferece e sua interpretação em crédito.",
-    "pre": "Slide 35 (floresta aleatória).",
-    "conducao": "Antes das barras, a turma escolhe. A floresta de 500 árvores na Iris dá 44,1% ao comprimento da pétala, 42,3% à largura da pétala, 11,2% ao comprimento da sépala e 2,3% à largura da sépala. As da pétala somam 86,4%; todas juntas, 100%. Em crédito, é o primeiro diagnóstico de quais variáveis movem o score. Cuidado: a importância por impureza tende a inflar variáveis contínuas e de muitos valores; confira com importância por permutação.",
-    "leitura": "Barras horizontais das quatro importâncias, ocultas até a previsão; chave da pétala; código da aula.",
-    "pergunta": "Uma variável com importância alta causa o desfecho?",
-    "resposta": "Não: importância mede quanto a variável reduz a impureza nas árvores, não efeito causal.",
-    "erros": [
-     {
-      "alt": "As da sépala, por serem maiores",
-      "confusao": "Confunde tamanho da medida com poder de separação.",
-      "intervencao": "Mostre os 11,2% e 2,3% das sépalas."
-     },
-     {
-      "alt": "As quatro pesam parecido",
-      "confusao": "Supõe que a floresta divide o peso igualmente.",
-      "intervencao": "Mostre que a maior pesa 44,1% e a menor 2,3%."
-     }
-    ],
-    "interacao": "Previsão com o título em forma de pergunta; as barras aparecem depois da tentativa; Tentar outra volta ao estado inicial.",
-    "verificacao": "O aluno diz quanto somam as duas medidas da pétala e um limite da importância por impureza.",
-    "transicao": "De árvores em paralelo para árvores em sequência: boosting."
-   },
-   "html": "<div class=\"painel\"><p>Ler a importância das características de uma floresta e saber seus limites.</p><p class=\"nota\">Quadro interativo do capítulo 12 na plataforma.</p></div>",
-   "text": "Ler a importância das características de uma floresta e saber seus limites.\n\nQuadro interativo do capítulo 12 na plataforma.",
-   "controls": [],
-   "interactive": false,
-   "svgs": 0,
-   "tables": 0,
-   "questoes": [],
-   "prever": [],
-   "hasFormula": false
-  },
-  {
    "id": "c12p36",
    "cap": 12,
-   "n": 37,
+   "n": 36,
    "titulo": "Gradient boosting em três árvores",
    "nivel": "essencial",
    "nivel120": null,
@@ -16150,7 +16099,7 @@
    "origem": "rec",
    "aprendizado": "Ler o código do gradient boosting em três etapas e ver o alvo de cada árvore: os dados, depois os resíduos.",
    "apoio": "Troque a etapa e veja o bloco de código aceso, o alvo da etapa e a árvore ajustada a ele.",
-   "conexao": "A soma das três árvores e a taxa de aprendizado estão no slide 38.",
+   "conexao": "A soma das três árvores e a taxa de aprendizado estão no slide 37.",
    "guia": {
     "funcao": "Mostrar o treino sequencial do boosting no código da aula.",
     "pre": "Slide 26 (boosting na lista das quatro formas).",
@@ -16167,7 +16116,7 @@
      {
       "alt": "Árvores rasas são um defeito",
       "confusao": "Não entende o papel do aprendiz fraco.",
-      "intervencao": "Mostre que a soma de árvores rasas acompanha a curva no slide 38."
+      "intervencao": "Mostre que a soma de árvores rasas acompanha a curva no slide 37."
      }
     ],
     "interacao": "Seletor de etapa que acende o código e troca o gráfico; Restaurar volta à etapa 1.",
@@ -16187,7 +16136,7 @@
   {
    "id": "c12p37",
    "cap": 12,
-   "n": 38,
+   "n": 37,
    "titulo": "Gradient boosting: cada árvore ajusta o resíduo",
    "nivel": "essencial",
    "nivel120": null,
@@ -16203,7 +16152,7 @@
    "conexao": "A síntese do bloco compara as quatro formas de produzir diversidade.",
    "guia": {
     "funcao": "Fechar o boosting com a soma das árvores e a taxa de aprendizado.",
-    "pre": "Slide 37 (três árvores em código).",
+    "pre": "Slide 36 (três árvores em código).",
     "conducao": "Leia a figura de Géron: em cada linha, a árvore da etapa e a previsão acumulada. Com M = 3 e η = 1, ŷ = h₁ + h₂ + h₃ e o erro de treino vai de 0,126 a 0,005. Com perda quadrática, o resíduo y − ŷ é o gradiente negativo da perda: cada árvore dá um passo na direção que mais reduz o erro. Baixe η para 0,1: cada árvore corrige só uma parte, e com 10 árvores o erro ainda está em 0,021. O erro aqui é de treino; quantas árvores usar se decide fora da amostra.",
     "leitura": "Figura original; previsão acumulada com a etapa anterior tracejada; erro quadrático médio por número de árvores; fórmula; controles de M e η.",
     "pergunta": "Por que usar η menor que 1 se ele deixa o treino mais lento?",
@@ -16237,7 +16186,7 @@
   {
    "id": "c12p38",
    "cap": 12,
-   "n": 39,
+   "n": 38,
    "titulo": "Síntese: quatro formas de produzir diversidade",
    "nivel": "essencial",
    "nivel120": null,
@@ -16252,7 +16201,7 @@
    "conexao": "O bloco 4 leva os modelos para a decisão de corte em crédito.",
    "guia": {
     "funcao": "Sintetizar o bloco e abrir a pergunta do bloco 4.",
-    "pre": "Slides 24 a 38.",
+    "pre": "Slides 24 a 37.",
     "conducao": "Leia a tabela: votação (0,896 hard e 0,912 soft), bagging (0,904 contra 0,856 da árvore), floresta (0,912 nas luas; na Iris, pétala com 86% da importância) e boosting (erro de 0,126 a 0,005 em três etapas). No eixo, os ensembles acertam de 112 a 114 de 125, contra 107 da árvore: a diversidade ajuda, por margens de poucos acertos. Pergunte como esses modelos viram decisão numa carteira de crédito.",
     "leitura": "Tabela da aula com links para cada método; acertos de todos os modelos no teste das luas num eixo.",
     "pergunta": "Qual técnica você usaria para uma carteira de crédito e o que mediria antes de decidir?",
@@ -16269,9 +16218,9 @@
       "intervencao": "Lembre que o mesmo princípio se aplica com perda logística."
      }
     ],
-    "interacao": "Links da tabela para os slides 24, 30, 35 e 37 e para o slide 40 na leitura; slide de consulta sem estado.",
+    "interacao": "Links da tabela para os slides 24, 30, 35 e 36 e para o slide 39 na leitura; slide de consulta sem estado.",
     "verificacao": "O aluno preenche de memória uma linha da tabela.",
-    "transicao": "Próxima pergunta: como o modelo vira decisão de corte (slide 40)."
+    "transicao": "Próxima pergunta: como o modelo vira decisão de corte (slide 39)."
    },
    "html": "<div class=\"painel\"><p>Comparar as quatro técnicas por fonte de diversidade, treino e combinação, com os resultados do bloco.</p><p class=\"nota\">Quadro interativo do capítulo 12 na plataforma.</p></div>",
    "text": "Comparar as quatro técnicas por fonte de diversidade, treino e combinação, com os resultados do bloco.\n\nQuadro interativo do capítulo 12 na plataforma.",
@@ -16286,7 +16235,7 @@
   {
    "id": "c12p39",
    "cap": 12,
-   "n": 40,
+   "n": 39,
    "titulo": "Como um classificador vira uma decisão de corte?",
    "nivel": "essencial",
    "nivel120": null,
@@ -16297,11 +16246,11 @@
    "origem": "rec",
    "aprendizado": "Reconhecer que a decisão de corte combina três pratos: discriminação do score, estabilidade no tempo e volume de recusas.",
    "apoio": "Observe a barra do caso (82.458 contratos, 7,1% de maus) e o limite de corte em 10%; abra um dos três pratos para ver onde ele é medido.",
-   "conexao": "O slide 41 define o que o corte precisa acertar.",
+   "conexao": "O slide 40 define o que o corte precisa acertar.",
    "guia": {
     "funcao": "Abrir o bloco 4 ligando os três blocos anteriores a uma decisão real de crédito: quem recusar.",
     "pre": "Slides 21 (AUC e Gini) e 38 (síntese dos ensembles).",
-    "conducao": "Mostre a barra: 82.458 contratos no curto prazo, 5.865 maus, 7,1%. A linha âmbar marca o limite do corte: menos de 10% da população. Pergunte como um score vira esse corte. Apresente os três pratos: discriminação (AUC e Gini, slide 43), estabilidade no tempo (no exemplo de sobreajuste a AUC cai de 0,832 para 0,645, slide 42) e volume recusado (a meta, slide 48). Feche com o fluxo do bloco: objetivo do caso, validação no tempo, regras de corte, métricas do corte.",
+    "conducao": "Mostre a barra: 82.458 contratos no curto prazo, 5.865 maus, 7,1%. A linha âmbar marca o limite do corte: menos de 10% da população. Pergunte como um score vira esse corte. Apresente os três pratos: discriminação (AUC e Gini, slide 42), estabilidade no tempo (no exemplo de sobreajuste a AUC cai de 0,832 para 0,645, slide 41) e volume recusado (a meta, slide 47). Feche com o fluxo do bloco: objetivo do caso, validação no tempo, regras de corte, métricas do corte.",
     "leitura": "As quatro perguntas da aula com Crédito em destaque; a barra do caso com os maus em vinho e o limite de 10% em âmbar; três cartões com a métrica de cada prato e o slide em que ela aparece; o fluxo do bloco.",
     "pergunta": "Se o corte pode remover menos de 10% da base e 7,1% são maus, um corte perfeito evitaria todos os maus?",
     "resposta": "Em tese, um corte que recusasse exatamente os 5.865 maus caberia na meta; na prática o score erra, e parte do volume recusado são bons. Por isso precisão, recall e volume precisam ser lidos juntos.",
@@ -16334,7 +16283,7 @@
   {
    "id": "c12p40",
    "cap": 12,
-   "n": 41,
+   "n": 40,
    "titulo": "O caso: identificar quem não paga nenhuma parcela",
    "nivel": "essencial",
    "nivel120": null,
@@ -16347,7 +16296,7 @@
    "origem": "rec",
    "aprendizado": "Ligar cada exigência do caso à métrica que a mede: concentrar o risco é precisão, remover menos de 10% é volume, evitar maus é recall.",
    "apoio": "Para cada exigência, escolha uma métrica; leia o retorno e, se errou, tente outra até as três ficarem certas.",
-   "conexao": "Antes de comparar as regras, o slide 42 mostra como validar o modelo no tempo.",
+   "conexao": "Antes de comparar as regras, o slide 41 mostra como validar o modelo no tempo.",
    "guia": {
     "funcao": "Traduzir o problema de negócio (quem não paga nenhuma parcela) para as métricas do bloco 2, agora com o mau como classe positiva.",
     "pre": "Slides 12 (precisão), 13 (recall) e 16 (custo dos erros em crédito).",
@@ -16389,7 +16338,7 @@
   {
    "id": "c12p41",
    "cap": 12,
-   "n": 42,
+   "n": 41,
    "titulo": "Fora do tempo: treinar no passado, testar no futuro",
    "nivel": "essencial",
    "nivel120": null,
@@ -16402,7 +16351,7 @@
    "origem": "rec",
    "aprendizado": "Explicar por que a validação de crédito se faz em safras posteriores ao treino, e não em safras sorteadas.",
    "apoio": "Mova o início da validação e responda à previsão; no acerto, troque para validação sorteada e conte quantas safras de validação ficam antes da última safra de treino.",
-   "conexao": "O slide 43 mede quanto a AUC cai nas safras fora do tempo.",
+   "conexao": "O slide 42 mede quanto a AUC cai nas safras fora do tempo.",
    "guia": {
     "funcao": "Dar a régua do bloco: a avaliação que importa para a concessão é a de safras que o modelo nunca viu, no futuro.",
     "pre": "Slide 7 (treino e teste) e slide 34 (out of bag, outra forma de avaliar fora da amostra).",
@@ -16439,7 +16388,7 @@
   {
    "id": "c12p42",
    "cap": 12,
-   "n": 43,
+   "n": 42,
    "titulo": "Fora do tempo, os três modelos do caso perdem discriminação",
    "nivel": "essencial",
    "nivel120": null,
@@ -16451,9 +16400,9 @@
    "origem": "rec",
    "aprendizado": "Ler a perda de AUC e de Gini fora do tempo e distinguir quedas moderadas (5,9% e 8,9%) da queda de 22,5% do exemplo de sobreajuste.",
    "apoio": "Compare os halteres de treino e validação; troque a medida para Gini e clique num modelo para ver as duas quedas dele.",
-   "conexao": "O slide 44 abre o exemplo de 22,5%.",
+   "conexao": "O slide 43 abre o exemplo de 22,5%.",
    "guia": {
-    "funcao": "Quantificar a régua do slide 42 com os três modelos do caso.",
+    "funcao": "Quantificar a régua do slide 41 com os três modelos do caso.",
     "pre": "Slides 21 (AUC e Gini) e 41 (validação fora do tempo).",
     "conducao": "Atraso curto, baixa renda: AUC de 0,688 no treino e 0,627 na validação, queda de 8,9%. Alta renda: 0,707 e 0,665, queda de 5,9%. Exemplo de alta renda (BVS): 0,832 e 0,645, queda de 22,5%, o que o material classifica como sobreajuste. Troque para Gini: os pontos não se movem, porque o Gini é 2 × AUC − 1, mas a queda relativa do BVS vai a 56,3%, porque o Gini mede a distância ao acaso. A lição: variação relativa depende da régua; compare sempre na mesma.",
     "leitura": "Halteres por modelo, do treino (círculo azul) à validação (quadrado verde), com a queda relativa; tabela com AUC, variação e Gini; à direita, as duas quedas do modelo selecionado e a conta do Gini.",
@@ -16468,7 +16417,7 @@
      {
       "alt": "Concluir que todo modelo com queda é sobreajustado",
       "confusao": "Confunde perda esperada com sobreajuste.",
-      "intervencao": "Compare 5,9% e 8,9% com 22,5%; o slide 45 discute outra causa possível."
+      "intervencao": "Compare 5,9% e 8,9% com 22,5%; o slide 44 discute outra causa possível."
      }
     ],
     "interacao": "Seletor AUC ou Gini que reescala o eixo e as quedas; clique num modelo na tabela. Restaurar volta a AUC com o BVS em foco.",
@@ -16488,7 +16437,7 @@
   {
    "id": "c12p43",
    "cap": 12,
-   "n": 44,
+   "n": 43,
    "titulo": "Fora do tempo, as faixas de score se aproximam",
    "nivel": "essencial",
    "nivel120": null,
@@ -16501,7 +16450,7 @@
    "origem": "rec",
    "aprendizado": "Reconhecer o sobreajuste na taxa de maus por faixa: a escada íngreme do treino achata na validação.",
    "apoio": "Antes de ler a figura, preveja como seria a taxa de maus por faixa se o score ainda ordenasse bem; depois leia cada metade da figura.",
-   "conexao": "O slide 45 pergunta se a queda é sobreajuste ou mudança na população.",
+   "conexao": "O slide 44 pergunta se a queda é sobreajuste ou mudança na população.",
    "guia": {
     "funcao": "Mostrar a perda de ordenação na unidade que o comitê usa: a taxa de maus por faixa de score.",
     "pre": "Slides 19 (curva ROC) e 42 (queda da AUC).",
@@ -16538,7 +16487,7 @@
   {
    "id": "c12p44",
    "cap": 12,
-   "n": 45,
+   "n": 44,
    "titulo": "Sobreajuste ou mudança na população? Que evidência separa as hipóteses?",
    "nivel": "complementar",
    "nivel120": null,
@@ -16550,12 +16499,12 @@
    "origem": "rec",
    "aprendizado": "Separar as hipóteses de sobreajuste e de mudança na população pelas evidências que cada uma prevê.",
    "apoio": "Escolha cada evidência, classifique como apoia sobreajuste, não separa ou apoia mudança na população, e leia o porquê.",
-   "conexao": "Com as duas checagens em mente, o slide 46 volta às regras de corte.",
+   "conexao": "Com as duas checagens em mente, o slide 45 volta às regras de corte.",
    "guia": {
     "funcao": "Aprofundamento: o Pare e pense da aula vira um exercício de diagnóstico; o material classifica o caso como sobreajuste, mas a queda também pode vir de perfil, período ou política.",
-    "pre": "Slides 42 a 44.",
-    "conducao": "Seis evidências. Apoiam sobreajuste: queda muito maior no modelo complexo que nos simples na mesma janela; queda já numa validação aleatória do mesmo período. Apoiam mudança na população: variáveis de entrada deslocadas nas safras novas; queda parecida em todos os modelos; mudança de política de concessão. Não separa sozinha: faixas boas com mais maus depois do início da validação, porque os dois mecanismos produzem isso; ajuda o momento. Na figura do apêndice (slide 52), as faixas de menor risco sobem já na safra anterior à linha do período fora do tempo, o que também é compatível com mudança na população. Diga isso com cautela: a figura não permite separar as hipóteses sozinha.",
-    "leitura": "Cartões de evidência acima; três colunas de diagnóstico abaixo, que recebem cada cartão quando classificado certo; à direita, a evidência em foco, as três opções, o retorno e a ligação com o slide 52.",
+    "pre": "Slides 41 a 43.",
+    "conducao": "Seis evidências. Apoiam sobreajuste: queda muito maior no modelo complexo que nos simples na mesma janela; queda já numa validação aleatória do mesmo período. Apoiam mudança na população: variáveis de entrada deslocadas nas safras novas; queda parecida em todos os modelos; mudança de política de concessão. Não separa sozinha: faixas boas com mais maus depois do início da validação, porque os dois mecanismos produzem isso; ajuda o momento. Na figura do apêndice (slide 51), as faixas de menor risco sobem já na safra anterior à linha do período fora do tempo, o que também é compatível com mudança na população. Diga isso com cautela: a figura não permite separar as hipóteses sozinha.",
+    "leitura": "Cartões de evidência acima; três colunas de diagnóstico abaixo, que recebem cada cartão quando classificado certo; à direita, a evidência em foco, as três opções, o retorno e a ligação com o slide 51.",
     "pergunta": "Que dado você pediria primeiro ao time de modelagem?",
     "resposta": "O desempenho de um modelo simples na mesma janela fora do tempo e o índice de estabilidade das variáveis de entrada: o primeiro isola o modelo, o segundo mede a população.",
     "erros": [
@@ -16587,7 +16536,7 @@
   {
    "id": "c12p45",
    "cap": 12,
-   "n": 46,
+   "n": 45,
    "titulo": "Três regras de corte: onde ficam os maus",
    "nivel": "essencial",
    "nivel120": null,
@@ -16599,14 +16548,14 @@
    "origem": "rec",
    "aprendizado": "Ler a taxa de maus no grupo removido contra a do grupo mantido nas três regras, nos dois horizontes.",
    "apoio": "Compare as barras de corte e restante; troque o horizonte e clique numa regra para ver quantas vezes o corte concentra os maus.",
-   "conexao": "O slide 47 liga cada métrica a uma pergunta do comitê.",
+   "conexao": "O slide 46 liga cada métrica a uma pergunta do comitê.",
    "guia": {
     "funcao": "Mostrar que as três regras concentram os maus; a diferença entre elas estará no volume.",
-    "pre": "Slide 41 (precisão como taxa de maus no grupo recusado).",
-    "conducao": "Curto prazo (três primeiras parcelas, target_never_paid): o grupo removido tem 22,7% de maus na política BACEN, 18,0% no Never Paid e 17,8% na regra conjunta, contra 5,1% a 6,0% no restante e 7,1% na base. A política recusa um grupo 3,8 vezes mais arriscado que o mantido. Longo prazo (target_60ever9p): 61,6%, 53,9% e 54,0% no corte, contra 30,1% a 31,6% no restante. Reforce que é comparação entre grupos observados, sem efeito causal. O volume fica de fora de propósito: é a pergunta do slide 48.",
+    "pre": "Slide 40 (precisão como taxa de maus no grupo recusado).",
+    "conducao": "Curto prazo (três primeiras parcelas, target_never_paid): o grupo removido tem 22,7% de maus na política BACEN, 18,0% no Never Paid e 17,8% na regra conjunta, contra 5,1% a 6,0% no restante e 7,1% na base. A política recusa um grupo 3,8 vezes mais arriscado que o mantido. Longo prazo (target_60ever9p): 61,6%, 53,9% e 54,0% no corte, contra 30,1% a 31,6% no restante. Reforce que é comparação entre grupos observados, sem efeito causal. O volume fica de fora de propósito: é a pergunta do slide 47.",
     "leitura": "Barras agrupadas por regra: corte em âmbar, restante em azul, referência da base na legenda; tabela da aula com as três taxas; a razão entre corte e restante da regra em foco.",
     "pergunta": "A regra com maior taxa de maus no corte é a que evita mais maus?",
-    "resposta": "Não necessariamente: a política tem a maior precisão, mas o número de maus evitados depende também de quantos ela recusa. O slide 48 mostra que a regra conjunta captura mais.",
+    "resposta": "Não necessariamente: a política tem a maior precisão, mas o número de maus evitados depende também de quantos ela recusa. O slide 47 mostra que a regra conjunta captura mais.",
     "erros": [
      {
       "alt": "Ler a taxa no restante como recall",
@@ -16636,7 +16585,7 @@
   {
    "id": "c12p46",
    "cap": 12,
-   "n": 47,
+   "n": 46,
    "titulo": "Cada métrica da aula responde a uma pergunta do comitê",
    "nivel": "essencial",
    "nivel120": null,
@@ -16648,10 +16597,10 @@
    "origem": "rec",
    "aprendizado": "Associar precisão, recall, AUC e Gini, validação fora do tempo e volume do corte às perguntas do comitê de crédito.",
    "apoio": "Clique em cada métrica para ver a conta em crédito, o valor no detector de 5 e o slide em que ela nasceu.",
-   "conexao": "No slide 48, precisão, recall e volume escolhem a regra.",
+   "conexao": "No slide 47, precisão, recall e volume escolhem a regra.",
    "guia": {
     "funcao": "Fechar o vocabulário do bloco 2 no caso de crédito, com o mau como classe positiva.",
-    "pre": "Slides 12, 13, 21, 41 e 42.",
+    "pre": "Slides 12, 13, 21, 40 e 41.",
     "conducao": "Percorra as cinco linhas. Precisão: maus recusados ÷ recusados; no detector de 5, 83,7% dos que ele chamou de 5 eram 5. Recall: maus recusados ÷ todos os maus; no detector, 65,1%. AUC e Gini: ordenação; no detector, AUC de 0,960; no caso, de 0,688 a 0,832 no treino. Validação fora do tempo: no caso, a AUC cai de 5,9% a 22,5%. Volume: recusados ÷ contratos; no detector, 7,0% das imagens foram sinalizadas; no caso, a meta é menos de 10%. As três primeiras do corte são contas sobre o mesmo grupo recusado.",
     "leitura": "Tabela da aula com métrica, leitura em crédito e pergunta do comitê; à direita, a pergunta, a conta, o valor no detector e no caso, e o link para o slide de origem.",
     "pergunta": "Que métrica o comitê usaria para decidir quanto negócio está disposto a perder?",
@@ -16685,7 +16634,7 @@
   {
    "id": "c12p47",
    "cap": 12,
-   "n": 48,
+   "n": 47,
    "titulo": "Política, modelo ou os dois: qual regra você levaria ao comitê?",
    "nivel": "essencial",
    "nivel120": null,
@@ -16698,10 +16647,10 @@
    "origem": "rec",
    "aprendizado": "Escolher uma regra de corte pesando precisão, recall e volume contra a meta de remover menos de 10% da população.",
    "apoio": "Escolha uma regra antes de ver os números; depois leia o gráfico de volume contra recall, a tabela e troque o horizonte.",
-   "conexao": "O slide 49 resume a aula com os números de cada bloco.",
+   "conexao": "O slide 48 resume a aula com os números de cada bloco.",
    "guia": {
     "funcao": "Exercício da aula: transformar as métricas em uma recomendação ao comitê.",
-    "pre": "Slides 41, 46 e 47.",
+    "pre": "Slides 40, 45 e 46.",
     "conducao": "Peça a escolha antes de revelar. Curto prazo: a política recusa 6,6% com precisão de 22,7% e recall de 21,2%; o Never Paid, no corte que o material usou, recusa 11,7%, com 18,0% e 29,6%; a regra conjunta (política e modelo) recusa 15,6%, com 17,8% e 38,9%. O volume de uma regra com modelo é escolha de limiar (slides 17 e 18): o Never Paid poderia cortar abaixo de 10%, mas o material não traz o recall nesse corte. A conta que decide: a regra conjunta recusa 6.325 bons a mais para evitar 1.036 maus a mais que a política; só compensa se um mau aprovado custar mais que 6,1 bons recusados (contra a política, o Never Paid pede 7,5). No corte do material, só a política cabe na meta de 10%. IV: 0,240, 0,248 e 0,347 no curto prazo.",
     "leitura": "Gráfico de volume do corte (x) contra recall (y), com a meta de 10% em âmbar e a região fora da meta sombreada; tabela com volume, precisão, recall, maus no restante e IV; seletor de horizonte.",
     "pergunta": "Que argumento levaria o comitê a aceitar a regra conjunta mesmo acima da meta?",
@@ -16735,7 +16684,7 @@
   {
    "id": "c12p48",
    "cap": 12,
-   "n": 49,
+   "n": 48,
    "titulo": "Síntese da aula: quatro perguntas, quatro respostas",
    "nivel": "essencial",
    "nivel120": null,
@@ -16747,7 +16696,7 @@
    "origem": "rec",
    "aprendizado": "Responder às quatro perguntas da aula com o número que sustenta cada resposta e o que ainda falta.",
    "apoio": "Clique em cada linha para ver o que ainda falta para a resposta valer numa carteira real e volte ao bloco pelo link.",
-   "conexao": "O slide 50 volta à pergunta de abertura.",
+   "conexao": "O slide 49 volta à pergunta de abertura.",
    "guia": {
     "funcao": "Síntese da aula, bloco a bloco.",
     "pre": "Os quatro blocos.",
@@ -16784,7 +16733,7 @@
   {
    "id": "c12p49",
    "cap": 12,
-   "n": 50,
+   "n": 49,
    "titulo": "De volta à pergunta de abertura",
    "nivel": "essencial",
    "nivel120": null,
@@ -16796,11 +16745,11 @@
    "origem": "rec",
    "aprendizado": "Responder à pergunta de abertura com três critérios: superar o trivial, limiar com custo e ordenação estável no tempo.",
    "apoio": "Clique em cada critério para ver o número e o slide que o provou; compare com a sua resposta do slide 1 e abra o teste guardado.",
-   "conexao": "Os slides 51 e 52 trazem os dados do caso e a figura por safra.",
+   "conexao": "Os slides 50 e 51 trazem os dados do caso e a figura por safra.",
    "guia": {
     "funcao": "Fechar o arco da aula: a resposta do slide 1 volta e é julgada pelos critérios.",
-    "pre": "Slides 1, 7, 10, 16, 18, 43 e 44.",
-    "conducao": "Primeiro critério: 95,7% contra 91,0%, 4,7 pontos acima do trivial (slide 10). Segundo: no limiar zero, precisão de 83,7% e recall de 65,1%; o limiar certo depende do custo de cada erro (slides 16 e 18). Terceiro: no exemplo BVS, a AUC cai de 0,832 para 0,645 fora do tempo (slides 43 e 44). Se a turma respondeu no slide 1, leia a resposta e o veredito. Abra então o teste guardado desde o slide 7: 94,9% de acurácia nas 10.000 imagens, contra 91,1% do trivial no teste; precisão de 66,2% e recall de 88,0%. Diz que o detector supera o trivial em imagens novas; não diz que o equilíbrio de erros se manteve (na validação cruzada era 83,7% e 65,1%) nem nada sobre o tempo, porque o MNIST não tem safras.",
+    "pre": "Slides 1, 7, 10, 16, 18, 42 e 43.",
+    "conducao": "Primeiro critério: 95,7% contra 91,0%, 4,7 pontos acima do trivial (slide 10). Segundo: no limiar zero, precisão de 83,7% e recall de 65,1%; o limiar certo depende do custo de cada erro (slides 16 e 18). Terceiro: no exemplo BVS, a AUC cai de 0,832 para 0,645 fora do tempo (slides 42 e 43). Se a turma respondeu no slide 1, leia a resposta e o veredito. Abra então o teste guardado desde o slide 7: 94,9% de acurácia nas 10.000 imagens, contra 91,1% do trivial no teste; precisão de 66,2% e recall de 88,0%. Diz que o detector supera o trivial em imagens novas; não diz que o equilíbrio de erros se manteve (na validação cruzada era 83,7% e 65,1%) nem nada sobre o tempo, porque o MNIST não tem safras.",
     "leitura": "Três critérios clicáveis com o número e o slide; à direita, a resposta registrada no slide 1, se houver, e o teste com acurácia, precisão e recall.",
     "pergunta": "Por que a precisão no teste (66,2%) é tão diferente da validação cruzada (83,7%) com o mesmo limiar zero?",
     "resposta": "Porque o modelo do teste foi ajustado no treino inteiro e o limiar zero cai em outro ponto da troca entre precisão e recall; o limiar precisa ser escolhido pelo custo e conferido em dados novos.",
@@ -16833,7 +16782,7 @@
   {
    "id": "c12p50",
    "cap": 12,
-   "n": 51,
+   "n": 50,
    "titulo": "Apêndice: dados do caso no curto e no longo prazo",
    "nivel": "complementar",
    "nivel120": null,
@@ -16845,10 +16794,10 @@
    "origem": "rec",
    "aprendizado": "Conferir, a partir das contagens do caso, volume, precisão, recall, WoE e IV de cada regra nos dois horizontes.",
    "apoio": "Troque o horizonte e refaça uma das contas com as contagens da tabela; veja onde cada regra cai na régua de IV.",
-   "conexao": "O slide 52 mostra a figura por safra do exemplo de sobreajuste.",
+   "conexao": "O slide 51 mostra a figura por safra do exemplo de sobreajuste.",
    "guia": {
     "funcao": "Apêndice de conferência: todos os números do bloco saem destas contagens.",
-    "pre": "Slides 46 e 48.",
+    "pre": "Slides 45 e 47.",
     "conducao": "No curto prazo, 82.458 contratos e 5.865 maus; a política remove 5.479 contratos (6,64%), com 1.245 maus; WoE de −1,35 no grupo removido e IV de 0,240. Refaça a precisão: 1.245 ÷ 5.479 = 22,7%. No longo prazo, 61.563 contratos, 20.856 maus entre 61.138 classificados; 425 contratos não são bons nem maus e ficam fora de precisão e recall, e o material não informa o motivo. IV pela régua de Siddiqi: fraco abaixo de 0,1, médio de 0,1 a 0,3, forte acima. No longo prazo, o Never Paid cai para fraco (0,099), e a regra conjunta segue líder em recall (26,7%).",
     "leitura": "Tabela por regra e grupo com contratos, bons, maus, população, WoE, taxa de maus e IV; tabela de corte com volume, precisão, recall, maus no restante e IV; régua de IV com as três regras.",
     "pergunta": "Por que o IV do Never Paid cai de médio para fraco no longo prazo?",
@@ -16882,7 +16831,7 @@
   {
    "id": "c12p51",
    "cap": 12,
-   "n": 52,
+   "n": 51,
    "titulo": "Apêndice: volume e taxa de maus por safra no exemplo de sobreajuste",
    "nivel": "complementar",
    "nivel120": null,
@@ -16893,11 +16842,11 @@
    },
    "origem": "rec",
    "aprendizado": "Ler a figura por safra do exemplo de sobreajuste: volume por faixa e taxa de maus por faixa antes e depois da linha do período fora do tempo.",
-   "apoio": "Alterne entre taxa de maus e volume e leia a descrição de cada metade; volte aos slides 44 e 45 pelos links.",
-   "conexao": "Fim do apêndice do caso; o slide 53 traz as referências.",
+   "apoio": "Alterne entre taxa de maus e volume e leia a descrição de cada metade; volte aos slides 43 e 44 pelos links.",
+   "conexao": "Fim do apêndice do caso; o slide 52 traz as referências.",
    "guia": {
-    "funcao": "Apêndice que mostra, safra a safra, o achatamento das faixas do slide 44 e a evidência discutida no slide 45.",
-    "pre": "Slides 44 e 45.",
+    "funcao": "Apêndice que mostra, safra a safra, o achatamento das faixas do slide 43 e a evidência discutida no slide 44.",
+    "pre": "Slides 43 e 44.",
     "conducao": "À direita, a taxa de maus de cada faixa por safra, de dezembro de 2018 a outubro de 2019; a linha azul delimita o período fora do tempo. Antes dela, as faixas ficam bem separadas; perto dela, as faixas de menor risco sobem, já na safra anterior à linha, e a pior cai: as taxas se aproximam. À esquerda, o volume por faixa: o total cresce no meio do período e segue alto. Diga com cautela: a subida que começa antes da linha também é compatível com mudança na população; a figura não traz os valores e não separa as hipóteses sozinha.",
     "leitura": "Figura original com o volume empilhado por faixa e a taxa de maus por faixa ao longo das safras, com a linha do período fora do tempo; leitura da metade escolhida.",
     "pergunta": "Que dado ao lado desta figura ajudaria a separar sobreajuste de mudança na população?",
@@ -16931,7 +16880,7 @@
   {
    "id": "c12p52",
    "cap": 12,
-   "n": 53,
+   "n": 52,
    "titulo": "Apêndice: referências e métodos além da aula",
    "nivel": "complementar",
    "nivel120": null,
@@ -16946,8 +16895,8 @@
    "conexao": "Fim do material de consulta do capítulo.",
    "guia": {
     "funcao": "Dar a cada método da aula a referência primária e apontar os métodos atuais que a aula não demonstra, com quando usar cada um.",
-    "pre": "Slides 1 a 50.",
-    "conducao": "Use como consulta, não como exposição. Em sala, mostre só o grupo Além da aula: a importância por impureza do slide 36 tem viés conhecido (Strobl et al., 2007) e deve ser conferida por permutação; SHAP explica cada contrato; XGBoost e LightGBM são o boosting que se usa hoje; stacking aprende a combinar os votos.",
+    "pre": "Slides 1 a 49.",
+    "conducao": "Use como consulta, não como exposição. Em sala, mostre só o grupo Além da aula: a importância por impureza das florestas tem viés conhecido (Strobl et al., 2007) e deve ser conferida por permutação; SHAP explica cada contrato; XGBoost e LightGBM são o boosting que se usa hoje; stacking aprende a combinar os votos.",
     "leitura": "Quatro grupos (Métricas, Ensembles, Crédito, Além da aula), cada referência com autor, obra, o que resolve e o slide da aula.",
     "pergunta": "Que método do grupo Além da aula você exigiria antes de levar um boosting ao comitê de crédito?",
     "resposta": "Uma explicação por contrato, como SHAP, e a importância por permutação para conferir a importância por impureza; os dois respondem à exigência de explicar a decisão ao cliente e ao validador.",
@@ -16960,7 +16909,7 @@
      {
       "alt": "Boosting moderno dispensa validação fora do tempo",
       "confusao": "Confunde potência do algoritmo com estabilidade no tempo.",
-      "intervencao": "Volte ao slide 43: todo modelo perde discriminação fora do tempo."
+      "intervencao": "Volte ao slide 42: todo modelo perde discriminação fora do tempo."
      }
     ],
     "interacao": "Seletor de grupo e links para os slides em que cada método aparece; Restaurar volta a Métricas.",

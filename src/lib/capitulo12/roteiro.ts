@@ -15,12 +15,11 @@
  */
 import type { Nivel, Pergunta, Slide } from "@/lib/capitulo7/roteiro";
 import { int, num, pct } from "../capitulo7/formato";
-import { CORTE, IRIS, LUAS, M_SGD, M_TRIVIAL, N_TREINO_LUAS } from "./dados";
+import { CORTE, LUAS, M_SGD, M_TRIVIAL, N_TREINO_LUAS } from "./dados";
 import { acertoDaMaioria } from "./metricas";
 
 /** Sem declaração de base comum: cada fonte diz de onde vem (MNIST, luas, Iris ou o caso de crédito). */
 export const BASE_C12 = "";
-const PETALA = IRIS.importancia[2] + IRIS.importancia[3];
 const MIL = acertoDaMaioria(1001, 0.51);
 
 export const PERGUNTAS: { id: Exclude<Pergunta, "todas" | "apoio">; nome: string; frase: string }[] = [
@@ -66,24 +65,23 @@ export const ROTEIRO: Slide[] = [
   { slug: "c12p32", n: 33, pergunta: "decisao", titulo: "Com amostras do tamanho do treino, cada árvore deixa de fora cerca de 37%", sub: "Em m sorteios com reposição, uma instância escapa com probabilidade (1 − 1/m)ᵐ.", nivel: "aprofundamento", min: 3 },
   { slug: "c12p33", n: 34, pergunta: "decisao", titulo: "A validação out of bag antecipa o teste?", sub: "Cada instância é avaliada só pelas árvores que não a usaram no treino, sem custo adicional.", nivel: "essencial", min: 3 },
   { slug: "c12p34", n: 35, pergunta: "decisao", titulo: "Floresta aleatória: amostras e características sorteadas", sub: "A cada divisão, só um subconjunto aleatório de características é considerado: árvores menos correlacionadas.", nivel: "essencial", min: 3 },
-  { slug: "c12p35", n: 36, pergunta: "decisao", titulo: `Na Iris, as medidas da pétala somam ${pct(PETALA, 0)} da importância`, sub: "Importância: quanto cada característica reduz, em média, a impureza das árvores.", nivel: "essencial", min: 3 },
-  { slug: "c12p36", n: 37, pergunta: "decisao", titulo: "Gradient boosting em três árvores", sub: "Treino sequencial: a árvore 1 ajusta os dados; as árvores 2 e 3 ajustam o resíduo.", nivel: "essencial", min: 3 },
-  { slug: "c12p37", n: 38, pergunta: "decisao", titulo: "Gradient boosting: cada árvore ajusta o resíduo", sub: "A cada etapa, o resíduo encolhe e a previsão acompanha melhor a curva.", nivel: "essencial", min: 4 },
-  { slug: "c12p38", n: 39, pergunta: "decisao", titulo: "Síntese: quatro formas de produzir diversidade", sub: "Como esses modelos viram decisão em uma carteira de crédito?", nivel: "essencial", min: 2 },
-  { slug: "c12p39", n: 40, pergunta: "validacao", titulo: "Como um classificador vira uma decisão de corte?", sub: "A decisão combina discriminação, estabilidade no tempo e volume de recusas.", nivel: "essencial", min: 2 },
-  { slug: "c12p40", n: 41, pergunta: "validacao", titulo: "O caso: identificar quem não paga nenhuma parcela", sub: "Concentrar o corte no maior risco, removendo menos de 10% da população.", nivel: "essencial", min: 3 },
-  { slug: "c12p41", n: 42, pergunta: "validacao", titulo: "Fora do tempo: treinar no passado, testar no futuro", sub: "Treino em safras antigas; validação em safras posteriores, que o modelo nunca viu.", nivel: "essencial", min: 3 },
-  { slug: "c12p42", n: 43, pergunta: "validacao", titulo: "Fora do tempo, os três modelos do caso perdem discriminação", sub: "AUC e Gini no treino e na validação fora do tempo, nos três modelos do caso.", nivel: "essencial", min: 3 },
-  { slug: "c12p43", n: 44, pergunta: "validacao", titulo: "Fora do tempo, as faixas de score se aproximam", sub: "No treino, a taxa de maus sobe em escada; na validação, a escada achata.", nivel: "essencial", min: 4 },
-  { slug: "c12p44", n: 45, pergunta: "validacao", titulo: "Sobreajuste ou mudança na população? Que evidência separa as hipóteses?", sub: "O material classifica o caso como sobreajuste. A queda também pode refletir mudança de perfil, de período ou de política.", nivel: "aprofundamento", min: 3 },
-  { slug: "c12p45", n: 46, pergunta: "validacao", titulo: "Três regras de corte: onde ficam os maus", sub: "Todas concentram os maus no grupo removido. A questão é quanto da base cada uma recusa.", nivel: "essencial", min: 3 },
-  { slug: "c12p46", n: 47, pergunta: "validacao", titulo: "Cada métrica da aula responde a uma pergunta do comitê", sub: "Com o mau pagador como classe positiva.", nivel: "essencial", min: 3 },
-  { slug: "c12p47", n: 48, pergunta: "validacao", titulo: "Política, modelo ou os dois: qual regra você levaria ao comitê?", sub: `Use precisão, recall e volume do corte. A meta: remover menos de 10% da população.`, nivel: "essencial", min: 5 },
-  { slug: "c12p48", n: 49, pergunta: "todas", titulo: "Síntese da aula: quatro perguntas, quatro respostas", sub: "Do rótulo à decisão de corte, com os números da aula.", nivel: "essencial", min: 3 },
-  { slug: "c12p49", n: 50, pergunta: "todas", titulo: "De volta à pergunta de abertura", sub: `${pct(M_SGD.acuracia, 1)} de acurácia só é bom resultado se superar o trivial (${pct(M_TRIVIAL.acuracia, 1)}), se o limiar refletir o custo de cada erro e se a ordenação sobreviver ao tempo.`, nivel: "essencial", min: 3 },
-  { slug: "c12p50", n: 51, pergunta: "apoio", titulo: "Apêndice: dados do caso no curto e no longo prazo", sub: `Contagens por regra e grupo, com volume, precisão, recall, peso de evidência e IV. No longo prazo, ${int(CORTE.longo.politica.semClassificacao)} contratos não são bons nem maus.`, nivel: "apendice", min: 3 },
-  { slug: "c12p51", n: 52, pergunta: "apoio", titulo: "Apêndice: volume e taxa de maus por safra no exemplo de sobreajuste", sub: "A linha azul delimita o período fora do tempo; depois dela, as taxas de maus das faixas se aproximam.", nivel: "apendice", min: 2 },
-  { slug: "c12p52", n: 53, pergunta: "apoio", titulo: "Apêndice: referências e métodos além da aula", sub: "A fonte primária de cada método da aula e o que a prática atual acrescenta: importância por permutação, SHAP, boosting por histograma e stacking.", nivel: "apendice", min: 3 },
+  { slug: "c12p36", n: 36, pergunta: "decisao", titulo: "Gradient boosting em três árvores", sub: "Treino sequencial: a árvore 1 ajusta os dados; as árvores 2 e 3 ajustam o resíduo.", nivel: "essencial", min: 3 },
+  { slug: "c12p37", n: 37, pergunta: "decisao", titulo: "Gradient boosting: cada árvore ajusta o resíduo", sub: "A cada etapa, o resíduo encolhe e a previsão acompanha melhor a curva.", nivel: "essencial", min: 4 },
+  { slug: "c12p38", n: 38, pergunta: "decisao", titulo: "Síntese: quatro formas de produzir diversidade", sub: "Como esses modelos viram decisão em uma carteira de crédito?", nivel: "essencial", min: 2 },
+  { slug: "c12p39", n: 39, pergunta: "validacao", titulo: "Como um classificador vira uma decisão de corte?", sub: "A decisão combina discriminação, estabilidade no tempo e volume de recusas.", nivel: "essencial", min: 2 },
+  { slug: "c12p40", n: 40, pergunta: "validacao", titulo: "O caso: identificar quem não paga nenhuma parcela", sub: "Concentrar o corte no maior risco, removendo menos de 10% da população.", nivel: "essencial", min: 3 },
+  { slug: "c12p41", n: 41, pergunta: "validacao", titulo: "Fora do tempo: treinar no passado, testar no futuro", sub: "Treino em safras antigas; validação em safras posteriores, que o modelo nunca viu.", nivel: "essencial", min: 3 },
+  { slug: "c12p42", n: 42, pergunta: "validacao", titulo: "Fora do tempo, os três modelos do caso perdem discriminação", sub: "AUC e Gini no treino e na validação fora do tempo, nos três modelos do caso.", nivel: "essencial", min: 3 },
+  { slug: "c12p43", n: 43, pergunta: "validacao", titulo: "Fora do tempo, as faixas de score se aproximam", sub: "No treino, a taxa de maus sobe em escada; na validação, a escada achata.", nivel: "essencial", min: 4 },
+  { slug: "c12p44", n: 44, pergunta: "validacao", titulo: "Sobreajuste ou mudança na população? Que evidência separa as hipóteses?", sub: "O material classifica o caso como sobreajuste. A queda também pode refletir mudança de perfil, de período ou de política.", nivel: "aprofundamento", min: 3 },
+  { slug: "c12p45", n: 45, pergunta: "validacao", titulo: "Três regras de corte: onde ficam os maus", sub: "Todas concentram os maus no grupo removido. A questão é quanto da base cada uma recusa.", nivel: "essencial", min: 3 },
+  { slug: "c12p46", n: 46, pergunta: "validacao", titulo: "Cada métrica da aula responde a uma pergunta do comitê", sub: "Com o mau pagador como classe positiva.", nivel: "essencial", min: 3 },
+  { slug: "c12p47", n: 47, pergunta: "validacao", titulo: "Política, modelo ou os dois: qual regra você levaria ao comitê?", sub: `Use precisão, recall e volume do corte. A meta: remover menos de 10% da população.`, nivel: "essencial", min: 5 },
+  { slug: "c12p48", n: 48, pergunta: "todas", titulo: "Síntese da aula: quatro perguntas, quatro respostas", sub: "Do rótulo à decisão de corte, com os números da aula.", nivel: "essencial", min: 3 },
+  { slug: "c12p49", n: 49, pergunta: "todas", titulo: "De volta à pergunta de abertura", sub: `${pct(M_SGD.acuracia, 1)} de acurácia só é bom resultado se superar o trivial (${pct(M_TRIVIAL.acuracia, 1)}), se o limiar refletir o custo de cada erro e se a ordenação sobreviver ao tempo.`, nivel: "essencial", min: 3 },
+  { slug: "c12p50", n: 50, pergunta: "apoio", titulo: "Apêndice: dados do caso no curto e no longo prazo", sub: `Contagens por regra e grupo, com volume, precisão, recall, peso de evidência e IV. No longo prazo, ${int(CORTE.longo.politica.semClassificacao)} contratos não são bons nem maus.`, nivel: "apendice", min: 3 },
+  { slug: "c12p51", n: 51, pergunta: "apoio", titulo: "Apêndice: volume e taxa de maus por safra no exemplo de sobreajuste", sub: "A linha azul delimita o período fora do tempo; depois dela, as taxas de maus das faixas se aproximam.", nivel: "apendice", min: 2 },
+  { slug: "c12p52", n: 52, pergunta: "apoio", titulo: "Apêndice: referências e métodos além da aula", sub: "A fonte primária de cada método da aula e o que a prática atual acrescenta: importância por permutação, SHAP, boosting por histograma e stacking.", nivel: "apendice", min: 3 },
 ];
 
 export const SLIDE = Object.fromEntries(ROTEIRO.map((s) => [s.slug, s])) as Record<string, Slide>;
@@ -96,7 +94,7 @@ export const CURTO: Record<string, string> = {
   c12p9: "Bloco 2", c12p10: "Acurácia", c12p11: "Matriz de confusão", c12p12: "Precisão", c12p13: "Recall", c12p14: "F1", c12p15: "Quatro métricas", c12p16: "Custo dos erros",
   c12p17: "Limiar", c12p18: "Precisão contra recall", c12p19: "Curva ROC", c12p20: "Curvas que se cruzam", c12p21: "AUC e Gini",
   c12p22: "Bloco 3", c12p53: "Sabedoria das multidões", c12p23: "Votação", c12p24: "Lei dos Grandes Números", c12p25: "Quatro formas", c12p26: "Duas luas", c12p27: "Votação em código", c12p28: "Voto contra isolados",
-  c12p29: "Bagging", c12p30: "500 árvores", c12p31: "Fronteira", c12p32: "37% de fora", c12p33: "Out of bag", c12p34: "Floresta aleatória", c12p35: "Importância", c12p36: "Boosting em código", c12p37: "Resíduo", c12p38: "Síntese dos ensembles",
+  c12p29: "Bagging", c12p30: "500 árvores", c12p31: "Fronteira", c12p32: "37% de fora", c12p33: "Out of bag", c12p34: "Floresta aleatória", c12p36: "Boosting em código", c12p37: "Resíduo", c12p38: "Síntese dos ensembles",
   c12p39: "Bloco 4", c12p40: "O caso", c12p41: "Fora do tempo", c12p42: "AUC fora do tempo", c12p43: "Sobreajuste", c12p44: "Sobreajuste ou população", c12p45: "Regras de corte", c12p46: "Métricas do comitê", c12p47: "Exercício do comitê",
   c12p48: "Síntese", c12p49: "Pergunta de abertura", c12p50: "Apêndice: dados do caso", c12p51: "Apêndice: safras", c12p52: "Apêndice: referências",
 };

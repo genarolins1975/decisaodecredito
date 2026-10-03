@@ -30,7 +30,7 @@ const GRUPOS: { id: string; nome: string; refs: Ref[] }[] = [
     { quem: "Lessmann et al. (2015)", obra: "Benchmarking state-of-the-art classification algorithms for credit scoring, EJOR 247(1)", resolve: "Em oito bases de crédito, ensembles heterogêneos superaram a logística, que segue o padrão da indústria.", slides: ["c12p38"] },
   ] },
   { id: "alem", nome: "Além da aula", refs: [
-    { quem: "Strobl et al. (2007)", obra: "Bias in random forest variable importance measures, BMC Bioinformatics 8:25", resolve: "A importância por impureza favorece variáveis com muitos cortes; use a importância por permutação para conferir.", slides: ["c12p35"] },
+    { quem: "Strobl et al. (2007)", obra: "Bias in random forest variable importance measures, BMC Bioinformatics 8:25", resolve: "A importância por impureza favorece variáveis com muitos cortes; use a importância por permutação para conferir.", slides: [] },
     { quem: "Lundberg e Lee (2017)", obra: "A unified approach to interpreting model predictions, NeurIPS", resolve: "SHAP explica a previsão de cada contrato; exigência de explicação ao cliente e ao validador.", slides: [] },
     { quem: "Chen e Guestrin (2016); Ke et al. (2017)", obra: "XGBoost, KDD; LightGBM, NeurIPS", resolve: "Boosting com regularização e histogramas: o padrão atual em bases tabulares grandes.", slides: [] },
     { quem: "Wolpert (1992)", obra: "Stacked generalization, Neural Networks 5(2)", resolve: "Um segundo modelo aprende a combinar os votos, em vez de contá-los.", slides: [] },

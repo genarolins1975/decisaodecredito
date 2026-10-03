@@ -36,7 +36,6 @@ import { S31Fronteira } from "./slides/s31-fronteira";
 import { S32Fora37 } from "./slides/s32-fora-37";
 import { S33Oob } from "./slides/s33-oob";
 import { S34Floresta } from "./slides/s34-floresta";
-import { S35Importancia } from "./slides/s35-importancia";
 import { S36BoostingCodigo } from "./slides/s36-boosting-codigo";
 import { S37Residuo } from "./slides/s37-residuo";
 import { S38SinteseEnsembles } from "./slides/s38-sintese-ensembles";
@@ -92,7 +91,6 @@ const BRUTO: Record<string, ComponentType<{ pagina?: Pagina }>> = {
   c12p32: S32Fora37,
   c12p33: S33Oob,
   c12p34: S34Floresta,
-  c12p35: S35Importancia,
   c12p36: S36BoostingCodigo,
   c12p37: S37Residuo,
   c12p38: S38SinteseEnsembles,

@@ -124,7 +124,7 @@
       "intervencao": "A floresta é bagging com sorteio de características; as árvores são independentes."
      }
     ],
-    "interacao": "Previsão com retorno por alternativa e Tentar outra; cartões são links para os slides 24, 30, 35 e 37.",
+    "interacao": "Previsão com retorno por alternativa e Tentar outra; cartões são links para os slides 24, 30, 35 e 36.",
     "verificacao": "O aluno classifica as quatro técnicas em paralelas e sequencial.",
     "transicao": "O problema em que as quatro serão testadas."
    }
@@ -420,39 +420,6 @@
     "transicao": "Quais variáveis a floresta mais usa? A importância na Iris."
    }
   },
-  "c12p35": {
-   "t": {
-    "exp": 1,
-    "disc": 1,
-    "ex": 1
-   },
-   "aprendizado": "Ler a importância das características de uma floresta e saber seus limites.",
-   "apoio": "Preveja quais medidas pesam mais; depois leia as barras.",
-   "conexao": "O boosting combina árvores de outro jeito: em sequência.",
-   "guia": {
-    "funcao": "Mostrar o primeiro diagnóstico que uma floresta oferece e sua interpretação em crédito.",
-    "pre": "Slide 35 (floresta aleatória).",
-    "conducao": "Antes das barras, a turma escolhe. A floresta de 500 árvores na Iris dá 44,1% ao comprimento da pétala, 42,3% à largura da pétala, 11,2% ao comprimento da sépala e 2,3% à largura da sépala. As da pétala somam 86,4%; todas juntas, 100%. Em crédito, é o primeiro diagnóstico de quais variáveis movem o score. Cuidado: a importância por impureza tende a inflar variáveis contínuas e de muitos valores; confira com importância por permutação.",
-    "leitura": "Barras horizontais das quatro importâncias, ocultas até a previsão; chave da pétala; código da aula.",
-    "pergunta": "Uma variável com importância alta causa o desfecho?",
-    "resposta": "Não: importância mede quanto a variável reduz a impureza nas árvores, não efeito causal.",
-    "erros": [
-     {
-      "alt": "As da sépala, por serem maiores",
-      "confusao": "Confunde tamanho da medida com poder de separação.",
-      "intervencao": "Mostre os 11,2% e 2,3% das sépalas."
-     },
-     {
-      "alt": "As quatro pesam parecido",
-      "confusao": "Supõe que a floresta divide o peso igualmente.",
-      "intervencao": "Mostre que a maior pesa 44,1% e a menor 2,3%."
-     }
-    ],
-    "interacao": "Previsão com o título em forma de pergunta; as barras aparecem depois da tentativa; Tentar outra volta ao estado inicial.",
-    "verificacao": "O aluno diz quanto somam as duas medidas da pétala e um limite da importância por impureza.",
-    "transicao": "De árvores em paralelo para árvores em sequência: boosting."
-   }
-  },
   "c12p36": {
    "t": {
     "exp": 2,
@@ -460,7 +427,7 @@
    },
    "aprendizado": "Ler o código do gradient boosting em três etapas e ver o alvo de cada árvore: os dados, depois os resíduos.",
    "apoio": "Troque a etapa e veja o bloco de código aceso, o alvo da etapa e a árvore ajustada a ele.",
-   "conexao": "A soma das três árvores e a taxa de aprendizado estão no slide 38.",
+   "conexao": "A soma das três árvores e a taxa de aprendizado estão no slide 37.",
    "guia": {
     "funcao": "Mostrar o treino sequencial do boosting no código da aula.",
     "pre": "Slide 26 (boosting na lista das quatro formas).",
@@ -477,7 +444,7 @@
      {
       "alt": "Árvores rasas são um defeito",
       "confusao": "Não entende o papel do aprendiz fraco.",
-      "intervencao": "Mostre que a soma de árvores rasas acompanha a curva no slide 38."
+      "intervencao": "Mostre que a soma de árvores rasas acompanha a curva no slide 37."
      }
     ],
     "interacao": "Seletor de etapa que acende o código e troca o gráfico; Restaurar volta à etapa 1.",
@@ -496,7 +463,7 @@
    "conexao": "A síntese do bloco compara as quatro formas de produzir diversidade.",
    "guia": {
     "funcao": "Fechar o boosting com a soma das árvores e a taxa de aprendizado.",
-    "pre": "Slide 37 (três árvores em código).",
+    "pre": "Slide 36 (três árvores em código).",
     "conducao": "Leia a figura de Géron: em cada linha, a árvore da etapa e a previsão acumulada. Com M = 3 e η = 1, ŷ = h₁ + h₂ + h₃ e o erro de treino vai de 0,126 a 0,005. Com perda quadrática, o resíduo y − ŷ é o gradiente negativo da perda: cada árvore dá um passo na direção que mais reduz o erro. Baixe η para 0,1: cada árvore corrige só uma parte, e com 10 árvores o erro ainda está em 0,021. O erro aqui é de treino; quantas árvores usar se decide fora da amostra.",
     "leitura": "Figura original; previsão acumulada com a etapa anterior tracejada; erro quadrático médio por número de árvores; fórmula; controles de M e η.",
     "pergunta": "Por que usar η menor que 1 se ele deixa o treino mais lento?",
@@ -528,7 +495,7 @@
    "conexao": "O bloco 4 leva os modelos para a decisão de corte em crédito.",
    "guia": {
     "funcao": "Sintetizar o bloco e abrir a pergunta do bloco 4.",
-    "pre": "Slides 24 a 38.",
+    "pre": "Slides 24 a 37.",
     "conducao": "Leia a tabela: votação (0,896 hard e 0,912 soft), bagging (0,904 contra 0,856 da árvore), floresta (0,912 nas luas; na Iris, pétala com 86% da importância) e boosting (erro de 0,126 a 0,005 em três etapas). No eixo, os ensembles acertam de 112 a 114 de 125, contra 107 da árvore: a diversidade ajuda, por margens de poucos acertos. Pergunte como esses modelos viram decisão numa carteira de crédito.",
     "leitura": "Tabela da aula com links para cada método; acertos de todos os modelos no teste das luas num eixo.",
     "pergunta": "Qual técnica você usaria para uma carteira de crédito e o que mediria antes de decidir?",
@@ -545,9 +512,9 @@
       "intervencao": "Lembre que o mesmo princípio se aplica com perda logística."
      }
     ],
-    "interacao": "Links da tabela para os slides 24, 30, 35 e 37 e para o slide 40 na leitura; slide de consulta sem estado.",
+    "interacao": "Links da tabela para os slides 24, 30, 35 e 36 e para o slide 39 na leitura; slide de consulta sem estado.",
     "verificacao": "O aluno preenche de memória uma linha da tabela.",
-    "transicao": "Próxima pergunta: como o modelo vira decisão de corte (slide 40)."
+    "transicao": "Próxima pergunta: como o modelo vira decisão de corte (slide 39)."
    }
   }
  }

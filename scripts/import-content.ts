@@ -458,6 +458,16 @@ async function main() {
     if (r.url) await db.update(schema.materials).set({ description: r.description, url: r.url, kind: r.kind, unitId: r.unitId ?? null, status: r.status ?? "published" }).where(and(eq(schema.materials.editionId, edition.id), eq(schema.materials.title, r.title)));
   }
 
+  /* Páginas retiradas do roteiro pelo professor: saem da plataforma (rascunho), sem apagar versões nem respostas.
+     c12p35 (importância na Iris) saiu do capítulo 12 em 3 de outubro de 2026. */
+  const RETIRADAS = ["c12p35"].filter((slug) => !ex.pages.some((p: any) => p.id === slug));
+  if (RETIRADAS.length) {
+    const alvo = await db.select({ id: schema.pages.id, slug: schema.pages.slug }).from(schema.pages)
+      .innerJoin(schema.chapters, eq(schema.chapters.id, schema.pages.chapterId)).innerJoin(schema.units, eq(schema.units.id, schema.chapters.unitId))
+      .where(and(eq(schema.units.editionId, edition.id), inArray(schema.pages.slug, RETIRADAS), eq(schema.pages.status, "published")));
+    for (const r of alvo) { await db.update(schema.pages).set({ status: "draft" }).where(eq(schema.pages.id, r.id)); console.log(`página ${r.slug} retirada do roteiro: passa a rascunho`); }
+  }
+
   await db.insert(schema.contentImports).values({ id: newId(), editionId: edition.id, sourceFile: ex.sourceFile, sourceSha256: ex.sourceSha256, summary: { pages: ex.pages.length, questions: qCount, rendering: stats, republish } });
   fs.writeFileSync(path.join(GEN, "inventory.json"), JSON.stringify(inventory, null, 1));
   const catalogo = await db.select({ status: schema.datasets.status }).from(schema.datasets).where(eq(schema.datasets.editionId, edition.id));

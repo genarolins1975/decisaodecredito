@@ -1,6 +1,6 @@
 "use client";
 import { Grafico, LinkSlide, Painel, Quadro, type Pagina } from "@/components/capitulo7/base";
-import { ACERTOS_LUAS, BOOST, FONTE_LUAS, IRIS, LUAS, N_TESTE_LUAS, type ModeloLua } from "@/lib/capitulo12/dados";
+import { ACERTOS_LUAS, BOOST, FONTE_LUAS, LUAS, N_TESTE_LUAS, type ModeloLua } from "@/lib/capitulo12/dados";
 import { UM_ACERTO } from "@/lib/capitulo12/b3";
 import { SLIDE } from "@/lib/capitulo12/roteiro";
 import { int, num, pct } from "@/lib/capitulo7/formato";
@@ -13,11 +13,10 @@ import { int, num, pct } from "@/lib/capitulo7/formato";
  * estado a restaurar.
  */
 const M = LUAS.modelos;
-const PETALA = IRIS.importancia[2] + IRIS.importancia[3];
 const LINHAS = [
   { nome: "Votação", slide: "c12p23", fonte: "Algoritmos diferentes", treino: "Paralelo", comb: "Maioria ou média das probabilidades", ex: `${num(M.hard.acc, 3)} (hard) e ${num(M.soft.acc, 3)} (soft)` },
-  { nome: "Bagging", slide: "c12p29", fonte: "Amostras diferentes", treino: "Paralelo", comb: "Maioria", ex: `${num(M.bag500.acc, 3)}, contra ${num(M.arvore.acc, 3)} da árvore única` },
-  { nome: "Floresta aleatória", slide: "c12p34", fonte: "Amostras e características", treino: "Paralelo", comb: "Maioria", ex: `${num(M.rf500.acc, 3)} nas luas; na Iris, pétala com ${pct(PETALA, 0)} da importância` },
+  { nome: "Bagging", slide: "c12p29", fonte: "Amostras diferentes", treino: "Paralelo", comb: "Média das probabilidades", ex: `${num(M.bag500.acc, 3)}, contra ${num(M.arvore.acc, 3)} da árvore única` },
+  { nome: "Floresta aleatória", slide: "c12p34", fonte: "Amostras e características", treino: "Paralelo", comb: "Média das probabilidades", ex: `${num(M.rf500.acc, 3)} nas luas` },
   { nome: "Boosting", slide: "c12p36", fonte: "Correção sequencial dos erros", treino: "Sequencial", comb: "Soma das etapas", ex: `Regressão em três etapas: erro de ${num(BOOST.mse[0], 3)} a ${num(BOOST.mse[3], 3)}` },
 ];
 const PONTOS: { k: ModeloLua; r: string; ens: boolean }[] = [
@@ -36,7 +35,7 @@ export function S38SinteseEnsembles({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c12p38" pagina={pagina} layout="um"
       conclusao={<>Nas luas, o voto, o bagging e a floresta de 500 árvores acertam de {int(MIN_E)} a <b>{int(MAX_E)} de {int(N_TESTE_LUAS)}</b>, contra {int(ACERTOS_LUAS.arvore)} da árvore única: a diversidade ajuda, por margens de poucos acertos. Próxima pergunta: como esses modelos viram decisão em uma carteira de crédito? <LinkSlide slug="c12p39" className="q12-b3-link">Slide {SLIDE.c12p39.n}</LinkSlide>.</>}
-      fonte={`${FONTE_LUAS}. Iris: RandomForestClassifier(n_estimators=500, random_state=42). Boosting: ${int(BOOST.x.length)} pontos, três árvores de profundidade 2, erro quadrático médio de treino.`}>
+      fonte={`${FONTE_LUAS}. Boosting: ${int(BOOST.x.length)} pontos, três árvores de profundidade 2, erro quadrático médio de treino.`}>
       <div className="q12-s38">
         <Painel className="q12-s38-tab">
           <div className="q12-s38-rola">
