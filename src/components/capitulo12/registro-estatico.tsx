@@ -54,6 +54,7 @@ import { S49Volta } from "./slides/s49-volta";
 import { S50ApendiceDados } from "./slides/s50-apendice-dados";
 import { S51ApendiceSafras } from "./slides/s51-apendice-safras";
 import { S52Referencias } from "./slides/s52-referencias";
+import { S53Multidoes } from "./slides/s53-multidoes";
 
 /** Os mesmos quadros de registro.tsx, importados de uma vez: para os testes de renderização no servidor. */
 const BRUTO: Record<string, ComponentType<{ pagina?: Pagina }>> = {
@@ -109,6 +110,7 @@ const BRUTO: Record<string, ComponentType<{ pagina?: Pagina }>> = {
   c12p50: S50ApendiceDados,
   c12p51: S51ApendiceSafras,
   c12p52: S52Referencias,
+  c12p53: S53Multidoes,
 };
 export const QUADROS_C12_ESTATICOS: Record<string, ComponentType<{ pagina?: Pagina }>> = Object.fromEntries(
   Object.entries(BRUTO).map(([slug, C]) => { const Q = ({ pagina }: { pagina?: Pagina }) => <ProvedorC12><C pagina={pagina} /></ProvedorC12>; Q.displayName = `QuadroC12(${slug})`; return [slug, Q]; }),

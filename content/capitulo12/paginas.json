@@ -22,8 +22,8 @@
    "conexao": "Fim do material de consulta do capítulo.",
    "guia": {
     "funcao": "Dar a cada método da aula a referência primária e apontar os métodos atuais que a aula não demonstra, com quando usar cada um.",
-    "pre": "Slides 1 a 49.",
-    "conducao": "Use como consulta, não como exposição. Em sala, mostre só o grupo Além da aula: a importância por impureza do slide 35 tem viés conhecido (Strobl et al., 2007) e deve ser conferida por permutação; SHAP explica cada contrato; XGBoost e LightGBM são o boosting que se usa hoje; stacking aprende a combinar os votos.",
+    "pre": "Slides 1 a 50.",
+    "conducao": "Use como consulta, não como exposição. Em sala, mostre só o grupo Além da aula: a importância por impureza do slide 36 tem viés conhecido (Strobl et al., 2007) e deve ser conferida por permutação; SHAP explica cada contrato; XGBoost e LightGBM são o boosting que se usa hoje; stacking aprende a combinar os votos.",
     "leitura": "Quatro grupos (Métricas, Ensembles, Crédito, Além da aula), cada referência com autor, obra, o que resolve e o slide da aula.",
     "pergunta": "Que método do grupo Além da aula você exigiria antes de levar um boosting ao comitê de crédito?",
     "resposta": "Uma explicação por contrato, como SHAP, e a importância por permutação para conferir a importância por impureza; os dois respondem à exigência de explicar a decisão ao cliente e ao validador.",
@@ -36,12 +36,44 @@
      {
       "alt": "Boosting moderno dispensa validação fora do tempo",
       "confusao": "Confunde potência do algoritmo com estabilidade no tempo.",
-      "intervencao": "Volte ao slide 42: todo modelo perde discriminação fora do tempo."
+      "intervencao": "Volte ao slide 43: todo modelo perde discriminação fora do tempo."
      }
     ],
     "interacao": "Seletor de grupo e links para os slides em que cada método aparece; Restaurar volta a Métricas.",
     "verificacao": "O aluno associa cada método a uma referência e diz quando usaria SHAP ou permutação.",
     "transicao": "Fim do capítulo."
+   }
+  },
+  "c12p53": {
+   "t": {
+    "exp": 5,
+    "disc": 1
+   },
+   "aprendizado": "Intuir, antes de qualquer algoritmo, por que combinar previsões pode errar menos que cada previsão sozinha, e em que condições.",
+   "apoio": "Antes do vídeo, escolha a condição em que o grupo erra menos; depois do vídeo, confronte a escolha com o que ele mostrou.",
+   "conexao": "A votação transforma a intuição em algoritmo: vários modelos, vence a maioria.",
+   "guia": {
+    "funcao": "Abrir o bloco de ensembles com a intuição da sabedoria das multidões, para que as duas condições (muitos palpites e erros independentes) cheguem ao slide 25 já levantadas pela turma.",
+    "pre": "Slide 22 (abertura do bloco de ensembles).",
+    "conducao": "Leia a pergunta e peça a escolha antes do vídeo. O vídeo dura 4 min 48 s e não toca sozinho: clique em reproduzir quando a turma tiver respondido. Ao final, colete as condições levantadas pela turma e escreva no quadro as duas que importam: muitos palpites e erros diferentes entre si. Elas antecipam o slide 25, sobre quantidade e diversidade, onde viram conta com classificadores de 51%.",
+    "leitura": "O vídeo do material original ocupa a peça principal; ao lado, a previsão com três condições, cada uma com retorno, e a nota para coletar as condições da turma.",
+    "pergunta": "Em que condições a resposta do grupo erra menos do que a dos indivíduos?",
+    "resposta": "Quando há muitos palpites e os erros individuais não andam juntos: os erros se compensam no agregado. Se os palpites se copiam, a vantagem some.",
+    "erros": [
+     {
+      "alt": "Quando o grupo tem especialistas",
+      "confusao": "Atribui o ganho à qualidade individual, não à agregação de erros diferentes.",
+      "intervencao": "Pergunte se um especialista sozinho também erra, e por que a média de muitos erraria menos."
+     },
+     {
+      "alt": "Quando todos discutem e chegam a um consenso",
+      "confusao": "Ignora que a discussão torna os palpites dependentes.",
+      "intervencao": "Antecipe o controle de correlação do slide 25: com erros que andam juntos, o grupo vale um indivíduo."
+     }
+    ],
+    "interacao": "Vídeo com controles, sem reprodução automática; previsão com retorno por alternativa; Restaurar limpa a escolha.",
+    "verificacao": "O aluno nomeia as duas condições: quantidade de palpites e independência dos erros.",
+    "transicao": "Votação: vários algoritmos, vence a maioria."
    }
   }
  }

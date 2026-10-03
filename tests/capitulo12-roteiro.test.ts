@@ -17,10 +17,10 @@ const extracao = JSON.parse(fs.readFileSync(path.join(raiz, "content/generated/e
 const c12 = (extracao.pages as any[]).filter((p) => String(p.id).startsWith("c12p"));
 
 describe("roteiro do capítulo 12", () => {
-  it("52 slides, numeração contínua, um slug por slide, apêndices por último", () => {
-    expect(TOTAL).toBe(52);
-    expect(ROTEIRO.map((s) => s.n)).toEqual(Array.from({ length: 52 }, (_, i) => i + 1));
-    expect(new Set(ROTEIRO.map((s) => s.slug)).size).toBe(52);
+  it("53 slides, numeração contínua, um slug por slide, apêndices por último", () => {
+    expect(TOTAL).toBe(53);
+    expect(ROTEIRO.map((s) => s.n)).toEqual(Array.from({ length: 53 }, (_, i) => i + 1));
+    expect(new Set(ROTEIRO.map((s) => s.slug)).size).toBe(53);
     expect(ROTEIRO.slice(-3).every((s) => s.nivel === "apendice")).toBe(true);
   });
   it("cada uma das quatro perguntas tem slides e um bloco que abre nela", () => {

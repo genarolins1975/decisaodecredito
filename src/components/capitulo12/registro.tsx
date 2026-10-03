@@ -61,6 +61,7 @@ const SOB_DEMANDA: Record<string, ComponentType<{ pagina?: Pagina }>> = {
   c12p50: dynamic(() => import("./slides/s50-apendice-dados").then((m) => m.S50ApendiceDados)),
   c12p51: dynamic(() => import("./slides/s51-apendice-safras").then((m) => m.S51ApendiceSafras)),
   c12p52: dynamic(() => import("./slides/s52-referencias").then((m) => m.S52Referencias)),
+  c12p53: dynamic(() => import("./slides/s53-multidoes").then((m) => m.S53Multidoes)),
 };
 export const QUADROS_C12: Record<string, ComponentType<{ pagina?: Pagina }>> = Object.fromEntries(
   Object.entries(SOB_DEMANDA).map(([slug, C]) => { const Q = ({ pagina }: { pagina?: Pagina }) => <ProvedorC12><C pagina={pagina} /></ProvedorC12>; Q.displayName = `QuadroC12(${slug})`; return [slug, Q]; }),

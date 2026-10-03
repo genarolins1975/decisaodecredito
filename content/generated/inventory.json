@@ -1,7 +1,7 @@
 {
  "source": "content/original/apresentacao-curso-pd.html",
- "sha256": "2a8b1f5f9694109133f16eedc9d37bcbf24bfd82406e70138ec7439a2c6b4c13",
- "extractedAt": "2026-10-03T10:16:03.601Z",
+ "sha256": "5133fcd74d70804a46ee81bc6b8abfe1d6971241498334029948e658036c4fe9",
+ "extractedAt": "2026-10-03T11:14:27.704Z",
  "edition": "2026",
  "units": [
   {
@@ -4388,6 +4388,25 @@
    "hasFormula": false
   },
   {
+   "source": "#/c12p53",
+   "slug": "c12p53",
+   "pageId": "d6l85hi8yeessny40dsz6",
+   "chapter": 12,
+   "unit": 6,
+   "title": "A sabedoria das multidões",
+   "level": "essencial",
+   "minutes": 6,
+   "origin": "rec",
+   "rendering": "static",
+   "controls": 0,
+   "svgs": 0,
+   "tables": 0,
+   "questions": [],
+   "predictions": [],
+   "hasGuide": true,
+   "hasFormula": false
+  },
+  {
    "source": "#/c12p23",
    "slug": "c12p23",
    "pageId": "smkq3l256cuny24l10mci",
@@ -4958,7 +4977,7 @@
    "hasFormula": false
   }
  ],
- "questions": 322,
+ "questions": 323,
  "rubrics": [
   {
    "slug": "comite",
@@ -5040,22 +5059,46 @@
  ],
  "rendering": {
   "legacy": 84,
-  "static": 148,
+  "static": 149,
   "native": 21
  },
  "resync": {
   "synced": [
-   "c12p15",
+   "c4p21",
+   "c5p3",
+   "c12p1",
+   "c12p7",
+   "c12p22",
+   "c12p23",
+   "c12p24",
    "c12p25",
+   "c12p26",
+   "c12p27",
+   "c12p28",
+   "c12p29",
    "c12p30",
+   "c12p31",
    "c12p32",
    "c12p33",
+   "c12p34",
+   "c12p35",
+   "c12p36",
+   "c12p37",
+   "c12p38",
+   "c12p39",
+   "c12p40",
+   "c12p41",
    "c12p42",
    "c12p43",
+   "c12p44",
    "c12p45",
+   "c12p46",
    "c12p47",
    "c12p48",
-   "c12p50"
+   "c12p49",
+   "c12p50",
+   "c12p51",
+   "c12p52"
   ],
   "diverged": []
  }

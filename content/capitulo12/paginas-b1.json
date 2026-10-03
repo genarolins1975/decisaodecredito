@@ -11,10 +11,10 @@
    "guia": {
     "funcao": "Gancho da aula: um detector de 5 com 95,7% de acurácia e a pergunta que ele provoca, com as quatro perguntas encadeadas que a aula responde.",
     "pre": "Nenhum.",
-    "conducao": "Mostre o número grande: o detector acerta 95,7%, 57.422 de 60.000 imagens. Aponte as doze imagens embaixo: seis são 5, seis não são. Pergunte se o modelo é bom e peça que a turma escolha uma das três respostas antes de qualquer explicação. Não dê gabarito: as três posições são defensáveis e cada retorno diz onde a resposta será posta à prova (slide 10 para o modelo sem informação, slides 11 e 16 para os erros e seus custos). Feche apresentando o percurso: classificação, desempenho, ensembles e crédito, e diga que a resposta volta no slide 49.",
+    "conducao": "Mostre o número grande: o detector acerta 95,7%, 57.422 de 60.000 imagens. Aponte as doze imagens embaixo: seis são 5, seis não são. Pergunte se o modelo é bom e peça que a turma escolha uma das três respostas antes de qualquer explicação. Não dê gabarito: as três posições são defensáveis e cada retorno diz onde a resposta será posta à prova (slide 10 para o modelo sem informação, slides 11 e 16 para os erros e seus custos). Feche apresentando o percurso: classificação, desempenho, ensembles e crédito, e diga que a resposta volta no slide 50.",
     "leitura": "KPI de 95,7% com 57.422 acertos em 60.000 imagens; doze dígitos da base com o rótulo verdadeiro; a pergunta com três respostas; à direita, as quatro perguntas da aula com o slide em que cada bloco começa.",
     "pergunta": "Errar menos de 5 em cada 100 basta para chamar o modelo de bom?",
-    "resposta": "Ainda não dá para saber: depende de quanto acertaria um modelo sem informação, de quais erros ele comete e de quanto cada erro custa. A aula responde com três critérios no slide 49.",
+    "resposta": "Ainda não dá para saber: depende de quanto acertaria um modelo sem informação, de quais erros ele comete e de quanto cada erro custa. A aula responde com três critérios no slide 50.",
     "erros": [
      {
       "alt": "Sim: 95,7% é alto",
@@ -32,7 +32,7 @@
       "intervencao": "Lembre que a mesma acurácia pode esconder erros muito diferentes; o slide 11 mostra a matriz."
      }
     ],
-    "interacao": "Previsão sem gabarito: a escolha fica guardada na aba e volta no slide 49; “Tentar outra” limpa. Os quatro cartões do percurso são links para a abertura de cada bloco.",
+    "interacao": "Previsão sem gabarito: a escolha fica guardada na aba e volta no slide 50; “Tentar outra” limpa. Os quatro cartões do percurso são links para a abertura de cada bloco.",
     "verificacao": "Cada aluno sabe dizer qual resposta escolheu e por quê.",
     "transicao": "Antes de medir, precisamos saber o que o modelo faz: uma imagem entra, um rótulo sai."
    }
@@ -210,8 +210,8 @@
    "conexao": "Com o treino separado, o slide 8 ajusta o primeiro classificador nas 60.000 imagens.",
    "guia": {
     "funcao": "Justificar o teste guardado com um experimento: o modelo que decora o treino parece perfeito nele.",
-    "pre": "Slide 6 (rótulo binário). As duas luas são apresentadas no slide 26; aqui basta dizer que é um problema de duas classes com 375 pontos de treino e 125 de teste.",
-    "conducao": "Na barra, as 60.000 primeiras imagens são treino e as 10.000 últimas, teste: é a divisão da própria base. O código fatia X e y nos mesmos pontos e cria y_train_5 e y_test_5. Diga que as métricas do bloco 2 serão medidas no treino por validação cruzada, e que o teste só é usado uma vez, no slide 49. Por quê? Faça a previsão: uma árvore de decisão sem limite de profundidade, nas duas luas. No acerto: 100,0% no treino (375 de 375) e 85,6% no teste (107 de 125), uma diferença de 14,4 pontos percentuais. A árvore decorou os pontos que viu. A acurácia do MNIST no teste não aparece aqui de propósito.",
+    "pre": "Slide 6 (rótulo binário). As duas luas são apresentadas no slide 27; aqui basta dizer que é um problema de duas classes com 375 pontos de treino e 125 de teste.",
+    "conducao": "Na barra, as 60.000 primeiras imagens são treino e as 10.000 últimas, teste: é a divisão da própria base. O código fatia X e y nos mesmos pontos e cria y_train_5 e y_test_5. Diga que as métricas do bloco 2 serão medidas no treino por validação cruzada, e que o teste só é usado uma vez, no slide 50. Por quê? Faça a previsão: uma árvore de decisão sem limite de profundidade, nas duas luas. No acerto: 100,0% no treino (375 de 375) e 85,6% no teste (107 de 125), uma diferença de 14,4 pontos percentuais. A árvore decorou os pontos que viu. A acurácia do MNIST no teste não aparece aqui de propósito.",
     "leitura": "Barra de treino e teste que seleciona a parte; código com as linhas da parte realçadas; previsão sobre a árvore; no acerto, as barras de acurácia no treino e no teste.",
     "pergunta": "Por que não usar o teste para escolher o modelo e depois relatar o mesmo teste?",
     "resposta": "Porque o teste vira parte do ajuste e deixa de medir o desempenho em dados novos; a escolha usa validação cruzada no treino e o teste fica para uma medida única no fim.",
