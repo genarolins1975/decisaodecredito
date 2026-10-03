@@ -43,6 +43,9 @@ const [VMIN, KVMIN] = VALIDOS.reduce((a, q) => (q[0] < a[0] ? q : a));
 const VMAX_DEPOIS = Math.max(...VALIDOS.filter(([, k]) => k >= KVMIN).map(([v]) => v));
 const COR_CAI = L_COR.every((v, k) => k === 0 || v < L_COR[k - 1]);
 if (!(KVMIN < KMAX && COR_CAI && L_VOT[KMAX - 1]! > VMIN)) throw new Error("as frases de votar e corrigir não valem nos dados");
+/* árvore em que corrigir passa escolher na log loss de treino; votar nunca passa */
+const K_PASSA = L_COR.findIndex((v, k) => k > 0 && v < L_ESC);
+if (K_PASSA < 1 || VMIN <= L_ESC) throw new Error("a frase sobre passar escolher não vale nos dados");
 
 /* A primeira árvore, explicada com os números da tela. */
 const PURAS = P_ESC.filter((p) => p === 0 || p === 1).length; // folhas puras: perda zero
@@ -74,7 +77,7 @@ export function S02TresEstrategias({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c6p2" pagina={pagina} layout="gl"
       conclusao={!rev ? <>Com uma árvore, escolher tem log loss <b>{num(L_ESC, 3)}</b>: {PURAS} das {DIDATICA.length} caem em folhas puras. Corrigir fica em {num(L_COR[1], 3)} e votar não tem limite (por quê, ao lado). E com {KMAX} árvores?</>
-        : <>Com {k} árvore{k > 1 ? "s" : ""}: votar {fmtL(L_VOT[k - 1])}, corrigir <b>{num(L_COR[k], 3)}</b>. Votar para de cair na árvore {KVMIN} ({num(VMIN, 3)}); corrigir cai em todas: cada árvore mira o erro que sobrou. A sequência parte de um palpite único: <LinkSlide slug="c6p3">slide {SLIDE.c6p3.n}</LinkSlide>.</>}
+        : <>Com {k} árvore{k > 1 ? "s" : ""}: votar {fmtL(L_VOT[k - 1])}, corrigir <b>{num(L_COR[k], 3)}</b>. Votar para de cair na árvore {KVMIN} ({num(VMIN, 3)}); corrigir cai em todas: cada árvore mira o erro que sobrou. {K_PASSA <= k ? <>No treino, corrigir passa escolher na árvore {K_PASSA} ({num(L_COR[K_PASSA], 3)} contra {num(L_ESC, 3)}); votar nunca passa (a menor, {num(VMIN, 3)}): cada árvore dele vê só uma amostra, e o ganho esperado, menos variância, aparece fora da amostra, que este gráfico não mede. </> : null}A sequência parte de um palpite único: <LinkSlide slug="c6p3">slide {SLIDE.c6p3.n}</LinkSlide>.</>}
       fonte={`${DIDATICA.length} propostas didáticas sintéticas dos capítulos 4 e 5 (gerador do curso, semente ${SEMENTE_BASE}; utilização e atraso; ${int(YD.reduce((s, v) => s + v, 0))} defaults). Árvores de profundidade ${CFG_DIDATICA.profundidade}, mínimo de ${CFG_DIDATICA.minFolha} por folha. Votar: amostras com reposição (semente ${SEMENTE_VOTAR}). Corrigir: taxa ${num(CFG_DIDATICA.eta, 1)} (slide ${SLIDE.c6p7.n}). Log loss média, log natural.`}>
       <Painel>
         <Grafico titulo="Log loss de treino nas 16 propostas" sub="conforme as árvores se somam" rotulo={rev ? `Log loss com ${k} árvores: votar ${fmtL(L_VOT[k - 1])}, corrigir ${num(L_COR[k], 3)}; escolher, uma árvore, ${num(L_ESC, 3)}` : `Com uma árvore: escolher ${num(L_ESC, 3)}, corrigir ${num(L_COR[1], 3)}, votar sem limite; o resto oculto até a previsão`} arCelular="4 / 3">
@@ -120,7 +123,7 @@ export function S02TresEstrategias({ pagina }: { pagina?: Pagina }) {
             <div><dt>● Corrigir {num(L_COR[1], 3)}</dt><dd>mesmos grupos, mas o passo de Newton (<LinkSlide slug="c6p6">slide {SLIDE.c6p6.n}</LinkSlide>) a partir de {pct(P0, 0)} leva a folha pura a {pct(COR1_ETA1, 1)}, não a {pct(0, 0)}, e só η = {num(CFG_DIDATICA.eta, 1)} dele entra: PDs de {pct(COR1[0], 0)} e {pct(COR1[1], 0)}. Com η = 1, {num(L_COR1_ETA1, 3)}.</dd></div>
             <div><dt>■ Votar, sem limite</dt><dd>{ids(ERRADAS1)}, adimplentes, ficaram fora da primeira amostra e caíram numa folha só de defaults: PD {pct(1, 0)}.</dd></div>
           </dl>
-          <p className="q6-s02-fecho">Escolher vence com uma árvore porque usa todos os dados e vai a {pct(0, 0)} e {pct(1, 0)} nas folhas puras; votar e corrigir pagam na primeira árvore: no treino, corrigir passa escolher com mais árvores; votar fica acima, porque o ganho dele é fora da amostra.</p>
+          <p className="q6-s02-fecho">Escolher vence com uma árvore porque usa todos os dados e vai a {pct(0, 0)} e {pct(1, 0)} nas folhas puras; votar e corrigir pagam na primeira árvore. Com mais árvores, o gráfico mostra.</p>
         </Expandir>
         </div>
         <div className="q7-botoes"><Botao sec onClick={() => { setEsc(null); setK(KMAX); setNExp((n) => n + 1); }}>Restaurar</Botao></div>

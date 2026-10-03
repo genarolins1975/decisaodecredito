@@ -154,8 +154,8 @@ function Coluna({ met, k, foco, rev }: { met: Met; k: number; foco: number; rev:
                   </g>
                 );
               }) : <>
-                {/* a seta fica junto do eixo, do lado oposto ao da barra, para não cruzar o círculo na ponta */}
-                {DIDATICA.map((_, i) => { const dv = P_COR[k][i] - P_COR[k - 1][i]; return <text key={i} className="q7-rot--peq" x={cx(i)} y={dv > 0 ? yA : yA} dy={dv > 0 ? "1.05em" : "-.3em"} textAnchor="middle" style={{ fill: PROB, fontWeight: 700 }}>{dv > 1e-9 ? "↑" : dv < -1e-9 ? "↓" : "·"}</text>; })}
+                {/* a seta fica junto do eixo, do lado oposto ao da barra (o lado é o do alvo, não o da mudança de PD: um default pode ter alvo positivo e PD que desce, porque a folha é comum) */}
+                {DIDATICA.map((_, i) => { const dv = P_COR[k][i] - P_COR[k - 1][i]; return <text key={i} className="q7-rot--peq" x={cx(i)} y={yA} dy={ALVO_COR[k - 1][i] > 0 ? "1.05em" : "-.3em"} textAnchor="middle" style={{ fill: PROB, fontWeight: 700 }}>{dv > 1e-9 ? "↑" : dv < -1e-9 ? "↓" : "·"}</text>; })}
                 <text className="q7-rot--peq" x={d.w / 2} y={yB} dy="1.15em" textAnchor="middle" style={{ fill: PROB }}>PD: ↑ sobe, ↓ desce, η = {num(ETA, 1)}</text>
               </>}
             </g>
@@ -233,7 +233,7 @@ export function S23EscolherVotarCorrigir({ pagina }: { pagina?: Pagina }) {
       titulo={rev ? undefined : "Escolher, votar ou corrigir: com uma árvore só, qual se ajusta melhor às 16?"}
       sub={rev ? undefined : `As mesmas ${N} propostas nos três métodos. Veja o que a árvore 1 recebe em cada um e responda ao lado.`}
       conclusao={!rev ? <>Árvore 1, proposta #{p.id} ({p.y ? "default" : "adimplente"}): escolher ajusta uma árvore com as {N}; em votar, ela está {naAmostra(0, foco)}; corrigir lhe dá o alvo y − p = {sinal(ALVO_COR[0][foco])}. Qual dos três se ajusta melhor às {N} (menor log loss de treino)?</>
-        : <>Com uma árvore, escolher perde menos na log loss das {N} (<b>{num(L_ESC!, 3)}</b> contra {num(L_COR1, 3)} de corrigir; votar sem limite). Corrigir dá um passo de Newton (<LinkSlide slug="c6p6">slide {SLIDE.c6p6.n}</LinkSlide>) encolhido pela taxa η = {num(ETA, 1)} (<LinkSlide slug="c6p7">slide {SLIDE.c6p7.n}</LinkSlide>): folha pura em {pct(COR1_LO, 0)} (com η = 1, {pct(PD_PURA_ETA1, 1)}; nunca {pct(0, 0)}). É ajuste ao treino: uma PD de {pct(0, 0)} numa folha pequena não é crível fora das {N}. Com mais árvores, no treino, corrigir passa escolher na árvore {K_PASSA}; votar melhora, mas fica acima (o ganho dele é fora da amostra): <LinkSlide slug="c6p2">slide {SLIDE.c6p2.n}</LinkSlide>.</>}
+        : <>Com uma árvore, escolher perde menos na log loss das {N} (<b>{num(L_ESC!, 3)}</b> contra {num(L_COR1, 3)} de corrigir; votar sem limite). Corrigir dá um passo de Newton (<LinkSlide slug="c6p6">slide {SLIDE.c6p6.n}</LinkSlide>) encolhido pela taxa η = {num(ETA, 1)} (<LinkSlide slug="c6p7">slide {SLIDE.c6p7.n}</LinkSlide>): folha pura em {pct(COR1_LO, 0)} (com η = 1, {pct(PD_PURA_ETA1, 1)}; nunca {pct(0, 0)}). É ajuste ao treino: uma PD de {pct(0, 0)} numa folha pequena não é crível fora das {N}. O que acontece com mais árvores, o <LinkSlide slug="c6p2">slide {SLIDE.c6p2.n}</LinkSlide> mede.</>}
       fonte={`${N} propostas didáticas sintéticas (gerador do curso, semente ${SEMENTE_BASE}; ${YD.reduce((a, v) => a + v, 0)} defaults). Árvores de profundidade ${CFG_DIDATICA.profundidade}, mínimo de ${CFG_DIDATICA.minFolha} por folha. Escolher: em geral, entre candidatos; aqui, uma árvore. Votar: amostras com reposição, semente ${SEMENTE_VOTAR}; a floresta aleatória também sorteia variáveis. Corrigir: F₀ = ${num(MOD.f0, 0)}, taxa ${num(ETA, 1)}. Log loss média de treino, log natural.`}>
       <Painel>
         <div className="q6-s23" data-rev={rev ? "1" : "0"}>
