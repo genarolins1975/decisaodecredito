@@ -32,7 +32,10 @@ const republish = args.includes("--republish");
 /** Descrição do guia do aluno de cada capítulo em Materiais e na página do capítulo. */
 const GUIA_ALUNO = "Uma seção por página do capítulo, na ordem da plataforma: a captura da tela, como ler o que está nela, o que levar e as questões, sem gabarito. Fecha com o que você deve conseguir explicar antes da próxima aula e os erros comuns.";
 /** Endereços do baralho da Aula 2 e dos guias dele, aposentados em 22/09/2026; o importador arquiva os cadastros que apontam para eles. */
-const MATERIAIS_APOSENTADOS = ["/slides/aula-2", "/api/materiais/aula-2/guia-do-aluno.pdf", "/api/materiais/aula-2/guia-do-professor.pdf"];
+const MATERIAIS_APOSENTADOS = ["/slides/aula-2", "/api/materiais/aula-2/guia-do-aluno.pdf", "/api/materiais/aula-2/guia-do-professor.pdf",
+  /* documentos avulsos do trabalho final publicados em 03/10/2026 e retirados no mesmo dia: o pacote v2 do bucket e as 15 bases v1
+     já registradas trazem README, guia, manifesto e roteiro coerentes com os dados; os avulsos descreviam colunas de outro gerador */
+  ...["README.md", "definicao-default.md", "datas-e-maturacao.md", "TEMPLATE-MANIFESTO-MODELO.md", "ROTEIRO-DE-TESTES.md", "guia-dados-e-missoes.xlsx"].map((f) => `/api/materiais/trabalho-final-${f}`)];
 
 const ex: Extract = JSON.parse(fs.readFileSync(path.join(GEN, "extract.json"), "utf8"));
 const purify = createDOMPurify(new JSDOM("").window as any);
@@ -434,16 +437,6 @@ async function main() {
     /* guias do aluno dos capítulos da Aula 2 e do capítulo 7, gerados por scripts/apostila/gerar.mjs e servidos por /api/materiais/[arquivo].
        O guia do professor traz gabaritos e o repositório é público: ele entra pelo canal privado (bucket e "Registrar pacote"). */
     ...[4, 5, 6, 7].map((n) => ({ title: `Capítulo ${n}: guia do aluno (PDF)`, kind: "arquivo", url: `/api/materiais/capitulo-${String(n).padStart(2, "0")}-aluno.pdf`, description: GUIA_ALUNO })),
-    /* documentos comuns do trabalho final (content/trabalho-final/), os mesmos títulos do manifesto de scripts/dados/gerar_pacote.py:
-       quando o pacote é registrado a partir do bucket, o cadastro passa a apontar para o arquivo e o endereço abaixo deixa de ser regravado */
-    ...([
-      ["README.md", "README do pacote", "Ordem de trabalho, arquivos, entregas por missão e regras do teste cego."],
-      ["definicao-default.md", "definição de default", "Evento, horizonte, população com rótulo e campos posteriores à decisão."],
-      ["datas-e-maturacao.md", "datas e maturação", "Quando cada campo existe, maturação e partição recomendada."],
-      ["TEMPLATE-MANIFESTO-MODELO.md", "modelo do manifesto", "Preencher antes de abrir o OOT; congela dados, pipeline, calibrador, política e reprodução."],
-      ["ROTEIRO-DE-TESTES.md", "roteiro de testes", "Testes executáveis e critérios de aceite de cada missão."],
-      ["guia-dados-e-missoes.xlsx", "guia de dados e missões", "As doze missões com entrada, arquivo de entrega e página da plataforma."],
-    ] as const).map(([arq, nome, description]) => ({ title: `Capítulo 11 (trabalho final): ${nome}`, kind: "arquivo", url: `/api/materiais/trabalho-final-${arq}`, description })),
     { title: "Siddiqi, N. Intelligent Credit Scoring: Building and Implementing Better Credit Risk Scorecards. 2. ed. Wiley, 2017.", kind: "referencia", description: "Construção de scorecards, WoE/IV, segmentação e implantação." },
     { title: "Thomas, L. C.; Crook, J. N.; Edelman, D. B. Credit Scoring and Its Applications. 2. ed. SIAM, 2017.", kind: "referencia", description: "Fundamentos estatísticos de credit scoring, validação e decisão." },
     { title: "Hastie, T.; Tibshirani, R.; Friedman, J. The Elements of Statistical Learning. 2. ed. Springer, 2009.", kind: "referencia", description: "Árvores, boosting e viés-variância (capítulos 9 e 10)." },
@@ -458,7 +451,7 @@ async function main() {
   const arquivados = await db.update(schema.materials).set({ status: "arquivado" })
     .where(and(eq(schema.materials.editionId, edition.id), inArray(schema.materials.url, MATERIAIS_APOSENTADOS), ne(schema.materials.status, "arquivado")))
     .returning({ id: schema.materials.id });
-  if (arquivados.length) console.log(`baralho da Aula 2 aposentado: ${arquivados.length} material(is) arquivado(s)`);
+  if (arquivados.length) console.log(`materiais aposentados: ${arquivados.length} cadastro(s) arquivado(s)`);
   const existingMats = await db.select({ title: schema.materials.title }).from(schema.materials).where(eq(schema.materials.editionId, edition.id));
   const have = new Set(existingMats.map((m) => m.title));
   let mpos = 0;
