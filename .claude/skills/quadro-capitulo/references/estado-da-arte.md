@@ -78,3 +78,32 @@ Conferido em outubro de 2026.
 | F4 | Modelos aditivos explicáveis com interações (GA2M, EBM) | Lou, Caruana, Gehrke e Hooker (2013), KDD |
 | F5 | Árvores ainda à frente de redes profundas em dados tabulares | Grinsztajn, Oyallon e Varoquaux (2022), NeurIPS Datasets and Benchmarks |
 | F6 | Explicações contrafactuais para decisões adversas | Wachter, Mittelstadt e Russell (2018), Harvard Journal of Law & Technology 31(2) |
+
+## Checklist preenchido: classificação e ensembles (capítulo 12)
+
+Conferido em outubro de 2026.
+
+### Essenciais
+
+| id | Tema | Referência primária |
+|---|---|---|
+| E1 | Matriz de confusão, acurácia, precisão, recall e F1, com a armadilha da classe rara | Saito e Rehmsmeier (2015), PLoS ONE 10(3) e0118432 |
+| E2 | Separação treino e teste, validação cruzada | Hastie, Tibshirani e Friedman (2009), The Elements of Statistical Learning, 2ª ed., cap. 7 |
+| E3 | Limiar de decisão pela razão de custos dos dois erros | Elkan (2001), The foundations of cost-sensitive learning, IJCAI |
+| E4 | ROC, AUC como probabilidade de ordenar um par, Gini = 2 AUC − 1, curvas que se cruzam | Fawcett (2006), Pattern Recognition Letters 27(8) |
+| E5 | Voto por maioria e o papel da independência dos erros | Hansen e Salamon (1990), IEEE TPAMI 12(10) |
+| E6 | Bagging e redução de variância | Breiman (1996), Bagging predictors, Machine Learning 24(2) |
+| E7 | Florestas aleatórias e estimativa out of bag | Breiman (2001), Random forests, Machine Learning 45(1) |
+| E8 | Gradient boosting: árvore ajustada ao gradiente negativo, taxa de aprendizado | Friedman (2001), Annals of Statistics 29(5) |
+| E9 | Validação fora do tempo e estabilidade entre safras | BCBS (2005), Studies on the Validation of Internal Rating Systems, WP 14 |
+| E10 | Regra de corte em crédito: volume recusado, taxa de maus e IV | Siddiqi (2017), Intelligent Credit Scoring, 2ª ed., Wiley |
+
+### Fronteira
+
+| id | Tema | Referência primária |
+|---|---|---|
+| F1 | Viés da importância por impureza e importância por permutação | Strobl et al. (2007), BMC Bioinformatics 8:25 |
+| F2 | Explicação por contrato com valores de Shapley (SHAP) | Lundberg e Lee (2017), NeurIPS |
+| F3 | Boosting regularizado por histograma (XGBoost, LightGBM) | Chen e Guestrin (2016), KDD; Ke et al. (2017), NeurIPS |
+| F4 | Stacking: um modelo aprende a combinar os votos | Wolpert (1992), Neural Networks 5(2) |
+| F5 | Benchmark de classificadores em crédito | Lessmann et al. (2015), EJOR 247(1) |

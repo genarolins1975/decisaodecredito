@@ -7,6 +7,11 @@ import "./capitulo7-g3.css";
 import "./capitulo6-g1.css";
 import "./capitulo6-g2.css";
 import "./capitulo6-g3.css";
+import "./capitulo12.css";
+import "./capitulo12-b1.css";
+import "./capitulo12-b2.css";
+import "./capitulo12-b3.css";
+import "./capitulo12-b4.css";
 import "katex/dist/katex.min.css";
 import "../../content/generated/legacy-scoped.css";
 

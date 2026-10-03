@@ -9,6 +9,10 @@ import { rotuloUnidade } from "@/lib/content/capitulo";
 
 export const metadata: Metadata = { title: "Aulas" };
 
+const EXTENSO = ["Nenhuma", "Uma", "Duas", "Três", "Quatro", "Cinco", "Seis", "Sete", "Oito", "Nove", "Dez"];
+/** "Cinco aulas", contado das unidades da edição, para o texto acompanhar uma aula nova sem edição à mão. */
+const aulasPorExtenso = (n: number) => `${EXTENSO[n] ?? n} ${n === 1 ? "aula" : "aulas"}`;
+
 export default async function AulasPage() {
   const ctx = await requireContext();
   const outline = await courseOutline(ctx.current.edition.id);
@@ -18,7 +22,7 @@ export default async function AulasPage() {
   return (
     <div>
       <PageHeader eyebrow={<>{ctx.current.cls.name} · edição {ctx.current.edition.label}</>} title="Aulas"
-        lead="Quatro aulas e o trabalho final, cada uma com seus capítulos e páginas. As páginas essenciais são vistas em aula e as complementares aprofundam no seu estudo." />
+        lead={`${aulasPorExtenso(outline.filter((u) => u.kind === "aula").length)} e o trabalho final, cada uma com seus capítulos e páginas. As páginas essenciais são vistas em aula e as complementares aprofundam no seu estudo.`} />
       <div className="flex flex-col gap-6">
         {outline.map((u) => (
           <section key={u.id} className="card" aria-labelledby={`u-${u.id}`}>

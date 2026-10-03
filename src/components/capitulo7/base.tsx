@@ -21,7 +21,8 @@ const dois = (n: number) => String(n).padStart(2, "0");
  */
 const BASE_CURSO = "Base sintética (semente 20260501), safras 2023-08 a 2023-12";
 export function declararBase(fonte: ReactNode, base = BASE_CURSO): ReactNode {
-  if (typeof fonte !== "string") return fonte;
+  // base vazia: o capítulo declara a origem dos dados na própria fonte de cada quadro (capítulo 12, dados públicos)
+  if (typeof fonte !== "string" || !base) return fonte;
   if (/^Janela fora do tempo:/.test(fonte)) return fonte.replace(/^Janela fora do tempo:/, `${base}, janela fora do tempo:`);
   if (/20260501|fora da base/.test(fonte)) return fonte;
   return `${base}. ${fonte}`;

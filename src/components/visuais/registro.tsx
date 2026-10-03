@@ -70,6 +70,7 @@ import { LinhaDoTempo } from "./linha-do-tempo";
 import { Safras } from "./safras";
 import { QUADROS_C7 } from "@/components/capitulo7/registro";
 import { QUADROS_C6 } from "@/components/capitulo6/registro";
+import { QUADROS_C12 } from "@/components/capitulo12/registro";
 
 /**
  * Visuais nativos por página. "legacy": substitui o visual herdado (iframe) da página. "figura": entra no lugar da
@@ -135,6 +136,8 @@ const REGISTRO: Record<string, VisualNativo> = {
   ...Object.fromEntries(Object.entries(QUADROS_C6).map(([slug, C]) => [slug, { Componente: C, substitui: "conteudo" as const }])),
   /* capítulo 7 reconstruído (outubro de 2026): um quadro 16:9 por página, em src/components/capitulo7 */
   ...Object.fromEntries(Object.entries(QUADROS_C7).map(([slug, C]) => [slug, { Componente: C, substitui: "conteudo" as const }])),
+  /* capítulo 12, classificação e ensembles (outubro de 2026): um quadro 16:9 por página, em src/components/capitulo12 */
+  ...Object.fromEntries(Object.entries(QUADROS_C12).map(([slug, C]) => [slug, { Componente: C, substitui: "conteudo" as const }])),
   c10p2: { Componente: TresZonas, substitui: "legacy" },
   c10p3: { Componente: QuadroDoComite, substitui: "legacy" },
   c10p5: { Componente: () => <Memorando campo={1} />, substitui: "legacy" },

@@ -1,0 +1,11 @@
+"use client";
+import { Painel, Quadro, type Pagina } from "@/components/capitulo7/base";
+
+/** 50 · c12p50 · quadro provisório (a construir). */
+export function S50ApendiceDados({ pagina }: { pagina?: Pagina }) {
+  return (
+    <Quadro slug="c12p50" pagina={pagina} layout="um">
+      <Painel><p className="q7-p">Em construção.</p></Painel>
+    </Quadro>
+  );
+}

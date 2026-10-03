@@ -25,3 +25,4 @@ aula_credito_html/dist/
 
 # guia do professor contém gabaritos e o repositório é público: ele sai pelo bucket privado, nunca por aqui
 content/materiais/*-professor.pdf
+scripts/capitulo12/.cache/

@@ -1,0 +1,412 @@
+{
+ "paginas": {
+  "c12p1": {
+   "aprendizado": "Guarde sua resposta. Voltamos a ela no fim com três critérios: os erros, o limiar e a estabilidade no tempo.",
+   "apoio": "Guarde sua resposta. Voltamos a ela no fim com três critérios: os erros, o limiar e a estabilidade no tempo.",
+   "conexao": "",
+   "t": {
+    "exp": 4
+   }
+  },
+  "c12p2": {
+   "aprendizado": "Dados, rótulo binário, treino e teste, classificador: os quatro passos deste bloco.",
+   "apoio": "Dados, rótulo binário, treino e teste, classificador: os quatro passos deste bloco.",
+   "conexao": "",
+   "t": {
+    "exp": 2
+   }
+  },
+  "c12p3": {
+   "aprendizado": "Instância, característica, rótulo e classe positiva, no MNIST e no crédito.",
+   "apoio": "Instância, característica, rótulo e classe positiva, no MNIST e no crédito.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p4": {
+   "aprendizado": "Cada imagem tem 28 × 28 = 784 pixels. A escrita varia; o rótulo permanece.",
+   "apoio": "Cada imagem tem 28 × 28 = 784 pixels. A escrita varia; o rótulo permanece.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p5": {
+   "aprendizado": "Uma imagem por linha, um pixel por coluna, e um vetor de rótulos ao lado.",
+   "apoio": "Uma imagem por linha, um pixel por coluna, e um vetor de rótulos ao lado.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p6": {
+   "aprendizado": "O mesmo formato aparece em inadimplência, fraude, doença e intenção de compra.",
+   "apoio": "O mesmo formato aparece em inadimplência, fraude, doença e intenção de compra.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p7": {
+   "aprendizado": "O teste fica guardado até o fim: medir a qualidade nos dados de treino superestima o desempenho.",
+   "apoio": "O teste fica guardado até o fim: medir a qualidade nos dados de treino superestima o desempenho.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p8": {
+   "aprendizado": "Um score por imagem; acima de zero, o modelo diz 5. Quanto podemos confiar nessas previsões?",
+   "apoio": "Um score por imagem; acima de zero, o modelo diz 5. Quanto podemos confiar nessas previsões?",
+   "conexao": "",
+   "t": {
+    "exp": 4
+   }
+  },
+  "c12p9": {
+   "aprendizado": "A matriz de confusão mostra os erros; o limiar decide quais deles a operação aceita.",
+   "apoio": "A matriz de confusão mostra os erros; o limiar decide quais deles a operação aceita.",
+   "conexao": "",
+   "t": {
+    "exp": 2
+   }
+  },
+  "c12p10": {
+   "aprendizado": "Só 9,0% das imagens de treino são 5. Quanto acerta um modelo que nunca diz 5?",
+   "apoio": "Só 9,0% das imagens de treino são 5. Quanto acerta um modelo que nunca diz 5?",
+   "conexao": "",
+   "t": {
+    "exp": 4
+   }
+  },
+  "c12p11": {
+   "aprendizado": "Linhas: a classe real. Colunas: a classe prevista. Os erros têm rosto.",
+   "apoio": "Linhas: a classe real. Colunas: a classe prevista. Os erros têm rosto.",
+   "conexao": "",
+   "t": {
+    "exp": 4
+   }
+  },
+  "c12p12": {
+   "aprendizado": "Mede a confiabilidade das previsões positivas.",
+   "apoio": "Mede a confiabilidade das previsões positivas.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p13": {
+   "aprendizado": "Também chamado de sensibilidade ou taxa de verdadeiros positivos (TPR).",
+   "apoio": "Também chamado de sensibilidade ou taxa de verdadeiros positivos (TPR).",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p14": {
+   "aprendizado": "F1 alto exige os dois altos ao mesmo tempo: a média harmônica pune o desequilíbrio.",
+   "apoio": "F1 alto exige os dois altos ao mesmo tempo: a média harmônica pune o desequilíbrio.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p15": {
+   "aprendizado": "Cada métrica responde a uma pergunta diferente sobre os mesmos erros.",
+   "apoio": "Cada métrica responde a uma pergunta diferente sobre os mesmos erros.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p16": {
+   "aprendizado": "A classe positiva é o mau pagador. Qual erro custa mais: o falso positivo ou o falso negativo?",
+   "apoio": "A classe positiva é o mau pagador. Qual erro custa mais: o falso positivo ou o falso negativo?",
+   "conexao": "",
+   "t": {
+    "exp": 4
+   }
+  },
+  "c12p17": {
+   "aprendizado": "Doze dígitos ordenados pelo score: acima do limiar, o modelo prevê 5.",
+   "apoio": "Doze dígitos ordenados pelo score: acima do limiar, o modelo prevê 5.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p18": {
+   "aprendizado": "O recall só pode cair; a precisão tende a subir, mas pode oscilar em amostras finitas.",
+   "apoio": "O recall só pode cair; a precisão tende a subir, mas pode oscilar em amostras finitas.",
+   "conexao": "",
+   "t": {
+    "exp": 4
+   }
+  },
+  "c12p19": {
+   "aprendizado": "TPR contra FPR em todos os limiares: compara modelos sem escolher um corte.",
+   "apoio": "TPR contra FPR em todos os limiares: compara modelos sem escolher um corte.",
+   "conexao": "",
+   "t": {
+    "exp": 4
+   }
+  },
+  "c12p20": {
+   "aprendizado": "Se uma curva domina a outra, a escolha é imediata; se elas se cruzam, depende da FPR que se tolera.",
+   "apoio": "Se uma curva domina a outra, a escolha é imediata; se elas se cruzam, depende da FPR que se tolera.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p21": {
+   "aprendizado": "Gini = 2 × AUC − 1. Um modelo isolado tem limites. E se combinarmos vários?",
+   "apoio": "Gini = 2 × AUC − 1. Um modelo isolado tem limites. E se combinarmos vários?",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p22": {
+   "aprendizado": "Votação, bagging, florestas aleatórias e boosting: quatro formas de combinar.",
+   "apoio": "Votação, bagging, florestas aleatórias e boosting: quatro formas de combinar.",
+   "conexao": "",
+   "t": {
+    "exp": 2
+   }
+  },
+  "c12p23": {
+   "aprendizado": "Algoritmos diferentes, treinados nos mesmos dados, votam na classe de cada nova instância.",
+   "apoio": "Algoritmos diferentes, treinados nos mesmos dados, votam na classe de cada nova instância.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p24": {
+   "aprendizado": "Duas condições: muitos aprendizes fracos e erros diferentes entre si.",
+   "apoio": "Duas condições: muitos aprendizes fracos e erros diferentes entre si.",
+   "conexao": "",
+   "t": {
+    "exp": 4
+   }
+  },
+  "c12p25": {
+   "aprendizado": "Quanto menos correlacionados os erros, maior o ganho da combinação.",
+   "apoio": "Quanto menos correlacionados os erros, maior o ganho da combinação.",
+   "conexao": "",
+   "t": {
+    "exp": 2
+   }
+  },
+  "c12p26": {
+   "aprendizado": "500 observações com ruído de 0,30: 375 para treino e 125 para teste.",
+   "apoio": "500 observações com ruído de 0,30: 375 para treino e 125 para teste.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p27": {
+   "aprendizado": "Hard voting conta as classes previstas; soft voting faz a média das probabilidades.",
+   "apoio": "Hard voting conta as classes previstas; soft voting faz a média das probabilidades.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p28": {
+   "aprendizado": "Cada observação de teste vale 0,8 ponto percentual.",
+   "apoio": "Cada observação de teste vale 0,8 ponto percentual.",
+   "conexao": "",
+   "t": {
+    "exp": 4
+   }
+  },
+  "c12p29": {
+   "aprendizado": "Sorteio com reposição: uma instância pode aparecer mais de uma vez na amostra de um preditor.",
+   "apoio": "Sorteio com reposição: uma instância pode aparecer mais de uma vez na amostra de um preditor.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p30": {
+   "aprendizado": "Cada árvore vê 100 das 375 instâncias de treino; o conjunto vota.",
+   "apoio": "Cada árvore vê 100 das 375 instâncias de treino; o conjunto vota.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p31": {
+   "aprendizado": "Viés semelhante, variância menor: a árvore isolada recorta o plano para acertar pontos do treino.",
+   "apoio": "Viés semelhante, variância menor: a árvore isolada recorta o plano para acertar pontos do treino.",
+   "conexao": "",
+   "t": {
+    "exp": 4
+   }
+  },
+  "c12p32": {
+   "aprendizado": "Em m sorteios com reposição, uma instância escapa com probabilidade (1 − 1/m)^m.",
+   "apoio": "Em m sorteios com reposição, uma instância escapa com probabilidade (1 − 1/m)^m.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p33": {
+   "aprendizado": "Cada instância é avaliada só pelas árvores que não a usaram no treino, sem custo adicional.",
+   "apoio": "Cada instância é avaliada só pelas árvores que não a usaram no treino, sem custo adicional.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p34": {
+   "aprendizado": "A cada divisão, só um subconjunto aleatório de características é considerado: árvores menos correlacionadas.",
+   "apoio": "A cada divisão, só um subconjunto aleatório de características é considerado: árvores menos correlacionadas.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p35": {
+   "aprendizado": "Importância: quanto cada característica reduz, em média, a impureza das árvores.",
+   "apoio": "Importância: quanto cada característica reduz, em média, a impureza das árvores.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p36": {
+   "aprendizado": "Treino sequencial: a árvore 1 ajusta os dados; as árvores 2 e 3 ajustam o resíduo.",
+   "apoio": "Treino sequencial: a árvore 1 ajusta os dados; as árvores 2 e 3 ajustam o resíduo.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p37": {
+   "aprendizado": "A cada etapa, o resíduo encolhe e a previsão acompanha melhor a curva.",
+   "apoio": "A cada etapa, o resíduo encolhe e a previsão acompanha melhor a curva.",
+   "conexao": "",
+   "t": {
+    "exp": 4
+   }
+  },
+  "c12p38": {
+   "aprendizado": "Como esses modelos viram decisão em uma carteira de crédito?",
+   "apoio": "Como esses modelos viram decisão em uma carteira de crédito?",
+   "conexao": "",
+   "t": {
+    "exp": 2
+   }
+  },
+  "c12p39": {
+   "aprendizado": "A decisão combina discriminação, estabilidade no tempo e volume de recusas.",
+   "apoio": "A decisão combina discriminação, estabilidade no tempo e volume de recusas.",
+   "conexao": "",
+   "t": {
+    "exp": 2
+   }
+  },
+  "c12p40": {
+   "aprendizado": "Concentrar o corte no maior risco, removendo menos de 10% da população.",
+   "apoio": "Concentrar o corte no maior risco, removendo menos de 10% da população.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p41": {
+   "aprendizado": "Treino em safras antigas; validação em safras posteriores, que o modelo nunca viu.",
+   "apoio": "Treino em safras antigas; validação em safras posteriores, que o modelo nunca viu.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p42": {
+   "aprendizado": "AUC e Gini no treino e na validação fora do tempo, nos três modelos do caso.",
+   "apoio": "AUC e Gini no treino e na validação fora do tempo, nos três modelos do caso.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p43": {
+   "aprendizado": "No treino, a taxa de maus sobe em escada; na validação, a escada achata.",
+   "apoio": "No treino, a taxa de maus sobe em escada; na validação, a escada achata.",
+   "conexao": "",
+   "t": {
+    "exp": 4
+   }
+  },
+  "c12p44": {
+   "aprendizado": "O material classifica o caso como sobreajuste. A queda também pode refletir mudança de perfil, de período ou de política.",
+   "apoio": "O material classifica o caso como sobreajuste. A queda também pode refletir mudança de perfil, de período ou de política.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p45": {
+   "aprendizado": "Todas concentram os maus no grupo removido. A questão é quanto da base cada uma recusa.",
+   "apoio": "Todas concentram os maus no grupo removido. A questão é quanto da base cada uma recusa.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p46": {
+   "aprendizado": "Com o mau pagador como classe positiva.",
+   "apoio": "Com o mau pagador como classe positiva.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p47": {
+   "aprendizado": "Use precisão, recall e volume do corte. A meta: remover menos de 10% da população.",
+   "apoio": "Use precisão, recall e volume do corte. A meta: remover menos de 10% da população.",
+   "conexao": "",
+   "t": {
+    "exp": 5
+   }
+  },
+  "c12p48": {
+   "aprendizado": "Do rótulo à decisão de corte, com os números da aula.",
+   "apoio": "Do rótulo à decisão de corte, com os números da aula.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p49": {
+   "aprendizado": "95,7% de acurácia só é bom resultado se superar o trivial (91,0%), se o limiar refletir o custo de cada erro e se a ordenação sobreviver ao tempo.",
+   "apoio": "95,7% de acurácia só é bom resultado se superar o trivial (91,0%), se o limiar refletir o custo de cada erro e se a ordenação sobreviver ao tempo.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p50": {
+   "aprendizado": "Contagens por regra e grupo, com volume, precisão, recall, peso de evidência e IV. No longo prazo, 425 contratos não são bons nem maus.",
+   "apoio": "Contagens por regra e grupo, com volume, precisão, recall, peso de evidência e IV. No longo prazo, 425 contratos não são bons nem maus.",
+   "conexao": "",
+   "t": {
+    "exp": 3
+   }
+  },
+  "c12p51": {
+   "aprendizado": "A linha azul delimita o período fora do tempo; depois dela, as taxas de maus das faixas se aproximam.",
+   "apoio": "A linha azul delimita o período fora do tempo; depois dela, as taxas de maus das faixas se aproximam.",
+   "conexao": "",
+   "t": {
+    "exp": 2
+   }
+  }
+ }
+}

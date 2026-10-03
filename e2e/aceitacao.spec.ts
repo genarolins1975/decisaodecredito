@@ -15,7 +15,7 @@ test.describe.serial("edições, turmas e isolamento", () => {
     const dup = await prof.post(`/api/professor/edicoes/${e2026.id}/duplicar`, { data: { year: 2027, label } });
     expect(dup.status()).toBe(201);
     const body = await dup.json();
-    expect(body.copied.pages).toBe(199);   // 180 do material original, o fecho da Aula 2 (c6p20) e as 18 páginas novas do capítulo 7 reconstruído
+    expect(body.copied.pages).toBe(252);   // 180 do material original, o fecho da Aula 2 (c6p20), as 18 páginas novas do capítulo 7, as 2 do capítulo 6 reconstruído e as 51 do capítulo 12
     expect(body.warning).toContain("Matrículas");
     // nada de pessoas/registros na nova edição
     const cls = await sql("select count(*)::int as n from classes where edition_id=$1", [body.edition.id]);

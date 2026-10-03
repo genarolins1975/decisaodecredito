@@ -1,0 +1,48 @@
+{
+ "capitulo": {
+  "pergunta": "Como medir e melhorar um classificador, e como transformá-lo numa decisão de corte?",
+  "prereq": "Capítulos 2, 4 e 5: probabilidade condicional, treino contra teste, logística e árvores de decisão. O capítulo 7 aprofunda as métricas de ordenação e calibração.",
+  "aprende": "Classificação binária e classe positiva, separação entre treino e teste, matriz de confusão, acurácia, precisão, recall e F1, limiar de decisão, curva ROC, AUC e Gini, votação, bagging, out of bag, florestas aleatórias, importância de variáveis, gradient boosting, validação fora do tempo e regras de corte em crédito.",
+  "motiva": "Um detector de 5 acerta 95,7% das imagens, e um modelo que nunca diz 5 acerta 91,0%. A acurácia sozinha não separa os dois.",
+  "atividade": "Escolher, com precisão, recall e volume recusado, a regra de corte que levaria ao comitê de crédito.",
+  "usa": "Dá o vocabulário de classificação e de ensembles usado nos capítulos 4 a 10 e uma decisão de corte com dados de um caso real."
+ },
+ "aula": {
+  "titulo": "Classificação e ensemble learning",
+  "entrega": "Recomendação de regra de corte com precisão, recall, volume recusado e estabilidade fora do tempo"
+ },
+ "paginas": {
+  "c12p52": {
+   "t": {
+    "exp": 2,
+    "disc": 1
+   },
+   "aprendizado": "Saber onde está a fonte primária de cada método da aula e o que a prática atual acrescenta a ele.",
+   "apoio": "Escolha o grupo de referências e siga o link para o slide em que o método aparece funcionando.",
+   "conexao": "Fim do material de consulta do capítulo.",
+   "guia": {
+    "funcao": "Dar a cada método da aula a referência primária e apontar os métodos atuais que a aula não demonstra, com quando usar cada um.",
+    "pre": "Slides 1 a 49.",
+    "conducao": "Use como consulta, não como exposição. Em sala, mostre só o grupo Além da aula: a importância por impureza do slide 35 tem viés conhecido (Strobl et al., 2007) e deve ser conferida por permutação; SHAP explica cada contrato; XGBoost e LightGBM são o boosting que se usa hoje; stacking aprende a combinar os votos.",
+    "leitura": "Quatro grupos (Métricas, Ensembles, Crédito, Além da aula), cada referência com autor, obra, o que resolve e o slide da aula.",
+    "pergunta": "Que método do grupo Além da aula você exigiria antes de levar um boosting ao comitê de crédito?",
+    "resposta": "Uma explicação por contrato, como SHAP, e a importância por permutação para conferir a importância por impureza; os dois respondem à exigência de explicar a decisão ao cliente e ao validador.",
+    "erros": [
+     {
+      "alt": "A importância por impureza basta",
+      "confusao": "Ignora o viés da medida a favor de variáveis com muitos cortes.",
+      "intervencao": "Mostre a referência de Strobl et al. (2007) e proponha a permutação no conjunto de validação."
+     },
+     {
+      "alt": "Boosting moderno dispensa validação fora do tempo",
+      "confusao": "Confunde potência do algoritmo com estabilidade no tempo.",
+      "intervencao": "Volte ao slide 42: todo modelo perde discriminação fora do tempo."
+     }
+    ],
+    "interacao": "Seletor de grupo e links para os slides em que cada método aparece; Restaurar volta a Métricas.",
+    "verificacao": "O aluno associa cada método a uma referência e diz quando usaria SHAP ou permutação.",
+    "transicao": "Fim do capítulo."
+   }
+  }
+ }
+}
