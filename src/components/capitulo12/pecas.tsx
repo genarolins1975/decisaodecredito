@@ -114,7 +114,8 @@ export type RegiaoLua = string; // 96 × 60 caracteres "0" e "1", linha a linha 
 
 /**
  * Plano das duas luas: pontos de treino ou de teste (classe 0 como círculo azul, classe 1 como triângulo verde) e,
- * se `regiao` vier, a região de decisão do modelo pintada por célula, com a fronteira em linha escura.
+ * se `regiao` vier, a região de decisão do modelo pintada por célula, com a fronteira em linha escura. A grade cobre
+ * todos os 500 pontos (x₁ de −2 a 3, x₂ de −1,5 a 2): nenhum ponto fica fora do desenho.
  */
 export function PlanoLuas({ regiao, conjunto = "treino", erros, rotulo, titulo, sub, destaque, arCelular }: {
   regiao?: RegiaoLua | null; conjunto?: "treino" | "teste" | "ambos"; erros?: string | null; rotulo: string; titulo?: ReactNode; sub?: ReactNode; destaque?: number[]; arCelular?: string;
@@ -135,24 +136,31 @@ export function PlanoLuas({ regiao, conjunto = "treino", erros, rotulo, titulo, 
         if (conjunto !== "treino") LUAS.teste.x.forEach((p, i) => pts.push({ x: p[0], y: p[1], c: LUAS.teste.y[i], t: true, i }));
         const r = Math.max(2.2, d.fs * 0.2);
         const celulas: ReactNode[] = [];
+        const borda: string[] = [];
         if (regiao) for (let j = 0; j < ny; j++) {
           // uma faixa por sequência de células da mesma classe na linha: menos elementos que um retângulo por célula
           let ini = 0;
           for (let i = 1; i <= nx; i++) {
             if (i === nx || regiao[j * nx + i] !== regiao[j * nx + ini]) {
               const c = regiao[j * nx + ini];
-              celulas.push(<rect key={`${j}-${ini}`} x={X(x0 + (ini - 0.5) * dx)} y={Y(y0 + (j + 0.5) * dy)} width={(i - ini) * dx * k + 0.6} height={dy * k + 0.6} fill={c === "1" ? "#E3F1E8" : "#E7EDF7"} />);
+              celulas.push(<rect key={`${j}-${ini}`} x={X(x0 + (ini - 0.5) * dx)} y={Y(y0 + (j + 0.5) * dy)} width={(i - ini) * dx * k + 0.6} height={dy * k + 0.6} fill={c === "1" ? "#CFE6D8" : "#D5E1F2"} />);
               ini = i;
             }
+          }
+          // fronteira: aresta entre duas células vizinhas de classes diferentes
+          for (let i = 0; i < nx; i++) {
+            const c = regiao[j * nx + i];
+            if (i + 1 < nx && regiao[j * nx + i + 1] !== c) { const xe = X(x0 + (i + 0.5) * dx); borda.push(`M${xe.toFixed(1)} ${Y(y0 + (j + 0.5) * dy).toFixed(1)}V${Y(y0 + (j - 0.5) * dy).toFixed(1)}`); }
+            if (j + 1 < ny && regiao[(j + 1) * nx + i] !== c) { const ye = Y(y0 + (j + 0.5) * dy); borda.push(`M${X(x0 + (i - 0.5) * dx).toFixed(1)} ${ye.toFixed(1)}H${X(x0 + (i + 0.5) * dx).toFixed(1)}`); }
           }
         }
         return (
           <g>
             <clipPath id="q12-luas-clip"><rect x={X(x0)} y={Y(y1)} width={(x1 - x0) * k} height={(y1 - y0) * k} /></clipPath>
-            <g clipPath="url(#q12-luas-clip)">{celulas}</g>
+            <g clipPath="url(#q12-luas-clip)">{celulas}{borda.length > 0 && <path d={borda.join("")} fill="none" stroke="#00205B" strokeWidth={Math.max(1.6, d.fs * 0.11)} strokeLinecap="square" />}</g>
             <rect x={X(x0)} y={Y(y1)} width={(x1 - x0) * k} height={(y1 - y0) * k} fill="none" stroke="#C9CDD5" />
-            {[-1, 0, 1, 2].map((v) => <text key={`x${v}`} className="q7-tick" x={X(v)} y={Y(y0)} dy="1.25em" textAnchor="middle">{v}</text>)}
-            {[-1, -0.5, 0, 0.5, 1, 1.5].map((v) => <text key={`y${v}`} className="q7-tick" x={X(x0)} dx="-.4em" y={Y(v)} dy=".34em" textAnchor="end">{String(v).replace(".", ",").replace("-", "−")}</text>)}
+            {[-2, -1, 0, 1, 2, 3].map((v) => <text key={`x${v}`} className="q7-tick" x={X(v)} y={Y(y0)} dy="1.25em" textAnchor="middle">{v}</text>)}
+            {[-1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2].map((v) => <text key={`y${v}`} className="q7-tick" x={X(x0)} dx="-.4em" y={Y(v)} dy=".34em" textAnchor="end">{String(v).replace(".", ",").replace("-", "−")}</text>)}
             {pts.filter((p) => p.x >= x0 && p.x <= x1 && p.y >= y0 && p.y <= y1).map((p) => {
               const errou = erros && p.t ? erros[p.i] !== String(p.c) : false;
               const on = destaque?.includes(p.i) && p.t;

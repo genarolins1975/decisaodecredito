@@ -15,7 +15,7 @@
  */
 import type { Nivel, Pergunta, Slide } from "@/lib/capitulo7/roteiro";
 import { int, num, pct } from "../capitulo7/formato";
-import { CORTE, IRIS, M_SGD, M_TRIVIAL, N_TREINO_LUAS } from "./dados";
+import { CORTE, IRIS, LUAS, M_SGD, M_TRIVIAL, N_TREINO_LUAS } from "./dados";
 import { acertoDaMaioria } from "./metricas";
 
 /** Sem declaração de base comum: cada fonte diz de onde vem (MNIST, luas, Iris ou o caso de crédito). */
@@ -31,7 +31,7 @@ export const PERGUNTAS: { id: Exclude<Pergunta, "todas" | "apoio">; nome: string
 ];
 
 export const ROTEIRO: Slide[] = [
-  { slug: "c12p1", n: 1, pergunta: "todas", titulo: `Um modelo acerta ${pct(M_SGD.acuracia, 1)} das previsões. Ele é bom?`, sub: "Guarde sua resposta. Voltamos a ela no fim com três critérios: os erros, o limiar e a estabilidade no tempo.", nivel: "essencial", min: 4 },
+  { slug: "c12p1", n: 1, pergunta: "todas", titulo: `Um modelo acerta ${pct(M_SGD.acuracia, 1)} das previsões. Ele é bom?`, sub: "Guarde sua resposta. Voltamos a ela no fim com três critérios: o modelo trivial, o limiar e a estabilidade no tempo.", nivel: "essencial", min: 4 },
   { slug: "c12p2", n: 2, pergunta: "ordenacao", titulo: "Uma imagem entra, um rótulo sai: como o modelo aprende essa função?", sub: "Dados, rótulo binário, treino e teste, classificador: os quatro passos deste bloco.", nivel: "essencial", min: 2 },
   { slug: "c12p3", n: 3, pergunta: "ordenacao", titulo: "Quatro termos que usaremos a aula inteira", sub: "Instância, característica, rótulo e classe positiva, no MNIST e no crédito.", nivel: "essencial", min: 3 },
   { slug: "c12p4", n: 4, pergunta: "ordenacao", titulo: "MNIST: 70 mil algarismos escritos à mão", sub: "Cada imagem tem 28 × 28 = 784 pixels. A escrita varia; o rótulo permanece.", nivel: "essencial", min: 3 },
@@ -45,7 +45,7 @@ export const ROTEIRO: Slide[] = [
   { slug: "c12p12", n: 12, pergunta: "probabilidade", titulo: "Precisão: quando o modelo diz 5, quanto acerta?", sub: "Mede a confiabilidade das previsões positivas.", nivel: "essencial", min: 3 },
   { slug: "c12p13", n: 13, pergunta: "probabilidade", titulo: "Recall: dos 5 que existem, quantos o modelo encontra?", sub: "Também chamado de sensibilidade ou taxa de verdadeiros positivos (TPR).", nivel: "essencial", min: 3 },
   { slug: "c12p14", n: 14, pergunta: "probabilidade", titulo: "F1 resume precisão e recall pela média harmônica", sub: "F1 alto exige os dois altos ao mesmo tempo: a média harmônica pune o desequilíbrio.", nivel: "essencial", min: 3 },
-  { slug: "c12p15", n: 15, pergunta: "probabilidade", titulo: "Só a acurácia faz o modelo trivial parecer razoável", sub: "Cada métrica responde a uma pergunta diferente sobre os mesmos erros.", nivel: "essencial", min: 3 },
+  { slug: "c12p15", n: 15, pergunta: "probabilidade", titulo: "Uma métrica sozinha faz o modelo trivial parecer razoável", sub: "Cada métrica responde a uma pergunta diferente sobre os mesmos erros.", nivel: "essencial", min: 3 },
   { slug: "c12p16", n: 16, pergunta: "probabilidade", titulo: "Em crédito, os dois erros têm custos diferentes", sub: "A classe positiva é o mau pagador. Qual erro custa mais: o falso positivo ou o falso negativo?", nivel: "essencial", min: 4 },
   { slug: "c12p17", n: 17, pergunta: "probabilidade", titulo: "O score vira decisão quando cruza o limiar", sub: "Doze dígitos ordenados pelo score: acima do limiar, o modelo prevê 5.", nivel: "essencial", min: 3 },
   { slug: "c12p18", n: 18, pergunta: "probabilidade", titulo: "Subir o limiar troca recall por precisão", sub: "O recall só pode cair; a precisão tende a subir, mas pode oscilar em amostras finitas.", nivel: "essencial", min: 4 },
@@ -55,15 +55,15 @@ export const ROTEIRO: Slide[] = [
   { slug: "c12p22", n: 22, pergunta: "decisao", titulo: "Por que a combinação de modelos medianos pode superar o melhor deles?", sub: "Votação, bagging, florestas aleatórias e boosting: quatro formas de combinar.", nivel: "essencial", min: 2 },
   { slug: "c12p23", n: 23, pergunta: "decisao", titulo: "Votação: vários algoritmos, vence a maioria", sub: "Algoritmos diferentes, treinados nos mesmos dados, votam na classe de cada nova instância.", nivel: "essencial", min: 3 },
   { slug: "c12p24", n: 24, pergunta: "decisao", titulo: `Mil classificadores de 51% acertam ${pct(MIL, 1)} por maioria`, sub: "Duas condições: muitos aprendizes fracos e erros diferentes entre si.", nivel: "essencial", min: 4 },
-  { slug: "c12p25", n: 25, pergunta: "decisao", titulo: "Quatro formas de aproximar a independência", sub: "Quanto menos correlacionados os erros, maior o ganho da combinação.", nivel: "essencial", min: 2 },
+  { slug: "c12p25", n: 25, pergunta: "decisao", titulo: "Quatro formas de produzir erros diferentes", sub: "Quanto menos correlacionados os erros, maior o ganho de combinar: três formas em paralelo, uma em sequência.", nivel: "essencial", min: 2 },
   { slug: "c12p26", n: 26, pergunta: "decisao", titulo: "Um problema de teste: duas luas entrelaçadas", sub: `500 observações com ruído de 0,30: ${int(N_TREINO_LUAS)} para treino e ${int(500 - N_TREINO_LUAS)} para teste.`, nivel: "essencial", min: 3 },
   { slug: "c12p27", n: 27, pergunta: "decisao", titulo: "Votação em código: três algoritmos, um voto", sub: "Hard voting conta as classes previstas; soft voting faz a média das probabilidades.", nivel: "essencial", min: 3 },
   { slug: "c12p28", n: 28, pergunta: "decisao", titulo: "O voto vence os modelos isolados, por poucos acertos", sub: `Cada observação de teste vale ${num(100 / (500 - N_TREINO_LUAS), 1)} ponto percentual.`, nivel: "essencial", min: 4 },
   { slug: "c12p29", n: 29, pergunta: "decisao", titulo: "Bagging: o mesmo algoritmo em amostras diferentes", sub: "Sorteio com reposição: uma instância pode aparecer mais de uma vez na amostra de um preditor.", nivel: "essencial", min: 3 },
-  { slug: "c12p30", n: 30, pergunta: "decisao", titulo: "Bagging com 500 árvores supera a árvore única", sub: "Cada árvore vê 100 das 375 instâncias de treino; o conjunto vota.", nivel: "essencial", min: 3 },
+  { slug: "c12p30", n: 30, pergunta: "decisao", titulo: `Bagging com 500 árvores acerta ${int(LUAS.modelos.bag500.acertos - LUAS.modelos.arvore.acertos)} pontos de teste a mais que a árvore única, em ${int(500 - N_TREINO_LUAS)}`, sub: "Cada árvore vê 100 das 375 instâncias de treino; o conjunto vota.", nivel: "essencial", min: 3 },
   { slug: "c12p31", n: 31, pergunta: "decisao", titulo: "O ensemble suaviza a fronteira de decisão", sub: "Viés semelhante, variância menor: a árvore isolada recorta o plano para acertar pontos do treino.", nivel: "essencial", min: 4 },
-  { slug: "c12p32", n: 32, pergunta: "decisao", titulo: "Cada árvore deixa de fora cerca de 37% das instâncias", sub: "Em m sorteios com reposição, uma instância escapa com probabilidade (1 − 1/m)ᵐ.", nivel: "aprofundamento", min: 3 },
-  { slug: "c12p33", n: 33, pergunta: "decisao", titulo: "A validação out of bag antecipa o teste", sub: "Cada instância é avaliada só pelas árvores que não a usaram no treino, sem custo adicional.", nivel: "essencial", min: 3 },
+  { slug: "c12p32", n: 32, pergunta: "decisao", titulo: "Com amostras do tamanho do treino, cada árvore deixa de fora cerca de 37%", sub: "Em m sorteios com reposição, uma instância escapa com probabilidade (1 − 1/m)ᵐ.", nivel: "aprofundamento", min: 3 },
+  { slug: "c12p33", n: 33, pergunta: "decisao", titulo: "A validação out of bag antecipa o teste?", sub: "Cada instância é avaliada só pelas árvores que não a usaram no treino, sem custo adicional.", nivel: "essencial", min: 3 },
   { slug: "c12p34", n: 34, pergunta: "decisao", titulo: "Floresta aleatória: amostras e características sorteadas", sub: "A cada divisão, só um subconjunto aleatório de características é considerado: árvores menos correlacionadas.", nivel: "essencial", min: 3 },
   { slug: "c12p35", n: 35, pergunta: "decisao", titulo: `Na Iris, as medidas da pétala somam ${pct(PETALA, 0)} da importância`, sub: "Importância: quanto cada característica reduz, em média, a impureza das árvores.", nivel: "essencial", min: 3 },
   { slug: "c12p36", n: 36, pergunta: "decisao", titulo: "Gradient boosting em três árvores", sub: "Treino sequencial: a árvore 1 ajusta os dados; as árvores 2 e 3 ajustam o resíduo.", nivel: "essencial", min: 3 },
@@ -72,8 +72,8 @@ export const ROTEIRO: Slide[] = [
   { slug: "c12p39", n: 39, pergunta: "validacao", titulo: "Como um classificador vira uma decisão de corte?", sub: "A decisão combina discriminação, estabilidade no tempo e volume de recusas.", nivel: "essencial", min: 2 },
   { slug: "c12p40", n: 40, pergunta: "validacao", titulo: "O caso: identificar quem não paga nenhuma parcela", sub: "Concentrar o corte no maior risco, removendo menos de 10% da população.", nivel: "essencial", min: 3 },
   { slug: "c12p41", n: 41, pergunta: "validacao", titulo: "Fora do tempo: treinar no passado, testar no futuro", sub: "Treino em safras antigas; validação em safras posteriores, que o modelo nunca viu.", nivel: "essencial", min: 3 },
-  { slug: "c12p42", n: 42, pergunta: "validacao", titulo: "Fora do tempo, todo modelo perde discriminação", sub: "AUC e Gini no treino e na validação fora do tempo, nos três modelos do caso.", nivel: "essencial", min: 3 },
-  { slug: "c12p43", n: 43, pergunta: "validacao", titulo: "Sobreajuste: fora do tempo, as faixas se aproximam", sub: "No treino, a taxa de maus sobe em escada; na validação, a escada achata.", nivel: "essencial", min: 4 },
+  { slug: "c12p42", n: 42, pergunta: "validacao", titulo: "Fora do tempo, os três modelos do caso perdem discriminação", sub: "AUC e Gini no treino e na validação fora do tempo, nos três modelos do caso.", nivel: "essencial", min: 3 },
+  { slug: "c12p43", n: 43, pergunta: "validacao", titulo: "Fora do tempo, as faixas de score se aproximam", sub: "No treino, a taxa de maus sobe em escada; na validação, a escada achata.", nivel: "essencial", min: 4 },
   { slug: "c12p44", n: 44, pergunta: "validacao", titulo: "Sobreajuste ou mudança na população? Que evidência separa as hipóteses?", sub: "O material classifica o caso como sobreajuste. A queda também pode refletir mudança de perfil, de período ou de política.", nivel: "aprofundamento", min: 3 },
   { slug: "c12p45", n: 45, pergunta: "validacao", titulo: "Três regras de corte: onde ficam os maus", sub: "Todas concentram os maus no grupo removido. A questão é quanto da base cada uma recusa.", nivel: "essencial", min: 3 },
   { slug: "c12p46", n: 46, pergunta: "validacao", titulo: "Cada métrica da aula responde a uma pergunta do comitê", sub: "Com o mau pagador como classe positiva.", nivel: "essencial", min: 3 },

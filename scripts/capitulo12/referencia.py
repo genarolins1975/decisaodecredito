@@ -109,7 +109,7 @@ Xm, ym = make_moons(n_samples=500, noise=0.30, random_state=42)
 Xa, Xb, ya, yb = train_test_split(Xm, ym, random_state=42)
 ia, ib = train_test_split(np.arange(500), random_state=42)
 
-GX = np.linspace(-1.5, 2.5, 96); GY = np.linspace(-1.0, 1.5, 60)
+GX = np.linspace(-2.0, 3.0, 101); GY = np.linspace(-1.5, 2.0, 71)
 GG = np.array([[gx, gy] for gy in GY for gx in GX])
 
 

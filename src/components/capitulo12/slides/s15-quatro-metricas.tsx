@@ -42,6 +42,7 @@ export function S15QuatroMetricas({ pagina }: { pagina?: Pagina }) {
       conclusao={<>Cada métrica trivial engana de um jeito: “{c.nome.toLowerCase()}” tem {LINHAS.find((l) => l.k === c.engana)!.nome.toLowerCase()} de <b>{pct(c.m[c.engana]!, 1)}</b>. A métrica certa depende de qual erro custa mais na decisão (slide {SLIDE.c12p16.n}).</>}
       fonte={`${FONTE_MNIST}. Métricas de metricas() sobre a matriz da validação cruzada; os modelos de comparação usam os mesmos ${int(M_SGD.positivos)} cincos e ${int(M_SGD.negativos)} não 5.`}>
       <Painel className="q12-s15-tab">
+        <div className="q12-s15-rola">
         <table className="q7-tab">
           <thead><tr><th className="q7-t-l">Métrica</th><th className="q7-t-l">Pergunta que responde</th><th>Detector SGD</th><th>{c.nome}</th></tr></thead>
           <tbody>
@@ -55,6 +56,7 @@ export function S15QuatroMetricas({ pagina }: { pagina?: Pagina }) {
             ))}
           </tbody>
         </table>
+        </div>
       </Painel>
       <Painel titulo="Modelo de comparação">
         <Seg rotulo="Modelo de comparação" opcoes={[{ v: "nunca", r: "Nunca diz 5" }, { v: "sempre", r: "Sempre diz 5" }]} valor={mod} onChange={setMod} cor />

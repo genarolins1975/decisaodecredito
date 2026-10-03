@@ -1,0 +1,1345 @@
+{
+ "capitulo": 12,
+ "data": "2026-10-03",
+ "revisor": "subagentes em contexto limpo",
+ "slides": {
+  "c12p1": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Captura 01-c12p1-1920x1080-palco.png: o painel da direita (Percurso, quatro cartões de 110 px cada, título quebrado em duas linhas) tem o mesmo peso visual do KPI 95,7%, que deveria dominar; o painel esquerdo empilha KPI, parágrafo, fita de doze dígitos e previsão sem uma peça principal clara.",
+    "corrigir": "Reduzir o Percurso a uma faixa compacta (quatro linhas de uma linha só, sem a pergunta inteira) e dar ao gancho (KPI 95,7% com a fita de dígitos) a maior área; encurtar o título do painel para 'Percurso'."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "O subtítulo do roteiro (roteiro.ts, c12p1) diz 'Voltamos a ela no fim com três critérios: os erros, o limiar e a estabilidade no tempo', o que sinaliza que a resposta é 'depende' (opção C) antes de a turma escolher entre 'Sim' (A) e 'Depende' (B, C). É o antipadrão 'subtítulo que responde à própria previsão'.",
+    "corrigir": "Trocar o subtítulo por algo neutro ('Guarde sua resposta: ela volta no fim da aula') e mostrar os três critérios só depois da escolha, no texto da leitura (s01-abertura.tsx, linha 28)."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Previsao com três posições (OPCOES_ABERTURA), escolha guardada em estado.ts para o slide 49 (exceção documentada no cabeçalho), 'Tentar outra' limpa; links do percurso levam aos slides 2, 9, 22 e 39; a leitura muda após a escolha (linha 28).",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "KPI 95,7% (57.422 de 60.000) confere com M_SGD; mas a fita mostra seis 5 e seis não 5 (FILA de EXEMPLOS, linha 16), proporção de 50% contra 9,0% na base, e a fonte do slide não declara a amostra (o slide 8 declara: 'proporção diferente da base, sem valor de estimativa').",
+    "corrigir": "Acrescentar à fonte: 'Doze imagens sorteadas com semente 12, seis 5 e seis de outros algarismos: proporção diferente da base (9,0% de 5)'."
+   }
+  },
+  "c12p2": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Capturas fix12/01-c12p2-1920x1080-palco.png e 1366x768: o seletor de imagem (botões 1 a 6) e a borda superior do dígito ficam cortados pela borda do painel central (só a metade de cima dos botões aparece); o vetor x quebra '…)' sozinho na segunda linha.",
+    "corrigir": "Dar ao painel .q12-s02 altura suficiente para o dígito mais o Seg (ou pôr o Seg ao lado do dígito) e encurtar o vetor para sete números, para caber numa linha."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Uma ideia (imagem entra, rótulo sai); a saída fica '5 ou não 5?' com a verdade ao lado e o aviso de que o modelo chega no slide 8; leitura liga ao fluxo do bloco com links para os slides 4, 6, 7 e 8.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Slide de abertura: o Seg troca a imagem entre seis (três 5, três não 5) e o vetor x é recalculado a partir dos pixels (linhas 22 a 24); os passos do 'Neste bloco' são links; o seletor volta a 1.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "O slide mostra números (784 valores de 0 a 255, os pixels '0, 0, 3, 18, 18, 18, 126, 136, 175' da imagem 0) sem nenhuma linha de fonte: AberturaBloco (pecas.tsx) chama Quadro sem a prop fonte.",
+    "corrigir": "Passar uma fonte em AberturaBloco (MNIST, OpenML mnist_784 versão 1; imagens: a primeira do treino e cinco da amostra com semente 12; pixels de 0 a 255)."
+   }
+  },
+  "c12p3": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Captura 03-c12p3-1920x1080-palco.png: no painel da direita há cerca de 180 px vazios entre a alternativa C e a nota sobre precisão e recall (área morta de um terço do painel no estado inicial).",
+    "corrigir": "Encolher o painel da previsão ou levar para ele a ilustração do termo (o dígito), deixando a tabela ocupar a largura do painel esquerdo."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Previsão 'No crédito, qual é a classe positiva?' com a célula oculta ('?') até o acerto; retornos nomeiam a confusão ('Confunde positivo com bom'; 'trocar a classe positiva muda o sentido da precisão'); leitura no acerto liga ao slide 4; nota liga aos slides 12 e 13.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Cada linha da tabela é um botão que troca a ilustração (pixel realçado de valor lido de EXEMPLOS[0]); previsão com 'Tentar outra'; Restaurar volta a 'Instância' e previsão em aberto (linha 98).",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Termos corretos; 70.000 imagens e 784 pixels de MN; o pixel realçado é calculado por pixelCentral; fonte declara a imagem (índice 0, rótulo 5) e o critério do pixel.",
+    "corrigir": ""
+   }
+  },
+  "c12p4": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Captura fix12/02-c12p4-1920x1080-palco.png: o botão Restaurar fica cortado pela borda inferior do painel da direita (só a metade de cima do texto aparece); a figura de Géron à esquerda tem o tamanho da grade de pixels e disputa com ela a posição de peça principal; os dois KPI (70.000, 784) repetem o subtítulo.",
+    "corrigir": "Tirar os dois KPI (já estão no subtítulo) para liberar altura e mostrar o Restaurar inteiro; reduzir a figura de Géron a uma miniatura ou movê-la para o slide 6."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Uma ideia (a escrita varia, o rótulo permanece); a leitura usa os números da tela ('o pixel da linha 7, coluna 9 vai de 0 a 253 entre as 7 imagens') e liga ao slide 5.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Clique ou setas escolhem o pixel; sete imagens de 5 escolhem a escrita; linha, coluna, índice (7 × 28 + 9 = 205), intensidade e a faixa da leitura são recalculados; Restaurar volta à imagem 0 e ao pixel central.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Índice = linha × 28 + coluna, coerente com reshape(28, 28) (b1.ts); intensidades lidas de base.json; fonte declara a amostra (semente 12, entre as 3.000 primeiras de cada classe), conferida em scripts/capitulo12/referencia.py linha 96.",
+    "corrigir": ""
+   }
+  },
+  "c12p5": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Captura fix12/03-c12p5-1920x1080-palco.png: o diagrama X (70.000 × 784) com a linha 0 realçada, o vetor y e a faixa de 784 números dominam o painel direito; código e controles à esquerda em hierarquia secundária; realce dourado consistente no código, na matriz e no dígito.",
+    "corrigir": ""
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Uma ideia (linha = imagem, coluna = pixel, y = rótulos); leitura com 70.000 linhas e 784 colunas e reshape(28, 28); liga ao slide 6.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Seg de leitura (linha, coluna, y) muda o realce do diagrama, as linhas acesas do código e a última linha (X_digits[:, 205]); Seg de linha troca a imagem e a faixa; Restaurar volta à linha 0 (captura b1s/c12p5-1920x1080-palco-e1.png).",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Formas (70000, 784) e (70000,) corretas para fetch_openml; pixel 205 = linha 7, coluna 9; fonte declara a origem das linhas e da coluna.",
+    "corrigir": ""
+   }
+  },
+  "c12p6": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Captura 06-c12p6-1920x1080-palco.png: entre a legenda da barra (y 510) e os KPI (y 660) há cerca de 140 px vazios no painel esquerdo; a figura de Géron à direita (vinte dígitos com 'label = ') ocupa um terço do quadro e não carrega o argumento do slide (prevalência do positivo).",
+    "corrigir": "Tirar a figura de Géron (ou reduzi-la a uma faixa) e usar a largura para a barra das 60.000 imagens com os rótulos True e False sob cada segmento; fechar o vão entre legenda e KPI."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Título afirmativo; leitura com 5.421 de 60.000 (9,0%) e a faixa de 9,0% a 11,2% para qualquer algarismo; liga ao slide 10 e ao slide 3 (crédito).",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Os segmentos da barra são botões: escolher outro algarismo muda o código, os KPI, a legenda e a leitura (linhas 29 a 34); Restaurar volta ao 5.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "CONTAGEM_DIGITOS soma 60.000 (verificado na linha 20); 5.421 é o mínimo e 6.742 (o 1) dá 11,2%; fonte declara np.bincount no treino.",
+    "corrigir": ""
+   }
+  },
+  "c12p7": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Captura 07-c12p7-1920x1080-palco.png: área morta de cerca de 100 px entre o código e a mensagem no painel esquerdo e de cerca de 120 px entre a alternativa C e a nota no painel direito; a barra 'Teste 10.000' não traz a porcentagem que o treino traz (86%).",
+    "corrigir": "Reservar no painel direito o lugar das barras de resultado (treino e teste, vazias até o acerto) e encurtar o painel esquerdo; completar o rótulo do teste com '14%'."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "O subtítulo ('medir a qualidade nos dados de treino superestima o desempenho') responde à previsão do painel direito antes da tentativa; e a previsão usa as duas luas e uma árvore (problema apresentado só no slide 26), um segundo conjunto de dados num slide sobre a divisão do MNIST.",
+    "corrigir": "Trocar o subtítulo por 'O teste fica guardado até o fim. Por quê?' e deixar a frase da superestimação para a leitura do acerto; na pergunta, descrever as luas em uma frase (500 pontos em duas classes entrelaçadas) em vez de remeter ao slide 26."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Previsão com três alternativas e retornos; no acerto aparecem barras com 100,0% (375 de 375) e 85,6% (107 de 125); a barra treino e teste acende as linhas do código; Restaurar volta ao estado inicial.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Divisão 60.000 e 10.000 confere com MN (verificação na linha 20); 100,0% e 85,6% vêm de LUAS.modelos.arvore com conferência de acertos (linhas 22 a 25); a fonte declara DecisionTreeClassifier(random_state=42), make_moons e o split; a nota avisa que a acurácia de teste do MNIST só aparece no slide 49.",
+    "corrigir": ""
+   }
+  },
+  "c12p8": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Captura 08-c12p8-1920x1080-palco.png: a reta do score com as doze miniaturas, regiões 'prevê não 5' e 'prevê 5' e limiar 0 em âmbar domina; marcas ✓ e ✗ além da cor; painel lateral com o selecionado e a contagem 8 de 12.",
+    "corrigir": ""
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Leitura com os números da tela ('acerta 8: os 6 que não são 5 e 2 dos 6 cincos') e a pergunta que abre o slide 9; SGD e hinge explicados em uma linha cada.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 8,
+    "evidencia": "Clicar numa miniatura só troca o cartão lateral (real, score, previsão); a leitura e a contagem 8 de 12 não mudam, e os ✓ e ✗ já estão todos à vista no estado inicial: é consulta entre telas prontas, sem experimento.",
+    "corrigir": "Esconder os ✓ e ✗ e perguntar antes quantas das doze o modelo acerta (Previsao com 6, 8 e 10), ou deixar o aluno arrastar o limiar sobre as doze miniaturas e recontar acertos e cincos encontrados."
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Scores e previsões de EXEMPLOS (verificação score > 0 na linha 19); fonte declara que o score é da validação cruzada e que a amostra 6 e 6 não tem valor de estimativa. Ressalva: o 1.201 da primeira imagem é o score de validação cruzada, não o do sgd_clf ajustado no código ao lado; a fonte o diz.",
+    "corrigir": ""
+   }
+  },
+  "c12p9": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Captura fix12/04-c12p9-1920x1080-palco.png: o botão 'Restaurar limiar 0' é cortado pela borda inferior do painel (recorte conferido em ampliação); as barras das pontas (−60.000 e 30.000) aparecem como picos porque somam as caudas, sem nenhuma marca que o diga.",
+    "corrigir": "Dar altura ao painel lateral para o botão inteiro; marcar as barras das pontas com hachura diferente e o rótulo '≤ −60.000' e '≥ 30.000'."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Abertura do bloco 2 com o objeto que o bloco inteiro lê; leitura com 1.891 cincos perdidos e 687 não 5 acima do limiar; liga aos slides 10 e 21.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Controle do limiar move a linha âmbar pelas bordas do histograma e recalcula 5 acima, alarmes falsos e cincos perdidos (confusaoNoIndice); Restaurar volta ao limiar 0; links do fluxo do bloco.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Os números conferem (no limiar 0, 3.530, 687 e 1.891, verificado na linha 25), mas o slide não tem linha de fonte (AberturaBloco não passa fonte ao Quadro), e a convenção das caudas somadas nas barras das pontas fica só no comentário do código.",
+    "corrigir": "Passar fonte em AberturaBloco: FONTE_MNIST, 'scores da validação cruzada em três partes; faixas de 2.250 pontos entre −60.000 e 30.000; as caudas somam nas barras das pontas; cada classe na sua fração'."
+   }
+  },
+  "c12p10": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Captura 10-c12p10-1920x1080-palco.png: no estado inicial, o painel da previsão tem cerca de 250 px vazios abaixo da alternativa D; a grade de cem marcas e os dois KPI ocupam bem o painel esquerdo.",
+    "corrigir": "Reservar no painel direito o lugar do seletor de algarismo (desabilitado até o acerto, com a explicação) ou reduzir a altura do painel e aumentar a grade."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "A previsão pergunta quanto acerta o modelo que nunca diz 5, mas a legenda da grade já mostra 'não 5 (91,0%)' no estado inicial (s10-acuracia.tsx, linha 49): a resposta certa está na tela antes da tentativa.",
+    "corrigir": "No estado inicial, mostrar na legenda só '5 (9,0%)' e 'não 5', sem a porcentagem, e revelar 91,0% no acerto."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Previsão com quatro alternativas e retornos; no acerto, o seletor de algarismo positivo recalcula prevalência, grade e acurácia trivial (de 88,8% a 91,0%), e a leitura acompanha; Restaurar volta ao início.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "91,0% = 1 − 5.421/60.000 com verificação (linha 19); 88,8% para o 1 (6.742) confere; fonte com a definição do modelo trivial.",
+    "corrigir": ""
+   }
+  },
+  "c12p11": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Captura 11-c12p11-1920x1080-palco.png: matriz no formato da aula com FP em foco, quatro alarmes falsos com o rótulo e o score, erros em vinho com rótulo VN, FP, FN, VP além da cor; hierarquia código, matriz, detalhe.",
+    "corrigir": ""
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Uma ideia (dois tipos de erro); leitura com 2.578 erros = 687 + 1.891; os rostos dos erros mostram o que a acurácia junta; liga aos slides 12 e 13.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 8,
+    "evidencia": "As quatro células são botões que trocam o cartão da direita entre quatro textos prontos; a leitura (linha 37) não muda com a escolha e nenhum número responde a uma causa que o aluno altere.",
+    "corrigir": "Acrescentar o controle do limiar (o mesmo do slide 9) para que as quatro células se recontem ao vivo, ou uma previsão 'qual erro é mais frequente?' antes de abrir os números de FP e FN."
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "53.892, 687, 1.891 e 3.530 de CV; 687 ÷ 54.579 = 1,3% confere; acurácia (53.892 + 3.530) ÷ 60.000 = 95,7%; fonte declara o critério das imagens (score mais alto entre FP, mais baixo entre FN).",
+    "corrigir": ""
+   }
+  },
+  "c12p12": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Captura 12-c12p12-1920x1080-palco.png: no estado inicial, o painel esquerdo tem cerca de 100 px vazios acima da matriz e 100 px abaixo do Restaurar, e o painel direito cerca de 250 px vazios abaixo da alternativa D.",
+    "corrigir": "Aumentar a matriz e a fórmula para ocupar a altura do painel esquerdo e reservar no direito o lugar da grade de marcas (vazia até o acerto) ou encurtar o painel."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Previsão com quatro alternativas que são as confusões típicas (acurácia, recall, complemento), cada uma com retorno que nomeia a confusão e a conta; conta e resultado ocultos até o acerto; leitura liga ao recall (slide 13).",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "A previsão muda a leitura, acende a coluna 'Previsto: 5' e mostra a grade de 100 marcas; 'Tentar outra' e Restaurar voltam ao início (captura b2/c12p12-ok-1920x1080.png).",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "3.530 ÷ 4.217 = 83,7% de M_SGD; denominador visível ('a coluna Previsto: 5'); grade arredondada pelos maiores restos e declarada na fonte.",
+    "corrigir": ""
+   }
+  },
+  "c12p13": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Captura 13-c12p13-1920x1080-palco.png: mesma composição do slide 12, com cerca de 100 px vazios acima e abaixo da matriz e 250 px vazios no painel da previsão no estado inicial.",
+    "corrigir": "Mesma correção do slide 12: matriz e fórmula maiores; lugar reservado para os quatro cincos rejeitados."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Previsão com recall, precisão, acurácia e complemento, retornos que nomeiam a confusão; leitura junta precisão 83,7% e recall 65,1% e liga ao F1 (slide 14).",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "A previsão acende a linha 'Real: 5', mostra a conta, o resultado e os quatro cincos mais rejeitados com o score (captura b2/c12p13-ok-1920x1080.png); Restaurar volta ao início.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "3.530 ÷ 5.421 = 65,1%; a nota '53.983 alarmes falsos' é cota inferior correta (FP na primeira borda acima do maior score dos quatro, linha 21) e diz 'ao menos'.",
+    "corrigir": ""
+   }
+  },
+  "c12p14": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Captura 14-c12p14-1920x1080-palco.png: o gráfico de barras domina e a média simples hachurada se distingue do F1; mas os botões 'Detector' e 'Restaurar' fazem a mesma coisa (linhas 63 e 65) e o painel da fórmula tem cerca de 180 px vazios embaixo.",
+    "corrigir": "Tirar o botão 'Detector' (Restaurar já faz isso) e usar o espaço do painel direito para uma segunda leitura, por exemplo a curva de F1 e média simples contra R com P fixo."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Título afirmativo; leitura com os números da tela (73,3% contra 74,4%); o atalho P = 100% e R = 1% mostra o caso extremo (F1 2,0%, média 50,5%); liga aos slides 16 e 17.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "Dois controles mudam P e R e as quatro barras e a leitura respondem: é o próprio experimento do título (a média harmônica pune o desequilíbrio); atalho para o extremo; Restaurar.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "F1 = 7.060 ÷ 9.638 = 73,3%, conferido contra mediaHarmonica na linha 17; a afirmação 'nunca passa do dobro do menor dos dois' é verdadeira (2PR/(P+R) ≤ 2 min(P, R)); fonte declara que os controles não são outro modelo.",
+    "corrigir": ""
+   }
+  },
+  "c12p15": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "Captura 15-c12p15-1920x1080-palco.png: tabela com barras embutidas por métrica, a linha que engana destacada e a matriz do modelo de comparação ao lado; 'indefinida (0/0)' com texto, não só cor.",
+    "corrigir": ""
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "A etiqueta 'ENGANA' marca a linha certa já no estado inicial, sem pergunta antes; e o título ('Só a acurácia faz o modelo trivial parecer razoável') é desmentido pelo próprio slide no estado 'Sempre diz 5', em que a etiqueta vai para o recall de 100%.",
+    "corrigir": "Antes de marcar a linha, perguntar 'qual métrica faz este modelo parecer bom?' (Previsao por modelo de comparação); reescrever o título, por exemplo 'Cada modelo trivial engana uma métrica: a acurácia ou o recall'."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "O Seg troca o modelo de comparação e muda tabela, matriz, texto e leitura (linha 42); Restaurar volta a 'Nunca diz 5'. São só dois estados prontos, sem variável contínua.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Números conferem (precisão do 'sempre' = prevalência 9,0%, verificação na linha 30; precisão indefinida 0/0 no 'nunca'), mas o título generaliza além do que a tela mostra: com 'Sempre diz 5', é o recall de 100,0% que faz o trivial parecer bom, não a acurácia.",
+    "corrigir": "Corrigir o título para não dizer 'só a acurácia'; a leitura 'Cada métrica trivial engana' também confunde modelo e métrica: 'cada modelo trivial engana uma métrica'."
+   }
+  },
+  "c12p16": {
+   "beleza": {
+    "nota": 7,
+    "evidencia": "Captura fix12/05-c12p16-1920x1080-palco.png: a curva de custo é desenhada com q7-linha--def (vinho, cor do default) quando é uma curva de custo, o antipadrão de cor fora do papel; três peças disputam o quadro (cartões FP e FN com metade vazia em 'Consequências no acerto', gráfico espremido no centro, previsão e tabela à direita).",
+    "corrigir": "Pintar a curva de custo em cinza escuro ou na cor de decisão só nos marcadores; reduzir os cartões FP e FN a uma faixa acima do gráfico e dar ao gráfico a largura do painel esquerdo."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "No estado inicial c = 1, o custo é FN + FP, isto é, o número de erros: o 'menor custo' em −1.260 é o limiar de maior acurácia, e a leitura diz 'depende da razão entre os dois custos, e não da acurácia' justamente no único estado em que a razão é 1. A pergunta de crédito (previsão) e a analogia do MNIST disputam a tela.",
+    "corrigir": "Começar em c = 5 (ou maior) e escrever a leitura em c = 1 como 'com custos iguais, o melhor limiar é o de maior acurácia'; ligar a previsão de crédito ao controle (no acerto, o controle passa a valer)."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "O controle c de 1 a 30 move o limiar de menor custo em todas as 602 bordas e a tabela e a leitura respondem; previsão com 'Tentar outra'; Restaurar volta a c = 1 e previsão em aberto.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Números conferem (custo 2.578 no limiar 0; 2.517 em −1.260), mas a leitura em c = 1 opõe o ótimo de custo à acurácia quando, com c = 1, minimizar c × FN + FP é exatamente maximizar a acurácia (s16-custos.tsx, linha 54).",
+    "corrigir": "Calcular a frase no código: se c = 1, dizer que o ótimo coincide com o de maior acurácia; só para c > 1 dizer que o limiar se afasta do de maior acurácia, com os dois limiares na tabela."
+   }
+  },
+  "c12p17": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "Captura 17-c12p17-1920x1080-palco.png: a figura de Géron repete os mesmos doze dígitos da fita e disputa com ela; o rótulo 'alarme falso' do cartão do 6 encosta nas duas bordas do cartão (espremido).",
+    "corrigir": "Tirar a figura (a fita já a reproduz, e a tabela guarda os três limiares) ou reduzi-la a miniatura de crédito; encurtar o rótulo para 'alarme' ou alargar os cartões."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "Há algo a descobrir (o que acontece com precisão e recall ao subir o limiar) e não há previsão: a tabela já mostra os três resultados; os doze dígitos da figura não são as doze imagens reais do slide 8, que têm score medido, e a turma passa a ver duas amostras de doze.",
+    "corrigir": "Usar as doze imagens do slide 8 (EXEMPLOS, com score) na fita e perguntar antes 'subindo o limiar uma posição, a precisão sobe, cai ou pode fazer os dois?'."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "O controle move o limiar entre as 13 posições e precisão, recall, fita e leitura respondem; botões da tabela levam às três posições da figura; Restaurar volta à posição 7.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "A leitura afirma sem condição 'Subir o limiar troca recall por precisão', mas na própria fita a precisão cai ao subir o limiar: posição 7 para 8, de 4/5 = 80% para 3/4 = 75%; posição 4 para 5, de 6/8 = 75% para 5/7 = 71%. O slide 18 faz a ressalva; este não.",
+    "corrigir": "Gerar a frase no código: quando a precisão cair em relação à posição anterior, dizer 'aqui a precisão caiu: em poucas imagens ela oscila; o recall nunca sobe'."
+   }
+  },
+  "c12p18": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "final12/18-c12p18-1920x1080-palco.png: o gráfico de precisão e recall domina, mas a figura de Géron no painel direito (s18, Figura precisao-recall-limiar) concorre com ele, tem rótulos ilegíveis e codifica ao contrário (no livro a precisão é tracejada e o recall contínuo; no gráfico nativo o recall é tracejado navy e a precisão contínua petróleo). Com o limiar acima de cerca de 6.000 (b2/c12p18-alto-1920x1080.png) a linha âmbar atravessa a anotação 'precisão oscila no topo'.",
+    "corrigir": "Tirar a figura de Géron do painel (ou levá-la ao Saiba mais) e usar o espaço para a matriz e os dois KPIs maiores; se a figura ficar, igualar a codificação das linhas. Mover a anotação da oscilação para cima da elipse, fora do caminho da linha do limiar."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Título afirma a troca; subtítulo antecipa o erro comum (a precisão não é monotônica) e o gráfico o mostra no dado (elipse vinho, 95,5% → 92,0%). Leitura com os números da tela (83,7% e 65,1% no limiar 0, matriz do slide 11) e ponte para o slide 19. A leitura não comenta a oscilação, que é o achado do slide.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "O controle 'Limiar do score' move a causa que o título afirma e a precisão, o recall, os denominadores (3.530 de 4.217; 3.530 de 5.421) e a matriz respondem na hora; Restaurar volta ao limiar 0 (s18 linha do Botao sec).",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Números de CURVA_SGD e confusaoNoIndice (dados.ts, metricas.ts), conferidos contra a matriz do slide 11; o código checa que o recall nunca sobe e procura no dado a última queda da precisão. Fonte com amostra, CV em três partes, versão. Ressalva de redação: 'o recall só pode cair' e 'recall (só cai)' contradizem o trecho plano em 100% à esquerda; o correto é 'nunca sobe'.",
+    "corrigir": "Trocar 'só pode cair' por 'nunca sobe' no subtítulo do roteiro e no rótulo da curva."
+   }
+  },
+  "c12p19": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "final12/19-c12p19-1920x1080-palco.png: o plano ROC quadrado ocupa cerca de 550 px de largura e o painel lateral, com duas fórmulas, controle, KPIs e um parágrafo, cerca de 850 px: a peça principal é menor que o painel de apoio.",
+    "corrigir": "Dar ao plano ROC a maior área (layout gl com o quadrado ocupando a altura útil e o painel lateral estreito); passar o parágrafo 'Subir o limiar desce pela curva' para o rótulo do controle."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Título afirma o mecanismo; o controle percorre a curva e o ponto do limiar 0 (1,3%; 65,1%) liga ao slide anterior; leitura com números e ponte explícita para os slides 20 e 21.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Controle de limiar move o ponto âmbar e os KPIs com denominadores (3.530 de 5.421; 687 de 54.579); seletor amplia o eixo da FPR para 0 a 10%; Restaurar volta ao limiar 0 e ao eixo inteiro.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 7,
+    "evidencia": "Erro conceitual na peça principal: a área sombreada não é a AUC. Em s19 o caminho é `${caminhoRoc(pts)}L${x(pts[0].fpr)} ${y(0)}L${x(0)} ${y(0)}Z`; como a curva já termina em (0; 0), o último L volta à origem e o Z fecha por uma corda até (100%; 100%): o sombreado fica entre a curva e a diagonal (AUC − 0,5, metade do Gini). Nas capturas final12/19-c12p19-1920x1080-palco.png e b2/c12p19-zoom-1920x1080.png o rótulo 'AUC 0,9605: área sob a curva' está na região branca abaixo da diagonal. No eixo ampliado o mesmo defeito sombreia só o trecho acima da corda.",
+    "corrigir": "Fechar o polígono por baixo: `${caminhoRoc(pts, x, y)}L${x(pts[0].fpr)} ${y(0)}Z` (sem o L de volta à origem). No eixo ampliado, trocar o rótulo para 'área sob a curva até FPR de 10%' ou escondê-lo."
+   }
+  },
+  "c12p20": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "final12/20-c12p20-1920x1080-palco.png: plano ROC quadrado de cerca de 560 px ao lado de um painel de cerca de 830 px com seletor, controle, dois KPIs e uma frase, com faixas brancas grandes entre eles (área morta). Rótulos diretos nas curvas e símbolos ● e ■ além da cor estão corretos.",
+    "corrigir": "Ampliar o plano ROC para a maior parte da largura e compactar o painel lateral (seletor, controle e KPIs em coluna estreita)."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Uma ideia (dominância contra cruzamento); leitura com os números da tela (56% contra 15% na FPR de 5%; cruzam em 29%) e ligação com crédito e com a AUC do slide 21. Usa 'floresta' antes do slide 34, mas só como rótulo de outro modelo.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "O controle 'FPR tolerada' é o experimento do título: ao passar de 29% o vencedor troca de A para B, com TPR e AUC nos KPIs; o seletor mostra o caso de dominância com dados do MNIST; Restaurar volta ao cruzamento em 5%.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Conferi as binormais: AUC_A = Φ(0,9815 ÷ √1,25) = 0,81; AUC_B = Φ(1,588 ÷ √3,56) = 0,80; cruzamento Φ(−0,6065 ÷ 1,1) = 29%; TPR em 5%: Φ(0,159) = 56,3% e Φ(−1,044) = 14,8%, como na tela. Dominância verificada no código em todos os pontos. Modelos A e B declarados conceituais na fonte.",
+    "corrigir": ""
+   }
+  },
+  "c12p21": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "final12/21-c12p21-1920x1080-palco.png: três peças disputam (régua AUC e Gini, tabela que repete a régua, gráfico de convergência dos pares); floresta (0,9983) e perfeito (1) se sobrepõem na régua e dividem um rótulo. O cursor de AUC e a curva de convergência usam âmbar, cor reservada a limiar e decisão.",
+    "corrigir": "Tirar a tabela (os valores já estão na régua e no aria) e dar a largura à régua; pintar cursor e curva de convergência em petróleo (probabilidade) e deixar o âmbar só para corte."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "Duas ideias no mesmo quadro (Gini como reescala e AUC como probabilidade de ordenar um par). A leitura fecha com 'Um modelo isolado tem limites. E se combinarmos vários?', sem nada na tela que mostre o limite; a floresta, que é um ensemble com AUC 0,9983 contra 0,9605, está na régua e não é usada como evidência.",
+    "corrigir": "Reescrever a leitura: 'A floresta, que combina muitas árvores, chega a AUC 0,9983 (Gini 0,997) contra 0,9605 do detector isolado. Por que combinar ajuda? (slide 22)'. Marcar a floresta na régua como 'ensemble'."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Botões 10, 100, 1.000 e 10.000 sorteiam pares com semente 20261003 e a fração converge para a AUC (b2/c12p21-pares-1920x1080.png: 949 de 1.000, 94,9%); o controle de AUC só converte para Gini, sem experimento; Restaurar volta ao estado inicial.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "AUC de roc_auc_score e AUC do histograma 0,96049 declaradas; empate de faixa vale meio ponto, declarado; Gini = 2 × AUC − 1 correto; o código barra diferença acima de 0,0005 entre as duas AUCs.",
+    "corrigir": ""
+   }
+  },
+  "c12p22": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "final12/22-c12p22-1920x1080-palco.png: os dois planos das luas ocupam cerca de 240 px cada numa faixa de 1.400 px, com uma área branca larga entre eles; os pontos e os anéis de erro ficam pequenos.",
+    "corrigir": "Juntar os dois planos lado a lado sem vão, cada um com cerca de 40% da faixa, e encostar a coluna 'Prévia do bloco' à direita."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Abertura de bloco com a pergunta do título, prévia concreta (107 contra 113 de 125) e leitura que avisa 'quando o ganho é pequeno demais para concluir'; fluxo com links aos slides 23, 29, 34 e 36.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Seletor Bagging, Votação, Floresta troca a região e os acertos (+6, +7, +7); links do fluxo navegam; voltar ao Bagging é o estado inicial (slide de navegação).",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Acertos conferidos no base.json: árvore 107, bag500 113, soft 114, rf500 114 de 125; o código barra ensemble que não supere a árvore. Ressalva: o rótulo diz '125 pontos de teste' e o plano desenha 122.",
+    "corrigir": "PlanoLuas (pecas.tsx, filtro pts.filter(p.x >= x0 && p.x <= x1 ...)) descarta pontos fora da grade [−1,5; 2,5] × [−1; 1,5]: 16 dos 375 de treino e 3 dos 125 de teste (índices 21, 33 e 115) não aparecem. Ampliar a grade da referência para [−1,8; 2,85] × [−1,3; 1,8] e regravar as regiões, ou desenhar os pontos de fora presos na borda com marca própria e declarar na fonte."
+   }
+  },
+  "c12p23": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "final12/23-c12p23-1920x1080-palco.png: a figura de Géron (em inglês) e o painel nativo de quatro votantes têm o mesmo tamanho e mostram a mesma coisa (três votos na classe 1, um na 2): duas peças concorrentes.",
+    "corrigir": "Reduzir a figura de Géron a miniatura de crédito ou levá-la ao Saiba mais e dar ao painel de votos a maior área."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Uma ideia (voto por maioria); leitura com a contagem da tela e ponte para o slide 24; o caso de empate 2 a 2 é explicado e liga ao número ímpar do slide seguinte.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 8,
+    "evidencia": "Clicar troca o voto e o resultado responde, mas não há classe verdadeira: o aluno não vê a maioria corrigir o erro de um votante, que é o que a leitura afirma ('A maioria só corrige um votante se os outros errarem em casos diferentes').",
+    "corrigir": "Acrescentar a classe verdadeira da instância (1) e marcar cada votante como certo ou errado; a leitura passa a dizer 'com 1 erro em 4 a maioria acerta; com 2 erros, empate; com 3, erra'."
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Sem números de dados, declarado na fonte; a regra de desempate confere com o VotingClassifier (argmax de bincount, menor classe). O retorno do slide 25 fala em 'três algoritmos', aqui são quatro: alinhar.",
+    "corrigir": ""
+   }
+  },
+  "c12p24": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "final12/24-c12p24-1920x1080-palco.png está limpo, mas com ρ > 0 (b3e/c12p24-1-1920x1080.png) o rótulo de cada barra mostra o valor com correlação e fica no topo do contorno tracejado: '79,0%' e '80,0%' aparecem na altura de 100%, como se fossem o valor do contorno (s24, y={r1(y(Math.max(val[i], rho > 0 ? ind[i] : 0)))}).",
+    "corrigir": "Pôr o rótulo do valor com correlação no topo da barra cheia e, quando ρ > 0, um rótulo cinza menor no topo do contorno com o valor sob independência."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Título com o número, subtítulo com as duas condições; a leitura convida 'Aumente ρ' e, com ρ > 0, mostra o teto ρ·p + (1 − ρ) = 80,0% (b3e/c12p24-1-1920x1080.png): o erro comum (supor independência) aparece com o controle. Ponte para o slide 25.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "Dois controles mudam a causa (p e ρ) e as barras, o KPI de 1.001 e a leitura respondem; o contorno mostra o contrafactual independente; Restaurar volta a p = 51%, ρ = 0.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 10,
+    "evidencia": "P(Bin(1001; 0,51) > 500) ≈ 73,7% (z = −0,633), como no título; binomial exata conferida com binom.sf; o modelo de mistura tem correlação par a par igual a ρ e está declarado como hipótese didática na tela e na fonte: a limitação muda a conclusão.",
+    "corrigir": ""
+   }
+  },
+  "c12p25": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "final12/25-c12p25-1920x1080-palco.png: cada cartão tem cerca de 110 px em branco entre o texto e o rodapé; os ícones de boosting (degraus) e de bagging (pontos) são quase decorativos e não se leem sem legenda.",
+    "corrigir": "Encurtar os cartões (rodapé logo abaixo do texto) e subir a previsão; trocar os ícones por um mini esquema que diga o que muda entre os modelos (algoritmo, amostra, característica, alvo do resíduo) ou tirá-los."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "A previsão (qual treina em sequência?) tem a resposta escrita no cartão 04 antes da tentativa: 'Cada modelo se concentra nos erros dos anteriores'. A pergunta (paralelo ou sequência) também não é a ideia do título (independência dos erros).",
+    "corrigir": "Esconder o texto dos cartões até a tentativa ou mudar a pergunta para a ideia do título, por exemplo: 'Qual delas não busca erros independentes, mas corrigir o erro do anterior?', com retornos que nomeiem a confusão."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Previsão com quatro alternativas, retorno por alternativa e 'Tentar outra'; cartões são links para os slides 23, 29, 34 e 36.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "O título 'Quatro formas de aproximar a independência' põe o boosting no mesmo saco: no boosting os modelos são dependentes por construção (cada um ajusta o resíduo do anterior) e o ganho vem sobretudo da redução de viés, não da média de erros independentes.",
+    "corrigir": "Título 'Quatro formas de produzir diversidade' (como o slide 38) e subtítulo 'Votação, bagging e floresta reduzem a correlação dos erros; o boosting corrige em sequência o erro do anterior'."
+   }
+  },
+  "c12p26": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "final12/26-c12p26-1920x1080-palco.png e ...-palco+abrir.png: a figura de Géron das luas aparece como miniatura de cerca de 55 px, ilegível; o plano nativo deixa cerca de 150 px vazios à direita dentro do painel.",
+    "corrigir": "Tirar a miniatura (o plano nativo já é a figura) e usar o espaço para alargar o plano ou para o bloco de código inteiro sem rolagem."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Leitura com números (500, 375, 125, 25%) e convite a sobrepor a logística; com a reta, a leitura passa a 0,864 (108 de 125) e liga ao slide 27.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Seletor treino, teste, ambos; botão que sobrepõe a fronteira da logística com erros circulados; destaque de linha no código acompanha o seletor; Restaurar volta ao treino sem fronteira.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "O subtítulo do plano diz '375 pontos de treino', mas PlanoLuas desenha 359: 16 pontos de treino (e 3 de teste) caem fora da grade [−1,5; 2,5] × [−1; 1,5] e são descartados em silêncio (pecas.tsx, filtro dos pts). Conferido no base.json.",
+    "corrigir": "PlanoLuas (pecas.tsx, filtro pts.filter(p.x >= x0 && p.x <= x1 ...)) descarta pontos fora da grade [−1,5; 2,5] × [−1; 1,5]: 16 dos 375 de treino e 3 dos 125 de teste (índices 21, 33 e 115) não aparecem. Ampliar a grade da referência para [−1,8; 2,85] × [−1,3; 1,8] e regravar as regiões, ou desenhar os pontos de fora presos na borda com marca própria e declarar na fonte."
+   }
+  },
+  "c12p27": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "final12/27-c12p27-1920x1080-palco.png: código à esquerda com linhas acesas e plano das luas à direita, rótulos e legenda com símbolo além da cor. O bloco de código rola por dentro e esconde a linha voting_clf.fit(X_train, y_train).",
+    "corrigir": "Encurtar o código (juntar os imports numa linha) para caber inteiro sem rolagem."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Leitura com os números da tela (0,896, 112 de 125, contra 0,888 do SVC, 1 acerto a mais) e pergunta que leva ao slide 28.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Seletor de cinco modelos troca a região, os erros circulados, a linha acesa e o próprio código (probability=True e voting='soft'); Restaurar volta ao hard voting.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Acertos conferidos no base.json (lr 108, rf10 109, svc 111, hard 112, soft 114); o código barra a leitura se o SVC deixar de ser o melhor isolado. Ressalva: 3 dos 125 pontos de teste não são desenhados.",
+    "corrigir": "PlanoLuas (pecas.tsx, filtro pts.filter(p.x >= x0 && p.x <= x1 ...)) descarta pontos fora da grade [−1,5; 2,5] × [−1; 1,5]: 16 dos 375 de treino e 3 dos 125 de teste (índices 21, 33 e 115) não aparecem. Ampliar a grade da referência para [−1,8; 2,85] × [−1,3; 1,8] e regravar as regiões, ou desenhar os pontos de fora presos na borda com marca própria e declarar na fonte."
+   }
+  },
+  "c12p28": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "final12/28-c12p28-1920x1080-palco.png e b3e/c12p28-1-1920x1080.png: a matriz de erros (uma coluna por ponto, agrupada por quantos erram) é a forma do argumento e domina; resta área vazia no pé do painel direito antes da revelação.",
+    "corrigir": ""
+   },
+   "didatica": {
+    "nota": 10,
+    "evidencia": "Previsão antes de revelar, com retornos que nomeiam a confusão (a alternativa 'uns 5' é o esperado sob independência, 5,4, e o retorno mostra que os três erram juntos em 6 pontos contra 0,2 esperado): o aluno vê o erro de supor independência no próprio dado. Leitura com números e ponte para o bagging (slide 29).",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Previsão de três alternativas que revela as linhas do hard e do soft, a tabela e a nota; 'Tentar outra' volta ao início.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 10,
+    "evidencia": "Conferi: erros 17, 16, 14; hard erra 6 + 7 = 13; esperado sob independência 125 × 0,136 × 0,128 × 0,112 = 0,24 e para a maioria 5,4; o código garante que o hard erra onde dois ou três erram. A nota 'Diferenças de 1 a 3 acertos (0,8 a 2,4 pontos) pedem validação cruzada' mostra a limitação que muda a conclusão.",
+    "corrigir": ""
+   }
+  },
+  "c12p29": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "final12/29-c12p29-1920x1080-palco.png: a grade de 20 instâncias, com ×n, pontos empilhados e 'fora' tracejado, domina; classe por símbolo (▲, ●); a figura de Géron à direita é secundária.",
+    "corrigir": ""
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Leitura com os números da tela (6 de 20 de fora, 30%, 4 repetidas, esperado 35,8%) e pontes para os slides 32 e 33; o caso pasting com 20 de 20 explica por que o pasting precisa de amostras menores.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 10,
+    "evidencia": "O aluno muda a causa (com ou sem reposição, número de sorteios, nova semente) e vê o efeito (de fora, repetidas, esperado); sementes 1, 2, 3 declaradas; Restaurar volta a bagging, 20 sorteios, semente 1.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Contagens conferidas na captura (10 × 1, 2 × 2, 2 × 3, 6 de fora). Mas o terceiro item do painel diz 'Os preditores são independentes: treinam em paralelo', logo depois de os slides 24 e 25 usarem independência no sentido estatístico dos erros: os preditores do bagging não são independentes (as amostras se sobrepõem e os erros se correlacionam, como o slide 28 mostrou).",
+    "corrigir": "Trocar por 'Cada preditor treina sozinho, em paralelo; os erros continuam correlacionados, porque as amostras se sobrepõem'."
+   }
+  },
+  "c12p30": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "final12/30-c12p30-1920x1080-palco.png: o plano das luas ocupa cerca de 430 px de um painel de cerca de 680 px (área vazia à esquerda e à direita); na coluna direita sobra área vazia abaixo da lista; o plano não circula os erros, ao contrário dos slides 27, 31 e 34.",
+    "corrigir": "Alargar o plano até a borda do painel e gravar as previsões de cada baggingN na referência e passá-las em erros para circular os erros, como nos outros slides."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Leitura honesta com os números da tela (113 de 125, +6, curva não monotônica com 5 e 100 árvores em 115, 0,8 ponto por acerto) e ponte para o slide 31.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Seletor de 1, 5, 25, 100 e 500 árvores troca a região, o subtítulo e o n_estimators no código; Restaurar volta a 500.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Acertos conferidos (1: 107, 5: 115, 25: 113, 100: 115, 500: 113). O título afirma 'supera' com 6 acertos em 125 sem intervalo, quando o slide 28 diz que diferenças pequenas pedem validação cruzada; e a leitura afirma 'o que muda de forma estável é a fronteira', estabilidade que nenhum slide mede (o 31 mostra uma só partição). Também 3 pontos de teste não desenhados.",
+    "corrigir": "Acrescentar à leitura o teste pareado (McNemar nos pontos discordantes) ou a média em várias sementes do train_test_split, gerados por scripts/capitulo12/referencia.py; trocar 'de forma estável' por 'de forma visível'. PlanoLuas (pecas.tsx, filtro pts.filter(p.x >= x0 && p.x <= x1 ...)) descarta pontos fora da grade [−1,5; 2,5] × [−1; 1,5]: 16 dos 375 de treino e 3 dos 125 de teste (índices 21, 33 e 115) não aparecem. Ampliar a grade da referência para [−1,8; 2,85] × [−1,3; 1,8] e regravar as regiões, ou desenhar os pontos de fora presos na borda com marca própria e declarar na fonte."
+   }
+  },
+  "c12p31": {
+   "beleza": {
+    "nota": 7,
+    "evidencia": "final12/31-c12p31-1920x1080-palco.png e b3e/c12p31-1-1920x1080.png: as duas regiões nativas parecem iguais. As ilhas da árvore existem na grade (faixas de uma célula, conferidas no base.json), mas com preenchimentos quase iguais (#E3F1E8 e #E7EDF7) e sem a linha de fronteira que o comentário de PlanoLuas promete, ficam invisíveis; quem prova o título é a miniatura de Géron no painel direito. Os planos ocupam só a faixa central do painel, com cerca de 80 px vazios acima e abaixo.",
+    "corrigir": "Desenhar a fronteira em linha escura (contorno entre células de classes diferentes) e subir o contraste das regiões; ampliar os dois planos para a altura do painel; reduzir a figura de Géron ou tirá-la."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "Com os pontos de treino, a leitura diz 'a região abre ilhas para acertar pontos isolados', e a tela não mostra ilhas (b3e/c12p31-1-1920x1080.png): o aluno não vê o que a frase afirma.",
+    "corrigir": "Depois de corrigir o desenho, apontar uma ilha com seta e rótulo ('ilha: 1 ponto de treino') no plano da árvore."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Seletor teste e treino troca os pontos, os erros circulados, os subtítulos e a leitura; Restaurar volta ao teste.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Números conferidos (treino 1,000 e 0,939; teste 0,856 e 0,904; 18 e 12 erros). Mas o subtítulo 'Viés semelhante, variância menor' e a leitura 'o recorte que acerta o treino é variância' afirmam viés e variância sem medi-los (uma só partição); e o plano de treino desenha 359 dos 375 pontos que diz mostrar.",
+    "corrigir": "Escrever como hipótese ('a árvore se ajusta ao ruído do treino; o bagging, ao fazer a média, tende a reduzir a variância') ou medir a variância com várias sementes. PlanoLuas (pecas.tsx, filtro pts.filter(p.x >= x0 && p.x <= x1 ...)) descarta pontos fora da grade [−1,5; 2,5] × [−1; 1,5]: 16 dos 375 de treino e 3 dos 125 de teste (índices 21, 33 e 115) não aparecem. Ampliar a grade da referência para [−1,8; 2,85] × [−1,3; 1,8] e regravar as regiões, ou desenhar os pontos de fora presos na borda com marca própria e declarar na fonte."
+   }
+  },
+  "c12p32": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "final12/32-c12p32-1920x1080-palco.png: a curva domina, com assíntota identificada, ponto âmbar rotulado e legenda de duas séries.",
+    "corrigir": ""
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Leitura com números (35,8% com m = 20; 36,7% com m = 375; 1/e = 36,8%) e ponte para o slide 33. O título fala em 'de fora' e a curva mostra 'dentro', o que obriga o aluno a subtrair.",
+    "corrigir": "Desenhar a fração de fora, (1 − 1/m)^m, que é a grandeza do título, com a assíntota 1/e."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Controle de m de 1 a 40, botão m = 375 e Restaurar para m = 20 (a amostra do slide 29).",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "A conta está certa, mas o título 'Cada árvore deixa de fora cerca de 37% das instâncias' vale só quando cada árvore sorteia tantas instâncias quanto o treino. No bagging do slide 30, logo antes, max_samples=100 de 375: cada árvore deixa de fora (1 − 1/375)^100 ≈ 76,6%. O slide não diz a condição.",
+    "corrigir": "Título 'Com amostra do tamanho do treino, cada árvore deixa de fora cerca de 37%' e uma linha no painel: 'com max_samples=100 (slide 30), ficam de fora 76,6%'."
+   }
+  },
+  "c12p33": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "final12/33-c12p33-1920x1080-palco.png e b3e/c12p33-1-1920x1080.png: régua de duas estimativas com intervalo de 95% é a peça principal, com o código acima e a previsão ao lado; o código encolhe a fonte depois da revelação.",
+    "corrigir": ""
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "Previsão com retornos que nomeiam a confusão ('Confunde OOB com acurácia no treino'), mas o título 'A validação out of bag antecipa o teste' entrega a alternativa A antes da tentativa.",
+    "corrigir": "Enquanto a previsão estiver aberta, usar título em pergunta ('A validação out of bag antecipa o teste?'), como o slide 35 já faz."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Previsão de três alternativas revela o comentário do código, o KPI e o ponto do teste na régua; 'Tentar outra' volta.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 10,
+    "evidencia": "OOB 0,8987 (337 de 375) e teste 0,912 (114 de 125) do base.json; intervalos de Wilson conferidos (OOB de 86,4% a 92,5% contém 0,912); a leitura diz 'menos de 2 acertos de teste' (1,3 ÷ 0,8 = 1,67). A fonte declara a diferença para a aula (0,901). O intervalo é a incerteza que muda a conclusão.",
+    "corrigir": ""
+   }
+  },
+  "c12p34": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "final12/34-c12p34-1920x1080-palco.png: a figura de Géron (árvores sobre colinas) é decorativa e minúscula; o último item da lista do painel direito encosta na borda inferior.",
+    "corrigir": "Tirar a ilustração decorativa e usar o espaço para uma peça que mostre o sorteio de características (ver interação)."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "O subtítulo afirma 'árvores menos correlacionadas' e nada na tela mostra isso; a leitura, honesta, admite que 'aqui não se isola o efeito do sorteio'. O slide informa o mecanismo, mas não o ensina.",
+    "corrigir": "Mostrar a concordância média entre pares de árvores no teste (bagging contra floresta, mesmo max_leaf_nodes e max_samples), gravada pela referência, ou um seletor max_features 1 ou 2 com os demais hiperparâmetros iguais."
+   },
+   "interacao": {
+    "nota": 8,
+    "evidencia": "O seletor floresta ou bagging alterna entre duas telas quase iguais (114 contra 113 acertos, regiões parecidas): escolhe entre telas prontas sem mudar a leitura do conceito do título.",
+    "corrigir": "Trocar o seletor pelo experimento max_features (1 ou 2) com os outros hiperparâmetros fixos, mostrando a correlação entre árvores e a acurácia."
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Acertos conferidos (rf500 114, bag500 113); a leitura declara que os hiperparâmetros diferem (max_leaf_nodes=16 contra árvores sem limite e max_samples=100) e não atribui a diferença ao sorteio; ⌊√2⌋ = 1 característica por divisão correto. Ressalva: 3 pontos de teste não desenhados.",
+    "corrigir": "PlanoLuas (pecas.tsx, filtro pts.filter(p.x >= x0 && p.x <= x1 ...)) descarta pontos fora da grade [−1,5; 2,5] × [−1; 1,5]: 16 dos 375 de treino e 3 dos 125 de teste (índices 21, 33 e 115) não aparecem. Ampliar a grade da referência para [−1,8; 2,85] × [−1,3; 1,8] e regravar as regiões, ou desenhar os pontos de fora presos na borda com marca própria e declarar na fonte."
+   }
+  },
+  "c12p35": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "final12/35-c12p35-1920x1080-palco.png e b3e/c12p35-2-1920x1080.png: barras horizontais com a pétala em petróleo forte, chave 'pétala: 86,4%' e placeholders tracejados antes da previsão; sobra área vazia no pé do painel direito.",
+    "corrigir": ""
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Título vira pergunta enquanto a previsão está aberta; retornos nomeiam a confusão ('Tamanho não é importância'); leitura com 86,4% e ponte para o boosting (slide 36).",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Previsão de três alternativas que revela as barras e a chave; 'Tentar outra' volta ao estado inicial.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Importâncias do base.json (11,2%, 2,3%, 44,1%, 42,3%; pétala 86,4%); fonte com amostra, hiperparâmetros e versões; o aviso de que a impureza infla variáveis contínuas e a sugestão de importância por permutação estão na tela. O retorno da alternativa A ('separam pouco as três espécies') ignora que a sépala perde importância também por ser correlacionada com a pétala.",
+    "corrigir": "Reescrever o retorno A: 'Somam 13,6%: depois das medidas da pétala, com que são correlacionadas, acrescentam pouco à separação'."
+   }
+  },
+  "c12p36": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "36-c12p36-1920x1080-palco.png: o bloco de código (16 linhas, coluna esquerda) tem a mesma largura e altura do gráfico de degraus à direita; as duas peças disputam a atenção e o gráfico, que prova o subtítulo, não domina.",
+    "corrigir": "Reduzir o código a uma coluna estreita ou mostrar só o bloco aceso da etapa (4 linhas) com as demais recolhidas, e dar ao gráfico do alvo e da árvore a maior área do quadro."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "Título 'Gradient boosting em três árvores' (roteiro.ts, c12p36) é rótulo, não afirmação; a leitura é boa ('o erro quadrático médio cai de 0,126 para 0,013') e liga ao slide 37, mas o título não diz o que concluir, e o slide 37 repete a mesma ideia.",
+    "corrigir": "Trocar o título por uma afirmação com o número da tela, por exemplo 'Três árvores em sequência: cada uma ajusta o que a anterior errou, e o erro cai de 0,126 para 0,005'."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Seletor Etapa 1, 2, 3 troca o bloco de código aceso, o alvo plotado (y, y2, y3 com marca +) e os dois KPIs de erro (0,126 → 0,013 → 0,006 → 0,005, capturas b3e/c12p36-2); Restaurar volta à etapa 1 (s36, linha do Botao).",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Árvores de boosting() em metricas.ts, conferidas no teste; ETAPAS.mse com checagem de queda no próprio módulo (s36, 'throw' se não cair); fonte declara 100 pontos, semente 42, y = 3x² + 0,05 × ruído e scikit-learn 1.9.1.",
+    "corrigir": ""
+   }
+  },
+  "c12p37": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "37-c12p37-1920x1080-palco.png: a figura raster de Géron (painel esquerdo, três linhas de gráficos com texto de cerca de 6 px, ilegível) repete o que o gráfico nativo do centro mostra e compete com ele; a figura não pode ser lida em sala.",
+    "corrigir": "Retirar a figura de Géron do palco (deixá-la no estudo ou num botão) e dar a largura ao gráfico de previsão acumulada e ao de erro por árvore."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Título afirmativo; leitura com os números do estado ('vai de 0,126 a 0,005, caindo a cada etapa'), frase sobre η e ligação ao slide 38; uma ideia: somar árvores que corrigem o resíduo.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Controles M (1 a 10) e η (0,1 a 1) recalculam boosting() e mudam a curva, o tracejado da etapa anterior, o gráfico de erro e o KPI (b3e/c12p37-1: M = 10, η = 0,1, erro 0,021); Restaurar volta a M = 3, η = 1.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "A fórmula KaTeX fixa 'ŷ(x) = h1(x) + h2(x) + h3(x)' (s37, Formula) continua na tela com M = 10 e η = 0,1 (b3e/c12p37-1), quando o modelo exibido é η·Σ h_m; e o subtítulo 'a previsão acompanha melhor a curva' se apoia só no erro de treino, que sempre cai com mais árvores e não mede ajuste à curva 3x².",
+    "corrigir": "Fórmula dinâmica: ŷ_M(x) = η Σ_{m=1}^{M} h_m(x), com M e η do estado; trocar 'acompanha melhor a curva' por 'acompanha melhor os pontos de treino' e dizer na leitura que o erro de treino não mostra sobreajuste (ou acrescentar o erro numa amostra de teste da mesma função)."
+   }
+  },
+  "c12p38": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "38-c12p38-1920x1080-palco.png: tabela de quatro métodos domina, linha de boosting destacada como sequencial; embaixo, eixo único de acertos com ■ ensemble e ○ isolado e rótulos diretos sem sobreposição ('soft e floresta 500' agrupados em 114).",
+    "corrigir": ""
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Leitura com os números da tela ('acertam de 112 a 114 de 125, contra 107 da árvore única') e pergunta que abre o bloco 4 com link ao slide 39; cada método liga ao slide em que começa.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Slide de síntese e consulta: cada método é link ao slide de origem (23, 29, 34, 36) e a leitura liga ao 39; a regra permite navegação como interação em consulta.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Coluna 'Combinação' diz 'Maioria' para bagging e floresta, mas os números 0,904 e 0,912 vêm de BaggingClassifier e RandomForestClassifier do scikit-learn, que fazem a média das probabilidades; e a leitura 'a diversidade ajuda' se apoia em 113 contra 107 acertos em 125: no pareamento, o bagging acerta 12 pontos que a árvore erra e erra 6 que ela acerta (McNemar exato p ≈ 0,24, calculado de base.json).",
+    "corrigir": "Escrever 'Maioria (Breiman); no scikit-learn, média das probabilidades' nas duas linhas; na leitura, trocar 'a diversidade ajuda' por 'os ensembles acertam de 5 a 7 pontos a mais, diferença dentro do que 125 pontos de teste permitem distinguir do acaso' e mostrar os erros discordantes."
+   }
+  },
+  "c12p39": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "39-c12p39-1920x1080-palco.png: duas navegações disputam o mesmo quadro (os três pratos com links para 42, 41 e 47, fora de ordem, e a faixa 'Neste bloco' com 40, 41, 45, 46); os cartões dos pratos têm cerca de um terço de área vazia entre o texto e 'slide 42'.",
+    "corrigir": "Fundir pratos e passos numa só sequência ordenada (40, 41, 42, 45, 46, 47) e reduzir a altura dos cartões ao conteúdo."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Pergunta do bloco no título; leitura com os números do caso ('82.458 contratos e 7,1% de maus; o corte pode remover menos de 10%') e ligação ao slide 40; a barra mostra 7,1% de maus contra o limite de 10%.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Slide de abertura de bloco: pratos e passos são links (LinkSlide) para os slides 40 a 47; sem estado a restaurar, como declarado no cabeçalho de s39.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "A legenda define 'mau: não paga as primeiras parcelas', o título do slide 40 diz 'quem não paga nenhuma parcela' e a fonte (HZ.curto.def em b4.ts) diz 'atraso nas três primeiras parcelas'; são três definições diferentes do mesmo alvo target_never_paid.",
+    "corrigir": "Fixar uma definição única do alvo do curto prazo (a do material: target_never_paid) em b4.ts e usá-la na legenda de s39, no título de s40 e nas fontes."
+   }
+  },
+  "c12p40": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "40-c12p40-1920x1080-palco.png: no estado inicial, o painel de ligação ocupa 920 px de largura com três linhas de botões e cerca de 200 px vazios abaixo; o painel esquerdo é texto em três cartões, com cara de documento.",
+    "corrigir": "Diminuir a altura do painel de ligação ao conteúdo ou reservar o espaço para o retorno abaixo de cada linha, e transformar os cartões Problema, Objetivo e Decisão numa faixa única acima dos KPIs."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Ligação exigência → métrica antes de revelar, com retorno que nomeia a confusão em cada alternativa errada ('Recall é uma parcela dos maus, não da população: confunde os denominadores') e 'Tentar outra'; leitura liga aos slides 41, 45 e 47.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Três grupos de botões com retorno, 'Tentar outra' por linha e Restaurar (s40, INICIAL); a leitura muda com o número de ligações certas.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "'Proposta do material: ... grupo de corte com mais de 60% de maus; rating A com 5%' aparece sem denominador ao lado de um caso de 7,1% de maus em que nenhuma regra passa de 22,7% de maus no corte (só no longo prazo a política chega a 61,6%); '5%' não diz de quê. Além disso, o título 'não paga nenhuma parcela' diverge da fonte 'atraso nas três primeiras parcelas'.",
+    "corrigir": "Dizer a que horizonte e alvo a proposta se refere (longo prazo, target_60ever9p) e o que é o 5% (taxa de maus do rating A), ou tirá-la do palco; alinhar título e fonte numa definição única do alvo."
+   }
+  },
+  "c12p41": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "41-c12p41-1920x1080-palco.png: o esquema de 12 safras domina, treino em azul com ● e validação hachurada em verde com ■, chaves e marcos sem sobreposição; a previsão ocupa o painel lateral.",
+    "corrigir": ""
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Previsão 'Por que não sortear a validação?' com resultado escondido, retorno que nomeia a confusão ('Confunde quantidade com período'), modo 'Sorteada' liberado só no acerto e leitura que liga ao slide 42.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Controle do início da validação (3 a 10 safras) muda o esquema e a leitura; no acerto, o seletor Sorteada conta as safras 'antes' (mulberry32, semente 41); Restaurar volta a 8 de 12 (capturas b4e/c12p41-sorteio, min, max).",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Fonte declara 'esquema ilustrativo, sem datas nem dados do caso' e a semente 41; nenhum número do caso é usado; retorno C correto ('em média, o sorteio preserva a taxa de maus').",
+    "corrigir": ""
+   }
+  },
+  "c12p42": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "42-c12p42-1920x1080-palco.png: o rótulo '−22,5%' do haltere BVS cruza a linha do eixo x; os modelos não selecionados ficam com opacidade 0,6 (texto apagado) e a tabela abaixo repete os seis números do gráfico; o painel lateral tem metade vazia.",
+    "corrigir": "Subir o rótulo da variação para cima do haltere (ou abrir margem inferior) e substituir a tabela por uma linha de Gini só quando a régua for Gini, aproveitando o espaço para o gráfico."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Título afirmativo, leitura com os números ('Quedas de 5,9% e 8,9% na AUC contrastam com 22,5%') e ligação ao slide 43; a nota do painel desmonta a confusão de régua ('a variação relativa depende da régua').",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Seletor AUC ou Gini troca a régua e as variações (−22,5% vira −56,3% no BVS, b4e/c12p42-gini); clique no modelo atualiza o painel; Restaurar volta a AUC com BVS em foco.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "O título 'Fora do tempo, todo modelo perde discriminação' generaliza a partir de três modelos de um caso; a fonte não traz o tamanho das amostras de treino e de validação nem o período, e as quedas de 5,9% e 8,9% aparecem sem intervalo.",
+    "corrigir": "Título 'Fora do tempo, os três modelos do caso perdem discriminação'; acrescentar n e período de cada amostra na fonte (ou dizer que o material não os informa) e, se possível, o erro padrão da AUC."
+   }
+  },
+  "c12p43": {
+   "beleza": {
+    "nota": 7,
+    "evidencia": "43-c12p43-1920x1080-palco.png: a peça principal é a figura raster do material (matplotlib com fundo cinza, rótulos em inglês 'Bad Rate Treino', 'False Positive Rate' com cerca de 9 px), validação em laranja na ROC e em verde nas barras, fora das cores do sistema; o painel da previsão tem cerca de 180 px vazios entre as alternativas e Restaurar.",
+    "corrigir": "Redesenhar a figura de forma nativa (ROC e barras por faixa, treino azul ●, validação verde ■, rótulos em português) digitalizando as seis taxas por faixa para base.json; reduzir o painel lateral ao conteúdo."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "O subtítulo já responde ('na validação, a escada achata') e as barras verdes da validação estão visíveis antes da previsão; a pergunta é contrafactual e a alternativa certa se denuncia ('como no treino').",
+    "corrigir": "Perguntar o que acontece com as faixas na validação, esconder a série de validação até a tentativa e tirar 'a escada achata' do subtítulo."
+   },
+   "interacao": {
+    "nota": 8,
+    "evidencia": "Depois do acerto, o seletor 'Taxa por faixa' ou 'Curva ROC' só troca um parágrafo pronto (LEITURA em s43); a figura não muda.",
+    "corrigir": "Com os dados digitalizados, deixar a turma escolher uma faixa (0 a 5) e ver a taxa no treino e na validação lado a lado, ou destacar a metade escolhida da figura."
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "O título afirma 'Sobreajuste:' como diagnóstico, enquanto o slide seguinte mostra que a mesma figura é compatível com mudança na população (a faixa 0 sobe de cerca de 1% para 16%, mudança de nível); a fonte não informa n por faixa nem período.",
+    "corrigir": "Título 'Fora do tempo, as faixas se aproximam: o material lê como sobreajuste'; acrescentar n e período na fonte ou declarar que o material não os informa."
+   }
+  },
+  "c12p44": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "44-c12p44-1920x1080-palco.png: a coluna 'Apoia sobreajuste' usa vinho, cor reservada ao default; no estado inicial as três colunas tracejadas ficam vazias (cerca de 300 px de altura) e o painel direito tem um vão entre as opções e a nota.",
+    "corrigir": "Trocar o vinho da coluna por uma cor neutra de categoria com símbolo próprio e encurtar as colunas vazias no estado inicial."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "A leitura final ('2 evidências apontam para sobreajuste, 3 para mudança na população e 1 não separa', b4e/c12p44-todas) conta o gabarito como se fosse resultado do caso e fala em 'as duas checagens' sem dizê-las.",
+    "corrigir": "Leitura final que diga o que pedir no caso BVS: comparar a queda numa validação aleatória do mesmo período com a queda fora do tempo e medir o deslocamento das variáveis de entrada nas safras novas."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Seis evidências a classificar em três colunas, retorno por alternativa, 'Tentar outra', 'Próxima evidência' e Restaurar (s44); o cartão desce para a coluna certa.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Evidência e1 ('Queda muito maior no modelo complexo que nos simples, na mesma janela') vem com 'se só o complexo cai, a causa está nele: decorou o treino'; um modelo que usa variáveis que mudaram também cai mais sob mudança na população, sem sobreajuste.",
+    "corrigir": "Reescrever o porquê de e1: 'aponta para sobreajuste se os modelos usam as mesmas variáveis; se o complexo usa variáveis que se deslocaram, a queda maior também cabe na mudança de população'."
+   }
+  },
+  "c12p45": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "45-c12p45-1920x1080-palco.png: os rótulos '6,0%', '5,7%' e '5,1%' são cortados pela linha tracejada da taxa da base (7,1%); as regras não selecionadas ficam com opacidade 0,55 e a tabela da direita repete os números do gráfico.",
+    "corrigir": "Levar os rótulos das barras do grupo mantido para dentro da barra ou abaixo da linha de referência, e reduzir a tabela à coluna do longo prazo e à descrição das regras."
+   },
+   "didatica": {
+    "nota": 8,
+    "evidencia": "O título 'onde ficam os maus' é respondido só com taxas; o subtítulo 'Todas concentram os maus no grupo removido' pode ser lido como captura, quando 61% a 79% dos maus ficam no grupo mantido (recall de 21,2% a 38,9%, CORTE.curto): é a confusão precisão contra recall que o slide 40 ensinou.",
+    "corrigir": "Trocar o título por 'Três regras de corte: quanto o grupo removido concentra de maus' ou mostrar, ao lado de cada regra, quantos dos 5.865 maus caem no corte."
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Seletor Curto prazo ou Longo prazo troca barras, escala e leitura (b4e/c12p45-longo); clique na regra muda o painel '3,8× a taxa'; Restaurar volta a curto prazo com a política.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Números conferidos com avaliaCorte sobre base.json: 22,7%/6,0%, 18,0%/5,7%, 17,8%/5,1% no curto prazo e 61,6%, 53,9%, 54,0% no longo; fonte com alvos, 82.458 contratos e 61.138 classificados e 'sem efeito causal'.",
+    "corrigir": ""
+   }
+  },
+  "c12p46": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "46-c12p46-1920x1080-palco.png: tabela de cinco métricas domina, linha selecionada destacada, cartão lateral com pergunta, conta e os dois exemplos; sem sobreposição.",
+    "corrigir": ""
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Leitura que faz a distinção nova do slide ('Precisão, recall e volume medem o mesmo grupo recusado; AUC e validação fora do tempo julgam o score antes do corte') e liga ao 47; cada métrica liga ao slide em que nasceu.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Slide de consulta: o clique na métrica troca conta, exemplo do detector e do caso, e o link 'Nasceu no slide 12' (13, 21, 41, 40) navega; Restaurar volta à precisão.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "Precisão 83,7% e recall 65,1% do detector (M_SGD), AUC do detector de AUC_SGD, quedas de 5,9% a 22,5% de AUC_TEMPO; contas corretas e mau como classe positiva declarado.",
+    "corrigir": ""
+   }
+  },
+  "c12p47": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "b4e/c12p47-d-1920x1080-palco.png (mesmo código do final): o rótulo 'Política BACEN' começa no ponto em 6,6% e atravessa a linha tracejada da meta de 10%; os três pontos estão no mesmo azul escuro.",
+    "corrigir": "Ancorar o rótulo da política à esquerda do ponto (textAnchor end) e colorir o ponto pela condição (dentro da meta em azul, fora em âmbar), mantendo os símbolos ●, ▲ e ◆."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Escolha antes de revelar, com o gráfico vazio até a tentativa (47-c12p47-1920x1080-palco.png), retorno por alternativa e 'Tentar outra'; leitura com os números ('38,9% contra 21,2%, 1,8×, mas recusa 15,6%') e ligação ao 48.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Previsão revela pontos e tabela; seletor de horizonte troca pontos, tabela e leitura; Restaurar volta à previsão aberta no curto prazo.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 7,
+    "evidencia": "Erro conceitual: o retorno da alternativa Never Paid diz 'Usar um modelo não basta para a regra caber na meta' e a leitura conclui 'Só a política cumpre a meta', tratando o volume de 11,7% como propriedade do modelo; o volume de um score é escolhido pelo limiar (slides 17 e 18 do próprio capítulo), e o Never Paid poderia ser cortado abaixo de 10%. A comparação justa é entre regras com o mesmo volume.",
+    "corrigir": "Reescrever o retorno de B e a leitura: 'no corte escolhido pelo material, o Never Paid recusa 11,7%; subir o limiar do modelo para recusar menos de 10% é possível, e a comparação justa com a política seria no mesmo volume, dado que o material não traz'; incluir no gabarito do guia essa saída."
+   }
+  },
+  "c12p48": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "48-c12p48-1920x1080-palco.png: o painel 'Crédito: o que ainda falta' tem texto até cerca de 470 px e fica vazio até o botão Restaurar em 775 px, mais da metade da área.",
+    "corrigir": "Reduzir o painel lateral ao conteúdo e ampliar a lista, ou mostrar as quatro lacunas de uma vez sem clique."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Quatro linhas, uma por bloco, cada uma com o número que a sustenta; leitura 'cada bloco deixou um número e uma lacuna' e ligação ao slide 49.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Slide de síntese: o clique na linha troca a lacuna e o link 'Rever o bloco' (slides 2, 9, 22, 39); Restaurar volta a Crédito.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "A linha Ensembles prova 'A combinação explora a diversidade de erros' com 114 contra 111 acertos em 125; no pareamento, o voto suave acerta 4 pontos que o SVC erra e erra 1 que ele acerta (McNemar exato p ≈ 0,38, calculado de base.json): a diferença não se distingue do acaso.",
+    "corrigir": "Acrescentar 'três acertos em 125 (2,4 pontos), diferença dentro do ruído do teste' ao detalhe da linha, ou usar o exemplo dos mil classificadores (slide 24) como número da síntese."
+   }
+  },
+  "c12p49": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "49-c12p49-1920x1080-palco.png: no estado inicial, o painel direito tem a resposta e o botão 'Abrir as 10.000 imagens de teste' até cerca de 470 px e fica vazio até Restaurar em 745 px.",
+    "corrigir": "Reservar a área para os três KPIs do teste em esqueleto (valores ocultos) ou subir Restaurar e encurtar o painel."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Volta à pergunta do slide 1 com a resposta da turma (useRespostaAbertura) e veredito por alternativa; três critérios com o número e o slide que os provou; leitura com 91,0% e −22,5%.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Clique nos critérios troca o detalhe e os links; o botão abre o teste guardado desde o slide 7 (94,9% contra 91,1%, precisão 66,2%, recall 88,0%, conferidos em base.json); Restaurar fecha o teste e volta ao critério 1.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "TESTE e TRIVIAL_TESTE de dados.ts; nota 'Não diz: a troca entre erros mudou' honesta (66,2% e 88,0% no teste contra 83,7% e 65,1% na validação cruzada); fonte com MNIST, semente e versão.",
+    "corrigir": ""
+   }
+  },
+  "c12p50": {
+   "beleza": {
+    "nota": 8,
+    "evidencia": "50-c12p50-1920x1080-palco.png: na régua de IV, a linha vertical de 0,240 corta o rótulo '▲ 0,248' e a linha de 0,347 corta a palavra 'forte'; o painel da régua tem cerca de 100 px vazios entre a régua e as notas.",
+    "corrigir": "Escalonar os rótulos à direita das linhas sem cruzá-las (ou ligar por guia horizontal) e mover o rótulo 'forte' para baixo da faixa."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Apêndice com leitura que usa os números ('5.865 maus entre 82.458 classificados (7,1%)... lidera o recall (38,9%) e recusa 15,6%') e nota que explica os 425 contratos sem classificação no longo prazo.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Seletor de horizonte troca as duas tabelas, a régua e a leitura; Restaurar volta ao curto prazo.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "WoE e IV recalculados conferem: WoE −1,35 e 0,18 na política, IV 0,240, 0,248 e 0,347 (b4.ts confere contra o declarado com tolerância 0,0015); fonte com fórmulas de WoE e IV.",
+    "corrigir": ""
+   }
+  },
+  "c12p51": {
+   "beleza": {
+    "nota": 7,
+    "evidencia": "51-c12p51-1920x1080-palco.png: a peça é a figura raster do material (paleta padrão do matplotlib, vermelho e roxo em faixas, ticks e legenda 'fx_SCORE' com cerca de 9 px, meses em inglês); o painel de leitura tem cerca de 200 px vazios entre o texto e os links.",
+    "corrigir": "Redesenhar as duas metades de forma nativa com as séries digitalizadas (faixas 0 a 5 em escala sequencial de risco, rótulos diretos em português) e encurtar o painel de leitura."
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Subtítulo afirmativo; leitura cautelosa com os números ('a AUC cai de 0,832 para 0,645. Subida que começa antes da linha também é compatível com mudança na população') e links de volta aos slides 43 e 44.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Apêndice de consulta: o seletor Taxa de maus ou Volume troca a leitura descritiva de cada metade e os links levam aos slides 43 e 44; Restaurar volta à taxa.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 9,
+    "evidencia": "A leitura confere com a figura: faixas 0, 1 e 2 sobem a partir de julho, antes da linha de agosto, e a faixa 5 cai de cerca de 0,69 para 0,48; fonte declara período (dezembro de 2018 a outubro de 2019) e que é leitura sem os valores.",
+    "corrigir": ""
+   }
+  },
+  "c12p52": {
+   "beleza": {
+    "nota": 9,
+    "evidencia": "52-c12p52-1920x1080-palco.png: grade de duas colunas com autor, obra, o que resolve e slides; abas por grupo; sem sobreposição.",
+    "corrigir": ""
+   },
+   "didatica": {
+    "nota": 9,
+    "evidencia": "Cada referência diz o que resolve e onde aparece na aula ('Na aula: slide 19, slide 20, slide 21'); grupo 'Além da aula' com quando usar.",
+    "corrigir": ""
+   },
+   "interacao": {
+    "nota": 9,
+    "evidencia": "Slide de consulta: abas Métricas, Ensembles, Crédito, Além da aula filtram a lista e os links levam aos slides; Restaurar volta a Métricas.",
+    "corrigir": ""
+   },
+   "rigor": {
+    "nota": 8,
+    "evidencia": "Falta a referência primária do item essencial E2 do estado da arte (Hastie, Tibshirani e Friedman, 2009, cap. 7: treino e teste, validação cruzada), que não aparece em nenhum arquivo do capítulo (grep sem resultado); e Géron é citado na 3ª edição em inglês aqui e como 'Mãos à obra' (tradução) no crédito do slide 37.",
+    "corrigir": "Acrescentar ao grupo Métricas 'Hastie, Tibshirani e Friedman (2009), The Elements of Statistical Learning, 2ª ed., Springer, cap. 7' com links aos slides 7 e 33, e unificar a edição de Géron."
+   }
+  }
+ },
+ "storytelling": {
+  "coerencia": {
+   "nota": 8,
+   "evidencia": "O fio é declarado no c12p1 (pergunta 'Ele é bom?' e as quatro perguntas encadeadas, PERGUNTAS em roteiro.ts) e volta na trilha de todos os 52 quadros, nas aberturas de bloco (c12p2, c12p9, c12p22, c12p39, capturas final12) e no fecho (c12p48 com as quatro linhas, c12p49 com a resposta do slide 1). Três quebras: (1) 'combinação' nomeia duas coisas diferentes: o ensemble do bloco 3 e a regra 'Política e modelo' (união de duas regras, REGRAS em dados.ts); no c12p48 as linhas 03 e 04 são consecutivas ('A combinação explora a diversidade de erros' e '38,9% dos maus capturados pela combinação'), e no c12p47 'a combinação quase dobra o recall'. (2) A estabilidade no tempo é prometida para a decisão (subtítulo do c12p1, subtítulo do c12p39 'A decisão combina discriminação, estabilidade no tempo e volume de recusas', comentário do roteiro 'precisão, recall, volume recusado e estabilidade') e some no exercício: subtítulo do c12p47 'Use precisão, recall e volume do corte'; os três modelos validados fora do tempo no c12p42 (atraso curto baixa renda, alta renda, BVS) não são o modelo da regra Never Paid ('Modelo com cadastro e informações do BACEN') do c12p45 e c12p47, e nenhuma tela diz isso. (3) Os critérios anunciados no c12p1 ('os erros, o limiar e a estabilidade no tempo') não são os do c12p49 ('superar o trivial', limiar, tempo).",
+   "corrigir": "Renomear a regra combinada em todo o capítulo para 'Política ou modelo' (ou 'regra conjunta') e reservar 'combinação' para ensembles; no c12p48, linha 04, trocar 'pela combinação' por 'pela regra conjunta'. Alinhar o subtítulo do c12p1 aos critérios do c12p49 ('o trivial, o limiar e a estabilidade no tempo'). No c12p42 ou c12p46, uma frase que diga qual dos modelos validados sustenta a regra Never Paid, ou que a AUC fora do tempo dela não está no material e precisa ser pedida antes do comitê; e pôr esse item no c12p47 (quarta coluna ou nota 'estabilidade: não informada para Never Paid')."
+  },
+  "arco": {
+   "nota": 8,
+   "evidencia": "Tensão e virada existem e vêm do dado: c12p10 mostra que o modelo que nunca diz 5 acerta 91,0% contra 95,7% do detector; c12p28 e c12p38 mostram que o ganho dos ensembles é de poucos acertos (114 contra 111 de 125, cada acerto 0,8 ponto) e o capítulo diz isso; c12p42 mostra a AUC do exemplo BVS caindo de 0,832 para 0,645 (−22,5%). Cada bloco fecha abrindo o seguinte (conclusões do c12p8, c12p21, c12p38). Falham duas condições do 9: o gancho (c12p1 a c12p3) não tem nada em jogo, é um detector de 5 no MNIST sem decisão nem custo; o crédito só aparece no c12p3 como vocabulário. E o fecho volta ao gancho (c12p49) mas não decide: a leitura do c12p49 com o teste aberto diz 'O limiar e o tempo dependem da decisão que o modelo apoia', e no c12p47 'Depende do que o comitê aceita trocar' é marcada como certa junto com 'Política BACEN' (OPS com duas alternativas certa: true).",
+   "corrigir": "No c12p1, pôr ao lado do KPI de 95,7% o paralelo do caso: no crédito, com 7,1% de maus (5.865 de 82.458), um modelo que aprova todos acerta 92,9%; a pergunta passa a ser sobre uma aprovação de crédito. No c12p47, depois da escolha, mostrar a razão de custos de equilíbrio calculada com as contagens do caso (curto prazo: a regra conjunta recusa 6.325 bons a mais para evitar 1.036 maus a mais que a política, logo só compensa se um mau aprovado custar mais que cerca de 6,1 bons recusados; Never Paid contra política, cerca de 7,5), ligada ao c12p16, e deixar uma única resposta certa condicionada a essa razão. No c12p49, uma linha de veredito para o detector: passa no critério 1 (94,9% contra 91,1% no teste), o critério 2 exige a razão de custos, o critério 3 não é testável no MNIST."
+  },
+  "exemplo": {
+   "nota": 7,
+   "evidencia": "O caso de crédito (82.458 contratos, 5.865 maus, 7,1%, c12p39 e c12p40) é real, de tamanho plausível, e a decisão final o usa (c12p47 com volume, precisão, recall e IV de CORTE). Mas ele não atravessa o capítulo: os blocos 1 e 2 usam o MNIST (c12p4 a c12p21), o bloco 3 usa as duas luas, a Iris (c12p35) e uma regressão de 100 pontos para o boosting (c12p36, c12p37); o crédito aparece só no c12p3 (vocabulário), no c12p16 (cartões de custo, com o experimento feito no MNIST como 'analogia') e do c12p39 em diante. Dentro do bloco 4 o caso é um mosaico: a AUC fora do tempo é de três modelos (CASO.auc em base.json: baixa renda, alta renda, BVS) que não são o da regra Never Paid, e as regras de corte são regras fixas, sem score nem limiar, de modo que o limiar (c12p17, c12p18), a ROC (c12p19) e os ensembles (c12p22 a c12p38) nunca são aplicados ao caso.",
+   "corrigir": "Fazer o caso de crédito atravessar o capítulo com os mesmos números: no c12p10, ao lado do 'nunca diz 5', o 'aprova todos' do caso (92,9%); no c12p16, aplicar a razão de custos às contagens do caso em vez de só ao detector; no c12p38 ou c12p39, dizer qual das três regras é um modelo e se ele é um ensemble, ou admitir na tela que o ganho dos ensembles não foi medido no caso; no c12p42, identificar o modelo da regra Never Paid ou declarar que a AUC dele falta. Se nada disso couber, declarar no c12p39 que o caso é uma composição de três peças do material (regras de corte, AUC de três modelos, exemplo BVS)."
+  },
+  "progressao": {
+   "nota": 8,
+   "evidencia": "A ordem vai do intuitivo ao formal: imagem e pixels (c12p4, c12p5), rótulo binário (c12p6), acurácia (c12p10), matriz (c12p11), precisão, recall e F1 com fórmula (c12p12 a c12p14), custo (c12p16), limiar (c12p17, c12p18), ROC e AUC como probabilidade de ordenar pares (c12p19, c12p21); no bloco 3, voto, (1 − 1/m)ᵐ (c12p32), η do boosting (c12p37). Aprofundamentos marcados no roteiro (c12p20, c12p32, c12p44) e puláveis; percurso essencial de 146 minutos (soma de min com nivel essencial em roteiro.ts), 163 com tudo. Falha uma condição: a validação cruzada é usada antes de ser apresentada. Todos os números do bloco 2 vêm de cross_val_predict(cv=3) (código no c12p11, fonte do c12p8), e a única menção na tela é a frase do c12p7 'as métricas do bloco 2 são medidas, por validação cruzada (slide 11)', logo depois do subtítulo 'medir a qualidade nos dados de treino superestima o desempenho'; o c12p11 (captura 11-c12p11-1920x1080-palco+abrir) mostra só o código. O aluno não vê por que 95,7% medido 'no treino' não é otimista. Menor: 'viés semelhante, variância menor' no c12p31 sem definição no capítulo, e o bloco 3 abre com 'Um modelo isolado tem limites' (c12p21) afirmado, não mostrado.",
+   "corrigir": "No c12p7 (ou num painel do c12p11), desenhar as três partes do treino de 20.000 imagens e dizer que cada imagem é prevista pelo modelo ajustado nas outras duas: a previsão é fora da amostra, por isso 95,7% não é acurácia de treino. No c12p31, uma linha que defina variância como a mudança da fronteira quando a amostra muda, mostrada com duas árvores de amostras diferentes."
+  },
+  "estadoDaArte": {
+   "nota": 9,
+   "evidencia": "Os dez essenciais estão em slide funcionando com dados: E1 c12p10 a c12p15; E2 c12p7 e c12p49 (teste guardado e aberto no fim); E3 c12p16 (custo = c × FN + FP em 602 limiares); E4 c12p19 a c12p21 (AUC 0,9605 e pares sorteados); E5 c12p24 (1.001 aprendizes de 51%) e c12p28; E6 c12p29 a c12p31; E7 c12p32 a c12p34 (37% de fora, OOB); E8 c12p36 e c12p37 (η de 0,1 a 1); E9 c12p41 a c12p44 e c12p51; E10 c12p45, c12p47 e c12p50 (IV com a régua de Siddiqi). Os cinco de fronteira estão no apêndice c12p52, grupo 'Além da aula', com referência primária e o que resolvem; nenhum funciona com dados (o c12p35 só cita a permutação num item revelado). Ressalvas: E2 não tem a referência primária em lugar nenhum do capítulo (Hastie, Tibshirani e Friedman não aparece em c12p52 nem nas fontes); F4 (Wolpert) diz o que resolve mas não quando usar; F5 (Lessmann) aparece em c12p52 ligado ao c12p38, que não mostra o benchmark. Nada apresentado como atual está superado; a importância por impureza vem com o aviso de viés.",
+   "corrigir": "Acrescentar a c12p52, grupo Métricas, Hastie, Tibshirani e Friedman (2009), cap. 7, ligado a c12p7 e c12p11; completar a linha de Wolpert com quando usar (modelos de base de famílias diferentes, com previsões fora da amostra para treinar o combinador); tirar c12p38 da linha de Lessmann ou pôr a frase do benchmark no c12p38. Para 10, pôr ao menos a importância por permutação funcionando no c12p35 (Iris, mesma floresta)."
+  },
+  "fechamento": {
+   "nota": 8,
+   "evidencia": "O c12p48 responde às quatro perguntas do c12p1 com um número cada (9,0%; 95,7% contra 91,0%; 114 de 125 contra 111; 38,9% recusando 15,6%) e diz o que falta para cada uma (painel 'o que ainda falta'); o c12p49 retoma a resposta do slide 1 e abre o teste guardado (94,9% contra 91,1% do trivial; precisão 66,2%, recall 88,0%, conferidos com mnist.teste em base.json); o c12p47 leva a uma recomendação ao comitê. Os guias batem com a tela nos números conferidos (c12p1, c12p47, c12p48, c12p49). Falha: a pergunta de abertura não é respondida com os números do caso. O critério de tempo do c12p49 é provado com outro modelo (BVS, 0,832 para 0,645), e o próprio quadro admite que 'o MNIST não tem safras'; a decisão do c12p47 termina em 'depende' sem a conta que decidiria (o custo do slide 16 nunca é aplicado ao corte). O material de apoio tem um desalinhamento: paginas.json diz que o capítulo 'dá o vocabulário ... usado nos capítulos 4 a 10', capítulos anteriores a ele e que o prereq lista como base.",
+   "corrigir": "No c12p47, depois da escolha, mostrar a razão de custos de equilíbrio entre as regras com as contagens do caso (cerca de 6,1 bons recusados por mau evitado para a regra conjunta contra a política no curto prazo) e pedir a recomendação condicionada a ela; no c12p49, um veredito explícito por critério para o detector (passa, depende do custo, não testável); no c12p48, linha 04, trocar o número da regra que fura a meta pelo da regra recomendada ou mostrar os dois. Corrigir o campo 'usa' de paginas.json para os capítulos que de fato usam o vocabulário."
+  }
+ },
+ "estadoDaArte": [
+  {
+   "id": "E1",
+   "tema": "Matriz de confusão, acurácia, precisão, recall e F1, com a armadilha da classe rara",
+   "classe": "essencial",
+   "slides": [
+    "c12p10",
+    "c12p11",
+    "c12p12",
+    "c12p13",
+    "c12p14",
+    "c12p15"
+   ],
+   "fonte": "Saito e Rehmsmeier (2015), PLoS ONE 10(3) e0118432; em c12p52, grupo Métricas"
+  },
+  {
+   "id": "E2",
+   "tema": "Separação treino e teste, validação cruzada",
+   "classe": "essencial",
+   "slides": [
+    "c12p7",
+    "c12p11",
+    "c12p49"
+   ],
+   "fonte": "Hastie, Tibshirani e Friedman (2009), The Elements of Statistical Learning, 2ª ed., cap. 7; ausente de c12p52 e das fontes dos quadros; validação cruzada só em código (c12p11)"
+  },
+  {
+   "id": "E3",
+   "tema": "Limiar de decisão pela razão de custos dos dois erros",
+   "classe": "essencial",
+   "slides": [
+    "c12p16",
+    "c12p18"
+   ],
+   "fonte": "Elkan (2001), The foundations of cost-sensitive learning, IJCAI; em c12p52, grupo Métricas"
+  },
+  {
+   "id": "E4",
+   "tema": "ROC, AUC como probabilidade de ordenar um par, Gini = 2 AUC − 1, curvas que se cruzam",
+   "classe": "essencial",
+   "slides": [
+    "c12p19",
+    "c12p20",
+    "c12p21"
+   ],
+   "fonte": "Fawcett (2006), Pattern Recognition Letters 27(8); em c12p52, grupo Métricas"
+  },
+  {
+   "id": "E5",
+   "tema": "Voto por maioria e o papel da independência dos erros",
+   "classe": "essencial",
+   "slides": [
+    "c12p23",
+    "c12p24",
+    "c12p27",
+    "c12p28"
+   ],
+   "fonte": "Hansen e Salamon (1990), IEEE TPAMI 12(10); em c12p52, grupo Ensembles"
+  },
+  {
+   "id": "E6",
+   "tema": "Bagging e redução de variância",
+   "classe": "essencial",
+   "slides": [
+    "c12p29",
+    "c12p30",
+    "c12p31"
+   ],
+   "fonte": "Breiman (1996), Bagging predictors, Machine Learning 24(2); em c12p52, grupo Ensembles"
+  },
+  {
+   "id": "E7",
+   "tema": "Florestas aleatórias e estimativa out of bag",
+   "classe": "essencial",
+   "slides": [
+    "c12p32",
+    "c12p33",
+    "c12p34"
+   ],
+   "fonte": "Breiman (2001), Random forests, Machine Learning 45(1); em c12p52, grupo Ensembles"
+  },
+  {
+   "id": "E8",
+   "tema": "Gradient boosting: árvore ajustada ao gradiente negativo, taxa de aprendizado",
+   "classe": "essencial",
+   "slides": [
+    "c12p36",
+    "c12p37"
+   ],
+   "fonte": "Friedman (2001), Annals of Statistics 29(5); em c12p52, grupo Ensembles"
+  },
+  {
+   "id": "E9",
+   "tema": "Validação fora do tempo e estabilidade entre safras",
+   "classe": "essencial",
+   "slides": [
+    "c12p41",
+    "c12p42",
+    "c12p43",
+    "c12p44",
+    "c12p51"
+   ],
+   "fonte": "BCBS (2005), Studies on the Validation of Internal Rating Systems, WP 14; em c12p52, grupo Crédito"
+  },
+  {
+   "id": "E10",
+   "tema": "Regra de corte em crédito: volume recusado, taxa de maus e IV",
+   "classe": "essencial",
+   "slides": [
+    "c12p45",
+    "c12p47",
+    "c12p50"
+   ],
+   "fonte": "Siddiqi (2017), Intelligent Credit Scoring, 2ª ed., Wiley; em c12p52, grupo Crédito"
+  },
+  {
+   "id": "F1",
+   "tema": "Viés da importância por impureza e importância por permutação",
+   "classe": "fronteira",
+   "slides": [
+    "apendice"
+   ],
+   "fonte": "Strobl et al. (2007), BMC Bioinformatics 8:25; em c12p52, Além da aula, com quando usar; o c12p35 só cita a permutação num item revelado, sem cálculo"
+  },
+  {
+   "id": "F2",
+   "tema": "Explicação por contrato com valores de Shapley (SHAP)",
+   "classe": "fronteira",
+   "slides": [
+    "apendice"
+   ],
+   "fonte": "Lundberg e Lee (2017), NeurIPS; em c12p52, Além da aula"
+  },
+  {
+   "id": "F3",
+   "tema": "Boosting regularizado por histograma (XGBoost, LightGBM)",
+   "classe": "fronteira",
+   "slides": [
+    "apendice"
+   ],
+   "fonte": "Chen e Guestrin (2016), KDD; Ke et al. (2017), NeurIPS; em c12p52, Além da aula"
+  },
+  {
+   "id": "F4",
+   "tema": "Stacking: um modelo aprende a combinar os votos",
+   "classe": "fronteira",
+   "slides": [
+    "apendice"
+   ],
+   "fonte": "Wolpert (1992), Neural Networks 5(2); em c12p52, Além da aula; a linha diz o que resolve, mas não quando usar"
+  },
+  {
+   "id": "F5",
+   "tema": "Benchmark de classificadores em crédito",
+   "classe": "fronteira",
+   "slides": [
+    "apendice"
+   ],
+   "fonte": "Lessmann et al. (2015), EJOR 247(1); em c12p52, grupo Crédito, ligado ao c12p38, que não mostra o benchmark"
+  }
+ ],
+ "excecoesVarredura": []
+}
