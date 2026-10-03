@@ -335,9 +335,9 @@
   },
   "c12p16": {
    "beleza": {
-    "nota": 7,
-    "evidencia": "Captura fix12/05-c12p16-1920x1080-palco.png: a curva de custo é desenhada com q7-linha--def (vinho, cor do default) quando é uma curva de custo, o antipadrão de cor fora do papel; três peças disputam o quadro (cartões FP e FN com metade vazia em 'Consequências no acerto', gráfico espremido no centro, previsão e tabela à direita).",
-    "corrigir": "Pintar a curva de custo em cinza escuro ou na cor de decisão só nos marcadores; reduzir os cartões FP e FN a uma faixa acima do gráfico e dar ao gráfico a largura do painel esquerdo."
+    "nota": 8,
+    "evidencia": "corr/c12p16-1920x1080-palco.png: a curva de custo agora é q7-linha--ink (azul escuro), cortada no topo do eixo por abaixoDe(); só os marcadores usam a cor de decisão (● menor custo, ○ limiar 0), com halo que não deixa o rótulo sobre a curva; c = 10 abre com o mínimo deslocado (−6.892, 9.964 contra 19.597). Resta uma falha: os cartões FP e FN da coluna esquerda mostram só 'Consequências no acerto.' e têm cerca de 100 px vazios cada no estado inicial (linhas 63 e 68 de s16), uma terceira coluna que disputa espaço com o gráfico; o eixo x não tem título (limiar do score).",
+    "corrigir": "Reduzir os cartões FP e FN a uma faixa de duas linhas acima do gráfico (as consequências entram nela no acerto) e dar ao gráfico a largura do painel esquerdo; pôr o título 'limiar do score' no eixo x."
    },
    "didatica": {
     "nota": 8,
@@ -416,9 +416,9 @@
     "corrigir": ""
    },
    "rigor": {
-    "nota": 7,
-    "evidencia": "Erro conceitual na peça principal: a área sombreada não é a AUC. Em s19 o caminho é `${caminhoRoc(pts)}L${x(pts[0].fpr)} ${y(0)}L${x(0)} ${y(0)}Z`; como a curva já termina em (0; 0), o último L volta à origem e o Z fecha por uma corda até (100%; 100%): o sombreado fica entre a curva e a diagonal (AUC − 0,5, metade do Gini). Nas capturas final12/19-c12p19-1920x1080-palco.png e b2/c12p19-zoom-1920x1080.png o rótulo 'AUC 0,9605: área sob a curva' está na região branca abaixo da diagonal. No eixo ampliado o mesmo defeito sombreia só o trecho acima da corda.",
-    "corrigir": "Fechar o polígono por baixo: `${caminhoRoc(pts, x, y)}L${x(pts[0].fpr)} ${y(0)}Z` (sem o L de volta à origem). No eixo ampliado, trocar o rótulo para 'área sob a curva até FPR de 10%' ou escondê-lo."
+    "nota": 9,
+    "evidencia": "s19 linha 39: o polígono é `${caminhoRoc(pts, x, y)}L${x(pts[0].fpr)} ${y(0)}Z`, que fecha pela base; em corr/c12p19-1920x1080-palco.png o sombreado ocupa toda a área sob a curva e o rótulo 'AUC 0,9605: área sob a curva' está dentro dele. No eixo ampliado o polígono fecha em FPR 10% e o rótulo da AUC some (linha 44, !zoom). Denominadores visíveis e conferidos: TPR 3.530 de 5.421 = 65,1%; FPR 687 de 54.579 = 1,3% (54.579 = 60.000 − 5.421). Fonte com amostra, semente, versão e convenção dos 602 limiares.",
+    "corrigir": ""
    }
   },
   "c12p20": {
@@ -665,9 +665,9 @@
   },
   "c12p31": {
    "beleza": {
-    "nota": 7,
-    "evidencia": "final12/31-c12p31-1920x1080-palco.png e b3e/c12p31-1-1920x1080.png: as duas regiões nativas parecem iguais. As ilhas da árvore existem na grade (faixas de uma célula, conferidas no base.json), mas com preenchimentos quase iguais (#E3F1E8 e #E7EDF7) e sem a linha de fronteira que o comentário de PlanoLuas promete, ficam invisíveis; quem prova o título é a miniatura de Géron no painel direito. Os planos ocupam só a faixa central do painel, com cerca de 80 px vazios acima e abaixo.",
-    "corrigir": "Desenhar a fronteira em linha escura (contorno entre células de classes diferentes) e subir o contraste das regiões; ampliar os dois planos para a altura do painel; reduzir a figura de Géron ou tirá-la."
+    "nota": 8,
+    "evidencia": "corr2/c12p31-1920x1080-palco.png: a recomposição funcionou. Os dois planos agora dominam (eixos de y≈360 a 643 num painel de 265 a 780, contra 375 a 628 antes), a fronteira escura e as ilhas da árvore provam o título, classe 0 em círculo azul e classe 1 em triângulo verde (símbolo além da cor), erro em anel vermelho; o painel lateral ficou estreito e a miniatura de Géron virou referência pequena acima da tabela, sem concorrer. Resta uma falha da rubrica: rótulo colado, o título 'x₁' encosta no tick '3' nos dois planos (recorte ampliado lê 'x₁3', x≈700 a 725, y≈660). Folgas menores: cerca de 60 px entre os títulos 'Árvore única'/'Bagging de 500 árvores' e o topo dos eixos, e cerca de 90 px vazios no painel lateral abaixo do texto (y≈690 a 780).",
+    "corrigir": "Afastar o título x₁ do último tick: pô-lo centrado abaixo dos ticks do eixo horizontal (ou encerrar o domínio em 2,5 e deixar o rótulo depois da seta). Opcional: subir o topo dos planos para logo abaixo dos títulos."
    },
    "didatica": {
     "nota": 8,
@@ -930,8 +930,8 @@
   "c12p43": {
    "beleza": {
     "nota": 7,
-    "evidencia": "43-c12p43-1920x1080-palco.png: a peça principal é a figura raster do material (matplotlib com fundo cinza, rótulos em inglês 'Bad Rate Treino', 'False Positive Rate' com cerca de 9 px), validação em laranja na ROC e em verde nas barras, fora das cores do sistema; o painel da previsão tem cerca de 180 px vazios entre as alternativas e Restaurar.",
-    "corrigir": "Redesenhar a figura de forma nativa (ROC e barras por faixa, treino azul ●, validação verde ■, rótulos em português) digitalizando as seis taxas por faixa para base.json; reduzir o painel lateral ao conteúdo."
+    "evidencia": "corr2/c12p43-1920x1080-palco.png: a figura original ganhou largura (x 260 a 1210) e domina; a chave em português (Train/Treino, Validation/Validacao, Bad Rate, fx_SCORE, True/False Positive Rate) resolve a leitura. Continuam duas falhas da rubrica: cor fora do papel (validação em laranja na ROC e verde nas barras, fundo cinza do matplotlib, a ponto de a chave precisar explicar as cores) e área morta no painel de previsão, cerca de 145 px entre o fim da alternativa C (y≈630) e Restaurar (y≈775); os retornos (s43-sobreajuste.tsx, linhas 18 a 20) têm duas ou três linhas no painel mais estreito e não preenchem o vão.",
+    "corrigir": "Colocar Restaurar logo abaixo da alternativa C e do retorno (não preso ao rodapé do painel) e encurtar o painel ao conteúdo, ou subir a figura e o painel juntos. Com a figura original obrigatória, a cor fora do papel deixa o teto em 8, salvo se for registrada como exceção declarada de fidelidade ao material."
    },
    "didatica": {
     "nota": 8,
@@ -1032,9 +1032,9 @@
     "corrigir": ""
    },
    "rigor": {
-    "nota": 7,
-    "evidencia": "Erro conceitual: o retorno da alternativa Never Paid diz 'Usar um modelo não basta para a regra caber na meta' e a leitura conclui 'Só a política cumpre a meta', tratando o volume de 11,7% como propriedade do modelo; o volume de um score é escolhido pelo limiar (slides 17 e 18 do próprio capítulo), e o Never Paid poderia ser cortado abaixo de 10%. A comparação justa é entre regras com o mesmo volume.",
-    "corrigir": "Reescrever o retorno de B e a leitura: 'no corte escolhido pelo material, o Never Paid recusa 11,7%; subir o limiar do modelo para recusar menos de 10% é possível, e a comparação justa com a política seria no mesmo volume, dado que o material não traz'; incluir no gabarito do guia essa saída."
+    "nota": 8,
+    "evidencia": "O erro conceitual saiu: o retorno de Never Paid diz que 11,7% é o corte do material e que subir o limiar reduziria o volume, sem recall conhecido nesse corte; a alternativa certa usa a razão de equilíbrio das contagens do caso (conjunta: 6.325 bons a mais para 1.036 maus a menos, 6,1; Never Paid: 3.691 para 489, 7,5, conferidos em CASO.curto.regras), ligada ao c do slide 16. Resta uma frase que generaliza: a leitura do longo prazo (s47, ramo h ≠ curto) diz 'só a política cumpre a meta' sem a ressalva 'no corte do material' que o curto prazo tem; e o retorno da alternativa certa diz que a conjunta 'vence a política' acima de 6,1 sem lembrar que ela recusa 15,6%, fora da meta de 10%.",
+    "corrigir": "No ramo de longo prazo da conclusão, escrever 'no corte do material, só a política cumpre a meta'; no retorno da alternativa D, acrescentar 'desde que o comitê aceite passar da meta de 10% ou ajuste o corte do modelo'."
    }
   },
   "c12p48": {
@@ -1106,8 +1106,8 @@
   "c12p51": {
    "beleza": {
     "nota": 7,
-    "evidencia": "51-c12p51-1920x1080-palco.png: a peça é a figura raster do material (paleta padrão do matplotlib, vermelho e roxo em faixas, ticks e legenda 'fx_SCORE' com cerca de 9 px, meses em inglês); o painel de leitura tem cerca de 200 px vazios entre o texto e os links.",
-    "corrigir": "Redesenhar as duas metades de forma nativa com as séries digitalizadas (faixas 0 a 5 em escala sequencial de risco, rótulos diretos em português) e encurtar o painel de leitura."
+    "evidencia": "corr2/c12p51-1920x1080-palco.png: a peça principal ocupa agora x 260 a 1305 e domina; o painel lateral estreito está cheio (alternância, título, leitura, links), sem área morta relevante; a chave em português (safra, fx_SCORE 0 a 5, esquerda, direita, linha azul) resolve os rótulos em inglês. As duas falhas restantes estão dentro da figura raster: cor fora do papel (paleta categórica padrão do matplotlib para faixas ordinais: 0 azul, 1 verde, 2 vermelho, 3 roxo, 4 amarelo, 5 ciano, sem escala sequencial de risco; o azul da faixa 0 ainda se confunde com a 'linha azul' da chave) e rótulo sobreposto (no gráfico da direita, a linha ciano da faixa 5 atravessa a legenda sobre os itens '3.0' e '4.0' entre Aug e Oct, recorte x 1150 a 1290, y 270 a 410).",
+    "corrigir": "Sem redesenho, o teto é este: as duas falhas estão no raster. Para subir, redesenhar de forma nativa ao lado da original ou numa alternância 'Figura original / Redesenho' (faixas 0 a 5 em escala sequencial de risco, rótulo direto no fim de cada linha em vez de legenda, meses em português, linha tracejada nomeada 'início fora do tempo'); ou, se o professor aceitar, registrar a figura como exceção declarada de fidelidade, o que leva a 8."
    },
    "didatica": {
     "nota": 9,
@@ -1160,9 +1160,9 @@
    "corrigir": "No c12p1, pôr ao lado do KPI de 95,7% o paralelo do caso: no crédito, com 7,1% de maus (5.865 de 82.458), um modelo que aprova todos acerta 92,9%; a pergunta passa a ser sobre uma aprovação de crédito. No c12p47, depois da escolha, mostrar a razão de custos de equilíbrio calculada com as contagens do caso (curto prazo: a regra conjunta recusa 6.325 bons a mais para evitar 1.036 maus a mais que a política, logo só compensa se um mau aprovado custar mais que cerca de 6,1 bons recusados; Never Paid contra política, cerca de 7,5), ligada ao c12p16, e deixar uma única resposta certa condicionada a essa razão. No c12p49, uma linha de veredito para o detector: passa no critério 1 (94,9% contra 91,1% no teste), o critério 2 exige a razão de custos, o critério 3 não é testável no MNIST."
   },
   "exemplo": {
-   "nota": 7,
-   "evidencia": "O caso de crédito (82.458 contratos, 5.865 maus, 7,1%, c12p39 e c12p40) é real, de tamanho plausível, e a decisão final o usa (c12p47 com volume, precisão, recall e IV de CORTE). Mas ele não atravessa o capítulo: os blocos 1 e 2 usam o MNIST (c12p4 a c12p21), o bloco 3 usa as duas luas, a Iris (c12p35) e uma regressão de 100 pontos para o boosting (c12p36, c12p37); o crédito aparece só no c12p3 (vocabulário), no c12p16 (cartões de custo, com o experimento feito no MNIST como 'analogia') e do c12p39 em diante. Dentro do bloco 4 o caso é um mosaico: a AUC fora do tempo é de três modelos (CASO.auc em base.json: baixa renda, alta renda, BVS) que não são o da regra Never Paid, e as regras de corte são regras fixas, sem score nem limiar, de modo que o limiar (c12p17, c12p18), a ROC (c12p19) e os ensembles (c12p22 a c12p38) nunca são aplicados ao caso.",
-   "corrigir": "Fazer o caso de crédito atravessar o capítulo com os mesmos números: no c12p10, ao lado do 'nunca diz 5', o 'aprova todos' do caso (92,9%); no c12p16, aplicar a razão de custos às contagens do caso em vez de só ao detector; no c12p38 ou c12p39, dizer qual das três regras é um modelo e se ele é um ensemble, ou admitir na tela que o ganho dos ensembles não foi medido no caso; no c12p42, identificar o modelo da regra Never Paid ou declarar que a AUC dele falta. Se nada disso couber, declarar no c12p39 que o caso é uma composição de três peças do material (regras de corte, AUC de três modelos, exemplo BVS)."
+   "nota": 8,
+   "evidencia": "O caso agora abre o capítulo (corr/c12p1: 'aprovar todos acerta 92,9% no caso da aula', igual a 1 − 5.865/82.458), volta no c12p10 (conclusão após o acerto: 'aprovar todos acerta 92,9%', CORTE.curto.politica), no c12p16 (leitura remete ao slide 47) e decide o c12p47 pela razão de custos de equilíbrio (6,1 e 7,5). Mas o c12p16 só aponta para o caso, a conta ainda é feita no MNIST; o bloco 3 (ensembles, c12p22 a c12p38) nunca toca a carteira; o c12p42 continua mostrando a AUC de três modelos (baixa renda, alta renda, BVS) que não são o da regra Never Paid; e o c12p39 não declara que o caso é uma composição de peças do material. O c12p49 responde à pergunta de abertura com o teste do MNIST, não com os números do caso.",
+   "corrigir": "No c12p16, acrescentar uma linha com as contagens do caso (a razão 6,1 da regra conjunta como o c que a carteira precisa superar); no c12p38, uma frase dizendo que o ganho dos ensembles não foi medido no caso; no c12p39, declarar que o caso combina regras de corte, AUC de três modelos e o exemplo BVS do material; no c12p49, repetir o 92,9% ao lado do trivial do MNIST."
   },
   "progressao": {
    "nota": 8,
@@ -1341,5 +1341,14 @@
    "fonte": "Lessmann et al. (2015), EJOR 247(1); em c12p52, grupo Crédito, ligado ao c12p38, que não mostra o benchmark"
   }
  ],
- "excecoesVarredura": []
+ "excecoesVarredura": [
+  {
+   "slug": "*",
+   "cenario": "390x844:estudo",
+   "motivo": "tabelas e réguas largas rolam no próprio contêiner no celular"
+  }
+ ],
+ "observacoes": [
+  "c12p43 e c12p51: beleza 7 por cores e legenda da figura original do caso (matplotlib), mantida por decisão do professor; a chave em português foi acrescentada."
+ ]
 }
