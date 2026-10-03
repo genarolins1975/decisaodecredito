@@ -44,11 +44,14 @@ export function S43Sobreajuste({ pagina }: { pagina?: Pagina }) {
               <Kpi tam="mini" rotulo="AUC no treino" valor={num(BVS.treino, 3)} />
               <Kpi tam="mini" rotulo="AUC na validação" valor={num(BVS.validacao, 3)} tom="val" />
             </div>
-            <Seg rotulo="Metade da figura" opcoes={[{ v: "faixas" as Metade, r: "Taxa por faixa" }, { v: "roc" as Metade, r: "Curva ROC" }]} valor={metade} onChange={setMetade} />
+            <div className="q12-s43-ctl">
+              <Seg rotulo="Metade da figura" opcoes={[{ v: "faixas" as Metade, r: "Taxa por faixa" }, { v: "roc" as Metade, r: "Curva ROC" }]} valor={metade} onChange={setMetade} />
+              <Botao sec onClick={() => { setEsc(null); setMetade("faixas"); }}>Restaurar</Botao>
+            </div>
             <p className="q7-p q12-s43-lei">{LEITURA[metade]}</p>
           </>
         )}
-        <div className="q7-botoes q12-s43-bot"><Botao sec onClick={() => { setEsc(null); setMetade("faixas"); }} desab={esc === null}>Restaurar</Botao></div>
+        {!liberado && <div className="q7-botoes q12-s43-bot"><Botao sec onClick={() => { setEsc(null); setMetade("faixas"); }} desab={esc === null}>Restaurar</Botao></div>}
       </Painel>
     </Quadro>
   );

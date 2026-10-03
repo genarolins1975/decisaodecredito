@@ -87,6 +87,7 @@
 .q12-s43-fig .q12-fig--fundo .q12-fig-img { border: 0; padding: 0; }
 .q12-s43-lei { font-size: 1.45cqw; }
 .q12-s43-bot { margin-top: auto; }
+.q12-s43-ctl { display: flex; justify-content: space-between; align-items: center; gap: .8cqw; flex-wrap: wrap; }
 @container q7 (max-width: 820px) { .q12-s43-lei { font-size: 14.5px; } }
 
 /* 44 · c12p44 · seis evidências classificadas em três colunas */
@@ -213,12 +214,12 @@
 .q12-s50-esq { gap: .45cqw; }
 .q7 .q7-slide .q12-s50-tab, .q7 .q7-slide .q12-s50-tab tbody th, .q7 .q7-slide .q12-s50-tab td { font-size: 1.2cqw; }
 .q7 .q7-slide .q12-s50-tab thead th { font-size: 1.12cqw; }
-.q7 .q7-slide .q12-s50-tab th, .q7 .q7-slide .q12-s50-tab td { padding: .22cqw .45cqw; }
+.q7 .q7-slide .q12-s50-tab th, .q7 .q7-slide .q12-s50-tab td { padding: .17cqw .45cqw; }
 .q7 .q7-slide .q12-s50-tab tr[data-grupo="corte"] td { background: var(--q7-dec-s); }
 .q7 .q7-slide .q12-s50-tab tbody th[rowspan] { vertical-align: middle; }
 .q7 .q7-slide .q12-s50-tab td.q12-s50-iv { vertical-align: middle; font-weight: 700; color: var(--q7-prob); background: transparent; }
 .q7 .q7-slide .q12-s50-tab td[data-fora="1"] { color: var(--q7-dec); font-weight: 700; }
-.q12-s50-esq .q7-k + .q7-tab { margin-bottom: .5cqw; }
+.q12-s50-esq .q7-k + .q7-tab { margin-bottom: .3cqw; }
 .q12-s50-ctl { display: flex; justify-content: space-between; align-items: center; gap: .8cqw; }
 @container q7 (max-width: 820px) {
   .q7 .q7-slide .q12-s50-tab { font-size: 12px; display: block; overflow-x: auto; } .q7 .q7-slide .q12-s50-tab thead th { font-size: 11px; }

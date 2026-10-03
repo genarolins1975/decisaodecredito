@@ -58,6 +58,7 @@ export function S45Regras({ pagina }: { pagina?: Pagina }) {
           }}
         </Grafico>
         <ul className="q7-leg"><li><span className="q7-mk q12-s45-mk-c" aria-hidden="true" />grupo removido pelo corte</li><li><span className="q7-mk q12-s45-mk-r" aria-hidden="true" />grupo mantido</li><li><span className="q7-mk q7-mk--trac q7-mk--ink" aria-hidden="true" />taxa da base inteira</li></ul>
+        <p className="q12-s45-sel"><b>{nomeSel}</b>, {HZ[h].nome.toLowerCase()}: o grupo removido tem <b>{vezes(s.precisao / s.mausNoResto, 1)}</b> a taxa de maus do mantido ({pct(s.precisao, 1)} contra {pct(s.mausNoResto, 1)}).</p>
       </Painel>
       <Painel>
         <div className="q12-s45-ctl">
@@ -73,7 +74,6 @@ export function S45Regras({ pagina }: { pagina?: Pagina }) {
             </tr>
           ))}</tbody>
         </table>
-        <p className="q12-s45-sel"><b>{nomeSel}</b>, {HZ[h].nome.toLowerCase()}: o grupo removido tem <b>{vezes(s.precisao / s.mausNoResto, 1)}</b> a taxa de maus do mantido ({pct(s.precisao, 1)} contra {pct(s.mausNoResto, 1)}).</p>
       </Painel>
     </Quadro>
   );

@@ -32,7 +32,7 @@ export function S48Sintese({ pagina }: { pagina?: Pagina }) {
   const [sel, setSel] = useState(3);
   return (
     <Quadro slug="c12p48" pagina={pagina} layout="glx"
-      conclusao={<>Do rótulo ao corte: o detector supera o trivial ({pct(M_SGD.acuracia, 1)} contra {pct(M_TRIVIAL.acuracia, 1)}), o voto supera o melhor isolado ({int(ACERTOS_LUAS.soft)} contra {int(MELHOR)}) e a regra escolhida depende da meta. O slide {SLIDE.c12p49.n} volta à pergunta de abertura.</>}
+      conclusao={<>Do rótulo ao corte, cada bloco deixou <b>um número e uma lacuna</b>. O slide {SLIDE.c12p49.n} volta à pergunta de abertura com três critérios.</>}
       fonte={`${FONTE_MNIST}. ${FONTE_LUAS}. Caso de crédito do material da aula, curto prazo.`}>
       <Painel className="q12-s48-lista">
         <ol>

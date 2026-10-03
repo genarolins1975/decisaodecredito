@@ -1,0 +1,449 @@
+{
+ "paginas": {
+  "c12p9": {
+   "t": {
+    "exp": 2
+   },
+   "aprendizado": "Reconhecer o histograma dos scores e o limiar como o objeto que todo o bloco 2 mede: dois tipos de erro de cada lado da linha.",
+   "apoio": "Olhe as duas distribuições de score e mova o limiar: veja quantos 5 ficam abaixo e quantos não 5 ficam acima.",
+   "conexao": "Antes de separar os erros, a medida mais usada, a acurácia, e o que ela esconde.",
+   "guia": {
+    "funcao": "Abrir o bloco Desempenho com a pergunta da aula e o objeto que volta nos slides 16 a 21: o score do detector e o limiar.",
+    "pre": "Slide 8 (o classificador SGD dá um score; acima de zero, diz 5).",
+    "conducao": "Leia as duas formas: os 5 (barras hachuradas em petróleo) concentram-se acima de zero; os não 5 (barras azuis cheias) abaixo, com cauda que passa da linha. Cada classe está na sua fração, porque os não 5 são dez vezes mais numerosos. No limiar 0, 3.530 dos 5.421 cincos ficam acima, 687 dos 54.579 não 5 também (alarmes falsos) e 1.891 cincos ficam abaixo (perdidos). Mova o limiar para a esquerda: os cincos perdidos caem e os alarmes falsos sobem. Feche com o fluxo do bloco: acurácia, matriz, precisão e recall, limiar, ROC.",
+    "leitura": "Quatro perguntas da aula com Desempenho em destaque; histograma dos scores por classe com o limiar em âmbar; contagens acima e abaixo do limiar; fluxo dos cinco passos do bloco.",
+    "pergunta": "Se as duas distribuições se sobrepõem, existe um limiar sem erro nenhum?",
+    "resposta": "Não. Na região em que as barras se sobrepõem, qualquer linha deixa 5 abaixo ou não 5 acima; o limiar só escolhe qual erro aceitar.",
+    "erros": [
+     {
+      "alt": "Basta subir o limiar para zerar os erros",
+      "confusao": "Vê só os alarmes falsos e esquece os cincos perdidos.",
+      "intervencao": "Mova o limiar para a direita e leia os cincos perdidos subindo."
+     },
+     {
+      "alt": "O histograma mostra que há mais 5 que não 5 acima de zero, logo o modelo é bom",
+      "confusao": "Lê frações de cada classe como contagens.",
+      "intervencao": "Lembre que cada classe está na sua escala: 687 alarmes falsos contra 3.530 acertos acima de zero."
+     }
+    ],
+    "interacao": "Controle do limiar pelas bordas do histograma, com contagens exatas; Restaurar volta ao limiar 0.",
+    "verificacao": "O aluno diz quais dois números mudam quando o limiar sobe.",
+    "transicao": "Primeiro, a medida que junta tudo num número só: a acurácia."
+   }
+  },
+  "c12p10": {
+   "t": {
+    "exp": 2,
+    "disc": 2
+   },
+   "aprendizado": "Calcular a acurácia de um modelo que nunca diz 5 e concluir que, com classes desbalanceadas, a acurácia mede sobretudo a classe majoritária.",
+   "apoio": "Preveja a acurácia do modelo que nunca diz 5; depois troque o algarismo positivo e veja o trivial acertar perto de 90% em todos.",
+   "conexao": "Para ver quem errou, a matriz de confusão separa os acertos e os dois erros.",
+   "guia": {
+    "funcao": "Pôr à prova a resposta do slide 1: 95,7% parece muito até ser comparado ao modelo que não olha imagem nenhuma.",
+    "pre": "Slide 1 (95,7% de acurácia) e slide 6 (5 ou não 5).",
+    "conducao": "Só 9,0% das imagens de treino são 5: 5.421 em 60.000. O modelo que nunca diz 5 acerta todos os 54.579 não 5 e erra os 5.421 cincos: 91,0%. O detector SGD acerta 57.422 de 60.000, 95,7%. A distância entre os dois é de menos de cinco pontos, e o trivial não encontra nenhum 5. Libere o seletor: com qualquer algarismo como positivo, o trivial acerta entre 88,8% e 91,0%. A acurácia de referência é 1 menos a prevalência.",
+    "leitura": "Grade de cem marcas (cada uma 1% das imagens), com os 5 em quadrados petróleo; no acerto, os 5 viram erros tracejados do trivial; dois números grandes: 95,7% do detector e a acurácia do trivial.",
+    "pergunta": "Que número você precisa conhecer antes de elogiar uma acurácia?",
+    "resposta": "A prevalência da classe positiva: com ela, 1 menos a prevalência é a acurácia de não fazer nada.",
+    "erros": [
+     {
+      "alt": "9,0%",
+      "confusao": "Confunde a fração de 5 com os acertos do modelo; 9,0% é justamente o que ele erra.",
+      "intervencao": "Pergunte em quais imagens o modelo que nunca diz 5 acerta."
+     },
+     {
+      "alt": "50%",
+      "confusao": "Pensa num sorteio entre duas classes.",
+      "intervencao": "Lembre que o modelo não sorteia: responde sempre não 5."
+     },
+     {
+      "alt": "95,7%",
+      "confusao": "Atribui ao trivial o número do detector treinado.",
+      "intervencao": "Mostre que o trivial não olha a imagem e conte os não 5."
+     }
+    ],
+    "interacao": "Previsão com quatro alternativas e retorno por confusão; no acerto, o número, a grade com os erros e o seletor do algarismo positivo; Restaurar volta à previsão em aberto.",
+    "verificacao": "O aluno calcula a acurácia trivial para o algarismo 1 (88,8%).",
+    "transicao": "A acurácia junta os erros; a matriz de confusão os separa."
+   }
+  },
+  "c12p11": {
+   "t": {
+    "exp": 2,
+    "disc": 1,
+    "prat": 1
+   },
+   "aprendizado": "Ler a matriz de confusão do detector, com linhas na classe real e colunas na prevista, e distinguir falso positivo de falso negativo.",
+   "apoio": "Clique em cada célula da matriz e leia o que ela conta; nas duas células de erro, veja as imagens mais extremas.",
+   "conexao": "A coluna Previsto: 5 dá a precisão; a linha Real: 5 dá o recall.",
+   "guia": {
+    "funcao": "Separar os 2.578 erros do detector em dois tipos com consequências diferentes, base de todas as métricas seguintes.",
+    "pre": "Slide 10 (a acurácia junta as duas diagonais).",
+    "conducao": "O código usa cross_val_predict em três partes: cada imagem é prevista por um modelo que não a viu. Linhas são a classe real, colunas a prevista. 53.892 verdadeiros negativos e 3.530 verdadeiros positivos são os acertos; 687 falsos positivos (alarmes falsos) e 1.891 falsos negativos (cincos perdidos) são os erros. O FP em foco: 1,3% dos 54.579 não 5; os quatro mais confiantes são um 0, um 9, um 6 e um 8 com score acima de 29.000. Clique em FN: 34,9% dos 5.421 cincos, e os quatro mais rejeitados têm score abaixo de −60.000. A acurácia, (53.892 + 3.530) ÷ 60.000 = 95,7%, não distingue os dois erros.",
+    "leitura": "Código da validação cruzada com a linha em destaque; matriz clicável; painel com a contagem, a fração da linha e as imagens de erro.",
+    "pergunta": "Qual dos dois erros a acurácia esconde melhor neste caso?",
+    "resposta": "Os cincos perdidos: são 1.891, mais que o dobro dos alarmes falsos, e somem dentro dos 4,3% de erro total.",
+    "erros": [
+     {
+      "alt": "Ler as colunas como a classe real",
+      "confusao": "Inverte a convenção da matriz da aula.",
+      "intervencao": "Aponte os rótulos: linhas Real, colunas Previsto."
+     },
+     {
+      "alt": "Achar que FP e FN são o mesmo erro com nomes diferentes",
+      "confusao": "Ignora qual classe foi trocada.",
+      "intervencao": "Compare as imagens das duas células: alarmes falsos são outros algarismos; perdidos são 5."
+     }
+    ],
+    "interacao": "Cada célula é um botão que muda o painel; nas células de erro aparecem quatro imagens; Restaurar volta ao FP.",
+    "verificacao": "O aluno diz em que célula cai um 5 que o modelo chamou de não 5.",
+    "transicao": "Começamos pela coluna da direita: quando o modelo diz 5, quanto acerta?"
+   }
+  },
+  "c12p12": {
+   "t": {
+    "exp": 1,
+    "prat": 1,
+    "disc": 1
+   },
+   "aprendizado": "Calcular a precisão como VP ÷ (VP + FP) e lê-la como a confiabilidade das previsões positivas.",
+   "apoio": "Faça a conta com a matriz e escolha a precisão; no acerto, veja a coluna acesa e a grade das previsões de 5.",
+   "conexao": "A precisão não vê os cincos perdidos; o recall vê.",
+   "guia": {
+    "funcao": "Primeira métrica que separa um erro: a coluna Previsto: 5.",
+    "pre": "Slide 11 (matriz de confusão).",
+    "conducao": "Peça a conta antes de mostrar: das 4.217 vezes em que o detector disse 5, 3.530 eram 5. Precisão = 3.530 ÷ (3.530 + 687) = 83,7%. A grade mostra o mesmo em cem marcas: 84 acertos e 16 alarmes falsos. Em crédito, com o mau pagador como positivo, a precisão é a fração de maus entre os recusados. Ela não diz nada dos 1.891 cincos que o modelo deixou passar.",
+    "leitura": "Matriz com a coluna Previsto: 5 acesa no acerto; fórmula em KaTeX; conta e resultado; grade de cem previsões de 5.",
+    "pergunta": "Um modelo que diz 5 uma única vez, e acerta, tem que precisão?",
+    "resposta": "100%, com recall de 1 em 5.421: precisão alta sozinha não basta.",
+    "erros": [
+     {
+      "alt": "95,7%",
+      "confusao": "Usa a acurácia, que soma os 53.892 verdadeiros negativos.",
+      "intervencao": "Cubra a coluna Previsto: não 5 e refaça a conta."
+     },
+     {
+      "alt": "65,1%",
+      "confusao": "Divide pelos 5 que existem (a linha), que é o recall.",
+      "intervencao": "Mostre a diferença de denominador: 4.217 previsões contra 5.421 cincos."
+     },
+     {
+      "alt": "16,3%",
+      "confusao": "Calcula a fração de alarmes falsos, o complemento.",
+      "intervencao": "Pergunte se a métrica conta acertos ou erros."
+     }
+    ],
+    "interacao": "Previsão com quatro alternativas; no acerto, realce, conta, resultado e grade; Restaurar volta à previsão em aberto.",
+    "verificacao": "O aluno escreve a precisão com os números da matriz sem olhar a fórmula.",
+    "transicao": "Agora a linha de baixo: dos 5 que existem, quantos ele encontra?"
+   }
+  },
+  "c12p13": {
+   "t": {
+    "exp": 1,
+    "prat": 1,
+    "disc": 1
+   },
+   "aprendizado": "Calcular o recall como VP ÷ (VP + FN), também chamado sensibilidade ou TPR, e ligá-lo aos cincos que o modelo perde.",
+   "apoio": "Faça a conta com a linha Real: 5 e escolha o recall; no acerto, veja os quatro cincos que o modelo mais rejeitou.",
+   "conexao": "Precisão 83,7% e recall 65,1%: o F1 junta os dois.",
+   "guia": {
+    "funcao": "Segunda métrica: a linha Real: 5, o erro que a precisão não vê.",
+    "pre": "Slides 11 e 12.",
+    "conducao": "Dos 5.421 cincos, o detector encontra 3.530: recall = 3.530 ÷ (3.530 + 1.891) = 65,1%. Os outros 1.891 ficam abaixo do limiar. Mostre os quatro mais rejeitados, com score entre −106.527 e −62.676: para alcançar qualquer um deles, o limiar aceitaria ao menos 53.983 alarmes falsos. Em crédito, recall é a fração dos maus pagadores que a política recusa.",
+    "leitura": "Matriz com a linha Real: 5 acesa no acerto; fórmula; conta e resultado; quatro imagens de falso negativo com o score.",
+    "pergunta": "Por que precisão e recall têm o mesmo numerador e números tão diferentes?",
+    "resposta": "Porque o denominador muda: precisão divide pelas 4.217 previsões de 5; recall, pelos 5.421 cincos que existem.",
+    "erros": [
+     {
+      "alt": "83,7%",
+      "confusao": "Usa o denominador da precisão.",
+      "intervencao": "Aponte a linha Real: 5 e a soma 3.530 + 1.891."
+     },
+     {
+      "alt": "95,7%",
+      "confusao": "Volta à acurácia, dominada pelos não 5.",
+      "intervencao": "Lembre que a pergunta é só sobre os 5."
+     },
+     {
+      "alt": "34,9%",
+      "confusao": "Calcula a fração perdida, o complemento.",
+      "intervencao": "Pergunte se o recall conta os encontrados ou os perdidos."
+     }
+    ],
+    "interacao": "Previsão com quatro alternativas; no acerto, realce, conta, resultado e as quatro imagens; Restaurar volta à previsão em aberto.",
+    "verificacao": "O aluno diz qual dos dois números cai se o limiar subir (o recall).",
+    "transicao": "Dois números para um modelo: dá para resumir num só?"
+   }
+  },
+  "c12p14": {
+   "t": {
+    "exp": 1,
+    "prat": 1,
+    "disc": 1
+   },
+   "aprendizado": "Calcular o F1 como média harmônica de precisão e recall e ver que ele pune o desequilíbrio entre os dois.",
+   "apoio": "Mova P e R e compare o F1 com a média simples; use o atalho P = 100%, R = 1%.",
+   "conexao": "F1 pesa os dois erros igualmente; o próximo slide compara as quatro métricas com modelos triviais.",
+   "guia": {
+    "funcao": "Mostrar por que o resumo de precisão e recall usa a harmônica, e qual hipótese de custo isso embute.",
+    "pre": "Slides 12 e 13.",
+    "conducao": "Com P = 83,7% e R = 65,1%, F1 = 2 × 3.530 ÷ (2 × 3.530 + 687 + 1.891) = 73,3%; a média simples daria 74,4%. Clique em P = 100%, R = 1%: a média simples dá 50,5% e o F1, 2,0%. A harmônica nunca passa do dobro do menor dos dois. A hipótese escondida: FP e FN entram com o mesmo peso no denominador. Quando um custa mais, o F1 não é a métrica da decisão.",
+    "leitura": "Quatro barras (P, R, média simples hachurada, F1 cheio); dois controles; fórmula nas duas formas e o F1 do detector.",
+    "pergunta": "Por que não usar a média simples de precisão e recall?",
+    "resposta": "Porque ela premia um modelo que maximiza um e abandona o outro: P = 100% e R = 1% teria média 50,5%.",
+    "erros": [
+     {
+      "alt": "F1 é a média de P e R",
+      "confusao": "Confunde harmônica com aritmética.",
+      "intervencao": "Use o atalho extremo e compare as barras."
+     },
+     {
+      "alt": "F1 alto prova que o modelo é bom para crédito",
+      "confusao": "Ignora que o F1 pesa os erros igualmente.",
+      "intervencao": "Antecipe o slide 16: em crédito os dois erros custam diferente."
+     }
+    ],
+    "interacao": "Dois controles (P e R) com barras ao vivo; atalhos Detector e P = 100%, R = 1%; Restaurar volta ao detector.",
+    "verificacao": "O aluno calcula o F1 com P = R = 50% (50%) e explica por que coincide com a média.",
+    "transicao": "Quatro métricas: qual delas engana com um modelo trivial?"
+   }
+  },
+  "c12p15": {
+   "t": {
+    "exp": 1,
+    "disc": 2
+   },
+   "aprendizado": "Associar cada métrica à pergunta que responde e reconhecer como cada modelo trivial engana uma delas.",
+   "apoio": "Troque o modelo de comparação entre nunca diz 5 e sempre diz 5 e veja qual linha engana.",
+   "conexao": "A métrica certa depende de qual erro custa mais: em crédito, os custos são diferentes.",
+   "guia": {
+    "funcao": "Síntese das métricas: a mesma matriz, quatro perguntas, e nenhuma serve sozinha.",
+    "pre": "Slides 10 a 14.",
+    "conducao": "Nunca diz 5: acurácia 91,0%, precisão indefinida (0/0), recall e F1 zero. Sempre diz 5: recall 100%, precisão 9,0% (91,0% das previsões de 5 são alarmes falsos), acurácia 9,0%, F1 16,6%. O detector: 95,7%, 83,7%, 65,1% e 73,3%. Cada trivial engana uma métrica diferente; olhar só uma delas premia o trivial certo.",
+    "leitura": "Tabela Métrica, Pergunta, Detector SGD e o modelo de comparação, com barras em cada valor e a linha que engana marcada; matriz do modelo de comparação ao lado.",
+    "pergunta": "Que métrica um comitê de crédito deveria olhar primeiro?",
+    "resposta": "Depende do erro mais caro: se aprovar um mau custa mais, o recall dos maus no corte; se recusar bons custa mais, a precisão. Por isso o slide 16 traz os custos.",
+    "erros": [
+     {
+      "alt": "Precisão indefinida é zero",
+      "confusao": "Trata 0/0 como 0.",
+      "intervencao": "Mostre que o modelo não fez nenhuma previsão de 5: não há o que medir."
+     },
+     {
+      "alt": "Recall 100% é o melhor resultado possível",
+      "confusao": "Esquece o custo dos alarmes falsos.",
+      "intervencao": "Troque para sempre diz 5 e leia a precisão de 9,0%."
+     }
+    ],
+    "interacao": "Seletor do modelo de comparação, que recalcula a tabela e a matriz; Restaurar volta a nunca diz 5.",
+    "verificacao": "O aluno diz qual métrica o modelo sempre diz 5 maximiza e qual ele derruba.",
+    "transicao": "Em crédito, qual erro custa mais?"
+   }
+  },
+  "c12p16": {
+   "t": {
+    "exp": 1,
+    "disc": 2,
+    "prat": 1
+   },
+   "aprendizado": "Distinguir o custo de um falso positivo e de um falso negativo em crédito e ver que o limiar de menor custo depende da razão entre eles.",
+   "apoio": "Responda qual erro custa mais; depois mova c e compare o limiar 0 com o de menor custo.",
+   "conexao": "O limiar decide; o próximo slide mostra como ele transforma o score em decisão.",
+   "guia": {
+    "funcao": "Levar as métricas do MNIST para o crédito: a classe positiva é o mau pagador, e os erros têm preço.",
+    "pre": "Slides 11 e 15.",
+    "conducao": "Falso positivo: recusar um bom pagador; perde receita e margem, o cliente vai para a concorrência, e o custo é pouco visível porque não aparece na inadimplência. Falso negativo: aprovar um mau; a perda é EAD × LGD, com provisão e capital, e aparece nas safras. Em geral o FN custa mais, mas o FP não é zero. A analogia no detector: perder um 5 custa c alarmes falsos. Com c = 1, o menor custo está no limiar −1.260 (2.517 contra 2.578 no limiar 0). Com c = 30, vai a −9.943: 9.282 alarmes falsos e 303 cincos perdidos, custo 18.372 contra 57.417 no limiar 0, 68% a menos. A acurácia não mudou de definição; mudou o preço dos erros.",
+    "leitura": "Dois cartões (FP e FN) com as consequências no acerto; curva do custo total contra o limiar com o limiar 0 e o de menor custo; tabela com limiar, FP, FN e custo dos dois.",
+    "pergunta": "Se o custo de recusar um bom subir (por exemplo, numa campanha de aquisição), para onde vai o limiar?",
+    "resposta": "Para cima: com o FP mais caro, a razão c cai e o ótimo aceita menos recusas.",
+    "erros": [
+     {
+      "alt": "O falso positivo custa mais",
+      "confusao": "Pesa só a margem perdida, que é real mas costuma ser menor que a perda de crédito.",
+      "intervencao": "Compare a margem de um contrato com EAD × LGD de um default."
+     },
+     {
+      "alt": "Custam o mesmo",
+      "confusao": "Adota a hipótese da acurácia e do F1.",
+      "intervencao": "Mova c de 1 para 30 e mostre o limiar ótimo andando."
+     },
+     {
+      "alt": "O limiar 0 é o ótimo do modelo",
+      "confusao": "Confunde a convenção do SGD com uma decisão econômica.",
+      "intervencao": "Mostre que mesmo com c = 1 o menor custo fica em −1.260."
+     }
+    ],
+    "interacao": "Previsão com três alternativas; consequências dos cartões no acerto; controle c de 1 a 30 com a curva e a tabela ao vivo; Restaurar volta à previsão em aberto e c = 1.",
+    "verificacao": "O aluno explica por que o limiar de menor custo desce quando c sobe.",
+    "transicao": "O limiar é o elo entre score e decisão: vejamos com doze dígitos."
+   }
+  },
+  "c12p17": {
+   "t": {
+    "exp": 1,
+    "prat": 1,
+    "disc": 1
+   },
+   "aprendizado": "Mover o limiar sobre dígitos ordenados pelo score e calcular precisão e recall em cada posição.",
+   "apoio": "Mova o limiar entre as 13 posições e confira as três linhas da tabela da figura.",
+   "conexao": "Com 60.000 imagens, a troca entre precisão e recall vira duas curvas.",
+   "guia": {
+    "funcao": "Tornar concreto o efeito do limiar com uma contagem que cabe na cabeça.",
+    "pre": "Slides 12, 13 e 16.",
+    "conducao": "Os doze dígitos da figura de Géron, em ordem de score: 8, 7, 3, 9, 5, 2, 5, 5, 6, 5, 5, 5, com seis 5. Limiar mais baixo (posição 4): oito previstos 5, seis certos; precisão 6/8 = 75%, recall 6/6 = 100%. Intermediário (posição 7): 4/5 = 80% e 4/6 ≈ 67%. Mais alto (posição 9): 3/3 = 100% e 3/6 = 50%. Peça para a turma prever cada linha antes de clicar. Na posição 12, nada é previsto 5: a precisão fica indefinida.",
+    "leitura": "Fita de doze dígitos com acertos, alarmes falsos e cincos perdidos marcados; controle de 13 posições; figura original; precisão e recall ao vivo; tabela da aula com a linha acesa.",
+    "pergunta": "Que posição maximiza a precisão sem deixá-la indefinida? E o recall?",
+    "resposta": "Precisão 100% nas posições 9 a 11; recall 100% da posição 0 à 4.",
+    "erros": [
+     {
+      "alt": "Subir o limiar sempre aumenta a precisão",
+      "confusao": "Generaliza uma tendência para uma regra.",
+      "intervencao": "Mova da posição 7 para a 8: a precisão vai de 80% a 75%, porque o 6 continua acima e um 5 sai."
+     },
+     {
+      "alt": "Recall de 67% significa 67% de acerto",
+      "confusao": "Confunde recall com acurácia.",
+      "intervencao": "Conte com a turma: 4 dos 6 cincos encontrados."
+     }
+    ],
+    "interacao": "Controle de 13 posições, botões nas linhas da tabela que levam às três posições da figura; Restaurar volta à posição 7.",
+    "verificacao": "O aluno calcula precisão e recall na posição 8 (3/4 = 75% e 3/6 = 50%).",
+    "transicao": "O mesmo experimento com as 60.000 imagens de treino."
+   }
+  },
+  "c12p18": {
+   "t": {
+    "exp": 2,
+    "prat": 1,
+    "disc": 1
+   },
+   "aprendizado": "Ler as curvas de precisão e recall contra o limiar e explicar por que o recall só cai e a precisão pode oscilar.",
+   "apoio": "Mova o limiar e acompanhe a matriz e os dois números; procure o trecho em que a precisão cai.",
+   "conexao": "Para comparar modelos sem escolher um limiar, a curva ROC.",
+   "guia": {
+    "funcao": "Generalizar o slide 17 para a base inteira, com a matriz que muda a cada limiar.",
+    "pre": "Slides 11 a 13 e 17.",
+    "conducao": "Cada ponto é uma borda do histograma, com cerca de 100 imagens por faixa. No limiar 0, a matriz do slide 11: precisão 83,7%, recall 65,1%. Subindo o limiar, o modelo aceita menos positivos: o recall só pode cair, porque o numerador perde cincos e o denominador é fixo. A precisão tende a subir, mas pode oscilar: no topo, ela cai de 95,5% para 92,0% (as últimas faixas têm 200 e 100 imagens). A figura do livro mostra a mesma ideia com outra versão do experimento e outra escala de score.",
+    "leitura": "Curvas de precisão (contínua) e recall (tracejada) contra o limiar, com a linha âmbar, a marca do limiar 0 e o trecho de oscilação circulado; matriz e números ao lado; figura original menor.",
+    "pergunta": "Por que a precisão pode cair quando o limiar sobe, se o modelo fica mais exigente?",
+    "resposta": "Porque o denominador também muda: se saem mais cincos que não 5 de uma faixa para outra, a razão cai. Em amostras finitas, isso acontece nas pontas.",
+    "erros": [
+     {
+      "alt": "Precisão e recall andam juntos",
+      "confusao": "Não vê a troca causada pelo limiar.",
+      "intervencao": "Mova o limiar e leia os dois números em sentidos opostos."
+     },
+     {
+      "alt": "O cruzamento das curvas é o melhor limiar",
+      "confusao": "Confunde ponto de igualdade com ponto ótimo.",
+      "intervencao": "Lembre o slide 16: o ótimo depende do custo dos erros."
+     }
+    ],
+    "interacao": "Controle do limiar pelas bordas do histograma, com linha, ponto, matriz e números ao vivo; Restaurar volta ao limiar 0.",
+    "verificacao": "O aluno explica por que o recall nunca sobe quando o limiar sobe.",
+    "transicao": "Precisão e recall dependem do limiar. Como comparar dois modelos sem escolher um?"
+   }
+  },
+  "c12p19": {
+   "t": {
+    "exp": 2,
+    "prat": 1,
+    "disc": 1
+   },
+   "aprendizado": "Construir a curva ROC como o conjunto dos pontos (FPR, TPR) de todos os limiares e localizar nela o limiar 0.",
+   "apoio": "Mova o limiar e veja o ponto percorrer a curva; amplie o eixo da FPR para 0 a 10%.",
+   "conexao": "Quando duas curvas se cruzam, a região de operação decide.",
+   "guia": {
+    "funcao": "Passar de um limiar para todos: a ROC compara modelos sem escolher o corte.",
+    "pre": "Slides 13 (TPR = recall) e 18.",
+    "conducao": "TPR = VP ÷ (VP + FN), o recall; FPR = FP ÷ (FP + VN), a fração dos não 5 ditos 5. No limiar 0: FPR 1,3% (687 de 54.579) e TPR 65,1%. Subir o limiar desce pela curva rumo a (0; 0); baixar sobe rumo a (100%; 100%). A diagonal é o acaso; o canto superior esquerdo, o modelo perfeito. AUC 0,9605, calculada pelo scikit-learn sobre os scores. Amplie a FPR: quase toda a ação do detector acontece abaixo de 10% de alarmes falsos. Na aula original a curva era conceitual; agora é a do próprio detector.",
+    "leitura": "Curva ROC do detector com área sombreada, diagonal do acaso, canto perfeito, ponto do limiar 0 e ponto do limiar escolhido; fórmulas de TPR e FPR; números ao vivo; seletor do eixo.",
+    "pergunta": "Onde fica, na ROC, o modelo que nunca diz 5? E o que sempre diz 5?",
+    "resposta": "Em (0; 0) e em (100%; 100%): as duas pontas da curva, os dois triviais do slide 15.",
+    "erros": [
+     {
+      "alt": "A ROC depende da prevalência",
+      "confusao": "Confunde FPR com precisão.",
+      "intervencao": "Mostre que cada taxa é calculada dentro de uma classe."
+     },
+     {
+      "alt": "AUC 0,96 quer dizer 96% de acerto",
+      "confusao": "Confunde AUC com acurácia.",
+      "intervencao": "Antecipe o slide 21: a AUC é uma probabilidade sobre pares."
+     }
+    ],
+    "interacao": "Controle do limiar com o ponto na curva; seletor do eixo da FPR (inteiro ou de 0 a 10%); Restaurar volta ao limiar 0 e ao eixo inteiro.",
+    "verificacao": "O aluno lê na curva a TPR com FPR de cerca de 5%.",
+    "transicao": "Uma curva só. E quando há duas?"
+   }
+  },
+  "c12p20": {
+   "t": {
+    "exp": 1,
+    "disc": 1,
+    "prat": 1
+   },
+   "aprendizado": "Escolher entre dois modelos pela ROC: dominância decide de imediato; cruzamento exige saber a FPR que se tolera.",
+   "apoio": "Alterne entre dominância (dados) e cruzamento (conceitual) e mova a FPR tolerada.",
+   "conexao": "A AUC resume a curva num número; o slide 21 mostra o que ela mede.",
+   "guia": {
+    "funcao": "Aprofundamento: mostrar que AUC maior não basta quando as curvas se cruzam.",
+    "pre": "Slide 19.",
+    "conducao": "Dominância, com dados: a floresta aleatória tem TPR maior ou igual ao SGD em toda FPR (AUC 0,9983 contra 0,9605), e a escolha não depende do corte. Cruzamento, conceitual: A e B são binormais inventadas para a aula (AUC 0,81 e 0,80) e se cruzam em FPR de 29%. Com FPR tolerada de 5%, A encontra 56,3% dos positivos e B, 14,8%. Acima de 29%, B vence. Em crédito, um corte pequeno opera na região de FPR baixa, e é lá que a comparação vale.",
+    "leitura": "Plano ROC com as duas curvas, a região em que A vence sombreada, a linha da FPR tolerada e os dois pontos; TPR e AUC de cada modelo ao lado.",
+    "pergunta": "Se a política recusa poucos clientes, qual dos dois modelos conceituais você levaria?",
+    "resposta": "O A: na região de FPR baixa, ele encontra muito mais maus, embora as AUCs sejam quase iguais.",
+    "erros": [
+     {
+      "alt": "O de maior AUC é sempre melhor",
+      "confusao": "Trata a AUC como medida da região de operação.",
+      "intervencao": "Mova a FPR para 60% e mostre B vencendo com AUC menor."
+     },
+     {
+      "alt": "As binormais são modelos ajustados ao MNIST",
+      "confusao": "Não lê a declaração de dado conceitual.",
+      "intervencao": "Aponte a fonte do slide: curvas conceituais, não ajustadas a dados."
+     }
+    ],
+    "interacao": "Seletor dominância ou cruzamento; controle da FPR tolerada de 1% a 90%; Restaurar volta ao cruzamento com 5%.",
+    "verificacao": "O aluno diz em que FPR os dois modelos conceituais empatam (29%).",
+    "transicao": "A AUC junta a curva num número. O que esse número significa?"
+   }
+  },
+  "c12p21": {
+   "t": {
+    "exp": 1,
+    "prat": 1,
+    "disc": 1
+   },
+   "aprendizado": "Interpretar a AUC como a probabilidade de um positivo sorteado ter score maior que um negativo sorteado e converter AUC em Gini.",
+   "apoio": "Mova a AUC e leia o Gini na régua; sorteie pares e veja a fração convergir para a AUC.",
+   "conexao": "Um modelo isolado tem limites: o bloco 3 combina vários.",
+   "guia": {
+    "funcao": "Fechar o bloco com o número que resume a ordenação e a escala usada no crédito.",
+    "pre": "Slides 19 e 20.",
+    "conducao": "Gini = 2 × AUC − 1: o acaso tem AUC 0,50 e Gini 0; o detector, 0,9605 e 0,921; a floresta, 0,9983 e 0,9967; o perfeito, 1 e 1. A AUC é a probabilidade de um 5 sorteado receber score maior que um não 5 sorteado. Sorteie: com 10 pares, 10 acertos; com 100, 97%; com 1.000, 94,9%; com 10.000, 96,0%, perto de 0,9605. O empate de faixa vale meio ponto. Em crédito, o Gini é a mesma informação na escala de 0 a 1.",
+    "leitura": "Fórmula do Gini; régua com AUC em cima e Gini embaixo, referências e o cursor âmbar; tabela de referências; sorteio de pares com a fração e a curva de convergência.",
+    "pergunta": "Um Gini de 0,40 corresponde a que AUC?",
+    "resposta": "0,70: AUC = (Gini + 1) ÷ 2.",
+    "erros": [
+     {
+      "alt": "Gini 0,92 é 92% de acerto",
+      "confusao": "Confunde medida de ordenação com acurácia.",
+      "intervencao": "Mostre a leitura por pares: é sobre quem fica acima, não sobre acertar o rótulo."
+     },
+     {
+      "alt": "Com 10 pares, 100% prova que o modelo é perfeito",
+      "confusao": "Lê ruído de amostra pequena como sinal.",
+      "intervencao": "Sorteie 1.000 e 10.000 pares e mostre a fração se aproximando de 0,9605."
+     }
+    ],
+    "interacao": "Controle da AUC com o Gini e a régua; botões de 10 a 10.000 pares, com semente fixa; Restaurar volta à AUC do detector e a nenhum par.",
+    "verificacao": "O aluno converte a AUC do detector em Gini sem calculadora.",
+    "transicao": "Um modelo isolado tem limites. E se combinarmos vários? Slide 22."
+   }
+  }
+ }
+}

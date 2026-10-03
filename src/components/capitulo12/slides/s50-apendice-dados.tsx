@@ -22,7 +22,7 @@ export function S50ApendiceDados({ pagina }: { pagina?: Pagina }) {
   const lider = REGRAS.find((r) => r.id === LIDER_RECALL(h))!;
   return (
     <Quadro slug="c12p50" pagina={pagina} layout="gl"
-      conclusao={<>{HZ[h].nome}: {int(C.politica.contratos)} contratos, <b>{int(C.politica.maus)} maus</b> entre {int(C.politica.classificados)} classificados ({pct(C.politica.taxaMaus, 1)}). A {lider.nome.toLowerCase()} lidera o recall ({pct(C[lider.id].recall, 1)}) e recusa {pct(C[lider.id].volume, 1)}, acima da meta de {pct(META_VOLUME, 0)}.</>}
+      conclusao={<>{HZ[h].nome}: {int(C.politica.contratos)} contratos, <b>{int(C.politica.maus)} maus</b> entre {int(C.politica.classificados)} classificados ({pct(C.politica.taxaMaus, 1)}). A regra {lider.nome} lidera o recall ({pct(C[lider.id].recall, 1)}) e recusa {pct(C[lider.id].volume, 1)}, acima da meta de {pct(META_VOLUME, 0)}.</>}
       fonte={`${FONTE_CASO}. Alvo ${HZ[h].alvo}. WoE = ln(% dos bons ÷ % dos maus) do grupo; IV = Σ (% bons − % maus) × WoE; volume sobre o total de contratos.`}>
       <Painel className="q12-s50-esq">
         <p className="q7-k">Contagens por regra e grupo, {HZ[h].nome.toLowerCase()}</p>

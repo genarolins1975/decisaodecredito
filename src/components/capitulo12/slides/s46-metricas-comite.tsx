@@ -35,7 +35,7 @@ export function S46MetricasComite({ pagina }: { pagina?: Pagina }) {
   const l = LINHAS.find((x) => x.id === sel)!;
   return (
     <Quadro slug="c12p46" pagina={pagina} layout="glx"
-      conclusao={<>Precisão, recall e volume são contas sobre <b>o mesmo grupo recusado</b>; AUC e a validação fora do tempo julgam o score antes do corte. No slide {SLIDE.c12p47.n}, as três primeiras escolhem a regra.</>}
+      conclusao={<>Precisão, recall e volume medem <b>o mesmo grupo recusado</b>; AUC e validação fora do tempo julgam o score antes do corte. O slide {SLIDE.c12p47.n} usa as três primeiras.</>}
       fonte={`${FONTE_CASO}. Detector de 5: validação cruzada em três partes no treino do MNIST (${int(M_SGD.n)} imagens).`}>
       <Painel className="q12-s46-esq">
         <table className="q7-tab q12-s46-tab">

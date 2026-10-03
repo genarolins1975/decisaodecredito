@@ -27,9 +27,9 @@ const GRUPOS = [3, 2, 1, 0].map((q) => ({ q, n: COLS.filter((i) => SOBRE.quantos
 const SVC_ERROS = ERROS.svc.length, HARD_ERROS = ERROS.hard.length;
 if (SOBRE.tres + SOBRE.dois !== HARD_ERROS) throw new Error("s28: o hard voting deveria errar onde dois ou três erram");
 const OPS: Opcao[] = [
-  { texto: `Uns ${int(Math.round(SOBRE.esperadoMaioria))}: com três votos, a maioria corrige quase tudo`, certa: false, retorno: <>Seria o esperado se os três errassem de forma independente ({num(SOBRE.esperadoMaioria, 1)}). Mas em {int(SOBRE.tres)} pontos os três erram juntos, e o voto não salva nenhum deles.</> },
-  { texto: `${int(HARD_ERROS)}: só ${int(SVC_ERROS - HARD_ERROS)} a menos que o SVC`, certa: true, retorno: <>Isso: a maioria erra onde dois ou três erram, {int(SOBRE.tres)} + {int(SOBRE.dois)} = {int(HARD_ERROS)} pontos. Os erros andam juntos, e o ganho é pequeno.</> },
-  { texto: `${int(ERROS.lr.length)} ou mais: o voto herda os erros do pior`, certa: false, retorno: <>Um erro isolado é vencido pelos outros dois votos: os {int(SOBRE.um)} pontos em que só um erra viram acerto do conjunto.</> },
+  { texto: `Uns ${int(Math.round(SOBRE.esperadoMaioria))}: com três votos, a maioria corrige quase tudo`, certa: false, retorno: <>Seria o esperado com erros independentes ({num(SOBRE.esperadoMaioria, 1)}). Mas em {int(SOBRE.tres)} pontos os três erram juntos.</> },
+  { texto: `${int(HARD_ERROS)}: só ${int(SVC_ERROS - HARD_ERROS)} a menos que o SVC`, certa: true, retorno: <>Isso: a maioria erra onde dois ou três erram, {int(SOBRE.tres)} + {int(SOBRE.dois)} = {int(HARD_ERROS)} pontos.</> },
+  { texto: `${int(ERROS.lr.length)} ou mais: o voto herda os erros do pior`, certa: false, retorno: <>Um erro isolado perde para os outros dois votos: os {int(SOBRE.um)} pontos em que só um erra viram acerto.</> },
 ];
 
 export function S28VotoIsolados({ pagina }: { pagina?: Pagina }) {
@@ -96,7 +96,7 @@ export function S28VotoIsolados({ pagina }: { pagina?: Pagina }) {
             <thead><tr><th className="q7-t-l">Modelo</th><th>Acurácia no teste</th><th>Acertos em {int(N_TESTE_LUAS)}</th></tr></thead>
             <tbody>{TABELA.map((t) => <tr key={t.k} data-on={t.k === "hard" || t.k === "soft" ? "1" : undefined}><th>{t.nome}</th><td>{num(LUAS.modelos[t.k].acc, 3)}</td><td>{int(ACERTOS_LUAS[t.k])}</td></tr>)}</tbody>
           </table>
-          <p className="q7-nota q12-s28-cv">Diferenças de 1 a 3 acertos ({num(UM_ACERTO * 100, 1)} a {num(3 * UM_ACERTO * 100, 1)} pontos) pedem validação cruzada antes de qualquer conclusão.</p>
+          <p className="q7-nota q12-s28-cv">Diferenças de 1 a 3 acertos ({num(UM_ACERTO * 100, 1)} a {num(3 * UM_ACERTO * 100, 1)} pontos) pedem validação cruzada.</p>
         </>}
         {!rev && <p className="q7-nota">Se os três errassem de forma independente, errariam juntos em {num(SOBRE.esperadoTres, 1)} ponto, em média. Na matriz, são {int(SOBRE.tres)}.</p>}
       </Painel>

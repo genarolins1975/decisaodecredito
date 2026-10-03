@@ -85,7 +85,7 @@ export function S41ForaDoTempo({ pagina }: { pagina?: Pagina }) {
                     {Array.from({ length: N }, (_, i) => i).filter((i) => ehVal(i) && i < ultimoTreino).map((i) => (
                       <text key={i} className="q7-rot--peq" x={x(i) + w / 2} y={yM1} textAnchor="middle" style={{ fill: "#8C2332", fontWeight: 700 }}>antes</text>
                     ))}
-                    <text className="q7-rot--peq" x={x(ultimoTreino) + w / 2} y={yM2} textAnchor="middle" style={{ fill: "#3D5A8A", fontWeight: 700 }}>última do treino</text>
+                    <text className="q7-rot--peq" x={ultimoTreino >= N - 2 ? x(ultimoTreino + 1) - gap / 2 : x(ultimoTreino) + w / 2} y={yM2} textAnchor={ultimoTreino >= N - 2 ? "end" : "middle"} style={{ fill: "#3D5A8A", fontWeight: 700 }}>{ultimoTreino >= N - 2 ? "última do treino ↑" : "↑ última do treino"}</text>
                   </>
                 )}
                 <text className="q7-rot" x={l} y={yS} style={{ fill: "#3D5A8A" }}>● o modelo aprende com {int(N - nVal)} safras</text>

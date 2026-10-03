@@ -210,3 +210,7 @@
   :is([data-q7="c12p15"], [data-q7="c12p18"]) .q12-mx--compacta .q12-mx-n { font-size: 12px; }
   .q12-s18-fig figcaption { font-size: 12px; }
 }
+/* ajustes de altura: 16 (tabela do lado) e 09 (lado do histograma) cabem com folga em 1366 × 768 */
+.q7 .q7-slide .q12-s16-tab th, .q7 .q7-slide .q12-s16-tab td { padding-top: .2cqw; padding-bottom: .2cqw; }
+.q12-s09-lado { gap: .35cqw; }
+.q12-s09-lado .q7-btn { min-height: 2.3cqw; padding-top: .3cqw; padding-bottom: .3cqw; }
