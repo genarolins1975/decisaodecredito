@@ -64,7 +64,7 @@ export function S04Mnist({ pagina }: { pagina?: Pagina }) {
                 </button>
               ))}
             </div>
-            <p className="q7-nota">Neste pixel, {acesos} das {CINCOS.length} imagens de 5 têm traço (valor acima de 0).</p>
+            <p className="q7-nota">Neste pixel, {acesos} das {CINCOS.length} têm traço (valor acima de 0).</p>
           </div>
           <div className="q7-botoes"><Botao sec onClick={() => { setK(0); setP(P0); }} desab={inicial}>Restaurar</Botao></div>
         </Painel>
