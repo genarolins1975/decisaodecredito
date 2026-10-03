@@ -27,7 +27,7 @@ export function S32Fora37({ pagina }: { pagina?: Pagina }) {
   const longe = m > MS[MS.length - 1];
   return (
     <Quadro slug="c12p32" pagina={pagina} layout="gl"
-      conclusao={<>Com m = {int(m)}, uma instância fica de fora com probabilidade <b>{pct(fora, 1)}</b>; com o treino das luas (m = {int(N_TREINO_LUAS)}), {pct(FORA_375, 1)}, já colado em 1/e = {pct(E, 1)}. Essas instâncias validam cada árvore de graça (slide {SLIDE.c12p33.n}).</>}
+      conclusao={<>{m === N_TREINO_LUAS ? <>Com o treino das luas (m = {int(m)}), uma instância fica de fora com probabilidade <b>{pct(FORA_375, 1)}</b></> : <>Com m = {int(m)}, uma instância fica de fora com probabilidade <b>{pct(fora, 1)}</b>; com o treino das luas (m = {int(N_TREINO_LUAS)}), {pct(FORA_375, 1)}</>}, já perto de 1/e = {pct(E, 1)}. Essas instâncias validam cada árvore sem custo adicional (slide {SLIDE.c12p33.n}).</>}
       fonte="Cálculo exato: (1 − 1/m)ᵐ é a probabilidade de uma instância não sair em nenhum de m sorteios com reposição entre m; o limite é 1/e.">
       <Painel>
         <Grafico titulo="Probabilidade de inclusão na amostra" sub="m sorteios com reposição entre m instâncias" arCelular="4 / 3"
@@ -46,7 +46,7 @@ export function S32Fora37({ pagina }: { pagina?: Pagina }) {
                 {pts.map((p, i) => <circle key={i} cx={p.x} cy={p.y} r={d.fs * 0.17} fill="#176C73" />)}
                 <line x1={cx} x2={cx} y1={y(0.6)} y2={cy} stroke="#A85A0C" strokeWidth={1.6} strokeDasharray="4 4" />
                 <circle cx={cx} cy={cy} r={d.fs * 0.42} fill="#A85A0C" stroke="#fff" strokeWidth={2.5} />
-                <text className="q7-corte-t" x={cx} y={cy} dx={longe || m > 30 ? "-.7em" : ".7em"} dy="-.7em" textAnchor={longe || m > 30 ? "end" : "start"}>{longe ? `m = ${int(m)} →` : `m = ${int(m)}`}: {pct(dentro, 1)}</text>
+                <text className="q7-corte-t" x={cx} y={cy} dx={longe || m > 30 ? "-.7em" : ".7em"} dy="-.7em" textAnchor={longe || m > 30 ? "end" : "start"}>{longe ? `m = ${int(m)}, fora do eixo` : `m = ${int(m)}`}: {pct(dentro, 1)}</text>
               </g>
             );
           }}

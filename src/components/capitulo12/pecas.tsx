@@ -86,18 +86,20 @@ export function MatrizReal({ vn, fp, fn, vp, pos = "5", neg = "não 5", realce =
   const cel = (c: Cel) => {
     const Tag = onFoco ? "button" : "div";
     const acerto = c === "vn" || c === "vp";
-    return (
+    // com clique, o botão fica dentro de uma célula: uma linha de tabela só aceita células como filhas
+    const envolve = (x: ReactNode) => (onFoco ? <span role="cell" className="q12-mx-cel">{x}</span> : x);
+    return envolve(
       <Tag type={onFoco ? "button" : undefined} className="q12-mx-c" data-cel={c} data-acerto={acerto ? "1" : "0"} data-realce={realce.includes(c) ? "1" : undefined} data-foco={foco === c ? "1" : undefined}
         onClick={onFoco ? () => onFoco(c) : undefined} aria-pressed={onFoco ? foco === c : undefined} role={onFoco ? undefined : "cell"}>
         <span className="q12-mx-v">{oculta.includes(c) ? "?" : int(val[c])}</span>
         {!compacta && <span className="q12-mx-n"><b>{nome[c][0]}</b> {nome[c][1]}</span>}
         {compacta && <span className="q12-mx-n"><b>{nome[c][0]}</b></span>}
-      </Tag>
+      </Tag>,
     );
   };
   return (
     <div className={`q12-mx ${compacta ? "q12-mx--compacta" : ""}`} role="table" aria-label={`Matriz de confusão: ${int(vn)} verdadeiros negativos, ${int(fp)} falsos positivos, ${int(fn)} falsos negativos, ${int(vp)} verdadeiros positivos`}>
-      <div className="q12-mx-cab" role="row"><span role="columnheader" /><span role="columnheader">Previsto: {neg}</span><span role="columnheader">Previsto: {pos}</span></div>
+      <div className="q12-mx-cab" role="row"><span role="columnheader"><span className="q7-sr">Classe real</span></span><span role="columnheader">Previsto: {neg}</span><span role="columnheader">Previsto: {pos}</span></div>
       <div className="q12-mx-lin" role="row"><span className="q12-mx-r" role="rowheader">Real: {neg}</span>{cel("vn")}{cel("fp")}</div>
       <div className="q12-mx-lin" role="row"><span className="q12-mx-r" role="rowheader">Real: {pos}</span>{cel("fn")}{cel("vp")}</div>
     </div>

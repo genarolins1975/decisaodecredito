@@ -17,7 +17,8 @@ const P = {
   avaliacao: `docs/capitulo${N}/avaliacao.json`,
   saida: `docs/capitulo${N}/AVALIACAO.md`,
 };
-const MIN = 9;
+// --min muda o piso quando o professor autoriza outro (capítulo 12: piso 8, decisão de 3 de outubro de 2026)
+const MIN = Number(arg("min", "9"));
 const ler = (p) => { try { return JSON.parse(fs.readFileSync(p, "utf8")); } catch { return null; } };
 const roteiro = fs.readFileSync(`src/lib/capitulo${N}/roteiro.ts`, "utf8");
 const SLIDES = [...roteiro.matchAll(/slug: "(c\d+p\d+)", n: (\d+),[^\n]*?titulo: "([^"]+)"/g)].map((m) => ({ slug: m[1], n: +m[2], titulo: m[3] })).sort((a, b) => a.n - b.n);

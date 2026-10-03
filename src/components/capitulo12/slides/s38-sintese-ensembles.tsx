@@ -29,6 +29,7 @@ const MIN_E = Math.min(...ENS), MAX_E = Math.max(...ENS);
 const VALS = PONTOS.map((p) => ACERTOS_LUAS[p.k]);
 const LO = Math.min(...VALS) - 1, HI = Math.max(...VALS) + 1;
 const GRUPOS = [...new Set(VALS)].sort((a, b) => a - b).map((v) => ({ v, ps: PONTOS.filter((p) => ACERTOS_LUAS[p.k] === v) }));
+if (GRUPOS.some((g) => g.ps.some((p) => p.ens !== g.ps[0].ens))) throw new Error("s38: modelos com os mesmos acertos deveriam ser do mesmo tipo");
 if (MIN_E <= ACERTOS_LUAS.arvore) throw new Error("s38: todo ensemble grande deveria superar a árvore única");
 
 export function S38SinteseEnsembles({ pagina }: { pagina?: Pagina }) {
@@ -40,6 +41,7 @@ export function S38SinteseEnsembles({ pagina }: { pagina?: Pagina }) {
         <Painel className="q12-s38-tab">
           <div className="q12-s38-rola">
           <table className="q7-tab">
+            <colgroup><col style={{ width: "21%" }} /><col style={{ width: "19%" }} /><col style={{ width: "10%" }} /><col style={{ width: "19%" }} /><col style={{ width: "31%" }} /></colgroup>
             <thead><tr><th className="q7-t-l">Método</th><th className="q7-t-l">Fonte de diversidade</th><th className="q7-t-l">Treino</th><th className="q7-t-l">Combinação</th><th className="q7-t-l">No exemplo da aula</th></tr></thead>
             <tbody>
               {LINHAS.map((l) => (
@@ -74,14 +76,11 @@ export function S38SinteseEnsembles({ pagina }: { pagina?: Pagina }) {
                       const cy = d.fs * 0.6 + j * ((base - d.fs * 1.2) / PONTOS.length);
                       return <g key={p.k}><text className="q7-rot--peq" x={l - d.fs * 0.4} y={cy} dy=".35em" textAnchor="end" style={{ fill: p.ens ? "#176C73" : "#3D5A8A", fontWeight: 600 }}>{p.r}</text><line x1={l} x2={x(ACERTOS_LUAS[p.k])} y1={cy} y2={cy} stroke="#E2DFD6" />{marca(p, x(ACERTOS_LUAS[p.k]), cy)}</g>;
                     })
-                    : GRUPOS.map((g) => (
-                      <g key={g.v}>
-                        {g.ps.map((p, j) => {
-                          const cy = base - d.fs * (0.8 + j * 1.25);
-                          return <g key={p.k}>{marca(p, x(g.v), cy)}<text className="q7-rot--peq" x={x(g.v) + s * 1.6} y={cy} dy=".35em" style={{ fill: p.ens ? "#176C73" : "#3D5A8A", fontWeight: 600 }}>{p.r}</text></g>;
-                        })}
-                      </g>
-                    ))}
+                    : GRUPOS.map((g) => {
+                      // modelos com os mesmos acertos dividem a marca e o rótulo (todos do mesmo tipo neste dado)
+                      const cy = base - d.fs * 0.8, p = g.ps[0];
+                      return <g key={g.v}>{marca(p, x(g.v), cy)}<text className="q7-rot--peq" x={x(g.v) + s * 1.6} y={cy} dy=".35em" style={{ fill: p.ens ? "#176C73" : "#3D5A8A", fontWeight: 600 }}>{g.ps.map((q) => q.r).join(" e ")}</text></g>;
+                    })}
                 </g>
               );
             }}

@@ -1,7 +1,7 @@
 {
  "source": "content/original/apresentacao-curso-pd.html",
- "sha256": "f3c7ef1a27783c6ea5b71e51f2e10aec0b78e3e0ad8f09a62b9776d2c444f7bb",
- "extractedAt": "2026-10-03T08:19:38.226Z",
+ "sha256": "770c81d1c58d25961cfbb8c7b761043655de34bf033c6882c69c89b6efbebf6c",
+ "extractedAt": "2026-10-03T09:31:34.167Z",
  "edition": "2026",
  "units": [
   {
@@ -3985,7 +3985,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4004,7 +4004,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4023,7 +4023,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4042,7 +4042,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4061,7 +4061,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4080,7 +4080,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4099,7 +4099,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4118,7 +4118,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4137,7 +4137,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4156,7 +4156,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4175,7 +4175,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4194,7 +4194,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4213,7 +4213,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4232,7 +4232,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4251,7 +4251,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4270,7 +4270,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4289,7 +4289,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4308,7 +4308,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4327,7 +4327,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4346,7 +4346,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4365,7 +4365,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4384,7 +4384,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4403,7 +4403,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4422,7 +4422,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4441,7 +4441,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4460,7 +4460,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4479,7 +4479,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4498,7 +4498,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4517,7 +4517,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4536,7 +4536,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4555,7 +4555,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4574,7 +4574,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4593,7 +4593,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4612,7 +4612,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4631,7 +4631,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4650,7 +4650,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4669,7 +4669,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4688,7 +4688,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4707,7 +4707,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4726,7 +4726,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4745,7 +4745,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4764,7 +4764,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4783,7 +4783,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4802,7 +4802,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4821,7 +4821,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4840,7 +4840,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4859,7 +4859,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4878,7 +4878,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4897,7 +4897,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4916,7 +4916,7 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
    "hasFormula": false
   },
   {
@@ -4935,11 +4935,30 @@
    "tables": 0,
    "questions": [],
    "predictions": [],
-   "hasGuide": false,
+   "hasGuide": true,
+   "hasFormula": false
+  },
+  {
+   "source": "#/c12p52",
+   "slug": "c12p52",
+   "pageId": "al1sdlhny59z0q1apxgps",
+   "chapter": 12,
+   "unit": 6,
+   "title": "Apêndice: referências e métodos além da aula",
+   "level": "complementar",
+   "minutes": 3,
+   "origin": "rec",
+   "rendering": "static",
+   "controls": 0,
+   "svgs": 0,
+   "tables": 0,
+   "questions": [],
+   "predictions": [],
+   "hasGuide": true,
    "hasFormula": false
   }
  ],
- "questions": 270,
+ "questions": 322,
  "rubrics": [
   {
    "slug": "comite",
@@ -5021,11 +5040,65 @@
  ],
  "rendering": {
   "legacy": 84,
-  "static": 147,
+  "static": 148,
   "native": 21
  },
  "resync": {
-  "synced": [],
+  "synced": [
+   "c4p21",
+   "c5p3",
+   "c12p1",
+   "c12p2",
+   "c12p3",
+   "c12p4",
+   "c12p5",
+   "c12p6",
+   "c12p7",
+   "c12p8",
+   "c12p9",
+   "c12p10",
+   "c12p11",
+   "c12p12",
+   "c12p13",
+   "c12p14",
+   "c12p15",
+   "c12p16",
+   "c12p17",
+   "c12p18",
+   "c12p19",
+   "c12p20",
+   "c12p21",
+   "c12p22",
+   "c12p23",
+   "c12p24",
+   "c12p25",
+   "c12p26",
+   "c12p27",
+   "c12p28",
+   "c12p29",
+   "c12p30",
+   "c12p31",
+   "c12p32",
+   "c12p33",
+   "c12p34",
+   "c12p35",
+   "c12p36",
+   "c12p37",
+   "c12p38",
+   "c12p39",
+   "c12p40",
+   "c12p41",
+   "c12p42",
+   "c12p43",
+   "c12p44",
+   "c12p45",
+   "c12p46",
+   "c12p47",
+   "c12p48",
+   "c12p49",
+   "c12p50",
+   "c12p51"
+  ],
   "diverged": []
  }
 }
