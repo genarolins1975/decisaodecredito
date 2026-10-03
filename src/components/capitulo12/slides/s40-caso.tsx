@@ -56,7 +56,11 @@ export function S40Caso({ pagina }: { pagina?: Pagina }) {
         </div>
         <p className="q7-nota"><b>Proposta do material:</b> {PROPOSTA_MATERIAL}</p>
       </Painel>
-      <Painel titulo="Que métrica mede cada exigência? O mau é a classe positiva" className="q12-s40-lig">
+      <Painel className="q12-s40-lig">
+        <div className="q12-s40-cab">
+          <p className="q7-k">Que métrica mede cada exigência? O mau é a classe positiva</p>
+          <Botao sec onClick={() => setEsc(INICIAL)} desab={EXIG.every((e) => esc[e.id] === null)}>Restaurar</Botao>
+        </div>
         <ol className="q12-s40-linhas">
           {EXIG.map((e, k) => {
             const m = esc[e.id];
@@ -80,7 +84,6 @@ export function S40Caso({ pagina }: { pagina?: Pagina }) {
             );
           })}
         </ol>
-        <div className="q7-botoes"><Botao sec onClick={() => setEsc(INICIAL)} desab={EXIG.every((e) => esc[e.id] === null)}>Restaurar</Botao></div>
       </Painel>
     </Quadro>
   );

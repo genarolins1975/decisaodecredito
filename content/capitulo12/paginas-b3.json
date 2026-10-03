@@ -1,0 +1,554 @@
+{
+ "paginas": {
+  "c12p22": {
+   "t": {
+    "exp": 1,
+    "disc": 1
+   },
+   "aprendizado": "Enunciar a pergunta do bloco: por que combinar modelos medianos pode superar o melhor deles, e quando o ganho é pequeno demais para concluir.",
+   "apoio": "Compare a árvore única com um ensemble nos mesmos 125 pontos de teste e troque o ensemble entre bagging, votação e floresta.",
+   "conexao": "A primeira forma de combinar é a mais simples: vários algoritmos votam.",
+   "guia": {
+    "funcao": "Abrir o bloco 3 com uma prévia concreta do que ele prova, no mesmo problema que atravessa o bloco (as duas luas).",
+    "pre": "Slide 21 (um modelo isolado tem limites).",
+    "conducao": "Mostre as duas regiões: a árvore única acerta 107 dos 125 pontos de teste; o bagging de 500 árvores acerta 113, seis a mais. Troque para a votação soft e para a floresta: as duas acertam 114. Os círculos vinho são os erros no teste. Antecipe a tensão do bloco: a combinação ganha, mas por poucos acertos, e o bloco vai mostrar por que (os erros andam juntos) e quando o ganho é ruído (cada acerto vale 0,8 ponto). Percorra os quatro passos do fluxo: votação (slide 23), bagging (29), florestas (34) e boosting (36).",
+    "leitura": "Quatro perguntas da aula com Ensembles em destaque; duas regiões de decisão lado a lado com acurácia e acertos no teste; o ganho em acertos; o fluxo do bloco com links.",
+    "pergunta": "Se cada modelo do conjunto erra mais que o melhor deles, como o conjunto pode errar menos?",
+    "resposta": "Porque o voto corrige um modelo quando os outros acertam no mesmo caso: o ganho depende de os erros caírem em casos diferentes. É a ideia que o slide 24 quantifica.",
+    "erros": [
+     {
+      "alt": "O conjunto ganha porque soma mais informação dos dados",
+      "confusao": "Confunde combinar modelos com acrescentar variáveis: todos usam as mesmas duas características.",
+      "intervencao": "Lembre que árvore e bagging veem os mesmos 375 pontos; o que muda é como os erros se distribuem."
+     },
+     {
+      "alt": "Seis acertos a mais provam que o bagging é muito melhor",
+      "confusao": "Lê uma diferença de 4,8 pontos em 125 casos sem considerar o ruído.",
+      "intervencao": "Antecipe o slide 28: diferenças de 1 a 3 acertos pedem validação cruzada."
+     }
+    ],
+    "interacao": "Seletor do ensemble comparado (bagging, votação, floresta); voltar ao bagging restaura o estado inicial; links do fluxo levam a cada passo.",
+    "verificacao": "O aluno diz quantos acertos separam a árvore do bagging e o que ainda precisa ser explicado.",
+    "transicao": "Começamos pela forma mais simples de combinar: vários algoritmos votam."
+   }
+  },
+  "c12p23": {
+   "t": {
+    "exp": 2,
+    "disc": 1
+   },
+   "aprendizado": "Descrever a votação: algoritmos diferentes, treinados nos mesmos dados, votam e vence a maioria; com número par, pode haver empate.",
+   "apoio": "Clique num preditor para trocar o voto entre as classes 1 e 2 e veja a previsão do conjunto, inclusive o empate de 2 a 2.",
+   "conexao": "Quanto rende a maioria depende de quantos votam e de quão independentes são os erros.",
+   "guia": {
+    "funcao": "Apresentar o mecanismo da votação com a figura original e um experimento de votos.",
+    "pre": "Slide 22 (pergunta do bloco).",
+    "conducao": "Leia a figura de Géron: quatro preditores diferentes recebem a mesma instância; três votam 1, um vota 2, o conjunto prevê 1. Clique no preditor da regressão logística: a conta vira 2 a 2 e a maioria deixa de existir; o scikit-learn desempata pela menor classe, uma regra arbitrária. Volte com Restaurar. Diga que o voto só corrige um votante quando os outros acertam no mesmo caso.",
+    "leitura": "Figura original da votação, dois pontos da aula; quatro votos clicáveis; previsão do conjunto com a contagem; aviso de empate.",
+    "pergunta": "O que acontece com o voto da maioria se dois preditores votarem 1 e dois votarem 2?",
+    "resposta": "Não há maioria; é preciso uma regra de desempate. Por isso as contas do slide 24 usam número ímpar de votantes.",
+    "erros": [
+     {
+      "alt": "O conjunto fica com o voto do melhor preditor",
+      "confusao": "Confunde votação simples com votação ponderada.",
+      "intervencao": "Mostre que cada voto vale o mesmo no hard voting; o peso por confiança aparece no soft voting (slide 27)."
+     },
+     {
+      "alt": "Empate dá classe 1 porque a figura mostra 1",
+      "confusao": "Lê o exemplo da figura como regra.",
+      "intervencao": "Clique até 2 a 2 e mostre o aviso de empate."
+     }
+    ],
+    "interacao": "Quatro botões que trocam o voto; Restaurar volta ao exemplo da figura (três a um).",
+    "verificacao": "O aluno explica por que o empate só ocorre com número par de votantes.",
+    "transicao": "E se forem mil votantes, cada um pouco melhor que uma moeda?"
+   }
+  },
+  "c12p24": {
+   "t": {
+    "exp": 2,
+    "disc": 1,
+    "ex": 1
+   },
+   "aprendizado": "Quantificar o ganho da maioria pela binomial e mostrar que ele depende da independência dos erros.",
+   "apoio": "Mova o acerto individual p e a correlação dos erros ρ e veja a barra de 1.001 classificadores mudar.",
+   "conexao": "Quatro técnicas diferentes tentam reduzir essa correlação.",
+   "guia": {
+    "funcao": "Mostrar a Lei dos Grandes Números aplicada aos votos e a hipótese que a sustenta.",
+    "pre": "Slide 23 (votação por maioria).",
+    "conducao": "Com votos independentes e p = 51%, a maioria acerta 51,0% com um classificador, 58,0% com 101, 73,7% com 1.001 e 97,7% com 10.001. Esse é o número do título. Agora suba ρ para 0,5: com probabilidade ρ todos copiam um voto comum (modelo didático, não medido em nenhum modelo real); a barra de 1.001 cai para cerca de 62%, e nenhum número de votantes passa de ρ·p + (1 − ρ). A hipótese forte é a independência: modelos treinados nos mesmos dados erram juntos.",
+    "leitura": "Barras do acerto da maioria por número de classificadores, com a de 1.001 em destaque e a linha do classificador isolado; controles de p e ρ; KPI da barra em destaque.",
+    "pergunta": "Se os mil classificadores fossem cópias do mesmo modelo, quanto acertaria a maioria?",
+    "resposta": "51%, o mesmo que um classificador: com ρ = 1 o conjunto vale um modelo.",
+    "erros": [
+     {
+      "alt": "Mais classificadores sempre melhoram a maioria",
+      "confusao": "Esquece a condição de p acima de 50%.",
+      "intervencao": "Ponha p em 50%: todas as barras ficam em 50%."
+     },
+     {
+      "alt": "A correlação só reduz um pouco o ganho",
+      "confusao": "Subestima o teto imposto por ρ.",
+      "intervencao": "Com ρ = 0,5 e p = 60%, mostre que as barras param em 80%."
+     }
+    ],
+    "interacao": "Dois controles (p e ρ); contorno tracejado mostra o valor sob independência; Restaurar volta a p = 51% e ρ = 0.",
+    "verificacao": "O aluno nomeia as duas condições do ganho: muitos aprendizes fracos e erros diferentes.",
+    "transicao": "Como produzir erros diferentes na prática? Quatro formas."
+   }
+  },
+  "c12p25": {
+   "t": {
+    "exp": 1,
+    "disc": 1
+   },
+   "aprendizado": "Distinguir as quatro técnicas pela fonte de diversidade e pela forma de treino (paralelo ou sequencial).",
+   "apoio": "Responda qual das quatro precisa treinar em sequência; os cartões revelam o tipo de treino e levam ao slide de cada técnica.",
+   "conexao": "As quatro serão testadas no mesmo problema: as duas luas.",
+   "guia": {
+    "funcao": "Organizar o bloco: cada técnica é uma maneira de aproximar a independência dos erros.",
+    "pre": "Slide 24 (independência dos erros).",
+    "conducao": "Leia os cartões: votação usa algoritmos diferentes; bagging, o mesmo algoritmo em amostras diferentes; floresta, amostras e características sorteadas a cada divisão; boosting, cada modelo se concentra nos erros dos anteriores. Faça a previsão. Só o boosting precisa terminar um modelo para começar o seguinte; as outras três treinam em paralelo (n_jobs=-1).",
+    "leitura": "Quatro cartões com ícone, fonte de diversidade e link; previsão sobre treino sequencial; rótulos de treino revelados depois.",
+    "pergunta": "Por que o bagging pode treinar as 500 árvores ao mesmo tempo e o boosting não?",
+    "resposta": "No bagging as amostras são sorteadas antes e nenhuma árvore depende de outra; no boosting a árvore seguinte ajusta o resíduo da anterior.",
+    "erros": [
+     {
+      "alt": "Votação",
+      "confusao": "Acha que os votos precisam ser contados em ordem.",
+      "intervencao": "Os três algoritmos treinam cada um por si; só a contagem vem depois."
+     },
+     {
+      "alt": "Floresta aleatória",
+      "confusao": "Confunde o sorteio por divisão com dependência entre árvores.",
+      "intervencao": "A floresta é bagging com sorteio de características; as árvores são independentes."
+     }
+    ],
+    "interacao": "Previsão com retorno por alternativa e Tentar outra; cartões são links para os slides 23, 29, 34 e 36.",
+    "verificacao": "O aluno classifica as quatro técnicas em paralelas e sequencial.",
+    "transicao": "O problema em que as quatro serão testadas."
+   }
+  },
+  "c12p26": {
+   "t": {
+    "exp": 2,
+    "ex": 1
+   },
+   "aprendizado": "Conhecer o problema de teste do bloco e por que uma fronteira reta não basta.",
+   "apoio": "Troque entre treino, teste e ambos; sobreponha a fronteira da logística e veja os erros no teste.",
+   "conexao": "Três algoritmos que curvam a fronteira de jeitos diferentes votam no slide 27.",
+   "guia": {
+    "funcao": "Fixar o problema comum do bloco (500 pontos, 375 de treino e 125 de teste) e motivar os ensembles com o limite de um modelo linear.",
+    "pre": "Slides 7 (treino e teste) e 25 (quatro formas).",
+    "conducao": "O código gera 500 pontos com ruído de 0,30 e separa 25% para teste: 375 de treino, 125 de teste. Mostre o treino, depois o teste. Sobreponha a logística: uma reta acerta 0,864 no teste (108 de 125) e os 17 erros ficam onde as luas se encaixam. É o ponto de partida: precisamos de fronteiras que curvem.",
+    "leitura": "Plano nativo das luas com seletor de pontos e fronteira da logística; código da aula; figura original; dois pontos da aula.",
+    "pergunta": "Por que a regressão logística erra justamente no meio do plano?",
+    "resposta": "Porque sua fronteira é uma reta, e as luas se encaixam uma na outra; nenhuma reta separa as duas classes.",
+    "erros": [
+     {
+      "alt": "Mais dados resolveriam o erro da logística",
+      "confusao": "Confunde viés com variância.",
+      "intervencao": "A reta continua reta com qualquer quantidade de pontos."
+     },
+     {
+      "alt": "O teste tem 25% porque o professor escolheu",
+      "confusao": "Não sabe que é o padrão de train_test_split.",
+      "intervencao": "Mostre que o código não passa test_size: 25% é o padrão."
+     }
+    ],
+    "interacao": "Seletor treino, teste ou ambos; botão que sobrepõe e tira a fronteira; Restaurar volta ao treino sem fronteira.",
+    "verificacao": "O aluno diz quantos pontos de teste a logística erra e por quê.",
+    "transicao": "Agora os três algoritmos que vão votar."
+   }
+  },
+  "c12p27": {
+   "t": {
+    "exp": 2,
+    "ex": 1
+   },
+   "aprendizado": "Ler o código de uma votação e comparar a região de decisão de cada votante com a do voto.",
+   "apoio": "Escolha o modelo no seletor e veja a linha acesa no código, a região de decisão e os erros no teste.",
+   "conexao": "Quantos acertos o voto ganha, e por que tão poucos, é o slide 28.",
+   "guia": {
+    "funcao": "Ligar o código do VotingClassifier ao efeito no plano.",
+    "pre": "Slides 23 (votação) e 26 (luas).",
+    "conducao": "O código treina logística, floresta de 10 árvores e SVC e os combina com voting=hard. Passe pelos modelos: logística 0,864, floresta 0,872, SVC 0,888, hard voting 0,896 (112 de 125), soft voting 0,912 (114). No soft, o código muda para probability=True no SVC e voting=soft: a média das probabilidades decide, e votos confiantes pesam mais. O hard vence o SVC por um acerto.",
+    "leitura": "Código da aula com a linha do modelo acesa; seletor de cinco modelos; região de decisão com erros de teste circulados.",
+    "pergunta": "Por que o soft voting precisa de probability=True no SVC?",
+    "resposta": "Porque o SVC, por padrão, não estima probabilidades; sem elas não há média de probabilidades para combinar.",
+    "erros": [
+     {
+      "alt": "O hard voting escolhe o modelo com maior acurácia",
+      "confusao": "Confunde votação com seleção de modelo.",
+      "intervencao": "Mostre que o voto é ponto a ponto: cada instância recebe a classe mais votada."
+     },
+     {
+      "alt": "Soft voting é sempre melhor",
+      "confusao": "Generaliza um resultado de 125 pontos.",
+      "intervencao": "A diferença entre hard e soft aqui é de dois acertos; o slide 28 discute o ruído."
+     }
+    ],
+    "interacao": "Seletor de cinco modelos que troca código, região e erros; Restaurar volta ao hard voting.",
+    "verificacao": "O aluno aponta no código a linha que muda do hard para o soft.",
+    "transicao": "Quantos acertos separam o voto do melhor isolado?"
+   }
+  },
+  "c12p28": {
+   "t": {
+    "exp": 1,
+    "disc": 1,
+    "ex": 2
+   },
+   "aprendizado": "Mostrar com os erros ponto a ponto que o voto ganha pouco porque os erros dos votantes são correlacionados.",
+   "apoio": "Preveja quantos pontos erra o hard voting; depois compare as linhas da matriz e a tabela de acertos.",
+   "conexao": "O bagging busca erros menos parecidos treinando o mesmo algoritmo em amostras diferentes.",
+   "guia": {
+    "funcao": "Desmontar a expectativa de que três votos corrigem quase tudo, com os dados do próprio problema.",
+    "pre": "Slides 24 (independência) e 27 (votação em código).",
+    "conducao": "A matriz mostra os 28 pontos de teste em que algum modelo erra. Os três isolados erram 17, 16 e 14 e, em 6 pontos, erram juntos; se fossem independentes, errariam juntos em 0,2 ponto em média. Faça a previsão. A maioria erra onde dois ou três erram: 6 + 7 = 13 pontos, um a menos que o SVC. O soft erra 11. Cada observação vale 0,8 ponto; diferenças de 1 a 3 acertos pedem validação cruzada.",
+    "leitura": "Matriz de erros por ponto de teste, agrupada por quantos isolados erram; linhas do hard e do soft reveladas na previsão; tabela de acurácia e acertos.",
+    "pergunta": "Por que o voto não salva os 6 pontos em que os três erram?",
+    "resposta": "Porque não há voto certo para somar: a maioria só corrige um erro quando os outros dois acertam.",
+    "erros": [
+     {
+      "alt": "Uns 5: a maioria corrige quase tudo",
+      "confusao": "Supõe erros independentes.",
+      "intervencao": "Mostre o esperado sob independência (5,4) e os 6 pontos em que os três erram juntos."
+     },
+     {
+      "alt": "17 ou mais: o voto herda o pior",
+      "confusao": "Acha que o erro de um votante passa para o conjunto.",
+      "intervencao": "Aponte os 15 pontos em que só um erra: todos viram acerto do voto."
+     }
+    ],
+    "interacao": "Previsão com retorno; as linhas do hard e do soft e a tabela aparecem depois da tentativa; Tentar outra volta ao estado inicial.",
+    "verificacao": "O aluno explica, com a matriz, por que o hard erra 13 e não 5.",
+    "transicao": "Como produzir erros menos parecidos: bagging."
+   }
+  },
+  "c12p29": {
+   "t": {
+    "exp": 2,
+    "ex": 1
+   },
+   "aprendizado": "Entender o sorteio do bagging (com reposição) e do pasting (sem reposição) e o que fica de fora de cada amostra.",
+   "apoio": "Sorteie amostras de 20 instâncias, troque entre bagging e pasting e mude o número de sorteios.",
+   "conexao": "Com 500 árvores assim, o bagging supera a árvore única no slide 30.",
+   "guia": {
+    "funcao": "Tornar concreto o sorteio bootstrap e ligar as instâncias de fora à validação out of bag.",
+    "pre": "Slide 25 (quatro formas).",
+    "conducao": "Leia a figura de Géron: do conjunto de treino saem amostras com reposição, uma por preditor. Na peça, a semente 1 sorteia 20 vezes entre 20 instâncias: 6 ficam de fora e 4 saem mais de uma vez; em média ficam de fora 35,8%. Sorteie outra (sementes 2, 3, ...). Mude para pasting com 20 sorteios: sem reposição, todas saem uma vez e não há diversidade; o pasting precisa de amostras menores.",
+    "leitura": "Vinte instâncias com a contagem de vezes sorteadas; KPIs de fora e repetidas; figura original; três pontos da aula.",
+    "pergunta": "Por que o pasting com o tamanho do conjunto inteiro não produz diversidade?",
+    "resposta": "Porque sem reposição, sortear 20 de 20 devolve sempre o conjunto inteiro: todos os preditores veriam os mesmos dados.",
+    "erros": [
+     {
+      "alt": "Com reposição, toda instância aparece pelo menos uma vez",
+      "confusao": "Confunde sorteio com reposição com permutação.",
+      "intervencao": "Aponte as instâncias marcadas como fora."
+     },
+     {
+      "alt": "As instâncias de fora são desperdício",
+      "confusao": "Não liga o que fica de fora à validação.",
+      "intervencao": "Antecipe o slide 33: elas avaliam a árvore que não as viu."
+     }
+    ],
+    "interacao": "Seletor bagging ou pasting, controle de sorteios, Sortear outra (sementes fixas em sequência); Restaurar volta a bagging, 20 sorteios, semente 1.",
+    "verificacao": "O aluno diz quantas instâncias ficaram de fora na amostra mostrada e quanto se espera em média.",
+    "transicao": "Quinhentas árvores assim contra uma árvore só."
+   }
+  },
+  "c12p30": {
+   "t": {
+    "exp": 2,
+    "disc": 1
+   },
+   "aprendizado": "Comparar o bagging de árvores com a árvore única e ler com honestidade a variação com o número de árvores.",
+   "apoio": "Troque o número de árvores (1, 5, 25, 100, 500) e veja a região, a acurácia e a linha de código mudarem.",
+   "conexao": "O que muda de forma estável é a fronteira, no slide 31.",
+   "guia": {
+    "funcao": "Mostrar o resultado do bagging da aula e evitar a leitura de que mais árvores sempre acertam mais no teste.",
+    "pre": "Slide 29 (bagging).",
+    "conducao": "O código treina 500 árvores, cada uma com 100 das 375 instâncias. Resultado: 0,904 no teste (113 de 125), contra 0,856 da árvore única (107). Agora passe pelo seletor: 1 árvore acerta 107; 5, 115; 25, 113; 100, 115; 500, 113. A curva não é monotônica. Cada acerto vale 0,8 ponto: diferenças de um a dois acertos são ruído de uma amostra de 125. O ganho estável está na forma da fronteira.",
+    "leitura": "Plano com a região do bagging de n árvores; seletor com acertos no teste; código com n_estimators aceso; KPIs do bagging e da árvore única.",
+    "pergunta": "Se 5 árvores acertam 115 e 500 acertam 113, devemos usar 5?",
+    "resposta": "Não com esta evidência: a diferença é de dois acertos em 125, dentro do ruído. A escolha pede validação cruzada ou a estimativa out of bag.",
+    "erros": [
+     {
+      "alt": "Mais árvores sempre acertam mais no teste",
+      "confusao": "Lê o número de árvores como garantia de acurácia.",
+      "intervencao": "Mostre 5 e 100 árvores com 115 e 500 com 113."
+     },
+     {
+      "alt": "Cinco árvores bastam",
+      "confusao": "Toma ruído por sinal.",
+      "intervencao": "Calcule: dois acertos são 1,6 ponto percentual em 125 casos."
+     }
+    ],
+    "interacao": "Seletor do número de árvores que troca região, título e código; Restaurar volta a 500.",
+    "verificacao": "O aluno diz quanto vale um acerto no teste e por que a curva oscila.",
+    "transicao": "Se a acurácia oscila, o que muda de forma estável? A fronteira."
+   }
+  },
+  "c12p31": {
+   "t": {
+    "exp": 2,
+    "disc": 1,
+    "ex": 1
+   },
+   "aprendizado": "Ver no plano que o bagging reduz a variância: a árvore única recorta o plano para acertar o treino; o conjunto desenha uma fronteira mais estável.",
+   "apoio": "Compare as duas regiões com os pontos de teste e depois com os de treino.",
+   "conexao": "Cada árvore deixa de fora parte do treino; quanto, é o slide 32.",
+   "guia": {
+    "funcao": "Ligar o ganho do bagging ao trade off entre viés e variância, com treino contra teste.",
+    "pre": "Slide 30 (bagging com 500 árvores).",
+    "conducao": "Mostre a figura de Géron e a versão nativa. No teste, a árvore erra 18 pontos e o bagging 12. Troque para o treino: a árvore acerta 100% (375 de 375), com ilhas na região em volta de pontos isolados; o bagging acerta 93,9% (352). No teste a ordem se inverte: 0,856 contra 0,904. O recorte que acerta o treino é variância.",
+    "leitura": "Duas regiões lado a lado com seletor treino ou teste; figura original; tabela de acurácia no treino e no teste.",
+    "pergunta": "Por que a árvore que acerta 100% do treino erra mais no teste?",
+    "resposta": "Porque ajustou o ruído do treino: as ilhas da região seguem pontos isolados que não se repetem no teste.",
+    "erros": [
+     {
+      "alt": "O bagging reduz o viés",
+      "confusao": "Confunde suavizar a fronteira com aproximar melhor a forma verdadeira.",
+      "intervencao": "Viés semelhante: as duas usam árvores profundas; o que cai é a variância."
+     },
+     {
+      "alt": "Treino 100% é sinal de bom modelo",
+      "confusao": "Usa o treino para avaliar.",
+      "intervencao": "Compare com a coluna do teste."
+     }
+    ],
+    "interacao": "Seletor teste ou treino; Restaurar volta ao teste.",
+    "verificacao": "O aluno lê a tabela e diz em que amostra a ordem dos modelos se inverte.",
+    "transicao": "Quantas instâncias cada árvore deixa de fora?"
+   }
+  },
+  "c12p32": {
+   "t": {
+    "exp": 2,
+    "ex": 1
+   },
+   "aprendizado": "Derivar a fração de instâncias fora de uma amostra bootstrap, (1 − 1/m)ᵐ, e seu limite 1/e ≈ 36,8%.",
+   "apoio": "Mova m e veja a probabilidade de inclusão; vá ao treino das luas (m = 375).",
+   "conexao": "Essas instâncias de fora validam o modelo sem custo: slide 33.",
+   "guia": {
+    "funcao": "Aprofundamento: justificar o 37% que sustenta a validação out of bag.",
+    "pre": "Slide 29 (sorteio com reposição).",
+    "conducao": "Uma instância escapa de um sorteio com probabilidade 1 − 1/m; de m sorteios, (1 − 1/m)ᵐ. Com m = 20, 35,8% fica de fora, como no slide 29. A curva de inclusão desce para 63,2%, e a de fora sobe para 1/e ≈ 36,8%. Com o treino das luas, m = 375, ficam de fora 36,7%.",
+    "leitura": "Curva da inclusão por m com a assíntota; fórmula em KaTeX; KPIs de dentro e fora; controle de m e botão m = 375.",
+    "pergunta": "Com m = 2, qual a chance de uma instância ficar de fora?",
+    "resposta": "(1 − 1/2)² = 25%.",
+    "erros": [
+     {
+      "alt": "Com muitos sorteios, todas as instâncias entram",
+      "confusao": "Confunde mais sorteios com amostra maior que o conjunto.",
+      "intervencao": "Os sorteios são m entre m: a fração de fora converge para 36,8%, não para zero."
+     },
+     {
+      "alt": "37% é uma escolha do scikit-learn",
+      "confusao": "Não reconhece o limite matemático.",
+      "intervencao": "Mostre a convergência na curva e na fórmula."
+     }
+    ],
+    "interacao": "Controle de m de 1 a 40, botão para m = 375; Restaurar volta a m = 20.",
+    "verificacao": "O aluno calcula a fração de fora para m = 2 e diz o limite.",
+    "transicao": "Essas instâncias de fora como validação."
+   }
+  },
+  "c12p33": {
+   "t": {
+    "exp": 1,
+    "disc": 1,
+    "ex": 1
+   },
+   "aprendizado": "Usar a acurácia out of bag como estimativa do desempenho fora da amostra e compará-la com o teste, com a incerteza de cada uma.",
+   "apoio": "Preveja a acurácia no teste a partir da estimativa out of bag; depois compare os dois intervalos de 95%.",
+   "conexao": "A floresta aleatória acrescenta ao bagging o sorteio de características.",
+   "guia": {
+    "funcao": "Mostrar que a validação out of bag antecipa o teste sem gastar dados.",
+    "pre": "Slides 29 e 32 (instâncias de fora).",
+    "conducao": "Com oob_score=True, cada instância é julgada só pelas árvores que não a sortearam. A estimativa é 0,899 (337 de 375); a aula registrava 0,901 (338) com outra versão do scikit-learn. Faça a previsão. No teste, 0,912 (114 de 125): 1,3 ponto acima, menos de dois acertos de teste. Os intervalos de Wilson se sobrepõem com folga: o do teste vai de cerca de 85% a 95%.",
+    "leitura": "Código com oob_score; régua com as duas acurácias e intervalos de 95%; previsão; KPIs out of bag e teste.",
+    "pergunta": "Por que a estimativa out of bag não tem o otimismo da acurácia no treino?",
+    "resposta": "Porque cada instância é avaliada só pelas árvores que não a usaram no treino.",
+    "erros": [
+     {
+      "alt": "Perto de 100%: a OOB é a acurácia no treino",
+      "confusao": "Confunde OOB com acurácia no treino.",
+      "intervencao": "Lembre que cerca de 37% das árvores não viram cada instância, e só elas votam."
+     },
+     {
+      "alt": "Bem abaixo: toda estimativa no treino é otimista",
+      "confusao": "Generaliza o otimismo do treino para a OOB.",
+      "intervencao": "Mostre os dois intervalos sobrepostos."
+     }
+    ],
+    "interacao": "Previsão; o comentário do teste no código, o KPI e o ponto na régua só aparecem depois; Tentar outra volta ao estado inicial.",
+    "verificacao": "O aluno diz quanto vale a diferença entre OOB e teste em acertos.",
+    "transicao": "Um sorteio a mais em cada divisão: a floresta aleatória."
+   }
+  },
+  "c12p34": {
+   "t": {
+    "exp": 2,
+    "disc": 1
+   },
+   "aprendizado": "Descrever a floresta aleatória como bagging de árvores com sorteio de características em cada divisão e comparar com o bagging nas luas.",
+   "apoio": "Troque entre floresta e bagging no plano e compare regiões, erros e acertos.",
+   "conexao": "Na Iris, a floresta mede a importância de cada característica.",
+   "guia": {
+    "funcao": "Apresentar a floresta e ser honesto sobre o que a comparação nas luas permite concluir.",
+    "pre": "Slides 29 a 33 (bagging).",
+    "conducao": "A floresta sorteia amostras e, em cada divisão, só um subconjunto de características: árvores menos correlacionadas. Nas luas há duas características, e max_features=sqrt sorteia uma. Resultado: floresta 0,912 (114), bagging 0,904 (113), um acerto de diferença. Os dois diferem também em max_samples e max_leaf_nodes, então a comparação não isola o efeito do sorteio.",
+    "leitura": "Plano com seletor floresta ou bagging e erros circulados; código da aula; figura original; três pontos.",
+    "pergunta": "Por que o sorteio de características reduz a correlação entre as árvores?",
+    "resposta": "Porque impede que todas as árvores comecem pela mesma variável forte; árvores diferentes erram em casos diferentes.",
+    "erros": [
+     {
+      "alt": "A floresta é melhor porque acertou um a mais",
+      "confusao": "Toma um acerto como prova.",
+      "intervencao": "Lembre o ruído do slide 30 e as diferenças de hiperparâmetros."
+     },
+     {
+      "alt": "A floresta usa menos variáveis no modelo final",
+      "confusao": "Confunde sorteio por divisão com seleção de variáveis.",
+      "intervencao": "Todas as variáveis podem aparecer; o sorteio é a cada divisão."
+     }
+    ],
+    "interacao": "Seletor floresta ou bagging; Restaurar volta à floresta.",
+    "verificacao": "O aluno explica o que é sorteado em cada divisão e quantas características isso deixa nas luas.",
+    "transicao": "Quais variáveis a floresta mais usa? A importância na Iris."
+   }
+  },
+  "c12p35": {
+   "t": {
+    "exp": 1,
+    "disc": 1,
+    "ex": 1
+   },
+   "aprendizado": "Ler a importância das características de uma floresta e saber seus limites.",
+   "apoio": "Preveja quais medidas pesam mais; depois leia as barras.",
+   "conexao": "O boosting combina árvores de outro jeito: em sequência.",
+   "guia": {
+    "funcao": "Mostrar o primeiro diagnóstico que uma floresta oferece e sua interpretação em crédito.",
+    "pre": "Slide 34 (floresta aleatória).",
+    "conducao": "Antes das barras, a turma escolhe. A floresta de 500 árvores na Iris dá 44,1% ao comprimento da pétala, 42,3% à largura da pétala, 11,2% ao comprimento da sépala e 2,3% à largura da sépala. As da pétala somam 86,4%; todas juntas, 100%. Em crédito, é o primeiro diagnóstico de quais variáveis movem o score. Cuidado: a importância por impureza tende a inflar variáveis contínuas e de muitos valores; confira com importância por permutação.",
+    "leitura": "Barras horizontais das quatro importâncias, ocultas até a previsão; chave da pétala; código da aula.",
+    "pergunta": "Uma variável com importância alta causa o desfecho?",
+    "resposta": "Não: importância mede quanto a variável reduz a impureza nas árvores, não efeito causal.",
+    "erros": [
+     {
+      "alt": "As da sépala, por serem maiores",
+      "confusao": "Confunde tamanho da medida com poder de separação.",
+      "intervencao": "Mostre os 11,2% e 2,3% das sépalas."
+     },
+     {
+      "alt": "As quatro pesam parecido",
+      "confusao": "Supõe que a floresta divide o peso igualmente.",
+      "intervencao": "Mostre que a maior pesa 44,1% e a menor 2,3%."
+     }
+    ],
+    "interacao": "Previsão com o título em forma de pergunta; as barras aparecem depois da tentativa; Tentar outra volta ao estado inicial.",
+    "verificacao": "O aluno diz quanto somam as duas medidas da pétala e um limite da importância por impureza.",
+    "transicao": "De árvores em paralelo para árvores em sequência: boosting."
+   }
+  },
+  "c12p36": {
+   "t": {
+    "exp": 2,
+    "ex": 1
+   },
+   "aprendizado": "Ler o código do gradient boosting em três etapas e ver o alvo de cada árvore: os dados, depois os resíduos.",
+   "apoio": "Troque a etapa e veja o bloco de código aceso, o alvo da etapa e a árvore ajustada a ele.",
+   "conexao": "A soma das três árvores e a taxa de aprendizado estão no slide 37.",
+   "guia": {
+    "funcao": "Mostrar o treino sequencial do boosting no código da aula.",
+    "pre": "Slide 25 (boosting na lista das quatro formas).",
+    "conducao": "A base tem 100 pontos com y = 3x² mais ruído. Etapa 1: a árvore de profundidade 2 ajusta y; o erro quadrático médio cai de 0,126 (previsão zero) para 0,013. Etapa 2: y2 = y − h₁(x), e a árvore ajusta esse resíduo; o erro cai para 0,006. Etapa 3: y3 = y2 − h₂(x); o erro cai para 0,005. Cada árvore tem só quatro folhas: é um aprendiz fraco, e cada uma espera a anterior.",
+    "leitura": "Código em quatro partes com a etapa acesa; gráfico do alvo da etapa e da árvore em degraus; KPIs do erro antes e depois.",
+    "pergunta": "Por que a árvore 2 não ajusta y diretamente?",
+    "resposta": "Porque o boosting corrige o que falta: a árvore 2 ajusta o que a árvore 1 errou.",
+    "erros": [
+     {
+      "alt": "As três árvores são treinadas em paralelo",
+      "confusao": "Não vê a dependência no código.",
+      "intervencao": "Aponte que y2 usa tree_reg1.predict."
+     },
+     {
+      "alt": "Árvores rasas são um defeito",
+      "confusao": "Não entende o papel do aprendiz fraco.",
+      "intervencao": "Mostre que a soma de árvores rasas acompanha a curva no slide 37."
+     }
+    ],
+    "interacao": "Seletor de etapa que acende o código e troca o gráfico; Restaurar volta à etapa 1.",
+    "verificacao": "O aluno escreve o alvo da etapa 3 em função de y e das árvores anteriores.",
+    "transicao": "Somando as árvores: a previsão acumulada."
+   }
+  },
+  "c12p37": {
+   "t": {
+    "exp": 2,
+    "disc": 1,
+    "ex": 1
+   },
+   "aprendizado": "Entender a previsão acumulada do boosting, por que se chama gradiente e o papel da taxa de aprendizado.",
+   "apoio": "Mude o número de árvores e a taxa de aprendizado e veja a previsão acumulada e o erro por etapa.",
+   "conexao": "A síntese do bloco compara as quatro formas de produzir diversidade.",
+   "guia": {
+    "funcao": "Fechar o boosting com a soma das árvores e a taxa de aprendizado.",
+    "pre": "Slide 36 (três árvores em código).",
+    "conducao": "Leia a figura de Géron: em cada linha, a árvore da etapa e a previsão acumulada. Com M = 3 e η = 1, ŷ = h₁ + h₂ + h₃ e o erro de treino vai de 0,126 a 0,005. Com perda quadrática, o resíduo y − ŷ é o gradiente negativo da perda: cada árvore dá um passo na direção que mais reduz o erro. Baixe η para 0,1: cada árvore corrige só uma parte, e com 10 árvores o erro ainda está em 0,021. O erro aqui é de treino; quantas árvores usar se decide fora da amostra.",
+    "leitura": "Figura original; previsão acumulada com a etapa anterior tracejada; erro quadrático médio por número de árvores; fórmula; controles de M e η.",
+    "pergunta": "Por que usar η menor que 1 se ele deixa o treino mais lento?",
+    "resposta": "Porque passos menores evitam que uma árvore ajustada a poucos casos pese sozinha; o número de árvores e a taxa se escolhem juntos por validação.",
+    "erros": [
+     {
+      "alt": "Mais árvores sempre melhoram o modelo",
+      "confusao": "Lê o erro de treino como erro fora da amostra.",
+      "intervencao": "Lembre que a curva é de treino e cai sempre aqui."
+     },
+     {
+      "alt": "O gradiente é a inclinação da curva dos dados",
+      "confusao": "Confunde gradiente da perda com derivada de y em x.",
+      "intervencao": "Escreva: −∂/∂ŷ de ½(y − ŷ)² = y − ŷ."
+     }
+    ],
+    "interacao": "Controles de M (1 a 10) e η (0,1 a 1); Restaurar volta a M = 3 e η = 1.",
+    "verificacao": "O aluno explica por que o resíduo é o gradiente negativo com perda quadrática.",
+    "transicao": "Juntando as quatro formas numa tabela."
+   }
+  },
+  "c12p38": {
+   "t": {
+    "exp": 1,
+    "disc": 1
+   },
+   "aprendizado": "Comparar as quatro técnicas por fonte de diversidade, treino e combinação, com os resultados do bloco.",
+   "apoio": "Use a tabela para voltar ao slide de cada método e leia os acertos de todos os modelos num só eixo.",
+   "conexao": "O bloco 4 leva os modelos para a decisão de corte em crédito.",
+   "guia": {
+    "funcao": "Sintetizar o bloco e abrir a pergunta do bloco 4.",
+    "pre": "Slides 23 a 37.",
+    "conducao": "Leia a tabela: votação (0,896 hard e 0,912 soft), bagging (0,904 contra 0,856 da árvore), floresta (0,912 nas luas; na Iris, pétala com 86% da importância) e boosting (erro de 0,126 a 0,005 em três etapas). No eixo, os ensembles acertam de 112 a 114 de 125, contra 107 da árvore: a diversidade ajuda, por margens de poucos acertos. Pergunte como esses modelos viram decisão numa carteira de crédito.",
+    "leitura": "Tabela da aula com links para cada método; acertos de todos os modelos no teste das luas num eixo.",
+    "pergunta": "Qual técnica você usaria para uma carteira de crédito e o que mediria antes de decidir?",
+    "resposta": "Não há vencedor universal; a escolha sai de validação fora do tempo e do custo dos erros, que o bloco 4 trata.",
+    "erros": [
+     {
+      "alt": "A floresta é a melhor porque teve a maior acurácia",
+      "confusao": "Ignora o empate com o soft voting e o ruído de 125 casos.",
+      "intervencao": "Mostre os dois modelos em 114 no eixo."
+     },
+     {
+      "alt": "Boosting não serve para classificação",
+      "confusao": "Generaliza o exemplo de regressão.",
+      "intervencao": "Lembre que o mesmo princípio se aplica com perda logística."
+     }
+    ],
+    "interacao": "Links da tabela para os slides 23, 29, 34 e 36 e para o slide 39 na leitura; slide de consulta sem estado.",
+    "verificacao": "O aluno preenche de memória uma linha da tabela.",
+    "transicao": "Próxima pergunta: como o modelo vira decisão de corte (slide 39)."
+   }
+  }
+ }
+}

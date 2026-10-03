@@ -40,7 +40,6 @@ export function S45Regras({ pagina }: { pagina?: Pagina }) {
               <g>
                 <Eixos x={x} y={y} xt={[]} yt={yt} fx={() => ""} fy={(v) => pct(v, 0)} />
                 <line x1={m.l} x2={d.w - m.r} y1={y(base)} y2={y(base)} stroke="#2A3342" strokeWidth={1.8} strokeDasharray="7 5" />
-                <text className="q7-rot--peq" x={d.w - m.r} y={y(base)} dy="-.45em" textAnchor="end" style={{ fill: "#2A3342", paintOrder: "stroke", stroke: "#fff", strokeWidth: "0.3em", strokeLinejoin: "round" }}>base inteira: {pct(base, 1)}</text>
                 {REGRAS.map((r, i) => {
                   const c = C[r.id], cx = x(i + 0.5), on = r.id === sel;
                   return (
@@ -57,7 +56,7 @@ export function S45Regras({ pagina }: { pagina?: Pagina }) {
             );
           }}
         </Grafico>
-        <ul className="q7-leg"><li><span className="q7-mk q12-s45-mk-c" aria-hidden="true" />grupo removido pelo corte</li><li><span className="q7-mk q12-s45-mk-r" aria-hidden="true" />grupo mantido</li><li><span className="q7-mk q7-mk--trac q7-mk--ink" aria-hidden="true" />taxa da base inteira</li></ul>
+        <ul className="q7-leg"><li><span className="q7-mk q12-s45-mk-c" aria-hidden="true" />grupo removido pelo corte</li><li><span className="q7-mk q12-s45-mk-r" aria-hidden="true" />grupo mantido</li><li><span className="q7-mk q7-mk--trac q7-mk--ink" aria-hidden="true" />taxa da base inteira: {pct(base, 1)}</li></ul>
         <p className="q12-s45-sel"><b>{nomeSel}</b>, {HZ[h].nome.toLowerCase()}: o grupo removido tem <b>{vezes(s.precisao / s.mausNoResto, 1)}</b> a taxa de maus do mantido ({pct(s.precisao, 1)} contra {pct(s.mausNoResto, 1)}).</p>
       </Painel>
       <Painel>

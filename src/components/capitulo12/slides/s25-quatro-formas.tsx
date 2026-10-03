@@ -71,7 +71,7 @@ export function S25QuatroFormas({ pagina }: { pagina?: Pagina }) {
           ))}
         </ol>
         <div className="q12-s25-prev">
-          <Previsao pergunta="Três delas podem treinar os modelos ao mesmo tempo. Qual precisa treinar em sequência?" opcoes={OPS} escolha={esc} onEscolha={setEsc} />
+          <Previsao pergunta="Três delas podem treinar os modelos ao mesmo tempo. Qual precisa treinar em sequência?" opcoes={OPS} escolha={esc} onEscolha={setEsc} recolher />
         </div>
       </div>
     </Quadro>

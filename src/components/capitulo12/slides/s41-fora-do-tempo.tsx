@@ -42,12 +42,13 @@ export function S41ForaDoTempo({ pagina }: { pagina?: Pagina }) {
         : <>Sorteada, a validação tem <b>{int(antes)} de {int(nVal)} safras anteriores</b> à última do treino: o modelo já viu o que veio depois delas.</>}
       fonte={`Esquema ilustrativo de validação fora do tempo, como no material da aula: ${int(N)} safras de concessão, sem datas nem dados do caso; o sorteio usa mulberry32 com semente ${SEMENTE}.`}>
       <Painel className="q12-s41-esq">
-        <Grafico rotulo={modo === "tempo" ? `Linha do tempo: ${ini} safras de treino seguidas de ${nVal} safras de validação fora do tempo` : `Linha do tempo com ${nVal} safras de validação sorteadas; ${antes} delas são anteriores à última safra do treino`} arCelular="16 / 9">
+        <Grafico rotulo={modo === "tempo" ? `Linha do tempo: ${ini} safras de treino seguidas de ${nVal} safras de validação fora do tempo` : `Linha do tempo com ${nVal} safras de validação sorteadas; ${antes} delas são anteriores à última safra do treino`} arCelular="1 / 1">
           {(d) => {
             const l = d.fs * 0.6, r = d.fs * 0.6, w = (d.w - l - r) / N, gap = Math.max(2, w * 0.08);
             const yB = d.h * 0.3, hB = d.h * 0.3, x = (i: number) => l + i * w;
             const yC = yB - d.fs * 1.9; // chaves acima dos blocos
-            const yM1 = yB + hB + d.fs * 1.5, yM2 = yM1 + d.fs * 1.6, yS = Math.min(d.h - d.fs * 0.4, yM2 + d.fs * 2.6);
+            const estreito = d.w < d.fs * 34;
+            const yM1 = yB + hB + d.fs * 1.5, yM2 = yM1 + d.fs * 1.6, yS = Math.min(d.h - d.fs * (d.w < d.fs * 34 ? 1.8 : 0.4), yM2 + d.fs * 2.6);
             return (
               <g>
                 <defs>
@@ -55,7 +56,7 @@ export function S41ForaDoTempo({ pagina }: { pagina?: Pagina }) {
                   <marker id="q12-s41-seta" viewBox="0 0 10 10" refX={9} refY={5} markerWidth={7} markerHeight={7} orient="auto"><path d="M0 0L10 5L0 10Z" fill="#5B6475" /></marker>
                 </defs>
                 <line x1={l} x2={d.w - r} y1={d.fs * 0.9} y2={d.fs * 0.9} stroke="#5B6475" strokeWidth={2} markerEnd="url(#q12-s41-seta)" />
-                <text className="q7-rot--peq" x={d.w - r - d.fs * 0.6} y={d.fs * 0.9} dy="-.45em" textAnchor="end" style={{ fill: "#5B6475" }}>safra de concessão, da mais antiga à mais recente</text>
+                <text className="q7-rot--peq" x={d.w - r - d.fs * 0.6} y={d.fs * 0.9} dy="-.45em" textAnchor="end" style={{ fill: "#5B6475" }}>{d.w > d.fs * 30 ? "safra de concessão, da mais antiga à mais recente" : "safra de concessão"}</text>
                 {Array.from({ length: N }, (_, i) => {
                   const v = ehVal(i);
                   return (
@@ -69,9 +70,9 @@ export function S41ForaDoTempo({ pagina }: { pagina?: Pagina }) {
                 {modo === "tempo" ? (
                   <>
                     <path d={`M${x(0) + gap / 2} ${yC + d.fs * 0.5}V${yC}H${x(ini) - gap / 2}V${yC + d.fs * 0.5}`} fill="none" stroke="#3D5A8A" strokeWidth={2} />
-                    <text className="q7-rot" x={(x(0) + x(ini)) / 2} y={yC} dy="-.45em" textAnchor="middle" style={{ fill: "#3D5A8A" }}>Treino: safras mais antigas</text>
+                    <text className="q7-rot" x={(x(0) + x(ini)) / 2} y={yC} dy="-.45em" textAnchor="middle" style={{ fill: "#3D5A8A" }}>{estreito ? "Treino" : "Treino: safras mais antigas"}</text>
                     <path d={`M${x(ini) + gap / 2} ${yC + d.fs * 0.5}V${yC}H${x(N) - gap / 2}V${yC + d.fs * 0.5}`} fill="none" stroke="#2E6B4F" strokeWidth={2} />
-                    <text className="q7-rot" x={nVal <= 2 ? x(N) - gap / 2 : (x(ini) + x(N)) / 2} y={yC} dy="-.45em" textAnchor={nVal <= 2 ? "end" : "middle"} style={{ fill: "#2E6B4F" }}>{nVal <= 3 ? "Fora do tempo (OOT)" : "Validação fora do tempo (OOT)"}</text>
+                    <text className="q7-rot" x={nVal <= 2 ? x(N) - gap / 2 : (x(ini) + x(N)) / 2} y={yC} dy="-.45em" textAnchor={nVal <= 2 ? "end" : "middle"} style={{ fill: "#2E6B4F" }}>{estreito || nVal <= 2 ? "OOT" : nVal <= 3 ? "Fora do tempo (OOT)" : "Validação fora do tempo (OOT)"}</text>
                     {[[0, "Início do treino", "start", yM1], [ini, "Início da validação", "middle", yM2], [N, "Fim da validação", "end", yM1]].map(([i, t, a, y]) => (
                       <g key={t as string}>
                         <line x1={x(i as number)} x2={x(i as number)} y1={yB - d.fs * 0.3} y2={(y as number) - d.fs * 0.95} stroke="#2A3342" strokeWidth={1.6} strokeDasharray={i === ini ? undefined : "4 4"} />
@@ -81,7 +82,7 @@ export function S41ForaDoTempo({ pagina }: { pagina?: Pagina }) {
                   </>
                 ) : (
                   <>
-                    <text className="q7-rot" x={d.w / 2} y={yC} dy="-.45em" textAnchor="middle" style={{ fill: "#8C2332" }}>Validação sorteada: safras ■ entre safras de treino ●</text>
+                    <text className="q7-rot" x={d.w / 2} y={yC} dy="-.45em" textAnchor="middle" style={{ fill: "#8C2332" }}>{estreito ? "Validação sorteada" : "Validação sorteada: safras ■ entre safras de treino ●"}</text>
                     {Array.from({ length: N }, (_, i) => i).filter((i) => ehVal(i) && i < ultimoTreino).map((i) => (
                       <text key={i} className="q7-rot--peq" x={x(i) + w / 2} y={yM1} textAnchor="middle" style={{ fill: "#8C2332", fontWeight: 700 }}>antes</text>
                     ))}
@@ -89,7 +90,7 @@ export function S41ForaDoTempo({ pagina }: { pagina?: Pagina }) {
                   </>
                 )}
                 <text className="q7-rot" x={l} y={yS} style={{ fill: "#3D5A8A" }}>● o modelo aprende com {int(N - nVal)} safras</text>
-                <text className="q7-rot" x={d.w - r} y={yS} textAnchor="end" style={{ fill: "#2E6B4F" }}>■ a validação mede {int(nVal)} {modo === "tempo" ? "safras posteriores" : "safras sorteadas"}</text>
+                <text className="q7-rot" x={estreito ? l : d.w - r} y={estreito ? yS + d.fs * 1.4 : yS} textAnchor={estreito ? "start" : "end"} style={{ fill: "#2E6B4F" }}>■ a validação mede {int(nVal)} {modo === "tempo" ? "safras posteriores" : "safras sorteadas"}</text>
               </g>
             );
           }}

@@ -46,7 +46,7 @@ export function S47Exercicio({ pagina }: { pagina?: Pagina }) {
                 <Eixos x={x} y={y} xt={[0, 0.05, 0.1, 0.15, 0.2]} yt={[0, 0.1, 0.2, 0.3, 0.4]} fx={(v) => pct(v, 0)} fy={(v) => pct(v, 0)} xTit="Volume do corte: parcela da população recusada" yTit="Recall: parcela dos maus capturada" />
                 <line className="q7-corte" x1={x(META_VOLUME)} x2={x(META_VOLUME)} y1={y(0)} y2={m.t} strokeDasharray="8 5" />
                 <text className="q7-corte-t" x={x(META_VOLUME)} y={y(0)} dx="-.5em" dy="-.6em" textAnchor="end">meta: menos de {pct(META_VOLUME, 0)}</text>
-                <text className="q7-rot--peq" x={x(0.2) - d.fs * 0.4} y={m.t} dy="2.2em" textAnchor="end" style={{ fill: "#A85A0C" }}>fora da meta</text>
+                {d.w > d.fs * 30 && <text className="q7-rot--peq" x={x(0.2) - d.fs * 0.4} y={m.t} dy="2.2em" textAnchor="end" style={{ fill: "#A85A0C" }}>fora da meta</text>}
                 {aberto && REGRAS.map((r) => {
                   const c = C[r.id], cx = x(c.volume), cy = y(c.recall), rr = d.fs * 0.55;
                   const fora = c.volume >= META_VOLUME;

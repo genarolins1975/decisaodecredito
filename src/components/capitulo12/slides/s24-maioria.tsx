@@ -38,7 +38,7 @@ export function S24Maioria({ pagina }: { pagina?: Pagina }) {
     <Quadro slug="c12p24" pagina={pagina} layout="gl"
       conclusao={rho === 0
         ? <>Com votos independentes, {int(DESTAQUE)} classificadores de {pct(p, 1)} acertam <b>{pct(vD, 1)}</b> por maioria. A hipótese forte é a independência: modelos treinados nos mesmos dados erram juntos. Aumente ρ.</>
-        : <>Com ρ = {num(rho, 2)}, os mesmos {int(DESTAQUE)} acertam <b>{pct(vD, 1)}</b>, contra {pct(ind[iD], 1)} se fossem independentes. Os ensembles (slide {SLIDE.c12p25.n}) existem para reduzir essa correlação.</>}
+        : <>Com ρ = {num(rho, 2)}, os mesmos {int(DESTAQUE)} acertam <b>{pct(vD, 1)}</b>, contra {pct(ind[iD], 1)} se fossem independentes{p > 0.5 ? <>; nenhum número de votantes passa de ρ·p + (1 − ρ) = {pct(rho * p + 1 - rho, 1)}</> : null}. Os ensembles (slide {SLIDE.c12p25.n}) existem para reduzir essa correlação.</>}
       fonte={`Cálculo pela distribuição binomial exata (equivale a binom.sf do SciPy ${BASE.versoes.scipy}); número ímpar de classificadores para evitar empates. Correlação: modelo ilustrativo de mistura, hipótese didática, não medida em modelo real.`}>
       <Painel className="q12-s24-g">
         <Grafico titulo="Acerto do voto da maioria" sub={`cada classificador acerta ${pct(p, 1)}`} tabela={tab} arCelular="4 / 3"

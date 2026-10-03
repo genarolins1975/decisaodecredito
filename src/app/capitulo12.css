@@ -79,7 +79,7 @@
   .q12-bloco-ps { grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .q12-bloco-n { font-size: 22px; } .q12-bloco-p b { font-size: 18px; } .q12-bloco-p > span:last-child { font-size: 14px; }
   .q12-bloco-fluxo ol { flex-direction: column; } .q7 .q7-slide .q12-bloco-passo { font-size: 15px; padding: 8px; } .q12-bloco-passo small { font-size: 12px; }
-  .q12-bloco-seta { transform: rotate(90deg); font-size: 16px; } .q12-grande { font-size: 32px; }
+  .q12-bloco-seta { display: none; } .q12-grande { font-size: 32px; }
 }
 
 /* 52 · c12p52 · apêndice de referências (slide do coordenador do capítulo) */

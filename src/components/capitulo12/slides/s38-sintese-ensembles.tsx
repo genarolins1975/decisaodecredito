@@ -38,6 +38,7 @@ export function S38SinteseEnsembles({ pagina }: { pagina?: Pagina }) {
       fonte={`${FONTE_LUAS}. Iris: RandomForestClassifier(n_estimators=500, random_state=42). Boosting: ${int(BOOST.x.length)} pontos, três árvores de profundidade 2, erro quadrático médio de treino.`}>
       <div className="q12-s38">
         <Painel className="q12-s38-tab">
+          <div className="q12-s38-rola">
           <table className="q7-tab">
             <thead><tr><th className="q7-t-l">Método</th><th className="q7-t-l">Fonte de diversidade</th><th className="q7-t-l">Treino</th><th className="q7-t-l">Combinação</th><th className="q7-t-l">No exemplo da aula</th></tr></thead>
             <tbody>
@@ -52,30 +53,35 @@ export function S38SinteseEnsembles({ pagina }: { pagina?: Pagina }) {
               ))}
             </tbody>
           </table>
+          </div>
         </Painel>
         <Painel className="q12-s38-g">
-          <Grafico titulo={`Acertos no teste das luas, de ${int(N_TESTE_LUAS)}`} sub={`cada acerto vale ${num(UM_ACERTO * 100, 1)} ponto; ■ ensemble, ○ modelo isolado`} arCelular="16 / 7"
+          <Grafico titulo={`Acertos no teste das luas, de ${int(N_TESTE_LUAS)}`} sub={`cada acerto vale ${num(UM_ACERTO * 100, 1)} ponto; ■ ensemble, ○ modelo isolado`} arCelular="4 / 3"
             rotulo={`Acertos no teste: ${PONTOS.map((p) => `${p.r} ${int(ACERTOS_LUAS[p.k])}`).join("; ")}`}>
             {(d) => {
-              const l = d.fs * 1.5, r = d.fs * 1.5, base = d.h - d.fs * 1.8;
+              // tela estreita: uma linha por modelo, rótulo à esquerda; larga: um eixo só, rótulos ao lado de cada marca
+              const estreito = d.w < d.fs * 36;
+              const l = estreito ? d.fs * 6.5 : d.fs * 1.5, r = estreito ? d.fs * 1 : d.fs * 4.5, base = d.h - d.fs * 1.8;
               const x = (v: number) => l + ((v - LO) / (HI - LO)) * (d.w - l - r);
+              const s = d.fs * 0.36;
+              const marca = (p: (typeof PONTOS)[number], cx: number, cy: number) => p.ens ? <rect x={cx - s} y={cy - s} width={2 * s} height={2 * s} fill="#176C73" /> : <circle cx={cx} cy={cy} r={s} fill="#fff" stroke="#3D5A8A" strokeWidth={2} />;
               return (
                 <g>
                   <line x1={l} x2={d.w - r} y1={base} y2={base} className="q7-eixo" />
-                  {Array.from({ length: HI - LO + 1 }, (_, i) => LO + i).map((v) => <g key={v}><line x1={x(v)} x2={x(v)} y1={base} y2={base + d.fs * 0.3} className="q7-eixo" /><text className="q7-tick" x={x(v)} y={base} dy="1.3em" textAnchor="middle">{int(v)}</text></g>)}
-                  {GRUPOS.map((g) => (
-                    <g key={g.v}>
-                      {g.ps.map((p, j) => {
-                        const cy = base - d.fs * (0.8 + j * 1.25), s = d.fs * 0.36;
-                        return (
-                          <g key={p.k}>
-                            {p.ens ? <rect x={x(g.v) - s} y={cy - s} width={2 * s} height={2 * s} fill="#176C73" /> : <circle cx={x(g.v)} cy={cy} r={s} fill="#fff" stroke="#3D5A8A" strokeWidth={2} />}
-                            <text className="q7-rot--peq" x={x(g.v) + s * 1.6} y={cy} dy=".35em" style={{ fill: p.ens ? "#176C73" : "#3D5A8A", fontWeight: 600 }}>{p.r}</text>
-                          </g>
-                        );
-                      })}
-                    </g>
-                  ))}
+                  {Array.from({ length: HI - LO + 1 }, (_, i) => LO + i).filter((v) => !estreito || v % 2 === 0).map((v) => <g key={v}><line x1={x(v)} x2={x(v)} y1={base} y2={base + d.fs * 0.3} className="q7-eixo" /><text className="q7-tick" x={x(v)} y={base} dy="1.3em" textAnchor="middle">{int(v)}</text></g>)}
+                  {estreito
+                    ? PONTOS.map((p, j) => {
+                      const cy = d.fs * 0.6 + j * ((base - d.fs * 1.2) / PONTOS.length);
+                      return <g key={p.k}><text className="q7-rot--peq" x={l - d.fs * 0.4} y={cy} dy=".35em" textAnchor="end" style={{ fill: p.ens ? "#176C73" : "#3D5A8A", fontWeight: 600 }}>{p.r}</text><line x1={l} x2={x(ACERTOS_LUAS[p.k])} y1={cy} y2={cy} stroke="#E2DFD6" />{marca(p, x(ACERTOS_LUAS[p.k]), cy)}</g>;
+                    })
+                    : GRUPOS.map((g) => (
+                      <g key={g.v}>
+                        {g.ps.map((p, j) => {
+                          const cy = base - d.fs * (0.8 + j * 1.25);
+                          return <g key={p.k}>{marca(p, x(g.v), cy)}<text className="q7-rot--peq" x={x(g.v) + s * 1.6} y={cy} dy=".35em" style={{ fill: p.ens ? "#176C73" : "#3D5A8A", fontWeight: 600 }}>{p.r}</text></g>;
+                        })}
+                      </g>
+                    ))}
                 </g>
               );
             }}

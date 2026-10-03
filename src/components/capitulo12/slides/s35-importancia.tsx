@@ -39,7 +39,7 @@ export function S35Importancia({ pagina }: { pagina?: Pagina }) {
   return (
     <Quadro slug="c12p35" pagina={pagina} layout="gg" titulo={rev ? undefined : "Na Iris, quais medidas pesam mais na floresta?"}
       conclusao={rev
-        ? <>As medidas da pétala somam <b>{pct(soma(PETALA), 1)}</b> da importância; as {int(NOMES.length)} somam {pct(TOTAL, 0)}. Votação, bagging e floresta treinam em paralelo; o boosting combina árvores em sequência (slide {SLIDE.c12p36.n}).</>
+        ? <>As medidas da pétala somam <b>{pct(soma(PETALA), 1)}</b> da importância; todas juntas somam {pct(TOTAL, 0)}. Votação, bagging e floresta treinam em paralelo; o boosting combina árvores em sequência (slide {SLIDE.c12p36.n}).</>
         : <>{int(NOMES.length)} medidas de flores de três espécies. Antes de ver as barras: quais delas a floresta mais usa para separar as espécies?</>}
       fonte={`Iris (load_iris do scikit-learn): 150 flores, 3 espécies, 4 medidas em cm. RandomForestClassifier(n_estimators=500, n_jobs=-1, random_state=42); importância por redução média de impureza (Gini); ${VERSOES}, NumPy ${BASE.versoes.numpy}.`}>
       <Painel>

@@ -46,7 +46,7 @@ export function S42AucTempo({ pagina }: { pagina?: Pagina }) {
                   const queda = met === "auc" ? mo.variacao : mo.variacaoGini;
                   return (
                     <g key={mo.modelo} opacity={on ? 1 : 0.6} style={{ cursor: "pointer" }} onClick={() => setSel(i)}>
-                      <text className="q7-rot" x={m.l} y={cy - d.fs * 1.05} style={{ fill: "#00205B", fontWeight: on ? 700 : 600 }}>{mo.modelo}{i === I_BVS ? " · sobreajuste, segundo o material" : ""}</text>
+                      <text className="q7-rot" x={m.l} y={cy - d.fs * 1.05} style={{ fill: "#00205B", fontWeight: on ? 700 : 600 }}>{mo.modelo}{i === I_BVS && d.w > d.fs * 34 ? " · sobreajuste, segundo o material" : ""}</text>
                       <line x1={x2 + r} x2={x1 - r} y1={cy} y2={cy} stroke={i === I_BVS ? "#8C2332" : "#5B6475"} strokeWidth={d.fs * 0.22} strokeLinecap="round" />
                       <circle cx={x1} cy={cy} r={r} fill="#3D5A8A" stroke="#fff" strokeWidth={2} />
                       <rect x={x2 - r} y={cy - r} width={2 * r} height={2 * r} fill="#2E6B4F" stroke="#fff" strokeWidth={2} />
