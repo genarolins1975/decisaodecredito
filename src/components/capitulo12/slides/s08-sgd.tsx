@@ -58,6 +58,7 @@ export function S08Sgd({ pagina }: { pagina?: Pagina }) {
           <li><b>predict</b> devolve True ou False: True quando o score passa de 0. Na primeira imagem (um {E0.rotulo}), o score é {int(E0.score)}.</li>
         </ul>
         <Painel className="q12-s08-reta" titulo="Doze imagens na reta do score: clique numa delas">
+          <div className="q12-s08-rola">
           <div className="q12-s08-area" style={{ ["--nf" as string]: NF }}>
             <div className="q12-s08-pista">
             <div className="q12-s08-reg q12-s08-reg--neg" style={{ width: `${X(0)}%` }}><span>prevê não 5</span></div>
@@ -79,6 +80,7 @@ export function S08Sgd({ pagina }: { pagina?: Pagina }) {
               {TICKS.map((t) => <span key={t} style={{ left: `${X(t)}%` }}>{int(t)}</span>)}
             </div>
             </div>
+          </div>
           </div>
         </Painel>
         <Painel className="q12-s08-info" tom="suave">

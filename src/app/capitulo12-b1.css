@@ -218,6 +218,8 @@
 .q12-s08-pts b { color: var(--q7-ink); }
 .q12-s08-reta { grid-column: 1 / 3; }
 .q12-s08-info { grid-column: 3; gap: .8cqw; }
+/* a régua fica num contêiner próprio: no 16:9 ele só repassa a altura; no celular é ele que rola na horizontal */
+.q12-s08-rola { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .q12-s08-area { position: relative; flex: 1; min-height: 0; --eixo: 2.2cqw; --topo: 2.4cqw; }
 .q12-s08-pista { position: absolute; top: 0; bottom: 0; left: 4.5%; right: 4.5%; }
 .q12-s08-reg { position: absolute; top: 0; bottom: var(--eixo); }
@@ -250,7 +252,7 @@
 @container q7 (max-width: 820px) {
   .q12-s08 { display: flex; flex-direction: column; gap: 12px; }
   .q12-s08-pts { font-size: 14.5px; padding-left: 18px; }
-  .q7 .q7-slide .q12-s08-reta { overflow-x: auto; }
+  .q12-s08-rola { flex: none; display: block; overflow-x: auto; }
   .q12-s08-area { flex: none; width: 640px; height: 250px; --eixo: 24px; --topo: 24px; }
   .q12-s08-reg span, .q12-s08-lim span { font-size: 10.5px; } .q12-s08-lim span { top: 18px; }
   .q7 .q7-slide .q12-s08-im { padding: 1px; } .q12-s08-et { font-size: 10.5px; }

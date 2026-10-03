@@ -182,11 +182,11 @@ const SIMBOLO: Record<string, string> = { ordenacao: "●", probabilidade: "▲"
  * Abertura de bloco: as quatro perguntas da aula com a deste bloco em destaque e o "Neste bloco" como fluxo de passos,
  * cada passo um link para o slide em que começa (no mesmo modo, apresentação ou estudo). Slide de navegação.
  */
-export function AberturaBloco({ slug, pagina, conclusao, extra }: { slug: string; pagina?: Pagina; conclusao: ReactNode; extra: ReactNode }) {
+export function AberturaBloco({ slug, pagina, conclusao, extra, fonte }: { slug: string; pagina?: Pagina; conclusao: ReactNode; extra: ReactNode; fonte?: ReactNode }) {
   const b = BLOCOS.find((x) => x.abre === slug)!;
   const iBloco = PERGUNTAS.findIndex((p) => p.id === b.pergunta);
   return (
-    <Quadro slug={slug} pagina={pagina} layout="um" conclusao={conclusao} rotuloConclusao="Neste bloco">
+    <Quadro slug={slug} pagina={pagina} layout="um" conclusao={conclusao} rotuloConclusao="Neste bloco" fonte={fonte}>
       <div className="q12-bloco">
         <ol className="q12-bloco-ps" aria-label="Os quatro blocos da aula">
           {PERGUNTAS.map((p, i) => {
