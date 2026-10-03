@@ -68,12 +68,6 @@ const L_ESC = perdaPD(P_ESC, YD), L_VOT1 = perdaPD(P_VOT[0], YD), L_COR1 = perda
 /* corrigir com uma árvore: o passo de Newton inteiro (η = 1) a partir do palpite, e o mesmo passo encolhido por η */
 const EST_ETA1 = estagios(modelo({ ...CFG_DIDATICA, eta: 1, arvores: 1 }, XD, YD), XD);
 const L_COR1_ETA1 = perdaLog(EST_ETA1[1], YD);
-/* com mais árvores: em que árvore corrigir passa escolher na log loss de treino (as 20 do slide 3), e votar nunca passa */
-const EST20 = estagios(modelo({ ...CFG_DIDATICA, arvores: 20 }, XD, YD), XD);
-const K_PASSA = EST20.findIndex((F, k) => k > 0 && perdaLog(F, YD) < L_ESC!);
-const VOT20 = amostrasVotar(20, N).map((ids) => arvoreY(ids.map((i) => XD[i]), ids.map((i) => YD[i])));
-const VOT_NUNCA_PASSA = Array.from({ length: 20 }, (_, k) => perdaPD(DIDATICA.map((_, i) => VOT20.slice(0, k + 1).reduce((a, t) => a + freq(t.no, XD[i], t.pbar), 0) / (k + 1)), YD)).every((v) => v === null || v > L_ESC!);
-if (K_PASSA < 1 || !VOT_NUNCA_PASSA) throw new Error("a frase sobre muitas árvores não vale nos dados");
 const PURA0 = DIDATICA.map((_, i) => i).filter((i) => P_ESC[i] === 0); // adimplentes em folha pura de escolher
 const PD_PURA_ETA1 = sigmoide(EST_ETA1[1][PURA0[0]]);
 const COR1_LO = Math.min(...P_COR[1]), COR1_HI = Math.max(...P_COR[1]);
