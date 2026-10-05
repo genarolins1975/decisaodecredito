@@ -10,7 +10,10 @@
  *     sem caixa; inicial "N" casa com qualquer termo que comece por n; "de", "da", "do", "dos", "das" e "e"
  *     são ignorados;
  *   - a regra vale para o nome da devolutiva e para o nome completo da lista da turma, quando informado;
- *   - e-mail informado na devolutiva tem precedência e casa só com a matrícula daquele e-mail;
+ *   - nome provisório que é o próprio e-mail vale pela parte local ("gabriel.oliveira@gmail.com" vira
+ *     "gabriel oliveira"), sem o domínio;
+ *   - e-mail informado na devolutiva tem precedência: se alguma matrícula tem aquele e-mail, o vínculo é com
+ *     ela e com nenhuma outra, e ela sai da disputa dos demais alunos; se nenhuma tem, vale a regra do nome;
  *   - o vínculo só vale quando é único nos dois sentidos: o aluno casa com uma única matrícula e essa
  *     matrícula casa com um único aluno. Qualquer ambiguidade fica sem vínculo e aparece para o professor.
  */
@@ -37,15 +40,17 @@ const normEmail = (e: string) => e.trim().toLowerCase();
 
 const localDoEmail = (email: string) => email.split("@")[0] ?? "";
 
+/** Nomes do candidato para comparação: nome que é e-mail entra só pela parte local, sem o domínio. */
+const nomesDoCandidato = (c: Candidato) => [...c.nomes.map((n) => (n.includes("@") ? localDoEmail(n) : n)), localDoEmail(c.email)];
+
 function termosDoCandidato(c: Candidato): Set<string> {
-  return new Set([...c.nomes.flatMap(termos), ...termos(localDoEmail(c.email))]);
+  return new Set(nomesDoCandidato(c).flatMap(termos));
 }
 
 /** Termo presente no conjunto; termo de uma letra é inicial e casa com qualquer termo que comece por ela. */
 const contem = (conjunto: Set<string>, t: string) => (t.length === 1 ? [...conjunto].some((x) => x.startsWith(t)) : conjunto.has(t));
 
 function casa(aluno: AlunoVinculo, c: Candidato, conjunto: Set<string>): boolean {
-  if (aluno.email) return normEmail(aluno.email) === normEmail(c.email);
   return [aluno.nome, aluno.nomeCompleto ?? ""].some((n) => casaNome(termos(n), c, conjunto));
 }
 
@@ -54,7 +59,7 @@ function casaNome(ts: string[], c: Candidato, conjunto: Set<string>): boolean {
   if (ts.every((t) => contem(conjunto, t))) return true;
   // nome da plataforma mais curto que o da devolutiva: vale se estiver inteiro nela, com ao menos dois termos
   const daDevolutiva = new Set(ts);
-  return [...c.nomes, localDoEmail(c.email)].some((nome) => {
+  return nomesDoCandidato(c).some((nome) => {
     const tn = termos(nome);
     return tn.length >= 2 && tn.every((t) => contem(daDevolutiva, t));
   });
@@ -62,7 +67,16 @@ function casaNome(ts: string[], c: Candidato, conjunto: Set<string>): boolean {
 
 export function vincular(alunos: AlunoVinculo[], candidatos: Candidato[]): Record<string, ResultadoVinculo> {
   const conjuntos = new Map(candidatos.map((c) => [c.id, termosDoCandidato(c)]));
-  const porAluno = new Map(alunos.map((a) => [a.id, candidatos.filter((c) => casa(a, c, conjuntos.get(c.id)!)).map((c) => c.id)]));
+  // e-mail fixado na devolutiva: a matrícula daquele e-mail é do aluno e sai da disputa pelo nome
+  const fixados = new Map<string, string>();
+  for (const a of alunos) {
+    if (!a.email) continue;
+    const c = candidatos.find((x) => normEmail(x.email) === normEmail(a.email!));
+    if (c) fixados.set(a.id, c.id);
+  }
+  const reservados = new Set(fixados.values());
+  const porAluno = new Map(alunos.map((a) => [a.id, fixados.has(a.id) ? [fixados.get(a.id)!]
+    : candidatos.filter((c) => !reservados.has(c.id) && casa(a, c, conjuntos.get(c.id)!)).map((c) => c.id)]));
   const porCandidato = new Map<string, number>();
   for (const ids of porAluno.values()) for (const id of ids) porCandidato.set(id, (porCandidato.get(id) ?? 0) + 1);
   const saida: Record<string, ResultadoVinculo> = {};
