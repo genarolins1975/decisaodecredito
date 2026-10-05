@@ -6,6 +6,8 @@ import { listMeetings } from "@/lib/services/meetings";
 import { Stat } from "@/components/ui";
 import { StartClassButton } from "@/components/professor/start-class-button";
 import { fmtDT } from "@/lib/time";
+import { TRABALHO_1, consolidacao, n2 } from "@/lib/avaliacoes/trabalho-1";
+import { vinculoTrabalho1 } from "@/lib/services/avaliacoes";
 
 export default async function TurmaVisaoPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -16,6 +18,7 @@ export default async function TurmaVisaoPage({ params }: { params: Promise<{ id:
   const next = meetings.find((m) => m.status === "planned" && m.scheduledAt && m.scheduledAt > new Date()) ?? meetings.find((m) => m.status === "planned");
   const grading = await db.select({ n: sql<number>`count(*)` }).from(schema.submissions).where(and(eq(schema.submissions.classId, id), eq(schema.submissions.isCurrent, true), inArray(schema.submissions.status, ["enviado", "atrasado", "reenviado"])));
   const reviews = await db.select({ n: sql<number>`count(*)` }).from(schema.attendanceRecords).innerJoin(schema.meetings, eq(schema.meetings.id, schema.attendanceRecords.meetingId)).where(and(eq(schema.meetings.classId, id), isNotNull(schema.attendanceRecords.reviewRequested)));
+  const t1v = await vinculoTrabalho1(); const t1 = t1v.turma?.id === id ? consolidacao() : null;
   const rule = (access.cls.config as { attendance?: { minimumPct?: number | null } }).attendance;
   return (
     <div>
@@ -35,6 +38,13 @@ export default async function TurmaVisaoPage({ params }: { params: Promise<{ id:
           <p className="text-[14px]">{rule?.minimumPct != null ? `Regra definida: mínimo ${rule.minimumPct}%.` : "Regra não definida: ninguém é reprovado por frequência até você configurar."} {Number(reviews[0]?.n ?? 0) > 0 && <b className="text-alert">{Number(reviews[0]?.n)} pedido(s) de revisão pendente(s).</b>}</p>
           <p className="hint mt-1"><Link href={`/professor/turmas/${id}/frequencia`}>Ver presença</Link> · <Link href={`/professor/turmas/${id}/configuracoes`}>definir a regra</Link></p>
         </section>
+        {t1 && (
+          <section className="card md:col-span-2">
+            <h2 className="text-base mb-2">{TRABALHO_1.titulo}</h2>
+            <p className="text-[14px]">Resultado publicado aos alunos: média {n2(t1.mediaAlunos)}, notas de {n2(t1.minima)} a {n2(t1.maxima)}, {t1.entregas} entregas.</p>
+            <p className="hint mt-1"><Link href="/professor/trabalho-1">Ver a consolidação e o vínculo de cada aluno</Link></p>
+          </section>
+        )}
       </div>
     </div>
   );
