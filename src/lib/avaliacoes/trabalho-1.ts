@@ -209,7 +209,7 @@ export type Aluno = {
 export const ALUNOS: Aluno[] = [
   { id: "tomaz-leal", nome: "Tomaz Leal", entrega: "supervisao-bcb" },
   { id: "roberto-gomides", nome: "Roberto Gomides", entrega: "supervisao-bcb" },
-  { id: "diana-cabral", nome: "Diana Cabral", entrega: "supervisao-bcb" },
+  { id: "diana-cabral", nome: "Diana Cabral", email: "didicstri@gmail.com", entrega: "supervisao-bcb" },
   { id: "jader-brenny-santana", nome: "Jader Brenny Santana", entrega: "consignado-jader" },
   { id: "andre-souza", nome: "André Souza", nomeCompleto: "André Nunes e Souza", entrega: "banco-asa" },
   { id: "andre-meirelles", nome: "André Meirelles", entrega: "banco-asa" },

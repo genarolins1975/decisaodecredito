@@ -84,7 +84,7 @@ describe("Trabalho 1: reconciliação com o documento de devolutivas", () => {
 });
 
 describe("Trabalho 1: vínculo entre devolutiva e matrícula", () => {
-  const alunos = ALUNOS.map((a) => ({ id: a.id, nome: a.nome, nomeCompleto: a.nomeCompleto }));
+  const alunos = ALUNOS.map((a) => ({ id: a.id, nome: a.nome, nomeCompleto: a.nomeCompleto, email: a.email }));
 
   it("normaliza acento, caixa e partículas", () => {
     expect(termos("Sebastião da Silva")).toEqual(["sebastiao", "silva"]);
@@ -156,6 +156,21 @@ describe("Trabalho 1: vínculo entre devolutiva e matrícula", () => {
       { id: "s2", nomes: ["Sebastião Rocha"], email: "s2@x.com" },
     ]);
     expect(r["sebastiao"]).toEqual({ status: "ambiguo", candidatos: ["s1", "s2"] });
+  });
+
+  it("nome provisório igual ao e-mail vale pela parte local, sem o domínio", () => {
+    const r = vincular(alunos, [{ id: "go", nomes: ["gabriel.oliveira@gmail.com"], email: "gabriel.oliveira@gmail.com" }]);
+    expect(r["gabriel-andrade"]).toEqual({ status: "vinculado", candidatoId: "go" });
+  });
+
+  it("e-mail fixado reserva a matrícula e, sem matrícula com aquele e-mail, vale o nome", () => {
+    const r = vincular([{ id: "d", nome: "Diana Cabral", email: "didicstri@gmail.com" }, { id: "x", nome: "Diana" }], [
+      { id: "m1", nomes: ["Diana Cabral"], email: "didicstri@gmail.com" },
+    ]);
+    expect(r.d).toEqual({ status: "vinculado", candidatoId: "m1" });
+    expect(r.x).toEqual({ status: "sem_correspondencia" });
+    const semEmail = vincular([{ id: "d", nome: "Diana Cabral", email: "didicstri@gmail.com" }], [{ id: "m2", nomes: ["Diana Cristina Cabral"], email: "outro@x.com" }]);
+    expect(semEmail.d).toEqual({ status: "vinculado", candidatoId: "m2" });
   });
 
   it("e-mail informado na devolutiva tem precedência sobre o nome", () => {
