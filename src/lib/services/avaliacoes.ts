@@ -28,7 +28,7 @@ export async function vinculoTrabalho1(): Promise<VinculoTurma> {
   const linhas = ids.length ? await db.select({ e: schema.enrollments, nomePerfil: schema.users.name }).from(schema.enrollments)
     .leftJoin(schema.users, eq(schema.users.id, schema.enrollments.userId))
     .where(inArray(schema.enrollments.classId, ids)) : [];
-  const alunos = ALUNOS.map((a) => ({ id: a.id, nome: a.nome, email: a.email }));
+  const alunos = ALUNOS.map((a) => ({ id: a.id, nome: a.nome, nomeCompleto: a.nomeCompleto, email: a.email }));
   let melhor: { turma: (typeof turmas)[number]; porAluno: Record<string, ResultadoVinculo>; n: number } | null = null;
   const placar: VinculoTurma["placar"] = [];
   const matriculas = new Map<string, MatriculaResumo>();

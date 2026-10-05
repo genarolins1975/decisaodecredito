@@ -33,8 +33,8 @@ export const TRABALHO_1 = {
   fonte: "Documento Trabalho 1 devolutivas individuais, do professor, com as notas equiparadas da revisão anterior mantidas.",
   /** Ano letivo da turma avaliada: turmas de outros anos nunca recebem esta avaliação. */
   anoLetivo: 2026,
-  /** Mínimo de alunos com vínculo único para a avaliação ser atribuída a uma turma da plataforma. */
-  vinculoMinimo: 8,
+  /** Mínimo de alunos com vínculo único para a avaliação ser atribuída a uma turma do ano letivo. */
+  vinculoMinimo: 3,
 };
 
 /** Pontos em sextos: p(23, 5) = 23 + 5/6. */
@@ -200,6 +200,8 @@ export type Aluno = {
   /** Nome como está na devolutiva; o vínculo com a matrícula usa estes termos. */
   nome: string;
   entrega: string;
+  /** Nome completo da lista da turma (sistema da escola), usado só no vínculo com a matrícula. */
+  nomeCompleto?: string;
   /** E-mail da matrícula, quando o vínculo pelo nome não bastar. Tem precedência sobre o nome. */
   email?: string;
 };
@@ -209,16 +211,16 @@ export const ALUNOS: Aluno[] = [
   { id: "roberto-gomides", nome: "Roberto Gomides", entrega: "supervisao-bcb" },
   { id: "diana-cabral", nome: "Diana Cabral", entrega: "supervisao-bcb" },
   { id: "jader-brenny-santana", nome: "Jader Brenny Santana", entrega: "consignado-jader" },
-  { id: "andre-souza", nome: "André Souza", entrega: "banco-asa" },
+  { id: "andre-souza", nome: "André Souza", nomeCompleto: "André Nunes e Souza", entrega: "banco-asa" },
   { id: "andre-meirelles", nome: "André Meirelles", entrega: "banco-asa" },
-  { id: "sebastiao", nome: "Sebastião", entrega: "banco-asa" },
-  { id: "renata-valsa", nome: "Renata Valsa", entrega: "fidc-imobiliario" },
-  { id: "larissa-bastos", nome: "Larissa Bastos", entrega: "fidc-imobiliario" },
-  { id: "gabriel-winck", nome: "Gabriel Winck", entrega: "fidc-imobiliario" },
-  { id: "guilherme-castro", nome: "Guilherme Castro", entrega: "fidc-cedente" },
+  { id: "sebastiao", nome: "Sebastião", nomeCompleto: "Sebastiao da Silva Campos Júnior", entrega: "banco-asa" },
+  { id: "renata-valsa", nome: "Renata Valsa", nomeCompleto: "Renata Carneiro Valsa", entrega: "fidc-imobiliario" },
+  { id: "larissa-bastos", nome: "Larissa Bastos", nomeCompleto: "Larissa Fialho Bastos", entrega: "fidc-imobiliario" },
+  { id: "gabriel-winck", nome: "Gabriel Winck", nomeCompleto: "Gabriel Lopes Winck", entrega: "fidc-imobiliario" },
+  { id: "guilherme-castro", nome: "Guilherme Castro", nomeCompleto: "Guilherme Almeida de Castro", entrega: "fidc-cedente" },
   { id: "michelle-bouhid", nome: "Michelle Bouhid", entrega: "hipotecario-europeu" },
-  { id: "carlos-eduardo-n-campos", nome: "Carlos Eduardo N Campos", entrega: "braskem" },
-  { id: "gabriel-andrade", nome: "Gabriel Andrade", entrega: "agrogalaxy" },
+  { id: "carlos-eduardo-n-campos", nome: "Carlos Eduardo N Campos", nomeCompleto: "Carlos Eduardo Nascimento Campos", entrega: "braskem" },
+  { id: "gabriel-andrade", nome: "Gabriel Andrade", nomeCompleto: "Gabriel Oliveira de Andrade", entrega: "agrogalaxy" },
   { id: "joao-pedro", nome: "João Pedro", entrega: "agrogalaxy" },
   { id: "matheus-luchi", nome: "Matheus Luchi", entrega: "agrogalaxy" },
 ];

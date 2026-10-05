@@ -24,7 +24,7 @@ Depois de mexer no roteiro ou nos guias do capítulo 7: `npx tsx scripts/capitul
 
 Resultado do Trabalho 1 (painel decisório de crédito) publicado na plataforma a partir do documento de devolutivas individuais do professor: 16 alunos, oito entregas. Os pontos por critério ficam em `src/lib/avaliacoes/trabalho-1.ts`, em sextos de ponto; nota base e nota equiparada (régua comum de 7 a 10) são derivadas e `tests/trabalho-1.test.ts` confere cada valor contra o documento.
 
-O aluno vê a própria devolutiva em `/trabalhos/trabalho-1` (cartão em Trabalhos e aviso em Início); o professor vê a consolidação em `/professor/trabalho-1` (cartão no Início e no Resumo da turma) e a tela de cada aluno em `/professor/trabalho-1/<aluno>`. Não há escrita no banco: o vínculo entre o nome da devolutiva e a matrícula é feito na leitura (`src/lib/avaliacoes/vinculo.ts`), só vale quando é único nos dois sentidos, e a turma é a do ano letivo 2026 que tiver ao menos oito vínculos. Para fixar um vínculo, preencher `email` do aluno no módulo.
+O aluno vê a própria devolutiva em `/trabalhos/trabalho-1` (cartão em Trabalhos e aviso em Início); o professor vê a consolidação em `/professor/trabalho-1` (cartão no Início e no Resumo da turma) e a tela de cada aluno em `/professor/trabalho-1/<aluno>`. Não há escrita no banco: o vínculo entre o nome da devolutiva e a matrícula é feito na leitura (`src/lib/avaliacoes/vinculo.ts`), só vale quando é único nos dois sentidos, e a turma é a do ano letivo 2026 com mais vínculos (mínimo de três). O nome da plataforma pode ser mais longo ou mais curto que o da devolutiva, desde que um contenha o outro inteiro. Para fixar um vínculo, preencher `email` do aluno no módulo.
 
 ## O que impede a conclusão total
 
