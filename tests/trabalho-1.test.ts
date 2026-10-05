@@ -84,7 +84,7 @@ describe("Trabalho 1: reconciliação com o documento de devolutivas", () => {
 });
 
 describe("Trabalho 1: vínculo entre devolutiva e matrícula", () => {
-  const alunos = ALUNOS.map((a) => ({ id: a.id, nome: a.nome }));
+  const alunos = ALUNOS.map((a) => ({ id: a.id, nome: a.nome, nomeCompleto: a.nomeCompleto }));
 
   it("normaliza acento, caixa e partículas", () => {
     expect(termos("Sebastião da Silva")).toEqual(["sebastiao", "silva"]);
@@ -114,9 +114,27 @@ describe("Trabalho 1: vínculo entre devolutiva e matrícula", () => {
     ]);
     expect(r["jader-brenny-santana"]).toEqual({ status: "vinculado", candidatoId: "j" });
     expect(r["carlos-eduardo-n-campos"]).toEqual({ status: "vinculado", candidatoId: "e" });
-    // "Gabriel Oliveira" não está contido em nenhum Gabriel da devolutiva; "Gabriel" sozinho não basta
-    expect(r["gabriel-andrade"]).toEqual({ status: "sem_correspondencia" });
+    // "Gabriel Oliveira" é Gabriel Oliveira de Andrade, pelo nome completo; "Gabriel" sozinho não basta
+    expect(r["gabriel-andrade"]).toEqual({ status: "vinculado", candidatoId: "o" });
     expect(r["gabriel-winck"]).toEqual({ status: "sem_correspondencia" });
+  });
+
+  it("lista da turma no formato do sistema da escola (sobrenome, nome) e cadastros curtos casam com o nome completo", () => {
+    const lista = ["Almeida de Castro, Guilherme", "Carneiro Valsa, Renata", "Chelotti Marques, Bruno", "da Silva Campos Júnior, Sebastiao",
+      "Eduardo Nascimento Campos, Carlos", "Fialho Bastos, Larissa", "Lopes Winck, Gabriel", "Nunes e Souza, André", "Oliveira de Andrade, Gabriel", "Pinto Tavares, Renato"];
+    const r = vincular(alunos, lista.map((n, i) => ({ id: `l${i}`, nomes: [n], email: `l${i}@x.com` })));
+    expect(r["guilherme-castro"]).toEqual({ status: "vinculado", candidatoId: "l0" });
+    expect(r["renata-valsa"]).toEqual({ status: "vinculado", candidatoId: "l1" });
+    expect(r["sebastiao"]).toEqual({ status: "vinculado", candidatoId: "l3" });
+    expect(r["carlos-eduardo-n-campos"]).toEqual({ status: "vinculado", candidatoId: "l4" });
+    expect(r["larissa-bastos"]).toEqual({ status: "vinculado", candidatoId: "l5" });
+    expect(r["gabriel-winck"]).toEqual({ status: "vinculado", candidatoId: "l6" });
+    expect(r["andre-souza"]).toEqual({ status: "vinculado", candidatoId: "l7" });
+    expect(r["gabriel-andrade"]).toEqual({ status: "vinculado", candidatoId: "l8" });
+    // cadastro curto pelo sobrenome do meio: "Gabriel Oliveira" é Gabriel Oliveira de Andrade
+    const curto = vincular(alunos, [{ id: "go", nomes: ["Gabriel Oliveira"], email: "go@x.com" }, { id: "gl", nomes: ["Gabriel Lopes"], email: "gl@x.com" }]);
+    expect(curto["gabriel-andrade"]).toEqual({ status: "vinculado", candidatoId: "go" });
+    expect(curto["gabriel-winck"]).toEqual({ status: "vinculado", candidatoId: "gl" });
   });
 
   it("não confunde homônimos parciais e trava a ambiguidade nos dois sentidos", () => {

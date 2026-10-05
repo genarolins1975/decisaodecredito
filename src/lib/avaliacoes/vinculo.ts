@@ -9,13 +9,14 @@
  *     inteiro contido no nome da devolutiva ("Jader Santana" casa com "Jader Brenny Santana"). Sem acento e
  *     sem caixa; inicial "N" casa com qualquer termo que comece por n; "de", "da", "do", "dos", "das" e "e"
  *     são ignorados;
+ *   - a regra vale para o nome da devolutiva e para o nome completo da lista da turma, quando informado;
  *   - e-mail informado na devolutiva tem precedência e casa só com a matrícula daquele e-mail;
  *   - o vínculo só vale quando é único nos dois sentidos: o aluno casa com uma única matrícula e essa
  *     matrícula casa com um único aluno. Qualquer ambiguidade fica sem vínculo e aparece para o professor.
  */
 
 export type Candidato = { id: string; nomes: string[]; email: string };
-export type AlunoVinculo = { id: string; nome: string; email?: string };
+export type AlunoVinculo = { id: string; nome: string; nomeCompleto?: string; email?: string };
 
 export type ResultadoVinculo =
   | { status: "vinculado"; candidatoId: string }
@@ -45,7 +46,10 @@ const contem = (conjunto: Set<string>, t: string) => (t.length === 1 ? [...conju
 
 function casa(aluno: AlunoVinculo, c: Candidato, conjunto: Set<string>): boolean {
   if (aluno.email) return normEmail(aluno.email) === normEmail(c.email);
-  const ts = termos(aluno.nome);
+  return [aluno.nome, aluno.nomeCompleto ?? ""].some((n) => casaNome(termos(n), c, conjunto));
+}
+
+function casaNome(ts: string[], c: Candidato, conjunto: Set<string>): boolean {
   if (ts.length === 0) return false;
   if (ts.every((t) => contem(conjunto, t))) return true;
   // nome da plataforma mais curto que o da devolutiva: vale se estiver inteiro nela, com ao menos dois termos
