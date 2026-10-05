@@ -105,6 +105,20 @@ describe("Trabalho 1: vínculo entre devolutiva e matrícula", () => {
     expect(r["tomaz-leal"]).toEqual({ status: "sem_correspondencia" });
   });
 
+  it("casa nome da plataforma mais curto que o da devolutiva, sem aceitar sobrenome diferente", () => {
+    const r = vincular(alunos, [
+      { id: "j", nomes: ["Jader Santana"], email: "jader@x.com" },
+      { id: "e", nomes: ["Eduardo Campos"], email: "ec@x.com" },
+      { id: "o", nomes: ["Gabriel Oliveira"], email: "go@x.com" },
+      { id: "g", nomes: ["Gabriel"], email: "g@x.com" },
+    ]);
+    expect(r["jader-brenny-santana"]).toEqual({ status: "vinculado", candidatoId: "j" });
+    expect(r["carlos-eduardo-n-campos"]).toEqual({ status: "vinculado", candidatoId: "e" });
+    // "Gabriel Oliveira" não está contido em nenhum Gabriel da devolutiva; "Gabriel" sozinho não basta
+    expect(r["gabriel-andrade"]).toEqual({ status: "sem_correspondencia" });
+    expect(r["gabriel-winck"]).toEqual({ status: "sem_correspondencia" });
+  });
+
   it("não confunde homônimos parciais e trava a ambiguidade nos dois sentidos", () => {
     const r = vincular(alunos, [
       { id: "g1", nomes: ["Gabriel Winck"], email: "g1@x.com" },

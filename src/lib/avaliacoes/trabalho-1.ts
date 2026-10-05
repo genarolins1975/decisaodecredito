@@ -33,8 +33,8 @@ export const TRABALHO_1 = {
   fonte: "Documento Trabalho 1 devolutivas individuais, do professor, com as notas equiparadas da revisão anterior mantidas.",
   /** Ano letivo da turma avaliada: turmas de outros anos nunca recebem esta avaliação. */
   anoLetivo: 2026,
-  /** Mínimo de alunos com vínculo único para a avaliação ser atribuída a uma turma da plataforma. */
-  vinculoMinimo: 8,
+  /** Mínimo de alunos com vínculo único para a avaliação ser atribuída a uma turma do ano letivo. */
+  vinculoMinimo: 3,
 };
 
 /** Pontos em sextos: p(23, 5) = 23 + 5/6. */

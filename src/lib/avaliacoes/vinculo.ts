@@ -5,8 +5,10 @@
  * que pode ser completo ("Renata Carneiro Valsa"), ou o e-mail como nome provisório. A regra é conservadora,
  * porque o erro que importa é mostrar a nota de um aluno a outro:
  *   - um aluno casa com uma matrícula quando todos os termos do seu nome aparecem no nome da matrícula, no
- *     nome do perfil ou na parte local do e-mail (sem acento e sem caixa; inicial "N" casa com qualquer termo
- *     que comece por n; "de", "da", "do", "dos", "das" e "e" são ignorados);
+ *     nome do perfil ou na parte local do e-mail, ou quando um desses nomes, com pelo menos dois termos, está
+ *     inteiro contido no nome da devolutiva ("Jader Santana" casa com "Jader Brenny Santana"). Sem acento e
+ *     sem caixa; inicial "N" casa com qualquer termo que comece por n; "de", "da", "do", "dos", "das" e "e"
+ *     são ignorados;
  *   - e-mail informado na devolutiva tem precedência e casa só com a matrícula daquele e-mail;
  *   - o vínculo só vale quando é único nos dois sentidos: o aluno casa com uma única matrícula e essa
  *     matrícula casa com um único aluno. Qualquer ambiguidade fica sem vínculo e aparece para o professor.
@@ -32,16 +34,26 @@ export function termos(texto: string): string[] {
 
 const normEmail = (e: string) => e.trim().toLowerCase();
 
+const localDoEmail = (email: string) => email.split("@")[0] ?? "";
+
 function termosDoCandidato(c: Candidato): Set<string> {
-  const local = c.email.split("@")[0] ?? "";
-  return new Set([...c.nomes.flatMap(termos), ...termos(local)]);
+  return new Set([...c.nomes.flatMap(termos), ...termos(localDoEmail(c.email))]);
 }
+
+/** Termo presente no conjunto; termo de uma letra é inicial e casa com qualquer termo que comece por ela. */
+const contem = (conjunto: Set<string>, t: string) => (t.length === 1 ? [...conjunto].some((x) => x.startsWith(t)) : conjunto.has(t));
 
 function casa(aluno: AlunoVinculo, c: Candidato, conjunto: Set<string>): boolean {
   if (aluno.email) return normEmail(aluno.email) === normEmail(c.email);
   const ts = termos(aluno.nome);
   if (ts.length === 0) return false;
-  return ts.every((t) => (t.length === 1 ? [...conjunto].some((x) => x.startsWith(t)) : conjunto.has(t)));
+  if (ts.every((t) => contem(conjunto, t))) return true;
+  // nome da plataforma mais curto que o da devolutiva: vale se estiver inteiro nela, com ao menos dois termos
+  const daDevolutiva = new Set(ts);
+  return [...c.nomes, localDoEmail(c.email)].some((nome) => {
+    const tn = termos(nome);
+    return tn.length >= 2 && tn.every((t) => contem(daDevolutiva, t));
+  });
 }
 
 export function vincular(alunos: AlunoVinculo[], candidatos: Candidato[]): Record<string, ResultadoVinculo> {
