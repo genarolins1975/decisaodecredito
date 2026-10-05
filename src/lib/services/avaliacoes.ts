@@ -15,12 +15,15 @@ export type VinculoTurma = {
 };
 
 /**
- * Turma do Trabalho 1: a que tem mais alunos da devolutiva com vínculo único, desde que pelo menos
+ * Turma do Trabalho 1: entre as turmas do ano letivo de TRABALHO_1.anoLetivo, a que tem mais alunos da devolutiva com vínculo único, desde que pelo menos
  * TRABALHO_1.vinculoMinimo. Empate fica com a turma mais antiga. Abaixo do mínimo, nenhuma turma recebe a
  * avaliação, e nenhum aluno a vê.
  */
 export async function vinculoTrabalho1(): Promise<VinculoTurma> {
-  const turmas = await db.select({ id: schema.classes.id, code: schema.classes.code, name: schema.classes.name }).from(schema.classes).orderBy(asc(schema.classes.createdAt));
+  const turmas = await db.select({ id: schema.classes.id, code: schema.classes.code, name: schema.classes.name }).from(schema.classes)
+    .innerJoin(schema.editions, eq(schema.editions.id, schema.classes.editionId))
+    .where(eq(schema.editions.year, TRABALHO_1.anoLetivo))
+    .orderBy(asc(schema.classes.createdAt));
   const ids = turmas.map((t) => t.id);
   const linhas = ids.length ? await db.select({ e: schema.enrollments, nomePerfil: schema.users.name }).from(schema.enrollments)
     .leftJoin(schema.users, eq(schema.users.id, schema.enrollments.userId))

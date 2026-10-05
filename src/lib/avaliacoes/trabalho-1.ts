@@ -31,6 +31,8 @@ export const TRABALHO_1 = {
   checkpoint: "29/08/2026",
   entrega: "12/09/2026",
   fonte: "Documento Trabalho 1 devolutivas individuais, do professor, com as notas equiparadas da revisão anterior mantidas.",
+  /** Ano letivo da turma avaliada: turmas de outros anos nunca recebem esta avaliação. */
+  anoLetivo: 2026,
   /** Mínimo de alunos com vínculo único para a avaliação ser atribuída a uma turma da plataforma. */
   vinculoMinimo: 8,
 };

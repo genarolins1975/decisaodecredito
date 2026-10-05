@@ -95,7 +95,7 @@ export default async function Trabalho1Consolidacao() {
           <h2 id="alunos" className="text-lg">Por aluno e vínculo na plataforma</h2>
           {v.turma
             ? <p className="text-[14px] mt-1">Turma atribuída: <b>{v.turma.name}</b> <span className="hint">({v.turma.code})</span>, com {nVinculados} de {c.alunos} alunos vinculados à própria matrícula. Só quem tem vínculo vê a devolutiva.</p>
-            : <p className="callout callout-warn text-[14px] mt-2">Nenhuma turma tem ao menos {TRABALHO_1.vinculoMinimo} alunos da devolutiva com vínculo único; por isso nenhum aluno vê o resultado ainda. {v.placar.length ? `Vínculos por turma: ${v.placar.map((p) => `${p.name} (${p.code}) ${p.vinculados}`).join("; ")}.` : "Não há turmas cadastradas."}</p>}
+            : <p className="callout callout-warn text-[14px] mt-2">Nenhuma turma do ano letivo {TRABALHO_1.anoLetivo} tem ao menos {TRABALHO_1.vinculoMinimo} alunos da devolutiva com vínculo único; por isso nenhum aluno vê o resultado ainda. {v.placar.length ? `Vínculos por turma: ${v.placar.map((p) => `${p.name} (${p.code}) ${p.vinculados}`).join("; ")}.` : "Não há turmas cadastradas."}</p>}
           <p className="hint mt-1">O vínculo casa o nome da devolutiva com o nome da matrícula, o nome do perfil ou o e-mail, sem acento, e só vale quando é único nos dois sentidos. Para fixar um vínculo, informe o e-mail da matrícula no campo email do aluno em src/lib/avaliacoes/trabalho-1.ts.</p>
         </div>
         <div className="table-wrap"><table className="table text-[13.5px]">
