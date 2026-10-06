@@ -974,6 +974,26 @@ test("teste cego por base: OOT e rótulos vêm da base do grupo; liberação só
   expect((await b.get(`/api/arquivos/${oot.file.id}`)).status()).toBe(403);
 });
 
+test("andamento por aluno: o professor vê etapa, missões e o que cada aluno fez; aluno não acessa", async () => {
+  const cid = await classId();
+  const [a] = await sql<{ id: string }>("select id from assignments where class_id=$1 and slug='trabalho-final'", [cid]);
+  const prof = await apiAs(PROF);
+  const url = `/professor/turmas/${cid}/trabalhos/${a.id}/andamento`;
+  // estado deixado pelo teste anterior: A congelou, baixou o OOT da base do grupo e enviou previsões válidas
+  const html = (await (await prof.get(`${url}?q=${encodeURIComponent("Aluno A")}`)).text()).replace(/<!-- -->/g, "");
+  expect(html).toContain("Aluno A Teste");
+  expect(html).not.toContain("Aluno B Teste");
+  expect(html).toContain("Previsões enviadas");
+  expect(html).toContain("Grupo congelou o modelo (versão v1.0");
+  expect(html).toContain("Baixou o OOT sem desfecho");
+  expect(html).toContain("submissão 1: válida");
+  const geral = (await (await prof.get(url)).text()).replace(/<!-- -->/g, "");
+  expect(geral).toContain("Aluno B Teste");
+  const aluno = await apiAs(ALUNO_A);
+  const r = await aluno.get(url, { maxRedirects: 0 }); // a área do professor manda quem não é da equipe para o próprio início
+  expect([302, 303, 307]).toContain(r.status()); expect(r.headers().location).toContain("/inicio");
+});
+
 test("Missão 12 mostra o estado do teste cego e leva ao quadro de congelamento", async ({ page }) => {
   const cid = await classId();
   const [a] = await sql<{ id: string }>("select id from assignments where class_id=$1 and slug='trabalho-final'", [cid]);
