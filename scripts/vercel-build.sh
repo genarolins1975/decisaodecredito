@@ -3,6 +3,7 @@
 # garante curso/edição/turma e a conta do professor (sem contas de teste) e importa o conteúdo.
 # Com CONTENT_SYNC_ON_BUILD=1 roda só a importação do conteúdo, sem migrar nem semear: é o caso de quem
 # desligou o bootstrap depois do primeiro deploy e ainda quer que as correções do material cheguem ao aluno.
+# Com qualquer das duas, aplica os ajustes pontuais de dados (scripts/ajustes-dados.ts, uma vez cada).
 # Sem nenhuma das duas, apenas compila.
 #
 # A importação é idempotente e conservadora: cria a página que falta, republica a página cujo HTML de
@@ -33,6 +34,8 @@ if [ "$bootstrap" = "1" ]; then
   NODE_ENV=production SEED_TEST_ACCOUNTS=0 npm run --silent db:seed
 fi
 if [ "$bootstrap" = "1" ] || [ "$conteudo" = "1" ]; then
+  echo "bootstrap: ajustes pontuais de dados (cada um roda uma vez; ver scripts/ajustes-dados.ts)"
+  npm run --silent dados:ajustes
   echo "bootstrap: conteúdo"
   npm run --silent content:import
 fi

@@ -14,7 +14,8 @@ type Data = {
   group: { id: string; name: string; members: { userId: string; name: string }[] } | null; submissions: Sub[];
   grade: { status: string; total: string | null; scores: Record<string, number>; comments: string | null; feedbackFileId: string | null; individualDefense: { score: number; notes: string } | null; publishedAt: string; rubricVersionNo: number | null; calc: { total: number; max: number; detail: { key: string; name: string; score: number | null; weight: number; weighted: number | null }[]; cutoffFailed: boolean; rounding: string } | null } | null;
   due: { dueAt: string | null; extension: { reason: string } | null }; progress: { stepId: string; status: string; note: string | null }[];
-  blind: { configured: boolean; datasetCode?: string | null; maxSubmissions: number; feedbackLevel: string; freezes: { id: string; modelVersion: string; manifestSha256: string; frozenAt: string; artifactHashes: { name: string; sha256: string }[] }[]; oot: { ok: boolean; reason?: string }; submissions: { id: string; submissionNo: number; validation: { valid: boolean; missing: number; duplicates: number; extra: number; rowsRead: number; expected: number }; submittedAt: string }[] } | null;
+  noGroup?: string | null;
+  blind: { configured: boolean; datasetCode?: string | null; maxSubmissions: number; feedbackLevel: string; freeze: { ok: boolean; reason?: string }; freezes: { id: string; modelVersion: string; manifestSha256: string; frozenAt: string; artifactHashes: { name: string; sha256: string }[] }[]; oot: { ok: boolean; reason?: string }; submissions: { id: string; submissionNo: number; validation: { valid: boolean; missing: number; duplicates: number; extra: number; rowsRead: number; expected: number }; submittedAt: string }[] } | null;
 };
 
 export function AssignmentStudent({ assignmentId, classId, isStudent }: { assignmentId: string; classId: string; isStudent: boolean }) {
@@ -29,7 +30,7 @@ export function AssignmentStudent({ assignmentId, classId, isStudent }: { assign
   const a = d.assignment;
   const draft = d.submissions.find((s) => s.status === "rascunho");
   const current = d.submissions.find((s) => s.status !== "rascunho");
-  const canEdit = isStudent && a.status === "published";
+  const canEdit = isStudent && a.status === "published" && !d.noGroup;
 
   async function uploadFile(file: File, purpose: string) {
     const fd = new FormData(); fd.set("classId", classId); fd.set("purpose", purpose); fd.set("assignmentId", assignmentId); fd.set("file", file);
@@ -49,6 +50,7 @@ export function AssignmentStudent({ assignmentId, classId, isStudent }: { assign
             {a.latePolicy.startedBeforeDeadlineCounts && <span className="hint"> Upload iniciado antes do prazo e concluído em até {a.latePolicy.graceMinutes ?? 15} min depois não conta como atraso.</span>}</p>
         </header>
         <ErrorBox message={err} /><SuccessBox message={ok} />
+        {d.noGroup && <Callout tone="warn" title="Você ainda não está em um grupo">{d.noGroup} Até lá, a entrega, o congelamento do modelo e o arquivo OOT ficam bloqueados.</Callout>}
         <section className="card conteudo">
           <h2 className="text-lg mb-2">Enunciado</h2>
           <p className="whitespace-pre-line text-[15px]">{a.description}</p>
@@ -119,6 +121,7 @@ export function AssignmentStudent({ assignmentId, classId, isStudent }: { assign
       <aside className="flex flex-col gap-4">
         <section className="card" aria-labelledby="entrega">
           <h2 id="entrega" className="text-lg mb-1">Entrega</h2>
+          {d.noGroup && <p className="hint">Disponível quando você entrar em um grupo.</p>}
           {current && (
             <div className="mb-3 text-[14px]">
               <p className="flex items-center gap-2 flex-wrap"><StatusBadge status={current.status} /> versão {current.versionNo} · {fmtDT(current.submittedAt)}{current.late && <span className="badge badge-warn">atraso</span>}</p>
@@ -150,7 +153,8 @@ export function AssignmentStudent({ assignmentId, classId, isStudent }: { assign
             <h2 id="cego" className="text-lg mb-1">Teste cego (OOT)</h2>
             <p className="hint mb-2">Ordem obrigatória: congelar o modelo (manifesto, versão e hashes) → receber o arquivo OOT sem desfecho → enviar previsões uma única vez ({d.blind.maxSubmissions} submissão{d.blind.maxSubmissions > 1 ? "ões" : ""}). Os rótulos ficam apenas com o professor.{d.blind.datasetCode ? ` O OOT é o da base ${d.blind.datasetCode} do seu grupo.` : ""}</p>
             {d.blind.freezes.filter((f) => !f.modelVersion.endsWith("-invalidado")).length === 0 ? (
-              canEdit && <FreezeForm onSubmit={async (file, version, hashes) => run(async () => { const up = await uploadFile(file, "manifest"); await api(`/api/trabalhos/${assignmentId}/congelar`, { body: { classId, manifestFileId: up.id, modelVersion: version, artifactHashes: hashes } }); return "Modelo congelado. Agora o arquivo OOT pode ser baixado."; })} busy={busy} />
+              canEdit && d.blind.freeze.ok ? <FreezeForm onSubmit={async (file, version, hashes) => run(async () => { const up = await uploadFile(file, "manifest"); await api(`/api/trabalhos/${assignmentId}/congelar`, { body: { classId, manifestFileId: up.id, modelVersion: version, artifactHashes: hashes } }); return "Modelo congelado. Agora o arquivo OOT pode ser baixado."; })} busy={busy} />
+                : <p className="hint">Congelamento indisponível: {d.blind.freeze.reason ?? (a.status === "published" ? "ação reservada ao aluno." : "o trabalho não está aberto para entregas.")}</p>
             ) : d.blind.freezes.map((f) => <p key={f.id} className={`text-[13px] ${f.modelVersion.endsWith("-invalidado") ? "hint line-through" : ""}`}><b>Congelado</b> em {fmtDT(f.frozenAt)} · versão {f.modelVersion} · manifesto <span className="font-mono">{f.manifestSha256.slice(0, 12)}…</span> · {f.artifactHashes.length} hash(es)</p>)}
             <div className="mt-2">
               {d.blind.oot.ok ? <button className="btn btn-sm btn-secondary" onClick={() => run(async () => { const r = await api<{ downloadUrl: string }>(`/api/trabalhos/${assignmentId}/oot?classId=${classId}`); location.href = r.downloadUrl; })}>Baixar OOT sem desfecho</button> : <p className="hint">OOT bloqueado: {d.blind.oot.reason}</p>}

@@ -56,6 +56,21 @@ export async function myFreeze(access: ClassAccess, assignmentId: string) {
   return { group, freezes: rows };
 }
 
+/**
+ * Pode congelar agora? Diz ao aluno, antes de ele montar o manifesto, o que impede o congelamento: papel na turma,
+ * turma arquivada, falta de grupo ou de base. Sem base não há OOT, e um congelamento nesse estado só travaria o grupo.
+ * Modelo já congelado não é impedimento a explicar: a tela mostra o congelamento existente.
+ */
+export async function freezeStatus(access: ClassAccess, assignment: { id: string; mode: string }): Promise<{ ok: boolean; reason?: string }> {
+  if (access.role !== "aluno") return { ok: false, reason: `Você está nesta turma como ${access.role}. O manifesto e o congelamento do modelo são feitos por quem está matriculado como aluno.` };
+  if (access.archived) return { ok: false, reason: "Turma arquivada: novas interações estão bloqueadas." };
+  const group = assignment.mode === "grupo" ? await myGroup(access.classId, access.user.id) : null;
+  if (assignment.mode === "grupo" && !group) return { ok: false, reason: "Você ainda não está em um grupo. Fale com o professor para entrar em um." };
+  const files = await resolveBlindFiles(await blindConfig(assignment.id), group);
+  if (!files.ootFileId) return { ok: false, reason: group && !group.datasetId ? "Seu grupo ainda não tem base atribuída. O congelamento fica disponível quando o professor atribuir a base." : "O professor ainda não cadastrou o arquivo OOT deste trabalho." };
+  return { ok: true };
+}
+
 /** Congela: exige manifesto (arquivo) e versão; primeiro congelamento é o oficial; novos só como exceção registrada pelo professor. */
 export async function freezeModel(access: ClassAccess, assignmentId: string, input: { manifestFileId: string; modelVersion: string; artifactHashes: { name: string; sha256: string }[]; notes?: string }) {
   const [a] = await db.select().from(schema.assignments).where(and(eq(schema.assignments.id, assignmentId), eq(schema.assignments.classId, access.classId)));
@@ -63,6 +78,8 @@ export async function freezeModel(access: ClassAccess, assignmentId: string, inp
   const group = await subject(access, a);
   const { freezes } = await myFreeze(access, assignmentId);
   if (freezes.some((f) => !f.modelVersion.endsWith("-invalidado"))) throw new ApiError(409, "O modelo já foi congelado. Um novo congelamento só pode ser registrado pelo professor como exceção.", "already_frozen");
+  const fs = await freezeStatus(access, a);
+  if (!fs.ok) throw new ApiError(400, fs.reason ?? "Congelamento indisponível", "freeze_unavailable");
   const { file } = await readFileBuffer(input.manifestFileId);
   if (file.ownerUserId !== access.user.id) throw new ApiError(403, "Arquivo não pertence a você");
   for (const h of input.artifactHashes) if (!/^[a-f0-9]{64}$/i.test(h.sha256)) throw new ApiError(400, `Hash inválido para ${h.name}`);
@@ -86,7 +103,10 @@ export async function canDownloadOot(access: ClassAccess, assignmentId: string):
   const [a] = await db.select().from(schema.assignments).where(eq(schema.assignments.id, assignmentId));
   if (!a) return { ok: false, reason: "Trabalho não encontrado" };
   let group: { datasetId: string | null } | null = null;
-  if (a.mode === "grupo") { try { group = await subject(access, a); } catch { if (access.role === "aluno") return { ok: false, reason: "Entre em um grupo com base atribuída para receber o arquivo OOT" }; } }
+  if (a.mode === "grupo") { try { group = await subject(access, a); } catch {
+    if (access.role === "aluno") return { ok: false, reason: "Entre em um grupo com base atribuída para receber o arquivo OOT" };
+    if (access.role === "monitor") return { ok: false, reason: "O OOT é entregue por grupo, conforme a base do grupo; como monitor, sem grupo nesta turma, não há base associada" };
+  } }
   const files = await resolveBlindFiles(cfg, group);
   if (!files.ootFileId) return { ok: false, reason: group && !group.datasetId ? "Seu grupo ainda não tem base atribuída" : "Arquivo OOT ainda não cadastrado pelo professor" };
   if (access.role !== "aluno") return { ok: true, fileId: files.ootFileId, datasetCode: files.datasetCode };

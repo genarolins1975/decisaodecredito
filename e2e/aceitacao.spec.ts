@@ -924,10 +924,25 @@ test("teste cego por base: OOT e rótulos vêm da base do grupo; liberação só
   await sql("update group_members set left_at = now() where user_id=$1 and left_at is null and group_id in (select id from groups where class_id=$2)", [ua, cid]);
   await sql("delete from blind_submissions where blind_test_id in (select id from blind_tests where assignment_id=$1)", [asg.id]);
   await sql("delete from model_freezes where assignment_id=$1", [asg.id]);
+  const a = await apiAs(ALUNO_A);
+  // sem grupo: a página carrega com o enunciado e diz por que o manifesto e o OOT estão bloqueados
+  let res = await a.get(`/api/trabalhos/${asg.id}?classId=${cid}`); expect(res.status()).toBe(200);
+  let view = await res.json();
+  expect(view.noGroup).toContain("grupo"); expect(view.blind.freeze.ok).toBe(false); expect(view.blind.freeze.reason).toContain("grupo");
+  // monitor: não congela, e a tela diz que é pelo papel na turma
+  const mon = await (await (await apiAs(MONITOR)).get(`/api/trabalhos/${asg.id}?classId=${cid}`)).json();
+  expect(mon.blind.freeze.ok).toBe(false); expect(mon.blind.freeze.reason).toContain("como monitor"); expect(mon.blind.oot.reason).toContain("monitor");
   const gid = (await (await prof.post(`/api/professor/turmas/${cid}/grupos`, { data: { name: `G-cego-${uid()}`, datasetId: ds.id } })).json()).id;
   await prof.post(`/api/professor/turmas/${cid}/grupos/${gid}/membros`, { data: { userId: ua, action: "add" } });
-  const a = await apiAs(ALUNO_A);
-  let view = await (await a.get(`/api/trabalhos/${asg.id}?classId=${cid}`)).json();
+  // grupo sem base: o congelamento fica bloqueado antes, no servidor e na tela, em vez de travar o grupo sem OOT
+  await sql("update groups set dataset_id = null where id=$1", [gid]);
+  view = await (await a.get(`/api/trabalhos/${asg.id}?classId=${cid}`)).json();
+  expect(view.blind.freeze.ok).toBe(false); expect(view.blind.freeze.reason).toContain("base atribuída");
+  const man0 = await (await a.post("/api/arquivos", { multipart: { classId: cid, purpose: "manifest", file: { name: "manifesto.md", mimeType: "text/plain", buffer: Buffer.from("# manifesto\n") } } })).json();
+  expect((await a.post(`/api/trabalhos/${asg.id}/congelar`, { data: { classId: cid, manifestFileId: man0.file.id, modelVersion: "v0", artifactHashes: [] } })).status()).toBe(400);
+  await sql("update groups set dataset_id = $2 where id=$1", [gid, ds.id]);
+  view = await (await a.get(`/api/trabalhos/${asg.id}?classId=${cid}`)).json();
+  expect(view.noGroup).toBeNull(); expect(view.blind.freeze.ok).toBe(true);
   expect(view.blind.configured).toBe(true); expect(view.blind.datasetCode).toBe("02_cartao"); expect(view.blind.oot.ok).toBe(false);
   expect((await a.get(`/api/trabalhos/${asg.id}/oot?classId=${cid}`)).status()).toBe(403);
   expect((await a.get(`/api/arquivos/${oot.file.id}`)).status()).toBe(403); // antes de congelar, nem pelo id do arquivo
