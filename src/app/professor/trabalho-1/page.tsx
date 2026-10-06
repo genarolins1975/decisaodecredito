@@ -71,7 +71,7 @@ export default async function Trabalho1Consolidacao() {
       </section>
 
       <section className="card p-0! mb-5" aria-labelledby="entregas">
-        <div className="p-[18px] pb-2"><h2 id="entregas" className="text-lg">Resultado por entrega</h2><p className="hint mt-1">Pontos por critério vigentes, após a revisão de {REVISAO.data}, com a precisão integral arredondada a duas casas. Zero em vermelho indica a trava aplicada. Anterior é a nota de {TRABALHO_1.entrega}; o acréscimo é arredondado separadamente e pode diferir 0,01 da diferença exibida.</p></div>
+        <div className="p-[18px] pb-2"><h2 id="entregas" className="text-lg">Resultado por entrega</h2><p className="hint mt-1">Pontos por critério vigentes, após a revisão de {REVISAO.data}, com a precisão integral arredondada a duas casas. Zero em vermelho indica a trava aplicada. Anterior é a nota de {TRABALHO_1.entrega}; o acréscimo é a diferença entre as duas notas exibidas.</p></div>
         <div className="table-wrap"><table className="table text-[13.5px]">
           <thead><tr><th>#</th><th>Entrega</th>{CRITERIOS.map((k) => <th key={k.chave} className="text-right!">{k.curto}<br /><span className="font-normal normal-case">/{k.max}</span></th>)}<th className="text-right!">Doc.<br /><span className="font-normal normal-case">/{DOCUMENTAL_MAX}</span></th><th className="text-right!">Total<br /><span className="font-normal normal-case">/100</span></th><th className="text-right!">Base</th><th className="text-right!">Anterior</th><th className="text-right!">Acréscimo</th><th className="text-right!">Nota</th></tr></thead>
           <tbody>
