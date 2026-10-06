@@ -31,7 +31,7 @@ export default async function AulasPage() {
                 <p className="eyebrow">{rotuloUnidade(u)}</p>
                 <h2 id={`u-${u.id}`}>{u.title}</h2>
               </div>
-              <p className="hint max-w-[48ch]"><b>Entrega:</b> {u.deliverable}</p>
+              {u.kind === "trabalho" && u.deliverable && <p className="hint max-w-[48ch]"><b>Entrega:</b> {u.deliverable}</p>}
             </div>
             {u.chapters.length > 0 && <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {u.chapters.map((c) => {

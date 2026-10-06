@@ -3,7 +3,7 @@ import Link from "next/link";
 import { and, asc, desc, eq, gte, inArray, isNotNull } from "drizzle-orm";
 import { requireContext } from "@/lib/context";
 import { db, schema } from "@/lib/db/client";
-import { listAssignments, myGroup } from "@/lib/services/assignments";
+import { listAssignments, myGroup, eEntregaDeAula } from "@/lib/services/assignments";
 import { flatPages } from "@/lib/services/content";
 import { PageHeader, StatusBadge, ButtonLink } from "@/components/ui";
 import { fmtL, fmtDT, relative } from "@/lib/time";
@@ -25,7 +25,7 @@ export default async function InicioPage() {
   const subs = ids.length ? await db.select().from(schema.submissions).where(and(inArray(schema.submissions.assignmentId, ids), eq(schema.submissions.isCurrent, true), group ? eq(schema.submissions.groupId, group.id) : eq(schema.submissions.submitterUserId, uid))) : [];
   const pending = assignments.filter((a) => !subs.some((s) => s.assignmentId === a.id && ["enviado", "atrasado", "reenviado", "corrigido", "publicado"].includes(s.status))).sort((a, b) => (a.dueAt?.getTime() ?? 9e15) - (b.dueAt?.getTime() ?? 9e15));
   const notices = await db.select().from(schema.notices).where(and(eq(schema.notices.classId, cid), isNotNull(schema.notices.publishedAt))).orderBy(desc(schema.notices.publishedAt)).limit(5);
-  const published = ids.length ? await db.select({ g: schema.grades, a: schema.assignments }).from(schema.grades).innerJoin(schema.assignments, eq(schema.assignments.id, schema.grades.assignmentId)).where(and(eq(schema.grades.userId, uid), eq(schema.grades.classId, cid), isNotNull(schema.grades.publishedAt), gte(schema.grades.publishedAt, new Date(now.getTime() - 30 * 86400e3)))).orderBy(desc(schema.grades.publishedAt)) : [];
+  const published = (ids.length ? await db.select({ g: schema.grades, a: schema.assignments }).from(schema.grades).innerJoin(schema.assignments, eq(schema.assignments.id, schema.grades.assignmentId)).where(and(eq(schema.grades.userId, uid), eq(schema.grades.classId, cid), isNotNull(schema.grades.publishedAt), gte(schema.grades.publishedAt, new Date(now.getTime() - 30 * 86400e3)))).orderBy(desc(schema.grades.publishedAt)) : []).filter(({ a }) => !eEntregaDeAula(a.slug)); // entregas por aula fora da visão do aluno (06/10/2026)
   const t1 = await devolutivaDoUsuario(cid, uid);
   const last = await db.select({ qv: schema.studyResponses.questionVersionId }).from(schema.studyResponses).where(and(eq(schema.studyResponses.userId, uid), eq(schema.studyResponses.classId, cid))).orderBy(desc(schema.studyResponses.serverTime)).limit(1);
   let resume: { slug: string; title: string } | null = null;
@@ -54,7 +54,7 @@ export default async function InicioPage() {
               <p className="mt-1 text-[15px]">{next.scheduledAt ? <><b>{fmtL(next.scheduledAt)}</b> <span className="hint">({relative(next.scheduledAt)})</span></> : <span className="hint">data a confirmar pelo professor</span>}{next.location ? ` · ${next.location}` : ""}{next.videoUrl && <> · <a href={next.videoUrl} target="_blank" rel="noreferrer">videoconferência</a></>}</p>
               {unitChapters.length > 0 && <p className="mt-2 text-[14.5px]"><b>Capítulos:</b> {unitChapters.map((c) => `${c.number}. ${c.title}`).join(" · ")}</p>}
               <p className="mt-2 text-[14.5px]"><b>O que preparar:</b> {next.preparation ?? (unitChapters.length ? `ler as páginas essenciais dos capítulos ${unitChapters.map((c) => c.number).join(", ")} e responder às perguntas de checagem.` : "o professor ainda não indicou.")}</p>
-              {nextUnit && <p className="mt-1 text-[14.5px]"><b>Entrega indicada:</b> {nextUnit.deliverable}</p>}
+              {nextUnit?.kind === "trabalho" && nextUnit.deliverable && <p className="mt-1 text-[14.5px]"><b>Entrega:</b> {nextUnit.deliverable}</p>}
               <div className="mt-3 flex gap-2 flex-wrap">
                 {unitChapters[0] && <ButtonLink href={`/aulas/capitulo/${unitChapters[0].number}`} variant="secondary">Abrir o primeiro capítulo</ButtonLink>}
               </div>

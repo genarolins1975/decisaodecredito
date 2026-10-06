@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { asc, eq } from "drizzle-orm";
 import { requireClassAccess } from "@/lib/auth/guard";
@@ -26,6 +27,7 @@ export default async function TrabalhoProfessorPage({ params }: { params: Promis
     <div className="flex flex-col gap-5">
       <div className="flex items-center gap-3 flex-wrap"><h2 className="text-xl">{a.title}</h2><StatusBadge status={a.status} />
         <div className="flex-1" />
+        <Link href={`/professor/turmas/${id}/trabalhos/${aid}/andamento`} className="btn btn-sm btn-secondary">Andamento por aluno</Link>
         <PublishToggle classId={id} aid={aid} status={a.status} /></div>
       <AssignmentTeacherPanel classId={id} assignment={json({ ...plain, steps })} rubric={json(rubric?.definition ?? null)} submissions={json(subs.submissions)} grades={json(subs.grades)} blind={json(blind)} groups={json(groups)} students={students.filter((s) => s.userId).map((s) => ({ userId: s.userId!, name: s.name }))} datasets={datasets} />
       <details className="card"><summary className="cursor-pointer font-serif font-bold text-ink">Editar enunciado, prazo, formatos, regra de atraso e rubrica</summary>

@@ -2,8 +2,9 @@
  * Testes de aceitação obrigatórios (seção 13 do briefing), executados contra a aplicação real
  * com banco local. Contas de teste isoladas (domínio example.test). Nenhum e-mail sai da plataforma.
  */
+import fs from "node:fs";
 import { test, expect } from "@playwright/test";
-import { apiAs, loginUi, sql, classId, uid, BASE, PROF, ALUNO_A, ALUNO_B, OUTRA, MONITOR, SEM } from "./helpers";
+import { apiAs, loginUi, sql, classId, uid, trabalhoDeTeste, BASE, PROF, ALUNO_A, ALUNO_B, OUTRA, MONITOR, SEM } from "./helpers";
 
 test.describe.serial("edições, turmas e isolamento", () => {
   test("edição 2026 existe; professor cria 2027 e duplica sem copiar pessoas ou registros", async () => {
@@ -225,7 +226,7 @@ test.describe.serial("trabalhos, grupos e notas", () => {
   test("upload interrompido não vira entrega; envio válido gera recibo; nota só após publicação; exportação reconcilia", async () => {
     const prof = await apiAs(PROF);
     const cid = await classId();
-    const asg = (await (await prof.get(`/api/professor/turmas/${cid}/trabalhos`)).json()).assignments.find((a: { slug: string }) => a.slug === "entrega-aula-1");
+    const asg = await trabalhoDeTeste(prof, cid);
     await prof.patch(`/api/professor/turmas/${cid}/trabalhos/${asg.id}`, { data: { status: "published", mode: "individual", dueAt: "2030-01-01T23:59", allowedFormats: ["pdf", "link"] } });
     const a = await apiAs(ALUNO_A);
     const draft = (await (await a.post(`/api/trabalhos/${asg.id}/rascunho`, { data: { classId: cid } })).json()).submission;
@@ -288,7 +289,7 @@ test("estudo: feedback em dois estágios, resposta vista não conta como acerto,
   expect(second.attemptNo).toBe(2); expect(second.revealed).toBe(true); expect(second.feedback.correct).toBe(1);
   // nota nula em Meu acompanhamento aparece como "sem nota", não como 0
   const prof = await apiAs(PROF);
-  const asg = (await (await prof.get(`/api/professor/turmas/${cid}/trabalhos`)).json()).assignments.find((x: { slug: string }) => x.slug === "entrega-aula-1");
+  const asg = await trabalhoDeTeste(prof, cid);
   const rows = await sql<{ total: string | null }>("select g.total from grades g join users u on u.id=g.user_id where g.assignment_id=$1 and u.email=$2", [asg.id, ALUNO_A.email]);
   if (rows[0] && rows[0].total === null) {
     const ui = await apiAs(ALUNO_A);
@@ -973,6 +974,41 @@ test("teste cego por base: OOT e rótulos vêm da base do grupo; liberação só
   expect((await b.get(`/api/arquivos/${oot.file.id}`)).status()).toBe(403);
 });
 
+test("andamento por aluno: o professor vê etapa, missões e o que cada aluno fez; aluno não acessa", async () => {
+  const cid = await classId();
+  const [a] = await sql<{ id: string }>("select id from assignments where class_id=$1 and slug='trabalho-final'", [cid]);
+  const prof = await apiAs(PROF);
+  const url = `/professor/turmas/${cid}/trabalhos/${a.id}/andamento`;
+  // estado deixado pelo teste anterior: A congelou, baixou o OOT da base do grupo e enviou previsões válidas
+  const html = (await (await prof.get(`${url}?q=${encodeURIComponent("Aluno A")}`)).text()).replace(/<!-- -->/g, "");
+  expect(html).toContain("Aluno A Teste");
+  expect(html).not.toContain("Aluno B Teste");
+  expect(html).toContain("Previsões enviadas");
+  expect(html).toContain("Grupo congelou o modelo (versão v1.0");
+  expect(html).toContain("Baixou o OOT sem desfecho");
+  expect(html).toContain("submissão 1: válida");
+  const geral = (await (await prof.get(url)).text()).replace(/<!-- -->/g, "");
+  expect(geral).toContain("Aluno B Teste");
+  const aluno = await apiAs(ALUNO_A);
+  const r = await aluno.get(url, { maxRedirects: 0 }); // a área do professor manda quem não é da equipe para o próprio início
+  expect([302, 303, 307]).toContain(r.status()); expect(r.headers().location).toContain("/inicio");
+});
+
+test("Missão 12 mostra o estado do teste cego e leva ao quadro de congelamento", async ({ page }) => {
+  const cid = await classId();
+  const [a] = await sql<{ id: string }>("select id from assignments where class_id=$1 and slug='trabalho-final'", [cid]);
+  // estado do teste anterior: A no grupo com base; sem congelamento, a missão diz o que falta e onde fazer
+  await sql("delete from blind_submissions where blind_test_id in (select id from blind_tests where assignment_id=$1)", [a.id]);
+  await sql("delete from model_freezes where assignment_id=$1", [a.id]);
+  await loginUi(page, ALUNO_A);
+  await page.goto(`/trabalhos/${a.id}`);
+  const missao = page.getByTestId("missao-12-teste-cego");
+  await expect(missao).toContainText("Falta congelar o modelo");
+  await missao.getByRole("link", { name: "Ir ao quadro do teste cego" }).click();
+  await expect(page).toHaveURL(/#cego$/);
+  await expect(page.getByRole("button", { name: "Congelar modelo" })).toBeVisible();
+});
+
 test("registro do pacote de bases a partir do bucket: manifesto lido, tamanhos conferidos, catálogo e materiais atualizados; só professor", async () => {
   const fs = await import("node:fs"); const path = await import("node:path"); const { createHash } = await import("node:crypto");
   const prof = await apiAs(PROF);
@@ -1055,6 +1091,28 @@ test("abertura do capítulo: página própria com pergunta central, mapa das pá
   const ph = await (await p.get("/aulas/capitulo/1")).text();
   expect(ph).toContain("Roteiro: exposição");
   expect(ph).toContain("Editar o conteúdo");
+});
+
+test("entregas por aula fora da visão do aluno: só o trabalho final na lista, sem quadro de entrega nas telas e nas páginas; a equipe continua vendo", async () => {
+  const prof = await apiAs(PROF);
+  const cid = await classId();
+  const lista = (await (await prof.get(`/api/professor/turmas/${cid}/trabalhos`)).json()).assignments as { id: string; slug: string; status: string }[];
+  const aula1 = lista.find((x) => x.slug === "entrega-aula-1")!;
+  const antes = aula1.status;
+  // mesmo publicada, a entrega de aula não chega ao aluno
+  await prof.patch(`/api/professor/turmas/${cid}/trabalhos/${aula1.id}`, { data: { status: "published" } });
+  const a = await apiAs(ALUNO_A);
+  const doAluno = (await (await a.get(`/api/trabalhos?classId=${cid}`)).json()).assignments as { slug: string }[];
+  expect(doAluno.some((x) => x.slug.startsWith("entrega-aula-"))).toBe(false);
+  expect((await a.get(`/api/trabalhos/${aula1.id}?classId=${cid}`)).status()).toBe(404);
+  expect((await a.get(`/trabalhos/${aula1.id}`)).status()).toBe(404);
+  const telas = (await Promise.all(["/trabalhos", "/inicio", "/acompanhamento", "/aulas", "/aulas/capitulo/3", ...["c3p19", "c6p20", "c8p12", "c10p14"].map((s) => `/api/conteudo/pagina/${s}?classId=${cid}`)].map(async (u) => (await a.get(u)).text()))).join("\n");
+  expect(telas).not.toContain("Entrega da aula");
+  expect(telas).not.toContain("Entrega indicada");
+  expect(fs.readFileSync("content/generated/legacy-engine.js", "utf8")).not.toContain("Entrega da aula");
+  // a equipe continua vendo a entrega no painel
+  expect(((await (await prof.get(`/api/trabalhos?classId=${cid}`)).json()).assignments as { slug: string }[]).some((x) => x.slug === "entrega-aula-1")).toBe(true);
+  await prof.patch(`/api/professor/turmas/${cid}/trabalhos/${aula1.id}`, { data: { status: antes } });
 });
 
 test("Aula 2 ao vivo pelas páginas: o professor conduz com o roteiro da página no ar, o aluno acompanha a página e não recebe as notas", async ({ page }) => {
@@ -1222,7 +1280,7 @@ test("uniformidade das molduras: retorno em toda rota de detalhe, um título por
   const umH1 = (html: string) => (html.match(/<h1[\s>]/g) ?? []).length;
 
   // toda rota de detalhe do aluno abre com o link de volta ao nível acima
-  const trabalhos = await sql<{ id: string }>("select id from assignments where class_id=$1 order by position limit 1", [cid]);
+  const trabalhos = await sql<{ id: string }>("select id from assignments where class_id=$1 and slug='trabalho-final'", [cid]);
   const detalheTrabalho = await (await aluno.get(`/trabalhos/${trabalhos[0].id}`)).text();
   expect(detalheTrabalho).toContain('href="/trabalhos"');
   const pgAula = await (await aluno.get("/aulas/c1p2")).text();

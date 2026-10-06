@@ -34,7 +34,7 @@ Para que o deploy faça isso sozinho, basta uma destas variáveis no ambiente de
 
 Sem nenhuma das duas, o build apenas compila e o conteúdo do banco fica como está. Fora da Vercel, o equivalente é `DATABASE_URL=<produção> npm run content:import`.
 
-Com qualquer das duas, o build também aplica os ajustes pontuais de dados de `scripts/ajustes-dados.ts`. Cada ajuste roda uma única vez e deixa registro no `audit_log` (ação `ajuste.*`), que impede nova execução. O primeiro, de 06/10/2026, passa a aluno toda matrícula de monitor em turma não arquivada. Fora da Vercel, o equivalente é `DATABASE_URL=<produção> npm run dados:ajustes`.
+Com qualquer das duas, o build também aplica os ajustes pontuais de dados de `scripts/ajustes-dados.ts`. Cada ajuste roda uma única vez e deixa registro no `audit_log` (ação `ajuste.*`), que impede nova execução. Os dois primeiros, de 06/10/2026, passam a aluno toda matrícula de monitor em turma não arquivada e devolvem a rascunho as entregas por aula (entrega-aula-N) publicadas, porque para o aluno ficam só o Trabalho 1 e o trabalho final. Fora da Vercel, o equivalente é `DATABASE_URL=<produção> npm run dados:ajustes`.
 
 **Node das funções.** O build da Vercel e as funções não rodam necessariamente o mesmo Node. Em 23/09/2026 o jsdom 30 funcionava no build (a importação do conteúdo usa jsdom) e quebrava as rotas do editor de página nas funções, com 500 antes de qualquer consulta. O jsdom ficou fixado em 26.1.0, que carrega em Node 20 e 22 anterior a 22.12, e `tests/sanitize.test.ts` impede a volta silenciosa a uma versão que exija Node mais novo. A sonda sem credencial é `GET /api/professor/conteudo/paginas/x`: 401 significa que a rota carregou; 500, que não.
 

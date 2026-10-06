@@ -3,6 +3,7 @@ import Link from "next/link";
 import { and, asc, desc, eq, inArray } from "drizzle-orm";
 import { requireContext } from "@/lib/context";
 import { db, schema } from "@/lib/db/client";
+import { eEntregaDeAula } from "@/lib/services/assignments";
 import { attendanceMap, type AttendanceRule } from "@/lib/services/attendance";
 import { flatPages } from "@/lib/services/content";
 import { PageHeader, StatusBadge, Stat } from "@/components/ui";
@@ -29,7 +30,7 @@ export default async function AcompanhamentoPage() {
   const ownCorrect = graded.filter((q) => { const last = responses.filter((r) => r.qv === q.vid).sort((a, b) => b.attemptNo - a.attemptNo)[0]; return last?.ok === true && !last.disclosedBefore; }).length;
   const firstTry = graded.filter((q) => { const rs = responses.filter((r) => r.qv === q.vid); return rs.length === 1 && rs[0].ok === true; }).length;
   const sawAnswer = graded.filter((q) => responses.some((r) => r.qv === q.vid && r.disclosedBefore) || responses.filter((r) => r.qv === q.vid).sort((a, b) => b.attemptNo - a.attemptNo)[0]?.ok === false && responses.some((r) => r.qv === q.vid && r.revealedAt)).length;
-  const grades = await db.select({ g: schema.grades, a: schema.assignments }).from(schema.grades).innerJoin(schema.assignments, eq(schema.assignments.id, schema.grades.assignmentId)).where(and(eq(schema.grades.userId, uid), eq(schema.grades.classId, cid))).orderBy(asc(schema.assignments.position));
+  const grades = (await db.select({ g: schema.grades, a: schema.assignments }).from(schema.grades).innerJoin(schema.assignments, eq(schema.assignments.id, schema.grades.assignmentId)).where(and(eq(schema.grades.userId, uid), eq(schema.grades.classId, cid))).orderBy(asc(schema.assignments.position))).filter(({ a }) => !eEntregaDeAula(a.slug)); // entregas por aula fora da visão do aluno (06/10/2026)
   // mesmo destino que o "Continuar de onde parou" de Início: a página seguinte à última respondida
   const ultimaRespondida = responses.length ? qpages.find((q) => q.vid === responses[0].qv)?.pageId ?? null : null;
   const iUltima = ultimaRespondida ? pages.findIndex((p) => p.id === ultimaRespondida) : -1;

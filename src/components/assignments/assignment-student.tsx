@@ -65,7 +65,7 @@ export function AssignmentStudent({ assignmentId, classId, isStudent }: { assign
         {a.steps.length > 0 && (
           <section className="card" aria-labelledby="missoes">
             <h2 id="missoes" className="text-lg mb-1">Missões</h2>
-            <p className="hint mb-3">Marque o andamento para acompanhar o percurso do {d.group ? "grupo" : "trabalho"}. Nem toda missão tem entrega ou nota separada; o professor pode validar cada uma.</p>
+            <p className="hint mb-3">Marque o andamento para acompanhar o percurso do {d.group ? "grupo" : "trabalho"}. Nem toda missão tem entrega ou nota separada; o professor pode validar cada uma.{a.blindTestEnabled && d.blind ? " O congelamento do modelo e o OOT da Missão 12 ficam no quadro Teste cego (OOT)." : ""}</p>
             <ol className="list-none p-0 m-0 grid gap-2">
               {a.steps.map((s) => {
                 const p = d.progress.find((x) => x.stepId === s.id);
@@ -83,6 +83,7 @@ export function AssignmentStudent({ assignmentId, classId, isStudent }: { assign
                     </div>
                     {s.description && <p className="text-[14px] mt-1">{s.description}</p>}
                     {s.expectedOutputs.length > 0 && <p className="hint mt-1"><b>Saída esperada:</b> {s.expectedOutputs.join(" · ")}</p>}
+                    {a.blindTestEnabled && d.blind && (s.pageSlug === "c11p17" || s.number === 12) && <EstadoTesteCego blind={d.blind} />}
                   </li>
                 );
               })}
@@ -150,7 +151,7 @@ export function AssignmentStudent({ assignmentId, classId, isStudent }: { assign
 
         {a.blindTestEnabled && d.blind && (
           <section className="card" aria-labelledby="cego">
-            <h2 id="cego" className="text-lg mb-1">Teste cego (OOT)</h2>
+            <h2 id="cego" className="text-lg mb-1 scroll-mt-4">Teste cego (OOT)</h2>
             <p className="hint mb-2">Ordem obrigatória: congelar o modelo (manifesto, versão e hashes) → receber o arquivo OOT sem desfecho → enviar previsões uma única vez ({d.blind.maxSubmissions} submissão{d.blind.maxSubmissions > 1 ? "ões" : ""}). Os rótulos ficam apenas com o professor.{d.blind.datasetCode ? ` O OOT é o da base ${d.blind.datasetCode} do seu grupo.` : ""}</p>
             {d.blind.freezes.filter((f) => !f.modelVersion.endsWith("-invalidado")).length === 0 ? (
               canEdit && d.blind.freeze.ok ? <FreezeForm onSubmit={async (file, version, hashes) => run(async () => { const up = await uploadFile(file, "manifest"); await api(`/api/trabalhos/${assignmentId}/congelar`, { body: { classId, manifestFileId: up.id, modelVersion: version, artifactHashes: hashes } }); return "Modelo congelado. Agora o arquivo OOT pode ser baixado."; })} busy={busy} />
@@ -166,6 +167,26 @@ export function AssignmentStudent({ assignmentId, classId, isStudent }: { assign
           </section>
         )}
       </aside>
+    </div>
+  );
+}
+
+/**
+ * A Missão 12 (pacote congelado antes do arquivo cego) não se cumpre marcando o andamento: o congelamento e o OOT ficam
+ * no quadro "Teste cego (OOT)", na coluna lateral (no celular, no fim da página). A missão mostra o estado e leva até lá.
+ */
+function EstadoTesteCego({ blind }: { blind: NonNullable<Data["blind"]> }) {
+  const ativo = blind.freezes.find((f) => !f.modelVersion.endsWith("-invalidado"));
+  const enviadas = blind.submissions.length;
+  let estado: string;
+  if (ativo && enviadas > 0) estado = `Modelo congelado em ${fmtDT(ativo.frozenAt)} e previsões OOT enviadas (${enviadas} de ${blind.maxSubmissions}).`;
+  else if (ativo) estado = blind.oot.ok ? `Modelo congelado em ${fmtDT(ativo.frozenAt)}. Baixe o OOT sem desfecho e envie as previsões no quadro do teste cego.` : `Modelo congelado em ${fmtDT(ativo.frozenAt)}. OOT bloqueado: ${blind.oot.reason ?? "indisponível"}.`;
+  else if (blind.freeze.ok) estado = "Falta congelar o modelo. Marcar a missão não basta: envie o manifesto, a versão e os hashes no quadro do teste cego; o OOT é liberado logo depois.";
+  else estado = `Congelamento indisponível: ${blind.freeze.reason ?? "fale com o professor."}`;
+  return (
+    <div className="mt-2 border-l-[3px] border-gold pl-3 text-[14px]" data-testid="missao-12-teste-cego">
+      <p><b>Teste cego (OOT):</b> {estado}</p>
+      <p className="mt-1"><a href="#cego">Ir ao quadro do teste cego</a></p>
     </div>
   );
 }

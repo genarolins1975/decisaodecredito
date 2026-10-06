@@ -21,7 +21,7 @@ export default async function TrabalhosPage() {
   const grades = ids.length ? await db.select().from(schema.grades).where(and(inArray(schema.grades.assignmentId, ids), eq(schema.grades.userId, ctx.user.id))) : [];
   return (
     <div>
-      <PageHeader eyebrow={ctx.current.cls.name} title="Trabalhos" lead={group ? `Você está no grupo "${group.name}" (${group.members.map((m) => m.name.split(" ")[0]).join(", ")}). Entregas em grupo são coletivas; a defesa é individual.` : "Entregas indicadas em cada aula e o trabalho final com doze missões."} />
+      <PageHeader eyebrow={ctx.current.cls.name} title="Trabalhos" lead={group ? `Você está no grupo "${group.name}" (${group.members.map((m) => m.name.split(" ")[0]).join(", ")}). Entregas em grupo são coletivas; a defesa é individual.` : "O Trabalho 1 e o trabalho final, com doze missões."} />
       {t1 && (
         <article className="card border-l-[4px]! border-l-gold! mb-4 flex flex-wrap items-center gap-x-6 gap-y-3">
           <div className="min-w-0 flex-1">

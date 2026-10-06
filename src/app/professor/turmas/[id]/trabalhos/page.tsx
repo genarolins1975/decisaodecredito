@@ -31,7 +31,7 @@ export default async function TrabalhosProfessorPage({ params }: { params: Promi
                   <td>{fmtDT(a.dueAt) || <span className="hint">a definir</span>}</td>
                   <td><StatusBadge status={a.status} /></td>
                   <td className="text-[13px]">{n(["enviado", "atrasado", "reenviado"])} a corrigir · {n(["corrigido"])} corrigidas · {n(["publicado"])} publicadas · {n(["devolvido"])} devolvidas</td>
-                  <td><Link href={`/professor/turmas/${id}/trabalhos/${a.id}`} className="btn btn-sm btn-secondary">Abrir</Link></td>
+                  <td className="whitespace-nowrap"><Link href={`/professor/turmas/${id}/trabalhos/${a.id}`} className="btn btn-sm btn-secondary">Abrir</Link> <Link href={`/professor/turmas/${id}/trabalhos/${a.id}/andamento`} className="btn btn-sm btn-ghost">Andamento por aluno</Link></td>
                 </tr>
               );
             })}

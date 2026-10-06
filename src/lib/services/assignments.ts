@@ -51,13 +51,19 @@ export async function myGroup(classId: string, userId: string) {
 }
 
 /* ---------------- trabalhos ---------------- */
+/**
+ * Entregas por aula (slug entrega-aula-N, criadas pela importação do material) saíram da visão do aluno em 06/10/2026:
+ * para o aluno ficam só o Trabalho 1 e o trabalho final. A equipe continua vendo as entregas no painel.
+ */
+export const eEntregaDeAula = (slug: string) => slug.startsWith("entrega-aula-");
+
 export async function listAssignments(classId: string, includeDrafts: boolean) {
   const rows = await db.select().from(schema.assignments).where(includeDrafts ? eq(schema.assignments.classId, classId) : and(eq(schema.assignments.classId, classId), eq(schema.assignments.status, "published"))).orderBy(asc(schema.assignments.position));
-  return rows;
+  return includeDrafts ? rows : rows.filter((a) => !eEntregaDeAula(a.slug));
 }
 export async function getAssignment(classId: string, id: string, includeDrafts: boolean) {
   const [a] = await db.select().from(schema.assignments).where(and(eq(schema.assignments.id, id), eq(schema.assignments.classId, classId)));
-  if (!a || (!includeDrafts && a.status !== "published")) throw new ApiError(404, "Trabalho não encontrado");
+  if (!a || (!includeDrafts && (a.status !== "published" || eEntregaDeAula(a.slug)))) throw new ApiError(404, "Trabalho não encontrado");
   const steps = await db.select().from(schema.assignmentSteps).where(eq(schema.assignmentSteps.assignmentId, id)).orderBy(asc(schema.assignmentSteps.position));
   const rubric = a.rubricVersionId ? (await db.select().from(schema.rubricVersions).where(eq(schema.rubricVersions.id, a.rubricVersionId)))[0] ?? null : null;
   return { ...a, steps, rubric };
