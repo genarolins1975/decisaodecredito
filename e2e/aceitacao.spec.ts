@@ -974,6 +974,21 @@ test("teste cego por base: OOT e rótulos vêm da base do grupo; liberação só
   expect((await b.get(`/api/arquivos/${oot.file.id}`)).status()).toBe(403);
 });
 
+test("Missão 12 mostra o estado do teste cego e leva ao quadro de congelamento", async ({ page }) => {
+  const cid = await classId();
+  const [a] = await sql<{ id: string }>("select id from assignments where class_id=$1 and slug='trabalho-final'", [cid]);
+  // estado do teste anterior: A no grupo com base; sem congelamento, a missão diz o que falta e onde fazer
+  await sql("delete from blind_submissions where blind_test_id in (select id from blind_tests where assignment_id=$1)", [a.id]);
+  await sql("delete from model_freezes where assignment_id=$1", [a.id]);
+  await loginUi(page, ALUNO_A);
+  await page.goto(`/trabalhos/${a.id}`);
+  const missao = page.getByTestId("missao-12-teste-cego");
+  await expect(missao).toContainText("Falta congelar o modelo");
+  await missao.getByRole("link", { name: "Ir ao quadro do teste cego" }).click();
+  await expect(page).toHaveURL(/#cego$/);
+  await expect(page.getByRole("button", { name: "Congelar modelo" })).toBeVisible();
+});
+
 test("registro do pacote de bases a partir do bucket: manifesto lido, tamanhos conferidos, catálogo e materiais atualizados; só professor", async () => {
   const fs = await import("node:fs"); const path = await import("node:path"); const { createHash } = await import("node:crypto");
   const prof = await apiAs(PROF);
