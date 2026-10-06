@@ -22,7 +22,7 @@ function BarraCriterio({ nome, descricao, valor, antes, max }: { nome: string; d
 }
 
 export function DevolutivaTrabalho1({ d }: { d: Devolutiva }) {
-  const { aluno, entrega, colegas, nota, anterior, acrescimo, credito, anteriores, base, documental, total, regua } = d;
+  const { aluno, entrega, colegas, nota, anterior, intermediaria, acrescimo, credito, anteriores, base, documental, total, regua } = d;
   const r = entrega.revisao;
   const subiu = acrescimo > 0.005;
   const contexto = entrega.modalidade === "grupo"
@@ -36,7 +36,7 @@ export function DevolutivaTrabalho1({ d }: { d: Devolutiva }) {
         <div className="md:pr-6 md:border-r md:border-rule">
           <p className="eyebrow" id="nota-t1">Nota do Trabalho 1</p>
           <p className="font-serif text-ink font-bold leading-none mt-2 tabular-nums"><span className="text-[56px]">{n2(nota)}</span><span className="text-[22px] text-muted"> / 10</span></p>
-          <p className="hint mt-2">{subiu ? <>nota anterior {n2(anterior)} · acréscimo de {n2(acrescimo)} na revisão de {REVISAO.data}</> : <>nota mantida na revisão de {REVISAO.data}</>}</p>
+          <p className="hint mt-2">{subiu ? <>nota de {TRABALHO_1.entrega}: {n2(anterior)} · acréscimo de {n2(acrescimo)} na revisão de {REVISAO.data}</> : <>nota mantida na revisão de {REVISAO.data}</>}</p>
         </div>
         <div className="min-w-0">
           <p className="eyebrow">{aluno.nome}</p>
@@ -51,11 +51,14 @@ export function DevolutivaTrabalho1({ d }: { d: Devolutiva }) {
         <h2 id="revisao" className="text-lg mt-1">{subiu ? "O que mudou na sua nota" : "Resultado da revisão"}</h2>
         <p className="mt-3 text-[15.5px] leading-relaxed max-w-[72ch]">{r.abertura}</p>
         <dl className="mt-4 grid gap-2 grid-cols-2 sm:grid-cols-4">
-          <div className="card-flat p-3!"><dt className="eyebrow">Nota anterior</dt><dd className="font-serif text-ink text-[22px] font-bold tabular-nums">{n2(anterior)}</dd></div>
+          <div className="card-flat p-3!"><dt className="eyebrow">Nota de {TRABALHO_1.entrega}</dt><dd className="font-serif text-ink text-[22px] font-bold tabular-nums">{n2(anterior)}</dd></div>
           <div className="card-flat p-3!"><dt className="eyebrow">Crédito comprovado</dt><dd className="font-serif text-ink text-[22px] font-bold tabular-nums">{n2(credito)}<span className="text-muted text-[14px] font-normal"> pontos brutos</span></dd></div>
           <div className="card-flat p-3!"><dt className="eyebrow">Acréscimo na nota</dt><dd className="font-serif text-ink text-[22px] font-bold tabular-nums">{subiu ? `+${n2(acrescimo)}` : "0,00"}</dd></div>
           <div className="card-flat p-3! border-l-[3px]! border-l-gold!"><dt className="eyebrow">Nota atual</dt><dd className="font-serif text-ink text-[22px] font-bold tabular-nums">{n2(nota)}</dd></div>
         </dl>
+        {intermediaria !== null && entrega.intermediaria && (
+          <p className="text-[14.5px] mt-3"><b>Percurso da nota:</b> {n2(anterior)} na avaliação de {TRABALHO_1.entrega}; {n2(intermediaria)} na {entrega.intermediaria.rotulo}; {n2(nota)} na reanálise do mesmo dia, que acrescentou {n2(nota - intermediaria)}.</p>
+        )}
         <p className="hint mt-3 max-w-[80ch]">A nota anterior foi mantida como piso. Só entrou crédito sustentado em evidência nova, convertido pela mesma régua da avaliação anterior, com teto 10,00. Não houve rebaixamento nem nova equiparação da turma.{subiu ? " Notas e acréscimo são arredondados separadamente a duas casas; a diferença exibida pode variar 0,01." : ""}</p>
         <p className="text-[14.5px] mt-3"><b>Materiais considerados nesta revisão:</b> {r.materiais}</p>
       </section>
