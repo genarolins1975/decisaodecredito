@@ -120,7 +120,6 @@ export function TresModelos({ palco = false }: { palco?: boolean }) {
           <p className="vz-rd-k">A pergunta da Aula 3</p>
           <p className="vz-rd-nota">Qual critério decide entre os três, fora da amostra, e quando a diferença justifica trocar o modelo? Capítulos 7 e 8.</p>
         </div>
-        <p className="vz-tm-entrega"><b>Entrega da aula 2:</b> a comparação conceitual das três técnicas e os exercícios de interpretação.</p>
       </div>
       </div>
 

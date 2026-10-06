@@ -80,6 +80,13 @@ type Block =
   | { type: "checkpoint"; count: string; intro: string; items: { title: string; question: string; answer: string }[] }
   | { type: "legacy"; slug: string; controls: number; fallbackHtml: string; note: string };
 
+/* Entregas por aula retiradas da plataforma em 06/10/2026: para o aluno ficam só o Trabalho 1 e o trabalho final.
+   O original traz um quadro "Entrega da aula N" no fim das páginas c3p19, c6p20 e c8p12; ele sai aqui, antes dos blocos,
+   e a página é republicada pela regra de sincronização (conteúdo de origem mudou). O motor legado perde o mesmo quadro
+   em scripts/content/build-legacy.mjs. */
+const ENTREGA_DE_AULA_HTML = /<div class="revelacao bom" style="margin-top:12px"><h4>Entrega da aula \d+<\/h4>[^<]*<\/div>/g;
+function semEntregaDeAula(html: string) { return html.replace(ENTREGA_DE_AULA_HTML, ""); }
+
 function buildBlocks(p: any): { blocks: Block[]; classification: string } {
   const dom = new JSDOM(`<!doctype html><body><div id="root">${p.html}</div></body>`);
   const doc = dom.window.document;
@@ -277,7 +284,7 @@ async function main() {
     const chapterId = chapterIds.get(p.cap)!;
     let [pg] = await db.select().from(schema.pages).where(and(eq(schema.pages.chapterId, chapterId), eq(schema.pages.slug, p.id)));
     if (!pg) [pg] = await db.insert(schema.pages).values({ id: newId(), chapterId, slug: p.id, number: p.n, position: i, level: p.nivel, level120: p.nivel120, minutes: p.min, origin: p.origem, status: "published" }).returning();
-    const { blocks: brutos, classification } = buildBlocks(p);
+    const { blocks: brutos, classification } = buildBlocks({ ...p, html: semEntregaDeAula(p.html) });
     stats[classification as keyof typeof stats]++;
     /* O patch do capítulo 11 é parte do conteúdo canônico, não uma correção posterior: aplicá-lo aqui
        faz o importador e patchCapitulo11 convergirem. Sem isso um desfaz o outro a cada build. */

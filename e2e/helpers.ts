@@ -37,3 +37,14 @@ export async function classId(code = "2026-A") {
   return rows[0].id;
 }
 export const uid = () => Math.random().toString(36).slice(2, 10);
+/**
+ * Trabalho genérico para os testes de envio e nota. As entregas por aula (entrega-aula-N) saíram da visão do
+ * aluno em 06/10/2026 e não servem mais para isso; este trabalho é criado uma vez pelo professor e reaproveitado.
+ */
+export async function trabalhoDeTeste(prof: APIRequestContext, cid: string): Promise<{ id: string }> {
+  const lista = (await (await prof.get(`/api/professor/turmas/${cid}/trabalhos`)).json()).assignments as { id: string; slug: string }[];
+  const achado = lista.find((a) => a.slug === "e2e-trabalho");
+  if (achado) return achado;
+  const r = await prof.post(`/api/professor/turmas/${cid}/trabalhos`, { data: { title: "Trabalho de teste (e2e)", slug: "e2e-trabalho", mode: "individual" } });
+  return { id: (await r.json()).id };
+}

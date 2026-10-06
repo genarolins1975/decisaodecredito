@@ -2,8 +2,9 @@
  * Testes de aceitação obrigatórios (seção 13 do briefing), executados contra a aplicação real
  * com banco local. Contas de teste isoladas (domínio example.test). Nenhum e-mail sai da plataforma.
  */
+import fs from "node:fs";
 import { test, expect } from "@playwright/test";
-import { apiAs, loginUi, sql, classId, uid, BASE, PROF, ALUNO_A, ALUNO_B, OUTRA, MONITOR, SEM } from "./helpers";
+import { apiAs, loginUi, sql, classId, uid, trabalhoDeTeste, BASE, PROF, ALUNO_A, ALUNO_B, OUTRA, MONITOR, SEM } from "./helpers";
 
 test.describe.serial("edições, turmas e isolamento", () => {
   test("edição 2026 existe; professor cria 2027 e duplica sem copiar pessoas ou registros", async () => {
@@ -225,7 +226,7 @@ test.describe.serial("trabalhos, grupos e notas", () => {
   test("upload interrompido não vira entrega; envio válido gera recibo; nota só após publicação; exportação reconcilia", async () => {
     const prof = await apiAs(PROF);
     const cid = await classId();
-    const asg = (await (await prof.get(`/api/professor/turmas/${cid}/trabalhos`)).json()).assignments.find((a: { slug: string }) => a.slug === "entrega-aula-1");
+    const asg = await trabalhoDeTeste(prof, cid);
     await prof.patch(`/api/professor/turmas/${cid}/trabalhos/${asg.id}`, { data: { status: "published", mode: "individual", dueAt: "2030-01-01T23:59", allowedFormats: ["pdf", "link"] } });
     const a = await apiAs(ALUNO_A);
     const draft = (await (await a.post(`/api/trabalhos/${asg.id}/rascunho`, { data: { classId: cid } })).json()).submission;
@@ -288,7 +289,7 @@ test("estudo: feedback em dois estágios, resposta vista não conta como acerto,
   expect(second.attemptNo).toBe(2); expect(second.revealed).toBe(true); expect(second.feedback.correct).toBe(1);
   // nota nula em Meu acompanhamento aparece como "sem nota", não como 0
   const prof = await apiAs(PROF);
-  const asg = (await (await prof.get(`/api/professor/turmas/${cid}/trabalhos`)).json()).assignments.find((x: { slug: string }) => x.slug === "entrega-aula-1");
+  const asg = await trabalhoDeTeste(prof, cid);
   const rows = await sql<{ total: string | null }>("select g.total from grades g join users u on u.id=g.user_id where g.assignment_id=$1 and u.email=$2", [asg.id, ALUNO_A.email]);
   if (rows[0] && rows[0].total === null) {
     const ui = await apiAs(ALUNO_A);
@@ -1057,6 +1058,28 @@ test("abertura do capítulo: página própria com pergunta central, mapa das pá
   expect(ph).toContain("Editar o conteúdo");
 });
 
+test("entregas por aula fora da visão do aluno: só o trabalho final na lista, sem quadro de entrega nas telas e nas páginas; a equipe continua vendo", async () => {
+  const prof = await apiAs(PROF);
+  const cid = await classId();
+  const lista = (await (await prof.get(`/api/professor/turmas/${cid}/trabalhos`)).json()).assignments as { id: string; slug: string; status: string }[];
+  const aula1 = lista.find((x) => x.slug === "entrega-aula-1")!;
+  const antes = aula1.status;
+  // mesmo publicada, a entrega de aula não chega ao aluno
+  await prof.patch(`/api/professor/turmas/${cid}/trabalhos/${aula1.id}`, { data: { status: "published" } });
+  const a = await apiAs(ALUNO_A);
+  const doAluno = (await (await a.get(`/api/trabalhos?classId=${cid}`)).json()).assignments as { slug: string }[];
+  expect(doAluno.some((x) => x.slug.startsWith("entrega-aula-"))).toBe(false);
+  expect((await a.get(`/api/trabalhos/${aula1.id}?classId=${cid}`)).status()).toBe(404);
+  expect((await a.get(`/trabalhos/${aula1.id}`)).status()).toBe(404);
+  const telas = (await Promise.all(["/trabalhos", "/inicio", "/acompanhamento", "/aulas", "/aulas/capitulo/3", ...["c3p19", "c6p20", "c8p12", "c10p14"].map((s) => `/api/conteudo/pagina/${s}?classId=${cid}`)].map(async (u) => (await a.get(u)).text()))).join("\n");
+  expect(telas).not.toContain("Entrega da aula");
+  expect(telas).not.toContain("Entrega indicada");
+  expect(fs.readFileSync("content/generated/legacy-engine.js", "utf8")).not.toContain("Entrega da aula");
+  // a equipe continua vendo a entrega no painel
+  expect(((await (await prof.get(`/api/trabalhos?classId=${cid}`)).json()).assignments as { slug: string }[]).some((x) => x.slug === "entrega-aula-1")).toBe(true);
+  await prof.patch(`/api/professor/turmas/${cid}/trabalhos/${aula1.id}`, { data: { status: antes } });
+});
+
 test("Aula 2 ao vivo pelas páginas: o professor conduz com o roteiro da página no ar, o aluno acompanha a página e não recebe as notas", async ({ page }) => {
   const prof = await apiAs(PROF);
   const cid = await classId();
@@ -1222,7 +1245,7 @@ test("uniformidade das molduras: retorno em toda rota de detalhe, um título por
   const umH1 = (html: string) => (html.match(/<h1[\s>]/g) ?? []).length;
 
   // toda rota de detalhe do aluno abre com o link de volta ao nível acima
-  const trabalhos = await sql<{ id: string }>("select id from assignments where class_id=$1 order by position limit 1", [cid]);
+  const trabalhos = await sql<{ id: string }>("select id from assignments where class_id=$1 and slug='trabalho-final'", [cid]);
   const detalheTrabalho = await (await aluno.get(`/trabalhos/${trabalhos[0].id}`)).text();
   expect(detalheTrabalho).toContain('href="/trabalhos"');
   const pgAula = await (await aluno.get("/aulas/c1p2")).text();

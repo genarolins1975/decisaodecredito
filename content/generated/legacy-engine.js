@@ -9200,10 +9200,6 @@ const TITULOS_AULA={c1p1:'Aula 1: formular o problema e compreender a base',
 Object.entries(TITULOS_AULA).forEach(([id,t])=>{const p=PAGINAS.find(x=>x.id===id);if(p)p.titulo=t;});
 function acrescentaEntrega(id,titulo,texto){const p=PAGINAS.find(x=>x.id===id);if(!p)return;const v=p.visual;
  p.visual=()=>`${v?v():''}<div class="revelacao bom" style="margin-top:12px"><h4>${esc(titulo)}</h4>${esc(texto)}</div>`;}
-acrescentaEntrega('c3p19','Entrega da aula 1','Salvar especificacao-modelo.md, inventario-dados.md e divisao-temporal.md.');
-acrescentaEntrega('c6p20','Entrega da aula 2','Salvar a comparação conceitual das três técnicas e os exercícios de interpretação.');
-acrescentaEntrega('c8p12','Entrega da aula 3','Salvar o relatório de validação e a recomendação de política com hipóteses explícitas.');
-acrescentaEntrega('c10p14','Entrega da aula 4','Salvar a decisão de comitê e o plano de monitoramento que alimentarão o trabalho final.');
 
 const CORE_120=new Set([
  'c1p1','c1p5','c1p7',

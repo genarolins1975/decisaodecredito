@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ n: string
 
 /**
  * Cartão de visita do capítulo: pergunta central, o que se aprende, por que importa, a atividade, o que o capítulo assume,
- * infográfico de abertura, mapa das páginas com objetivo e tempo, entrega da aula, materiais e capítulos vizinhos.
+ * infográfico de abertura, mapa das páginas com objetivo e tempo, entrega do trabalho final (só no capítulo dele), materiais e capítulos vizinhos.
  */
 export default async function CapituloPage({ params }: { params: Promise<{ n: string }> }) {
   const { n } = await params;
@@ -111,12 +111,13 @@ export default async function CapituloPage({ params }: { params: Promise<{ n: st
         </ol>
       </section>
 
-      <section className="capx-secao capx-duas" aria-label="Entrega e materiais">
-        <div className="capx-bloco">
-          <p className="eyebrow">Entrega {unit.kind === "trabalho" ? "do trabalho final" : `da aula ${unit.number}`}</p>
+      {/* só o trabalho final tem entrega na plataforma; as entregas por aula foram retiradas (06/10/2026) */}
+      <section className={`capx-secao ${unit.kind === "trabalho" ? "capx-duas" : ""}`} aria-label={unit.kind === "trabalho" ? "Entrega e materiais" : "Materiais"}>
+        {unit.kind === "trabalho" && <div className="capx-bloco">
+          <p className="eyebrow">Entrega do trabalho final</p>
           <p>{unit.deliverable ?? "Sem entrega associada."}</p>
           <p className="mt-2"><Link href="/trabalhos">Ver os trabalhos</Link></p>
-        </div>
+        </div>}
         <div className="capx-bloco">
           <p className="eyebrow">Material para levar</p>
           {materiais.length > 0 ? (

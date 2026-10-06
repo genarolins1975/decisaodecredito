@@ -139,3 +139,11 @@ const PATCH_C11 = {"mapa": [["<span class=\"big\">60.000</span><h3>propostas sin
   fs.writeFileSync(enginePath, js); console.log(`motor legado: ${n} substituições do capítulo 11`);
 }
 console.log("css escopado gerado");
+// entregas por aula retiradas da plataforma (06/10/2026): o motor deixa de acrescentar o quadro "Entrega da aula N"
+// às páginas c3p19, c6p20, c8p12 e c10p14; a importação retira o mesmo quadro do HTML (scripts/import-content.ts)
+{
+  const enginePath = path.join(OUT, "legacy-engine.js"); const js = fs.readFileSync(enginePath, "utf8");
+  const sem = js.replace(/acrescentaEntrega\('c\d+p\d+','Entrega da aula \d+','[^']*'\);\n?/g, "");
+  if (sem.includes("'Entrega da aula")) { console.error("motor legado: quadro de entrega por aula sobreviveu"); process.exit(1); }
+  fs.writeFileSync(enginePath, sem); console.log(`motor legado: ${(js.length - sem.length) ? "quadros de entrega por aula retirados" : "sem quadro de entrega por aula"}`);
+}
