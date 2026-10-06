@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CRITERIOS, DOCUMENTAL_MAX, PENDENCIAS, TRABALHO_1, consolidacao, n2, pts } from "@/lib/avaliacoes/trabalho-1";
+import { CRITERIOS, DOCUMENTAL_MAX, PENDENCIAS, REVISAO, TRABALHO_1, consolidacao, n2, pts } from "@/lib/avaliacoes/trabalho-1";
 import { vinculoTrabalho1 } from "@/lib/services/avaliacoes";
 import { PageHeader, Stat, StatusBadge } from "@/components/ui";
 
@@ -43,12 +43,13 @@ export default async function Trabalho1Consolidacao() {
   return (
     <div>
       <Link href="/professor" className="voltar">Início</Link>
-      <PageHeader eyebrow={<>{v.turma ? v.turma.name : "Turma não identificada"} · resultado consolidado</>} title={TRABALHO_1.titulo} lead={<>Oito entregas, dezesseis alunos. Entrega e defesa em {TRABALHO_1.entrega}, checkpoint em {TRABALHO_1.checkpoint}. Cada aluno vê apenas a própria devolutiva, em Trabalhos.</>} />
+      <PageHeader eyebrow={<>{v.turma ? v.turma.name : "Turma não identificada"} · resultado consolidado</>} title={TRABALHO_1.titulo} lead={<>{c.entregas} entregas e {c.alunos} alunos. Entrega e defesa em {TRABALHO_1.entrega}, checkpoint em {TRABALHO_1.checkpoint}, revisão das complementações em {REVISAO.data}. Cada aluno vê apenas a própria devolutiva, em Trabalhos.</>} />
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-5">
-        <Stat label="Média da turma" value={n2(c.mediaAlunos)} hint={`${c.alunos} alunos · mediana ${n2(c.medianaAlunos)} · média base ${n2(c.mediaBaseAlunos)}`} />
-        <Stat label="Amplitude" value={<>{n2(c.minima)} a {n2(c.maxima)}</>} hint={`bases de ${n2(c.regua.menor)} a ${n2(c.regua.maior)}, equiparadas de 7 a 10`} />
-        <Stat label="Entregas" value={c.entregas} hint={`${c.grupos} em grupo de três · ${c.individuais} individuais`} />
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5 mb-5">
+        <Stat label="Média da turma" value={n2(c.mediaAlunos)} hint={`${c.alunos} alunos · mediana ${n2(c.medianaAlunos)} · antes da revisão ${n2(c.mediaAnteriorAlunos)}`} />
+        <Stat label={`Revisão de ${REVISAO.data}`} value={<>{c.alunosComAcrescimo} alunos</>} hint={`com acréscimo, em ${c.entregasComAcrescimo} entregas; nenhuma nota reduzida`} tone="ok" />
+        <Stat label="Amplitude" value={<>{n2(c.minima)} a {n2(c.maxima)}</>} hint={`régua fixa: bases de ${n2(c.regua.menor)} a ${n2(c.regua.maior)} levadas de 7 a 10, teto 10`} />
+        <Stat label="Entregas" value={c.entregas} hint={`${c.grupos} em grupo · ${c.individuais} individuais`} />
         <Stat label="Verificação zerada" value={<>{verif.zeros} de {c.entregas}</>} hint={`${verif.alunosZerados} de ${c.alunos} alunos, pela trava de rastreabilidade`} tone="alert" />
       </div>
 
@@ -56,7 +57,7 @@ export default async function Trabalho1Consolidacao() {
         <h2 id="leitura" className="text-lg">Leitura da turma</h2>
         <div className="grid gap-3 md:grid-cols-3 mt-3">
           <article className="panel-soft"><p className="eyebrow mb-1">Evidência</p><p className="text-[14.5px] leading-relaxed">Na média das entregas, concepção ficou em {pct(crit.concepcao.media / 25)} do máximo, interpretação em {pct(crit.interpretacao.media / 20)} e apresentação em {pct(crit.apresentacao.media / 15)}; verificação ficou em {pct(verif.media / 25)} e caderno de processo em {pct(proc.media / 15)}. {verif.zeros} das {c.entregas} entregas tiveram verificação zerada e {proc.zeros} tiveram processo zerado.</p></article>
-          <article className="panel-soft"><p className="eyebrow mb-1">Inferência</p><p className="text-[14.5px] leading-relaxed">A turma formula bem a decisão; o que separa as notas é provar o número e documentar o uso da IA. {lideresVerificam ? `As ${comVerificacao} entregas com verificação positiva ocupam as ${comVerificacao} primeiras posições. ` : ""}A régua comum comprime a escala de {n2(c.regua.menor)} a {n2(c.regua.maior)} para 7 a 10 e preserva a ordem; os pontos por critério continuam a ser o retrato da qualidade.</p></article>
+          <article className="panel-soft"><p className="eyebrow mb-1">Inferência</p><p className="text-[14.5px] leading-relaxed">A turma formula bem a decisão; o que separa as notas é provar o número e documentar o uso da IA. {lideresVerificam ? `As ${comVerificacao} entregas com verificação positiva ocupam as ${comVerificacao} primeiras posições. ` : ""}A revisão de {REVISAO.data} confirma a leitura: o maior acréscimo veio de verificação documentada. A régua da avaliação anterior ficou fixa (bases de {n2(c.regua.menor)} a {n2(c.regua.maior)} para 7 a 10, teto 10); acima do antigo máximo, o teto iguala as entregas em 10,00, e os pontos por critério continuam a ser o retrato da qualidade.</p></article>
           <article className="panel-soft"><p className="eyebrow mb-1">Recomendação</p><p className="text-[14.5px] leading-relaxed">No trabalho final, pedir já no checkpoint um pacote mínimo de reprodução (base original, código e memória de extração de um indicador ponta a ponta) e o caderno de processo em andamento. Antes de levar estas notas ao histórico, resolver as {PENDENCIAS.length} pendências listadas abaixo.</p></article>
         </div>
       </section>
@@ -70,9 +71,9 @@ export default async function Trabalho1Consolidacao() {
       </section>
 
       <section className="card p-0! mb-5" aria-labelledby="entregas">
-        <div className="p-[18px] pb-2"><h2 id="entregas" className="text-lg">Resultado por entrega</h2><p className="hint mt-1">Pontos por critério com a precisão integral arredondada a duas casas. Zero em vermelho indica a trava aplicada.</p></div>
+        <div className="p-[18px] pb-2"><h2 id="entregas" className="text-lg">Resultado por entrega</h2><p className="hint mt-1">Pontos por critério vigentes, após a revisão de {REVISAO.data}, com a precisão integral arredondada a duas casas. Zero em vermelho indica a trava aplicada. Anterior é a nota de {TRABALHO_1.entrega}; o acréscimo é arredondado separadamente e pode diferir 0,01 da diferença exibida.</p></div>
         <div className="table-wrap"><table className="table text-[13.5px]">
-          <thead><tr><th>#</th><th>Entrega</th>{CRITERIOS.map((k) => <th key={k.chave} className="text-right!">{k.curto}<br /><span className="font-normal normal-case">/{k.max}</span></th>)}<th className="text-right!">Doc.<br /><span className="font-normal normal-case">/{DOCUMENTAL_MAX}</span></th><th className="text-right!">Total<br /><span className="font-normal normal-case">/100</span></th><th className="text-right!">Base</th><th className="text-right!">Nota</th></tr></thead>
+          <thead><tr><th>#</th><th>Entrega</th>{CRITERIOS.map((k) => <th key={k.chave} className="text-right!">{k.curto}<br /><span className="font-normal normal-case">/{k.max}</span></th>)}<th className="text-right!">Doc.<br /><span className="font-normal normal-case">/{DOCUMENTAL_MAX}</span></th><th className="text-right!">Total<br /><span className="font-normal normal-case">/100</span></th><th className="text-right!">Base</th><th className="text-right!">Anterior</th><th className="text-right!">Acréscimo</th><th className="text-right!">Nota</th></tr></thead>
           <tbody>
             {c.porEntrega.map((x, i) => (
               <tr key={x.entrega.id}>
@@ -82,11 +83,13 @@ export default async function Trabalho1Consolidacao() {
                 <td className="text-right tabular-nums">{n2(x.documental)}</td>
                 <td className="text-right tabular-nums">{n2(x.total)}</td>
                 <td className="text-right tabular-nums">{n2(x.base)}</td>
+                <td className="text-right tabular-nums text-muted">{n2(x.anterior)}</td>
+                <td className={`text-right tabular-nums ${x.acrescimo > 0.005 ? "text-ok font-semibold" : "text-muted"}`}>{x.acrescimo > 0.005 ? `+${n2(x.acrescimo)}` : "0,00"}</td>
                 <td className="text-right tabular-nums"><b className="text-ink text-[15px]">{n2(x.nota)}</b></td>
               </tr>
             ))}
           </tbody>
-          <tfoot><tr><td /><td className="font-semibold text-ink">Média das entregas</td>{c.porCriterio.map((x) => <td key={x.criterio.chave} className="text-right tabular-nums font-semibold">{n2(x.media)}</td>)}<td className="text-right tabular-nums font-semibold">{n2(c.porEntrega.reduce((s, x) => s + x.documental, 0) / c.entregas)}</td><td className="text-right tabular-nums font-semibold">{n2(c.porEntrega.reduce((s, x) => s + x.total, 0) / c.entregas)}</td><td className="text-right tabular-nums font-semibold">{n2(c.porEntrega.reduce((s, x) => s + x.base, 0) / c.entregas)}</td><td className="text-right tabular-nums font-semibold">{n2(c.porEntrega.reduce((s, x) => s + x.nota, 0) / c.entregas)}</td></tr></tfoot>
+          <tfoot><tr><td /><td className="font-semibold text-ink">Média das entregas</td>{c.porCriterio.map((x) => <td key={x.criterio.chave} className="text-right tabular-nums font-semibold">{n2(x.media)}</td>)}<td className="text-right tabular-nums font-semibold">{n2(c.porEntrega.reduce((s, x) => s + x.documental, 0) / c.entregas)}</td><td className="text-right tabular-nums font-semibold">{n2(c.porEntrega.reduce((s, x) => s + x.total, 0) / c.entregas)}</td><td className="text-right tabular-nums font-semibold">{n2(c.porEntrega.reduce((s, x) => s + x.base, 0) / c.entregas)}</td><td className="text-right tabular-nums font-semibold">{n2(c.porEntrega.reduce((s, x) => s + x.anterior, 0) / c.entregas)}</td><td /><td className="text-right tabular-nums font-semibold">{n2(c.porEntrega.reduce((s, x) => s + x.nota, 0) / c.entregas)}</td></tr></tfoot>
         </table></div>
       </section>
 
@@ -99,15 +102,16 @@ export default async function Trabalho1Consolidacao() {
           <p className="hint mt-1">O vínculo casa o nome da devolutiva com o nome da matrícula, o nome do perfil ou o e-mail, sem acento, e só vale quando é único nos dois sentidos. Para fixar um vínculo, informe o e-mail da matrícula no campo email do aluno em src/lib/avaliacoes/trabalho-1.ts.</p>
         </div>
         <div className="table-wrap"><table className="table text-[13.5px]">
-          <thead><tr><th>Aluno</th><th>Entrega</th><th className="text-right!">Nota</th><th>Matrícula vinculada</th><th>Devolutiva</th></tr></thead>
+          <thead><tr><th>Aluno</th><th>Entrega</th><th className="text-right!">Anterior</th><th className="text-right!">Nota</th><th>Matrícula vinculada</th><th>Devolutiva</th></tr></thead>
           <tbody>
-            {c.porAluno.map(({ aluno, entrega, nota }) => {
+            {c.porAluno.map(({ aluno, entrega, nota, anterior, acrescimo }) => {
               const r = v.porAluno[aluno.id]; const m = r?.status === "vinculado" ? v.matriculas.get(r.candidatoId) : null;
               return (
                 <tr key={aluno.id}>
                   <td><b className="text-ink">{aluno.nome}</b></td>
                   <td>{entrega.tema}</td>
-                  <td className="text-right tabular-nums"><b className="text-ink">{n2(nota)}</b></td>
+                  <td className="text-right tabular-nums text-muted">{n2(anterior)}</td>
+                  <td className="text-right tabular-nums"><b className="text-ink">{n2(nota)}</b>{acrescimo > 0.005 && <span className="block text-[12px] text-ok">+{n2(acrescimo)}</span>}</td>
                   <td>{m ? <><span>{m.nome}</span> <StatusBadge status={m.status} />{m.papel === "monitor" && <span className="badge badge-ink ml-1">monitor</span>}<br /><span className="hint">{m.email}</span></>
                     : r?.status === "ambiguo" ? <span className="text-warn">ambíguo: casa com {r.candidatos.length} matrículas ({r.candidatos.map((id) => v.matriculas.get(id)?.nome).join("; ")})</span>
                     : <span className="hint">{v.turma ? "sem correspondência na turma" : "sem turma atribuída"}</span>}</td>
@@ -117,6 +121,14 @@ export default async function Trabalho1Consolidacao() {
             })}
           </tbody>
         </table></div>
+      </section>
+
+      <section className="card mb-5" aria-labelledby="rev">
+        <h2 id="rev" className="text-lg">Revisão de {REVISAO.data}: critério e conferências</h2>
+        <div className="grid gap-2 mt-3 text-[14.5px] max-w-[85ch]">{REVISAO.criterio.map((t, i) => <p key={i}>{t}</p>)}</div>
+        <ul className="list-none p-0 m-0 mt-4 grid gap-3 md:grid-cols-3">
+          {REVISAO.conferencias.map((x) => <li key={x.titulo} className="panel-soft"><p className="font-semibold text-ink text-[14.5px]">{x.titulo}</p><p className="text-[14px] mt-1">{x.texto}</p></li>)}
+        </ul>
       </section>
 
       <section className="card mb-5" aria-labelledby="pend">
@@ -129,7 +141,7 @@ export default async function Trabalho1Consolidacao() {
       <details className="card-flat">
         <summary className="cursor-pointer font-semibold text-ink">Método de cálculo e fonte</summary>
         <div className="mt-3 grid gap-2 text-[14.5px] max-w-[80ch]">
-          <p>Nota base = (pontos documentais + apresentação) ÷ 10. Nota equiparada = 7 + 3 × (nota base − {n2(c.regua.menor)}) ÷ ({n2(c.regua.maior)} − {n2(c.regua.menor)}), com os valores completos no cálculo e duas casas na exibição.</p>
+          <p>Nota base = (pontos documentais + apresentação) ÷ 10. Nota = mínimo entre 10 e 7 + 3 × (nota base − {n2(c.regua.menor)}) ÷ ({n2(c.regua.maior)} − {n2(c.regua.menor)}), com os valores completos no cálculo e duas casas na exibição. Os extremos são os da avaliação de {TRABALHO_1.entrega} e ficam fixos; equivale a somar à nota anterior 3 × crédito ÷ 61.</p>
           <p>Apresentação incorporada como definida: Michelle Bouhid 10/15, Carlos Eduardo N Campos 5/15 e demais 15/15. Nenhum teto de checkpoint foi aplicado, porque seu valor não estava definido.</p>
           <p>Médias da turma ponderadas por aluno (cada integrante de grupo conta uma vez); médias por critério e a linha final da tabela ponderadas por entrega.</p>
           <p className="hint">Fonte: {TRABALHO_1.fonte} Os valores desta página são recalculados dos pontos por critério e conferidos contra o documento em tests/trabalho-1.test.ts.</p>
