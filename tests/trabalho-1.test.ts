@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ALUNOS, CRITERIOS, ENTREGAS, PENDENCIAS, REVISAO, acrescimo, composicao, consolidacao, credito, devolutiva, documental, integrantes, n2, notaAnterior, notaBase, notaEquiparada, notaQuestao, pontosAnteriores, pts, regua, total } from "@/lib/avaliacoes/trabalho-1";
+import { ALUNOS, CRITERIOS, ENTREGAS, PENDENCIAS, REVISAO, acrescimo, composicao, consolidacao, credito, devolutiva, documental, integrantes, n2, notaAnterior, notaIntermediaria, notaBase, notaEquiparada, notaQuestao, pontosAnteriores, pts, regua, total } from "@/lib/avaliacoes/trabalho-1";
 import { termos, vincular } from "@/lib/avaliacoes/vinculo";
 
 /**
@@ -13,7 +13,7 @@ const DOCUMENTO: Record<string, { criterios: string[]; doc: string; total: strin
   "banco-asa": { criterios: ["22", "17", "15", "11,83", "15"], doc: "65,83", total: "80,83", base: "8,08", anterior: "9,58", nota: "9,58", credito: "0,00", acrescimo: "0,00", questoes: ["8,18", "7,86", "7,54"] },
   "fidc-imobiliario": { criterios: ["24,17", "21,67", "18,33", "13", "15"], doc: "77,17", total: "92,17", base: "9,22", anterior: "8,45", nota: "10,00", credito: "34,33", acrescimo: "1,55", questoes: ["9,18", "8,82", "9,07"] },
   "fidc-cedente": { criterios: ["18,17", "0", "16,83", "8,17", "15"], doc: "43,17", total: "58,17", base: "5,82", anterior: "8,47", nota: "8,47", credito: "0,00", acrescimo: "0,00", questoes: ["5,11", "4,93", "5,11"] },
-  "hipotecario-europeu": { criterios: ["17,67", "0", "16,67", "0", "10"], doc: "34,33", total: "44,33", base: "4,43", anterior: "7,66", nota: "7,79", credito: "2,50", acrescimo: "0,12", questoes: ["7,43", "4,79", "6,96"] },
+  "hipotecario-europeu": { criterios: ["17,67", "0", "16,67", "2", "10"], doc: "36,33", total: "46,33", base: "4,63", anterior: "7,66", nota: "7,89", credito: "4,50", acrescimo: "0,22", questoes: ["7,43", "4,79", "6,96"] },
   braskem: { criterios: ["11,33", "0", "12", "0", "5"], doc: "23,33", total: "28,33", base: "2,83", anterior: "7,00", nota: "7,00", credito: "0,00", acrescimo: "0,00", questoes: ["3,64", "3,32", "3,18"] },
   agrogalaxy: { criterios: ["14,17", "0", "10,17", "0", "15"], doc: "24,33", total: "39,33", base: "3,93", anterior: "7,54", nota: "7,54", credito: "0,00", acrescimo: "0,00", questoes: ["3,86", "3,71", "3,71"] },
   "fintech-produto-publico": { criterios: ["20,83", "13,33", "15,67", "12", "15"], doc: "61,83", total: "76,83", base: "7,68", anterior: "8,80", nota: "9,39", credito: "12,00", acrescimo: "0,59", questoes: ["7,29", "6,79", "7,29"] },
@@ -23,7 +23,7 @@ const DOCUMENTO: Record<string, { criterios: string[]; doc: string; total: strin
 const NOTA_ALUNO: Record<string, [string, string]> = {
   "Tomaz Leal": ["10,00", "10,00"], "Roberto Gomides": ["10,00", "10,00"], "Diana Cabral": ["10,00", "10,00"], "Jader Brenny Santana": ["9,70", "9,70"],
   "André Souza": ["9,58", "9,58"], "André Meirelles": ["9,58", "9,58"], "Sebastião": ["9,58", "9,58"], "Renata Valsa": ["8,45", "10,00"], "Larissa Bastos": ["8,45", "10,00"],
-  "Gabriel Winck": ["8,45", "10,00"], "Guilherme Castro": ["8,47", "8,47"], "Michelle Bouhid": ["7,66", "7,79"], "Carlos Eduardo N Campos": ["7,00", "7,00"],
+  "Gabriel Winck": ["8,45", "10,00"], "Guilherme Castro": ["8,47", "8,47"], "Michelle Bouhid": ["7,66", "7,89"], "Carlos Eduardo N Campos": ["7,00", "7,00"],
   "Gabriel Andrade": ["7,54", "7,54"], "João Pedro": ["7,54", "7,54"], "Matheus Luchi": ["7,54", "7,54"],
   "Stêphan Lana Severiano": ["8,80", "9,39"], "Raphael dos Santos Andrade Silva": ["8,80", "9,39"],
 };
@@ -54,8 +54,16 @@ describe("Trabalho 1: reconciliação com os documentos de avaliação e de revi
     }
   });
 
-  it("a abertura de quem teve acréscimo cita as notas anterior e atual calculadas", () => {
-    for (const e of ENTREGAS.filter((x) => acrescimo(x) > 0.005)) expect(e.revisao.abertura, e.id).toContain(`de ${n2(notaAnterior(e))} para ${n2(notaEquiparada(e))}`);
+  it("a abertura de quem teve acréscimo cita as notas de antes e depois da última revisão, calculadas", () => {
+    for (const e of ENTREGAS.filter((x) => acrescimo(x) > 0.005)) expect(e.revisao.abertura, e.id).toContain(`de ${n2(notaIntermediaria(e) ?? notaAnterior(e))} para ${n2(notaEquiparada(e))}`);
+  });
+
+  it("reanálise de Michelle: 7,66 em 12/09, 7,79 na revisão das 13h45 e 7,89 com processo 2/15 (acréscimo de 0,10)", () => {
+    const e = ENTREGAS.find((x) => x.id === "hipotecario-europeu")!;
+    expect(n2(notaIntermediaria(e)!)).toBe("7,79");
+    expect(n2(notaEquiparada(e) - notaIntermediaria(e)!)).toBe("0,10");
+    expect(e.pontos.processo).toBe(2);
+    expect(ENTREGAS.filter((x) => x.intermediaria).map((x) => x.id)).toEqual(["hipotecario-europeu"]);
   });
 
   it("três questões por entrega, cada uma com a nota (25C + 25V + 20I) ÷ 70 publicada", () => {
@@ -104,7 +112,7 @@ describe("Trabalho 1: reconciliação com os documentos de avaliação e de revi
     const verif = c.porCriterio.find((x) => x.criterio.chave === "verificacao")!;
     expect(verif.zeros).toBe(4);
     expect(verif.alunosZerados).toBe(6);
-    expect(c.porCriterio.find((x) => x.criterio.chave === "processo")!.zeros).toBe(3);
+    expect(c.porCriterio.find((x) => x.criterio.chave === "processo")!.zeros).toBe(2);
     expect(c.entregasComAcrescimo).toBe(3);
     expect(c.alunosComAcrescimo).toBe(6);
     // "as entregas com verificação positiva ocupam as primeiras posições"
@@ -112,7 +120,7 @@ describe("Trabalho 1: reconciliação com os documentos de avaliação e de revi
     expect(c.porEntrega.slice(0, k).every((x) => x.entrega.pontos.verificacao > 0)).toBe(true);
     const soma = c.porAluno.reduce((s, x) => s + x.nota, 0);
     expect(c.mediaAlunos).toBeCloseTo(soma / 18, 12);
-    expect(n2(c.mediaAlunos)).toBe("9,06");
+    expect(n2(c.mediaAlunos)).toBe("9,07");
     expect(n2(c.mediaAnteriorAlunos)).toBe("8,73");
     expect(n2(c.medianaAlunos)).toBe("9,58");
   });

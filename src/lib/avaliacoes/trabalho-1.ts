@@ -11,7 +11,10 @@
  * avaliação anterior com os extremos fixos (a menor nota base anterior vai a 7 e a maior a 10), com teto 10. Os
  * extremos não são recalculados depois das complementações, para não reduzir a nota de ninguém.
  *
- * Ajustes de forma nos textos, sem alterar número ou juízo: espaço em "de R$" e em "7,00 pela", "R$ 17.299.582,19",
+ * A reanálise de Michelle Bouhid, no mesmo dia ("Trabalho 1 Reanálise Michelle"), levou processo de 0 a 2/15 e a
+ * nota de 7,79 a 7,89; a etapa intermediária fica registrada em `intermediaria`.
+ *
+ * Ajustes de forma nos textos, sem alterar número ou juízo: "células 63 e 64" e "70 e 71" no lugar de intervalos com traço, espaço em "de R$" e em "7,00 pela", "R$ 17.299.582,19",
  * "400% ao ano", "12270 e 12569", o traço do título AgroGalaxy trocado por dois pontos e o tema da entrega de Stêphan
  * e Raphael escrito a partir das três perguntas ("onde, com que produto e para qual público").
  */
@@ -37,7 +40,7 @@ export const TRABALHO_1 = {
   checkpoint: "29/08/2026",
   entrega: "12/09/2026",
   revisao: "06/10/2026",
-  fonte: "Documentos Trabalho 1 devolutivas individuais (avaliação de 12/09/2026) e Trabalho 1 Avaliação Conferida (revisão de 06/10/2026, 13h45), do professor.",
+  fonte: "Documentos Trabalho 1 devolutivas individuais (avaliação de 12/09/2026) e Trabalho 1 Avaliação Conferida (revisão de 06/10/2026, 13h45) e Trabalho 1 Reanálise Michelle (06/10/2026), do professor.",
   /** Ano letivo da turma avaliada: turmas de outros anos nunca recebem esta avaliação. */
   anoLetivo: 2026,
   /** Mínimo de alunos com vínculo único para a avaliação ser atribuída a uma turma do ano letivo. */
@@ -72,6 +75,8 @@ export type Entrega = {
   pontos: Record<CriterioChave, number>;
   /** Pontos da avaliação anterior, só nos critérios que a revisão alterou. */
   antes?: Partial<Record<CriterioChave, number>>;
+  /** Etapa intermediária, quando houve mais de uma revisão: pontos de antes da última, só nos critérios que ela alterou. */
+  intermediaria?: { rotulo: string; antes: Partial<Record<CriterioChave, number>> };
   revisao: Revisao;
   /** Textos da avaliação de 12/09/2026, mantidos como registro. A entrega incluída na revisão não os tem. */
   sintese?: string;
@@ -227,18 +232,19 @@ export const ENTREGAS: Entrega[] = [
     id: "hipotecario-europeu",
     tema: "Crédito hipotecário europeu",
     modalidade: "individual",
-    pontos: { concepcao: p(17, 4), verificacao: 0, interpretacao: p(16, 4), processo: 0, apresentacao: 10 },
-    antes: { concepcao: p(16, 1), interpretacao: p(15, 4) },
+    pontos: { concepcao: p(17, 4), verificacao: 0, interpretacao: p(16, 4), processo: 2, apresentacao: 10 },
+    antes: { concepcao: p(16, 1), interpretacao: p(15, 4), processo: 0 },
+    intermediaria: { rotulo: "revisão de 06/10/2026, 13h45", antes: { processo: 0 } },
     revisao: {
-      abertura: "Reconheci a organização em três perguntas e a explicação dos cálculos e limites. A nota passa de 7,66 para 7,79. A lacuna BCL mantém o corte global de verificação; o novo material não contém o caderno de IA exigido.",
+      abertura: "Você entregou fontes, fórmulas, código e resultados no V3. O zero global em verificação decorre da origem incompleta da complementação BCL de Luxemburgo. Reconheci processo parcial em 2/15 pelas decisões e checagens registradas; a nota sobe de 7,79 para 7,89.",
       legendaQuestoes: "Três perguntas identificadas no trabalho.",
       questoes: [
       { titulo: "Resiliência da garantia imobiliária", c: 7, v: 7, i: 8.5, texto: "O novo notebook explicita séries Eurostat, fórmulas e tabelas para valorização, volatilidade e drawdown. Isso melhora a documentação; preços nominais não medem LGD de execução." },
       { titulo: "Financiamento e novas concessões", c: 7, v: 0, i: 8, texto: "A complementação BCL de Luxemburgo continua descrita sem chave, original e regra de substituição por observação. A fórmula sobre o CSV preparado não resolve sua origem." },
       { titulo: "Estoque e expansão das hipotecas", c: 7.2, v: 5.5, i: 8.5, texto: "Há código e resultados para crescimento e participação. O acesso ECB indicado é amplo e os CSV originais/data de extração não acompanharam o HTML; a verificação permanece parcial." },
       ],
-      processo: "Código de cálculo é evidência metodológica, mas não substitui prompts, aceites/rejeições e três episódios de erro antes/depois. Processo permanece 0/15.",
-      materiais: "HTML TRABALHO_CREDITO_MichelleBouhid_V3.html, enviado em 06/10/2026 às 05:46. O arquivo já estava na pasta e foi organizado como complementação; identifiquei o anexo no e-mail por nome e tamanho.",
+      processo: "Reconheci 2/15 pelas decisões e checagens: as células 63 e 64 mostram a conversão de datas; as células 70 e 71, a conversão de tipos numéricos. O texto registra a agregação trimestral antes da normalização. Faltam prompts, aceites/rejeições e três erros da IA documentados. Essas conversões não comprovam erros da ferramenta. Detalhamento: prompts 0/5, erros IA 0/6, decisões e desvios 2/4. A verificação permanece 0/25 por regra de corte.",
+      materiais: "Mensagem \"Trabalho1 Rastreabilidade\" de 06/10 às 05h46, de michelle.bouhid@gmail.com, com TRABALHO_CREDITO_MichelleBouhid_V3.html. Também conferi a entrega de 19/9 e o registro da mensagem Trabalho 2 de 06/10 às 11h09. O Trabalho 2 não foi utilizado para aumentar a nota do Trabalho 1.",
     },
     sintese: "O painel apresenta uma comparação organizada de profundidade, crescimento e garantias no crédito hipotecário, com referências e consequências claras. A nota reconhece essa qualidade analítica e incorpora 10 pontos na apresentação. Os principais descontos decorrem do recorte europeu, diferente do mercado brasileiro solicitado, da pergunta excedente e da falta de rastreabilidade suficiente de parte dos dados.",
     paragrafos: [
@@ -375,16 +381,16 @@ export const REVISAO = {
     "Quando persiste um número essencial sem origem, o corte global de verificação continua valendo. A nota V de uma questão pode reconhecer documentação parcial sem revogar o corte do trabalho inteiro. As apresentações permanecem como avaliadas; nenhum desempenho oral novo foi presumido.",
   ],
   conferencias: [
-    { titulo: "Materiais e alcance", texto: "A caixa de e-mail institucional foi conferida em 06/10/2026 às 13h45. Os hashes dos 53 arquivos organizados anteriormente não mudaram. O registro de IA de Stêphan e Raphael foi avaliado; o PDF validador e as medidas DAX citados no e-mail de 06/10 aparecem só como nomes, sem anexos disponíveis, e não receberam pontos. A mensagem Trabalho 2 de Michelle foi registrada separadamente e não alterou o Trabalho 1." },
+    { titulo: "Materiais e alcance", texto: "A caixa de e-mail institucional foi conferida em 06/10/2026 às 13h45. Os hashes dos 53 arquivos organizados anteriormente não mudaram. O registro de IA de Stêphan e Raphael foi avaliado; o PDF validador e as medidas DAX citados no e-mail de 06/10 aparecem só como nomes, sem anexos disponíveis, e não receberam pontos. A mensagem Trabalho 2 de Michelle foi registrada separadamente e não alterou o Trabalho 1. Depois dessa conferência, Michelle foi reanalisada: processo passou a 2/15 e a nota a 7,89. As demais notas e as notas por questão foram preservadas." },
     { titulo: "Conferência independente do grupo de Renata", texto: "Sem executar scripts dos alunos, os recebíveis foram recalculados em Tabela Price com as taxas das AFs por contrato: 23 contratos, 4.573 parcelas, nenhuma taxa faltante, valor nominal R$ 30.411.868,22 e valor presente R$ 17.299.582,19. Também foram conferidos CR 2 de 18,2454%, CR 5 de 42,6275% e VP de R$ 15.069.312,77 após retirar 12270 e 12569. A declaração de 700 testes sem divergência é do grupo e não foi tratada como certificação integral; premissas de recuperação, estrutura de cotas e remuneração continuam premissas, agora rastreáveis." },
-    { titulo: "Michelle e a entrega de Stêphan e Raphael", texto: "O notebook HTML de Michelle foi lido com fontes, tabelas e código; o complemento BCL continua identificado só na preparação dos dados, sem origem por observação. Na entrega de Stêphan e Raphael foram lidos dados, metadados e funções de cálculo do HTML, sem executar a aplicação: três perguntas, 12 gráficos principais, fontes SCR, taxas e CDI, fórmulas e limites. Faltam arquivos originais, código de preparação e logs de execução. O registro de interações de IA recebido depois rendeu 12/15 em processo, mantidas as notas por questão e os demais critérios." },
+    { titulo: "Michelle e a entrega de Stêphan e Raphael", texto: "Michelle entregou fontes, fórmulas, código e resultados no V3; o zero em verificação decorre da lacuna de origem da complementação BCL, não de ausência de material. Na reanálise, processo recebeu 2/15 pelas decisões e checagens de tipos documentadas, sem classificá-las como três erros comprovados da IA. Na entrega de Stêphan e Raphael foram lidos dados, metadados e funções de cálculo do HTML, sem executar a aplicação: três perguntas, 12 gráficos principais, fontes SCR, taxas e CDI, fórmulas e limites. O registro de interações de IA rendeu 12/15 em processo; o PDF validador e as medidas DAX citados no encaminhamento continuam pendentes." },
   ],
 };
 
 /** Pendências registradas nos documentos, para o professor resolver antes de dar a avaliação por definitiva. */
 export const PENDENCIAS: { titulo: string; texto: string; entrega?: string }[] = [
   { titulo: "Arquivos citados por Stêphan", entrega: "fintech-produto-publico", texto: "O PDF validador e as medidas DAX citados no e-mail de 06/10 não estavam disponíveis para exame e não receberam pontos. O registro de IA foi redigido pela IA e requer conferência do grupo; seus testes narrados não foram reproduzidos." },
-  { titulo: "Origem da complementação BCL", entrega: "hipotecario-europeu", texto: "A complementação BCL de Luxemburgo continua sem chave, original e regra de substituição por observação; o corte global de verificação de Michelle Bouhid permanece." },
+  { titulo: "Origem da complementação BCL", entrega: "hipotecario-europeu", texto: "A complementação BCL de Luxemburgo continua sem chave, original e regra de substituição por observação; o corte global de verificação de Michelle Bouhid permanece. O zero decorre dessa lacuna de origem, não de ausência de material: fontes, fórmulas, código e resultados foram entregues no V3." },
   { titulo: "Equivalência da entrega AgroGalaxy", entrega: "agrogalaxy", texto: "A entrega foi identificada como Trabalho Final; a avaliação dos três integrantes permanece condicional à equivalência ao Trabalho 1." },
   { titulo: "Identificação do grupo ASA", entrega: "banco-asa", texto: "A identificação do grupo deve ser reconciliada com o caderno de processo." },
   { titulo: "Versão entregue dos painéis publicados", entrega: "supervisao-bcb", texto: "A versão publicada observada do painel de supervisão traz build de 18/09/2026, posterior à entrega; confirmar a correspondência com a versão entregue. O mesmo vale para os demais painéis publicados." },
@@ -419,6 +425,12 @@ const naRegua = (base: number) => { const r = regua(); return Math.min(r.teto, r
 
 /** Nota da avaliação anterior (12/09/2026). */
 export const notaAnterior = (e: Entrega) => naRegua(totalAnterior(e) / 10);
+/** Nota antes da última revisão, quando houve mais de uma; senão, nulo. */
+export function notaIntermediaria(e: Entrega) {
+  if (!e.intermediaria) return null;
+  const x = { ...e.pontos, ...e.intermediaria.antes };
+  return naRegua((somaDoc(x) + x.apresentacao) / 10);
+}
 /** Nota vigente: a anterior mais 3 × crédito ÷ 61 pela régua fixa, com teto 10. */
 export const notaEquiparada = (e: Entrega) => naRegua(notaBase(e));
 export const acrescimo = (e: Entrega) => notaEquiparada(e) - notaAnterior(e);
@@ -446,7 +458,7 @@ export function devolutiva(alunoId: string) {
   const entrega = aluno ? entregaPorId(aluno.entrega) : null;
   if (!aluno || !entrega) return null;
   const colegas = integrantes(entrega.id).filter((a) => a.id !== aluno.id);
-  return { aluno, entrega, colegas, nota: notaEquiparada(entrega), anterior: notaAnterior(entrega), acrescimo: acrescimo(entrega), credito: credito(entrega), anteriores: pontosAnteriores(entrega), base: notaBase(entrega), documental: documental(entrega), total: total(entrega), regua: regua() };
+  return { aluno, entrega, colegas, nota: notaEquiparada(entrega), anterior: notaAnterior(entrega), intermediaria: notaIntermediaria(entrega), acrescimo: acrescimo(entrega), credito: credito(entrega), anteriores: pontosAnteriores(entrega), base: notaBase(entrega), documental: documental(entrega), total: total(entrega), regua: regua() };
 }
 export type Devolutiva = NonNullable<ReturnType<typeof devolutiva>>;
 
