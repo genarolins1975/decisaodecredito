@@ -7,7 +7,8 @@ import { PageHeader, Stat, StatusBadge, ButtonLink } from "@/components/ui";
 import { StartClassButton } from "@/components/professor/start-class-button";
 import { fmtDT, fmtL, relative } from "@/lib/time";
 import { TRABALHO_1, consolidacao, n2 } from "@/lib/avaliacoes/trabalho-1";
-import { vinculoTrabalho1 } from "@/lib/services/avaliacoes";
+import { vinculoTrabalho1, vinculoTrabalho2 } from "@/lib/services/avaliacoes";
+import { TRABALHO_2, consolidacaoT2 } from "@/lib/avaliacoes/trabalho-2";
 
 export const metadata: Metadata = { title: "Início" };
 
@@ -31,6 +32,7 @@ export default async function ProfessorHome() {
   const nextOf = (cid: string) => { const ms = planned.filter((m) => m.classId === cid); return ms.find((m) => m.scheduledAt && m.scheduledAt >= new Date(now.getTime() - 4 * 3600e3)) ?? ms.find((m) => !m.scheduledAt) ?? ms[0] ?? null; };
   const activeClasses = classes.filter((c) => c.status === "active");
   const t1 = consolidacao(); const t1v = await vinculoTrabalho1();
+  const t2c = consolidacaoT2(); const t2v = await vinculoTrabalho2();
   const failed = Number(failedMail[0]?.n ?? 0); const queued = Number(queuedMail[0]?.n ?? 0);
 
   return (
@@ -83,6 +85,16 @@ export default async function ProfessorHome() {
         </div>
         <p className="text-center"><span className="eyebrow block">Média da turma</span><span className="font-serif text-ink text-[32px] font-bold tabular-nums">{n2(t1.mediaAlunos)}</span></p>
         <Link href="/professor/trabalho-1" className="btn btn-secondary">Ver a consolidação</Link>
+      </section>
+
+      <section aria-labelledby="t2" className="card mb-6 flex flex-wrap items-center gap-x-8 gap-y-3">
+        <div className="min-w-0 flex-1">
+          <p className="eyebrow">{t2v.turma ? t2v.turma.name : "Turma não identificada"} · resultado consolidado</p>
+          <h2 id="t2" className="text-[20px] mt-1"><Link href="/professor/trabalho-2" className="no-underline hover:underline">{TRABALHO_2.titulo}</Link></h2>
+          <p className="text-[14px] mt-1">{t2c.entregas} entregas e {t2c.alunos} alunos · notas de {n2(t2c.minima)} a {n2(t2c.maxima)} pela régua de {TRABALHO_2.reescala} · previsões OOT válidas em {t2c.ootValidos} entregas</p>
+        </div>
+        <p className="text-center"><span className="eyebrow block">Média da turma</span><span className="font-serif text-ink text-[32px] font-bold tabular-nums">{n2(t2c.mediaAlunos)}</span></p>
+        <Link href="/professor/trabalho-2" className="btn btn-secondary">Ver a consolidação</Link>
       </section>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">

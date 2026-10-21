@@ -360,7 +360,7 @@ export const ALUNOS: Aluno[] = [
   { id: "carlos-eduardo-n-campos", nome: "Carlos Eduardo N Campos", nomeCompleto: "Carlos Eduardo Nascimento Campos", entrega: "braskem" },
   { id: "gabriel-andrade", nome: "Gabriel Andrade", nomeCompleto: "Gabriel Oliveira de Andrade", email: "gabrielbove13@gmail.com", entrega: "agrogalaxy" },
   { id: "joao-pedro", nome: "João Pedro", entrega: "agrogalaxy" },
-  { id: "matheus-luchi", nome: "Matheus Luchi", entrega: "agrogalaxy" },
+  { id: "matheus-luchi", nome: "Matheus Luchi", email: "matheusluchi@id.uff.br", entrega: "agrogalaxy" },
   { id: "stephan-lana-severiano", nome: "Stêphan Lana Severiano", entrega: "fintech-produto-publico" },
   { id: "raphael-dos-santos-andrade-silva", nome: "Raphael dos Santos Andrade Silva", entrega: "fintech-produto-publico" },
 ];

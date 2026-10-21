@@ -7,7 +7,8 @@ import { Stat } from "@/components/ui";
 import { StartClassButton } from "@/components/professor/start-class-button";
 import { fmtDT } from "@/lib/time";
 import { TRABALHO_1, consolidacao, n2 } from "@/lib/avaliacoes/trabalho-1";
-import { vinculoTrabalho1 } from "@/lib/services/avaliacoes";
+import { vinculoTrabalho1, vinculoTrabalho2 } from "@/lib/services/avaliacoes";
+import { TRABALHO_2, consolidacaoT2 } from "@/lib/avaliacoes/trabalho-2";
 
 export default async function TurmaVisaoPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -19,6 +20,7 @@ export default async function TurmaVisaoPage({ params }: { params: Promise<{ id:
   const grading = await db.select({ n: sql<number>`count(*)` }).from(schema.submissions).where(and(eq(schema.submissions.classId, id), eq(schema.submissions.isCurrent, true), inArray(schema.submissions.status, ["enviado", "atrasado", "reenviado"])));
   const reviews = await db.select({ n: sql<number>`count(*)` }).from(schema.attendanceRecords).innerJoin(schema.meetings, eq(schema.meetings.id, schema.attendanceRecords.meetingId)).where(and(eq(schema.meetings.classId, id), isNotNull(schema.attendanceRecords.reviewRequested)));
   const t1v = await vinculoTrabalho1(); const t1 = t1v.turma?.id === id ? consolidacao() : null;
+  const t2v = await vinculoTrabalho2(); const t2 = t2v.turma?.id === id ? consolidacaoT2() : null;
   const rule = (access.cls.config as { attendance?: { minimumPct?: number | null } }).attendance;
   return (
     <div>
@@ -43,6 +45,13 @@ export default async function TurmaVisaoPage({ params }: { params: Promise<{ id:
             <h2 className="text-base mb-2">{TRABALHO_1.titulo}</h2>
             <p className="text-[14px]">Resultado publicado aos alunos: média {n2(t1.mediaAlunos)}, notas de {n2(t1.minima)} a {n2(t1.maxima)}, {t1.entregas} entregas.</p>
             <p className="hint mt-1"><Link href="/professor/trabalho-1">Ver a consolidação e o vínculo de cada aluno</Link></p>
+          </section>
+        )}
+        {t2 && (
+          <section className="card md:col-span-2">
+            <h2 className="text-base mb-2">{TRABALHO_2.titulo}</h2>
+            <p className="text-[14px]">Resultado publicado aos alunos: média {n2(t2.mediaAlunos)}, notas de {n2(t2.minima)} a {n2(t2.maxima)} pela régua de {TRABALHO_2.reescala}, {t2.entregas} entregas.</p>
+            <p className="hint mt-1"><Link href="/professor/trabalho-2">Ver a consolidação e o vínculo de cada aluno</Link></p>
           </section>
         )}
       </div>

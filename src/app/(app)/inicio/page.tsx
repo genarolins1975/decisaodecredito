@@ -7,8 +7,9 @@ import { listAssignments, myGroup, eEntregaDeAula } from "@/lib/services/assignm
 import { flatPages } from "@/lib/services/content";
 import { PageHeader, StatusBadge, ButtonLink } from "@/components/ui";
 import { fmtL, fmtDT, relative } from "@/lib/time";
-import { devolutivaDoUsuario } from "@/lib/services/avaliacoes";
+import { devolutivaDoUsuario, devolutivaT2DoUsuario } from "@/lib/services/avaliacoes";
 import { TRABALHO_1, n2 } from "@/lib/avaliacoes/trabalho-1";
+import { TRABALHO_2 } from "@/lib/avaliacoes/trabalho-2";
 
 export const metadata: Metadata = { title: "Início" };
 
@@ -27,6 +28,7 @@ export default async function InicioPage() {
   const notices = await db.select().from(schema.notices).where(and(eq(schema.notices.classId, cid), isNotNull(schema.notices.publishedAt))).orderBy(desc(schema.notices.publishedAt)).limit(5);
   const published = (ids.length ? await db.select({ g: schema.grades, a: schema.assignments }).from(schema.grades).innerJoin(schema.assignments, eq(schema.assignments.id, schema.grades.assignmentId)).where(and(eq(schema.grades.userId, uid), eq(schema.grades.classId, cid), isNotNull(schema.grades.publishedAt), gte(schema.grades.publishedAt, new Date(now.getTime() - 30 * 86400e3)))).orderBy(desc(schema.grades.publishedAt)) : []).filter(({ a }) => !eEntregaDeAula(a.slug)); // entregas por aula fora da visão do aluno (06/10/2026)
   const t1 = await devolutivaDoUsuario(cid, uid);
+  const t2 = await devolutivaT2DoUsuario(cid, uid);
   const last = await db.select({ qv: schema.studyResponses.questionVersionId }).from(schema.studyResponses).where(and(eq(schema.studyResponses.userId, uid), eq(schema.studyResponses.classId, cid))).orderBy(desc(schema.studyResponses.serverTime)).limit(1);
   let resume: { slug: string; title: string } | null = null;
   if (last[0]) {
@@ -73,8 +75,9 @@ export default async function InicioPage() {
         </section>
         <section className="card" aria-labelledby="dev">
           <h2 id="dev" className="text-lg mb-2">Avisos e resultados</h2>
-          {notices.length === 0 && published.length === 0 && !t1 && <p className="hint">Nenhum aviso recente.</p>}
+          {notices.length === 0 && published.length === 0 && !t1 && !t2 && <p className="hint">Nenhum aviso recente.</p>}
           <ul className="list-none p-0 m-0 grid gap-2 text-[14px]">
+            {t2 && <li><Link href="/trabalhos/trabalho-2">Resultado publicado: {TRABALHO_2.titulo}</Link> <span className="hint">nota {n2(t2.nota)}</span></li>}
             {t1 && <li><Link href="/trabalhos/trabalho-1">Resultado publicado: {TRABALHO_1.titulo}</Link> <span className="hint">nota {n2(t1.nota)}</span></li>}
             {notices.map((n) => <li key={n.id}><b>{n.title}</b><p className="hint">{fmtDT(n.publishedAt)}</p><p className="whitespace-pre-line">{n.body}</p></li>)}
             {published.map(({ g, a }) => <li key={g.id}><Link href={`/trabalhos/${a.id}`}>Resultado publicado: {a.title}</Link> <span className="hint">{fmtDT(g.publishedAt)}</span></li>)}

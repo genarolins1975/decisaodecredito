@@ -6,8 +6,9 @@ import { listAssignments, myGroup } from "@/lib/services/assignments";
 import { db, schema } from "@/lib/db/client";
 import { PageHeader, Empty, StatusBadge } from "@/components/ui";
 import { fmtDT, relative } from "@/lib/time";
-import { devolutivaDoUsuario } from "@/lib/services/avaliacoes";
+import { devolutivaDoUsuario, devolutivaT2DoUsuario } from "@/lib/services/avaliacoes";
 import { TRABALHO_1, n2 } from "@/lib/avaliacoes/trabalho-1";
+import { TRABALHO_2 } from "@/lib/avaliacoes/trabalho-2";
 
 export const metadata: Metadata = { title: "Trabalhos" };
 
@@ -18,10 +19,22 @@ export default async function TrabalhosPage() {
   const ids = list.map((a) => a.id);
   const subs = ids.length ? await db.select().from(schema.submissions).where(and(inArray(schema.submissions.assignmentId, ids), eq(schema.submissions.isCurrent, true), group ? eq(schema.submissions.groupId, group.id) : eq(schema.submissions.submitterUserId, ctx.user.id))) : [];
   const t1 = await devolutivaDoUsuario(ctx.current.classId, ctx.user.id);
+  const t2 = await devolutivaT2DoUsuario(ctx.current.classId, ctx.user.id);
   const grades = ids.length ? await db.select().from(schema.grades).where(and(inArray(schema.grades.assignmentId, ids), eq(schema.grades.userId, ctx.user.id))) : [];
   return (
     <div>
       <PageHeader eyebrow={ctx.current.cls.name} title="Trabalhos" lead={group ? `Você está no grupo "${group.name}" (${group.members.map((m) => m.name.split(" ")[0]).join(", ")}). Entregas em grupo são coletivas; a defesa é individual.` : "O Trabalho 1 e o trabalho final, com doze missões."} />
+      {t2 && (
+        <article className="card border-l-[4px]! border-l-gold! mb-4 flex flex-wrap items-center gap-x-6 gap-y-3">
+          <div className="min-w-0 flex-1">
+            <p className="flex items-center gap-2 flex-wrap"><span className="eyebrow">{t2.entrega.modalidade === "grupo" ? "em grupo" : "individual"} · avaliado em {TRABALHO_2.avaliacao} · reescalado em {TRABALHO_2.reescala}</span><span className="badge badge-ok">nota publicada</span></p>
+            <h2 className="text-lg mt-1"><Link href="/trabalhos/trabalho-2" className="no-underline hover:underline">{TRABALHO_2.titulo}</Link></h2>
+            <p className="text-[14px] mt-1">{t2.entrega.titulo}. Pontos por critério, evidência e lacunas, entregáveis, missões e o cálculo da reescala.</p>
+          </div>
+          <p className="font-serif text-ink font-bold tabular-nums"><span className="text-[34px]">{n2(t2.nota)}</span><span className="text-muted text-[15px]"> / 10</span></p>
+          <Link href="/trabalhos/trabalho-2" className="btn btn-sm">Ver a devolutiva</Link>
+        </article>
+      )}
       {t1 && (
         <article className="card border-l-[4px]! border-l-gold! mb-4 flex flex-wrap items-center gap-x-6 gap-y-3">
           <div className="min-w-0 flex-1">
@@ -33,7 +46,7 @@ export default async function TrabalhosPage() {
           <Link href="/trabalhos/trabalho-1" className="btn btn-sm">Ver a devolutiva</Link>
         </article>
       )}
-      {list.length === 0 ? (t1 ? null : <Empty title="Nenhum trabalho publicado ainda" />) : (
+      {list.length === 0 ? (t1 || t2 ? null : <Empty title="Nenhum trabalho publicado ainda" />) : (
         <ul className="grid gap-3 md:grid-cols-2 list-none p-0 m-0">
           {list.map((a) => {
             const s = subs.find((x) => x.assignmentId === a.id);
